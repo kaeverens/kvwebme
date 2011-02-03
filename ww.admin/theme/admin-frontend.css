@@ -1,0 +1,82 @@
+#admin-menubar{
+	background:#666;
+	border-bottom:#000;
+	position:fixed;
+	left:0;
+	right:0;
+	top:0;
+	text-align:left;
+	padding:2px 20px;
+	z-index:1001;
+}
+#admin-menubar a{
+	color:#fff;
+	font-size:16px;
+}
+#admin-menubar a{
+	border:solid #fff;
+	border-width:1px;
+	border-radius:5px;
+	-moz-border-radius:5px;
+	box-shadow:#fff 1px 1px 2px;
+	-moz-box-shadow:#000 1px 1px 2px;
+	display:inline-block;
+	padding:2px;
+	margin:1px 10px;
+}
+
+#admin-overlay{
+	left:0;
+	top:0;
+	right:0;
+	bottom:0;
+	z-index:1003;
+	position:fixed;
+	background:#000;
+	opacity:.7;
+}
+#admin-editor{
+	border:solid #fff;
+	border-width:1px;
+	border-radius:5px;
+	-moz-border-radius:5px;
+	box-shadow:#fff 1px 1px 3px;
+	-moz-box-shadow:#000 1px 1px 3px;
+	padding:2px;
+	margin:1px;
+	position:fixed;
+	left:20px;
+	top:40px;
+	bottom:10px;
+	background:#eee;
+	right:20px;
+	z-index:1004;
+}
+#admin-editor iframe{
+	width:100%;
+	height:100%;
+	border:0;
+}
+#admin-editor #admin-iframe-holder{
+	position:fixed;
+	left:25px;
+	right:25px;
+	top:60px;
+	bottom:15px;
+}
+#admin-editor a{
+	float:right;
+	color:#f00;
+	font-weight:bold;
+	background:#fff;
+}
+#admin-menubar-hider{
+	position:fixed;
+	left:0;
+	top:5px;
+	height:16px;
+	width:16px;
+	background:url(arrows.png);
+	background-position:center right;
+	z-index:1002;
+}
