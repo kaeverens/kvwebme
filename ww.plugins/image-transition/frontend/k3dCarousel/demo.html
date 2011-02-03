@@ -1,0 +1,31 @@
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script src="jquery.k3dCarousel.min.js"></script>
+		<style>
+			#k3dCarousel img{
+				display:none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="k3dCarousel">
+			<img src="images/concrawood.jpg" />
+			<img src="images/fernheasty.jpg" />
+			<img src="images/mcnallys.jpg" />
+			<img src="images/northernstandard.jpg" />
+			<img src="images/soccertours.jpg" />
+			<img src="images/soundinsulation.jpg" />
+			<img src="images/textaroom.jpg" />
+			<img src="images/windhoist.jpg" />
+		</div>
+		<script>
+			$(window).load(function(){
+				$('#k3dCarousel').k3dCarousel({
+					d:1,
+					a:["left","right"]
+				});
+			});
+		</script>
+	</body>
+</html>

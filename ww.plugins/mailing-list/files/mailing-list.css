@@ -1,0 +1,60 @@
+/*
+	Webme Mailing List Plugin v0.2
+	File: files/mailing-list.css
+	Developer: Conor Mac Aoidh <http://macaoidh.name>
+	Report Bugs: <conor@macaoidh.name>
+*/
+.jqifade{  position:absolute;background-color:#aaaaaa }
+div.jqi{ width:400px;font-family:Verdana,Geneva,Arial,Helvetica,sans-serif;position:absolute;background-color:#ffffff;font-size:11px;text-align:left;border:solid 1px #eeeeee;-moz-border-radius:10px;-webkit-border-radius:10px;padding:7px }
+div.jqi .jqicontainer{ font-weight:bold }
+div.jqi .jqiclose{ position:absolute;top:4px;right:-2px;width:18px;cursor:default;color:#bbbbbb;font-weight:bold }
+div.jqi .jqimessage{ padding:10px;line-height:20px;color:#444444 }
+div.jqi .jqibuttons{ text-align:right;padding:5px 0 5px 0;border:solid 1px #eeeeee;background-color:#f4f4f4 }
+div.jqi button{ padding:3px 10px;margin:0 10px;background-color:#2F6073;border:solid 1px #f4f4f4;color:#ffffff;font-weight:bold;font-size:12px }
+div.jqi button:hover{ background-color:#728A8C }
+div.jqi button.jqidefaultbutton{ background-color:#BF5E26; }
+.jqiwarning .jqi .jqibuttons{ background-color:#BF5E26; }
+.error{
+	background-color:red;
+	border:1px dashed #000;
+}
+.tablesorter{
+	font-family:arial;
+	background-color:#CDCDCD;
+	margin:0 10px;
+	font-size:8pt;
+	width:95%;
+	text-align:left;
+	border:1px solid #ccc;
+}
+.tablesorter thead tr th, .tablesorter tfoot tr th{
+	background-color:#e6EEEE;
+	border:1px solid #ddd;
+	font-size:8pt;
+	padding:4px;
+}
+.tablesorter thead tr .header{
+	background-image:url(/ww.plugins/mailing-list/files/bg.gif);
+	background-repeat:no-repeat;
+	background-position:center right;
+	cursor:pointer;
+}
+.tablesorter tbody td{
+	color:#3D3D3D;
+	padding:4px;
+	background-color:#FFF;
+	vertical-align:top;
+	border:1px solid #ddd;
+}
+.tablesorter tbody tr.odd td{
+	background-color:#F0F0F6;
+}
+.tablesorter thead tr .headerSortUp{
+	background-image:url(/ww.plugins/mailing-list/files/asc.gif);
+}
+.tablesorter thead tr .headerSortDown{
+	background-image:url(/ww.plugins/mailing-list/files/desc.gif);
+}
+.tablesorter thead tr .headerSortDown, .tablesorter thead tr .headerSortUp{
+background-color:#8dbdd8;
+}

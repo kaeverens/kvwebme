@@ -1,0 +1,142 @@
+<table class="checkout_table"> 
+	<tbody> 
+		<tr> 
+			<td width="40%"> 
+				<h3>Delivery Details</h3> 
+					<table class="shoppingcartCheckout"> 
+						<tbody> 
+							<tr> 
+								<td style="width: 20%;" class="cellHeader" colspan="1">Name</td>
+								<td colspan="1">
+									<input id="FirstName" name="FirstName" value="" class=" text" />
+								</td> 
+							</tr> 
+							<tr> 
+								<td class="cellHeader" colspan="1">Surname</td> 
+								<td colspan="1">
+									<input id="Surname" name="Surname" value="" class=" text" />
+								</td> 
+							</tr> 
+							<tr> 
+								<td class="cellHeader" colspan="1">Phone</td>
+								<td colspan="1">
+									<input id="Phone" name="Phone" value="" class=" text" />
+								</td> 
+							</tr> 
+							<tr> 
+								<td class="cellHeader" colspan="1">Email</td>
+								<td colspan="1">
+									<input id="Email" name="Email" value="" class="email text" />
+								</td> 
+							</tr> 
+							<tr> 
+								<td class="cellHeader" colspan="1">Street</td> 
+								<td colspan="1"><input id="Street" name="Street" value="" class=" text" />
+							</td> 
+						</tr> 
+						<tr>
+							<td class="cellHeader" colspan="1">Street 2</td> 
+							<td colspan="1">
+								<input id="Street2" name="Street2" value="" class=" text" />
+							</td> 
+						</tr> 
+						<tr> 
+							<td class="cellHeader">Town</td> 
+							<td colspan="1">
+								<input id="Town" name="Town" value="" class=" text" />
+							</td> 
+						</tr> 
+						<tr>
+							<td class="cellHeader">County</td> 
+							<td colspan="1">
+								<input id="County" name="County" value="" class=" text" />
+							</td> 
+						</tr> 
+						<tr> 
+							<td class="cellHeader">Country</td> 
+							<td colspan="1">
+								<div class="countries-list">
+									<select name="country">
+										<option>Ireland</option>
+									</select>
+								</div>
+							</td> 
+						</tr> 
+					</tbody> 
+				</table> 
+			</td> 
+			<td width="60%" id="sc_paymentCell"> 
+				<h3>Payment Details</h3> 
+				{{ONLINESTORE_PAYMENT_TYPES}}
+				<div id="payment_method_form">&nbsp;</div> 
+				Click here if Billing address is different to Delivery: 
+				<input type="checkbox" name="BillingAddressIsDifferentToDelivery" onclick="document.getElementById('billing_address').style.display=(this.checked)?'block':'none'" /> 
+				<div style="display: none;" id="billing_address"> 
+					<table class="shoppingcartCheckout_billing"> 
+						<tbody> 
+							<tr> 
+								<td style="width: 20%;" class="cellHeader" colspan="1">
+									Name
+								</td> 
+								<td colspan="1">
+									<input id="Billing_FirstName" name="Billing_FirstName" value="" class=" text" />
+								</td> 
+							</tr> 
+							<tr> 
+								<td class="cellHeader" colspan="1">Surname</td> 
+								<td colspan="1">
+									<input id="Billing_Surname" name="Billing_Surname" value="" class=" text" />
+								</td> 
+							</tr> 
+							<tr> 
+								<td class="cellHeader" colspan="1">Phone</td> 
+								<td colspan="1">
+									<input id="Billing_Phone" name="Billing_Phone" value="" class=" text" />
+								</td> 
+							</tr> 
+							<tr> 
+								<td class="cellHeader" colspan="1">Email</td> 
+								<td colspan="1">
+									<input id="Billing_Email" name="Billing_Email" value="" class="email text" />
+								</td> 
+							</tr> 
+							<tr> 
+								<td class="cellHeader" colspan="1">Street</td> 
+								<td colspan="1">
+									<input id="Billing_Street" name="Billing_Street" value="" class=" text" />
+								</td> 
+							</tr> 
+							<tr> 
+								<td class="cellHeader" colspan="1">Street 2</td> 
+								<td colspan="1">
+									<input id="Billing_Street2" name="Billing_Street2" value="" class=" text" />
+								</td> 
+							</tr> 
+							<tr> 
+								<td class="cellHeader">Town</td> 
+								<td colspan="1">
+									<input id="Billing_Town" name="Billing_Town" value="" class=" text" />
+								</td> 
+							</tr> 
+							<tr> 
+								<td class="cellHeader">County</td> 
+								<td colspan="1">
+									<input id="Billing_County" name="Billing_County" value="" class=" text" />
+								</td> 
+							</tr> 
+							<tr> 
+								<td class="cellHeader">Country</td> <td colspan="1">
+									<div class="countries-list">
+										<select name="Billing_Country">
+											<option>Ireland</option>
+										</select>
+									</div>
+								</td> 
+							</tr> 
+						</tbody> 
+					</table> 
+				</div> 
+			</td> 
+		</tr> 
+	</tbody> 
+</table>

@@ -1,0 +1,13 @@
+#os-currencies-ul,#os-currencies-ul li{
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+#os-currencies-ul td,#currencies th{
+	width:20%;
+	text-align:left;
+}
+#currencies table{
+	margin:0;
+	min-width:500px;
+}
