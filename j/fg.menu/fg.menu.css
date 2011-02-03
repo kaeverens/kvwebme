@@ -1,0 +1,32 @@
+div.fg-menu-container{
+	position:relative;
+}
+.fg-menu-container ul,.fg-menu-container li{
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+li.fg-menu-container{
+	position:relative;
+}
+div.fg-menu-container ul li a{
+	display:block;
+}
+div.menu-fg ul table{
+	display:none;
+}
+div.menu-fg ul ul{
+	display:none;
+}
+div.menu-fg a{
+	display: block;
+	position:relative;
+}
+.menu-fg-horizontal>ul>li{
+	display:inline-block;
+	margin:0;
+	*float:left;
+}
+.fg-menu-container table table{
+	display:none;
+}
