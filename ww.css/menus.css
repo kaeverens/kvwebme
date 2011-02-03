@@ -1,0 +1,16 @@
+.ajaxmenu .nojs{display:none}
+.menu{
+	z-index:1001;
+}
+.menuBarLeft a{display:block}
+.tier-two{clear:left}
+
+.fg-menu-container .ui-corner-all{
+	border-radius:0;
+	-moz-border-radius:0;
+}
+.fg-menu-container a.ui-state-hover{
+	background:transparent;
+}
+.ui-tabs-nav { height:2.5em; }
+

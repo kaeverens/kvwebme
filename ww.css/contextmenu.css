@@ -1,0 +1,19 @@
+#wwContextMenu{
+	position:absolute;
+	width:120px;
+	background:#ddd;
+	border:2px solid;
+	border-color:#aaa #333 #333 #aaa;
+	text-align:left;
+}
+#wwContextMenu a{
+	color:#00f;
+	font-size:10px;
+	text-decoration:none;
+	display:block;
+	padding:5px;
+}
+#wwContextMenu a:hover{
+	background:#fff;
+	color:red;
+}

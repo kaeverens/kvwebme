@@ -1,0 +1,608 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: webme\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-03-18 14:22+0100\n"
+"PO-Revision-Date: 2009-03-18 14:22+0100\n"
+"Last-Translator: Kae Verens <kae@verens.com>\n"
+"Language-Team:  <kae@webworks.ie>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: /home/kae/files/websites/webworks-webme/trunk\n"
+
+#: /home/kae/files/websites/webworks-webme/trunk/common.php:97
+msgid "login"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/common/funcs.search.php:7
+msgid "no search text entered"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/common/funcs.search.php:18
+msgid "Page Search Results"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/common/funcs.search.php:19
+msgid "1 result found"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/common/funcs.search.php:20
+msgid "%1 results found"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/common/menus.php:133
+msgid "Site Map"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.php_classes/CountriesList.php:748
+msgid "--Please Choose--"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/header.php:31
+msgid "Click to read a PDF doc, detailing how to get started with WebME"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/header.php:31
+msgid "Help"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/header.php:31
+msgid "Log out from your account"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/header.php:31
+msgid "Logout"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/header.php:33
+msgid "loading. please wait..."
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/stats.php:4
+msgid "Website Statistics"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages.php:3
+msgid "Pages"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages.php:20
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages.php:23
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages.php:27
+msgid "Insert Page Details"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages.php:20
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages.php:24
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages.php:27
+msgid "Update Page Details"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages.php:39
+msgid "You have no permissions for this page"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/footer.php:4
+msgid "<a href=\"http://webme.eu/\">WebME CMS</a> is written and maintained by <a href=\"http://webworks.ie/\">webworks.ie</a>."
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/login.php:3
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/login.php:68
+msgid "remind"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/login.php:19
+msgid "Please make sure to use a valid email address"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/login.php:30
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/login.php:54
+msgid "Login"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/login.php:47
+msgid "To access the administrative features of your website, you will need to enter the username and password below and click \"login\"."
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/login.php:57
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/login.php:67
+msgid "email"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/login.php:58
+msgid "password"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/login.php:64
+msgid "Reminder"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/login.php:70
+msgid "Use this form to create a new password for yourself."
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls.php:3
+msgid "Polls"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls.php:10
+msgid "editPoll"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls.php:17
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/forms.php:3
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/forms.php:35
+msgid "Edit Poll"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls.php:22
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/forms.php:35
+msgid "Create Poll"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/forms.php:3
+msgid "New Poll"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/forms.php:12
+msgid "Main"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/forms.php:14
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/showitems.php:17
+msgid "Name"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/forms.php:15
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/showitems.php:18
+msgid "Enabled"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/forms.php:22
+msgid "Answers"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/actions.edit.php:11
+msgid "Poll updated"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/actions.delete.php:5
+msgid "Poll deleted"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/showitems.php:2
+msgid "Existing Polls"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/showitems.php:10
+msgid "Prev"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/showitems.php:13
+msgid "Next"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/showitems.php:23
+msgid "Yes"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/showitems.php:23
+msgid "No"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/showitems.php:24
+msgid "edit"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/showitems.php:24
+msgid "are you sure you want to delete this poll?"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/showitems.php:29
+msgid "none yet"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/actions.new.php:9
+msgid "Poll created"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:13
+msgid "pages"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:18
+msgid "polls"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:19
+msgid "site options"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:20
+msgid "stats"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:24
+msgid "databases"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:25
+msgid "panels"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:26
+msgid "ads"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:30
+msgid "orders"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:31
+msgid "products"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:32
+msgid "categories"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:33
+msgid "stock control"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:34
+msgid "checkouts"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:35
+msgid "templates"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:39
+msgid "user accounts"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:40
+msgid "user groups"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:41
+msgid "admins"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:45
+msgid "forms"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:46
+msgid "sms messaging"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/ajax/menu.php:47
+msgid "ezines/newsletters"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/siteoptions/general.php:2
+msgid "General"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/siteoptions/general.php:8
+msgid "options updated"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/siteoptions/themes.php:2
+msgid "Themes"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/siteoptions/localisation.php:2
+msgid "Localisation"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/siteoptions/localisation.php:45
+msgid "Languages"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/siteoptions/localisation.php:45
+msgid "If any languages are entered here, the first row will be treated as the \"default\" language of the site."
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/siteoptions/localisation.php:47
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/siteoptions/localisation.php:64
+msgid "ISO code"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/siteoptions/localisation.php:59
+msgid "Add Language"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/siteoptions/localisation.php:62
+msgid "Currencies"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/siteoptions/localisation.php:62
+msgid "The first row will be treated as the \"default\" currency of the site. Values of all other currencies are relative to the first row."
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/siteoptions/localisation.php:76
+msgid "Add Currency"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/siteoptions/localisation.php:80
+msgid "User discount"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/siteoptions/localisation.php:80
+msgid "What discount percentage should new user registrants be set to?"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:4
+msgid "You do not have Edit rights for this page"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:5
+msgid "You cannot create a top-level page. Please choose a page to edit from the menu on the left."
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:22
+msgid "change Editing Language without saving?"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:45
+msgid "Common Details"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:49
+msgid "name"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:52
+msgid "title"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:59
+msgid "not available yet"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:60
+msgid "URL"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:66
+msgid "type"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:68
+msgid "normal"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:69
+msgid "events calendar"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:70
+msgid "user login/registration"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:71
+msgid "page summaries"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:72
+msgid "search results"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:73
+msgid "news"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:75
+msgid "table of contents"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:76
+msgid "online store checkout"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:87
+msgid "parent"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:89
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:136
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:230
+msgid "none"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:94
+msgid "template"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:118
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:160
+msgid "please wait - loading..."
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:123
+msgid "Visibility"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:124
+msgid "Login and Register forms"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:125
+msgid "Login form"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:126
+msgid "Register form"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:128
+msgid "Registration type:"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:133
+msgid "redirect on login:"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:140
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:205
+msgid "body"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:165
+msgid "content header"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:170
+msgid "category to show"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:170
+msgid "all categories"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:182
+msgid "product to show"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:182
+msgid "all products"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:192
+msgid "product template"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:192
+msgid "all types"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:214
+msgid "Advanced Options"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:218
+msgid "MetaData"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:219
+msgid "keywords"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:220
+msgid "description"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:221
+msgid "used by Google. importance of page relative to other pages on site. values 0.0 to 1.0"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:222
+msgid "This is especially useful for large sites"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:230
+msgid "or"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:230
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.action.new.php:34
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.action.edit.php:63
+msgid "add another"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:238
+msgid "Special"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:239
+msgid "Is Home Page"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:239
+msgid "Does not appear in navigation"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:239
+msgid "Allow public comments"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:247
+msgid "Other"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:250
+msgid "Page Order"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:250
+msgid "end of navigation"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:250
+msgid "start of navigation"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:251
+msgid "Recursively update page templates"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:256
+msgid "Hide this page in ..."
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.action.common.php:14
+msgid "This page has been marked as the site's Home Page, because there must always be one."
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.action.new.php:9
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.action.edit.php:57
+msgid "A page named \"%1\" already exists. Page name amended to \"%2\""
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.action.new.php:49
+msgid "An item has been added to the database."
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.action.new.php:54
+msgid "You do not have permissions for creating a document in that location."
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.action.delete.php:5
+msgid "Cannot delete page - there must always be at least one page."
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.action.delete.php:14
+msgid "A page has been deleted."
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.action.delete.php:19
+msgid "That page does not exist."
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.action.delete.php:24
+msgid "You do not have delete rights for this page."
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.menu.php:18
+msgid "are you sure you want to delete this?"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.menu.php:22
+msgid "CLICK HERE FOR A NEW TOP-LEVEL PAGE"
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.action.edit.php:102
+msgid "An item's details have been updated."
+msgstr ""
+
+#: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.action.edit.php:107
+msgid "No update rights."
+msgstr ""
+
