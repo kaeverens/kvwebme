@@ -1,0 +1,18 @@
+li .actions{
+	text-align:right;
+}
+li:hover .actions *{
+	visibility:visible;
+}
+li .actions *{
+	visibility:hidden;
+}
+li .actions a{
+	padding:0;
+	background:none;
+	display:inline;
+}
+li .actions a:hover{
+	background:none;
+	color:red;
+}
