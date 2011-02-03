@@ -1,0 +1,44 @@
+body{
+	font:14px Calibri, Arial, Helvetica, sans-serif;
+	line-height:1.4;
+	background:#353d00;
+	color:#fff;
+	margin:0;
+	padding:0;
+}
+
+#Header{
+	padding:20px 50px;
+	background:#768800;
+}
+
+#Content{
+	width:830px;
+	padding:10px 10px 50px 50px;
+}
+
+h1 em{
+	color:#ffcc00;
+}
+h2{
+ 	color:#dcb000;
+}
+
+pre{
+	background:#000;
+	padding:20px;
+}
+code{
+	font:14px Consolas, Courier, monospace;
+}
+
+a{
+	color:#dc8700;
+}
+a:visited{
+	color:#ff9c00;
+}
+
+a img{
+	border:none;
+}

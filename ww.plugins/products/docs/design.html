@@ -1,0 +1,73 @@
+<ul>
+	<li><a href="#overview">Overview</a></li>
+	<li><a href="#templates">Templates</a></li>
+</ul>
+
+<a name="overview"></a><a href="#top">top</a>
+<h2>Overview</h2>
+<p>Products are created by using the <code>Products &gt; Types</code> admin page.</p>
+<i> ... insert more documentation ... </i>
+
+<a name="templates"></a><a href="#top">top</a>
+<h2>Templates</h2>
+<p>Product templates define how the product will look on the front-end of the site.</p>
+<p>If you don't define a template, then all the product fields will be shown in a tabular format.</p>
+<p>There are two templates for each type - a "multi-view" template, and a "single-view" template. The multi-view template is shown on pages where more than one product may be visible, and the single-view template is used on pages dedicated to displaying a single product.</p>
+<p>A product template is designed much the same as a web-page template.</p>
+<p>Let's say you have the following fields in your product type: email, name, address, phone</p>
+<p>You can display this as a table using code like this (click the "Source" button and enter this):</p>
+<pre>
+&lt;table
+	&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;td&gt;<strong>{{$name|escape}}</strong>&lt;/td&gt;&lt;/tr&gt;
+	&lt;tr&gt;&lt;th&gt;Email&lt;/th&gt;&lt;td&gt;&lt;a href="mailto:<strong>{{$email|escape}}</strong>"&gt;<strong>{{$email|escape}}</strong>&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+	&lt;tr&gt;&lt;th&gt;Phone&lt;/th&gt;&lt;td&gt;<strong>{{$phone|escape}}</strong>&lt;/td&gt;&lt;/tr&gt;
+	&lt;tr&gt;&lt;th&gt;Address&lt;/th&gt;&lt;td&gt;<strong>{{$address}}</strong>&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+<p>The variables names are equal, including case, to the product field names.</p>
+<p>Notice the <code>|escape</code> bits. If someone enters something like <code>great &lt;3 stuff</code> in the name, email or phone fields, then WebME should convert the <code>&lt;</code> to <code>&amp;lt;</code> before pasting to the HTML. This is called "escaping".</p>
+<p>We don't use <code>|escape</code> on the address or any other textarea field, as these are usually filled in with rich-text editors so are fine to output directly.</p>
+<p>Here's an example of the above, where the code is used in the multi-view template and shown on the front-end with two products filled in:</p>
+<img src="/ww.plugins/products/docs/i/img1.jpg" />
+<p>Normally you would have a full product defined in the single-view template, and a shortened version in the multi-view. Here's an example multi-view template:</p>
+<pre>
+&lt;table style="width: 300px;"&gt;
+	&lt;tr&gt;
+		&lt;td style="width: 100px;"&gt;{{$name|escape}}&lt;/td&gt;
+		&lt;td style="width: 100px;"&gt;{{$phone|escape}}&lt;/td&gt;
+		&lt;td&gt;&lt;a href="{{PRODUCTS_LINK}}"&gt;full details&lt;/a&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+<p>In this case, we set the size of the table and table headers, as the displayed tables may differ in size otherwise.</p>
+<p>The <code>{{PRODUCTS_LINK}}</code> function will generate a link to a single-view version of the product.</p>
+<p>To display a header row above the list, edit the Header tab of your products page, and create the table header. It should use the same dimensions as the multi-view table:</p>
+<pre>
+&lt;table style="width: 300px;"&gt;
+	&lt;tr&gt;
+		&lt;th style="width: 100px;"&gt;Name&lt;/th&gt;
+		&lt;th style="width: 100px;"&gt;Phone&lt;/th&gt;
+		&lt;th&gt;&nbsp;&lt;/th&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+<p>That will now render into a nicer multi-view like this:</p>
+<img src="/ww.plugins/products/docs/i/img2.jpg" />
+<p>Clicking the "full details" link will open up a products page with a single-vew version of the product.</p>
+<p>If you don't have a page specifically for that product, then it will be rendered in the same page as was used to do the multi-view. This can cause a problem if you used a header row:</p>
+<img src="/ww.plugins/products/docs/i/img3.jpg" />
+<p>The answer is to only show the header row when we are in multi-view mode. To do this, we can use some Smarty code within the page's Header tab:</p>
+<pre>
+<strong>{{if $GLOBALS.products_template_used==&quot;multiview&quot;}}</strong>
+&lt;table style="width: 300px;"&gt;
+	&lt;tr&gt;
+		&lt;th style="width: 100px;"&gt;Name&lt;/th&gt;
+		&lt;th style="width: 100px;"&gt;Phone&lt;/th&gt;
+		&lt;th&gt;&nbsp;&lt;/th&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+<strong>{{/if}}</strong>
+</pre>
+<p>That code will only show the header row if the template used was the multiview one.</p>
+<p>A similar trick can be used to hide HTML if some of the fields haven't been filled in. For example, let's say the phone number hasn't been filled in:</p>
+
