@@ -1,0 +1,44 @@
+<IfModule mod_deflate.c>
+	SetOutputFilter DEFLATE
+</IfModule>
+
+php_flag magic_quotes_gpc off
+
+RewriteEngine on
+
+RewriteCond %{SCRIPT_NAME} !\.php
+RewriteRule ^f/(.*)$ /ww.incs/get-file.php?filename=$1 [L]
+RewriteRule ^ww.skins/(.*)$ /ww.incs/get-skin-file.php?filename=$1 [QSA,L]
+RewriteRule ^admin[/]*$ /ww.admin [L]
+RewriteRule ^favicon.ico$ /i/favicon.ico [L]
+RewriteRule ^ww.cache.*$ /i/favicon.ico [L]
+RewriteRule ^css$ /ww.css/all.php [L]
+RewriteRule ^css(/.*)$ /ww.css/all.php?extra=$1 [L]
+RewriteRule ^js(/.*)?$ /j/js.php?extra=$1 [L]
+RewriteRule ^kfmget/(.*)$ /j/kfm/get.php?id=$1 [L]
+RewriteRule ^kfmgetfull/(.*)$ /j/kfm/get.php?uri=$1 [L]
+RewriteRule ^([^./]*).rss$ /ww.incs/rss.php?page=$1 [L]
+RewriteRule ^sitemap.xml /ww.incs/sitemap.php [L]
+RewriteRule ^_r$ /ww.incs/redirector.php [QSA,L]
+RewriteRule ^_s/(.*)$ /ww.incs/short-url.php?s=$1 [L]
+RewriteRule ^([^./]{3}[^.&]*)\&(.*)$ /index.php?page=$1&$2 [L]
+RewriteRule ^([^./]{3}[^.]*)$ /index.php?page=$1 [QSA,L]
+
+ErrorDocument 404 /ww.incs/404.php
+
+<Files archives>
+	ForceType application/x-httpd-php
+</Files>
+
+BrowserMatch "MSIE" brokenvary=1
+BrowserMatch "Mozilla/4.[0-9]{2}" brokenvary=1
+BrowserMatch "Opera" !brokenvary
+SetEnvIf brokenvary 1 force-no-vary
+ExpiresActive On
+ExpiresDefault A18000
+ExpiresByType image/gif A2592000
+ExpiresByType image/jpeg A2592000
+ExpiresByType image/png A2592000
+
+AddCharset utf-8 .js
+AddCharset utf-8 .php
