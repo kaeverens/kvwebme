@@ -1,0 +1,7 @@
+div.comment-wrapper{
+	padding: 10px;
+}
+div.comments div.comments-actions{
+	float:right;
+	margin:5px;
+}

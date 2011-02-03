@@ -1,0 +1,8 @@
+.forum-page-table {
+	position:absolute;
+	left:0;
+	top:60;
+}
+.dataTables_filter input[type="text"] {
+	width:200px; !important;
+}

@@ -1,0 +1,21 @@
+/*
+ *         Webme Dynamic Search Plugin v0.3
+ *         File: files/style.css
+ *         Developer: Conor Mac Aoidh <http://macaoidh.name>
+ *         Report Bugs: <conor@macaoidh.name>                        
+ */
+
+#right_link{ float:right }
+#dynamic_search_table{ margin:20px 10px 10px }
+#dynamic_search_select{ width:80px }
+#dynamic_searchfield{ width:505px;height:22px }
+.dynamic_searched{ background:yellow;padding:1px }
+#dynamic_search_submit{ border:1px solid #000;padding:2px;width:80px }
+#dynamic_searches{ width:670px;background:#efb;margin:10px;min-height:120px;border:1px solid #aaa }
+#dynamic_searches p,#dynamic_searches ol{ margin:10px 10px 10px 40px }
+#dynamic_suggestions{  display:none;position:absolute;width:503px;border:1px solid #999;margin-left:0;list-style-type:none;background:#fff;margin-top:-8px }
+#dynamic_suggestions li{ padding:4px }
+#stuff,#dynamic_search_results{ margin:10px }
+#dynamic_list{ list-style-type:none }
+.left{ float:left }
+.right{ float:right }

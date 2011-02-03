@@ -1,0 +1,36 @@
+/*Main Container*/
+.container {
+	width:100%;	
+
+
+}
+.container ul{
+	list-style-type: none;
+	margin: 0;
+	padding:0;	
+		
+}
+.container li{
+	display: inline;
+	margin: 0px;
+	padding:0px;
+	
+}
+/*Content Container*/
+.hrzAccordion .contentContainer {
+	padding-left: 0px;	
+	float: left;
+	width:0px;
+	overflow:hidden;
+background: white;
+	
+}
+.hrzAccordion .contentWrapper{	
+}
+.hrzAccordion .contentInnerWrapper{
+	text-align: justify;
+}
+/* Handle*/
+.hrzAccordion .handle{
+	float: left;
+}

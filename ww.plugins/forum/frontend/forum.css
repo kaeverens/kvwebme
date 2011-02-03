@@ -1,0 +1,38 @@
+#forum-post{
+	padding:10px 2px;
+}
+#forum-post label{
+	display:block;
+}
+#forum-post #forum-post-title{
+	display:block;
+	width:95%;
+}
+#forum-post #forum-post-body{
+	display:block;
+	width:95%;
+	height:8em;
+}
+#forum-posts{
+	width:100%;
+}
+#forum-posts td,#forum-posts th{
+	vertical-align:top;
+}
+#forum-posts td.post { 
+	height:50px;
+}
+#forum-posts td.user-details {
+	width:100px;
+}
+#forum-posts div.post-header{
+	color:#999;
+	font-size:smaller;
+	border-bottom:1px solid #999;
+}
+#forum-threads{
+	width:100%;
+}
+#forum-threads td{
+	border-top:1px dashed #999;
+}
