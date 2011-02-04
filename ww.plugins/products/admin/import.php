@@ -130,7 +130,7 @@ if (isset($_POST['import'])) {
 							);
 						}
 					}
-					$i++;
+					++$i;
 				}
 				$row = fgetcsv($file);
 			}
@@ -159,6 +159,7 @@ if (isset($_POST['import'])) {
 			}
 			for ($i=0; $i<$numRows; $i++) {
 				if (!isset($name[$i]) || $name[$i]=='') {
+					continue;
 					$name[$i]='NO NAME SUPPLIED';
 				}
 				if (is_array($id)) {

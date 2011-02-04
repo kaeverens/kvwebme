@@ -14,7 +14,10 @@ function date_m2h(d,type){
 	return time+', '+date;
 }
 function htmlspecialchars(str) {
-	return str==''?'':$('<i>').text(str).html();
+	if (!str) {
+		return '';
+	}
+	return $('<i>').text(str).html();
 }
 // { kaejax
 function kaejax_create_functions(url,f){

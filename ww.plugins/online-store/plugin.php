@@ -429,9 +429,9 @@ function OnlineStore_startup(){
 				$page->initValues();
 				$vat=isset($page->vars['online_stores_vat_percent'])
 					?$page->vars['online_stores_vat_percent']
-					:21;
+					:0;
 				if ($vat=='') {
-					$vat=21;
+					$vat=0;
 				}
 				$_SESSION['onlinestore_vat_percent']=(float)$vat;
 			}

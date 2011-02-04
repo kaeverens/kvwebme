@@ -165,7 +165,7 @@ $c.= '</select></td>';
 // { VAT
 $vat=isset($vars['online_stores_vat_percent'])?$vars['online_stores_vat_percent']:'';
 if ($vat=='') {
-	$vat=21;
+	$vat=0;
 }
 $c.='<th>VAT</th><td><input name="page_vars[online_stores_vat_percent]"'
 	.' value="'.((float)$vat).'" /></td></tr>';

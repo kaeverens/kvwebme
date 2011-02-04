@@ -293,7 +293,7 @@ function userregistration_register(){
 		$r=dbRow("SELECT * FROM site_vars WHERE name='user_discount'");
 		$discount=(float)$r['value'];
 		$hash=base64_encode(sha1(rand(0,65000),true));
-		$sql='insert into user_accounts set name="'.$name.'", password=md5("'.$password.'"), email="'.$email.'", verification_hash="'.$hash.'", active=0, extras="'.addslashes(json_encode($extras)).'"';
+		$sql='insert into user_accounts set name="'.$name.'", password=md5("'.$password.'"), email="'.$email.'", verification_hash="'.$hash.'", active=0, extras="'.addslashes(json_encode($extras)).'",date_created=now()';
 		dbQuery($sql);
 		$page=$GLOBALS['PAGEDATA'];
 		$id=dbOne('select last_insert_id() as id','id');
@@ -314,7 +314,7 @@ function userregistration_register(){
 			if(1 || $page->vars['userlogin_send_admin_emails']){
 				$admins=dbAll('select email from user_accounts,users_groups where groups_id=1 && user_accounts_id=user_accounts.id');
 				foreach($admins as $admin){
-					mail($admin['email'],'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to alert you that a user has been created on your site, http://$sitedomain/ - the user has not yet been activated, so please log into the admin area of the site (http://$sitedomain/ww.admin/ - under Site Options then Users) and verify that the user details are correct.","From: noreply@$sitedomain\nReply-to: noreply@$sitedomain");
+					mail($admin['email'],'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to alert you that a user ($email) has been created on your site, http://$sitedomain/ - the user has not yet been activated, so please log into the admin area of the site (http://$sitedomain/ww.admin/ - under Site Options then Users) and verify that the user details are correct.","From: noreply@$sitedomain\nReply-to: noreply@$sitedomain");
 				}
 			}
 			return userregistration_form(false,'<p><strong>Thank you for registering</strong>. Please check your email for a verification URL. Once that\'s been followed, your account will be activated and a password supplied to you.</p>');

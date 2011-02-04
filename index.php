@@ -113,7 +113,7 @@ if (isset($https_required) && $https_required && !$_SERVER['HTTPS']) {
 	$server=str_replace('www.', '', $_SERVER['HTTP_HOST']);
 	redirect('https://www.'.$server.'/');
 }
-if (!isset($DBVARS['version']) || $DBVARS['version']<31) {
+if (!isset($DBVARS['version']) || $DBVARS['version']<32) {
 	redirect('/ww.incs/upgrade.php');
 }
 $id=getVar('pageid', 0);

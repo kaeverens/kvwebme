@@ -26,10 +26,13 @@ if(isset($_REQUEST['action'])){
 	if($ok){
 		mysql_connect($_SESSION['db_vars']['hostname'], $_SESSION['db_vars']['username'], $_SESSION['db_vars']['password']);
 		mysql_select_db($_SESSION['db_vars']['db_name']);
-		$pass=md5($_REQUEST['password']);
-		$name=addslashes($_REQUEST['name']);
-		$email=$_REQUEST['email'];
-		mysql_query("insert into user_accounts (id,email,password,name,active) values(1,'$email','$pass','$name',1)");
+		mysql_query(
+			'insert into user_accounts set id=1,'
+			.'email="'.addslashes($_REQUEST['email']).'",'
+			.'password="'.md5($_REQUEST['password']).'",'
+			.'name="'.addslashes($_REQUEST['name']).'",active=1,'
+			.'parent=0,date_created=now()'
+		);
 		mysql_query("insert into groups (id,name) values(1,'administrators')");
 		mysql_query("insert into users_groups values(1,1)");
 		$_SESSION['admin_created']=1;

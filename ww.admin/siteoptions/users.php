@@ -10,7 +10,11 @@ if(isset($_REQUEST['action'])){
 		unset($_REQUEST['id']);
 	}
 	if ($action=='Save') {
-		$sql='set email="'.addslashes($_REQUEST['email']).'",name="'.addslashes($_REQUEST['name']).'",phone="'.addslashes($_REQUEST['phone']).'",active="'.(int)$_REQUEST['active'].'",address="'.addslashes($_REQUEST['address']).'"';
+		$sql='set email="'.addslashes($_REQUEST['email']).'",'
+			.'name="'.addslashes($_REQUEST['name']).'",'
+			.'phone="'.addslashes($_REQUEST['phone']).'",'
+			.'active="'.(int)$_REQUEST['active'].'",'
+			.'address="'.addslashes($_REQUEST['address']).'"';
 		if (isset($_REQUEST['extras'])) {
 			$extras=array();
 			foreach ($_REQUEST['extras'] as $k=>$v) {
@@ -26,7 +30,7 @@ if(isset($_REQUEST['action'])){
 			else $sql.=',password=md5("'.addslashes($_REQUEST['password']).'")';
 		}
 		if($id==-1){
-			dbQuery('insert into user_accounts '.$sql);
+			dbQuery('insert into user_accounts '.$sql.',date_created=now()');
 			$id=dbOne("select last_insert_id() as id limit 1",'id');
 		}
 		else{

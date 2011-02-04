@@ -54,20 +54,54 @@
 <p>That will now render into a nicer multi-view like this:</p>
 <img src="/ww.plugins/products/docs/i/img2.jpg" />
 <p>Clicking the "full details" link will open up a products page with a single-vew version of the product.</p>
-<p>If you don't have a page specifically for that product, then it will be rendered in the same page as was used to do the multi-view. This can cause a problem if you used a header row:</p>
-<img src="/ww.plugins/products/docs/i/img3.jpg" />
-<p>The answer is to only show the header row when we are in multi-view mode. To do this, we can use some Smarty code within the page's Header tab:</p>
-<pre>
-<strong>{{if $GLOBALS.products_template_used==&quot;multiview&quot;}}</strong>
-&lt;table style="width: 300px;"&gt;
-	&lt;tr&gt;
-		&lt;th style="width: 100px;"&gt;Name&lt;/th&gt;
-		&lt;th style="width: 100px;"&gt;Phone&lt;/th&gt;
-		&lt;th&gt;&nbsp;&lt;/th&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-<strong>{{/if}}</strong>
-</pre>
-<p>That code will only show the header row if the template used was the multiview one.</p>
-<p>A similar trick can be used to hide HTML if some of the fields haven't been filled in. For example, let's say the phone number hasn't been filled in:</p>
-
+<a name="list-of-template-codes"></a><a href="#top">top</a><h2>List of template codes</h2>
+<table>
+	<tr>
+		<th>PRODUCTS_BUTTON_ADD_TO_CART</th>
+		<td> </td>
+	</tr>
+	<tr>
+		<th>PRODUCTS_BUTTON_ADD_MANY_TO_CART</th>
+		<td> </td>
+	</tr>
+	<tr>
+		<th>PRODUCTS_CATEGORIES</th>
+		<td> </td>
+	</tr>
+	<tr>
+		<th>PRODUCTS_DATATABLE</th>
+		<td> </td>
+	</tr>
+	<tr>
+		<th>PRODUCTS_IMAGE</th>
+		<td> </td>
+	</tr>
+	<tr>
+		<th>PRODUCTS_IMAGES</th>
+		<td> </td>
+	</tr>
+	<tr>
+		<th>PRODUCTS_LINK</th>
+		<td> </td>
+	</tr>
+	<tr>
+		<th>PRODUCTS_LIST_CATEGORIES</th>
+		<td> </td>
+	</tr>
+	<tr>
+		<th>PRODUCTS_LIST_CATEGORY_CONTENTS</th>
+		<td> </td>
+	</tr>
+	<tr>
+		<th>PRODUCTS_PLUS_VAT</th>
+		<td> </td>
+	</tr>
+	<tr>
+		<th>PRODUCTS_RELATED</th>
+		<td> </td>
+	</tr>
+	<tr>
+		<th>PRODUCTS_REVIEWS</th>
+		<td> </td>
+	</tr>
+</table>

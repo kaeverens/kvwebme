@@ -1,5 +1,60 @@
 <?php
-if(!is_admin())exit;
+if (!is_admin()) {
+	exit;
+}
+
+function Products_showDataField($df,$def){
+	echo '<tr><th>'.htmlspecialchars($def['n']).'</th><td>';
+	switch($def['t']){
+		case 'checkbox': // {
+			echo '<input name="data_fields['.htmlspecialchars($def['n']).']" '
+				.'type="checkbox"';
+			if($def['r'])echo ' class="required"';
+			if($df['v'])echo ' checked="checked"';
+			echo ' />';
+			break;
+		// }
+		case 'date': // {
+			echo '<input class="date-human';
+			if($def['r'])echo ' required';
+			echo '" name="data_fields['.htmlspecialchars($def['n']).']" value="'
+				.htmlspecialchars($df['v']).'" />';
+			break;
+		// }
+		case 'selectbox': // {
+			if ($def['u']) {
+				if ($df['v']=='') {
+					$df['v']=$def['e'];
+				}
+				echo '<textarea name="data_fields['.htmlspecialchars($def['n']).']">'
+					.htmlspecialchars($df['v'])
+					.'</textarea>';
+			}
+			else {
+				$opts=explode("\n",$def['e']);
+				echo '<select name="data_fields['.htmlspecialchars($def['n']).']">';
+				foreach($opts as $opt){
+					echo '<option';
+					if($opt==$df['v'])echo ' selected="selected"';
+					echo '>'.htmlspecialchars($opt).'</option>';
+				}
+				echo '</select>';
+			}
+			break;
+		// }
+		case 'textarea': // {
+			echo ckeditor('data_fields['.htmlspecialchars($def['n']).']',$df['v']);
+			break;
+		// }
+		default: // { inputbox
+			echo '<input name="data_fields['.htmlspecialchars($def['n']).']"';
+			if($def['r'])echo ' class="required"';
+			echo ' value="'.htmlspecialchars($df['v']).'" />';
+		// }
+	}
+	echo '</td></tr>';
+}
+
 // { set up initial variables
 if (isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
 	$id=(int)$_REQUEST['id'];
@@ -340,56 +395,15 @@ $dfjson=str_replace(array("\n","\r"),array('\n',''),$dfjson);
 $dfjson=json_decode($dfjson,true);
 $dfdefs=array();
 foreach($dfjson as $d)$dfdefs[$d['n']]=$d;
-function product_dfs_show($df,$def){
-	echo '<tr><th>'.htmlspecialchars($def['n']).'</th><td>';
-	switch($def['t']){
-		case 'checkbox': // {
-			echo '<input name="data_fields['.htmlspecialchars($def['n']).']" '
-				.'type="checkbox"';
-			if($def['r'])echo ' class="required"';
-			if($df['v'])echo ' checked="checked"';
-			echo ' />';
-			break;
-		// }
-		case 'date': // {
-			echo '<input class="date-human';
-			if($def['r'])echo ' required';
-			echo '" name="data_fields['.htmlspecialchars($def['n']).']" value="'
-				.htmlspecialchars($df['v']).'" />';
-			break;
-		// }
-		case 'selectbox': // {
-			$opts=explode("\n",$def['e']);
-			echo '<select name="data_fields['.htmlspecialchars($def['n']).']">';
-			foreach($opts as $opt){
-				echo '<option';
-				if($opt==$df['v'])echo ' selected="selected"';
-				echo '>'.htmlspecialchars($opt).'</option>';
-			}
-			echo '</select>';
-			break;
-		// }
-		case 'textarea': // {
-			echo ckeditor('data_fields['.htmlspecialchars($def['n']).']',$df['v']);
-			break;
-		// }
-		default: // { inputbox
-			echo '<input name="data_fields['.htmlspecialchars($def['n']).']"';
-			if($def['r'])echo ' class="required"';
-			echo ' value="'.htmlspecialchars($df['v']).'" />';
-		// }
-	}
-	echo '</td></tr>';
-}
 foreach($dfs as $df){
 	if(isset($dfdefs[$df['n']])){
 		$def=$dfdefs[$df['n']];
 		unset($dfdefs[$df['n']]);
-		product_dfs_show($df,$def);
+		Products_showDataField($df,$def);
 	}
 }
 foreach($dfdefs as $def){
-	product_dfs_show(array('v'=>''),$def);
+	Products_showDataField(array('v'=>''),$def);
 }
 echo '</table></div>';
 // }

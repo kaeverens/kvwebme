@@ -350,7 +350,10 @@ function products_image($params, &$smarty) {
 			'/ww.plugins/products/j/jquery.magnifier.0.2/js/jquery.magnifier/css/jquery.magnifier.css'
 		);
 		WW_addInlineScript('$("a[rel*=magnify]").magnify()');
-		return '<a href="/kfmget/'.$iid.'" rel="magnify">'.$img.'</a>';
+		return '<style>div#dio-sensor{'
+			.'cursor: url("/ww.plugins/products/frontend/magnifying-glass.png"), crosshair}'
+			.'</style>'
+			.'<a href="/kfmget/'.$iid.'" rel="magnify">'.$img.'</a>';
 	}
 	return $params['nolink']
 		?$img
@@ -1270,6 +1273,9 @@ class ProductType{
 				case 'selectbox': // {
 					if (isset($f->u) && $f->u) {
 						$h='<select name="products_values_'.$f->n.'">';
+						if ($f->e=='') {
+							$f->e=$val;
+						}
 						$es=explode("\n", $f->e);
 						foreach ($es as $e) {
 							$e=trim($e);

@@ -162,7 +162,7 @@ echo '<div id="multiview-template">'
 	.ckeditor('multiview_template_header', $tdata['multiview_template_header'])
 	.'</div><div id="mv-footer">'
 	.ckeditor('multiview_template_footer', $tdata['multiview_template_footer'])
-	.'</div></div>';
+	.'</div></div></div>';
 // }
 // { single-view template
 echo '<div id="singleview-template">'

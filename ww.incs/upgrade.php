@@ -11,6 +11,32 @@
 	* @link     http://webworks.ie/
 	*/
 
+/**
+  * recursively copy a directory
+  *
+	* @param string $src source directory
+	* @param string $dst destination directory
+	*
+  * @return null
+  */
+function Copy_recursive($src, $dst) {
+	$dir = opendir($src);
+	if (!file_exists($dst)) {
+		mkdir($dst);
+	}
+	while (false !== ( $file = readdir($dir)) ) {
+		if (( $file != '.' ) && ( $file != '..' )) {
+			if ( is_dir($src . '/' . $file) ) {
+				Copy_recursive($src . '/' . $file, $dst . '/' . $file);
+			}
+			else {
+				copy($src . '/' . $file, $dst . '/' . $file);
+			}
+		}
+	}
+	closedir($dir);
+} 
+
 $version=0;
 require_once '../ww.incs/common.php';
 if (isset($DBVARS['version'])) {
@@ -293,32 +319,6 @@ if ($version==26) { // add "extras" to user_account, for metadata
 	dbQuery('alter table user_accounts add extras text');
 	$version=27;
 }
-
-/**
-  * recursively copy a directory
-  *
-	* @param string $src source directory
-	* @param string $dst destination directory
-	*
-  * @return null
-  */
-function Copy_recursive($src, $dst) {
-	$dir = opendir($src);
-	if (!file_exists($dst)) {
-		mkdir($dst);
-	}
-	while (false !== ( $file = readdir($dir)) ) {
-		if (( $file != '.' ) && ( $file != '..' )) {
-			if ( is_dir($src . '/' . $file) ) {
-				Copy_recursive($src . '/' . $file, $dst . '/' . $file);
-			}
-			else {
-				copy($src . '/' . $file, $dst . '/' . $file);
-			}
-		}
-	}
-	closedir($dir);
-} 
 if ($version==27) { // create personal copy of theme
 	if (!file_exists(USERBASE.'/themes-personal')) {
 		mkdir(USERBASE.'/themes-personal');
@@ -347,6 +347,10 @@ if ($version==30) { // add metadata to groups table
 	dbQuery('alter table groups add meta text');
 	dbQuery('update groups set meta="{}"');
 	$version=31;
+}
+if ($version==31) { // add "date_created" to user_account
+	dbQuery('alter table user_accounts add date_created datetime');
+	$version=32;
 }
 
 $DBVARS['version']=$version;
