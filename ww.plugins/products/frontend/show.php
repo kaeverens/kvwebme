@@ -1207,6 +1207,7 @@ class ProductType{
 			return false;
 		}
 		$this->data_fields=json_decode($r['data_fields']);
+		$this->meta=json_decode(isset($r['meta'])?$r['meta']:'{}');
 		$tpl_cache=USERBASE.'/ww.cache/products/templates/types_multiview_'.$v.'_header';
 		if (!file_exists($tpl_cache)) {
 			file_put_contents($tpl_cache, $r['multiview_template_header']);
@@ -1265,10 +1266,16 @@ class ProductType{
 			$val=$product->get($f->n);
 			switch($f->t) {
 				case 'checkbox': // {
-					$smarty->assign($f->n, $val?'Yes':'No');
+					$smarty->assign(
+						$f->n,
+						'<span class="product-field '.$f->n.'">'.($val?'Yes':'No').'</span>'
+					);
 				break; // }
 				case 'date': // {
-					$smarty->assign($f->n, date_m2h($val));
+					$smarty->assign(
+						$f->n,
+						'<span class="product-field '.$f->n.'">'.date_m2h($val).'</span>'
+					);
 				break; // }
 				case 'selectbox': // {
 					if (isset($f->u) && $f->u) {
@@ -1300,22 +1307,32 @@ class ProductType{
 					else {
 						$h=$val;
 					}
-					$smarty->assign($f->n, $h);
+					$smarty->assign(
+						$f->n,
+						'<span class="product-field '.$f->n.'">'.$h.'</span>'
+					);
 				break; // }
 				default: // { everything else
 					if (isset($f->u) && $f->u) {
 						$smarty->assign(
 							$f->n,
-							'<input name="products_values_'.$f->n.'" />'
+							'<input class="product-field '.$f->n
+							.'" name="products_values_'.$f->n.'" />'
 						);
 					}
 					else {
-						$smarty->assign($f->n, $val);
+						$smarty->assign(
+							$f->n,
+							'<span class="product-field '.$f->n.'">'.$val.'</span>'
+						);
 					}
 					// }
 			}
 		}
 		$smarty->assign('_name',$product->vals['name']);
+		if (isset($this->meta->allow_visitor_corrections)) {
+			WW_addScript('/ww.plugins/products/frontend/visitor-corrections.js');
+		}
 		return '<div class="products-product" id="products-'.$product->get('id')
 			.'">'.$smarty->fetch(
 				USERBASE.'/ww.cache/products/templates/types_'.$template.'_'.$this->id

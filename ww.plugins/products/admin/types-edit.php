@@ -32,8 +32,10 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		$multiview=str_replace('&quot;', '"', $multiview);
 		$multiview_header=str_replace('&quot;', '"', $multiview_header);
 		$multiview_footer=str_replace('&quot;', '"', $multiview_footer);
+		$meta=json_encode($_REQUEST['meta']);
 		$sql='set name="'.addslashes($_REQUEST['name'])
 			.'",data_fields="'.addslashes($data_fields)
+			.'",meta="'.addslashes($meta)
 			.'",multiview_template="'.addslashes($multiview)
 			.'",multiview_template_header="'.addslashes($multiview_header)
 			.'",multiview_template_footer="'.addslashes($multiview_footer)
@@ -76,6 +78,9 @@ else{
 		$tdata=dbRow("select * from products_types where id=".(int)$_REQUEST['from']);
 		$tdata['id']=0;
 		$tdata['name']='';
+		if ($tdata['meta']=='') {
+			$tdata['meta']='{}';
+		}
 	}
 	else {
 		$tdata=array(
@@ -88,10 +93,12 @@ else{
 			'data_fields'=>'',
 			'is_for_sale'=>0,
 			'multiview_template'=>'',
-			'singleview_template'=>''
+			'singleview_template'=>'',
+			'meta'=>'{}'
 		);
 	}
 }
+$tdata['meta']=json_decode($tdata['meta'], true);
 echo '<form action="'.$_url.'&amp;id='.$id.'" method="POST" '
 	.'enctype="multipart/form-data">';
 echo '<input type="hidden" name="action" value="save" />';
@@ -106,15 +113,36 @@ echo '<div id="main-details"><table>';
 // { name
 echo '<tr><th>Name</th><td><input class="not-empty" name="name" value="'
 	.htmlspecialchars($tdata['name']).'" /></td>';
+// }
+// { "advanced" items
+echo '<td rowspan="2"><table>';
+// { are products for sale
 if (isset($PLUGINS['online-store'])) {
-	echo '<th>Are products of this type for sale online?</th>';
+	echo '<tr><th>Are products of this type for sale online?</th>';
 	echo '<td><input name="is_for_sale" type="checkbox"';
 	if ($tdata['is_for_sale']) {
 		echo ' checked="checked"';
 	}
-	echo ' /></td>';
+	echo ' /></td></tr>';
 }
-echo '</tr>';
+// }
+// { allow visitors to suggest corrections
+echo '<tr><th>Allow visitors to suggest corrections?</th>'
+	.'<td><input name="meta[allow_visitor_corrections]" type="checkbox"';
+if (isset($tdata['meta']['allow_visitor_corrections'])
+	&& $tdata['meta']['allow_visitor_corrections']
+) {
+	echo ' checked="checked"';
+}
+echo ' /></td></tr>';
+echo '<tr><th>Who should corrections be sent to?</th>';
+$c=isset($tdata['meta']['visitor_corrections_recipient'])
+	?$tdata['meta']['visitor_corrections_recipient']
+	:'info@'.$_SERVER['HTTP_HOST'];
+echo '<td><input name="meta[visitor_corrections_recipient]"'
+	.' value="'.htmlspecialchars($c).'" /></td></tr>';
+// }
+echo '</table></td></tr>';
 // }
 // { management tabs, image not found
 echo '<tr>';
