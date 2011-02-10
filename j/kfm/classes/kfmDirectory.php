@@ -148,7 +148,7 @@ class kfmDirectory extends kfmObject{
 		if(file_exists($this->path()) && is_dir($this->path())) {
 			foreach(new directoryIterator($this->path()) as $f){
 				if($f->isDot())continue;
-				if(is_file($this->path().$f) && kfmFile::checkName($f))$tmp[]=$f.'';
+				if(is_file($this->path().$f) && @kfmFile::checkName($f))$tmp[]=$f.'';
 			}
 		}
 		natsort($tmp);

@@ -32,7 +32,9 @@ function cache_load($type,$md5){
 	return false;
 }
 function cache_save($type,$md5,$vals){
-	if(!is_dir(USERBASE.'/ww.cache/'.$type))mkdir(USERBASE.'/ww.cache/'.$type,0777,true);
+	if (!is_dir(USERBASE.'/ww.cache/'.$type)) {
+		mkdir(USERBASE.'/ww.cache/'.$type, 0777, true);
+	}
 	file_put_contents(USERBASE.'/ww.cache/'.$type.'/'.$md5, json_encode($vals));
 }
 function config_rewrite(){

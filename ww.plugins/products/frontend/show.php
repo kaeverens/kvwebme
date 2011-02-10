@@ -559,8 +559,8 @@ function products_show($PAGEDATA) {
 	if (!isset($PAGEDATA->vars['products_what_to_show'])) {
 		$PAGEDATA->vars['products_what_to_show']='0';
 	}
-	WW_addScript('/ww.plugins/products/j/jquery.lightbox-0.5.min.js');
-	WW_addCSS('/ww.plugins/products/c/jquery.lightbox-0.5.css');
+	WW_addScript('/ww.plugins/products/j/jquery.lightbox/jquery.lightbox-0.5.js');
+	WW_addCSS('/ww.plugins/products/j/jquery.lightbox/jquery.lightbox-0.5.css');
 	WW_addScript('/ww.plugins/products/frontend/js.js');
 	$c='';
 	// { search
@@ -1261,20 +1261,29 @@ class ProductType{
 		$smarty=products_setup_smarty();
 		$smarty->assign('product', $product);
 		$smarty->assign('product_id', $product->get('id'));
+		if (isset($this->meta->allow_visitor_corrections)) {
+			WW_addScript('/ww.plugins/products/frontend/visitor-corrections.js');
+		}
+		$prefix='';
+		$suffix='';
 		foreach ($this->data_fields as $f) {
 			$f->n=preg_replace('/[^a-zA-Z0-9\-_]/', '_', $f->n);
+			if (isset($this->meta->allow_visitor_corrections)) {
+				$prefix='<span class="product-field '.$f->n.'">';
+				$suffix='</span>';
+			}
 			$val=$product->get($f->n);
 			switch($f->t) {
 				case 'checkbox': // {
 					$smarty->assign(
 						$f->n,
-						'<span class="product-field '.$f->n.'">'.($val?'Yes':'No').'</span>'
+						$prefix.($val?'Yes':'No').$suffix
 					);
 				break; // }
 				case 'date': // {
 					$smarty->assign(
 						$f->n,
-						'<span class="product-field '.$f->n.'">'.date_m2h($val).'</span>'
+						$prefix.date_m2h($val).$suffix
 					);
 				break; // }
 				case 'selectbox': // {
@@ -1309,7 +1318,7 @@ class ProductType{
 					}
 					$smarty->assign(
 						$f->n,
-						'<span class="product-field '.$f->n.'">'.$h.'</span>'
+						$prefix.$h.$suffix
 					);
 				break; // }
 				default: // { everything else
@@ -1323,16 +1332,13 @@ class ProductType{
 					else {
 						$smarty->assign(
 							$f->n,
-							'<span class="product-field '.$f->n.'">'.$val.'</span>'
+							$prefix.$val.$suffix
 						);
 					}
 					// }
 			}
 		}
 		$smarty->assign('_name',$product->vals['name']);
-		if (isset($this->meta->allow_visitor_corrections)) {
-			WW_addScript('/ww.plugins/products/frontend/visitor-corrections.js');
-		}
 		return '<div class="products-product" id="products-'.$product->get('id')
 			.'">'.$smarty->fetch(
 				USERBASE.'/ww.cache/products/templates/types_'.$template.'_'.$this->id
