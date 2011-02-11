@@ -35,7 +35,7 @@ function Sitemap_getLinks($rs) {
 	global $PAGEDATA;
 	$c='';
 	foreach ($rs as $r) {
-		$d=(ereg('hasChildren', $r['classes']))
+		$d=(strpos($r['classes'], 'hasChildren')!==false)
 			?'<ul>'.Sitemap_getLinks(
 				Menu_getChildren(
 					$r['id'],

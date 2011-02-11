@@ -243,10 +243,10 @@ function Product_datatableMultiple (&$products, $direction) {
 	}
 	switch ($direction){
 		case 'horizontal': // {
-			WW_addScript('/j/jquery.dataTables.min.js');
+			WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
+			WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
 			WW_addScript('/ww.plugins/products/frontend/show-horizontal.js');
 			WW_addCSS('/ww.plugins/products/frontend/show-horizontal.css');
-			WW_addCSS('/j/jquery.dataTables.css');
 			$html='<table class="product-horizontal">';
 			$html.='<thead><tr>';
 			foreach($headers as $n=>$v) {
@@ -850,7 +850,7 @@ class Product{
 			if ($pid) {
 				$page = Page::getInstance($pid);
 				$this->relativeUrl=$page->getRelativeUrl()
-					.'?&product_id='.$this->id;
+					.'?product_id='.$this->id;
 				return $this->relativeUrl;
 			}
 		}

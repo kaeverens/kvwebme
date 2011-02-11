@@ -50,6 +50,18 @@ if ($mimetype=='text/css') {
 						.'-ms-filter: "progid:DXImageTransform.Microsoft.gradient(start'
 						.'Colorstr=#FF'.$colours[0].', endColorstr=#FF'.$colours[1].')";';
 					break; // }
+				case 'border-radius': // {
+					$radius=$matches[2][$i];
+					$css='-moz-border-radius:'.$radius.';'
+						.'-webkit-border-radius:'.$radius.';'
+						.'border-radius:'.$radius.';';
+					break; // }
+				case 'box-shadow': // {
+					$rules=$matches[2][$i];
+					$css='box-shadow:'.$rules.';'
+						.'-moz-box-shadow:'.$rules.';'
+						.'-webkit-box-shadow:'.$rules.';';
+					break; // }
 				default:
 					$css=$matches[0][$i];
 			}

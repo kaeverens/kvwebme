@@ -195,7 +195,7 @@ function products_widget(id, categories) {
 		var y=e.pageY-this.offsetTop-radius;
 		var cat=getcat(x, y);
 		if (cat && cat.id) {
-			document.location='/_r?type=products&products_category='+cat.id
+			document.location='/_r?type=products&product_cid='+cat.id
 		}
 	});
 }

@@ -17,8 +17,8 @@ $admin_vars=array();
 	foreach(array('show_items','start') as $v)$$v=getVar($v,0);
 	$id=isset($_REQUEST['id'])?(int)$_REQUEST['id']:0;
 // }
-WW_addScript('/j/jquery.dataTables.min.js');
-WW_addCSS('/j/jquery.dataTables.css');
+WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
+WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
 WW_addScript('/j/jquery.remoteselectoptions.js');
 WW_addScript('/j/fg.menu/fg.menu.js');
 WW_addScript('/j/ckeditor-3.5/ckeditor.js');

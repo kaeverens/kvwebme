@@ -101,7 +101,10 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 		// { generate invoice
 		require_once SCRIPTBASE . 'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
 		$smarty = new Smarty;
-		$smarty->compile_dir=USERBASE . 'templates_c';
+		$smarty->compile_dir=USERBASE.'/ww.cache/templates_c';
+		if (!file_exists(USERBASE.'/ww.cache/templates_c')) {
+			mkdir(USERBASE.'/ww.cache/templates_c');
+		}
 		$smarty->register_function('INVOICETABLE', 'online_store_invoice_table');
 		foreach ($_REQUEST as $key=>$val) {
 			$smarty->assign($key, $val);

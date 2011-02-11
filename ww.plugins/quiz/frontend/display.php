@@ -42,8 +42,8 @@ function displayQuizInfo ($name, $topic, $id) {
   * @return string $displayString The correct page HTML
 */
 function getPageHtml () {
-	WW_addScript('/j/jquery.dataTables.min.js');
-	WW_addCSS('/j/jquery.dataTables.css');
+	WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
+	WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
 	$displayString= $displayString.'<style> * .dataTables_wrapper{clear:none;';
 	$displayString= $displayString.'padding:10px;}</style>';
 	// { The Script

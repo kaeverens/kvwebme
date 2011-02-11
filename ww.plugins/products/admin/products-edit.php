@@ -47,9 +47,14 @@ function Products_showDataField($df,$def){
 			break;
 		// }
 		default: // { inputbox
-			echo '<input name="data_fields['.htmlspecialchars($def['n']).']"';
-			if($def['r'])echo ' class="required"';
-			echo ' value="'.htmlspecialchars($df['v']).'" />';
+			if ($def['u']) { // user-defined
+				echo 'this field is entered by the front-end reader.';
+			}
+			else {
+				echo '<input name="data_fields['.htmlspecialchars($def['n']).']"';
+				if($def['r'])echo ' class="required"';
+				echo ' value="'.htmlspecialchars($df['v']).'" />';
+			}
 		// }
 	}
 	echo '</td></tr>';
@@ -196,7 +201,10 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 
 if($id){
 	$pdata=dbRow("select * from products where id=$id");
-	if(!$pdata)die('<em>No product with that ID exists.</em>');
+	if (!$pdata) {
+		echo '<em>No product with that ID exists.</em>';
+		return;
+	}
 }
 else{
 	$pdata=array(
@@ -220,13 +228,13 @@ echo '<div id="tabs"><ul>'
 	.'<li><a href="#main-details">Main Details</a></li>'
 	.'<li><a href="#data-fields">Data Fields</a></li>';
 	if (isset($PLUGINS['online-store'])) {
-		$addOnlineStoreFields 
-			= dbOne(
-				'select is_for_sale '
-				.'from products_types '
-				.'where id ='.$pdata['product_type_id'],
+		$addOnlineStoreFields = $id
+			?dbOne(
+				'select is_for_sale from products_types where id ='
+				.$pdata['product_type_id'],
 				'is_for_sale'
-			);
+			)
+			:1;
 		echo '<li class="products-online-store"';
 		if (!$addOnlineStoreFields) {
 			echo ' style="display:none";';

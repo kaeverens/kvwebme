@@ -28,8 +28,18 @@ else {
 }
 echo '</select>';
 // }
+// { type
+echo '<br /><strong>Type</strong>';
+echo '<select name="widget_type"><option>Pie-Chart</option>';
+echo '<option';
+if (isset($_REQUEST['widget_type']) && $_REQUEST['widget_type']=='List Categories') {
+	echo ' selected="selected"';
+}
+echo '>List Categories</option>';
+echo '</select>';
+// }
 // { diameter
-echo '<strong>Diameter</strong>';
+echo '<br /><strong>Diameter</strong>';
 $diameter=(isset($_REQUEST['diameter']) && $_REQUEST['diameter'])
 	?((int)$_REQUEST['diameter'])
 	:280;

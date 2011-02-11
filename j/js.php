@@ -45,6 +45,9 @@ if (!file_exists(USERBASE.'/ww.cache/j/js-'.$name)) {
 	foreach($files as $f){
 		$js.=file_get_contents($f).';';
 	}
+	if (!file_exists(USERBASE.'/ww.cache/j')) {
+		mkdir(USERBASE.'/ww.cache/j');
+	}
 	file_put_contents(USERBASE.'/ww.cache/j/js-'.$name, $js);
 }
 readfile(USERBASE.'/ww.cache/j/js-'.$name);
