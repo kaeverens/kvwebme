@@ -213,7 +213,14 @@ function Product_datatableMultiple (&$products, $direction) {
 		$row=array();
 		$product=Product::getInstance($pid);
 		$type=ProductType::getInstance($product->vals['product_type_id']);
+		if (!isset($type)) {
+			return '<em>product type with id '.$product->vals['product_type_id']
+				.' does not exist - please alert the admin of this site.</em>';
+		}
 		$row['name']=$product->name;
+		if (!is_array($type->data_fields)) {
+			return 'product type "'.$type->name.'" has no data fields.';
+		}
 		foreach($type->data_fields as $df){
 			switch ($df->t) {
 				case 'checkbox': // {
@@ -1261,17 +1268,15 @@ class ProductType{
 		$smarty=products_setup_smarty();
 		$smarty->assign('product', $product);
 		$smarty->assign('product_id', $product->get('id'));
-		if (isset($this->meta->allow_visitor_corrections)) {
+		$corrections=isset($this->meta->allow_visitor_corrections)
+			&& $template=='singleview';
+		if ($corrections) {
 			WW_addScript('/ww.plugins/products/frontend/visitor-corrections.js');
 		}
-		$prefix='';
-		$suffix='';
 		foreach ($this->data_fields as $f) {
 			$f->n=preg_replace('/[^a-zA-Z0-9\-_]/', '_', $f->n);
-			if (isset($this->meta->allow_visitor_corrections)) {
-				$prefix='<span class="product-field '.$f->n.'">';
-				$suffix='</span>';
-			}
+			$prefix='<span class="product-field '.$f->n.'">';
+			$suffix='</span>';
 			$val=$product->get($f->n);
 			switch($f->t) {
 				case 'checkbox': // {

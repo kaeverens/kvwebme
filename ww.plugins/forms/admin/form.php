@@ -151,10 +151,13 @@ foreach ($q2 as $r2) {
 $c.= '</ul></div>';
 // }
 // { success message
-$c.= '<div id="success">';
-$c.= '<p>What should be displayed on-screen when the message is sent.</p>';
-$c.= ckeditor('page_vars[forms_successmsg]', $vars['forms_successmsg']);
-$c.= '</div>';
+if (!isset($vars['forms_successmsg'])) {
+	$vars['forms_successmsg']='';
+}
+$c.= '<div id="success">'
+	.'<p>What should be displayed on-screen when the message is sent.</p>'
+	.ckeditor('page_vars[forms_successmsg]', $vars['forms_successmsg'])
+	.'</div>';
 // }
 // { template
 $c.= '<div id="template">';

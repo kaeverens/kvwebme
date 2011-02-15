@@ -21,7 +21,9 @@ if (isset($_POST['formfieldElementsName'])
 		if ($name!='') {
 			$type=addslashes($_POST['formfieldElementsType'][$key]);
 			$isrequired=(isset($_POST['formfieldElementsIsRequired'][$key]))?1:0;
-			$extra=addslashes($_POST['formfieldElementsExtra'][$key]);
+			$extra=isset($_POST['formfieldElementsExtra'][$key])
+				?addslashes($_POST['formfieldElementsExtra'][$key])
+				:'';
 			$query='insert into forms_fields set name="'.$name.'",type="'.$type.'",
 				isrequired="'.$isrequired.'",formsId="'.$id.'",extra="'.$extra.'"';
 			dbQuery($query);
