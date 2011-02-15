@@ -1,4 +1,4 @@
-function pages_add_subpage(node,tree){
+function pages_add_subpage(node, tree){
 	var p=node[0].id.replace(/.*_/,'');
 	pages_new(p);
 }
@@ -27,6 +27,15 @@ function pages_new(p){
 	$('#newpage_date').each(convert_date_to_human_readable);
 	return false;
 }
+function pages_copy(node, tree) {
+	$.post('/ww.admin/pages/page-copy.php',{
+		'id':node[0].id.replace(/.*_/,'')
+	}, function(ret){
+		pages_add_node(ret.name, ret.id, ret.pid);
+		document.getElementById('page-form-wrapper')
+			.src="pages/form.php?id="+ret.id;
+	}, 'json');
+}
 function pages_delete(node,tree){
 	if(!confirm("Are you sure you want to delete this page?"))return;
 	$.getJSON('/ww.admin/pages/delete.php?id='+node[0].id.replace(/.*_/,''),function(){
@@ -41,7 +50,7 @@ function pages_delete(node,tree){
 function pages_add_node(name,id,pid){
 	var pel=null;
 	var $jstree=$('#pages-wrapper');
-	if(pid){
+	if (pid) {
 		pel='#page_'+pid;
 	}
 	else{
@@ -65,6 +74,8 @@ $(function(){
 			'plugins': ["themes", "html_data", "ui", "crrm", "contextmenu", "dnd"],
 			'contextmenu': {
 				'items': {
+					'rename':false,
+					'ccp':false,
 					'create' : {
 						'label'	: "Create Page", 
 						'visible'	: function (NODE, TREE_OBJ) { 
@@ -74,8 +85,6 @@ $(function(){
 						'action':pages_add_subpage,
 						'separator_after' : true
 					},
-					'ccp': false,
-					'rename': false,
 					'remove' : {
 						'label'	: "Delete Page", 
 						'visible'	: function (NODE, TREE_OBJ) { 
@@ -83,6 +92,14 @@ $(function(){
 							return TREE_OBJ.check("deletable", NODE); 
 						}, 
 						'action':pages_delete,
+						'separator_after' : true
+					},
+					'copy' : {
+						'label'	: "Copy Page", 
+						'visible'	: function (NODE, TREE_OBJ) { 
+							return true;
+						}, 
+						'action':pages_copy
 					}
 				}
 			},

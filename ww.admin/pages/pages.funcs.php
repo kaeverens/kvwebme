@@ -1,18 +1,4 @@
 <?php
-function allowedToEditPage($id){
-	if(!$id){
-		return admin_can_create_top_pages();
-	}
-	$r=dbRow('select value from permissions where id="'.$id.'" and type=1');
-	if(count($r)){
-		$lines=explode(',',$r['value']);
-		foreach($lines as $bit){
-			$smallerbits=explode('=',$bit);
-			if($smallerbits[0]==get_userid())return $smallerbits[1]&2;
-		}
-	}
-	return 1;
-}
 function selectkiddies($i=0,$n=1,$s=0,$id=0){
 	$q=dbAll('select name,id from pages where parent="'.$i.'" and id!="'.$id.'" order by ord,name');
 	if(count($q)<1)return;

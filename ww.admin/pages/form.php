@@ -5,6 +5,12 @@ if (!is_admin()) {
 	exit;
 }
 
+if (!isset($_REQUEST['id']) || $_REQUEST['id']==0) {
+	echo '<p>Please use the navigation menu on the left to choose a page or '
+		.'to create a new one.</p>';
+	exit;
+}
+
 // { take care of actions
 $id=isset($_REQUEST['id'])
 	?(int)$_REQUEST['id']
