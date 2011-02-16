@@ -5,7 +5,7 @@ if (!is_admin()) {
 	exit;
 }
 
-if (!isset($_REQUEST['id']) || $_REQUEST['id']==0) {
+if ((!isset($_REQUEST['id']) || $_REQUEST['id']==0) && (!isset($_REQUEST['action']) || $_REQUEST['action']!='Insert Page Details')) {
 	echo '<p>Please use the navigation menu on the left to choose a page or '
 		.'to create a new one.</p>';
 	exit;
