@@ -70,7 +70,10 @@ if ($kfm->setting('allow_file_upload')) {
 				$errors[] = 'The extension: '.kfmFile::getExtension($filename).' is not allowed';
 			}
 			// { check to see if it's an image, and if so, is it bloody massive
-			if(in_array(kfmFile::getExtension($filename),array('jpg', 'jpeg', 'gif', 'png', 'bmp'))){
+			if (in_array(
+				strtolower(preg_replace('/.*\./', '', $filename)),
+				array('jpg', 'jpeg', 'gif', 'png', 'bmp')
+			)){
 				list($width, $height, $type, $attr)=getimagesize($tmpname);
 				if($width>$toDir->maxWidth() || $height>$toDir->maxHeight()){
 					$errors[] = 'Please do not upload images which are larger than '.$toDir->maxWidth().'x'.$toDir->maxHeight();
@@ -112,7 +115,9 @@ if ($kfm->setting('allow_file_upload')) {
 							$data = @exif_read_data($to, 0, true);
 							if (is_array($data)&&isset($data['COMMENT'])&&is_array($data['COMMENT'])) $comment = join("\n", $data['COMMENT']);
 						}
-						$file->setCaption($comment);
+						if (method_exists($file, 'setCaption')) {
+							$file->setCaption($comment);
+						}
 					}
 					else if (isset($_POST['kfm_unzipWhenUploaded'])&&$_POST['kfm_unzipWhenUploaded']) {
 						kfm_extractZippedFile($fid);

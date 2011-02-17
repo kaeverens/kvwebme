@@ -115,11 +115,14 @@ $html.='</div>';
 $html.='</div></div>';
 // }
 // { terms and conditions
-$html.='<div id="privacy-conditions">';
-$html.='<p>Leave blank if no terms and conditions agreement is needed</p>';
+if (!isset($page_vars['userlogin_terms_and_conditions'])) {
+	$page_vars['userlogin_terms_and_conditions']='';
+}
 $contents = $page_vars['userlogin_terms_and_conditions'];
-$html.=ckeditor('page_vars[userlogin_terms_and_conditions]', $contents, false);
-$html.='</div>';
+$html.='<div id="privacy-conditions">'
+	.'<p>Leave blank if no terms and conditions agreement is needed</p>'
+	.ckeditor('page_vars[userlogin_terms_and_conditions]', $contents, false)
+	.'</div>';
 // }
 // { addition privacy fields
 $html.= '<div id="privacy-data">';

@@ -210,7 +210,9 @@ $c.=' /></td></tr>';
 // { redirect page
 $c.='<tr><th>Redirect after payment</th><td>';
 $c.='<select id="online_store_redirect_to" name="page_vars[online_store_redirect_to]">';
-if($vars['online_store_redirect_to']){
+if (isset($vars['online_store_redirect_to'])
+	&& $vars['online_store_redirect_to']
+) {
 	$parent=Page::getInstance($vars['online_store_redirect_to']);
 	$c.='<option value="'.$parent->id.'">'.htmlspecialchars($parent->name).'</option>';
 }

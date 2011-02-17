@@ -26,12 +26,12 @@ $c.= '<div class="tabs">'
 // }
 // { dashboard
 $c.='<div id="t-dashboard">';
-$sql='select users.name as user, threads.name as thread, posts.body as body, '
-	.'posts.id as id, posts.created_date as date'
-	.' ,forums.name as forum, forums.moderator_groups as groups';
-$sql.=' from user_accounts as users, forums_threads as threads, forums_posts '
-	.'as posts, forums ';
-$sql.='where users.id=posts.author_id and threads.id=posts.thread_id '
+$sql='select users.id as uid,users.name as user, threads.name as thread,'
+	.'posts.body as body, posts.id as id, posts.created_date as date,'
+	.'forums.name as forum, forums.moderator_groups as groups'
+	.' from user_accounts as users, forums_threads as threads, forums_posts '
+	.'as posts, forums '
+	.'where users.id=posts.author_id and threads.id=posts.thread_id '
 	.'and threads.forum_id = forums.id and posts.moderated=0 '
 	.'and forums.page_id = '.$page['id'];
 $posts = dbAll($sql);
@@ -53,23 +53,10 @@ foreach ($posts as $post) {
 	$c.='<td>'.htmlspecialchars($post['thread']).'</td>';
 	$c.='<td>'.htmlspecialchars($post['body']).'</td>';
 	$c.='<td>';
-	$modGroups = explode(',', $post['groups']);
-	$user = User::getInstance(get_userId());
-	$userGroups = $user->getGroups();
-	$isMod = false;
-	foreach ($userGroups as $userGroup) {
-		if (in_array($userGroup, $modGroups, false)) {
-			$c.='<a class="approve" id="approve_'.$post['id'].'" '
-			.'href="javascript:;">Approve</a><br />';
-			$c.='<a class="delete" id="delete_'.$post['id'].'" '
-			.'href="javascript:;">Delete</a>';
-			$isMod = true;
-			break;
-		}
-	}
-	if (!$isMod) {
-		$c.= 'You are not a moderator for this forum';
-	}
+	$c.='<a class="approve" id="approve_'.$post['id'].'" '
+		.'href="javascript:;">Approve</a><br />'
+		.'<a class="delete" id="delete_'.$post['id'].'" '
+		.'href="javascript:;">Delete</a>';
 	$c.= '</td></tr>';
 }
 $c.='</tbody></table></div>';
