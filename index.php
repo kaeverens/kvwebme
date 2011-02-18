@@ -252,6 +252,9 @@ if (isset($PLUGINS['comments'])) {
 $pagecontent=$c.'<span class="end-of-page-content"></span>';
 // }
 // { load page template
+if (isset($_REQUEST['__t']) && !preg_match('/[\.\/]/', $_REQUEST['__t'])) {
+	$PAGEDATA->template=$_REQUEST['__t'];
+}
 if (file_exists(THEME_DIR.'/'.THEME.'/h/'.$PAGEDATA->template.'.html')) {
 	$template=THEME_DIR.'/'.THEME.'/h/'.$PAGEDATA->template.'.html';
 }
