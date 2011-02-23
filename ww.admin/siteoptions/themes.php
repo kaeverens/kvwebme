@@ -40,7 +40,8 @@ if ($action=='set_theme') {
 	if (isset($_REQUEST['personal'])) {
 		if (is_dir($DBVARS['theme_dir_personal'].'/'.$_REQUEST['theme'])) {
 			$DBVARS['theme']=$_REQUEST['theme'];
-			$DBVARS['theme_variant']=$_REQUEST['theme_variant'];
+			$DBVARS['theme_variant']=isset($_REQUEST['theme_variant'])
+				?$_REQUEST['theme_variant']:'';
 		}
 	}
 	else {
@@ -84,20 +85,22 @@ foreach ($dir as $file) {
 		.'<input type="hidden" name="action" value="set_theme" />'
 		.'<input type="hidden" name="theme" value="'
 		.htmlspecialchars($file).'" />';
-	$size=getimagesize('../ww.skins/'.$file.'/screenshot.png');
-	$w=$size[0]; $h=$size[1];
-	if ($w>240) {
-		$w=$w*(240/$w);
-		$h=$h*(240/$w);
+	if (file_exists('../ww.skins/'.$file.'/screenshot.png')) {
+		$size=getimagesize('../ww.skins/'.$file.'/screenshot.png');
+		$w=$size[0]; $h=$size[1];
+		if ($w>240) {
+			$w=$w*(240/$w);
+			$h=$h*(240/$w);
+		}
+		if ($h>172) {
+			$w=$w*(172/$h);
+			$h=$h*(172/$h);
+		}
+		echo '<img src="/ww.skins/'.htmlspecialchars($file)
+			.'/screenshot.png" width="'.(floor($w)).'" height="'
+			.(floor($h)).'" />';
 	}
-	if ($h>172) {
-		$w=$w*(172/$h);
-		$h=$h*(172/$h);
-	}
-	echo '<img src="/ww.skins/'.htmlspecialchars($file)
-		.'/screenshot.png" width="'.(floor($w)).'" height="'
-		.(floor($h)).'" /><br />'
-		.'<strong>',htmlspecialchars($file),'</strong><br />';
+	echo '<br /><strong>',htmlspecialchars($file),'</strong><br />';
 	if (is_dir($DBVARS['theme_dir_personal'].'/'.$file.'/cs')) {
 		$dir2=new DirectoryIterator($DBVARS['theme_dir_personal'].'/'.$file.'/cs');
 		echo 'variant: <select name="theme_variant">';

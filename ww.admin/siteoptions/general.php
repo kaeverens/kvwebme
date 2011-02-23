@@ -33,7 +33,9 @@ if ($action=='Save') {
 	) {
 		$tmpname=addslashes($_FILES['site_logo']['tmp_name']);
 		$newdir=USERBASE.'/f/skin_files';
-		mkdir(USERBASE.'/f/skin_files');
+		if (!file_exists($newdir)) {
+			mkdir($newdir);
+		}
 		`rm -fr "$newdir"/logo-*`;
 		move_uploaded_file($_FILES['site_logo']['tmp_name'], $newdir.'/logo.png');
 	}
