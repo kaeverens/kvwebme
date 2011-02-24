@@ -92,7 +92,7 @@ if ($kfm->setting('allow_file_upload')) {
 			}
 			else {
 				chmod($to, octdec('0'.$kfm->setting('default_upload_permission')));
-				$fid  = kfmFile::addToDb($filename, $kfm_session->get('cwd_id'));
+				$fid  = @kfmFile::addToDb($filename, $kfm_session->get('cwd_id'));
 				$file = kfmFile::getInstance($fid);
 				if (function_exists('exif_imagetype')) {
 					$imgtype = exif_imagetype($to);

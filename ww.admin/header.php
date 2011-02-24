@@ -70,6 +70,7 @@ foreach($PLUGINS as $pname=>$p){
 	// { add final items
 	$menus['Stats']=    array('_link'=>'/ww.admin/stats.php');
 	$menus['View Site']=array( '_link'=>'/', '_target'=>'_blank');
+	$menus['Help']=array( '_link'=>'http://kvweb.me/', '_target'=>'_blank');
 	$menus['Log Out']=  array('_link'=>'/?logout=1');
 	// }
 	// { display menu as UL list

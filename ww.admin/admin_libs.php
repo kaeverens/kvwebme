@@ -231,6 +231,7 @@ function sanitise_html_essential($original_html) {
 		$html = preg_replace('#<!--\[if !mso\][^<]*<!\[endif\]-->#','',$html);
 		// }
 		$html=str_replace('&quot;','"',$html);
+		$html=str_replace('&#39;',"'",$html);
 		$has_changed=$html!=$original_html;
 		$original_html=$html;
 	}while($has_changed);

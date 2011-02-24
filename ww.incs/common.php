@@ -103,17 +103,19 @@ function smarty_setup($compile_dir){
 	*
 	* @return string
 	*/
-function Template_breadcrumbs($id=0) {
+function Template_breadcrumbs($id=0, $top=1) {
 	if ($id) {
 		$page=Page::getInstance($id);
 	}
 	else {
 		$page=$GLOBALS['PAGEDATA'];
 	}
-	$c=$page->parent ? Template_breadcrumbs($page->parent) . ' &raquo; ' : '';
-	return $c . '<a href="' . $page->getRelativeURL() . '" title="' 
+	$c=$page->parent ? Template_breadcrumbs($page->parent,0) . ' &raquo; ' : '';
+	$pre=$top?'<div class="breadcrumbs">':'';
+	$suf=$top?'</div>':'';
+	return $pre.$c.'<a href="' . $page->getRelativeURL() . '" title="' 
 		. htmlspecialchars($page->title) . '">' 
-		. htmlspecialchars($page->name) . '</a>';
+		. htmlspecialchars($page->name) . '</a>'.$suf;
 }
 
 /**
