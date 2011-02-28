@@ -5,7 +5,9 @@ $errors=array();
 $cid=(int)$_REQUEST['cid'];
 $mid=(int)$_REQUEST['mid'];
 $email=$_REQUEST['email'];
-$name=$_REQUEST['name'];
+$name=isset($_REQUEST['name'])
+	?$_REQUEST['name']:
+	$email;
 $phone=isset($_REQUEST['phone'])
 	?$_REQUEST['phone']
 	:'';

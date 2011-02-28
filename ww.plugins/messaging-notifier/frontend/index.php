@@ -97,7 +97,10 @@ function parse_messaging_notifier($data, $vars){
 	return $html;
 }
 function messaging_notifier_get_rss($r){
-	$f=file_get_contents($r->url);
+	$f=@file_get_contents($r->url);
+	if (!$f) {
+		return array();
+	}
 	$dom=@DOMDocument::loadXML($f);
 	$items=$dom->getElementsByTagName('item');
 	$arr=array();
@@ -140,7 +143,10 @@ function messaging_notifier_get_webmeNews($r) {
 	return $arr;
 }
 function messaging_notifier_get_twitter($r){
-	$f=file_get_contents($r->url);
+	$f=@file_get_contents($r->url);
+	if (!$f) {
+		return array();
+	}
 	$dom=DOMDocument::loadXML($f);
 	$items=$dom->getElementsByTagName('item');
 	$arr=array();
@@ -159,7 +165,10 @@ function messaging_notifier_get_twitter($r){
 	return $arr;
 }
 function messaging_notifier_get_phpbb3($r){
-	$f=file_get_contents($r->url);
+	$f=@file_get_contents($r->url);
+	if (!$f) {
+		return array();
+	}
 	$urlbase=preg_replace('#/[^/]*$#','/',$r->url);
 	$dom=@DOMDocument::loadHTML($f);
 	$lists=$dom->getElementsByTagName('ul');

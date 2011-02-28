@@ -29,7 +29,7 @@ function CSS_colourCode($code){
 }
 $mimetype=get_mimetype(preg_replace('/.*\./','',$file));
 if ($mimetype=='text/css') {
-	$parsed=USERBASE.'/f/.files/css_'.str_replace('/', '|', $file);
+	$parsed=USERBASE.'/ww.cache/css_'.str_replace('/', '|', $file);
 	if (!file_exists($parsed) || filectime($parsed)<filectime($file)) {
 		$f=file_get_contents($file);
 		// { cool stuff
@@ -60,7 +60,8 @@ if ($mimetype=='text/css') {
 					$rules=$matches[2][$i];
 					$css='box-shadow:'.$rules.';'
 						.'-moz-box-shadow:'.$rules.';'
-						.'-webkit-box-shadow:'.$rules.';';
+						.'-webkit-box-shadow:'.$rules.';'
+						.'behavior:url(/ww.css/ie-css3.htc);';
 					break; // }
 				default:
 					$css=$matches[0][$i];
