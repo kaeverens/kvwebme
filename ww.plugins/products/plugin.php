@@ -386,7 +386,8 @@ class ProductType{
 		return $this;
 	}
 	static function getInstance($id=0) {
-		if (!is_numeric($id)) {
+		$id=(int)$id;
+		if ($id<1) {
 			return false;
 		}
 		if (!array_key_exists($id, self::$instances)) {

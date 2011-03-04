@@ -94,7 +94,9 @@ else{
 			'is_for_sale'=>0,
 			'multiview_template'=>'',
 			'singleview_template'=>'',
-			'meta'=>'{}'
+			'meta'=>'{}',
+			'multiview_template_header'=>'',
+			'multiview_template_footer'=>''
 		);
 	}
 }
