@@ -1,12 +1,12 @@
 <?php
-$html='<tr><td colspan="6"><div class="tabs">';
-$html.='<ul>';
-$html.='<li><a href="#privacy-header">Header</a></li>';
-$html.='<li><a href="#privacy-options">Options</a></li>';
-$html.='<li><a href="#privacy-messages">Messages</a></li>';
-$html.='<li><a href="#privacy-conditions">Terms and Conditions</a></li>';
-$html.='<li><a href="#privacy-data">Extra User Data</a></li>';
-$html.='</ul>';
+$html='<tr><td colspan="6"><div class="tabs">'
+	.'<ul>'
+	.'<li><a href="#privacy-header">Header</a></li>'
+	.'<li><a href="#privacy-options">Options</a></li>'
+	.'<li><a href="#privacy-messages">Messages</a></li>'
+	.'<li><a href="#privacy-conditions">Terms and Conditions</a></li>'
+	.'<li><a href="#privacy-data">Extra User Data</a></li>'
+	.'</ul>';
 // { main
 $html.='<div id="privacy-header">';
 $html.='<p>This will appear above the login/registration form</p>';
@@ -16,7 +16,10 @@ $html.='</div>';
 // { options
 $html.='<div id="privacy-options"><table style="width:100%">';
 // { visibility, user groups
-$html.='<tr><th>'.__('Visibility').'</th><td>';
+if (!isset($page_vars['userlogin_visibility'])) {
+	$page_vars['userlogin_visibility']=3;
+}
+$html.='<tr><th>Visibility</th><td>';
 $html.= wInput(
 	'page_vars[userlogin_visibility]',
 	'select',
@@ -60,7 +63,9 @@ $html.='</select></td></tr>';
 // { redirect on login
 $html.='<tr><th>'.__('redirect on login:').'</th><td>';
 $html.='<select id="page_vars_userlogin_redirect_to" name="page_vars[userlogin_redirect_to]">';
-if($page_vars['userlogin_redirect_to']){
+if (isset($page_vars['userlogin_redirect_to'])
+	&& $page_vars['userlogin_redirect_to']
+) {
 	$parent=Page::getInstance($page_vars['userlogin_redirect_to']);
 	$html.='<option value="'.$parent->id.'">'.htmlspecialchars($parent->name).'</option>';
 }

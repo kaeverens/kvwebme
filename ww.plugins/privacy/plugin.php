@@ -1,6 +1,6 @@
 <?php
 $plugin=array(
-	'name' => 'Privacy',
+	'name' => 'User Authentication',
 	'admin' => array(
 		'page_type' => 'privacy_admin',
 		'page_panel' => array(

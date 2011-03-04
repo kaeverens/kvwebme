@@ -66,7 +66,7 @@ if ($kfm->setting('allow_file_upload')) {
 			else if (!kfmFile::checkName($filename)) {
 				$errors[] = 'The filename: '.$filename.' is not allowed';
 			}
-			else if(in_array(kfmFile::getExtension($filename),$kfm->setting('banned_upload_extensions'))){
+			else if(in_array(@kfmFile::getExtension($filename),$kfm->setting('banned_upload_extensions'))){
 				$errors[] = 'The extension: '.kfmFile::getExtension($filename).' is not allowed';
 			}
 			// { check to see if it's an image, and if so, is it bloody massive
