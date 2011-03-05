@@ -6,6 +6,7 @@ if (isset($vars->external_login)
 	&& $vars->external_login=='1'
 ) {
 	echo ' or '
-		.'<button appid="'.$vars->fbappid.'">Facebook</button>';
+		.'<img src="/ww.plugins/privacy/i/facebook.png" appid="'.$vars->fbappid
+		.'" class="facebook" alt="Facebook"/>';
 }
 echo '</div>';

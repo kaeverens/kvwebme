@@ -1,8 +1,14 @@
 $(function(){
 	var $form=$('#userauthentication-widget');
-	$form.find('button').click(function(){
-		var $this=$(this);
-		switch ($this.text()) {
+	$form.find('button,img').click(function(){
+		var $this=$(this), btn='';
+		if ($this.text()=='email and password') {
+			btn='email and password';
+		}
+		if ($this[0].className=='facebook') {
+			btn='facebook';
+		}
+		switch (btn) {
 			case 'email and password': // {
 				$('<table id="userauthentication-email-and-password">'
 					+'<tr><th>email</th><td><input type="email" /></td></tr>'
@@ -32,7 +38,7 @@ $(function(){
 					}
 				});
 			break; // }
-			case 'Facebook': // {
+			case 'facebook': // {
 				var fbappid=$this.attr('appid');
 				var widget_id=$form.attr('widget-id');
 				document.location='https://www.facebook.com/dialog/oauth?'
