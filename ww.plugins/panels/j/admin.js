@@ -29,26 +29,24 @@ function showWidgetForm(w){
 				return false;
 			})
 			.appendTo(form);
-		var fholder=$('<div style="clear:both;border-bottom:1px solid #416BA7">loading...</div>').prependTo(form);
+		var fholder=$('<div style="clear:both;border-bottom:1px solid #416BA7;padding-bottom:15px;">loading...</div>').prependTo(form);
 		p.panel=$('h4>span.name',form.closest('.panel-wrapper')).eq(0).text();
 		fholder.load(ww.widgetForms[p.type],p);
 	}
 	else $('<p>no config form needed for this widget</p>').appendTo(form);
-	$('<a href="javascript:;" title="remove widget">remove</a>')
+	$('<a href="javascript:;">[pages]</a>')
+		.click(widget_visibility)
+		.appendTo(form);
+	$('<a class="disabled" href="javascript:;">['+(p.disabled?'off':'on')+']</a>')
+		.click(widget_toggle_disabled)
+		.appendTo(form);
+	$('<a href="javascript:;" title="remove widget">[x]</a>')
 		.click(function(){
 			if(!confirm('Are you sure you want to remove this widget from this panel?'))return;
 			var panel=w.closest('.panel-wrapper');
 			w.remove();
 			updateWidgets(panel);
 		})
-		.appendTo(form);
-	$('<span>, </span>').appendTo(form);
-	$('<a href="javascript:;">visibility</a>')
-		.click(widget_visibility)
-		.appendTo(form);
-	$('<span>, </span>').appendTo(form);
-	$('<a class="disabled" href="javascript:;">'+(p.disabled?'disabled':'enabled')+'</a>')
-		.click(widget_toggle_disabled)
 		.appendTo(form);
 }
 function buildRightWidget(p){
@@ -82,7 +80,7 @@ function widget_toggle_disabled(ev){
 	var p=w.data('widget');
 	p.disabled=p.disabled?0:1;
 	w.removeClass().addClass('widget-wrapper '+(p.disabled?'disabled':'enabled'));
-	$('.disabled',w).text(p.disabled?'disabled':'enabled');
+	$('.disabled',w).text(p.disabled?'[off]':'[on]');
 	w.data('widget',p);
 	updateWidgets(w.closest('.panel-wrapper'));
 }
@@ -166,14 +164,14 @@ function panels_init(panel_column){
 		var p=ww.panels[i];
 		$('<div class="panel-wrapper '+(p.disabled?'disabled':'enabled')+'" id="panel'+p.id+'">'
 				+'<h4><span class="name">'+p.name+'</span></h4>'
-				+'<span class="controls" style="display:none">'
-					+'<a title="remove panel" href="javascript:panel_remove('
-					  +i+');" class="remove">remove</a>, '
+				+'<div class="controls" style="display:none;text-align:right">'
 					+'<a href="javascript:panel_visibility('
-					  +p.id+');" class="visibility">visibility</a>, '
+					  +p.id+');" class="visibility">[pages]</a>'
 					+'<a href="javascript:panel_toggle_disabled('
-					  +i+');" class="disabled">'+(p.disabled?'disabled':'enabled')+'</a>'
-				+'</span></div>'
+					  +i+');" class="disabled">['+(p.disabled?'off':'on')+']</a>'
+					+'<a title="remove panel" href="javascript:panel_remove('
+					  +i+');" class="remove">[x]</a>'
+				+'</div></div>'
 			)
 			.data('widgets',p.widgets.widgets)
 			.appendTo(panel_column);
@@ -184,14 +182,14 @@ function panel_toggle_disabled(i){
 	p.disabled=p.disabled?0:1;
 	var panel=$('#panel'+p.id);
 	panel.removeClass().addClass('panel-wrapper '+(p.disabled?'disabled':'enabled'));
-	$('.controls .disabled',panel).text(p.disabled?'disabled':'enabled');
+	$('.controls .disabled',panel).text(p.disabled?'[off]':'[on]');
 	ww.panels[i]=p;
 	$.get('/ww.plugins/panels/admin/save-disabled.php?id='+p.id+'&disabled='+p.disabled);
 }
 function widgets_init(widget_column){
 	for(var i=0;i<ww.widgets.length;++i){
 		var p=ww.widgets[i];
-		$('<div class="widget-wrapper"><h4>'+p.type+'</h4><p>'+p.description+'</p></div>')
+		$('<div class="widget-wrapper"><h4 widget-type="'+p.type+'">'+p.name+'</h4><p>'+p.description+'</p></div>')
 			.appendTo(widget_column)
 			.data('widget',p);
 		ww.widgetsByName[p.type]=p;
@@ -232,7 +230,7 @@ $(function(){
 				w.appendTo(widgets_container);
 				if(p.header_visibility)$('input.widget_header_visibility',w)[0].checked=true;
 			}
-			$('<br style="clear:both" />').appendTo(widgets_container);
+			$('<br style="clear:both;line-height:0" />').appendTo(widgets_container);
 			$('.panel-body').sortable({
 				'stop':function(){
 					updateWidgets($(this).closest('.panel-wrapper'));
@@ -245,8 +243,9 @@ $(function(){
 			var item=ui.item;
 			var panel=item.closest('.panel-wrapper');
 			if(!panel.length)return $(this).sortable('cancel');
-			var p=ww.widgetsByName[$('h4',ui.item).text()];
-			var clone=buildRightWidget({'type':p.type});
+			var h4=$(ui.item).find('h4');
+			var p=ww.widgetsByName[h4.attr('widget-type')];
+			var clone=buildRightWidget({'type':p.type,'name':p.name});
 			showWidgetForm(clone);
 			clone.insertBefore('.panel-body br:last',panel);
 			$(this).sortable('cancel');

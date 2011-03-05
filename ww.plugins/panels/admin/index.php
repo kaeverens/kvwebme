@@ -19,7 +19,11 @@ echo 'ww.widgets=[';
 $ws=array();
 foreach($PLUGINS as $n=>$p){
 	if (isset($p['frontend']['widget'])) {
-		$ws[]='{type:"'.$n.'",description:"'.addslashes($p['description']).'"}';
+		$ws[]=json_encode(array(
+			'type'        => $n,
+			'description' => $p['description'],
+			'name'        => $p['name']
+		));
 	}
 	if (isset($p['admin']['widget']['css_include'])) {
 		WW_addCSS($p['admin']['widget']['css_include']);

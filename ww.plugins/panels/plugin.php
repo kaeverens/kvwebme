@@ -21,7 +21,7 @@ function panels_show($vars){
 	// { load panel data
 	$p=cache_load('panels',md5($name));
 	if($p===false){
-		$p=dbRow('select visibility,disabled,body from panels where name="'.addslashes($name).'" limit 1');
+		$p=dbRow('select id,visibility,disabled,body from panels where name="'.addslashes($name).'" limit 1');
 		if(!$p){
 			dbQuery("insert into panels (name,body) values('".addslashes($name)."','{\"widgets\":[]}')");
 			return '';
@@ -44,14 +44,18 @@ function panels_show($vars){
 	$h='';
 	global $PLUGINS;
 	foreach($widgets->widgets as $widget){
-		if(isset($widget->disabled) && $widget->disabled)continue;
-		if(isset($widget->visibility) && count($widget->visibility)){
+		if (isset($widget->disabled) && $widget->disabled) {
+			continue;
+		}
+		if( isset($widget->visibility) && count($widget->visibility)) {
 			if(!in_array($GLOBALS['PAGEDATA']->id,$widget->visibility))continue;
 		}
-		if(isset($widget->header_visibility) && $widget->header_visibility)$h.='<h4 class="panel-widget-header '.preg_replace('/[^a-z0-9A-Z\-]/','',$widget->name).'">'.htmlspecialchars($widget->name).'</h4>';
-		if(isset($PLUGINS[$widget->type])){
-			if(isset($PLUGINS[$widget->type]['frontend']['widget'])){
-				$h.=$PLUGINS[$widget->type]['frontend']['widget']($widget);
+		if (isset($widget->header_visibility) && $widget->header_visibility) {
+			$h.='<h4 class="panel-widget-header '.preg_replace('/[^a-z0-9A-Z\-]/','',$widget->name).'">'.htmlspecialchars($widget->name).'</h4>';
+		}
+		if (isset($PLUGINS[$widget->type])) {
+			if (isset($PLUGINS[$widget->type]['frontend']['widget'])) {
+				$h.=$PLUGINS[$widget->type]['frontend']['widget']($widget, $p['id']);
 			}
 			else $h.='<em>plugin "'.htmlspecialchars($widget->type).'" does not have a widget interface.</em>';
 		}
