@@ -83,7 +83,7 @@ $html.='<ul>';
 $html.='<li><a href="#privacy-messages-login">Login</a></li>';
 $html.='<li><a href="#privacy-messages-reminder">Reminder</a></li>';
 $html.='<li><a href="#privacy-messages-registeration">Registeration</a></li>';
-$html.='<ul>';
+$html.='</ul>';
 // { Login header
 $html.='<div id="privacy-messages-login"><br />';
 $html.='<p>This message appears above the login form.</p>';

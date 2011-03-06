@@ -22,11 +22,13 @@ if ($action=='Save') {
 	) {
 		$tmpname=addslashes($_FILES['site_favicon']['tmp_name']);
 		$newdir=USERBASE.'/f/skin_files';
-		mkdir(USERBASE.'/f/skin_files');
+		if (!file_exists(USERBASE.'/f/skin_files')) {
+			mkdir(USERBASE.'/f/skin_files');
+		}
 		`rm -fr "$newdir"/favicon-*`;
 		$from=addslashes($_FILES['site_favicon']['tmp_name']);
 		$to=addslashes($newdir.'/favicon.ico');
-		`convert "$from" -resize 32x32 "to"`;
+		`convert "$from" -resize 32x32 "$to"`;
 	}
 	if (isset($_FILES['site_logo'])
 		&& file_exists($_FILES['site_logo']['tmp_name'])
