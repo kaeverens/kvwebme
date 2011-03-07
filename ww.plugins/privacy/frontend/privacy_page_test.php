@@ -3,8 +3,16 @@
 // assume no access
 $allowed=false;
 
-// if there's no restriction on this page, then $allowed=true
-if((!isset($pagedata->vars['restrict_to_groups']) || $pagedata->vars['restrict_to_groups']=='')
+// if user is not logged in and "privacy_require_login" is set, then return false
+if (!isset($_SESSION['userdata'])
+	&& isset($pagedata->vars['privacy_require_login'])
+) {
+	$allowed=false;
+	return;
+}
+
+// if there's no restriction on this page, then return true
+if ((!isset($pagedata->vars['restrict_to_groups']) || $pagedata->vars['restrict_to_groups']=='')
 	&& (!isset($pagedata->vars['privacy_password']) || $pagedata->vars['privacy_password']=='')
 ) {
 	$allowed=true;
