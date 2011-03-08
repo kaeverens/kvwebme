@@ -4,8 +4,8 @@ $files=array(
 	'menus.css',
 	'ui.datepicker.css',
 	'forms.css',
-	'contextmenu.css',
-	'../j/jquery-ui/css/smoothness/jquery-ui-1.8.1.custom.css'
+	'contextmenu.css'
+#	'../j/jquery-ui/css/smoothness/jquery-ui-1.8.1.custom.css'
 );
 $name='';
 if(isset($_REQUEST['extra'])){

@@ -16,7 +16,7 @@ Dual licensed under the MIT (filamentgroup.com/examples/mit-license.txt) and GPL
 
 var allUIMenus = [];
 
-$.fn.menu = function(options){
+$.fn.fgmenu = function(options){
 	var caller = this;
 	var options = options;
 	var m = new Menu(caller, options);	
@@ -55,9 +55,9 @@ function Menu(caller, options){
 			linkToFront: false
 		},
 		showSpeed: 200, // show/hide speed in milliseconds
-		callerOnState: 'ui-state-active', // class to change the appearance of the link/button when the menu is showing
-		loadingState: 'ui-state-loading', // class added to the link/button while the menu is created
-		linkHover: 'ui-state-hover', // class for menu option hover state
+//		callerOnState: 'ui-state-active', // class to change the appearance of the link/button when the menu is showing
+//		loadingState: 'ui-state-loading', // class added to the link/button while the menu is created
+//		linkHover: 'ui-state-hover', // class for menu option hover state
 		linkHoverSecondary: 'li-hover', // alternate class, may be used for multi-level menus		
 	// ----- multi-level menu defaults -----
 		crossSpeed: 200, // cross-fade speed for multi-level menus
@@ -65,7 +65,7 @@ function Menu(caller, options){
 		backLink: true, // in the ipod-style menu: instead of breadcrumbs, show only a 'back' link
 		backLinkText: 'Back',
 		flyOut: true, // multi-level menus are ipod-style by default; this parameter overrides to make a flyout instead
-		flyOutOnState: 'ui-state-default',
+//		flyOutOnState: 'ui-state-default',
 		nextMenuLink: 'ui-icon-triangle-1-e', // class to style the link (specifically, a span within the link) used in the multi-level menu to show the next level
 		topLinkText: 'All',
 		nextCrumbLink: 'ui-icon-carat-1-e'	

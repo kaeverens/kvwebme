@@ -43,7 +43,7 @@ $(function(){
 	$('input.date-human').each(convert_date_to_human_readable);
 	$('#menu-top>ul>li>a').each(function(){
 		if(!(/#/.test(this.href.toString())))return; // only apply menu to links with '#' in them
-		$(this).menu({
+		$(this).fgmenu({
 			content: $(this).next().html(),
 			flyOut:true,
 			showSpeed: 400,

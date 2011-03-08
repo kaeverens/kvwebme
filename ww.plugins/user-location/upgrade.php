@@ -1,6 +1,6 @@
 <?php
 /**
-  * upgrade script for localjobs4me-get-location plugin
+  * upgrade script for user-location plugin
   *
   * PHP Version 5
   *

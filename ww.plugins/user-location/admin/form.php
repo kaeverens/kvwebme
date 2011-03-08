@@ -21,12 +21,12 @@ $c.= '<div class="tabs">'
 	.'</ul>';
 // }
 // { header
-$c.='<div id="f-header"><p>Text to be shown above the form</p>'
+$c.='<div id="f-header"><p>Text to be shown above the location map</p>'
 	.ckeditor('body', $page['body'])
 	.'</div>';
 // }
 // { footer
-$c.='<div id="footer"><p>Text to appear below the form.</p>';
+$c.='<div id="footer"><p>Text to appear below the location map.</p>';
 $c.=ckeditor('page_vars[footer]',(isset($vars['footer'])?$vars['footer']:''));
 $c.='</div>';
 // }

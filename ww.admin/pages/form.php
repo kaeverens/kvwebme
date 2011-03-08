@@ -42,7 +42,8 @@ echo '<html><head>'
 	.'<script src="form-20100924.js"></script>'
 	.'<link rel="stylesheet" type="text/css" href="/j/cluetip/jquery.cluetip.css" />'
 	.'<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />'
-	.'<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/south-street/jquery-ui.css" type="text/css" />'
+	.'<!-- link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/south-street/jquery-ui.css" type="text/css" / -->'
+	.'<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/themes/base/jquery-ui.css" type="text/css" />'
 	.'</head>'
 	.'<body class="noheader">';
 // }

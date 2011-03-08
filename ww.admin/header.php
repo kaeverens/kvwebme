@@ -32,7 +32,8 @@ WW_addScript('/ww.admin/j/admin.js');
 		<?php echo '<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'; ?>
 		<link rel="stylesheet" type="text/css" href="/j/cluetip/jquery.cluetip.css" />
 		<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />
-		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/south-street/jquery-ui.css" type="text/css" />
+		<!-- link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/south-street/jquery-ui.css" type="text/css" / -->
+		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/themes/base/jquery-ui.css" type="text/css" />
 <?php
 foreach($PLUGINS as $pname=>$p){
 	if(file_exists(SCRIPTBASE.'/ww.plugins/'.$pname.'/admin/admin.css'))echo '<link rel="stylesheet" href="/ww.plugins/'.$pname.'/admin/admin.css" type="text/css" />';

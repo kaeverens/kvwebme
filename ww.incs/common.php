@@ -268,7 +268,7 @@ function menu_show_fg($opts){
 		else{
 			$posopts='';
 		}
-		WW_addInlineScript("$(function(){ $('#menu-fg-$menuid>ul>li>a').each(function(){ $(this).menu({ content:$(this).next().outerHTML(), choose:function(ev,ui){ document.location=ui.item[0].childNodes(0).href; }, $posopts flyOut:true }); }); $('.menu-fg>ul>li').addClass('fg-menu-top-level'); });");
+		WW_addInlineScript("$(function(){ $('#menu-fg-$menuid>ul>li>a').each(function(){ $(this).fgmenu({ content:$(this).next().outerHTML(), choose:function(ev,ui){ document.location=ui.item[0].childNodes(0).href; }, $posopts flyOut:true }); }); $('.menu-fg>ul>li').addClass('fg-menu-top-level'); });");
 	}
 	return $c;
 }

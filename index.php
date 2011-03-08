@@ -306,7 +306,7 @@ $c.='<style>.loggedin{display:'
 	.'} .loggedinCell{display:'
 	.(is_logged_in()?'table-cell':'none')
 	.'}</style>';
-$jquery_versions=array('1.4.4', '1.8.9');
+$jquery_versions=array('1.5.1', '1.8.10');
 if (isset($DBVARS['offline']) && $DBVARS['offline']) {
 	if (!file_exists(USERBASE.'/f/.files/jqueryui-'.$jquery_versions[1].'.js')) {
 		$f=file_get_contents('https://ajax.googleapis.com/ajax/libs/jqueryui/'
@@ -347,6 +347,7 @@ else {
 		.'<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/'
 		.$jquery_versions[1].'/jquery-ui.min.js"></script>';
 }
+$c.='<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/themes/base/jquery-ui.css" type="text/css" />';
 $c.='<script src="WW_SCRIPTS_GO_HERE"></script>';
 if (is_admin()) {
 	WW_addScript('/ww.admin/j/common.js');
