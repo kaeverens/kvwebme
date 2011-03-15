@@ -35,7 +35,7 @@ $fields=array_unique($fields);
 asort($fields);
 foreach ($fields as $field) {
 	echo '<option';
-	if ($field==$vars['products_order_by']) {
+	if (isset($vars['products_order_by']) && $field==$vars['products_order_by']) {
 		echo ' selected="selected"';
 	}
 	echo '>', htmlspecialchars($field), '</option>';

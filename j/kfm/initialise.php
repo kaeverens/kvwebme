@@ -122,8 +122,8 @@ $GLOBALS['kfm']->defaultSetting('only_allow_image_upload',0);
 $GLOBALS['kfm']->defaultSetting('use_multiple_file_upload',1);
 $GLOBALS['kfm']->defaultSetting('default_upload_permission',644);
 $GLOBALS['kfm']->defaultSetting('banned_upload_extensions',array());
-$GLOBALS['kfm']->defaultSetting('max_image_upload_width', 1601);
-$GLOBALS['kfm']->defaultSetting('max_image_upload_height', 1601);
+$GLOBALS['kfm']->defaultSetting('max_image_upload_width', 5000);
+$GLOBALS['kfm']->defaultSetting('max_image_upload_height', 5000);
 // plugins
 $GLOBALS['kfm']->defaultSetting('disabled_plugins',array());
 // depricated

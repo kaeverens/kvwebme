@@ -14,7 +14,6 @@
 // { define $plugin
 $plugin=array(
 	'name'            => 'User - Get Location',
-	'hide_from_admin' => true,
 	'admin' => array(
 		'page_type' => 'User_getLocation_admin'
 	),

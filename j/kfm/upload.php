@@ -63,7 +63,7 @@ if ($kfm->setting('allow_file_upload')) {
 			}
 			else $to = $toDir->path().'/'.$filename;
 			if (!is_file($tmpname)) $errors[] = 'No file uploaded';
-			else if (!kfmFile::checkName($filename)) {
+			else if (@!kfmFile::checkName($filename)) {
 				$errors[] = 'The filename: '.$filename.' is not allowed';
 			}
 			else if(in_array(@kfmFile::getExtension($filename),$kfm->setting('banned_upload_extensions'))){

@@ -47,9 +47,12 @@ function panels_show($vars){
 		if (isset($widget->disabled) && $widget->disabled) {
 			continue;
 		}
-		if( isset($widget->visibility) && count($widget->visibility)) {
-			if(!in_array($GLOBALS['PAGEDATA']->id,$widget->visibility))continue;
+		if (isset($widget->visibility) && count($widget->visibility)
+			&& !in_array($GLOBALS['PAGEDATA']->id, $widget->visibility)
+		) {
+			continue;
 		}
+		$h.='<div class="panel-widget panel-widget-'.$widget->type.'">';
 		if (isset($widget->header_visibility) && $widget->header_visibility) {
 			$h.='<h4 class="panel-widget-header '.preg_replace('/[^a-z0-9A-Z\-]/','',$widget->name).'">'.htmlspecialchars($widget->name).'</h4>';
 		}
@@ -57,9 +60,14 @@ function panels_show($vars){
 			if (isset($PLUGINS[$widget->type]['frontend']['widget'])) {
 				$h.=$PLUGINS[$widget->type]['frontend']['widget']($widget, $p['id']);
 			}
-			else $h.='<em>plugin "'.htmlspecialchars($widget->type).'" does not have a widget interface.</em>';
+			else {
+				$h.='<em>plugin "'.htmlspecialchars($widget->type).'" does not have a widget interface.</em>';
+			}
 		}
-		else $h.='<em>missing plugin "'.htmlspecialchars($widget->type).'".</em>';
+		else {
+			$h.='<em>missing plugin "'.htmlspecialchars($widget->type).'".</em>';
+		}
+		$h.='</div>';
 	}
 	// }
 	if($h=='')return '';

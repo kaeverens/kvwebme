@@ -47,7 +47,7 @@ function Products_showDataField($df,$def){
 			break;
 		// }
 		default: // { inputbox
-			if ($def['u']) { // user-defined
+			if (isset($def['u']) && $def['u']) { // user-defined
 				echo 'this field is entered by the front-end reader.';
 			}
 			else {

@@ -32,9 +32,53 @@ if(!$existing_accounts && isset($_REQUEST['email']) && isset($_REQUEST['password
 	<head>
 		<title><?php echo __('Login'); ?></title>
 		<link rel="stylesheet" type="text/css" href="/ww.admin/theme/login.css" />
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="/js/"></script>
+<?php
+$c='';
+$jquery_versions=array('1.5.1', '1.8.10');
+if (isset($DBVARS['offline']) && $DBVARS['offline']) {
+	if (!file_exists(USERBASE.'/f/.files/jqueryui-'.$jquery_versions[1].'.js')) {
+		$f=file_get_contents('https://ajax.googleapis.com/ajax/libs/jqueryui/'
+			.$jquery_versions[1].'/jquery-ui.min.js');
+		if ($f) {
+			file_put_contents(
+				USERBASE.'/f/.files/jqueryui-'.$jquery_versions[1].'.js',
+				$f
+			);
+		}
+		else {
+			echo 'could not download jQuery UI files. please go online, '
+				.'reload this page, then go offline.';
+		}
+	}
+	if (!file_exists(USERBASE.'/f/.files/jquery-'.$jquery_versions[0].'.js')) {
+		$f=file_get_contents('https://ajax.googleapis.com/ajax/libs/jquery/'
+			.$jquery_versions[0].'/jquery.min.js');
+		if ($f) {
+			file_put_contents(
+				USERBASE.'/f/.files/jquery-'.$jquery_versions[0].'.js',
+				$f
+			);
+		}
+		else {
+			echo 'could not download jQuery files. please go online, '
+				.'reload this page, then go offline.';
+		}
+	}
+	$c.='<script src="/f/.files/jquery-'.$jquery_versions[0]
+		.'.js"></script>'
+		.'<script src="/f/.files/jqueryui-'.$jquery_versions[1]
+		.'.js"></script>';
+}
+else {
+	$c.='<script src="https://ajax.googleapis.com/ajax/libs/jquery/'
+		.$jquery_versions[0].'/jquery.min.js"></script>'
+		.'<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/'
+		.$jquery_versions[1].'/jquery-ui.min.js"></script>';
+}
+$c.='<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/'
+	.$jquery_versions[1].'/themes/base/jquery-ui.css" type="text/css" />';
+echo $c;
+?>
 		<script>
 			$(function() {
 				$('#login-tabs').tabs();
