@@ -22,6 +22,7 @@ if (strpos($file, '..')!==false
 	exit;
 }
 if (!file_exists($file) || !is_file($file)) {
+	header('HTTP/1.0 404 Not Found');
 	echo 'file does not exist';
 	exit;
 }
