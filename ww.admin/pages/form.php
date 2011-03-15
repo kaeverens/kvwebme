@@ -30,8 +30,7 @@ $edit=($is_an_update || $action=='edit' || $id)?1:0;
 // }
 // { display header and link in scripts
 echo '<html><head>'
-	.'<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>'
-	.'<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>'
+	.Core_getJQueryScripts()
 	.'<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'
 	.'<script src="/j/ckeditor-3.5/ckeditor.js"></script>'
 	.'<script src="/ww.admin/j/admin.js"></script>'
@@ -42,8 +41,6 @@ echo '<html><head>'
 	.'<script src="form-20100924.js"></script>'
 	.'<link rel="stylesheet" type="text/css" href="/j/cluetip/jquery.cluetip.css" />'
 	.'<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />'
-	.'<!-- link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/south-street/jquery-ui.css" type="text/css" / -->'
-	.'<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/themes/base/jquery-ui.css" type="text/css" />'
 	.'</head>'
 	.'<body class="noheader">';
 // }

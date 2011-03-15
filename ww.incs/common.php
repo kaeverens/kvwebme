@@ -1,6 +1,27 @@
 <?php
 require_once dirname(__FILE__).'/basics.php';
 require_once SCRIPTBASE . 'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
+function Core_getJQueryScripts() {
+	global $DBVARS;
+	$jquery_versions=array('1.5.1', '1.8.10');
+	if (isset($DBVARS['offline']) && $DBVARS['offline']) {
+		require SCRIPTBASE.'/ww.incs/get-offline-files.php';
+		$jurls=Core_getOfflineJQueryScripts($jquery_versions);
+	}
+	else {
+		$jurls=array(
+			'https://ajax.googleapis.com/ajax/libs/jquery/'
+			.$jquery_versions[0].'/jquery.min.js',
+			'https://ajax.googleapis.com/ajax/libs/jqueryui/'
+			.$jquery_versions[1].'/jquery-ui.min.js',
+			'http://ajax.googleapis.com/ajax/libs/jqueryui/'
+			.$jquery_versions[1].'/themes/base/jquery-ui.css'
+		);
+	}
+	return '<script src="'.$jurls[0].'"></script>'
+		.'<script src="'.$jurls[1].'"></script>'
+		.'<link href="'.$jurls[2].'" rel="stylesheet" type="text/css" />';
+}
 function date_m2h($d, $type = 'date') {
 	$date = preg_replace('/[- :]/', ' ', $d);
 	$date = explode(' ', $date);

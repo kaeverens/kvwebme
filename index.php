@@ -6,9 +6,9 @@
 	*
 	* @category None
 	* @package  None
-	* @author   Kae Verens <kae@webworks.ie>
+	* @author   Kae Verens <kae@kvsites.ie>
 	* @license  GPL 2.0
-	* @link     http://webworks.ie/
+	* @link     http://kvsites.ie/
 	*/
 
 $ww_startup = microtime(true);
@@ -306,49 +306,7 @@ $c.='<style>.loggedin{display:'
 	.'} .loggedinCell{display:'
 	.(is_logged_in()?'table-cell':'none')
 	.'}</style>';
-$jquery_versions=array('1.5.1', '1.8.10');
-if (isset($DBVARS['offline']) && $DBVARS['offline']) {
-	if (!file_exists(USERBASE.'/f/.files/jqueryui-'.$jquery_versions[1].'.js')) {
-		$f=file_get_contents('https://ajax.googleapis.com/ajax/libs/jqueryui/'
-			.$jquery_versions[1].'/jquery-ui.min.js');
-		if ($f) {
-			file_put_contents(
-				USERBASE.'/f/.files/jqueryui-'.$jquery_versions[1].'.js',
-				$f
-			);
-		}
-		else {
-			echo 'could not download jQuery UI files. please go online, '
-				.'reload this page, then go offline.';
-		}
-	}
-	if (!file_exists(USERBASE.'/f/.files/jquery-'.$jquery_versions[0].'.js')) {
-		$f=file_get_contents('https://ajax.googleapis.com/ajax/libs/jquery/'
-			.$jquery_versions[0].'/jquery.min.js');
-		if ($f) {
-			file_put_contents(
-				USERBASE.'/f/.files/jquery-'.$jquery_versions[0].'.js',
-				$f
-			);
-		}
-		else {
-			echo 'could not download jQuery files. please go online, '
-				.'reload this page, then go offline.';
-		}
-	}
-	$c.='<script src="/f/.files/jquery-'.$jquery_versions[0]
-		.'.js"></script>'
-		.'<script src="/f/.files/jqueryui-'.$jquery_versions[1]
-		.'.js"></script>';
-}
-else {
-	$c.='<script src="https://ajax.googleapis.com/ajax/libs/jquery/'
-		.$jquery_versions[0].'/jquery.min.js"></script>'
-		.'<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/'
-		.$jquery_versions[1].'/jquery-ui.min.js"></script>';
-}
-$c.='<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/'
-	.$jquery_versions[1].'/themes/base/jquery-ui.css" type="text/css" />';
+$c.=Core_getJQueryScripts();
 $c.='<script src="WW_SCRIPTS_GO_HERE"></script>';
 if (is_admin()) {
 	WW_addScript('/ww.admin/j/common.js');
