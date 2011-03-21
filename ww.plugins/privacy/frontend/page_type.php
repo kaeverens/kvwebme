@@ -8,9 +8,23 @@ function userloginandregistrationDisplay(){
 	if (isset($_GET['hash']) && $_GET['hash'] && $_GET['email']) {
 		$r=dbRow("select * from user_accounts where email='".addslashes($_GET['email'])."' and verification_hash='".addslashes($_GET['hash'])."'");
 		if(!count($r))die('that hash and email combination does not exist');
-		$password=Password::getNew();
-		dbQuery("update user_accounts set password=md5('$password'),verification_hash='',active=1 where email='".addslashes($_GET['email'])."' and verification_hash='".addslashes($_GET['hash'])."'");
-		mail($_GET['email'],'['.$sitedomain.'] user password created',"Your new password:\n\n".$password,"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain");
+		if (!isset($_REQUEST['np'])) {
+			$password=Password::getNew();
+			$password='password=md5(\''.$password.'\'),';
+		}
+		dbQuery("update user_accounts set $np verification_hash='',active=1 where email='".addslashes($_GET['email'])."' and verification_hash='".addslashes($_GET['hash'])."'");
+		if (isset($_REQUEST['np'])) {
+			mail(
+				$_GET['email'],
+				'['.$sitedomain.'] user verified',
+				"Thank you,\n\nyour user account with us has now been verified. You can login now using your email address and password.",
+				"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain"
+			);
+			return '<p>Thank you for registering.</p><p>Your account has now been verified.</p><p>Please <a href="/_r?type=privacy">click here</a> to login.</p>';
+		}
+		else {
+			mail($_GET['email'],'['.$sitedomain.'] user password created',"Your new password:\n\n".$password,"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain");
+		}
 		$action='Login';
 		$_REQUEST['email']=$_GET['email'];
 		$_REQUEST['password']=$password;
@@ -123,9 +137,15 @@ function userregistration_form($error='',$alert=''){
 	global $PAGEDATA;
 	$c='<div id="userregistration">';
 	if(isset($PAGEDATA->vars['userlogin_message_registration']))$c.=$PAGEDATA->vars['userlogin_message_registration'];
-	$c.=$error.'<form class="userRegistrationBox" action="'.$GLOBALS['PAGEDATA']->getRelativeUrl().'#userregistration" method="post"><table>'
-		.'<tr><th>Name</th><td><input type="text" name="name" value="'.htmlspecialchars(getVar('name')).'" /></td>'
-		.'<th>Email</th><td><input type="text" name="email" value="'.htmlspecialchars(getVar('email')).'" /></td></tr></table>';
+	$c.=$error.'<form class="userRegistrationBox" action="'
+		.$GLOBALS['PAGEDATA']->getRelativeUrl()
+		.'#userregistration" method="post"><table>'
+		.'<tr><th>Name</th><td><input type="text" name="name" value="'
+		.htmlspecialchars(getVar('name')).'" /></td>'
+		.'<th>Email</th><td><input type="text" name="email" value="'
+		.htmlspecialchars(getVar('email')).'" /></td></tr>'
+		.'<tr><th>Preferred Password</th><td><input name="pass1" type="password" /></td>'
+		.'<th>Repeat Password</th><td><input name="pass2" type="password" /></td></tr></table>';
 	if(isset($PAGEDATA->vars['privacy_extra_fields']) && strlen($PAGEDATA->vars['privacy_extra_fields'])>2){
 		$c.='<table>';
 		$required=array();
@@ -254,8 +274,15 @@ function userregistration_register(){
 		$address2=getVar('address2');
 		$address3=getVar('address3');
 		$howyouheard=getVar('howyouheard');
+		$pass1=$_REQUEST['pass1'];
+		$pass2=$_REQUEST['pass2'];
 	// }
-	if(isset($PAGEDATA->vars['userlogin_terms_and_conditions']) && $PAGEDATA->vars['userlogin_terms_and_conditions'] && !isset($_REQUEST['terms_and_conditions']))return '<em>You must agree to the terms and conditions. Please press "Back" and try again.</em>';
+	if (isset($PAGEDATA->vars['userlogin_terms_and_conditions'])
+		&& $PAGEDATA->vars['userlogin_terms_and_conditions']
+		&& !isset($_REQUEST['terms_and_conditions'])
+	) {
+		return '<em>You must agree to the terms and conditions. Please press "Back" and try again.</em>';
+	}
 	// { check for user_account table "extras"
 		$extras=array();
 		$rs=json_decode($PAGEDATA->vars['privacy_extra_fields']);
@@ -288,8 +315,13 @@ function userregistration_register(){
 		$r=dbRow('select id from user_accounts where email="'.$email.'"');
 		if($r && count($r))return userregistration_form('<p><em>That email is already registered.</em></p>');
 	// }
+	// { check that passwords match
+	if (!$pass1 || $pass1!=$pass2) {
+		return userregistration_form('<p><em>Please enter your preferred password twice</em></p>');
+	}
+	// }
 	// { register the account
-		$password=Password::getNew();
+		$password=$pass1;
 		$r=dbRow("SELECT * FROM site_vars WHERE name='user_discount'");
 		$discount=(float)$r['value'];
 		$hash=base64_encode(sha1(rand(0,65000),true));
@@ -310,7 +342,7 @@ function userregistration_register(){
 		$sesc=urlencode($short_url);
 		dbQuery("insert into short_urls values(0,now(),'$lesc','$short_url')");
 		if($page->vars['userlogin_registration_type']=='Email-verified'){
-    	mail($email,'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to verify your email address, which has been used to register a user-account on the $sitedomain website.\n\nAfter clicking the link below, you will be logged into the server, and a new password will be emailed out to you.\n\nIf you did not register this account, then please delete this email. Otherwise, please click the following URL to verify your email address with us. Thank you.\n\nhttp://$sitedomain/_s/".$sesc,"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain");
+    	mail($email,'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to verify your email address, which has been used to register a user-account on the $sitedomain website.\n\nAfter clicking the link below, you will be logged into the server.\n\nIf you did not register this account, then please delete this email. Otherwise, please click the following URL to verify your email address with us. Thank you.\n\nhttp://$sitedomain/_s/".$sesc,"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain");
 			if(1 || $page->vars['userlogin_send_admin_emails']){
 				$admins=dbAll('select email from user_accounts,users_groups where groups_id=1 && user_accounts_id=user_accounts.id');
 				foreach($admins as $admin){

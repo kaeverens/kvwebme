@@ -60,8 +60,8 @@ if ($mimetype=='text/css') {
 					$rules=$matches[2][$i];
 					$css='box-shadow:'.$rules.';'
 						.'-moz-box-shadow:'.$rules.';'
-						.'-webkit-box-shadow:'.$rules.';'
-						.'behavior:url(/ww.css/ie-css3.htc);';
+						.'-webkit-box-shadow:'.$rules.';' /*
+						.'behavior:url(/ww.css/ie-css3.htc);'*/ ;
 					break; // }
 				default:
 					$css=$matches[0][$i];

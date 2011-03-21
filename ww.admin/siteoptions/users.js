@@ -25,13 +25,7 @@ $(function(){
 			return;
 		}
 		var name=$('input[name=name]').val(),email=$('input[name=email]').val(),password=$('input[name=password]').val();
-		if (password=='' && val) {
-			password=makepass();
-			$('input[name=password],input[name=password2]').val(password);
-		}
-		msg=val
-			?'Dear '+name+',\n\nWe have activated your account.\n\nYou can log in using your email address "'+email+'" and the password "'+password+'"\n\nThank you.'
-			:'Dear '+name+',\n\nWe have de-activated your account.\n\nThank you.'
+		msg='Dear '+name+',\n\nWe have activated your account.\n\nYou can log in using your email address "'+email+'" and the password you chose when registering.\n\nThank you.'
 		$('<textarea name="email-to-send">'+msg+'</textarea>')
 			.appendTo('#users-email-to-send-holder');
 		$('#users-email-to-send')
