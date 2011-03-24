@@ -20,7 +20,6 @@ function forums_admin_remove_post(data) {
 	var postsTable = window.postsForModeration;
 	var id = data.id;
 	var action = data.action;
-	$('<div>This post has been '+action+'</div>').dialog();
 	var pos = postsTable.fnGetPosition(($('#post-for-moderation-'+id)[0]));
 	postsTable.fnDeleteRow(pos);
 }

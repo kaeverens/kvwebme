@@ -87,12 +87,13 @@ else { // add user to the subscribers list
 }
 
 // { insert the post into the thread
+$moderated=1-$forum['is_moderated'];
 dbQuery(
-	'insert into forums_posts values(0,'.$thread_id.','
-	.$_SESSION['userdata']['id'].',now(),"'
-	.addslashes($body).'", 0)'
+	'insert into forums_posts set thread_id='.$thread_id
+	.',author_id='.$_SESSION['userdata']['id'].',created_date=now()'
+	.',body="'.addslashes($body).'",moderated='.$moderated
 );
-$post_id=dbLastInsertId();
+$post_id=(int)dbLastInsertId();
 
 dbQuery(
 	'update forums_threads set num_posts=num_posts+1,'
@@ -122,6 +123,7 @@ foreach ($subscribers as $subscriber) {
 }
 // }
 
+header('Content-type: application/json; charset=UTF-8');
 echo json_encode(
 	array(
 		'forum_id'=>$forum_id,

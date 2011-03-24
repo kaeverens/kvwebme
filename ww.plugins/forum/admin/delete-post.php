@@ -16,7 +16,12 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/ww.php_classes/User.php';
 $id = $_REQUEST['id'];
 $userID = get_userid();
 $user = User::getInstance($userID);
-$usersGroups = $user->getGroups();
+if ($userID) {
+	$usersGroups = $user->getGroups();
+}
+else {
+	$usersGroups = array(1);
+}
 $thread 
     = dbOne(
 		'select thread_id from forums_posts where id = '.$id,
