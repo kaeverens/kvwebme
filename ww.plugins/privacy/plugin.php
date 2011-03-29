@@ -39,9 +39,9 @@ function UserAuthentication_showWidget($vars=null, $widget_id) {
 	if (!isset($_SESSION['userdata']) || !$_SESSION['userdata']['id']) {
 		require_once SCRIPTBASE.'ww.plugins/privacy/frontend/widget-login.php';
 		WW_addScript('/ww.plugins/privacy/frontend/widget-login.js');
-		return;
+		return $c;
 	}
-	echo '<div id="userauthentication-widget">Logged in as <strong>'
+	return '<div id="userauthentication-widget">Logged in as <strong>'
 		.$_SESSION['userdata']['name'].'</strong>'
 		.' [<a href="/?logout">log out</a>]</div>';
 }

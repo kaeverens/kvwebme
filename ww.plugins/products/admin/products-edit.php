@@ -22,7 +22,7 @@ function Products_showDataField($df,$def){
 			break;
 		// }
 		case 'selectbox': // {
-			if ($def['u']) {
+			if (isset($def['u']) && $def['u']) {
 				if ($df['v']=='') {
 					$df['v']=$def['e'];
 				}

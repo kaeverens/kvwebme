@@ -1,7 +1,7 @@
 <?php
 $c='<div id="userauthentication-widget" widget-id="'
 	.$widget_id.'-'.$vars->id.'">'
-	.'log in with <button>email and password</button>';
+	.'log in with <button>email/password</button>';
 if (isset($vars->external_login)
 	&& $vars->external_login=='1'
 ) {

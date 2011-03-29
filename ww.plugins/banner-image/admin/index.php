@@ -20,19 +20,21 @@ if(isset($_GET['delete_banner']) && (int)$_GET['delete_banner']){
 }
 if(isset($_POST['save_banner'])){
 	$id=(int)$_POST['id'];
-	$pages=$_POST['pages_'.$id];
+	$pages=@$_POST['pages_'.$id];
 	$html=sanitise_html($_POST['html_'.$id]);
 	$sql='set html="'.addslashes($html).'",name="'.addslashes($_POST['name']).'",pages='.(count($pages)?1:0);
-	if($id){
+	if ($id) {
 		dbQuery("update banners_images $sql where id=$id");
 	}
-	else{
+	else {
 		dbQuery("insert into banners_images $sql");
-		$id=dbOne('select last_insert_id() as id','id');
+		$id=dbOne('select last_insert_id() as id', 'id');
 		$_REQUEST['id']=$id;
 	}
 	dbQuery("delete from banners_pages where bannerid=$id");
-	if(is_array($pages))foreach($pages as $k=>$v)dbQuery('insert into banners_pages set pageid='.((int)$v).",bannerid=$id");
+	if (is_array($pages)) {
+		foreach($pages as $k=>$v)dbQuery('insert into banners_pages set pageid='.((int)$v).",bannerid=$id");
+	}
 	$updated='Banner Saved';
 	cache_clear('banner-images');
 }
