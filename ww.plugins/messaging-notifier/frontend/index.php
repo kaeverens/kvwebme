@@ -65,7 +65,9 @@ function parse_messaging_notifier($data, $vars){
 	}
 	krsort($ordered);
 	foreach($ordered as $r){
-		if(++$i > 10)continue;
+		if (++$i > 10 || (!$vars->scrolling && $i>$vars->stories_to_show)) {
+			continue;
+		}
 		$description='';
 		if($vars->characters_shown){
 			$description=preg_replace('/<[^>]*>/','',$r['description']);
