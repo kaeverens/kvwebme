@@ -37,4 +37,32 @@ $(function(){
 					+'&'+ret.post_id+'#forum-c-'+ret.post_id;
 			});
 		});
+	$('#forum-posts>tbody>tr').each(function(){
+		var $this=$(this);
+		var pdata=$this.attr('p-data');
+		if (!pdata) {
+			return;
+		}
+		pdata=eval(pdata);
+		if (pdata.uid==userdata.id) {
+			var $a=$('<a href="javascript:;">[x]</a>')
+				.css({
+					"float":"right",
+					"font-size":"smaller"
+				})
+				.click(function(){
+					if (confirm('are you sure you want to delete this post?')) {
+						$.post('/ww.plugins/forum/frontend/delete.php', {
+							id:pdata.id
+						}, function(ret){
+							if (ret.error) {
+								return alert(ret.error);
+							}
+							document.location=document.location.toString();
+						});
+					}
+				});
+			$this.find('td:last-child').prepend($a);
+		}
+	});
 });

@@ -197,7 +197,11 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 	);
 	foreach ($posts as $post) {
 		$user=User::getInstance($post['author_id']);
-		$c.='<tr><td class="user-details"><a name="forum-c-'.$post['id']
+		// 89.126.104.138 
+		$c.='<tr p-data=\'({"id":'.$post['id']
+			.',"cdate":"'.$post['created_date'].'"'
+			.',"uid":'.$post['author_id'].'})\'>'
+			.'<td class="user-details"><a name="forum-c-'.$post['id']
 			.'"></a>'.htmlspecialchars($user->dbVals['name']).'</td>'
 			.'<td><div class="post-header">Posted: '
 			.date_m2h($post['created_date'], 'datetime')
