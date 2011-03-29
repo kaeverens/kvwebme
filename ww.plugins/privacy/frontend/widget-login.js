@@ -2,7 +2,7 @@ $(function(){
 	var $form=$('#userauthentication-widget');
 	$form.find('button,img').click(function(){
 		var $this=$(this), btn='';
-		if ($this.text()=='email and password') {
+		if ($this.text()=='email/password') {
 			btn='email and password';
 		}
 		if ($this[0].className=='facebook') {
@@ -29,7 +29,7 @@ $(function(){
 										return alert(ret.error);
 									}
 									document.location=ret.redirect_url;
-								}, 'json'
+								}
 							);
 						}
 					},
