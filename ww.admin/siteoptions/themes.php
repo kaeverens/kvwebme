@@ -21,7 +21,7 @@
 **/
 function Themes_recursiveCopy($src, $dst) {
 	$dir = opendir($src);
-	mkdir($dst);
+	@mkdir($dst);
 	while (false !== ( $file = readdir($dir)) ) {
 		if (( $file != '.' ) && ( $file != '..' )) {
 			if ( is_dir($src . '/' . $file) ) {
@@ -47,7 +47,7 @@ if ($action=='set_theme') {
 	else {
 		if (is_dir($DBVARS['theme_dir'].'/'.$_REQUEST['theme'])) {
 			$DBVARS['theme']=$_REQUEST['theme'];
-			$DBVARS['theme_variant']=$_REQUEST['theme_variant'];
+			$DBVARS['theme_variant']=@$_REQUEST['theme_variant'];
 			Themes_recursiveCopy(
 				$DBVARS['theme_dir'].'/'.$_REQUEST['theme'],
 				$DBVARS['theme_dir_personal'].'/'.$_REQUEST['theme']
