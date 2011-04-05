@@ -130,4 +130,28 @@ $(function(){
 			.src="pages/form.php?id="+node.id.replace(/.*_/,'');
 		$('#pages-wrapper').jstree('select_node',node);
 	});
+	$('<div class="resize-bar-w"/>')
+		.css('cursor','e-resize')
+		.draggable({
+			helper:function(){
+				return document.createElement('span');
+			},
+			start:function(e){
+				this.offsetStart=e.pageX;
+				this.hasLeftOffsetStart=parseInt(
+					$('div.has-left-menu').css('left')
+				);
+				this.menuWidthStart=parseInt(
+					$(this).closest('div.left-menu').css('width')
+				);
+			},
+			drag:function(e){
+				var offset=e.pageX-this.offsetStart;
+				$(this).closest('div.left-menu').css('width', this.menuWidthStart+offset);
+				$('div.has-left-menu').css('left', this.hasLeftOffsetStart+offset);
+			},
+			stop:function(){
+			}
+		})
+		.appendTo('div.left-menu');
 });

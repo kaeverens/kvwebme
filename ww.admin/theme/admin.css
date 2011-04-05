@@ -145,7 +145,15 @@ a.external{background:url("/ww.admin/theme/10x10_external.png") no-repeat right;
 #firefoxAd a, #firefoxAd a:visited { color: #fff; text-decoration: none; }
 #firefoxAd span { position: relative; bottom: 10px; left: 4px; color: #fff; }
 
-.left-menu        {width: 150px; background:#fff; float:left;border: 1px solid #ededed;padding: 5px;margin-bottom:40px}
+.left-menu {
+	width: 150px;
+	background:#fff;
+	float:left;
+	border: 1px solid #ededed;
+	padding: 5px;
+	margin-bottom:40px;
+	position:relative;
+}
 .left-menu a      {display:block; color:#d36042; padding: 3px 0 3px 5px;text-decoration:none; border: 0;}
 .left-menu a:hover{background-color:#A6BFE2; color:#fff}
 .left-menu a.showhideLink{display:inline;padding-left:15px}
@@ -161,6 +169,15 @@ a.external{background:url("/ww.admin/theme/10x10_external.png") no-repeat right;
 
 .has-left-menu{position:absolute;right:5px;left:180px;top:95px;padding: 5px;}
 .has-left-menu input.checkbox {  width: auto !important; } 
+
+div.resize-bar-w{
+	position:absolute;
+	background:#3b3c37;
+	width:6px;
+	bottom:0;
+	top:0;
+	right:0;
+}
 
 #sc_cartridges_panel,#sc_clients_panel{height:100px;overflow:auto}
 #tablePopulate th textarea{background:#eee}
