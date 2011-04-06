@@ -25,6 +25,10 @@ foreach ($panel->widgets as $widget) {
 		$auth=file_get_contents($url);
 		$details=file_get_contents('https://graph.facebook.com/me?'.$auth);
 		$details=json_decode($details);
+		if (is_null($details)) {	// failed login
+			header('Location: /');
+			exit;
+		}
 		$name= $details->name;
 		$email=$details->email;
 		$user=dbRow(
