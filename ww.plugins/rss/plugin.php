@@ -14,7 +14,7 @@
 // { define $plugin
 $plugin=array(
 	'name'          => 'RSS',
-	'description'   => 'add RSS feed to news pages, comments, and other plugins',
+	'description'   => 'add RSS feeds to forums, news pages, comments, etc.',
 	'triggers'      => array(
 		'building-metadata'=>'RSS_getFeedURLS'
 	),

@@ -75,8 +75,7 @@ function Comments_getCommentsHTML($PAGEDATA) {
 **/
 
 function Comments_getRssLink($PAGEDATA) {
-	$hideComments=isset($PAGEDATA->vars['hide_comments'])
-		&& $PAGEDATA->vars['hide_comments'];
+	$hideComments=@$PAGEDATA->vars['hide_comments'] || !@$PAGEDATA->vars['allow_comments'];
 	return $hideComments
 		?false
 		:array(
