@@ -110,8 +110,10 @@ function Forum_rssHandler($PAGEDATA) {
 **/
 
 function Forum_getRssLink($PAGEDATA) {
-	return array(
-		'Posts for '.$PAGEDATA->name,
-		$PAGEDATA->getRelativeURL().'?_p=rss&p=forum'
-	);
+	return $PAGEDATA->type=='forum'
+		?array(
+			'Posts for '.$PAGEDATA->name,
+			$PAGEDATA->getRelativeURL().'?_p=rss&p=forum'
+		)
+		:false;
 }
