@@ -85,7 +85,7 @@ function Forum_rssHandler($PAGEDATA) {
 				.' in "'.$threads[$post['thread_id']]['name'].'"',
 			'description'=>$post['body'],
 			'link'=>'http://'.$_SERVER['HTTP_HOST'].$PAGEDATA->getRelativeURL()
-				.'?forum-f='.$thread['forum_id']
+				.'?forum-f='.$threads[$post['thread_id']]['forum_id']
 				.'&amp;forum-t='.$post['thread_id']
 				.'#forum-c-'.$post['id'],
 			'guid'=>'post-'.$post['id'],

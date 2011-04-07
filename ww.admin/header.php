@@ -25,8 +25,10 @@ WW_addScript('/j/ckeditor-3.5/ckeditor.js');
 WW_addScript('/j/cluetip/jquery.cluetip.js');
 WW_addScript('/ww.admin/j/admin.js');
 ?>
+<!doctype html>
 <html>
 	<head>
+		<title>WebME admin area</title>
 <?php
 	echo Core_getJQueryScripts();
 ?>
@@ -77,12 +79,27 @@ foreach($PLUGINS as $pname=>$p){
 	function admin_menu_show($items,$name=false,$prefix,$depth=0){
 		$target=(isset($items['_target']))?' target="'.$items['_target'].'"':'';
 		if(isset($items['_link']))echo '<a href="'.$items['_link'].'"'.$target.'>'.$name.'</a>';
-		else if($name!='top')echo '<a href="#'.$prefix.'-'.$name.'">'.$name.'</a>';
-		if(count($items)==1 && isset($items['_link']))return;
-		if($depth<2)echo '<div id="'.$prefix.'-'.$name.'">';
+		else if($name!='top')echo '<a href="#'.$prefix.'-'.urlencode($name).'">'.$name.'</a>';
+		if (count($items)==1 && isset($items['_link'])) {
+			return;
+		}
+		$submenus=0;
+		foreach ($items as $subitems) {
+			if (is_array($subitems)) {
+				$submenus++;
+			}
+		}
+		if (!$submenus) {
+			return;
+		}
+		if ($depth<2) {
+			echo '<div id="'.$prefix.'-'.urlencode($name).'">';
+		}
 		echo '<ul>';
-		foreach($items as $iname=>$subitems){
-			if($iname=='_link')continue;
+		foreach ($items as $iname=>$subitems) {
+			if (!is_array($subitems)) {
+				continue;
+			}
 			echo '<li>';
 			admin_menu_show($subitems,$iname,$prefix.'-'.$name,$depth+1);
 			echo '</li>';

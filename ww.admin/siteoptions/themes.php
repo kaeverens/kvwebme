@@ -131,7 +131,9 @@ $dir=new DirectoryIterator($DBVARS['theme_dir']);
 $themes_found=0;
 foreach ($dir as $file) {
 	if ($file->isDot()
-		|| !file_exists($DBVARS['theme_dir'].'/'.$file.'/screenshot.png')
+		|| !file_exists(
+			$DBVARS['theme_dir'].'/'.$file->getFilename().'/screenshot.png'
+		)
 	) {
 		continue;
 	}
@@ -142,8 +144,10 @@ foreach ($dir as $file) {
 		.'<input type="hidden" name="page" value="themes" />'
 		.'<input type="hidden" name="action" value="set_theme" />'
 		.'<input type="hidden" name="theme" value="'
-		.htmlspecialchars($file).'" />';
-	$size=getimagesize('../ww.skins/'.$file.'/screenshot.png');
+		.htmlspecialchars($file->getFilename()).'" />';
+	$size=getimagesize(
+		$DBVARS['theme_dir'].'/'.$file->getFilename().'/screenshot.png'
+	);
 	$w=$size[0]; $h=$size[1];
 	if ($w>240) {
 		$w=$w*(240/$w);

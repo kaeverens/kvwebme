@@ -20,7 +20,7 @@ function Core_getJQueryScripts() {
 	}
 	return '<script src="'.$jurls[0].'"></script>'
 		.'<script src="'.$jurls[1].'"></script>'
-		.'<link href="'.$jurls[2].'" rel="stylesheet" type="text/css" />';
+		.'<link href="'.$jurls[2].'" rel="stylesheet" />';
 }
 function date_m2h($d, $type = 'date') {
 	$date = preg_replace('/[- :]/', ' ', $d);
@@ -57,7 +57,10 @@ function getVar($v, $d = '') {
 function inc_common($f) {
 	include_once SCRIPTBASE . 'common/' . $f;
 }
-function redirect($addr){
+function redirect($addr, $type=302){
+	if ($type==301) {
+		header('HTTP/1.1 301 Moved Permanently');
+	}
 	header('Location: '.$addr);
 	echo '<html><head><script type="text/javascript">setTimeout(function(){document.location="'.$addr.'";},10);</script></head><body><noscript>you need javascript to use this site</noscript></body></html>';
 	exit;

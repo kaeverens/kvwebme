@@ -155,7 +155,7 @@ function WW_getCSS(){
 	}
 	$url='/css/';
 	foreach($css_urls as $s)$url.='|'.$s;
-	return '<link rel="stylesheet" type="text/css" href="'.htmlspecialchars($url).'" />';
+	return '<link rel="stylesheet" href="'.htmlspecialchars($url).'" />';
 }
 function WW_getScripts() {
 	global $scripts,$scripts_inline;

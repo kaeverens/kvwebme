@@ -108,10 +108,21 @@ function WW_getScripts() {
 	}
 	return $url;
 }
+
+// load common functions for displaying pages
 require_once 'ww.incs/common.php';
 if (isset($https_required) && $https_required && !$_SERVER['HTTPS']) {
 	$server=str_replace('www.', '', $_SERVER['HTTP_HOST']);
 	redirect('https://www.'.$server.'/');
+}
+if (isset($DBVARS['canonical_name'])
+	&& $_SERVER['HTTP_HOST']!=$DBVARS['canonical_name']
+) {
+	$url=
+	$url=($_SERVER['HTTPS']=='on'?'https':'http')
+		.'://'.$DBVARS['canonical_name']
+		.$_SERVER['REQUEST_URI'];
+	redirect($url);
 }
 if (!isset($DBVARS['version']) || $DBVARS['version']<32) {
 	redirect('/ww.incs/upgrade.php');
@@ -311,18 +322,25 @@ $c.='<script src="WW_SCRIPTS_GO_HERE"></script>';
 if (is_admin()) {
 	WW_addScript('/ww.admin/j/common.js');
 }
+// { generate inline javascript
 $tmp='var pagedata={id:'.$PAGEDATA->id.''
 	.plugin_trigger('displaying-pagedata')
-	.'},'
-	.'userdata={isAdmin:'.(is_admin()?1:0);
-if (isset($_SESSION['userdata'])
-	&& isset($_SESSION['userdata']['discount'])
-) {
-	$tmp.=',discount:'.(int)$_SESSION['userdata']['discount'];
+	.'},';
+if (isset($_SESSION['userdata'])) {
+	$tmp.='userdata={isAdmin:'.(is_admin()?1:0)
+		.',id:'.$_SESSION['userdata']['id'];
+	if (isset($_SESSION['userdata']['discount'])) {
+		$tmp.=',discount:'.(int)$_SESSION['userdata']['discount'];
+	}
+	$tmp.='}';
 }
-$tmp.='};document.write("<"+"style>'
+else {
+	$tmp.='userdata={isAdmin:0}';
+}
+$tmp.=';document.write("<"+"style>'
 	.'a.nojs{display:none !important}<"+"/style>");';
 array_unshift($scripts_inline, $tmp);
+// }
 if (is_admin()) {
 	WW_addScript('/ww.admin/j/admin-frontend.js');
 	WW_addScript('/j/ckeditor-3.5/ckeditor.js');

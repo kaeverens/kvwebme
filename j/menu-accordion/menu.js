@@ -8,7 +8,8 @@ $(function(){
 				.addClass('has-submenu')
 				.click(function(){
 					var $this=$(this);
-					$this.next().toggle();
+					$this.next().toggle(200);
+					this.blur();
 					return false;
 				});
 	});

@@ -16,6 +16,12 @@ echo '<h2>'.__('General').'</h2>';
 if ($action=='Save') {
 	$DBVARS['f_cache']=$_REQUEST['f_cache'];
 	$DBVARS['site_title']=$_REQUEST['site_title'];
+	if (@$_REQUEST['canonical_name']) {
+		$DBVARS['canonical_name']=$_REQUEST['canonical_name'];
+	}
+	else if (isset($DBVARS['canonical_name']) ) {
+		unset($DBVARS['canonical_name']);
+	}
 	$DBVARS['site_subtitle']=$_REQUEST['site_subtitle'];
 	if (isset($_FILES['site_favicon'])
 		&& file_exists($_FILES['site_favicon']['tmp_name'])
@@ -59,10 +65,20 @@ if ($action=='remove_logo') {
 echo '<form method="post" action="siteoptions.php?page=general" enctype="mu'
 	.'ltipart/form-data"><input type="hidden" name="MAX_FILE_SIZE" value="999'
 	.'9999" /><table>';
+// { website title and subtitle
 echo '<tr><th>Website Title</th><td><input name="site_title" value="'
-	.htmlspecialchars($DBVARS['site_title']).'" /></td></tr>';
-echo '<tr><th>Website Subtitle</th><td><input name="site_subtitle" value="'
+	.htmlspecialchars($DBVARS['site_title']).'" /></td></tr>'
+	.'<tr><th>Website Subtitle</th><td><input name="site_subtitle" value="'
 	.htmlspecialchars($DBVARS['site_subtitle']).'" /></td></tr>';
+// }
+// { canonical domain name
+$canonical_name=@$DBVARS['canonical_name']
+	?' value="'.htmlspecialchars($DBVARS['canonical_name']).'"'
+	:'';
+echo '<tr><th>Canonical Domain Name</th><td><input name="canonical_name" '
+	.'placeholder="leave blank to accept multiple domain names"'
+	.$canonical_name.' type="url" /></td></tr>';
+// }
 // { logo
 echo '<tr><th>Logo</th><td><input type="file" name="site_logo" /><br />';
 if (file_exists(USERBASE.'f/skin_files/logo.png')) {
@@ -84,12 +100,14 @@ if (file_exists(USERBASE.'f/skin_files/favicon.png')) {
 }
 echo '</td></tr>';
 // }
+// { page length limit
 echo '<tr><th>Page Length Limit</th>';
 echo '<td><input type="text" name="site_page_length_limit"';
 if (isset($DBVARS['site_page_length_limit'])) {
 	echo ' value="'.$DBVARS['site_page_length_limit'].'"';
 }
 echo ' /></td></tr>';
+// }
 // { uploaded files cache
 echo '<tr><th>How long browsers should cache uploaded files for</th><td>'
 	.'<select name="f_cache"><option value="0">forever</option>';
