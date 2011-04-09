@@ -1,5 +1,7 @@
 $(function() {
-	my_table = $("#comments-table").dataTable();
+	my_table = $("#comments-table").dataTable({
+		'aaSorting':[[0,'desc']]
+	});
 	if (noModeration) {
 		my_table.fnSetColumnVis(5, false);
 	}
@@ -72,6 +74,17 @@ function set_moderation() {
 		},
 		update_table_columns,
 		"json"
+	);
+}
+function set_moderatorEmail() {
+	var val = $('#comments_moderatorEmail').val();
+	$.post(
+		'/ww.plugins/comments/admin/set_moderatorEmail.php',
+		{
+			"email":val
+		},
+		function(){
+		}
 	);
 }
 function set_captchas() {

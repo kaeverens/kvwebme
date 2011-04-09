@@ -29,6 +29,13 @@ if ($noModeration) {
 }
 echo ' onchange="set_moderation();" /></td></tr>';
 // }
+// { moderator email address
+echo '<tr><th>Moderator email address</th><td><input id="comments_moderatorEmail"';
+if (isset($DBVARS['comments_moderatorEmail'])) {
+	echo ' value="'.htmlspecialchars($DBVARS['comments_moderatorEmail']).'"';
+}
+echo ' onchange="set_moderatorEmail();" /></td><tr>';
+// }
 // { use captchas
 echo '<tr><th>Don\'t use captchas for spam filtering?</th>';
 $noCaptchas = 0;
@@ -48,15 +55,7 @@ echo '<strong>Comments</strong>';
 $comments = dbAll('select * from comments');
 echo '<div style="width:80%">';
 echo '<table id="comments-table" style="width:100%"><thead><tr>';
-echo '<th>Date</th>';
-echo '<th>Name</th>';
-echo '<th>Email</th>';
-echo '<th>URL</th>';
-echo '<th>Comment</th>';
-echo '<th>Mod</th>';
-echo '<th>Edit</th>';
-echo '<th>Delete</th>';
-echo '</tr></thead><tbody>';
+echo '<th>Date</th><th>Name</th><th>Email</th><th>URL</th><th>Comment</th><th>Mod</th><th>Edit</th><th>Delete</th></tr></thead><tbody>';
 foreach ($comments as $comment) {
 	$id = $comment['id'];
 	echo '<tr id="comment-'.$id.'">';

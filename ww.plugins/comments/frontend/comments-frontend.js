@@ -110,18 +110,8 @@ function comments_display_thank_you_message(data) {
 	if (!data.status) {
 		return alert(data.message);
 	}
-	$('.no-comments').remove();
-	var commentString = '<div id="comment-wrapper-'+data.id+'" '
-		+'class="comment-wrapper comment-editable"'
-		+' cdate="'+data.mysqldate+'" '
-		+'comment="'+htmlspecialchars(data.comment)+'">';
-	commentString+= '<div id="comment-info-'+data.id+'">'
-	commentString+= 'Posted by '+data.name+' on '+data.humandate;
-	commentString+= '<div id="comment-'+data.id+'">'
-	commentString+= htmlspecialchars(data.comment);
-	commentString+= '</div><br /><br /></div>';
-	$(commentString).insertBefore('#comment-form');
-	alert('Thank you for commenting');
+	alert(data.moderated?'Thank you - your comment has been received and will be uploaded as soon as possible':'Thank you for commenting');
+	document.location=document.location.toString();
 }
 function comments_frontend_start_delete(id) {
 	if (confirm('Are you sure you want to delete this comment?')) {
@@ -130,19 +120,11 @@ function comments_frontend_start_delete(id) {
 			{
 				"id":id
 			},
-			comments_frontend_fadeout_comment,
-			"json"
+			function(){
+				document.location=document.location.toString();
+			}
 		);
 	}
-}
-function comments_frontend_fadeout_comment(data) {
-	if (!data.status) {
-		return alert('Could not delete this comment');
-	}
-	$('#'+data.id).fadeOut('slow', comments_frontend_remove_comment);
-}
-function comments_frontend_remove_comment(data) {
-	$(this).remove()
 }
 function comments_frontend_start_edit(id, comment) {
 	$('#comment-'+id).remove();

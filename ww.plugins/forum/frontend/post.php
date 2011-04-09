@@ -19,8 +19,8 @@ if (!isset($_SESSION['userdata']) || !$_SESSION['userdata']['id']) {
 
 $title=$_REQUEST['title'];
 $body=$_REQUEST['body'];
-$forum_id=(int)$_REQUEST['forum_id'];
-$thread_id=(int)$_REQUEST['thread_id'];
+$forum_id=(int)@$_REQUEST['forum_id'];
+$thread_id=(int)@$_REQUEST['thread_id'];
 
 $errs=array();
 

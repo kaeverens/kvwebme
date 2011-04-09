@@ -21,16 +21,9 @@ $site = isset($_REQUEST['site'])?$_REQUEST['site']:'';
 $page = $_REQUEST['page'];
 $comment = $_REQUEST['comment'];
 
-$noModeration 
-	= dbOne(
-		'select value from site_vars where name = "no_moderation"', 'value'
-	);
-if (is_admin()||$noModeration) {
-	$trusted = 1;
-}
-else {
-	$trusted = 0;
-}
+$trusted=($is_admin
+	|| dbOne('select value from site_vars where name="no_moderation"', 'value')
+)?1:0;
 if (!is_numeric($page)) {
 	echo '{"status":0, "message":"The page id should be a number"}';
 }
@@ -49,7 +42,15 @@ else {
 		homepage ="'.addslashes($site).'"'
 	);
 	$id = dbOne('select last_insert_id() as id', 'id');
-	$_SESSION['comment_ids'][] = $id;
+//	$_SESSION['comment_ids'][] = $id; // turning this off to avoid confusion...
+	if (isset($DBVARS['comments_moderatorEmail']) && $DBVARS['comments_moderatorEmail']) {
+		mail(
+			$DBVARS['comments_moderatorEmail'],
+			'['.$_SERVER['HTTP_HOST'].'] new comment',
+			addslashes($name)." has commented on your site:\n".addslashes($comment)."\n\nTo approve or delete this comment, please log into your administration area and go to Communication>Comments",
+			'From: noreply@'.$_SERVER['HTTP_HOST']."\nReply-to: noreply@".$_SERVER['HTTP_HOST']
+		);
+	}
 	$count 
 		= dbOne(
 			'select count(id) from comments 
@@ -64,13 +65,15 @@ else {
 	else {
 		$addIntroString=1;
 	}
-	$data=array();
-	$data['status']=1;
-	$data['id']=$id;
-	$data['name']=$name;
-	$data['humandate']=$date;
-	$data['mysqldate']=$datetime;
-	$data['comment']=$comment;
-	$data['add']=$addIntroString;
+	$data=array(
+		'status'=>1,
+		'id'    =>$id,
+		'name'  =>$name,
+		'humandate'=>$date,
+		'mysqldate'=>$datetime,
+		'comment'=>$comment,
+		'add'   =>$addIntroString,
+		'moderated'=>$trusted?0:1
+	);
 	echo json_encode($data);
 }

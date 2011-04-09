@@ -83,7 +83,11 @@ function userloginandregistrationDisplay(){
 			$c.='<script>$(document).ready(function(){$("<strong>No user account with that email address exists.</strong>").dialog({modal:true,height:100,width:150});});</script>';
 		}
 	}
-	if(!$PAGEDATA->vars['userlogin_visibility'])$PAGEDATA->vars['userlogin_visibility']=3;
+	if (!isset($PAGEDATA->vars['userlogin_visibility'])
+		||$PAGEDATA->vars['userlogin_visibility']
+	) {
+		$PAGEDATA->vars['userlogin_visibility']=3;
+	}
 	if(!$loggedin){ // show login and registration box
 		$c.='<div class="tabs"><ul>';
 		// { menu

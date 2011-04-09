@@ -8,7 +8,7 @@
 
 echo '
 <link rel="stylesheet" type="text/css" href="/ww.plugins/mailing-list/files/mailing-list.css"/>
-<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.validate/1.6/jquery.validate.min.js"></script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.8/jquery.validate.min.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
       $("#emailForm").validate({

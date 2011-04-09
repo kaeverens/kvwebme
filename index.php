@@ -119,7 +119,7 @@ if (isset($DBVARS['canonical_name'])
 	&& $_SERVER['HTTP_HOST']!=$DBVARS['canonical_name']
 ) {
 	$url=
-	$url=($_SERVER['HTTPS']=='on'?'https':'http')
+	$url=(@$_SERVER['HTTPS']=='on'?'https':'http')
 		.'://'.$DBVARS['canonical_name']
 		.$_SERVER['REQUEST_URI'];
 	redirect($url);
