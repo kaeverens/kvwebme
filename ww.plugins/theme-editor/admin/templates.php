@@ -43,7 +43,7 @@ $(function(){
 	  parserfile: ["parsexml.js", "parsecss.js", "tokenizejavascript.js",
 			"parsejavascript.js", "parsehtmlmixed.js"],
 		reindentOnLoad:true,
-		height:450,
+		height:"450px",
 	  path: "/j/CodeMirror-0.93/js/",
 		stylesheet: [
 			"/j/CodeMirror-0.93/css/xmlcolors.css",
