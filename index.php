@@ -343,8 +343,8 @@ array_unshift($scripts_inline, $tmp);
 // }
 if (is_admin()) {
 	WW_addScript('/ww.admin/j/admin-frontend.js');
-	WW_addScript('/j/ckeditor-3.5/ckeditor.js');
-	WW_addScript('/j/ckeditor-3.5/adapters/jquery.js');
+	WW_addScript('/j/ckeditor-3.5.3/ckeditor.js');
+	WW_addScript('/j/ckeditor-3.5.3/adapters/jquery.js');
 	WW_addCSS('/ww.admin/theme/admin-frontend.css');
 	foreach ($GLOBALS['PLUGINS'] as $p) {
 		if (isset($p['frontend']['admin-script'])) {
