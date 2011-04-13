@@ -309,9 +309,6 @@ $c='<title>'.htmlspecialchars($title).'</title>';
 // }
 // { show stylesheet and javascript links
 $c.='WW_CSS_GOES_HERE';
-if (isset($DBVARS['theme_variant']) && $DBVARS['theme_variant']) {
-	WW_addCSS('/ww.skins/'.$DBVARS['theme'].'/cs/'.$DBVARS['theme_variant'].'.css');
-}
 $c.='<style>.loggedin{display:'
 	.(is_logged_in()?'block':'none')
 	.'} .loggedinCell{display:'
@@ -368,6 +365,10 @@ if (isset($PAGEDATA->vars['google-site-verification'])
 ) {
 	$c.='<meta name="google-site-verification" content="'
 		.htmlspecialchars($PAGEDATA->vars['google-site-verification']).'" />';
+}
+if (isset($DBVARS['theme_variant']) && $DBVARS['theme_variant']) {
+	$c.='<link rel="stylesheet" href="/ww.skins/'.$DBVARS['theme'].'/cs/'
+		.$DBVARS['theme_variant'].'.css" />';
 }
 // }
 // { favicon
