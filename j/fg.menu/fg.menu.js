@@ -65,7 +65,6 @@ function Menu(caller, options){
 		backLink: true, // in the ipod-style menu: instead of breadcrumbs, show only a 'back' link
 		backLinkText: 'Back',
 		flyOut: true, // multi-level menus are ipod-style by default; this parameter overrides to make a flyout instead
-//		flyOutOnState: 'ui-state-default',
 		nextMenuLink: 'ui-icon-triangle-1-e', // class to style the link (specifically, a span within the link) used in the multi-level menu to show the next level
 		topLinkText: 'All',
 		nextCrumbLink: 'ui-icon-carat-1-e'	
@@ -242,7 +241,7 @@ Menu.prototype.drilldown = function(container, options) {
 	var crumbDefaultHeader = $('<li class="fg-menu-breadcrumb-text">'+options.crumbDefaultText+'</li>');
 	var firstCrumbText = (options.backLink) ? options.backLinkText : options.topLinkText;
 	var firstCrumbClass = (options.backLink) ? 'fg-menu-prev-list' : 'fg-menu-all-lists';
-	var firstCrumbLinkClass = (options.backLink) ? 'ui-state-default ui-corner-all' : '';
+	var firstCrumbLinkClass = (options.backLink) ? 'ui-corner-all' : '';
 	var firstCrumbIcon = (options.backLink) ? '<span class="ui-icon ui-icon-triangle-1-w"></span>' : '';
 	var firstCrumb = $('<li class="'+firstCrumbClass+'"><a href="#" class="'+firstCrumbLinkClass+'">'+firstCrumbIcon+firstCrumbText+'</a></li>');
 	

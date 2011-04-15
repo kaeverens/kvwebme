@@ -319,11 +319,13 @@ if ($version==26) { // add "extras" to user_account, for metadata
 	dbQuery('alter table user_accounts add extras text');
 	$version=27;
 }
-if ($version==27) { // create personal copy of theme
+if ($version==27) { // create personal copy of theme if it exists
 	if (!file_exists(USERBASE.'/themes-personal')) {
 		mkdir(USERBASE.'/themes-personal');
 	}
-	Copy_recursive(THEME_DIR.'/'.THEME, USERBASE.'themes-personal/'.THEME);
+	if (file_exists(THEME_DIR.'/'.THEME)) {
+		Copy_recursive(THEME_DIR.'/'.THEME, USERBASE.'themes-personal/'.THEME);
+	}
 	$DBVARS['theme_dir_personal']=USERBASE.'themes-personal';
 	$version=28;
 }

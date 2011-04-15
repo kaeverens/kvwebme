@@ -156,7 +156,9 @@ class kfmDirectory extends kfmObject{
 		// { load file details from database
 		$files=array();
 		foreach($tmp as $filename){
-			if(!isset($fileshash[$filename]))$fileshash[$filename]=kfmFile::addToDb($filename,$this->id);
+			if (!isset($fileshash[$filename])) {
+				$fileshash[$filename]=@kfmFile::addToDb($filename,$this->id);
+			}
 			$file=kfmFile::getInstance($fileshash[$filename]);
 			if(!$file)continue;
 			if($file->isImage()){

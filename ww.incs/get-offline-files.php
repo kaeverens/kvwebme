@@ -51,7 +51,7 @@ function Core_getOfflineJQueryScripts($jquery_versions) {
 			$base='http://ajax.googleapis.com/ajax/libs/jqueryui/'
 				.$jquery_versions[1].'/themes/base/images/';
 			preg_match_all('/url\(images\/([^\)]*)/', $f, $files);
-			mkdir(USERBASE.'/f/.files/images');
+			@mkdir(USERBASE.'/f/.files/images');
 			foreach ($files[1] as $url) {
 				$file=file_get_contents($base.$url);
 				file_put_contents(USERBASE.'/f/.files/images/'.$url, $file);

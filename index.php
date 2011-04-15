@@ -274,6 +274,9 @@ else if (file_exists(THEME_DIR.'/'.THEME.'/h/_default.html')) {
 }
 else {
 	$d=array();
+	if (!file_exists(THEME_DIR.'/'.THEME.'/h/')) {
+		die('no theme installed. please <a href="/ww.admin/">install one</a>');
+	}
 	$dir=new DirectoryIterator(THEME_DIR.'/'.THEME.'/h/');
 	foreach ($dir as $f) {
 		if ($f->isDot()) {

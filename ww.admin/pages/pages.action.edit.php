@@ -28,9 +28,9 @@ $body=$original_body;
 $body=sanitise_html($body);
 $name=$_REQUEST['name'];
 // { check that name is not duplicate of existing page
-if (dbOne('select id from pages where name="'.addslashes($name).'" and parent='.$pid.' and id!="'.$_POST['id'].'"','id')) {
+if (dbOne('select id from pages where name="'.addslashes($name).'" and parent='.$pid.' and id!="'.$id.'"','id')) {
 	$i=2;
-	while(dbOne('select id from pages where name="'.addslashes($name.$i).'" and parent='.$pid.' and id!="'.$_POST['id'].'"','id'))$i++;
+	while(dbOne('select id from pages where name="'.addslashes($name.$i).'" and parent='.$pid.' and id!="'.$id.'"','id'))$i++;
 	$msgs.='<em>'.__('A page named "%1" already exists. Page name amended to "%2"',$name,$name.$i).'</em>';
 	$name=$name.$i;
 }
@@ -58,7 +58,7 @@ if(is_array($pagevars))foreach($pagevars as $k=>$v){
 // }
 if(isset($_REQUEST['recursively_update_page_templates']))recursively_update_page_templates($id,$template);
 if($_POST['type']==4){
-	$r2=dbRow('select * from page_summaries where page_id="'.$_POST['id'].'"');
+	$r2=dbRow('select * from page_summaries where page_id="'.$id.'"');
 	$do=1;
 	if($r2){
 		if(isset($_POST['page_summary_parent']) && $r2['parent_id']!=$_POST['page_summary_parent']){
@@ -66,9 +66,11 @@ if($_POST['type']==4){
 		}
 		else $do=0;
 	}
-	if($do)dbQuery('insert into page_summaries set page_id="'.$_POST['id'].'",parent_id="'.$_POST['page_summary_parent'].'",rss=""');
+	if ($do) {
+		dbQuery('insert into page_summaries set page_id="'.$id.'",parent_id="'.$_POST['page_summary_parent'].'",rss=""');
+	}
 	include_once(SCRIPTBASE.'/ww.incs/page.summaries.php');
-	displayPageSummaries($_POST['id']);
+	PageSummaries_getHtml($_POST['id']);
 }
 $msgs.='<em>The page has been updated.</em>';
 dbQuery('update page_summaries set rss=""');

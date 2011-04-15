@@ -19,18 +19,35 @@ class User{
 		return self::$instances[$id];
 	}
 	function getGroups(){
-		if(isset($this->groups))return $this->groups;
-		$arr=array();
+		if (isset($this->groups)) {
+			return $this->groups;
+		}
+		$byid=array();
 		$gs
 			=dbAll(
 				'select groups_id from users_groups '
 				.'where user_accounts_id='.$this->id
 			);
 		foreach($gs as $g){
-			$arr[]=$g['groups_id'];
+			$byid[]=$g['groups_id'];
 		}
-		$this->groups=$arr;
+		$this->groups=$byid;
 		return $this->groups;
+	}
+	function isInGroup($group) {
+		if (isset($this->groupsByName[$group])) {
+			return $this->groupsByName[$group];
+		}
+		if (!isset($this->groupsByName)) {
+			$this->groupsByName=array();
+		}
+		$gid=dbOne('select id from groups where name="'.addslashes($group).'"', 'id');
+		if (!$gid) {
+			$this->groupsByName[$group]=0;
+			return false;
+		}
+		$this->groupsByName[$group]=dbOne('select groups_id from users_groups where groups_id='.$gid.' and user_accounts_id='.$this->id, 'groups_id');
+		return $this->groupsByName[$group];
 	}
 	function set($name,$value){
 		dbQuery(
