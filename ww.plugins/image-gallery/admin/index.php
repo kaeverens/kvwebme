@@ -43,12 +43,15 @@ if (isset($GLOBALS['PLUGINS']['online-store'])) {
 $c.= '</ul>';
 // { images
 $c.='<div id="image-gallery-images">';
-$invalid = '/[^A-Za-z0-9_\-]/';
-$name = preg_replace($invalid, '|', $page['name']);
-if(!$gvars['image_gallery_directory'] || !is_dir(USERBASE.'f/'.$gvars['image_gallery_directory'])){
+if (!$gvars['image_gallery_directory']
+	|| !is_dir(USERBASE.'f/'.$gvars['image_gallery_directory'])
+) {
 	if (!is_dir(USERBASE.'f/image-galleries')) {
 		mkdir(USERBASE.'f/image-galleries');
 	}
+	$invalid = '/[^A-Za-z0-9_\-]/';
+	$p=Page::getInstance($page['id']);
+	$name = preg_replace($invalid, '_', $p->getRelativeUrl());
 	$gvars['image_gallery_directory']='/image-galleries/page-'.$name;
 	$dir=USERBASE.'f/'.$gvars['image_gallery_directory'];
 	if (!file_exists($dir)) {
