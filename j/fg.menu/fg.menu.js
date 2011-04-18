@@ -565,6 +565,8 @@ Number.prototype.pxToEm = String.prototype.pxToEm = function(settings){
 	return result;
 };
 
+$('#menu-top>ul>li>a').addClass('fg-menu-top-level');
+
 $('.fg-menu,.fg-menu-top-level')
 	.live('mouseover',function(){
 		this.mouse_is_over=true;

@@ -133,6 +133,7 @@ function panel_visibility(id){
 	$.get('/ww.plugins/panels/admin/get-visibility.php',{'id':id},function(options){
 		var d=$('<form><p>This panel will be visible in <select name="panel_visibility_pages[]" multiple="multiple">'+options+'</select>. If you want it to be visible in all pages, please choose <b>none</b> to indicate that no filtering should take place.</p></form>');
 		d.dialog({
+			modal:true,
 			width:300,
 			height:400,
 			close:function(){
