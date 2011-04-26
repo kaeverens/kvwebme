@@ -32,7 +32,7 @@ if(!$existing_accounts && isset($_REQUEST['email']) && isset($_REQUEST['password
 	<head>
 		<title><?php echo 'Login'; ?></title>
 <?php
-	require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/common.php';
+	require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/common.php';
 	echo Core_getJQueryScripts();
 ?>
 		<link rel="stylesheet" type="text/css" href="/ww.admin/theme/login.css" />

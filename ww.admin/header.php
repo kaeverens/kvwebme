@@ -3,7 +3,7 @@ $dir=dirname(__FILE__);
 $webme_start_time=microtime();
 header('Content-type: text/html; Charset=utf-8');
 date_default_timezone_set('Eire');
-require $dir.'/../ww.incs/common.php';
+require_once $dir.'/../ww.incs/common.php';
 // { if not logged in, show login page
 if (!is_admin()) {
 	include SCRIPTBASE . 'ww.admin/login.php';
