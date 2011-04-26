@@ -76,19 +76,10 @@ function Form_send($page, $vars) {
 					.htmlspecialchars($val).$separator;
 				// }
 		}
-		if ($r2['isrequired']&&$val=='') {
-			$err.='<em>'.__(
-				'You must fill in the <strong>%1</strong> field.',
-				$r2['name']
-			)
-			.'</em><br />';
-		}
-		if ($r2['type']=='email' && !filter_var($val, FILTER_VALIDATE_EMAIL)) {
-			$err.='<em>'.__(
-				'You must provide a valid email in the <strong>%1</strong> field.',
-				$r2['name']
-			).'</em><br />';
-		}
+		if ($r2['isrequired']&&$val=='')
+			$err.='<em>You must fill in the <strong>' . $r2['name'] . '</strong> field.</em><br />';
+		if ($r2['type']=='email' && !filter_var($val, FILTER_VALIDATE_EMAIL))
+			$err.='<em>You must provide a valid email in the <strong>' . $r2['name'] . '</strong> field.</em><br />';
 	}
 	if ($vars['forms_captcha_required']) {
 		require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/recaptcha.php';
@@ -342,7 +333,7 @@ function Form_showForm(
 			);
 		}
 		else{
-			$c.='<tr><th>'.htmlspecialchars(__($r2['name']));
+			$c.='<tr><th>'.htmlspecialchars($r2['name']);
 			if ($r2['isrequired']) {
 				$c.='<sup>*</sup>';
 			}
@@ -376,7 +367,7 @@ function Form_showForm(
 			.join(',', $required).'" />';
 	}
 	if (count($required)) {
-		$c.='<br />'.__('* indicates required fields');
+		$c.='<br />* indicates required fields';
 	}
 	if (!$vars['forms_template']||$vars['forms_template']=='&nbsp;') {
 		$c.='</th></tr></table>';

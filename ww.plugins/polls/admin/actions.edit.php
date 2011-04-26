@@ -8,5 +8,5 @@ foreach($answers as $answer){
 	$num++;
 	dbQuery("insert into poll_answer set poll_id=$id,num=$num,answer='".addslashes($answer)."'");
 }
-echo '<em>'.__('Poll updated').'</em>';
+echo '<em>Poll updated</em>';
 cache_clear('polls');

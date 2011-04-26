@@ -246,7 +246,7 @@ function userregistration_form($error='',$alert=''){
 					break;
 				}
 			}
-			$c.='<tr><th>'.htmlspecialchars(__($r->name));
+			$c.='<tr><th>'.htmlspecialchars($r->name);
 			if (isset($r->is_required) && $r->is_required) {
 				$c.='<sup>*</sup>';
 			}
@@ -254,7 +254,7 @@ function userregistration_form($error='',$alert=''){
 			$cnt++;
 		}
 		$c.='</table>';
-		if(count($required))$c.='<br />'.__('* indicates required fields');
+		if(count($required))$c.='<br />* indicates required fields');
 	}
 	if(isset($PAGEDATA->vars['userlogin_terms_and_conditions']) && $PAGEDATA->vars['userlogin_terms_and_conditions']){
 		$c.='<input type="checkbox" name="terms_and_conditions" /> I agree to the <a href="javascript:userlogin_t_and_c()">terms and conditions</a>.<br />';

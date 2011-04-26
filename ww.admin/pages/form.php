@@ -19,13 +19,13 @@ $parent=isset($_REQUEST['parent'])?(int)$_REQUEST['parent']:0;
 $action=isset($_REQUEST['action'])?$_REQUEST['action']:'';
 $msgs='';
 include('pages.funcs.php');
-if($action==__('Insert Page Details') || $action==__('Update Page Details')){
+if($action=='Insert Page Details' || $action=='Update Page Details'){
 	switch($action){
-		case __('Insert Page Details'): include('pages.action.new.php');    break;
-		case __('Update Page Details'): include('pages.action.edit.php');   break;
+		case 'Insert Page Details': include('pages.action.new.php');    break;
+		case 'Update Page Details': include('pages.action.edit.php');   break;
 	}
 }
-$is_an_update=($action==__('Insert Page Details') || $action==__('Update Page Details'));
+$is_an_update=($action=='Insert Page Details' || $action=='Update Page Details');
 $edit=($is_an_update || $action=='edit' || $id)?1:0;
 // }
 // { display header and link in scripts
@@ -71,7 +71,7 @@ echo '<form enctype="multipart/form-data" id="pages_form" class="pageForm"'
 	.' method="post" action="'.$_SERVER['PHP_SELF'].'"'
 	.' maxLength="'.$maxLength.'">'
 	.'<input type="hidden" name="MAX_FILE_SIZE" value="9999999" />';
-echo '<div style="float:right">'.wInput('action','submit',($edit?__('Update Page Details'):__('Insert Page Details'))).'</div>';
+echo '<div style="float:right">'.wInput('action','submit',($edit?'Update Page Details':'Insert Page Details')).'</div>';
 if($page['special']&2 && !isset($_REQUEST['newpage_dialog']))echo '<em>NOTE: this page is currently hidden from the front-end navigation. Use the "Advanced Options" to un-hide it.</em>';
 echo wInput('id','hidden',$page['id']);
 echo '<div id="pages-tabs" class="tabs">';
@@ -91,10 +91,10 @@ echo '<div id="pages-common">';
 echo '<table>';
 echo '<tr>';
 // { name
-echo '<th width="6%"><div class="help name"></div>'.__('name').'</th><td width="23%"><input id="name" name="name" value="'.htmlspecialchars($page['name']).'" /></td>';
+echo '<th width="6%"><div class="help name"></div>name</th><td width="23%"><input id="name" name="name" value="'.htmlspecialchars($page['name']).'" /></td>';
 // }
 // { title
-echo '<th width="10%"><div class="help title"></div>'.__('title').'</th><td width="23%">'.wInput('title','',htmlspecialchars($page['title'])).'</td>';
+echo '<th width="10%"><div class="help title"></div>title</th><td width="23%">'.wInput('title','',htmlspecialchars($page['title'])).'</td>';
 // }
 // { url 
 echo '<th colspan="2">';
@@ -109,7 +109,7 @@ echo '</tr>';
 // }
 // { page type, parent, associated date
 // { type
-echo '<tr><th><div class="help type"></div>'.__('type').'</th><td><select name="type">';
+echo '<tr><th><div class="help type"></div>type</th><td><select name="type">';
 $found=0;
 if(preg_match('/^[0-9]*$/',$page['type']))foreach($pagetypes as $a){
 	if(has_access_permissions($a[2]) || !$a[2]){
@@ -133,13 +133,13 @@ if (!$found) {
 echo '</select></td>';
 // }
 // { parent
-echo '<th><div class="help parent"></div>',__('parent'),'</th><td>',"\n\n",'<select name="parent">';
+echo '<th><div class="help parent"></div>parent</th><td><select name="parent">';
 if($page['parent']){
 	$parent=Page::getInstance($page['parent']);
 	echo '<option value="',$parent->id,'">',htmlspecialchars($parent->name),'</option>';
 }
-else echo '<option value="0"> -- ',__('none'),' -- </option>';
-echo '</select>',"\n\n",'</td>';
+else echo '<option value="0"> -- none -- </option>';
+echo '</select></td>';
 // }
 // { associated date
 if(!isset($page['associated_date']) || !preg_match('/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$/',$page['associated_date']) || $page['associated_date']=='0000-00-00')
@@ -154,7 +154,7 @@ if (isset($page['original_body'])) {
 }
 switch($page['type']){
 	case '0': case '5': // { normal
-		echo '<tr><th><div class="help body"></div>'.__('body').'</th><td colspan="5">';
+		echo '<tr><th><div class="help body"></div>body</th><td colspan="5">';
 		echo ckeditor('body',$page['body']);
 		echo '</td></tr>';
 		break;
@@ -205,9 +205,9 @@ echo '<div id="pages-advanced">';
 echo '<table>';
 echo '<td>';
 // { metadata 
-echo '<h4>'.__('MetaData').'</h4><table>';
-echo '<tr><th>'.__('keywords').'</th><td>'.wInput('keywords','',htmlspecialchars($page['keywords'])).'</td></tr>';
-echo '<tr><th>'.__('description').'</th><td>'.wInput('description','',htmlspecialchars($page['description'])).'</td></tr>';
+echo '<h4>MetaData</h4><table>';
+echo '<tr><th>keywords</th><td>'.wInput('keywords','',htmlspecialchars($page['keywords'])).'</td></tr>';
+echo '<tr><th>description</th><td>'.wInput('description','',htmlspecialchars($page['description'])).'</td></tr>';
 $importance=(float)$page['importance'];
 if ($importance<.1) {
 	$importance=.5;
@@ -251,8 +251,8 @@ echo '</table>';
 // }
 echo '</td><td>';
 // { special
-echo '<h4>'.__('Special').'</h4>';
-$specials=array(__('Is Home Page'), __('Does not appear in navigation'), __('Is not summarised'));
+echo '<h4>Special</h4>';
+$specials=array('Is Home Page', 'Does not appear in navigation', 'Is not summarised');
 for($i=0;$i<count($specials);++$i){
 	if($specials[$i]!=''){
 		echo wInput('special['.$i.']','checkbox',($page['special']&pow(2,$i))?1:0).$specials[$i].'<br />';
@@ -260,7 +260,7 @@ for($i=0;$i<count($specials);++$i){
 }
 // }
 // { other
-echo '<h4>'.__('Other').'</h4>';
+echo '<h4>Other</h4>';
 echo '<table>';
 // { order of sub-pages
 echo '<tr><th>Order of sub-pages</th><td><select name="page_vars[order_of_sub_pages]">';
@@ -275,7 +275,7 @@ echo '<option value="1"';
 if(isset($page_vars['order_of_sub_pages_dir']) && $page_vars['order_of_sub_pages_dir']=='1')echo ' selected="selected"';
 echo '>descending (z-a, 9-0)</option></select></td></tr>';
 // }
-echo '<tr><th>'.__('Recursively update page templates').'</th><td><input type="checkbox" name="recursively_update_page_templates" /></td></tr>';
+echo '<tr><th>Recursively update page templates</th><td><input type="checkbox" name="recursively_update_page_templates" /></td></tr>';
 echo '</table>';
 // }
 echo '</td></tr></table></div>';
@@ -290,7 +290,7 @@ foreach($PLUGINS as $n=>$p){
 }
 // }
 echo '</div>';
-echo wInput('action','submit',($edit?__('Update Page Details'):__('Insert Page Details')));
+echo wInput('action','submit',($edit?'Update Page Details':'Insert Page Details'));
 if(isset($_REQUEST['frontend-admin'])){
 	echo '<input type="hidden" name="frontend-admin" value="1" />';
 }

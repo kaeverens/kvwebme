@@ -1,5 +1,5 @@
 <?php
-echo '<h2>'.__('Plugins').'</h2>';
+echo '<h2>Plugins</h2>';
 // { handle actions
 if($action=='Save'){
 	// { get hidden plugins (those that the admin must install manually using teh site config)
@@ -14,7 +14,7 @@ if($action=='Save'){
 	// }
 	$DBVARS['plugins']=array_merge($tmp,$tmp_hidden);
 	config_rewrite();
-	echo '<em>'.__('plugins updated').'</em>';
+	echo '<em>plugins updated</em>';
 	echo '<a href="./siteoptions.php?page=plugins">reloading page to refresh database</a>';
 	echo '<script type="text/javascript">window.setTimeout("document.location=\'./siteoptions.php?page=plugins\'",1000);</script>';
 	exit;

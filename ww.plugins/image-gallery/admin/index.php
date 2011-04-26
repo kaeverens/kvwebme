@@ -143,11 +143,11 @@ $c.='<td colspan="2">'
 	.'onclick="javascript:window.open(\'/j/kfm/'
 	.'?startup_folder=\'+$(\'#image_gallery_directory\').attr(\'value\'),'
 	.'\'kfm\',\'modal,width=800,height=600\');">Manage Images</a></td></tr>';
-$c.='<tr><th>'.__('Columns').'</th><td>'
+$c.='<tr><th>Columns</th><td>'
 	.'<input name="page_vars[image_gallery_x]" value="'
 	.(int)$gvars['image_gallery_x'].'" /></td>';
 // { gallery type
-$c.='<th>'.__('Gallery Type').'</th><td><select name="page_vars[image_gallery_type]">';
+$c.='<th>Gallery Type</th><td><select name="page_vars[image_gallery_type]">';
 $types=array('ad-gallery','simple gallery');
 foreach($types as $t){
 	$c.='<option value="'.$t.'"';
@@ -157,7 +157,7 @@ foreach($types as $t){
 $c.='</select></td></tr>';
 // }
 // { rows
-$c.='<tr><th>'.__('Rows').'</th><td>'
+$c.='<tr><th>Rows</th><td>'
 	.'<input name="page_vars[image_gallery_y]" value="'
 	.(int)$gvars['image_gallery_y'].'" /></td>';
 // }
@@ -171,7 +171,7 @@ $c.='>Yes</option></select></td></tr>';
 // { caption length
 $cl=(int)$gvars['image_gallery_captionlength'];
 $cl=$cl?$cl:100;
-$c.='<tr><th>'.__('Caption Length').'</th><td>'
+$c.='<tr><th>Caption Length</th><td>'
 	.'<input name="page_vars[image_gallery_captionlength]" value="'.$cl.'" />'
 	.'</td>';
 // }
@@ -183,7 +183,7 @@ $c.='<th>Slide Delay</th><td>'
 // }
 $ts=(int)$gvars['image_gallery_thumbsize'];
 $ts=$ts?$ts:150;
-$c.='<tr><th>'.__('Thumb Size').'</th><td>'
+$c.='<tr><th>Thumb Size</th><td>'
 	.'<input name="page_vars[image_gallery_thumbsize]" value="'.$ts.'" />'
 	.'</td></tr>';
 $c.='</table>';

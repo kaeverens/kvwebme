@@ -1,5 +1,5 @@
 <?php
-echo '<h2>'.__('Localisation').'</h2>';
+echo '<h2>Localisation</h2>';
 // { handle actions
 if($action=='Save'){
 	dbQuery("DELETE FROM site_vars");
@@ -42,9 +42,9 @@ if($action=='Save'){
 // { form
 echo '<form method="post" action="siteoptions.php?page=localisation"><table>';
 // { languages
-echo '<tr><th>'.__('Languages').'</th><td>'.__('If any languages are entered here, the first row will be treated as the "default" language of the site.');
+echo '<tr><th>Languages</th><td>If any languages are entered here, the first row will be treated as the "default" language of the site.';
 echo '<table id="siteoptions_languages">';
-echo '<tr><th>'.__('Name').'</th><th>'.__('ISO code').' <a href="http://en.wikipedia.org/wiki/List_of_ISO_639-2_codes" class="external">(Alpha-2)</a></th></tr>';
+echo '<tr><th>Name</th><th>ISO code <a href="http://en.wikipedia.org/wiki/List_of_ISO_639-2_codes" class="external">(Alpha-2)</a></th></tr>';
 // { draw existing languages
 $r=dbRow("SELECT * FROM site_vars WHERE name='languages'");
 if(count($r)){
@@ -56,12 +56,12 @@ if(count($r)){
 	}
 }
 // }
-echo '</table><a href="javascript:addLanguage()">'.__('Add Language').'</a></td></tr>';
+echo '</table><a href="javascript:addLanguage()">Add Language</a></td></tr>';
 // }
 // { currencies
-echo '<tr><th>'.__('Currencies').'</th><td>'.__('The first row will be treated as the "default" currency of the site. Values of all other currencies are relative to the first row.');
+echo '<tr><th>Currencies</th><td>The first row will be treated as the "default" currency of the site. Values of all other currencies are relative to the first row.';
 echo '<table id="siteoptions_currencies">';
-echo '<tr><th>'.__('Name').'</th><th>'.__('ISO code').' <a href="http://www.iso.org/iso/support/faqs/faqs_widely_used_standards/widely_used_standards_other/currency_codes/currency_codes_list-1.htm" class="external">&nbsp;</a></th><th>Symbol</th><th>Value</th></tr>';
+echo '<tr><th>Name</th><th>ISO code <a href="http://www.iso.org/iso/support/faqs/faqs_widely_used_standards/widely_used_standards_other/currency_codes/currency_codes_list-1.htm" class="external">&nbsp;</a></th><th>Symbol</th><th>Value</th></tr>';
 // { draw existing currencies
 $r=dbRow("SELECT * FROM site_vars WHERE name='currencies'");
 if(!count($r))$r=array('value'=>'[{"name":"Euro","iso":"eur","symbol":"€","value":1}]');
@@ -73,11 +73,11 @@ for($i=0;$i<count($curs);++$i){
 	echo '<td><input name="cur_value['.$i.']" value="'.htmlspecialchars($curs[$i]->value).'" /></td></tr>';
 }
 // }
-echo '</table><a href="javascript:addCurrency()">'.__('Add Currency').'</a></td></tr>';
+echo '</table><a href="javascript:addCurrency()">Add Currency</a></td></tr>';
 // }
 // { user discounts
 $r=dbRow("SELECT * FROM site_vars WHERE name='user_discount'");
-echo '<tr><th>'.__('User discount').'</th><td>'.__('What discount percentage should new user registrants be set to?').'<br /><input name="user_discount" value="'.((float)$r['value']).'" /></td></tr>';
+echo '<tr><th>User discount</th><td>What discount percentage should new user registrants be set to?<br /><input name="user_discount" value="'.((float)$r['value']).'" /></td></tr>';
 // }
 echo '<tr><td colspan="2" style="text-align:right"><input type="submit" name="action" value="Save" /></td></tr></table></form>';
 // }

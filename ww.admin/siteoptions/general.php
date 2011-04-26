@@ -11,7 +11,7 @@
 	* @link     http://kvsites.ie/
 	*/
 
-echo '<h2>'.__('General').'</h2>';
+echo '<h2>General</h2>';
 // { handle actions
 if ($action=='Save') {
 	$DBVARS['f_cache']=$_REQUEST['f_cache'];
@@ -55,7 +55,7 @@ if ($action=='Save') {
 		unset($DBVARS['site_page_length_limit']);
 	}
 	config_rewrite();
-	echo '<em>'.__('options updated').'</em>';
+	echo '<em>options updated</em>';
 }
 if ($action=='remove_logo') {
 	unlink(USERBASE.'/f/skin_files/logo.png');

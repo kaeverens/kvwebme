@@ -34,7 +34,7 @@ function Themes_recursiveCopy($src, $dst) {
 	}
 	closedir($dir);
 } 
-echo '<h2>'.__('Themes').'</h2>';
+echo '<h2>Themes</h2>';
 // { handle actions
 if ($action=='set_theme') {
 	if (isset($_REQUEST['personal'])) {

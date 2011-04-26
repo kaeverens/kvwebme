@@ -218,7 +218,7 @@ if (isset($vars['online_store_redirect_to'])
 }
 else{
 	$vars['online_store_redirect_to']=0;
-	$c.='<option value="0"> -- '.__('none').' -- </option>';
+	$c.='<option value="0"> -- none -- </option>';
 }
 $c.='</select></td></tr>';
 // }

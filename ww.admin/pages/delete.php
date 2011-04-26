@@ -25,7 +25,7 @@ else{
 			'update pages set parent="'.$r['parent'].'" where parent="'.$id.'"'
 		);
 		if (!isset($no_echo_on_success)) {
-			$msgs.='<em>'.__('A page has been deleted.').'</em>';
+			$msgs.='<em>A page has been deleted.</em>';
 		}
 		cache_clear('menus');
 		cache_clear('pages');

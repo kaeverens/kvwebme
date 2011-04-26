@@ -1,5 +1,5 @@
 <?php
-echo '<h2>'.__('Users').'</h2>';
+echo '<h2>Users</h2>';
 $groups=array();
 // { handle actions
 if(isset($_REQUEST['action'])){

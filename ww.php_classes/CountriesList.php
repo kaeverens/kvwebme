@@ -745,7 +745,7 @@ class CountriesList{
 				if(isset($this->isoNameHash[$country]))$arr[$country]=$this->isoNameHash[$country];
 			}
 			asort($arr);
-			$this->countries=array(array('iso'=>'','name'=>__('--Please Choose--')));
+			$this->countries=array(array('iso'=>'','name'=>'--Please Choose--'));
 			foreach($arr as $key=>$val)$this->countries[]=array('iso'=>$key,'name'=>$val);
 		}
 	}

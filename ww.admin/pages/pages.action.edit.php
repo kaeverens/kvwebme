@@ -31,7 +31,7 @@ $name=$_REQUEST['name'];
 if (dbOne('select id from pages where name="'.addslashes($name).'" and parent='.$pid.' and id!="'.$id.'"','id')) {
 	$i=2;
 	while(dbOne('select id from pages where name="'.addslashes($name.$i).'" and parent='.$pid.' and id!="'.$id.'"','id'))$i++;
-	$msgs.='<em>'.__('A page named "%1" already exists. Page name amended to "%2"',$name,$name.$i).'</em>';
+	$msgs.='<em>A page named "' . $name . '" already exists. Page name amended to "' . $name . $i . '"</em>';
 	$name=$name.$i;
 }
 // }

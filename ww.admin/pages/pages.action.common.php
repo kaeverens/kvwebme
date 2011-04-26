@@ -27,6 +27,6 @@ if ($special&1) { // there can be only one homepage
 else {
 	if ($homes==0) {
 		$special+=1;
-		$msgs.='<em>'.__('This page has been marked as the site\'s Home Page, because there must always be one.').'</em>';
+		$msgs.='<em>This page has been marked as the site\'s Home Page, because there must always be one.</em>';
 	}
 }

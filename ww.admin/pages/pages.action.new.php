@@ -9,7 +9,7 @@ $pid=(int)$_REQUEST['parent'];
 if(dbQuery("select id from pages where name='$name' and parent=$pid")->rowCount()){
 	$i=2;
 	while(dbQuery("select id from pages where name='$name$i' and parent=$pid")->rowCount())$i++;
-	$msgs.='<em>'.__('A page named "%1" already exists. Page name amended to "%2"',$name,$name.$i).'</em>';
+	$msgs.='<em>A page named "' . $name . '" already exists. Page name amended to "' . $name . $i . '"</em>';
 	$name.=$i;
 }
 // { variables
@@ -41,7 +41,7 @@ if(has_page_permissions(128))$q.=',special='.$special;else $q.=',special=0';
 dbQuery($q);
 $id=dbOne('select last_insert_id() as id','id');
 dbQuery('insert into permissions set id="'.$id.'", type=1, value="'.get_userid().'=7'."\n\n4".'"');
-$msgs.='<em>'.__('New page created.').'</em>';
+$msgs.='<em>New page created.</em>';
 dbQuery('update page_summaries set rss=""');
 cache_clear('menus');
 cache_clear('pages');

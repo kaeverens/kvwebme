@@ -24,9 +24,9 @@ $html.= wInput(
 	'page_vars[userlogin_visibility]',
 	'select',
 	array(
-		'3'=>__('Login and Register forms'),
-		'1'=>__('Login form'),
-		'2'=>__('Register form')
+		'3'=>'Login and Register forms',
+		'1'=>'Login form',
+		'2'=>'Register form'
 	),
 	$page_vars['userlogin_visibility']
 );
@@ -49,7 +49,7 @@ foreach($groups as $k=>$g){
 $html.='</td></tr>';
 // }
 // { registration type
-$html.='<tr><th>'.__('Registration type:').'</th><td>';
+$html.='<tr><th>Registration type:</th><td>';
 $html.='<select name="page_vars[userlogin_registration_type]">';
 $html.='<option>Moderated</option>';
 $html.='<option';
@@ -61,7 +61,7 @@ $html.='>Email-verified</option>';
 $html.='</select></td></tr>';
 // }
 // { redirect on login
-$html.='<tr><th>'.__('redirect on login:').'</th><td>';
+$html.='<tr><th>redirect on login:</th><td>';
 $html.='<select id="page_vars_userlogin_redirect_to" name="page_vars[userlogin_redirect_to]">';
 if (isset($page_vars['userlogin_redirect_to'])
 	&& $page_vars['userlogin_redirect_to']
@@ -71,7 +71,7 @@ if (isset($page_vars['userlogin_redirect_to'])
 }
 else{
 	$page_vars['userlogin_redirect_to']=0;
-	$html.='<option value="0"> -- '.__('none').' -- </option>';
+	$html.='<option value="0"> -- none -- </option>';
 }
 $html.='</select></td></tr>';
 // }
@@ -145,14 +145,14 @@ $rs=json_decode($page_vars['privacy_extra_fields']);
 $i=0;
 $arr
 	=array(
-		'email'=>__('email'),
-		'input box'=>__('input box'),
-		'textarea'=>__('textarea'),
-		'date'=>__('date'),
-		'checkbox'=>__('checkbox'),
-		'selectbox'=>__('selectbox'),
-		'hidden'=>__('hidden message'),
-		'ccdate'=>__('credit card expiry date')
+		'email'=>'email',
+		'input box'=>'input box',
+		'textarea'=>'textarea',
+		'date'=>'date',
+		'checkbox'=>'checkbox',
+		'selectbox'=>'selectbox',
+		'hidden'=>'hidden message',
+		'ccdate'=>'credit card expiry date'
 	);
 foreach($rs as $r){
 	if(!isset($r->name))continue;

@@ -6,7 +6,7 @@ echo admin_menu(array(
 ));
 
 echo '<div class="has-left-menu">';
-$edit=($action==__('editPoll'))?1:0;
+$edit=($action=='editPoll')?1:0;
 $dir=dirname(__FILE__);
 switch($action){
 	case 'deletePoll': // {
@@ -14,12 +14,12 @@ switch($action){
 		include($dir.'/showitems.php');
 		break;
 	// }
-	case __('Edit Poll'): // {
+	case 'Edit Poll': // {
 		include($dir.'/actions.edit.php');
 		include($dir.'/forms.php');
 		break;
 	// }
-	case __('Create Poll'): // {
+	case 'Create Poll': // {
 		include($dir.'/actions.new.php');
 		include($dir.'/forms.php');
 		break;

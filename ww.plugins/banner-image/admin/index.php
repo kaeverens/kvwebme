@@ -76,7 +76,7 @@ function banner_image_drawForm($id=0){
 	echo '<tr><th>Banner</th><td><div id="banner_image_html">',ckeditor('html_'.$fdata['id'],html_unfixImageResizes($fdata['html']),0,'',180),'</div></td></tr>';
 	// }
 	// { show submit button and end form
-	echo '<tr><td><a href="./plugin.php?_plugin=banner-image&_page=index&delete_banner='.$fdata['id'].'" onclick="return confirm(\'are you sure you want to remove this banner?\');" title="remove banner">[x]</a></td><td><input type="submit" name="save_banner" value="',__('Update'),'" /></td></tr>';
+	echo '<tr><td><a href="./plugin.php?_plugin=banner-image&_page=index&delete_banner='.$fdata['id'].'" onclick="return confirm(\'are you sure you want to remove this banner?\');" title="remove banner">[x]</a></td><td><input type="submit" name="save_banner" value="Update" /></td></tr>';
 	// }
 	echo '</table></form>';
 }

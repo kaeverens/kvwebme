@@ -39,12 +39,12 @@ function Search_showResults() {
 			Page::getInstance($p['id'], $p);
 		}
 		$q=array_slice($q, $start, 20);
-		$c.='<h2>'.__('Page Search Results').'</h2><em id="searchResultsTitle">';
+		$c.='<h2>Page Search Results</h2><em id="searchResultsTitle">';
 		if ($n==1) {
-			$c.=__('1 result found');
+			$c.='1 result found';
 		}
 		else {
-			$c.=__('%1 results found', $n);
+			$c.=$n . ' results found';
 		}
 		$c.='</em> <div>';
 		if ($start>0) {

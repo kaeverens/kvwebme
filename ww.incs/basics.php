@@ -2,14 +2,6 @@
 session_start();
 require 'Log.php';
 if(!defined('START_TIME'))define('START_TIME',microtime(true));
-function __() {
-	$str = gettext(func_get_arg(0));
-	for($i = func_num_args()-1 ; $i ; --$i){
-		$s=func_get_arg($i);
-		$str=str_replace('%'.$i,$s,$str);
-	}
-	return $str;  
-}
 spl_autoload_register('WebME_autoload');
 function WebME_autoload($name) {
 	require $name . '.php';
