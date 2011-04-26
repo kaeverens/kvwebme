@@ -175,11 +175,6 @@ $pagetypes=array(
 	array(9,'table of contents',0)
 );
 // }
-$admin_top_menu=array(
-	array('id'=>'am_pages','name'=>'pages','link'=>'pages.php'),
-	array('id'=>'am_siteoptions','name'=>_('site options'),'link'=>'siteoptions.php'),
-	array('id'=>'am_stats','name'=>_('stats'),'link'=>'stats.php')
-);
 $DBVARS['plugins']=(isset($DBVARS['plugins']) && $DBVARS['plugins']!='')?explode(',',$DBVARS['plugins']):array();
 if(!defined('CONFIG_FILE'))define('CONFIG_FILE',SCRIPTBASE.'.private/config.php');
 define('WORKDIR_IMAGERESIZES', USERBASE.'/f/.files/image_resizes/');
