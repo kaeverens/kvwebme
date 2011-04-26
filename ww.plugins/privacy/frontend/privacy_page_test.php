@@ -23,11 +23,13 @@ if ((!isset($pagedata->vars['restrict_to_groups']) || $pagedata->vars['restrict_
 if(isset($_SESSION['userdata']['groups'])
 	&& count($_SESSION['userdata']['groups'])
 ) {
-	$gs=json_decode($pagedata->vars['restrict_to_groups']);
-	foreach ($_SESSION['userdata']['groups'] as $k=>$id) {
-		if (isset($gs->$id)) {
-			$allowed=true;
-			return;
+	if (@$pagedata->vars['restrict_to_groups']!='') {
+		$gs=json_decode($pagedata->vars['restrict_to_groups']);
+		foreach ($_SESSION['userdata']['groups'] as $k=>$id) {
+			if (isset($gs->$id)) {
+				$allowed=true;
+				return;
+			}
 		}
 	}
 }

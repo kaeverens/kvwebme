@@ -27,7 +27,7 @@ if ($s>$n) {
 	$s=$n;
 }
 for ($i=$start;$i<$s;++$i) {
-	$cap=$images[$i]['caption'];
+	$cap=@$images[$i]['caption'];
 	if (strlen($cap)>$vars['image_gallery_captionlength']) {
 		$cap=substr($cap,0,$vars['image_gallery_captionlength']-3).'...';
 	}

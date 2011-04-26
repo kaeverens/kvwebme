@@ -163,7 +163,10 @@ function Template_logoDisplay($vars) {
 		$to=addslashes($image_file);
 		`convert $from -geometry $geometry $to`;
 	}
-	return '<img id="logo" src="/i/blank.gif" style="background:url(/f/skin_files/logo-'.$geometry.'.png) no-repeat;width:'.$x.'px;height:'.$y.'px;" />';
+	$size=getimagesize($image_file);
+	return '<img id="logo" src="/i/blank.gif" style="'
+		.'background:url(/f/skin_files/logo-'.$geometry.'.png) no-repeat;'
+		.'width:'.$size[0].'px;height:'.$size[1].'px;" />';
 }
 // { user authentication
 if ((isset($_REQUEST['action']) && $_REQUEST['action']=='login')
