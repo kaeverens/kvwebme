@@ -296,20 +296,21 @@ function Product_datatableMultiple (&$products, $direction) {
 		// }
 	}
 }
-function products_get_add_to_cart_button($params,&$smarty) {
-	return '<form method="POST">'
+function products_get_add_to_cart_button($params, &$smarty) {
+	return '<form method="POST" class="products-addtocart">'
 		.'<input type="hidden" name="products_action" value="add_to_cart" />'
 		.'<input type="submit" value="Add to Cart" />'
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'" /></form>';
 }
-function Products_getAddManyToCartButton($params,&$smarty) {
+function Products_getAddManyToCartButton($params, &$smarty) {
 	return '<form method="POST" class="products-addmanytocart">'
-		.'<input type="hidden" name="products_action" value="add_to_cart" />'
-		.'<input name="products-howmany" value="1" class="add_multiple_widget_amount" style="width:50px" />'
-		.'<input type="submit" value="Add to Cart" />'
+		.'<input type="hidden" name="products_action" value="add_to_cart"/>'
+		.'<input name="products-howmany" value="1" '
+		.'class="add_multiple_widget_amount" style="width:50px"/>'
+		.'<input type="submit" value="Add to Cart"/>'
 		.'<input type="hidden" name="product_id" value="'
-		. $smarty->_tpl_vars['product']->id .'" /></form>';
+		. $smarty->_tpl_vars['product']->id .'"/></form>';
 }
 function products_image($params, &$smarty) {
 	$params=array_merge(array(

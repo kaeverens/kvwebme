@@ -66,4 +66,14 @@ $(function(){
 				.appendTo($form);
 		}
 	});
+	var paddtocart=0;
+	$('form.products-addtocart,form.products-addmanytocart').submit(function(){
+		$.post('/ww.plugins/products/frontend/add-to-cart.php',
+			$(this).serializeArray(),
+			function(){
+				document.location=document.location;
+			}
+		);
+		return false;
+	});
 });

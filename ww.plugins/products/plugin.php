@@ -122,7 +122,7 @@ function products_frontend($PAGEDATA){
 		.$producthtml
 		.$PAGEDATA->vars['footer'];
 }
-function products_add_to_cart($PAGEDATA){
+function products_add_to_cart(){
 	if (!isset($_REQUEST['products_action'])) {
 		return;
 	}
