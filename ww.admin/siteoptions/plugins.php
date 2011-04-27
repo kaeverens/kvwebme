@@ -22,7 +22,7 @@ if($action=='Save'){
 // }
 // { form
 echo '<form method="post" action="siteoptions.php?page=plugins"><table>';
-echo '<tr><th>Plugin Name</th><th>Version</th><th>Description</th><th>Active</th></tr>';
+echo '<tr><th>Plugin Name</th><th>Description</th><th>Active</th></tr>';
 foreach($PLUGINS as $name=>$plugin){
 	if(isset($plugin['hide_from_admin']) && $plugin['hide_from_admin'])continue;
 	echo '<tr><th>',htmlspecialchars($plugin['name']),'</th>',

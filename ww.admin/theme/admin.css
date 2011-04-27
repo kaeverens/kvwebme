@@ -151,7 +151,7 @@ a.external{background:url("/ww.admin/theme/10x10_external.png") no-repeat right;
 	float:left;
 	border: 1px solid #ededed;
 	padding: 5px;
-	margin-bottom:40px;
+	margin:0 25px 40px 0;
 	position:relative;
 }
 .left-menu a      {display:block; color:#d36042; padding: 3px 0 3px 5px;text-decoration:none; border: 0;}
@@ -507,4 +507,4 @@ div.help{
 }
 .CodeMirror-wrapping{
 	border: 1px solid #000;
-}
+} 

@@ -146,6 +146,7 @@ $i=0;
 $arr
 	=array(
 		'email'=>'email',
+		'url'=>'url',
 		'input box'=>'input box',
 		'textarea'=>'textarea',
 		'date'=>'date',
@@ -153,10 +154,11 @@ $arr
 		'selectbox'=>'selectbox',
 		'hidden'=>'hidden message',
 		'ccdate'=>'credit card expiry date'
-	);
+);
 foreach($rs as $r){
 	if(!isset($r->name))continue;
 	if(!isset($r->type))$r->type='input box';
+	if(!isset($r->validation))$r->validation='';
 	if(!isset($r->is_required))$r->is_required=false;
 	if(!isset($r->extra))$r->extra='';
 	$html.= '<li><table width="100%"><tr><td width="30%">'

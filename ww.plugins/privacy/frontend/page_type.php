@@ -139,9 +139,15 @@ function userregistration(){
 }
 function userregistration_form($error='',$alert=''){
 	global $PAGEDATA;
-	$c='<div id="userregistration">';
+
+	/**
+	 * form validation array
+	 */
+	$validation = array( );
+
+	$c='<div id="userregistration"><em style="color:red" id="error"></em>';
 	if(isset($PAGEDATA->vars['userlogin_message_registration']))$c.=$PAGEDATA->vars['userlogin_message_registration'];
-	$c.=$error.'<form class="userRegistrationBox" action="'
+	$c.=$error.'<form id="reg-form" class="userRegistrationBox" action="'
 		.$GLOBALS['PAGEDATA']->getRelativeUrl()
 		.'#userregistration" method="post"><table>'
 		.'<tr><th>Name</th><td><input type="text" name="name" value="'
@@ -164,6 +170,7 @@ function userregistration_form($error='',$alert=''){
 			if (isset($r->is_required) && $r->is_required) {
 				$required[]=$name.','.$r->type;
 				$class=' required';
+				$validation[ 'privacy_extras_'.$name ] = array( 'required' => true );
 			}
 			if (isset($_REQUEST[$name])) {
 				$_SESSION['privacys'][$name]=$_REQUEST[$name];
@@ -217,6 +224,18 @@ function userregistration_form($error='',$alert=''){
 				}
 				case 'email':{
 					$d='<input id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" value="'.$val.'" class="email'.$class.' text" />';
+					if( isset( $validation[ 'privacy_extras_'.$name ] ) )
+						$validation[ 'privacy_extras_'.$name ][ 'email' ] = true;
+					else
+						$validation[ 'privacy_extras_'.$name ] = array( 'email' => true );
+					break;
+				}
+				case 'url':{
+					$d='<input id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" value="'.$val.'" class="url'.$class.' text" />';
+                                        if( isset( $validation[ 'privacy_extras_'.$name ] ) ) 
+						$validation[ 'privacy_extras_'.$name ][ 'url' ] = true;
+                                        else
+                                                $validation[ 'privacy_extras_'.$name ] = array( 'url' => true );
 					break;
 				}
 				case 'file': {
@@ -254,7 +273,7 @@ function userregistration_form($error='',$alert=''){
 			$cnt++;
 		}
 		$c.='</table>';
-		if(count($required))$c.='<br />* indicates required fields');
+		if(count($required))$c.='<br />* indicates required fields';
 	}
 	if(isset($PAGEDATA->vars['userlogin_terms_and_conditions']) && $PAGEDATA->vars['userlogin_terms_and_conditions']){
 		$c.='<input type="checkbox" name="terms_and_conditions" /> I agree to the <a href="javascript:userlogin_t_and_c()">terms and conditions</a>.<br />';
@@ -263,8 +282,23 @@ function userregistration_form($error='',$alert=''){
 	if ($alert) {
 		WW_addInlineScript('$(function(){$(\'<div>'.addslashes($alert).'</div>\').dialog({modal:true});});');
 	}
-	$c.='<input type="submit" name="a" value="Register" />'
+	$c.='<input type="submit" name="a" id="registration-submit" value="Register" />'
 		.'</form></div>';
+
+        /** 
+         * add jquery form validation
+         */
+	WW_addScript( '/ww.plugins/privacy/j/validate.jquery.min.js' );
+        $script = ' 
+                var options = ' . json_encode( $validation ) . ';
+
+                $( "#reg-form" ).validate( options, function( message ){
+			$( "#userregistration em#error" ).html( message );
+		} );
+        ';
+	WW_addInlineScript( $script );
+	$c .= '<style type="text/css">.error{ border:1px solid #600;background:#f99 }</style>'; 
+
 	return $c;
 }
 function userregistration_register(){
