@@ -20,12 +20,32 @@ function show_content_snippet($vars){
 		// { vertical accordion
 		$id='cs-'.rand();
 		if($data['accordion_direction']=='0'){
+			$script = '
+				function change_slide( ){
+					var active = $( "#' . $id . '" ).accordion( "option", "active"  );
+					var total = $( ".accordion-h3" ).length;
+					if( total == active )
+						active = 0;
+					else
+						active++;
+					$( "#' . $id . '" ).accordion( "activate", active );
+					setTimeout( change_slide, 10000 );
+				}
+				$( "#' . $id . '" ).accordion( {
+					autoHeight : false,
+					changeStart : function( ){
+						clearTimeout( change_slide );
+					}
+				} );
+				setTimeout( change_slide, 10000 );	
+			';
+			WW_addInlineScript( $script );
 			$html='<div id="'.$id.'">';
 			foreach($data['content'] as $content){
-				$html.='<h3><a href="#">'.htmlspecialchars($content['title']).'</a></h3>';
+				$html.='<h3 class="accordion-h3"><a href="#">'.htmlspecialchars($content['title']).'</a></h3>';
 				$html.='<div>'.$content['html'].'</div>';
 			}
-			$html.='</div><script>$(function(){$("#'.$id.'").accordion({autoHeight:false});});</script>';
+			$html.='</div>';
 			return $html;
 		}
 		// }
