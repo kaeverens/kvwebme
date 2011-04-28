@@ -231,7 +231,7 @@ function userregistration_form($error='',$alert=''){
 					break;
 				}
 				case 'url':{
-					$d='<input id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" value="'.$val.'" class="url'.$class.' text" />';
+					$d='<input id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" value="" class="url'.$class.' text" />';
                                         if( isset( $validation[ 'privacy_extras_'.$name ] ) ) 
 						$validation[ 'privacy_extras_'.$name ][ 'url' ] = true;
                                         else
@@ -339,12 +339,13 @@ function userregistration_register(){
 	}
 	if (!$email) {
 		$missing[]='your email address';
-	}
-	foreach ($rs as $r) {
-		if (isset($r->is_required) && $r->is_required && (!isset($_REQUEST['privacy_extras_'.$r->name]) || !$_REQUEST['privacy_extras_'.$r->name])) {
-			$missing[]=$r->name;
-		}
-	}
+	};
+	// this is not working properly
+//	foreach ($rs as $r) {
+//		if (isset($r->is_required) && $r->is_required && (!isset($_REQUEST['privacy_extras_'.$r->name]) || !$_REQUEST['privacy_extras_'.$r->name])) {
+//			$missing[]=$r->name;
+//		}
+//	}
 	if(count($missing)) {
 		return userregistration_form('<em>You must fill in the following fields: '.join(', ', $missing).'</em>');
 	}
