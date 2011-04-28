@@ -24,12 +24,9 @@ function show_content_snippet($vars){
 				function change_slide( ){
 					var active = $( "#' . $id . '" ).accordion( "option", "active"  );
 					var total = $( ".accordion-h3" ).length;
-					if( total == active )
-						active = 0;
-					else
-						active++;
+					active = ( active + 1 ) % total;
 					$( "#' . $id . '" ).accordion( "activate", active );
-					setTimeout( change_slide, 10000 );
+					setTimeout( change_slide, 8000 );
 				}
 				$( "#' . $id . '" ).accordion( {
 					autoHeight : false,
@@ -37,7 +34,7 @@ function show_content_snippet($vars){
 						clearTimeout( change_slide );
 					}
 				} );
-				setTimeout( change_slide, 10000 );	
+				setTimeout( change_slide, 8000 );	
 			';
 			WW_addInlineScript( $script );
 			$html='<div id="'.$id.'">';
