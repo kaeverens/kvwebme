@@ -1,13 +1,58 @@
 <?php
 require 'header.php';
 
-?>
-<p>Welcome to the WebME installer. Sorry for the spartan look of it at the moment; it will improve over time.</p>
-<p>There are not many steps to complete. Here they are:</p>
-<ul>
-	<li><a href="step1.php">Install database</a></li>
-	<li>Create an admin account</li>
-	<li>Choose a user files directory</li>
-</ul>
-<?php
+$phpversion = phpversion( );
+$ver = split( "[/ ]", $_SERVER[ 'SERVER_SOFTWARE' ] );
+$apacheversion = $ver[ 1 ] . ' ' . $ver[ 2 ];
+
+$access=(is_writable($home_dir)) ? 'Granted':'<span style="color:#D36042">Not Granted</span>';
+$php=($phpversion<<5) ? $phpversion : '<span style="color:#D36042">'.$phpversion.'</span>';
+$apache=($ver[1]<<2) ? $apacheversion :'<span style="color:#D36042">'.$apacheversion.'</span>';
+
+if(function_exists('apache_get_modules')){
+        $modules=apache_get_modules();
+
+        $mods=(in_array('mod_rewrite',$modules))?'Installed':'<span id="notgranted" style="color:#D36042">Not Installed</span>';
+}
+else
+        $mods='Unknown';
+
+
+echo '
+<h3>Installation Requirements</h3>
+<p><i style="clear:none">The requirements below are the minimum specifications needed to run the system reliably. You may install without meeting all of these requirements, but some aspects of the system may not function properly.</i></p>
+<table class="row-color">
+        <tr>
+		<th>Software</th>
+		<th>Required</th>
+		<th>Current</th>
+	</tr>
+        <tr>
+		<td>PHP Version:</td>
+		<td>5</td>
+		<th>'.$php.'</th>
+	</tr>
+        <tr>
+		<td>Apache Version:</td>
+		<td>2</td>
+		<th>'.$apache.'</th>
+	</tr>
+        <tr>
+		<td>Apache Rewrite Module:</td>
+		<td>&nbsp;</td>
+		<th>'.$mods.'</th>
+	</tr>
+        <tr>
+		<td colspan="3">Write Access:</td>
+	</tr>
+        <tr>
+		<td colspan="2">'.$home_dir.'</td>
+		<th>'.$access.'</th>
+	</tr>
+</table>
+<br>
+<h2><a href="step1.php">Continue</a></h2>
+<br style="clear:both"/>
+';
+
 require 'footer.php';

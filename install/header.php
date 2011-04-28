@@ -5,9 +5,81 @@ if(file_exists('../.private/config.php')){
 	exit;
 }
 session_start();
-?>
+
+$home_dir = substr( dirname( __FILE__ ), 0, -7);
+echo '
+<!doctype html>
 <html>
-	<head>
-		<title>Webworks WebME installer</title>
-	</head>
-	<body>
+<head>
+	<title>WebME admin area</title>
+
+	<link rel="stylesheet" type="text/css" href="/j/cluetip/jquery.cluetip.css" />
+	<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />
+
+	<!-- Installer specific javascript -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+	<script type="text/javascript">
+	$( document ).ready( function( ){
+		// set the current page in install-menu
+	        var link= window.location.href.split( "?" );
+		link = link[ 0 ].split( "/" );
+	        var path = link[ link.length - 1 ];
+		$("#install-menu li a[href=\'"+path+"\']").addClass("current");
+	} );
+	</script>
+
+	<!-- Installer specific CSS -->
+	<style type="text/css">
+		table{
+			border-spacing: 6px;
+		}
+		table th{
+			text-align: left;
+		}
+		#install-menu{
+		        margin: 0;
+		        padding: 0 0 20px;    
+		}
+		#install-menu li{ 
+		        margin: 0;
+		        padding: 0;
+		}
+		#install-menu li a{
+		        border: 0 none;
+		        display: block;
+		        text-decoration: none;
+		        padding: 3px 0 3px 5px;
+		}
+		#install-menu li a.current{
+		        color: #d36042;
+		} 
+		#content{
+			width: 70%;
+			margin-left: 190px;
+		}
+	</style>
+
+</head>
+<body> 
+	<div id="header"> 
+	</div>
+
+	<div id="wrapper">
+		<div id="main">
+
+		<h1>Webme Installer</h1>
+
+		<div class="left-menu">
+			<ul id="install-menu">
+				<li><a href="index.php">Requirements</a></li>
+				<li><a href="step1.php">Add Database</a></li>
+				<li><a href="step2.php">Create User</a></li>
+				<li><a href="step3.php">User FIles</a></li>
+				<li><a>Finish</a></li>
+			</ul>
+		</div>
+
+		<div id="pages-wrapper">
+
+			<div id="content">
+';
