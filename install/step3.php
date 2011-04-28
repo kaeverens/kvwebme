@@ -43,11 +43,24 @@ if(isset($_REQUEST['action'])){
 }
 if(!isset($_SESSION['user']))$_SESSION['user']=array('email'=>'','password'=>'','name'=>'');
 
-echo '<form method="post"><table>';
+/**
+ * add form validation
+ */
+echo '
+<script type="text/javascript">
+        $( document ).ready( function( ){
+                var options = { "name" : { "required" : true }, "email" : { "required" : true, "email" : true }, "password" : { "required" : true, "match" : "password2" } };
+                $( "#user-form" ).validate( options, error_handler );
+        } );
+</script>';
+
+echo '<h3>User Account</h3>';
+echo '<p id="errors"></p>';
+echo '<form method="post" id="user-form"><table>';
+echo '<tr><th>Name</th><td><input type="text" name="name" value="'.htmlspecialchars($_SESSION['user']['name']).'" /></td></tr>';
 echo '<tr><th>Email</th><td><input type="text" name="email" value="'.htmlspecialchars($_SESSION['user']['email']).'" /></td><td>You will log in with this. Please ensure it is correct. If you forget your password, it can be sent to this address.</td></tr>';
 echo '<tr><th>Password</th><td><input type="password" name="password" value="" /></td></tr>';
 echo '<tr><th>Repeat Password</th><td><input type="password" name="password2" value="" /></td></tr>';
-echo '<tr><th>Name</th><td><input type="text" name="name" value="'.htmlspecialchars($_SESSION['user']['name']).'" /></td></tr>';
 echo '</table><input name="action" type="submit" value="Create Admin" /></form>';
 
 

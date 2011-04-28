@@ -23,7 +23,21 @@ if(isset($_REQUEST['userbase']) && $_REQUEST['userbase']){
 }
 
 if(!isset($_SESSION['userbase']) || !$_SESSION['userbase'])$_SESSION['userbase']=$_SERVER['DOCUMENT_ROOT'];
-echo '<form method="post"><p>Please type the address of the directory you want to use for your user files.</p>
+
+/**
+ * add form validation
+ */
+echo '
+<script type="text/javascript">
+        $( document ).ready( function( ){
+                var options = { "userbase" : { "required" : true } };
+                $( "#files-form" ).validate( options, error_handler );
+        } );
+</script>';
+
+echo '<h3>User Files</h3>';
+echo '<p id="errors"></p>';
+echo '<form method="post" id="files-form"><p>Please type the address of the directory you want to use for your user files.</p>
 	<input name="userbase" value="'.htmlspecialchars($_SESSION['userbase']).'" style="width:90%" /><br /><input type="submit" /></form>';
 echo '<p>It is a good idea to place this directory outside the web-accessible part of the server.</p>';
 

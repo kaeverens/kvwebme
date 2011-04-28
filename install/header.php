@@ -18,7 +18,12 @@ echo '
 
 	<!-- Installer specific javascript -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+	<script src="/j/validate.jquery.min.js"></script>
+
 	<script type="text/javascript">
+        function error_handler( msg ){
+                $( "#errors" ).html( msg );
+        }
 	$( document ).ready( function( ){
 		// set the current page in install-menu
 	        var link= window.location.href.split( "?" );
@@ -57,6 +62,13 @@ echo '
 			width: 70%;
 			margin-left: 190px;
 		}
+		#errors{
+			color:#D36042
+		}
+		.error{
+			border:1px solid #600;
+			background:#D36042
+		}
 	</style>
 
 </head>
@@ -73,9 +85,9 @@ echo '
 			<ul id="install-menu">
 				<li><a href="index.php">Requirements</a></li>
 				<li><a href="step1.php">Add Database</a></li>
-				<li><a href="step2.php">Create User</a></li>
-				<li><a href="step3.php">User FIles</a></li>
-				<li><a>Finish</a></li>
+				<li><a href="step3.php">Create User</a></li>
+				<li><a href="step4.php">User FIles</a></li>
+				<li><a href="step5.php">Finish</a></li>
 			</ul>
 		</div>
 

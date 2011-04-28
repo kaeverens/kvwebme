@@ -38,7 +38,20 @@ if(isset($_REQUEST['action'])){
 	}
 }
 
-echo '<form method="post"><table>';
+/**
+ * add form validation
+ */
+echo '
+<script type="text/javascript">
+	$( document ).ready( function( ){
+		var options = { "username" : { "required" : true }, "hostname" : { "required" : true }, "db_name" : { "required" : true } };
+		$( "#database-form" ).validate( options, error_handler );
+	} );
+</script>';
+
+echo '<h3>Database Details</h3>';
+echo '<p id="errors"></p>';
+echo '<form method="post" id="database-form"><table>';
 echo '<tr><th>Username</th><td><input type="text" name="username" value="'.htmlspecialchars($_SESSION['db_vars']['username']).'" /></td></tr>';
 echo '<tr><th>Password</th><td><input type="text" name="password" value="'.htmlspecialchars($_SESSION['db_vars']['password']).'" /></td></tr>';
 echo '<tr><th>HostName</th><td><input type="text" name="hostname" value="'.htmlspecialchars($_SESSION['db_vars']['hostname']).'" /></td></tr>';
