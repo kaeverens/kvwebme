@@ -7,8 +7,10 @@ if (!is_admin()) {
 echo '<a href="plugin.php?_plugin=products">List all products</a> | '
 	.'<a href="plugin.php?_plugin=products&amp;_page=products-edit">'
 	.'Add a Product</a> | '
-	.'<a href="plugin.php?_plugin=products&amp;_page=import">'
-	.'Import Products</a>';
+	.'Import Products: '
+	.'<a href="plugin.php?_plugin=products&amp;_page=import">CSV</a> / '
+	.'<a href="plugin.php?_plugin=products&amp;_page=import-json">JSON</a>'
+	;
 // }
 
 if (isset($_REQUEST['delete']) && is_numeric($_REQUEST['delete'])) {
@@ -41,8 +43,9 @@ if (!dbOne('select id from products_types limit 1','id')) {
 if(!count($rs)){
 	echo '<em>No existing products. <a href="plugin.php?_plugin=products&amp;'
 		.'_page=products-edit">Click here to create one</a>.'
-		.' or <a href="plugin.php?_plugin=products&amp;_page=import">'
-		.'Click here to import products</a></em>';
+		.' or import from '
+		.'<a href="plugin.php?_plugin=products&amp;_page=import">CSV</a> or '
+		.'<a href="plugin.php?_plugin=products&amp;_page=import-json">JSON</a>';
 	return;
 }
 
