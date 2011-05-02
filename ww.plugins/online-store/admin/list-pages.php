@@ -11,10 +11,24 @@
 	* @link     None
 	*/
 
-require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!is_admin()) {
 	die('access denied');
 }
 
-$id=dbOne('select id from pages where type="online-store" limit 1', 'id');
-redirect('/ww.admin/pages.php?id='.$id);
+$ids=dbAll('select id from pages where type="online-store"');
+if (count($ids)>1) {
+	echo '<p>Please choose the online store you want to administrate.</p><ul>';
+	foreach ($ids as $id) {
+		$page=Page::getInstance($id['id']);
+		echo '<li><a href="/ww.admin/pages.php?id='.$id['id'].'">'
+			.$page->getRelativeUrl().'</a></li>';
+	}
+	echo '</ul>';
+}
+else if (count($ids)==1) {
+	redirect('/ww.admin/pages.php?id='.$ids[0]['id']);
+}
+else {
+	echo '<em>no page of type Online Store created. '
+		.'please <a href="/ww.admin/pages.php">create one</a>.</em>';
+}
