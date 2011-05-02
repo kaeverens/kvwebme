@@ -6,7 +6,7 @@
 	*
 	* @category None
 	* @package  None
-	* @author   Kae Verens <kae@webworks.ie>
+	* @author   Kae Verens <kae@kvsites.ie>
 	* @license  GPL 2.0
 	* @link     None
 	*/
@@ -17,7 +17,8 @@ $plugin=array(
 	'admin' => array(
 		'page_type' => 'OnlineStore_adminPageForm',
 		'menu' => array(
-			'Site Options>Online Store' => 'site-options',
+			'Online Store>Orders'  => 'list-pages',
+			'Online Store>Options' => 'site-options'
 		),
 		'widget' => array(
 			'form_url' => '/ww.plugins/online-store/admin/widget-form.php'
@@ -40,7 +41,7 @@ $plugin=array(
 		'displaying-pagedata'      => 'OnlineStore_pagedata',
 		'initialisation-completed' => 'OnlineStore_startup'
 	),
-	'version' => '7'
+	'version' => '8'
 );
 // }
 // { currency symbols
