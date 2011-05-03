@@ -1,8 +1,15 @@
 <?php
-/*
-	Webme Products Plugin
-	report bugs to Kae (kae@webworks.ie)
-*/
+/**
+	* definition file for Products plugin
+	*
+	* PHP version 5
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     None
+	*/
 
 // { plugin declaration
 $plugin=array(

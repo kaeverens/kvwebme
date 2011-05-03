@@ -1,6 +1,8 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if(!is_admin())die('access denied');
+if (!is_admin()) {
+	die('access denied');
+}
 
 // { template
 $template=isset($_REQUEST['template'])?$_REQUEST['template']:'';

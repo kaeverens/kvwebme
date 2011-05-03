@@ -81,8 +81,8 @@ if ($version==7) { // add online_store_vouchers
 		value_type enum("percentage", "value"),
 		usages_per_user int,
 		usages_in_total int,
-		start_date datetime,
-		end_date datetime
+		start_date date,
+		end_date date
 		) default charset=utf8');
 	$version=8;
 }

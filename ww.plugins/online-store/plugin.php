@@ -17,8 +17,9 @@ $plugin=array(
 	'admin' => array(
 		'page_type' => 'OnlineStore_adminPageForm',
 		'menu' => array(
-			'Online Store>Orders'  => 'list-pages',
-			'Online Store>Options' => 'site-options'
+			'Online Store>Orders'   => 'list-pages',
+			'Online Store>Vouchers' => 'vouchers',
+			'Online Store>Options'  => 'site-options'
 		),
 		'widget' => array(
 			'form_url' => '/ww.plugins/online-store/admin/widget-form.php'
@@ -31,6 +32,9 @@ $plugin=array(
 		'template_functions' => array(
 			'ONLINESTORE_PAYMENT_TYPES' => array(
 				'function' => 'OnlineStore_payment_types'
+			),
+			'ONLINESTORE_VOUCHER' => array(
+				'function' => 'OnlineStore_showVoucherInput'
 			),
 			'PRODUCTS_FULL_PRICE' => array(
 				'function' => 'OnlineStore_productPriceFull'
@@ -399,6 +403,15 @@ function OnlineStore_getFinalTotal() {
 	$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
 	if ($postage['total']) {
 		$grandTotal+=$postage['total'];
+	}
+	if (@$_REQUEST['os_voucher']) {
+		require_once dirname(__FILE__).'/frontend/voucher-libs.php';
+		$email=@$_REQUEST['Email'];
+		$code=$_REQUEST['os_voucher'];
+		$voucher_amount=OnlineStore_voucherAmount($code, $email, $grandTotal);
+		if ($voucher_amount) {
+			$grandTotal-=$voucher_amount;
+		}
 	}
 	if ($vattable) {
 		$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);

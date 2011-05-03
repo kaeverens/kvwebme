@@ -11,10 +11,6 @@
 	* @link     None
 	*/
 
-if (!is_admin()) {
-	die('access denied');
-}
-
 $ids=dbAll('select id from pages where type="online-store"');
 if (count($ids)>1) {
 	echo '<p>Please choose the online store you want to administrate.</p><ul>';

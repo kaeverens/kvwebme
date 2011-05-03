@@ -11,6 +11,12 @@
 	* @link     None
 	*/
 
+function OnlineStore_showVoucherInput() {
+	$code=@$_REQUEST['os_voucher'];
+	return '<div id="os-voucher">Voucher Code: <input name="os_voucher" value="'
+		.htmlspecialchars($code).'"/></div>';
+}
+
 if (isset($PAGEDATA->vars['online_stores_requires_login'])
 	&& $PAGEDATA->vars['online_stores_requires_login']
 	&& !isset($_SESSION['userdata'])
@@ -23,7 +29,7 @@ WW_addScript('/ww.plugins/online-store/j/basket.js');
 $c='';
 global $DBVARS,$online_store_currencies;
 $submitted=0;
-if (isset($_REQUEST['action']) && $_REQUEST['action']) {
+if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 	$errors=array();
 	// { check for errors in form submission
 	$fields=$PAGEDATA->vars['online_stores_fields'];
@@ -51,6 +57,17 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 			&& $PAGEDATA->vars['online_stores_realex_sharedsecret']
 		) {
 			$_REQUEST['_payment_method_type'] = 'Realex';
+		}
+	}
+	// }
+	// { if a voucher is submitted, check that it's still valid
+	if (@$_REQUEST['os_voucher']) {
+		require_once dirname(__FILE__).'/voucher-libs.php';
+		$email=$_REQUEST['Email'];
+		$code=$_REQUEST['os_voucher'];
+		$valid=OnlineStore_voucherCheckValidity($code, $email);
+		if (isset($valid['error'])) {
+			$errors[]=$valid['error'];
 		}
 	}
 	// }
@@ -147,6 +164,18 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 				.'Postage and Packaging (P&amp;P)</td><td class="amountcell">'
 				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
 		}
+		if (@$_REQUEST['os_voucher']) {
+			$email=$_REQUEST['Email'];
+			$code=$_REQUEST['os_voucher'];
+			$voucher_amount=OnlineStore_voucherAmount($code, $email, $grandTotal);
+			if ($voucher_amount) {
+				$table.='<tr><td class="voucher" style="text-align: right;" colspan="3">'
+					.'Voucher ('.htmlspecialchars($code).')</td><td class="totals amountcell">-'
+					.OnlineStore_numToPrice($voucher_amount).'</td></tr>';
+				$grandTotal-=$voucher_amount;
+				OnlineStore_voucherRecordUsage($id, $voucher_amount);
+			}
+		}
 		if ($vattable) {
 			$table.='<tr><td style="text-align:right" class="vat" colspan="3">VAT ('.$_SESSION['onlinestore_vat_percent'].'% on '
 				.OnlineStore_numToPrice($vattable).')</td><td class="amountcell">';
@@ -184,7 +213,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 		}
 		// }
 		// { unset the shopping cart data
-		unset($_SESSION['online-store']);
+//		unset($_SESSION['online-store']);
 		// }
 		$submitted=1;
 	}
@@ -242,6 +271,18 @@ if (!$submitted) {
 				.'Postage and Packaging (P&amp;P)</td><td class="totals">'
 				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
 		}
+		if (@$_REQUEST['os_voucher']) {
+			require_once dirname(__FILE__).'/voucher-libs.php';
+			$email=$_REQUEST['Email'];
+			$code=$_REQUEST['os_voucher'];
+			$voucher_amount=OnlineStore_voucherAmount($code, $email, $grandTotal);
+			if ($voucher_amount) {
+				$c.='<tr><td class="voucher" style="text-align: right;" colspan="3">'
+					.'Voucher ('.htmlspecialchars($code).')</td><td class="totals">-'
+					.OnlineStore_numToPrice($voucher_amount).'</td></tr>';
+				$grandTotal-=$voucher_amount;
+			}
+		}
 		if ($vattable) {
 			$c.='<tr><td style="text-align:right" class="vat" colspan="3">VAT ('.$_SESSION['onlinestore_vat_percent'].'% on '
 				.OnlineStore_numToPrice($vattable).')</td><td class="totals">';
@@ -255,10 +296,11 @@ if (!$submitted) {
 		if ($has_vatfree) {
 			$c.='<div><sup>1</sup>VAT-free item</div>';
 		}
-		$c.='<form method="post">';
-		$c.=$PAGEDATA->render();
-		$c.='<input type="submit" name="action" value="Proceed to Payment" />'
-		.'</form>';
+		$c.='<form method="post">'
+			.$PAGEDATA->render()
+			.'<input type="submit" name="action" value="Proceed to Payment" />'
+			.'</form>';
+		WW_addScript('/ww.plugins/online-store/frontend/index.js');
 	}
 	else {
 		$c.='<em>No items in your basket</em>';
