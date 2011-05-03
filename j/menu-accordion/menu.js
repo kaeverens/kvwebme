@@ -20,5 +20,6 @@ $(function(){
 		$menu.prev().trigger('click');
 		$menu=$menu.prev().closest('ul');
 	}while ($menu.length);
-        $('.menu-pid-'+pid).siblings( 'ul' ).css( 'display', 'block' );
+	if( $( 'div.menu-accordion' ).hasClass( 'expand-selected' ) )
+        	$('.menu-pid-'+pid).siblings( 'ul' ).css( 'display', 'block' );
 });
