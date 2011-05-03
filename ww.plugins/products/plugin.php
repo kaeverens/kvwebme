@@ -24,7 +24,10 @@ $plugin=array(
 		),
 		'page_type' => 'products_admin_page_form',
 		'widget' => array(
-			'form_url'   => '/ww.plugins/products/admin/widget.php'
+			'form_url'   => '/ww.plugins/products/admin/widget.php',
+			'js_include' => array(
+				'/ww.plugins/products/admin/widget.js'
+			),
 		)
 	),
 	'description' => 'Product catalogue.',
@@ -74,7 +77,7 @@ $plugin=array(
 	'triggers' => array(
 		'initialisation-completed' => 'products_add_to_cart'
 	),
-	'version' => '18'
+	'version' => '19'
 );
 // }
 

@@ -39,10 +39,12 @@ echo '>List Categories</option>';
 echo '</select>';
 // }
 // { diameter
-echo '<br /><strong>Diameter</strong>';
+echo '<div class="diameter"><strong>Diameter</strong>';
 $diameter=(isset($_REQUEST['diameter']) && $_REQUEST['diameter'])
 	?((int)$_REQUEST['diameter'])
 	:280;
-echo '<input name="diameter" value="'.htmlspecialchars($diameter).'" />';
+echo '<input name="diameter" value="'.htmlspecialchars($diameter).'" /></div>';
+// }
 echo '<script>$("#parent_cat_'.$id.'").remoteselectoptions({url:'
-	.'"/ww.plugins/products/admin/get-all-categories.php"});</script>';
+	.'"/ww.plugins/products/admin/get-all-categories.php"});'
+	.'Products_widgetTypeChanged();</script>';

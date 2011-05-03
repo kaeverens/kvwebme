@@ -7,7 +7,7 @@ $diameter=isset($vars->diameter) && $vars->diameter?$vars->diameter:280;
 $parent_cat=isset($vars->parent_cat)?((int)$vars->parent_cat):0;
 $cats=dbAll(
 	'select id,name,associated_colour as col from products_categories '
-	.'where parent_id='.$parent_cat.' and enabled order by name'
+	.'where parent_id='.$parent_cat.' and enabled order by sortNum,name'
 );
 
 switch ($widget_type) {

@@ -3,7 +3,7 @@
 	<tr><td>
 <div id="categories-wrapper">
 <?php
-$rs=dbAll('select * from products_categories');
+$rs=dbAll('select * from products_categories order by sortNum');
 $cats=array();
 foreach($rs as $r){
 	if(!isset($cats[$r['parent_id']]))$cats[$r['parent_id']]=array();

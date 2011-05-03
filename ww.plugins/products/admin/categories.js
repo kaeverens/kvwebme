@@ -94,18 +94,37 @@ $(function(){
 		$('#pc_edit_productschoices').text(selected_names.join(', '));
 	}
 	$('#categories-wrapper').jstree({
-		selected:'cat_'+window.selected_cat,
-		types:{
-			"default":{
+		'plugins': ["themes", "html_data", "ui", "dnd"],
+		'selected':'cat_'+window.selected_cat,
+		'types':{
+			'default':{
 				icon:{
 					image: false
 				}
 			}
 		},
-		callback:{
+		'callback':{
 			"onmove":function(node){
 				var p=$.jstree._focused().parent(node);
 				$.getJSON('/ww.plugins/products/admin/move-category.php?id='+node.id.replace(/.*_/,'')+'&parent_id='+(p==-1?0:p[0].id.replace(/.*_/,'')),show_attributes);
+			}
+		},
+		'dnd': {
+			'drag_target': false,
+			'drop_target': false,
+			'drag_finish': function(data) {
+				var node=data.o[0];
+				setTimeout(function(){
+					var p=node.parentNode.parentNode;
+					var nodes=$(p).find('>ul>li');
+					if(p.tagName=='DIV')p=-1;
+					var new_order=[];
+					for(var i=0;i<nodes.length;++i)new_order.push(nodes[i].id.replace(/.*_/,''));
+					var url='/ww.plugins/products/admin/categories-move.php?id='
+						+node.id.replace(/.*_/,'')+'&parent_id='
+						+(p==-1?0:p.id.replace(/.*_/,''))+'&order='+new_order;
+					$.getJSON(url);
+				},1);
 			}
 		}
 	});
