@@ -50,10 +50,13 @@ if (isset($_POST['import'])) {
 										mkdir($dirname);
 									}
 								}
-								if (!file_exists($dirname.'/'.$filename)) {
+								if (!file_exists($dirname.'/'.$filename)
+									|| !filesize($dirname.'/'.$filename)
+								) {
+									$url=str_replace(' ', '%20', $arr[1]);
 									file_put_contents(
 										$dirname.'/'.$filename,
-										file_get_contents($arr[1])
+										file_get_contents($url)
 									);
 								}
 							}
