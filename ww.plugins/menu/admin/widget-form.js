@@ -19,10 +19,11 @@ function menu_edit(ev){
 			+'<option value="0">Drop-down</option>'
 			+'<option value="1">Accordion</option>'
 		+'</select></td></tr>'
-		+'<tr id="row-menu-state" style="display:none"><th>State</th><td>'
+		+'<tr id="row-menu-state" style="display:none"><th>Initial State</th><td>'
 		+'<select name="menu_state_a" id="menu_state">'
-                        +'<option value="0">Contracted</option>'
-                        +'<option value="1">Expanded</option>'
+                        +'<option value="0">Contract All</option>'
+                        +'<option value="1">Expand All</option>'
+			+'<option value="2">Expand Current Page</option>'
                 +'</select></td></tr>'
 		+'<tr><th>Columns</th><td><input id="menu_columns" class="small" /></td></tr>'
 		+'</table></div>'
@@ -104,7 +105,7 @@ function menu_edit(ev){
 					val?'table-row':'none'
 				);
 			} );
-		if( res.state==1)
+		if( res.state!=0)
 			$('#row-menu-state').css('display','table-row');
 		$('select[name="menu_state_a"]').val(+res.state);
 		if(!res.background)res.background='#ffffff';

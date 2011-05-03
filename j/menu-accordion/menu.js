@@ -1,7 +1,7 @@
 $(function(){
 	$('div.menu-accordion ul ul').each(function(){
 		var $this=$(this);
-		if( !$this.closest( 'div.menu-accordion' ).hasClass( "expanded" ) )
+		if( !$this.closest( 'div.menu-accordion' ).hasClass( 'expanded' ) )
 			$this.css( 'display', 'none' );
 		$this
 			.addClass('is-fg-submenu')
@@ -20,4 +20,5 @@ $(function(){
 		$menu.prev().trigger('click');
 		$menu=$menu.prev().closest('ul');
 	}while ($menu.length);
+        $('.menu-pid-'+pid).siblings( 'ul' ).css( 'display', 'block' );
 });
