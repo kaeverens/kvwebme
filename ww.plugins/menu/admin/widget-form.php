@@ -8,7 +8,8 @@ if(isset($_REQUEST['get_menu'])){
 	$r=dbRow('select * from menus where id='.(int)$_REQUEST['get_menu']);
 	if($r===false)$r=array(
 		'parent'=>0,
-		'direction'=>0
+		'direction'=>0,
+		'state'=>0
 	);
 	if($r['parent'])$r['parent_name']=Page::getInstance($r['parent'])->name;
 	else $r['parent_name']=' -- none -- ';
@@ -25,9 +26,10 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	$opacity=(float)$_REQUEST['opacity'];
 	$columns=(int)$_REQUEST['columns'];
 	$style_from=(int)$_REQUEST['style_from'];
+	$state=(int)$_REQUEST['state'];
 	$sql="menus set type='$type',parent='$parent',direction='$direction',"
 		."background='$background',opacity=$opacity,columns=$columns,"
-		."style_from=$style_from";
+		."style_from=$style_from,state=$state";
 	if($id){
 		$sql="update $sql where id=$id";
 		dbQuery($sql);

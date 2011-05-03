@@ -19,6 +19,11 @@ function menu_edit(ev){
 			+'<option value="0">Drop-down</option>'
 			+'<option value="1">Accordion</option>'
 		+'</select></td></tr>'
+		+'<tr id="row-menu-state" style="display:none"><th>State</th><td>'
+		+'<select name="menu_state_a" id="menu_state">'
+                        +'<option value="0">Contracted</option>'
+                        +'<option value="1">Expanded</option>'
+                +'</select></td></tr>'
 		+'<tr><th>Columns</th><td><input id="menu_columns" class="small" /></td></tr>'
 		+'</table></div>'
 		// }
@@ -51,7 +56,8 @@ function menu_edit(ev){
 							'background':$('#menu_background').val(),
 							'opacity':$('#menu_opacity').val(),
 							'columns':$('#menu_columns').val(),
-							'style_from':$('#menu_style_from').val()
+							'style_from':$('#menu_style_from').val(),
+							'state':$('#menu_state').val()
 						},
 						function(ret){
 							if(ret.id!=ret.was_id){
@@ -89,7 +95,18 @@ function menu_edit(ev){
 		if (res.direction==1) {
 			$('#row-menu-type').css('display','table-row');
 		}
-		$('select[name=menu_type_v]').val(res.type);
+		$('select[name=menu_type_v]')
+			.val(+res.type)
+			.change( function( ){
+				var val= +$(this).val();
+				$('#row-menu-state').css(
+					'display',
+					val?'table-row':'none'
+				);
+			} );
+		if( res.state==1)
+			$('#row-menu-state').css('display','table-row');
+		$('select[name="menu_state_a"]').val(+res.state);
 		if(!res.background)res.background='#ffffff';
 		$('#menu_background')
 			.val(res.background)

@@ -1,8 +1,9 @@
 $(function(){
 	$('div.menu-accordion ul ul').each(function(){
 		var $this=$(this);
+		if( !$this.closest( 'div.menu-accordion' ).hasClass( "expanded" ) )
+			$this.css( 'display', 'none' );
 		$this
-			.css('display','none')
 			.addClass('is-fg-submenu')
 			.prev()
 				.addClass('has-submenu')

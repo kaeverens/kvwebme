@@ -254,7 +254,8 @@ function menu_show_fg($opts){
 		'columns'   => 1,  // for wide drop-down sub-menus
 		'opacity'   => 0,  // opacity of the sub-menu
 		'type'      => 0,  // 0=drop-down, 1=accordion
-		'style_from'=> 1   // inherit sub-menu style from CSS (0) or options (1)
+		'style_from'=> 1,   // inherit sub-menu style from CSS (0) or options (1)
+		'state'	    => 0,  // 1=expanded, 0=contracted
 	);
 	foreach($opts as $k=>$v){
 		if(isset($options[$k]))$options[$k]=$v;
@@ -281,7 +282,7 @@ function menu_show_fg($opts){
 	if ($options['type']) {
 		WW_addScript('/j/menu-accordion/menu.js');
 		WW_addCSS('/j/menu-accordion/menu.css');
-		$c.='<div class="menu-accordion">'.$html.'</div>';
+		$c.= ( $options[ 'state' ] ) ? '<div class="menu-accordion expanded">'.$html.'</div>' : '<div class="menu-accordion">'.$html.'</div>';
 	}
 	else{
 		WW_addScript('/j/fg.menu/fg.menu.js');
