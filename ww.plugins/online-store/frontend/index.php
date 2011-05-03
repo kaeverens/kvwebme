@@ -6,7 +6,7 @@
 	*
 	* @category None
 	* @package  None
-	* @author   Kae Verens <kae@webworks.ie>
+	* @author   Kae Verens <kae@kvsites.ie>
 	* @license  GPL 2.0
 	* @link     None
 	*/
@@ -213,7 +213,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		}
 		// }
 		// { unset the shopping cart data
-//		unset($_SESSION['online-store']);
+		unset($_SESSION['online-store']);
 		// }
 		$submitted=1;
 	}
@@ -225,6 +225,11 @@ if (!$submitted) {
 		&&isset($_SESSION['online-store']['items'])
 		&&count($_SESSION['online-store']['items'])>0
 	) {
+		$user_is_vat_free=0;
+		if (@$_SESSION['userdata']['id']) {
+			$user=User::getInstance($_SESSION['userdata']['id']);
+			$user_is_vat_free=$user->isInGroup('_vatfree');
+		}
 		$c.='<table id="onlinestore-checkout" width="100%"><tr>';
 		$c.='<th>Item</th>';
 		$c.='<th>Price</th>';
@@ -243,7 +248,7 @@ if (!$submitted) {
 			if (isset($item['url'])&&!empty($item['url'])) {
 				$c.='</a>';
 			}
-			if (!$item['vat']) {
+			if (!$item['vat'] && !$user_is_vat_free) {
 				$c.='<sup>1</sup>';
 				$has_vatfree=true;
 			}
@@ -253,7 +258,7 @@ if (!$submitted) {
 				.'</span></td>';
 			$totalItemCost=$item['cost']*$item['amt'];
 			$grandTotal+=$totalItemCost;
-			if ($item['vat']) {
+			if ($item['vat'] && !$user_is_vat_free) {
 				$vattable+=$totalItemCost;
 			}
 			$c.='<td class="'.$md5.'-item-total totals">'
@@ -291,8 +296,8 @@ if (!$submitted) {
 			$grandTotal+=$vat;
 		}
 		$c.='<tr class="os_basket_totals"><td style="text-align: right;" colspan="3">Total Due</td>'
-			.'<td class="totals">'.OnlineStore_numToPrice($grandTotal).'</td></tr>';
-		$c.='</table>';
+			.'<td class="totals">'.OnlineStore_numToPrice($grandTotal).'</td></tr>'
+			.'</table>';
 		if ($has_vatfree) {
 			$c.='<div><sup>1</sup>VAT-free item</div>';
 		}

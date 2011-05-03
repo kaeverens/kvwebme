@@ -60,12 +60,6 @@ if (!$fp) {
 			OnlineStore_processOrder($id, $order);
 		}
 		else if (strcmp($res, "INVALID") == 0) {
-			// echo the response
-			mail(
-				'kae@webworks.ie', 
-				'['.$_SERVER['HTTP_HOST'].'] error in paypal response',
-				"The response from IPN was: <b>" .$res ."</b>"
-			);
 		}
 		
 	}

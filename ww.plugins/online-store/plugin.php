@@ -69,7 +69,7 @@ $online_store_currencies=array(
 	*/
 function OnlineStore_addToCart(
 	$cost=0, $amt=0, $short_desc='',
-	$long_desc='', $md5='', $url='', $vat=true
+	$long_desc='', $md5='', $url='', $vat=true, $id=0
 ) {
 	// { add item to session
 	if (!isset($_SESSION['online-store'])) {
@@ -84,6 +84,7 @@ function OnlineStore_addToCart(
 	$item['short_desc']=$short_desc;
 	$item['url']=$url;
 	$item['vat']=$vat;
+	$item['id']=$id;
 	$_SESSION['online-store']['items'][$md5]=$item;
 	// }
 	require dirname(__FILE__).'/libs.php';
@@ -290,12 +291,12 @@ function OnlineStore_showBasketWidget($vars=null) {
 	else {
 		if (count($_SESSION['online-store']['items'])) {
 			$html.='<table class="os_basket">';
-			$html.='<tr class="os_basket_titles"><th>&nbsp;</th><th>Price</th><th>Amount</th>'
+			$html.='<tr class="os_basket_titles"><th>Price</th><th>Amount</th>'
 				.'<th>Total</th></tr>';
 			foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
 				// { name
 				$html.='<tr class="os_basket_itemTitle" product="'.$md5.'">'
-					.'<th colspan="4">';
+					.'<th colspan="3">';
 				if ($item['url']) {
 					$html.='<a href="'.$item['url'].'">';
 				}
@@ -306,17 +307,17 @@ function OnlineStore_showBasketWidget($vars=null) {
 				$html.='</th></tr>';
 				// }
 				$html.='<tr class="os_basket_itemDetails '.$md5.'" product="'.$md5.'">'
-					.'<td>&nbsp;</td><td>'
-					.OnlineStore_numToPrice($item['cost']).'</td>';
+					.'<td>'.OnlineStore_numToPrice($item['cost']).'</td>';
 				// { amount
-				$html.='<td class="amt"><span class="'.$md5.'-amt">'.$item['amt']
-					.'</span></td>';
+				$html.='<td class="amt"><span class="'.$md5.'-amt">'.$item['amt'].'</span>'
+					.' [<a class="del" href="/ww.plugins/online-store/j/set_amt.php?md5='.$md5.'&amp;amt=0&amp;r=1">x</a>]'
+					.'</td>';
 				// }
 				$html.='<td class="'.$md5.'-item-total">'
 					.OnlineStore_numToPrice($item['cost']*$item['amt'])
 					.'</td></tr>';
 			}
-			$html.='<tr class="os_basket_totals"><th colspan="3">Total</th>'
+			$html.='<tr class="os_basket_totals"><th colspan="2">Total</th>'
 				.'<td class="total">'
 				.OnlineStore_numToPrice($_SESSION['online-store']['total']).'</td></tr>';
 			$html.='</table>';
