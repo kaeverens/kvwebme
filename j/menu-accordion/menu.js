@@ -21,5 +21,5 @@ $(function(){
 		$menu=$menu.prev().closest('ul');
 	}while ($menu.length);
 	if( $( 'div.menu-accordion' ).hasClass( 'expand-selected' ) )
-        	$('.menu-pid-'+pid).siblings( 'ul' ).css( 'display', 'block' );
+        	$( 'div.menu-accordion .menu-pid-'+pid ).siblings( 'ul' ).css( 'display', 'block' );
 });
