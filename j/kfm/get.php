@@ -96,7 +96,7 @@ if (isset($_GET['type'])&&$_GET['type']=='thumb') {
 
 if (!file_exists($path)) {
 	header('Status: 404 Not Found');
-	echo 'file does not exist';
+	echo 'file "'.htmlspecialchars($path).'" does not exist';
 	exit;
 }
 

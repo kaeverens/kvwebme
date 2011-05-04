@@ -16,8 +16,8 @@ function showWidgetForm(w){
 		f.remove();
 		return;
 	}
-	var form=$('<form></form>').appendTo(w);
 	var p=w.data('widget');
+	var form=$('<form class="'+p.type+'"/>').appendTo(w);
 	if(ww.widgetForms[p.type]){
 		$('<button style="float:right">Save</button>')
 			.click(function(){
