@@ -37,5 +37,4 @@ mysql_query('create table users_groups(
 // }
 
 $_SESSION['db_vars']['db_installed']=1;
-echo '<script type="text/javascript">setTimeout(function(){document.location="/install/step3.php"},1000);</script>';
-echo '<p>Database installed. Please <a href="step3.php">click here to proceed</a>.</p>';
+header( 'location: step3.php' );

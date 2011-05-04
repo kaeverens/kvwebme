@@ -1,7 +1,7 @@
 <?php
 require 'header.php';
-// get db variables
 
+// get db variables
 if(!isset($_SESSION['db_vars'])){ // set up dummy values
 	$_SESSION['db_vars']=array(
 		'username' => '',
@@ -20,7 +20,9 @@ if(isset($_REQUEST['action'])){
 		'db_name'  => $_REQUEST['db_name'],
 		'passed'   => 0
 	);
+
 	$mysql = mysql_connect($_SESSION['db_vars']['hostname'], $_SESSION['db_vars']['username'], $_SESSION['db_vars']['password']);
+
 	if(!$mysql){
 		printf("Connect failed: %s\n", mysql_error());
 		echo '<p>Please check your values and try again.</p>';
@@ -31,9 +33,7 @@ if(isset($_REQUEST['action'])){
 		}
 		else{
 			$_SESSION['db_vars']['passed']=1;
-			echo '<script type="text/javascript">document.location="/install/step2.php";</script>';
-			echo '<p>Thank you. Please <a href="step2.php">click here to proceed</a>.</p>';
-			exit;
+			header( 'location: step2.php' );
 		}
 	}
 }

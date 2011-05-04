@@ -36,9 +36,7 @@ if(isset($_REQUEST['action'])){
 		mysql_query("insert into groups (id,name) values(1,'administrators')");
 		mysql_query("insert into users_groups values(1,1)");
 		$_SESSION['admin_created']=1;
-		echo '<script type="text/javascript">setTimeout(function(){document.location="/install/step4.php"},1000);</script>';
-		echo '<p>Administrator created. Please <a href="step4.php">click here to proceed</a>.</p>';
-		exit;
+		header( 'location: step4.php' );
 	}
 }
 if(!isset($_SESSION['user']))$_SESSION['user']=array('email'=>'','password'=>'','name'=>'');
