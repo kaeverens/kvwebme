@@ -1,13 +1,13 @@
 <?php
 function selectkiddies($i=0,$n=1,$s=0,$id=0){
-	$q=dbAll('select name,id from pages where parent="'.$i.'" and id!="'.$id.'" order by ord,name');
+	$q=dbAll('select name,id,alias from pages where parent="'.$i.'" and id!="'.$id.'" order by ord,name');
 	if(count($q)<1)return;
 	foreach($q as $r){
 		if($r['id']!=''){
 			echo '<option value="'.$r['id'].'" title="'.htmlspecialchars($r['name']).'"';
 			echo ($s==$r['id'])?' selected="selected">':'>';
 			echo str_repeat('&raquo; ', $n);
-			$name=$r['name'];
+			$name=$r['alias'];
 			if (strlen($name)>20) {
 				$name=substr($name,0,17).'...';
 			}
@@ -36,3 +36,19 @@ function showshortcuts($id,$parent){
 		echo '</ul>';
 	}
 }
+/**
+ * transcribe
+ *
+ * replaces accented characters with their
+ * non-accented equivellants
+ */
+function transcribe($string){
+    $a = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞ
+ßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿŔŕ';
+    $b = 'aaaaaaaceeeeiiiidnoooooouuuuy
+bsaaaaaaaceeeeiiiidnoooooouuuyybyRr';
+    $string = utf8_decode($string);    
+    $string = strtr($string, utf8_decode($a), $b);
+    $string = strtolower($string);
+    return utf8_encode($string);
+} 

@@ -4,7 +4,7 @@ WW_addScript('/j/jstree-1.0rc2/_lib/jquery.cookie.js');
 WW_addScript('/j/jquery.remoteselectoptions.js');
 WW_addScript('/ww.admin/pages/menu.js');
 echo '<div id="pages-wrapper">';
-$rs=dbAll('select id,special&2 as disabled,type,name,parent from pages order by ord,name');
+$rs=dbAll('select id,special&2 as disabled,type,name,parent,alias from pages order by ord,name');
 $pages=array();
 foreach($rs as $r){
 	if(!isset($pages[$r['parent']]))$pages[$r['parent']]=array();
@@ -18,7 +18,7 @@ function show_pages($id){
 		if($page['name']=='')$page['name']='NO NAME';
 		echo '<li id="page_'.$page['id'].'"><a';
 		if($page['disabled']=='1')echo ' class="disabled"';
-		echo '>'.htmlspecialchars($page['name']).'</a>';
+		echo '>'.htmlspecialchars($page['alias']).'</a>';
 		show_pages($page['id']);
 		echo '</li>';
 	}

@@ -209,7 +209,7 @@ function menu_build_fg($parentid,$depth,$options){
 	foreach($rs as $r){
 		$item='<li>';
 		$page=Page::getInstance($r['id']);
-		$item.='<a class="menu-fg menu-pid-'.$r['id'].'" href="'.$page->getRelativeUrl().'">'.htmlspecialchars($page->name).'</a>';
+		$item.='<a class="menu-fg menu-pid-'.$r['id'].'" href="'.$page->getRelativeUrl().'">'.htmlspecialchars($page->alias).'</a>';
 		$item.=menu_build_fg($r['id'],$depth+1,$options);
 		$item.='</li>';
 		$items[]=$item;
@@ -272,6 +272,7 @@ function menu_show_fg($opts){
 	$items=array();
 	$menuid=$GLOBALS['fg_menus']++;
 	$md5=md5($options['parent'].'|0|'.json_encode($options));
+	
 	$html=cache_load('pages','fgmenu-'.$md5);
 	if($html===false){
 		$html=menu_build_fg($options['parent'],0,$options);

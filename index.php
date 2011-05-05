@@ -124,7 +124,7 @@ if (isset($DBVARS['canonical_name'])
 		.$_SERVER['REQUEST_URI'];
 	redirect($url);
 }
-if (!isset($DBVARS['version']) || $DBVARS['version']<32) {
+if (!isset($DBVARS['version']) || $DBVARS['version']<33) {
 	redirect('/ww.incs/upgrade.php');
 }
 $id=getVar('pageid', 0);
@@ -307,7 +307,7 @@ $smarty->assign('THEMEDIR', '/ww.skins/'.THEME);
 // { page title
 $title=($PAGEDATA->title!='')
 	?$PAGEDATA->title
-	:str_replace('www.', '', $_SERVER['HTTP_HOST']).' > '.$PAGEDATA->name;
+	:str_replace('www.', '', $_SERVER['HTTP_HOST']).' > '.$PAGEDATA->alias;
 $c='<title>'.htmlspecialchars($title).'</title>';
 // }
 // { show stylesheet and javascript links
@@ -369,8 +369,8 @@ if (isset($PAGEDATA->vars['google-site-verification'])
 	$c.='<meta name="google-site-verification" content="'
 		.htmlspecialchars($PAGEDATA->vars['google-site-verification']).'" />';
 }
-if( $PAGEDATA->name ){
-	$smarty->assign( 'pagename', $PAGEDATA->name );
+if( $PAGEDATA->alias ){
+	$smarty->assign( 'pagename', $PAGEDATA->alias );
 }
 if (isset($DBVARS['theme_variant']) && $DBVARS['theme_variant']) {
 	$c.='<link rel="stylesheet" href="/ww.skins/'.$DBVARS['theme'].'/cs/'

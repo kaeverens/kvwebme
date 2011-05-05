@@ -1,10 +1,12 @@
 <?php
 include dirname(__FILE__).'/pages.action.common.php';
-$name=$_REQUEST['name'];
+$name = $_REQUEST['name'];
 if(isset($_REQUEST['prefill_body_with_title_as_header']))$body='<h1>'.htmlspecialchars($name).'</h1><p>&nbsp;</p>';
 else if(isset($_REQUEST['body']))$body=$_REQUEST['body'];
 else $body='';
-$name=addslashes($name);
+$name = addslashes( $name );
+$alias = $name;
+$name = transcribe( $name );
 $pid=(int)$_REQUEST['parent'];
 if(dbQuery("select id from pages where name='$name' and parent=$pid")->rowCount()){
 	$i=2;
@@ -35,7 +37,8 @@ $q='insert into pages set ord="'.$ord.'",importance="'.$importance.'",'
 	.'template="'.$template.'",edate=now(),name="'.$name.'",title="'.$title.'",'
 	.'original_body="'.addslashes($original_body).'",'
 	.'body="'.addslashes($body).'",type="'.$type.'",'
-	.'associated_date="'.addslashes($associated_date).'"';
+	.'associated_date="'.addslashes($associated_date).'",'
+	.'alias="'.$alias.'"';
 $q.=',parent='.$pid;
 if(has_page_permissions(128))$q.=',special='.$special;else $q.=',special=0';
 dbQuery($q);
@@ -45,4 +48,4 @@ $msgs.='<em>New page created.</em>';
 dbQuery('update page_summaries set rss=""');
 cache_clear('menus');
 cache_clear('pages');
-echo '<script>window.parent.pages_add_node("'.addslashes($name).'",'.$id.','.$pid.');</script>';
+echo '<script>window.parent.pages_add_node("'.addslashes($alias).'",'.$id.','.$pid.');</script>';

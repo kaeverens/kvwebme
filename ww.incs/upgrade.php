@@ -354,6 +354,11 @@ if ($version==31) { // add "date_created" to user_account
 	dbQuery('alter table user_accounts add date_created datetime');
 	$version=32;
 }
+if( $version == 32 ){ // add "alias" field to pages table
+	dbQuery( 'alter table pages add alias text after associated_date' );
+	dbQuery( 'update pages set alias=name' );
+	$version = 33;
+}
 
 $DBVARS['version']=$version;
 config_rewrite();

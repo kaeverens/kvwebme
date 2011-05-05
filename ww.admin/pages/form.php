@@ -91,7 +91,7 @@ echo '<div id="pages-common">';
 echo '<table>';
 echo '<tr>';
 // { name
-echo '<th width="6%"><div class="help name"></div>name</th><td width="23%"><input id="name" name="name" value="'.htmlspecialchars($page['name']).'" /></td>';
+echo '<th width="6%"><div class="help name"></div>name</th><td width="23%"><input id="name" name="name" value="'.htmlspecialchars($page['alias']).'" /></td>';
 // }
 // { title
 echo '<th width="10%"><div class="help title"></div>title</th><td width="23%">'.wInput('title','',htmlspecialchars($page['title'])).'</td>';
@@ -136,7 +136,7 @@ echo '</select></td>';
 echo '<th><div class="help parent"></div>parent</th><td><select name="parent">';
 if($page['parent']){
 	$parent=Page::getInstance($page['parent']);
-	echo '<option value="',$parent->id,'">',htmlspecialchars($parent->name),'</option>';
+	echo '<option value="',$parent->id,'">',htmlspecialchars($parent->alias),'</option>';
 }
 else echo '<option value="0"> -- none -- </option>';
 echo '</select></td>';

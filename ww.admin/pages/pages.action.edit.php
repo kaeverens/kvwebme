@@ -26,7 +26,8 @@ $template=$_REQUEST['template'];
 $original_body=(isset($_REQUEST['body']))?$_REQUEST['body']:'';
 $body=$original_body;
 $body=sanitise_html($body);
-$name=$_REQUEST['name'];
+$name = transcribe( $_REQUEST['name'] );
+$alias = addslashes( $_REQUEST[ 'name' ] );
 // { check that name is not duplicate of existing page
 if (dbOne('select id from pages where name="'.addslashes($name).'" and parent='.$pid.' and id!="'.$id.'"','id')) {
 	$i=2;
@@ -45,7 +46,8 @@ $q='update pages set importance="'.$importance.'"'
 	.',name="'.addslashes($name).'",title="'.addslashes($_POST['title']).'"'
 	.',original_body="'.addslashes(sanitise_html_essential($original_body)).'"'
 	.',body="'.addslashes($body).'",parent='.$pid
-	.',special='.$special;
+	.',special='.$special
+	.',alias="'.$alias.'"';
 $q.=' where id='.$id;
 dbQuery($q);
 // { page_vars
@@ -82,5 +84,5 @@ if(isset($_REQUEST['frontend-admin'])){
 else{
 	echo '<script>window.parent.document.getElementById("page_'.$id.'")'
 		.'.childNodes[1].innerHTML=\'<ins class="jstree-icon">&nbsp;</ins>'
-		.htmlspecialchars($name).'\';</script>';
+		.htmlspecialchars($alias).'\';</script>';
 }
