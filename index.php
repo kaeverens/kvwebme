@@ -124,7 +124,7 @@ if (isset($DBVARS['canonical_name'])
 		.$_SERVER['REQUEST_URI'];
 	redirect($url);
 }
-if (!isset($DBVARS['version']) || $DBVARS['version']<33) {
+if (!isset($DBVARS['version']) || $DBVARS['version']<34) {
 	redirect('/ww.incs/upgrade.php');
 }
 $id=getVar('pageid', 0);
