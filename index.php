@@ -369,9 +369,10 @@ if (isset($PAGEDATA->vars['google-site-verification'])
 	$c.='<meta name="google-site-verification" content="'
 		.htmlspecialchars($PAGEDATA->vars['google-site-verification']).'" />';
 }
-if( $PAGEDATA->alias ){
-	$smarty->assign( 'pagename', $PAGEDATA->alias );
-}
+$smarty->assign(
+	'pagename',
+	@$PAGEDATA->alias?$PAGEDATA->alias:$PAGEDATA->name
+);
 if (isset($DBVARS['theme_variant']) && $DBVARS['theme_variant']) {
 	$c.='<link rel="stylesheet" href="/ww.skins/'.$DBVARS['theme'].'/cs/'
 		.$DBVARS['theme_variant'].'.css" />';
