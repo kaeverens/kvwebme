@@ -6,13 +6,21 @@ spl_autoload_register('WebME_autoload');
 function WebME_autoload($name) {
 	require $name . '.php';
 }
-function cache_clear($type){
-	if(!is_dir(USERBASE.'/ww.cache/'.$type))return;
+function cache_clear($type='') {
+	if (!is_dir(USERBASE.'/ww.cache/'.$type)) {
+		return;
+	}
 	$d=new DirectoryIterator(USERBASE.'/ww.cache/'.$type);
 	foreach($d as $f){
 		$f=$f->getFilename();
-		if($f=='.' || $f=='..')continue;
-		if (!is_dir(USERBASE.'/ww.cache/'.$type.'/'.$f)) {
+		if ($f=='.' || $f=='..') {
+			continue;
+		}
+		if (is_dir(USERBASE.'/ww.cache/'.$type.'/'.$f)) {
+			cache_clear($type.'/'.$f);
+			rmdir(USERBASE.'/ww.cache/'.$type.'/'.$f);
+		}
+		else {
 			unlink(USERBASE.'/ww.cache/'.$type.'/'.$f);
 		}
 	}

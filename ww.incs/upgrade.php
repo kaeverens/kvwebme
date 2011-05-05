@@ -365,6 +365,7 @@ if ( $version == 33 ) { // clear cache...
 }
 
 $DBVARS['version']=$version;
+cache_clear();
 config_rewrite();
 
 echo '<p>Site upgraded. Please <a href="/">click here</a> to return to the '
