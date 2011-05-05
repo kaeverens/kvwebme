@@ -321,7 +321,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 				.'<td class="total">'
 				.OnlineStore_numToPrice($_SESSION['online-store']['total']).'</td></tr>';
 			$html.='</table>';
-			$html.='<a href="/?pageid='.$_SESSION['onlinestore_checkout_page'].'">'
+			$html.='<a class="online-store-checkout-link" href="/?pageid='.$_SESSION['onlinestore_checkout_page'].'">'
 				.'Proceed to Checkout</a>';
 		}
 		else {
