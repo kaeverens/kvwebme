@@ -206,47 +206,40 @@ function userregistration_form($error='',$alert=''){
 			}
 			if(!isset($_REQUEST[$name]))$_REQUEST[$name]='';
 			switch($r->type){
-				case 'checkbox': {
+				case 'checkbox': // {
 					$d='<input type="checkbox" id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'"';
 					if($_REQUEST[$name])$d.=' checked="'.$_REQUEST[$name].'"';
 					$d.=' class="'.$class.' checkbox" />';
-					break;
-				}
-				case 'ccdate': {
+					break; // }
+				case 'ccdate': // {
 					if($_REQUEST[$name]=='')$_REQUEST[$name]=date('Y-m');
 					$d='<input name="privacy_extras_'.$name.'" value="'.$_REQUEST[$name].'" class="ccdate" />';
-					break;
-				}
-				case 'date': {
+					break; // }
+				case 'date': // {
 					if($_REQUEST[$name]=='')$_REQUEST[$name]=date('Y-m-d');
 					$d='<input name="privacy_extras_'.$name.'" value="'.$_REQUEST[$name].'" class="date" />';
-					break;
-				}
-				case 'email':{
+					break; // }
+				case 'email': // {
 					$d='<input id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" value="'.$val.'" class="email'.$class.' text" />';
 					if( isset( $validation[ 'privacy_extras_'.$name ] ) )
 						$validation[ 'privacy_extras_'.$name ][ 'email' ] = true;
 					else
 						$validation[ 'privacy_extras_'.$name ] = array( 'email' => true );
-					break;
-				}
-				case 'url':{
+					break; // }
+				case 'url': // {
 					$d='<input id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" value="" class="url'.$class.' text" />';
                                         if( isset( $validation[ 'privacy_extras_'.$name ] ) ) 
 						$validation[ 'privacy_extras_'.$name ][ 'url' ] = true;
                                         else
                                                 $validation[ 'privacy_extras_'.$name ] = array( 'url' => true );
-					break;
-				}
-				case 'file': {
+					break; // }
+				case 'file': // {
 					$d='<input id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" type="file" />';
-					break;
-				}
-				case 'hidden': {
+					break; // }
+				case 'hidden': // {
 					$d='<textarea id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" class="'.$class.' hidden">'.htmlspecialchars($r->extra).'</textarea>';
-					break;
-				}
-				case 'selectbox': {
+					break; // }
+				case 'selectbox': // {
 					$d='<select id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'">';
 					$arr=explode("\n",htmlspecialchars($r->extra));
 					foreach($arr as $li){
@@ -254,16 +247,13 @@ function userregistration_form($error='',$alert=''){
 						else $d.='<option>'.rtrim($li).'</option>';
 					}
 					$d.='</select>';
-					break;
-				}
-				case 'textarea': {
+					break; // }
+				case 'textarea': // {
 					$d='<textarea id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" class="'.$class.'">'.$_REQUEST[$name].'</textarea>';
-					break;
-				}
-				default:{ # input boxes, and anything which was not handled already
+					break; // }
+				default: // { input boxes, and anything which was not handled already
 					$d='<input id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" value="'.$val.'" class="'.$class.' text" />';
-					break;
-				}
+					break; // }
 			}
 			$c.='<tr><th>'.htmlspecialchars($r->name);
 			if (isset($r->is_required) && $r->is_required) {
@@ -288,7 +278,7 @@ function userregistration_form($error='',$alert=''){
         /** 
          * add jquery form validation
          */
-	WW_addScript( '/ww.plugins/privacy/j/validate.jquery.min.js' );
+	WW_addScript( '/j/validate.jquery.min.js' );
         $script = ' 
                 var options = ' . json_encode( $validation ) . ';
 
@@ -321,21 +311,26 @@ function userregistration_register(){
 	) {
 		return '<em>You must agree to the terms and conditions. Please press "Back" and try again.</em>';
 	}
+	$missing=array();
 	// { check for user_account table "extras"
 		$extras=array();
 		$rs=json_decode($PAGEDATA->vars['privacy_extra_fields']);
 		if ($rs) {
-			foreach($rs as $r){
-				if(!$r->name)continue;
+			foreach ($rs as $r) {
+				if (!$r->name) {
+					continue;
+				}
 				$ename=preg_replace('/[^a-zA-Z0-9_]/','',$r->name);
 				$extras[$r->name]=isset($_REQUEST['privacy_extras_'.$ename])
 					?$_REQUEST['privacy_extras_'.$ename]
 					:'';
+				if ($extras[$r->name]=='' && @$r->is_required) {
+					$missing[]=$r->name;
+				}
 			}
 		}
 	// }
 	// { check for required fields
-	$missing=array();
 	if (!$name) {
 		$missing[]='your name';
 	}
