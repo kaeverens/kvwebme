@@ -39,6 +39,16 @@ if (isset($_SESSION['userdata']['id'])) {
 		'update user_accounts set last_view=now() where id='
 		.$_SESSION['userdata']['id']
 	);
+	if (file_exists(
+		USERBASE.'/ww.cache/user-session-resets/'.$_SESSION['userdata']['id']
+	)) {
+		$_SESSION['userdata'] = dbRow(
+			'select * from user_accounts where id='.$_SESSION['userdata']['id']
+		);
+		unlink(
+			USERBASE.'/ww.cache/user-session-resets/'.$_SESSION['userdata']['id']
+		);
+	}
 	if (!isset($_SESSION['userdata']['groups'])) {
 		$USERGROUPS = array();
 		$rs = dbAll("select id,name from users_groups,groups where id=groups_id and user_accounts_id=" . $_SESSION['userdata']['id']);

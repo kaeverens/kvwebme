@@ -60,6 +60,7 @@ if(isset($_REQUEST['action'])){
 			$site=preg_replace('/www\./','',$_SERVER['HTTP_HOST']);
 			mail($_REQUEST['email'],'['.$site.'] user status update',$_REQUEST['email-to-send'],'Reply-to: no-reply@'.$site."\nFrom: no-reply@".$site);
 		}
+		cache_save('user-session-resets', $id, true);
 	}
 }
 // }
