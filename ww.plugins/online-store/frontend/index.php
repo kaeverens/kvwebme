@@ -305,6 +305,9 @@ if (!$submitted) {
 			.$PAGEDATA->render()
 			.'<input type="submit" name="action" value="Proceed to Payment" />'
 			.'</form>';
+		$post=$_POST;
+		unset($post['action']);
+		WW_addInlineScript('var os_post_vars='.json_encode($post).';');
 		WW_addScript('/ww.plugins/online-store/frontend/index.js');
 	}
 	else {

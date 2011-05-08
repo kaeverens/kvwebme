@@ -22,4 +22,10 @@ $(function(){
 			$this.closest('form').submit();
 		}, 'json');
 	});
+	if (os_post_vars) {
+		for (var i in os_post_vars) {
+			$('input[name="'+i+'"],select[name="'+i+'"],textarea[name="'+i+'"]')
+				.val(os_post_vars[i]);
+		}
+	}
 });
