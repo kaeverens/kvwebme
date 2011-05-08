@@ -10,7 +10,7 @@
   * @subpackage CommentsPlugin
   * @author     Belinda Hamilton <bhamilton@webworks.ie>
   * @license    GPL Version 2.0
-  * @link       www.webworks.ie
+  * @link       www.kvweb.me
 **/
 
 // { global options

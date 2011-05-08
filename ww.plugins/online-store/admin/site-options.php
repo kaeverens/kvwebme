@@ -6,9 +6,9 @@
   *
   * @category   OnlineStorePlugin
   * @package    WebWorksWebme
-  * @author     Kae Verens <kae@webworks.ie>
+  * @author     Kae Verens <kae.ie>
   * @license    GPL Version 2
-  * @link       www.webworks.ie
+  * @link       www.kvweb.me
  */
 
 if ( isset($_REQUEST['action']) && $_REQUEST['action']=='Save') {

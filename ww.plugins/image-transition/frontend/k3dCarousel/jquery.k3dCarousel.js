@@ -4,7 +4,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl.html
  * tested with jQuery 1.4.2
- * written by Kae Verens: kae@webworks.ie
+ * written by Kae Verens: kae@kvsites.ie
  * version: 1.2
  */
 (function( $ ){

@@ -10,7 +10,7 @@
   * @subpackage Products_Plugin
   * @author     Belinda Hamilton <bhamilton@webworks.ie>
   * @license    GPL Version 2
-  * @link       www.webworks.ie
+  * @link       www.kvweb.me
  */
 // { Move to a new location. When I try to use this file I get a strange table
 

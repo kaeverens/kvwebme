@@ -6,9 +6,9 @@
   *
   * @category WebworksWebme
   * @package  None
-  * @author   Kae Verens <kae@webworks.ie>
+  * @author   Kae Verens <kae@kvsites.ie>
   * @license  GPL Version 2
-  * @link     http://www.webworks.ie/
+  * @link     http://www.kvweb.me/
  */
 
 $dir=dirname(__FILE__);

@@ -10,7 +10,7 @@
   * @subpackage CommentsPlugin
   * @author     Belinda Hamilton <bhamilton@webworks.ie>
   * @license    GPL Version 2
-  * @link       www.webworks.ie
+  * @link       www.kvweb.me
 **/
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/recaptcha.php';

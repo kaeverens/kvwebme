@@ -12,7 +12,7 @@
   * @subpackage Quiz
   * @author     Belinda Hamilton <bhamilton@webworks.ie>
   * @license    General Purpose License Version 2
-  * @link       www.webworks.ie
+  * @link       www.kvweb.me
 */
 if (isset($_POST['action'])) {
 	$errors=checkInput($_POST);

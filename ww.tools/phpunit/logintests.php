@@ -8,7 +8,7 @@
   * @package  Webworks_Webme
   * @author   Belinda Hamilton <bhamilton@webworks.ie>
   * @license  GPL Version 2
-  * @link     www.webworks.ie
+  * @link     www.kvweb.me
 **/
 
 require_once 'PHPUnit/Framework/TestCase.php';
@@ -20,7 +20,7 @@ require_once 'PHPUnit/Framework/TestCase.php';
   * @package  Webworks_Webme
   * @author   Belinda Hamilton <bhamilton@webworks.ie>
   * @license  GPL Version 2
-  * @link     www.webworks.ie
+  * @link     www.kvweb.me
 **/
 class LoginTests extends PHPUnit_Framework_TestCase{
 	private $_curl_handle;

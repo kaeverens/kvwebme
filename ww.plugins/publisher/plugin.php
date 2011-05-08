@@ -9,7 +9,7 @@
   * @subpackage Whatever
   * @author     Kae Verens <kae@kvsites.ie>
   * @license    GPL Version 2
-  * @link       www.kvsites.ie
+  * @link       www.kvweb.me
  */
 
 $plugin=array(

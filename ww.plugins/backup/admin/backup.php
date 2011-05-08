@@ -7,9 +7,9 @@
   *
   * @package    WebworksWebme
   * @subpackage Backup
-  * @author     Kae Verens <kae@webworks.ie>
+  * @author     Kae Verens <kae.ie>
   * @license    GPL Version 2.0
-  * @link       www.webworks.ie
+  * @link       www.kvweb.me
 **/
 
 echo '<p>Backing up your site may use a lot of resources and take a while '

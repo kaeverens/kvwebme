@@ -6,13 +6,6 @@ kfm.about=function(){
 	var div=document.createElement('div');
 	div.style.width='400px';
 	var html='<h1>KFM '+kfm_vars.version+'</h1>';
-	{ // sponsors
-		html+='<h2>Sponsors</h2>';
-		html+='KFM is free software. Here are some recent sponsors:<br />';
-		html+='<a href="http://tinyurl.com/2uerfm" style="float:right;display:block;border:1px solid red;background:#fff;text-decoration:none;text-align:center;margin-right:10px" target="_blank">Donate to KFM</a>';
-		html+='<a href="http://webworks.ie/" target="_blank"><strong>webworks.ie</strong></a><br />';
-		html+='<a href="http://www.bluenectar.com.au/" target="_blank">Blue Nectar</a><br />';
-	}
 	{ // developers
 		html+='<h2>Developers</h2>';
 		html+='<a href="http://verens.com/" target="_blank"><strong>Kae Verens</strong></a><br />';

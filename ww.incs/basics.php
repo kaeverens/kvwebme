@@ -168,7 +168,7 @@ define('SCRIPTBASE', $_SERVER['DOCUMENT_ROOT'] . '/');
 if (!file_exists(SCRIPTBASE . '.private/config.php')) {
 	echo '<html><body><p>No configuration file found</p>';
 	if(file_exists('install/index.php'))echo '<p><a href="/install/index.php">Click here to install</a></p>';
-	else echo '<p><strong>Installation script also missing...</strong> please contact kae@webworks.ie if you think there\'s a problem.</p>';
+	else echo '<p><strong>Installation script also missing...</strong> please contact kae@kvsites.ie if you think there\'s a problem.</p>';
 	echo '</body></html>';
 	exit;
 }

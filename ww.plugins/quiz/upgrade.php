@@ -9,7 +9,7 @@
  *  @subpackage QuizPlugin
  *  @author     Belinda Hamilton <bhamilton@webworks.ie>
  *  @license    This software is release under the General Purpose License V 2.0
- *  @link       www.webworks.ie
+ *  @link       www.kvweb.me
 */
 if ($version==0) {
   	//Create the tables

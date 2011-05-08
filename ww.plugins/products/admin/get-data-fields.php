@@ -8,7 +8,7 @@
   * @subpackage ProductsPlugin
   * @author     Belinda Hamilton <bhamilton@webworks.ie>
   * @license    GPL Version 2.0
-  * @link       www.webworks.ie
+  * @link       www.kvweb.me
 **/
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';

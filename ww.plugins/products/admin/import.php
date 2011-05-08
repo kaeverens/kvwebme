@@ -12,7 +12,7 @@
 	* @subpackage ProductsPlugin
 	* @author     Belinda Hamilton <bhamilton@webworks.ie>
 	* @license    GPL Version 2
-	* @link       www.webworks.ie
+	* @link       www.kvweb.me
 	**/
 echo '<script src="/ww.plugins/products/admin/products.js"></script>';
 $name=array();

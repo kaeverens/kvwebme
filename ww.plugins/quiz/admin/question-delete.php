@@ -9,7 +9,7 @@
   * @subpackage QuizPlugin
   * @author     Belinda Hamilton <bhamilton@webworks.ie>
   * @license    This software is released under GPL V 2.0
-  * @link       www.webworks.ie
+  * @link       www.kvweb.me
 */
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!is_admin()) {

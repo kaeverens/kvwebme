@@ -9,7 +9,7 @@
   * @subpackage Publisher
   * @author     Kae Verens <kae@kvsites.ie>
   * @license    GPL Version 2
-  * @link       www.kvsites.ie
+  * @link       www.kvweb.me
  */
 
 if ($version==0) { // set site to offline mode

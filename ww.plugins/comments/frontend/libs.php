@@ -9,7 +9,7 @@
   * @subpackage CommentsPlugin
   * @author     Kae Verens <kae@kvsites.ie>
   * @license    GPL Version 2
-  * @link       www.webworks.ie
+  * @link       www.kvweb.me
 **/
 
 /**

@@ -10,7 +10,7 @@
   * @subpackage Quiz
   * @author     Belinda Hamilton <bhamilton@webworks.ie>
   * @license    This software is released under General Purpose License Version 2.0
-  * @link       www.webworks.ie
+  * @link       www.kvweb.me
 */
 $dir = dirname(__FILE__);
 $isInvalidInput = false;

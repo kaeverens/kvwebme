@@ -9,7 +9,7 @@
   *  @subpackage QuizPlugin
   *  @author     Belinda Hamilton <bhamilton@webworks.ie>
   *  @license    This software is released under a General Purpose License V2
-  *  @link       www.webworks.ie
+  *  @link       www.kvweb.me
 */
 $plugin = array (
 	'name' =>'Quizzes',
