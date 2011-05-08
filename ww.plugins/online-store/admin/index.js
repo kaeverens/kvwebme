@@ -57,7 +57,7 @@ function os_update_fields(force){
 	for(var i=0;i<$inputs.length;++i){
 		if(!os_fields[$inputs[i].name]){
 			os_fields[$inputs[i].name]={
-				required:0
+				required:$($inputs[i]).attr('required')
 			}
 		}
 		os_fields[$inputs[i].name].show=1;
