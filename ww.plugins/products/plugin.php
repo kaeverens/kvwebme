@@ -431,6 +431,9 @@ class ProductType{
 		if ($corrections) {
 			WW_addScript('/ww.plugins/products/frontend/visitor-corrections.js');
 		}
+		if (!is_array(@$this->data_fields)) {
+			$this->data_fields=array();
+		}
 		foreach ($this->data_fields as $f) {
 			$f->n=preg_replace('/[^a-zA-Z0-9\-_]/', '_', $f->n);
 			if ($corrections) {

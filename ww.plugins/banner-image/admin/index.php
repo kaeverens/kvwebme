@@ -68,7 +68,11 @@ function banner_image_drawForm($id=0){
 	echo '<tr><th>Pages</th><td>This banner will only be shown on the <select name="pages_',$fdata['id'],'[]" multiple="multiple" style="max-width:200px;height:500px">';
 	$ps=dbAll('select * from banners_pages where bannerid='.$fdata['id']);
 	$pages=array();
-	foreach($ps as $p)$pages[]=$p['pageid'];
+	if (count($ps)) {
+		foreach ($ps as $p) {
+			$pages[]=$p['pageid'];
+		}
+	}
 	banner_image_selectkiddies(0,1,$pages);
 	echo '</select> pages. <span style="color:red;font-weight:bold">If no pages are specified, then the banner will be shown on all pages.</span></td></tr>';
 	// }

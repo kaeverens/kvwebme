@@ -122,6 +122,9 @@ function products_datatable ($params, &$smarty) {
 		return 'Missing Product Type : '.$product->get('product_type_id');
 	}
 	$datafields= $type->data_fields;
+	if (!is_array($datafields)) {
+		$datafields=array();
+	}
 	$c = '<table>';
 	if ($params['align']!='horizontal') {
 		foreach ($datafields as $data) {
