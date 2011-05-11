@@ -181,6 +181,7 @@ function Forum_showForums(&$PAGEDATA, &$forums) {
   * @return string HTML of the forum creation tool
   */
 function Forum_showThread(&$PAGEDATA, &$id) {
+	require_once dirname(__FILE__).'/bb2html.php';
 	WW_addCSS('/ww.plugins/forum/frontend/forum.css');
 	$thread=dbRow('select * from forums_threads where id='.$id);
 	$forum_id=$thread['forum_id'];
@@ -209,7 +210,7 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 		$emailHash=md5(trim(strtolower($user->dbVals['email'])));
 		$c.='<tr><td><img src="http://www.gravatar.com/avatar/'
 			.$emailHash.'" />';
-		$c.='</td><td class="post">'.nl2br(htmlspecialchars($post['body']))
+		$c.='</td><td class="post">'.bb2html($post['body'])
 			.'</td></tr>';
 	}
 	$c.='</table>';
@@ -217,6 +218,8 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 	if (isset($_SESSION['userdata']) && $_SESSION['userdata']['id']) {
 		$c.='<div id="forum-post-submission-form"><script>var forum_id='
 			.$forum_id.',forum_thread_id='.$id.';</script></div>';
+		WW_addScript('/j/ckeditor-3.6/ckeditor.js');
+		WW_addScript('/j/ckeditor-3.6/adapters/jquery.js');
 		WW_addScript('/ww.plugins/forum/frontend/forum.js');
 	}
 	else {
