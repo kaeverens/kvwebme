@@ -183,7 +183,7 @@ function Forum_showForums(&$PAGEDATA, &$forums) {
   * @return string HTML of the forum creation tool
   */
 function Forum_showThread(&$PAGEDATA, &$id) {
-	require_once dirname(__FILE__).'/bb2html.php';
+	require_once SCRIPTBASE.'ww.incs/bb2html.php';
 	WW_addCSS('/ww.plugins/forum/frontend/forum.css');
 	$thread=dbRow('select * from forums_threads where id='.$id);
 	$forum_id=$thread['forum_id'];
