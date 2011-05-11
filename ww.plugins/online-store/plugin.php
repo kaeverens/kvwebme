@@ -265,9 +265,7 @@ function OnlineStore_productPriceFull($params, &$smarty) {
 function OnlineStore_numToPrice($val, $sym=true, $rounded=false) {
 	$rate=$_SESSION['currency']['value'];
 	$sym=$_SESSION['currency']['symbol'];
-	return $rounded
-		?$sym.round($val*$rate)
-		:$sym.sprintf("%.2f",$val*$rate);
+	return $sym.sprintf("%.2f", $rounded?round($val*$rate):$val*$rate);
 }
 
 /**
@@ -310,7 +308,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 					.'<td>'.OnlineStore_numToPrice($item['cost']).'</td>';
 				// { amount
 				$html.='<td class="amt"><span class="'.$md5.'-amt">'.$item['amt'].'</span>'
-					.' [<a class="del" href="/ww.plugins/online-store/j/set_amt.php?md5='.$md5.'&amp;amt=0&amp;r=1">x</a>]'
+					.' [<a class="amt-del" href="javascript:;">x</a>]'
 					.'</td>';
 				// }
 				$html.='<td class="'.$md5.'-item-total">'

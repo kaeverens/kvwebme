@@ -314,18 +314,20 @@ function userregistration_register(){
 	$missing=array();
 	// { check for user_account table "extras"
 		$extras=array();
-		$rs=json_decode($PAGEDATA->vars['privacy_extra_fields']);
-		if ($rs) {
-			foreach ($rs as $r) {
-				if (!$r->name) {
-					continue;
-				}
-				$ename=preg_replace('/[^a-zA-Z0-9_]/','',$r->name);
-				$extras[$r->name]=isset($_REQUEST['privacy_extras_'.$ename])
-					?$_REQUEST['privacy_extras_'.$ename]
-					:'';
-				if ($extras[$r->name]=='' && @$r->is_required) {
-					$missing[]=$r->name;
+		if (@$PAGEDATA->vars['privacy_extra_fields']) {
+			$rs=json_decode($PAGEDATA->vars['privacy_extra_fields']);
+			if ($rs) {
+				foreach ($rs as $r) {
+					if (!$r->name) {
+						continue;
+					}
+					$ename=preg_replace('/[^a-zA-Z0-9_]/','',$r->name);
+					$extras[$r->name]=isset($_REQUEST['privacy_extras_'.$ename])
+						?$_REQUEST['privacy_extras_'.$ename]
+						:'';
+					if ($extras[$r->name]=='' && @$r->is_required) {
+						$missing[]=$r->name;
+					}
 				}
 			}
 		}
