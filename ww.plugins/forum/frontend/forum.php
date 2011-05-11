@@ -141,6 +141,8 @@ function Forum_showForum(&$PAGEDATA, &$id) {
 	if (isset($_SESSION['userdata']) && $_SESSION['userdata']['id']) {
 		$c.='<div id="forum-post-submission-form"><script>var forum_id='
 			.$id.';</script></div>';
+		WW_addScript('/j/ckeditor-3.6/ckeditor.js');
+		WW_addScript('/j/ckeditor-3.6/adapters/jquery.js');
 		WW_addScript('/ww.plugins/forum/frontend/forum.js');
 	}
 	else {
