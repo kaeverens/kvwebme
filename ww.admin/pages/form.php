@@ -32,7 +32,7 @@ $edit=($is_an_update || $action=='edit' || $id)?1:0;
 echo '<html><head>'
 	.Core_getJQueryScripts()
 	.'<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'
-	.'<script src="/j/ckeditor-3.5.3/ckeditor.js"></script>'
+	.'<script src="/j/ckeditor-3.6/ckeditor.js"></script>'
 	.'<script src="/ww.admin/j/admin.js"></script>'
 	.'<script src="/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js"></script>'
 	.'<link rel="stylesheet" type="text/css" href="/j/jquery.dataTables-1.7.5/jquery.dataTables.css" />'

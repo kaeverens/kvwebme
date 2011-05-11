@@ -20,7 +20,7 @@ WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
 WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
 WW_addScript('/j/jquery.remoteselectoptions.js');
 WW_addScript('/j/fg.menu/fg.menu.js');
-WW_addScript('/j/ckeditor-3.5.3/ckeditor.js');
+WW_addScript('/j/ckeditor-3.6/ckeditor.js');
 WW_addScript('/j/cluetip/jquery.cluetip.js');
 WW_addScript('/ww.admin/j/admin.js');
 ?>
