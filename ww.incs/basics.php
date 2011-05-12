@@ -200,8 +200,13 @@ else if (isset($DBVARS['theme_dir']) && $DBVARS['theme_dir']) {
 else {
 	define('THEME_DIR',SCRIPTBASE.'ww.skins');
 }
-if (@$DBVARS['theme']) {
-	define('THEME',$DBVARS['theme']);
+if (@$_REQUEST['__theme'] && strpos($_REQUEST['__theme'], '/')===false
+	&& file_exists(THEME_DIR.'/'.$_REQUEST['__theme'])
+) {
+	define('THEME', $_REQUEST['__theme']);
+}
+else if (@$DBVARS['theme']) {
+	define('THEME', $DBVARS['theme']);
 }
 else{
 	if (!file_exists(THEME_DIR)) {
