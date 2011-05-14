@@ -1,6 +1,6 @@
 <?php
-WW_addScript('/j/jstree-1.0rc2/jquery.jstree.js');
-WW_addScript('/j/jstree-1.0rc2/_lib/jquery.cookie.js');
+WW_addScript('/j/jstree/jquery.jstree.js');
+WW_addScript('/j/jstree/_lib/jquery.cookie.js');
 WW_addScript('/j/jquery.remoteselectoptions.js');
 WW_addScript('/ww.admin/pages/menu.js');
 echo '<div id="pages-wrapper">';
