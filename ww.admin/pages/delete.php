@@ -15,7 +15,7 @@ if ($r['pagecount']<2) {
 	$msgs.='<em>Cannot delete page - there must always be at '
 		.'least one page.</em>';
 }
-else{
+else {
 	$q=dbQuery('select parent from pages where id="'.$id.'"');
 	if ($q->rowCount()) {
 		$r=dbRow('select parent from pages where id="'.$id.'"');

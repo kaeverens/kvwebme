@@ -1,6 +1,8 @@
 <?php
 require '../../ww.incs/basics.php';
-if(!is_admin())exit;
+if (!is_admin()) {
+	exit;
+}
 require '../admin_libs.php';
 
 $id=(int)$_REQUEST['id'];
