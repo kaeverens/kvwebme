@@ -34,9 +34,6 @@ $(function(){
 				+'<div id="colour-picker"></div>'
 				+'</td></tr>';
 			// }
-			// { delete
-			table+='<tr><th>Delete</th><td><a href="javascript:;" class="delete">[x]</a></td></tr>';
-			// }
 			table+='</table>';
 			table=$(table).appendTo('#products-categories-attrs');
 			$('#colour-picker').farbtastic(function(colour){
@@ -94,8 +91,56 @@ $(function(){
 		$('#pc_edit_productschoices').text(selected_names.join(', '));
 	}
 	$('#categories-wrapper').jstree({
-		'plugins': ["themes", "html_data", "ui", "dnd"],
+		'plugins': ["themes", "html_data", "ui", "dnd", "contextmenu"],
 		'selected':'cat_'+window.selected_cat,
+		'contextmenu': {
+			'items': {
+				'rename':false,
+				'ccp':false,
+				'create' : {
+					'label'	: "create sub-category", 
+					'visible'	: function (NODE, TREE_OBJ) { 
+						if(NODE.length != 1) return 0; 
+						return TREE_OBJ.check("creatable", NODE); 
+					}, 
+					'action':function(node, tree){
+						var id=node[0].id.replace(/.*_/,'');
+						var name=prompt('what do you want to name this sub-category?');
+						if (!name) {
+							return;
+						}
+						$.getJSON('/ww.plugins/products/admin/add-new-category.php',{
+							"parent_id":id,
+							"name":name
+						},function(){
+							document.location=document.location;
+						});
+					},
+					'separator_after' : true
+				},
+				'remove' : {
+					'label'	: "delete category", 
+					'visible'	: function (NODE, TREE_OBJ) { 
+						if(NODE.length != 1) return 0; 
+						return TREE_OBJ.check("deletable", NODE); 
+					}, 
+					'action':function(node, tree){
+						if (!confirm("Are you sure you want to delete this category?")) {
+							return;
+						}
+						var id=node[0].id.replace(/.*_/,'');
+						$.getJSON(
+							'/ww.plugins/products/admin/delete-category.php?id='+id,
+							function(){
+								document.location="/ww.admin/plugin.php?_plugin=products&_page=categories";
+							}
+						);
+					},
+					'separator_after' : true
+				},
+				'copy' : false
+			}
+		},
 		'types':{
 			'default':{
 				icon:{
@@ -129,18 +174,6 @@ $(function(){
 		}
 	});
 	var div=$('<div style="clear:both;padding-top:20px;" />');
-	$('<button>add sub-category</button>')
-		.click(function(){
-			var name=prompt('what do you want to name this sub-category?');
-			if(!name)return;
-			$.getJSON('/ww.plugins/products/admin/add-new-category.php',{
-				"parent_id":$.jstree._focused().get_selected()[0].id.replace(/.*_/,''),
-				"name":name
-			},function(){
-				document.location=document.location;
-			});
-		})
-		.appendTo(div);
 	$('<button>add main category</button>')
 		.click(function(){
 			var name=prompt('what do you want to name this category?');
@@ -156,12 +189,6 @@ $(function(){
 	div.insertAfter('#categories-wrapper');
 	$.getJSON('/ww.plugins/products/admin/get-category-attrs.php?id='+window.selected_cat,show_attributes);
 	$('#pc_edit_name, #pc_edit_enabled, #pc_colour').live('change', save);
-	$('#products-categories-attrs>table .delete').live('click',function(){
-		if(!confirm("Are you sure you want to delete this category?"))return;
-		$.getJSON('/ww.plugins/products/admin/delete-category.php?id='+window.selected_cat,function(){
-			document.location="/ww.admin/plugin.php?_plugin=products&_page=categories";
-		});
-	});
 	$('#categories-wrapper li>a').live('click', function(){
 		$.getJSON('/ww.plugins/products/admin/get-category-attrs.php?id='+$(this).closest('li')[0].id.replace(/.*_/,''),show_attributes);
 	});
