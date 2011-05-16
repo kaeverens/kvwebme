@@ -85,7 +85,7 @@ for( $i = 0; $i < count( $themes ); ++$i ){
 	if( $i % 3 == 0 )
 		echo '</tr><tr>';
 
-	$class = ( $i % 2 != 0 ) ? ' class="middle"' : '';
+        $class = ( !( ( $i - 1 ) % 3 ) ) ? ' class="middle"' : '';
 
 	echo '<td' . @$class . '>';
 

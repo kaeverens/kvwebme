@@ -127,10 +127,11 @@ for( $i = 0; $i < count( $themes ); ++$i ){
                 echo '</tr><tr>';
 
 	$status = ( $DBVARS[ 'theme' ] == $themes[ $i ][ 'name' ] ) ? ' - Current Theme' : '' ;
+	$current = ( $DBVARS[ 'theme' ] == $themes[ $i ][ 'name' ] ) ? ' style="background:#FCFFB2"' : '';
 
-        $class = ( $i % 2 != 0 ) ? ' class="middle"' : '';
+        $class = ( !( ( $i - 1 ) % 3 ) ) ? ' class="middle"' : '';
 
-        echo '<td' . @$class . '>';
+        echo '<td' . $class . $current . '>';
 
         echo '<div class="theme-container">
                 <form action="/ww.admin/siteoptions.php?page=themes&action=install" method="post">
@@ -143,7 +144,10 @@ for( $i = 0; $i < count( $themes ); ++$i ){
                  * get all variants
                  */
                 foreach( $themes[ $i ][ 'variants' ] as $variant ){
-                        echo '<option screenshot="/ww.skins/' . $themes[ $i ][ 'name' ] . '/cs/' . $variant. '.png">' . $variant . '</option>';
+                        $cur = ( $DBVARS[ 'theme' ] == $themes[ $i ][ 'name' ] && $DBVARS['theme_variant'] == $variant ) ?
+                                ' selected="selected"' :
+                                '';
+                        echo '<option screenshot="/ww.skins/' . $themes[ $i ][ 'name' ] . '/cs/' . $variant. '.png" ' . $cur . '>' . $variant . '</option>';
                 }
 
         echo '</select></p>
