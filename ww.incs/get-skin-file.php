@@ -37,7 +37,7 @@ if ($mimetype=='text/css') {
 		for ($i=0; $i<count($matches[0]); ++$i) {
 			switch($matches[1][$i]) {
 				case 'linear-gradient': // {
-					$colours=explode(', ', $matches[2][$i]);
+					$colours=preg_split('/, */', $matches[2][$i]);
 					foreach ($colours as $k=>$v) {
 						$colours[$k]=CSS_colourCode($v);
 					}
