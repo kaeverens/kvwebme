@@ -1,5 +1,5 @@
 <?php
-session_start();
+@session_start();
 require 'Log.php';
 if(!defined('START_TIME'))define('START_TIME',microtime(true));
 spl_autoload_register('WebME_autoload');

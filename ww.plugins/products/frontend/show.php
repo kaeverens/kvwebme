@@ -700,6 +700,7 @@ function Products_showRelatedProducts($params, &$smarty) {
 	$product = $smarty->_tpl_vars['product'];
 	$productID = $product->id;
 	$type='';
+
 	if (isset($params['type'])) {
 		$tid=dbOne('select id from products_relation_types where name="'.addslashes($params['type']).'"', 'id');
 		if($tid) {

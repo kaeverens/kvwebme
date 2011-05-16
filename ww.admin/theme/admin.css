@@ -507,4 +507,8 @@ div.help{
 }
 .CodeMirror-wrapping{
 	border: 1px solid #000;
-} 
+}
+#themes-table{ border: 1px solid #ccc }
+.middle{ background: #eee }
+.theme-container{ width: 280px;margin:10px } 
+.theme-preview{ padding:2px;text-decoration:none;border-right:1px solid #888;border-bottom:1px solid #888;background:#f6f6f6 }
