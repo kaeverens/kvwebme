@@ -374,7 +374,7 @@ $smarty->assign(
 	@$PAGEDATA->alias?$PAGEDATA->alias:$PAGEDATA->name
 );
 if (isset($DBVARS['theme_variant']) && $DBVARS['theme_variant']) {
-	$c.='<link rel="stylesheet" href="/ww.skins/'.$DBVARS['theme'].'/cs/'
+	$c.='<link rel="stylesheet" href="/ww.skins/'.THEME.'/cs/'
 		.$DBVARS['theme_variant'].'.css" />';
 }
 // }

@@ -203,7 +203,19 @@ else {
 if (@$_REQUEST['__theme'] && strpos($_REQUEST['__theme'], '/')===false
 	&& file_exists(THEME_DIR.'/'.$_REQUEST['__theme'])
 ) {
+	$_SESSION['theme_override']=array(
+		$_REQUEST['__theme'],
+		$_REQUEST['__theme_variant'],
+		time()
+	);
 	define('THEME', $_REQUEST['__theme']);
+	$DBVARS['theme_variant']=@$_REQUEST['__theme_variant'];
+}
+else if (isset($_SESSION['theme_override'])
+	&& $_SESSION['theme_override'][2]>(time()-5)
+) {
+	define('THEME', $_SESSION['theme_override'][0]);
+	$DBVARS['theme_variant']=$_SESSION['theme_override'][1];
 }
 else if (@$DBVARS['theme']) {
 	define('THEME', $DBVARS['theme']);
