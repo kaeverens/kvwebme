@@ -106,7 +106,7 @@ for( $i = 0; $i < count( $themes ); ++$i ){
 
 	echo '</select></p>
 	<p>
-		<input type="submit" class="install-theme" name="install-theme" installed="' . $theme_installed . '" value="Install" />
+		<input type="submit" class="install-theme" name="install-theme" installed="' . $theme_installed . '" value="Download & Install" />
 		<input type="submit" class="install-theme" name="download-theme" installed="' . $theme_installed . '" value="Download"/> 
 		<a class="theme-preview theme-preview-download" title="' . $themes[ $i ][ 'name' ] . '" >Preview</a>
 	</p></form></td>';
