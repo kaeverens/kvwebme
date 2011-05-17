@@ -164,7 +164,7 @@ function Form_showForm(
 	if ($err) {
 		$c.='<div class="errorbox">'.$err.'</div>';
 	}
-	if ($vars['forms_template'] && strpos($vars['forms_template'], '%')===false) {
+	if ($vars['forms_template'] && strpos($vars['forms_template'], '{{')===false) {
 		$vars['forms_template']='';
 	}
 	if (!$vars['forms_template']||$vars['forms_template']=='&nbsp;') {
@@ -322,12 +322,12 @@ function Form_showForm(
 		}
 		if ($vars['forms_template']&&$vars['forms_template']!='&nbsp;') {
 			$vars['forms_template']=str_replace(
-				'%'.$cnt.'%',
+				'{{$'.$cnt.'}}',
 				$d,
 				$vars['forms_template']
 			);
 			$vars['forms_template']=str_replace(
-				'%'.htmlspecialchars($r2['name']).'%',
+				'{{$'.htmlspecialchars($r2['name']).'}}',
 				$d,
 				$vars['forms_template']
 			);
