@@ -105,19 +105,20 @@ $(function(){
 			},
 			'dnd': {
 				'drag_target': false,
-				'drop_target': false,
-				'drag_finish': function(data) {
-					var node=data.o[0];
-					setTimeout(function(){
-						var p=node.parentNode.parentNode;
-						var nodes=$(p).find('>ul>li');
-						if(p.tagName=='DIV')p=-1;
-						var new_order=[];
-						for(var i=0;i<nodes.length;++i)new_order.push(nodes[i].id.replace(/.*_/,''));
-						$.getJSON('/ww.admin/pages/move_page.php?id='+node.id.replace(/.*_/,'')+'&parent_id='+(p==-1?0:p.id.replace(/.*_/,''))+'&order='+new_order);
-					},1);
-				}
+				'drop_target': false
 			}
+		})
+		.bind('move_node.jstree',function(e, ref){
+			var data=ref.args[0];
+			var node=data.o[0];
+			setTimeout(function(){
+				var p=node.parentNode.parentNode;
+				var nodes=$(p).find('>ul>li');
+				if(p.tagName=='DIV')p=-1;
+				var new_order=[];
+				for(var i=0;i<nodes.length;++i)new_order.push(nodes[i].id.replace(/.*_/,''));
+				$.getJSON('/ww.admin/pages/move_page.php?id='+node.id.replace(/.*_/,'')+'&parent_id='+(p==-1?0:p.id.replace(/.*_/,''))+'&order='+new_order);
+			},1);
 		});
 	var div=$('<div><i>right-click for options</i><br /><br /></div>');
 	$('<button>add main page</button>')
