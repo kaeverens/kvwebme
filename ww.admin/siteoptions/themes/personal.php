@@ -98,6 +98,12 @@ $( ".theme-preview-personal" ).click( function( ){
 
 WW_addInlineScript( $script );
 
+$notification = @$_GET[ 'uploaded' ];
+if( $notification == 'true' )
+	$msg = '<em>Theme Uploaded Successfuly!</em>';
+elseif( $notification == 'false' )
+	$msg = '<em>There was an error uploading the theme. Please do not include any PHP files.</em>';
+
 /**
  * display theme
  */
@@ -113,9 +119,11 @@ echo '
 	<ul>
 		<li><a href="#tabs-1">Personal</a></li>
 		<li><a href="/ww.admin/siteoptions/themes/download.php">Download</a></li>
+		<li><a href="/ww.admin/siteoptions/themes/upload.php">Upload</a></li>
 	</ul>
 
 	<div id="tabs-1">
+	' . @$msg . '
 <table id="themes-table"><tr>';
 
 /**
