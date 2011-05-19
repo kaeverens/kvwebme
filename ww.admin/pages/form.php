@@ -124,16 +124,18 @@ if (!preg_match('/^[0-9]*$/',$page['type']))foreach($PLUGINS as $n=>$p) {
 	if (isset($p['admin']['page_type']) ){
 		if( $page['type']==$n ){
 			echo '<option value="',htmlspecialchars($n),'" selected="selected">',htmlspecialchars($n),'</option>';
+			$plugin = $p;
+			$found=1;
 		}
-		elseif( is_array( $p[ 'admin' ][ 'page_type' ] ) ){
+		else if( is_array( $p[ 'admin' ][ 'page_type' ] ) ){
 			foreach( $p[ 'admin' ][ 'page_type' ] as $name => $function ){
 				if( $name == $page[ 'type' ] ){
 					echo '<option value="',htmlspecialchars($name),'" selected="selected">',htmlspecialchars($name),'</option>';
 				}
+				$plugin = $p;
+				$found=1;
 			}
 		}
-		$found=1;
-		$plugin = $p;
 	}
 }
 if (!$found) {
@@ -202,8 +204,11 @@ switch($page['type']){
 		break;
 	// }
 	default: // { plugin
-		if($plugin && isset($plugin['admin']['page_type']) ){
-			if( is_array( $plugin[ 'admin' ][ 'page_type' ] ) ){
+		if ($plugin && isset($plugin['admin']['page_type']) ){
+			if ( function_exists($plugin['admin']['page_type'])) {
+				echo '<tr><td colspan="6">'.$plugin['admin']['page_type']($page,$page_vars).'</td></tr>';
+			}
+			else if( is_array( $plugin[ 'admin' ][ 'page_type' ] ) ){
 				foreach( $plugin[ 'admin' ][ 'page_type' ] as $name => $function ){
 					if( $name == $page[ 'type' ] && function_exists( $function ) ){
 						echo '<tr><td colspan="6">'.$function($page,$page_vars).'</td></tr>';
@@ -211,8 +216,6 @@ switch($page['type']){
 					}	
 				}
 			}
-			elseif( function_exists($plugin['admin']['page_type']))
-				echo '<tr><td colspan="6">'.$plugin['admin']['page_type']($page,$page_vars).'</td></tr>';
 		}
 	// }
 }
