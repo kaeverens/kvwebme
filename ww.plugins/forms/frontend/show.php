@@ -59,7 +59,7 @@ function Form_send($page, $vars) {
 			break;
 			// }
 			case 'date':case 'ccdate': // {
-				$val=date_m2h($_REQUEST[$name]);
+				$val=date_m2h(@$_REQUEST[$name]);
 				if ($r2['type']=='ccdate') {
 					$val=preg_replace('#.* ([a-zA-Z]*, [0-9]+)#', "$1", $val);
 				}

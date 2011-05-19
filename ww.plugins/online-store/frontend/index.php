@@ -176,7 +176,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 				OnlineStore_voucherRecordUsage($id, $voucher_amount);
 			}
 		}
-		if ($vattable) {
+		if ($vattable && $_SESSION['onlinestore_vat_percent']) {
 			$table.='<tr><td style="text-align:right" class="vat" colspan="3">VAT ('.$_SESSION['onlinestore_vat_percent'].'% on '
 				.OnlineStore_numToPrice($vattable).')</td><td class="amountcell">';
 			$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);
@@ -288,7 +288,7 @@ if (!$submitted) {
 				$grandTotal-=$voucher_amount;
 			}
 		}
-		if ($vattable) {
+		if ($vattable && $_SESSION['onlinestore_vat_percent']) {
 			$c.='<tr><td style="text-align:right" class="vat" colspan="3">VAT ('.$_SESSION['onlinestore_vat_percent'].'% on '
 				.OnlineStore_numToPrice($vattable).')</td><td class="totals">';
 			$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);
