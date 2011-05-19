@@ -121,15 +121,25 @@ if(preg_match('/^[0-9]*$/',$page['type']))foreach($pagetypes as $a){
 }
 $plugin=false;
 if (!preg_match('/^[0-9]*$/',$page['type']))foreach($PLUGINS as $n=>$p) {
-	if (isset($p['admin']['page_type']) && $page['type']==$n) {
-		echo '<option value="',htmlspecialchars($n),'" selected="selected">',htmlspecialchars($n),'</option>';
+	if (isset($p['admin']['page_type']) ){
+		if( $page['type']==$n ){
+			echo '<option value="',htmlspecialchars($n),'" selected="selected">',htmlspecialchars($n),'</option>';
+		}
+		elseif( is_array( $p[ 'admin' ][ 'page_type' ] ) ){
+			foreach( $p[ 'admin' ][ 'page_type' ] as $name => $function ){
+				if( $name == $page[ 'type' ] ){
+					echo '<option value="',htmlspecialchars($name),'" selected="selected">',htmlspecialchars($name),'</option>';
+				}
+			}
+		}
 		$found=1;
-		$plugin=$p;
+		$plugin = $p;
 	}
 }
 if (!$found) {
 	$page['type']=0;
 }
+
 echo '</select></td>';
 // }
 // { parent
@@ -192,8 +202,17 @@ switch($page['type']){
 		break;
 	// }
 	default: // { plugin
-		if($plugin && isset($plugin['admin']['page_type']) && function_exists($plugin['admin']['page_type'])){
-			echo '<tr><td colspan="6">'.$plugin['admin']['page_type']($page,$page_vars).'</td></tr>';
+		if($plugin && isset($plugin['admin']['page_type']) ){
+			if( is_array( $plugin[ 'admin' ][ 'page_type' ] ) ){
+				foreach( $plugin[ 'admin' ][ 'page_type' ] as $name => $function ){
+					if( $name == $page[ 'type' ] && function_exists( $function ) ){
+						echo '<tr><td colspan="6">'.$function($page,$page_vars).'</td></tr>';
+						break;
+					}	
+				}
+			}
+			elseif( function_exists($plugin['admin']['page_type']))
+				echo '<tr><td colspan="6">'.$plugin['admin']['page_type']($page,$page_vars).'</td></tr>';
 		}
 	// }
 }

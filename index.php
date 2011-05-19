@@ -245,6 +245,21 @@ else {
 					$not_found=false;
 				}
 			}
+			else{
+				foreach( $PLUGINS as $p ){
+
+					if( is_array( @$p[ 'frontend' ][ 'page_type' ] ) ){
+						foreach( $p[ 'frontend' ][ 'page_type' ] as $name => $function ){
+							if( $name == $PAGEDATA->type && function_exists( $function ) ){
+								$c .= $function( $PAGEDATA );
+								$not_found = false;
+								break;
+							}
+						}
+					}
+
+				}
+			}
 			if ($not_found) {
 				$c.='<em>No plugin found to handle page type <strong>'
 					.htmlspecialchars($PAGEDATA->type)

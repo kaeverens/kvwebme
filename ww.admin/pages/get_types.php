@@ -10,12 +10,19 @@ foreach($pagetypes as $a){
 }
 $plugin=false;
 foreach($PLUGINS as $n=>$p){
+	
 	if(isset($p['admin']['page_type'])){
-		$tmp='';
-		if(!is_int($selected) && $selected==$n){
-//			$tmp='" selected="selected';
-			$plugin=$p;
+		if( is_array( $p[ 'admin' ][ 'page_type' ] ) ){
+			foreach( $p[ 'admin' ][ 'page_type' ] as $name => $type )
+				echo '<option value="' . htmlspecialchars( $name ) . '">' . htmlspecialchars( $name ) . '</option>';
 		}
-		echo '<option value="'.htmlspecialchars($n).$tmp.'">'.htmlspecialchars($n).'</option>';
+		else{
+			$tmp='';
+			if(!is_int($selected) && $selected==$n){
+//				$tmp='" selected="selected';
+				$plugin=$p;
+			}
+			echo '<option value="'.htmlspecialchars($n).$tmp.'">'.htmlspecialchars($n).'</option>';
+		}
 	}
 }
