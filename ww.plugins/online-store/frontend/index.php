@@ -131,6 +131,13 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			.'<th class="descriptionheader">Description</th>'
 			.'<th class="unitamountheader">'
 			.'Unit Price</th><th class="amountheader">Amount</th></tr>';
+		$user_is_vat_free=0;
+		$group_discount=0;
+		if (@$_SESSION['userdata']['id']) {
+			$user=User::getInstance($_SESSION['userdata']['id']);
+			$user_is_vat_free=$user->isInGroup('_vatfree');
+			$group_discount=$user->getGroupHighest('discount');
+		}
 		$grandTotal=0;
 		$vattable=0;
 		$has_vatfree=false;
@@ -155,15 +162,8 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		$table.='<tr class="os_basket_totals">'
 			.'<td colspan="3" style="text-align:right">'
 			.'Subtotal</td><td class="totals amountcell">'
-			.OnlineStore_numToPrice($total)
+			.OnlineStore_numToPrice($grandTotal)
 			.'</td></tr>';
-		$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
-		if ($postage['total']) {
-			$grandTotal+=$postage['total'];
-			$table.='<tr><td class="p_and_p" style="text-align: right;" colspan="3">'
-				.'Postage and Packaging (P&amp;P)</td><td class="amountcell">'
-				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
-		}
 		if (@$_REQUEST['os_voucher']) {
 			$email=$_REQUEST['Email'];
 			$code=$_REQUEST['os_voucher'];
@@ -176,6 +176,22 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 				OnlineStore_voucherRecordUsage($id, $voucher_amount);
 			}
 		}
+		if ($group_discount) { // group discount
+			$discount_amount=$grandTotal*($group_discount/100);
+			$table.='<tr><td class="group-discount" style="text-align:right;" colspan="3">'
+				.'Group Discount ('.$group_discount.'%)</td><td class="totals">-'
+				.OnlineStore_numToPrice($discount_amount).'</td></tr>';
+			$grandTotal-=$discount_amount;
+		}
+		// { postage
+		$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
+		if ($postage['total']) {
+			$grandTotal+=$postage['total'];
+			$table.='<tr><td class="p_and_p" style="text-align: right;" colspan="3">'
+				.'Postage and Packaging (P&amp;P)</td><td class="amountcell">'
+				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
+		}
+		// }
 		if ($vattable && $_SESSION['onlinestore_vat_percent']) {
 			$table.='<tr><td style="text-align:right" class="vat" colspan="3">VAT ('.$_SESSION['onlinestore_vat_percent'].'% on '
 				.OnlineStore_numToPrice($vattable).')</td><td class="amountcell">';
@@ -226,9 +242,11 @@ if (!$submitted) {
 		&&count($_SESSION['online-store']['items'])>0
 	) {
 		$user_is_vat_free=0;
+		$group_discount=0;
 		if (@$_SESSION['userdata']['id']) {
 			$user=User::getInstance($_SESSION['userdata']['id']);
 			$user_is_vat_free=$user->isInGroup('_vatfree');
+			$group_discount=$user->getGroupHighest('discount');
 		}
 		$c.='<table id="onlinestore-checkout" width="100%"><tr>';
 		$c.='<th>Item</th>';
@@ -269,13 +287,6 @@ if (!$submitted) {
 		}
 		$c.='<tr class="os_basket_totals"><td style="text-align: right;" colspan="3">Subtotal</td>'
 			.'<td class="totals">'.OnlineStore_numToPrice($grandTotal).'</td></tr>';
-		$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
-		if ($postage['total']) {
-			$grandTotal+=$postage['total'];
-			$c.='<tr><td class="p_and_p" style="text-align: right;" colspan="3">'
-				.'Postage and Packaging (P&amp;P)</td><td class="totals">'
-				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
-		}
 		if (@$_REQUEST['os_voucher']) {
 			require_once dirname(__FILE__).'/voucher-libs.php';
 			$email=$_REQUEST['Email'];
@@ -288,6 +299,22 @@ if (!$submitted) {
 				$grandTotal-=$voucher_amount;
 			}
 		}
+		if ($group_discount) { // group discount
+			$discount_amount=$grandTotal*($group_discount/100);
+			$c.='<tr><td class="group-discount" style="text-align:right;" colspan="3">'
+				.'Group Discount ('.$group_discount.'%)</td><td class="totals">-'
+				.OnlineStore_numToPrice($discount_amount).'</td></tr>';
+			$grandTotal-=$discount_amount;
+		}
+		// { postage
+		$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
+		if ($postage['total']) {
+			$grandTotal+=$postage['total'];
+			$c.='<tr><td class="p_and_p" style="text-align: right;" colspan="3">'
+				.'Postage and Packaging (P&amp;P)</td><td class="totals">'
+				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
+		}
+		// }
 		if ($vattable && $_SESSION['onlinestore_vat_percent']) {
 			$c.='<tr><td style="text-align:right" class="vat" colspan="3">VAT ('.$_SESSION['onlinestore_vat_percent'].'% on '
 				.OnlineStore_numToPrice($vattable).')</td><td class="totals">';

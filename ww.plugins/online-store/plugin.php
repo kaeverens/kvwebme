@@ -392,16 +392,19 @@ function OnlineStore_getFinalTotal() {
 	$grandTotal = 0;
 	$vattable=0;
 	$has_vatfree=false;
+	$user_is_vat_free=0;
+	$group_discount=0;
+	if (@$_SESSION['userdata']['id']) {
+		$user=User::getInstance($_SESSION['userdata']['id']);
+		$user_is_vat_free=$user->isInGroup('_vatfree');
+		$group_discount=$user->getGroupHighest('discount');
+	}
 	foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
 		$totalItemCost=$item['cost']*$item['amt'];
 		$grandTotal+=$totalItemCost;
 		if ($item['vat']) {
 			$vattable+=$totalItemCost;
 		}
-	}
-	$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
-	if ($postage['total']) {
-		$grandTotal+=$postage['total'];
 	}
 	if (@$_REQUEST['os_voucher']) {
 		require_once dirname(__FILE__).'/frontend/voucher-libs.php';
@@ -412,7 +415,17 @@ function OnlineStore_getFinalTotal() {
 			$grandTotal-=$voucher_amount;
 		}
 	}
-	if ($vattable) {
+	if ($group_discount) { // group discount
+		$discount_amount=$grandTotal*($group_discount/100);
+		$grandTotal-=$discount_amount;
+	}
+	// { postage
+	$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
+	if ($postage['total']) {
+		$grandTotal+=$postage['total'];
+	}
+	// }
+	if ($vattable && !$user_is_vat_free) {
 		$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);
 		$grandTotal+=$vat;
 	}

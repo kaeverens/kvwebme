@@ -12,6 +12,7 @@
  */
 
 if ( isset($_REQUEST['action']) && $_REQUEST['action']=='Save') {
+	// { currencies
 	$curs=array();
 	foreach($_REQUEST['os-currencies_iso'] as $key=>$val) {
 		$curs[]=array(
@@ -27,6 +28,25 @@ if ( isset($_REQUEST['action']) && $_REQUEST['action']=='Save') {
 		'insert into site_vars set name="currencies",value="'
 		.addslashes($curs).'"'
 	);
+	// }
+	// { group discounts
+	foreach ($_REQUEST['discounts'] as $gid=>$val) {
+		$val=(float)$val;
+		$gid=(int)$gid;
+		$group=dbRow('select meta from groups where id='.$gid);
+		if ($group) {
+			if ($group['meta']=='') {
+				$group['meta']='{}';
+			}
+			$meta=json_decode($group['meta'], true);
+			$meta['discount']=$val;
+			dbQuery(
+				'update groups set meta="'.addslashes(json_encode($meta))
+				.'" where id='.$gid
+			);
+		}
+	}
+	// }
 	echo '<em>Saved</em>';
 }
 
@@ -37,13 +57,28 @@ $os_currencies=dbOne(
 if (!$os_currencies) {
 	$os_currencies='[{"name":"Euro","iso":"Eur","symbol":"€","value":1}]';
 }
-echo '<form method="post" action="'.$_url.'" />';
-echo '<table>'
-	,'<tr><th>Currencies</th><td id="currencies">'
+echo '<form method="post" action="'.$_url.'" />'
+// { currencies
+	.'<h3>Currencies</h3>'
+	.'<div id="currencies">'
 	.'<p>The top row is the default currency of the website.'
 	.' To change the default, please drag a different row to the top.</p>'
-	,'</td></tr>'
-	,'</table>';
+	.'</div>';
+// }
+// { discounts
+echo '<h3>Group discounts</h3><table>';
+$groups=dbAll('select * from groups order by name');
+foreach ($groups as $group) {
+	if ($group['meta']=='') {
+		$group['meta']='{}';
+	}
+	$meta=json_decode($group['meta'], true);
+	echo '<tr><th>'.htmlspecialchars($group['name']).'</th><td>%'
+		.'<input type="number" name="discounts['.$group['id']
+		.']" min="0" max="100" value="'.((float)@$meta['discount']).'"/></td></tr>';
+}
+echo '</table>';
+// }
 echo '<input type="submit" name="action" value="Save" /></form>';
 WW_addScript('/ww.plugins/online-store/admin/site-options.js');
 WW_addInlineScript('window.os_currencies='.$os_currencies.';');

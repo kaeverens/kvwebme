@@ -18,7 +18,24 @@ class User{
 		if(!isset(self::$instances[$id]))return false;
 		return self::$instances[$id];
 	}
-	function getGroups(){
+	function getGroupHighest($name) {
+		$groups=$this->getGroups();
+		$highest=0;
+		foreach ($groups as $gid) {
+			$meta=dbOne('select meta from groups where id='.$gid, 'meta');
+			if ($meta) {
+				if (!$meta) {
+					$meta='{}';
+				}
+				$meta=json_decode($meta, true);
+				if (isset($meta[$name]) && $meta[$name]>$highest) {
+					$highest=$meta[$name];
+				}
+			}
+		}
+		return (float)$highest;
+	}
+	function getGroups() {
 		if (isset($this->groups)) {
 			return $this->groups;
 		}
