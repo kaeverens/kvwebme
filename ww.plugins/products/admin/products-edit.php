@@ -436,7 +436,13 @@ if (isset($PLUGINS['online-store'])) {
 							'Yes'
 						)
 				),
-			'_custom_vat_amount' => 'Custom VAT Amount'
+			'_custom_vat_amount' => 'Custom VAT Amount',
+			'_deliver_free' => array(
+				'Free Delivery', 'Options'=>array('No', 'Yes')
+			),
+			'_not_discountable' => array(
+				'Not Discountable', 'Options'=>array('No', 'Yes')
+			)
 		);
 	$online_store_data = json_decode($pdata['online_store_fields']);
 	echo '<div id="online-store-fields" class="products-online-store"';

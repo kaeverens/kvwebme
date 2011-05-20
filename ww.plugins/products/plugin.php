@@ -139,7 +139,9 @@ function products_add_to_cart(){
 	$id=(int)$_REQUEST['product_id'];
 	require_once dirname(__FILE__).'/frontend/show.php';
 	$product=Product::getInstance($id);
-	if(!$product)return;
+	if (!$product) {
+		return;
+	}
 	$amount=1;
 	if (isset($_REQUEST['products-howmany'])) {
 		$amount=(int)$_REQUEST['products-howmany'];
@@ -193,7 +195,10 @@ function products_add_to_cart(){
 		$long_desc,
 		'products_'.$id.$md5,
 		$_SERVER['HTTP_REFERER'],
-		$vat
+		$vat,
+		$id,
+		(int)$product->vals['online-store']['_deliver_free'],
+		(int)$product->vals['online-store']['_not_discountable']
 	);
 }
 function Products_listCategories($params, &$smarty){

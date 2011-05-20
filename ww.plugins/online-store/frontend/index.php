@@ -139,6 +139,8 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$group_discount=$user->getGroupHighest('discount');
 		}
 		$grandTotal=0;
+		$discountableTotal=0;
+		$deliveryTotal=0;
 		$vattable=0;
 		$has_vatfree=false;
 		foreach ($_SESSION['online-store']['items'] as $key=>$item) {
@@ -157,6 +159,12 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$grandTotal+=$totalItemCost;
 			if ($item['vat']) {
 				$vattable+=$totalItemCost;
+			}
+			if (!isset($item['_deliver_free']) || !$item['_deliver_free']) {
+				$deliveryTotal+=$totalItemCost;
+			}
+			if (!isset($item['_not_discountable']) || !$item['_not_discountable']) {
+				$discountableTotal+=$totalItemCost;
 			}
 		}
 		$table.='<tr class="os_basket_totals">'
@@ -255,6 +263,8 @@ if (!$submitted) {
 		$c.='<th>Total</th>';
 		$c.='</tr>';
 		$grandTotal = 0;
+		$deliveryTotal=0;
+		$discountableTotal=0;
 		$vattable=0;
 		$has_vatfree=false;
 		foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
@@ -279,6 +289,12 @@ if (!$submitted) {
 			if ($item['vat'] && !$user_is_vat_free) {
 				$vattable+=$totalItemCost;
 			}
+			if (!isset($item['delivery_free']) || !$item['delivery_free']) {
+				$deliveryTotal+=$totalItemCost;
+			}
+			if (!isset($item['not_discountable']) || !$item['not_discountable']) {
+				$discountableTotal+=$totalItemCost;
+			}
 			$c.='<td class="'.$md5.'-item-total totals">'
 				.OnlineStore_numToPrice($totalItemCost).'</td></tr>';
 			if ($item['long_desc']) {
@@ -299,15 +315,15 @@ if (!$submitted) {
 				$grandTotal-=$voucher_amount;
 			}
 		}
-		if ($group_discount) { // group discount
-			$discount_amount=$grandTotal*($group_discount/100);
+		if ($group_discount && $discountableTotal) { // group discount
+			$discount_amount=$discountableTotal*($group_discount/100);
 			$c.='<tr><td class="group-discount" style="text-align:right;" colspan="3">'
 				.'Group Discount ('.$group_discount.'%)</td><td class="totals">-'
 				.OnlineStore_numToPrice($discount_amount).'</td></tr>';
 			$grandTotal-=$discount_amount;
 		}
 		// { postage
-		$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
+		$postage=OnlineStore_getPostageAndPackaging($deliveryTotal, '', 0);
 		if ($postage['total']) {
 			$grandTotal+=$postage['total'];
 			$c.='<tr><td class="p_and_p" style="text-align: right;" colspan="3">'

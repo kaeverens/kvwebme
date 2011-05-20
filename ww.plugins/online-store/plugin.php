@@ -68,8 +68,8 @@ $online_store_currencies=array(
 	* @return null
 	*/
 function OnlineStore_addToCart(
-	$cost=0, $amt=0, $short_desc='',
-	$long_desc='', $md5='', $url='', $vat=true, $id=0
+	$cost=0, $amt=0, $short_desc='', $long_desc='', $md5='', $url='',
+	$vat=true, $id=0, $delivery_free=0, $not_discountable=0
 ) {
 	// { add item to session
 	if (!isset($_SESSION['online-store'])) {
@@ -85,6 +85,8 @@ function OnlineStore_addToCart(
 	$item['url']=$url;
 	$item['vat']=$vat;
 	$item['id']=$id;
+	$item['delivery_free']=$delivery_free;
+	$item['not_discountable']=$not_discountable;
 	$_SESSION['online-store']['items'][$md5]=$item;
 	// }
 	require dirname(__FILE__).'/libs.php';
@@ -341,7 +343,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 	* @return array
 	*/
 function OnlineStore_getPostageAndPackaging($total,$country,$weight){
-	if (!OnlineStore_getNumItems()) {
+	if (!OnlineStore_getNumItems() || !$total) {
 		return array('name'=>'none', 'total'=>0);
 	}
 	$pandps=OnlineStore_getPostageAndPackagingData();
@@ -390,6 +392,8 @@ function OnlineStore_getPostageAndPackagingSubtotal($cstrs,$total,$country,$weig
 }
 function OnlineStore_getFinalTotal() {
 	$grandTotal = 0;
+	$deliveryTotal=0;
+	$discountableTotal=0;
 	$vattable=0;
 	$has_vatfree=false;
 	$user_is_vat_free=0;
@@ -405,6 +409,12 @@ function OnlineStore_getFinalTotal() {
 		if ($item['vat']) {
 			$vattable+=$totalItemCost;
 		}
+		if (!isset($item['delivery_free']) || !$item['delivery_free']) {
+			$deliveryTotal+=$totalItemCost;
+		}
+		if (!isset($item['not_discountable']) || !$item['not_discountable']) {
+			$discountableTotal+=$totalItemCost;
+		}
 	}
 	if (@$_REQUEST['os_voucher']) {
 		require_once dirname(__FILE__).'/frontend/voucher-libs.php';
@@ -415,12 +425,12 @@ function OnlineStore_getFinalTotal() {
 			$grandTotal-=$voucher_amount;
 		}
 	}
-	if ($group_discount) { // group discount
-		$discount_amount=$grandTotal*($group_discount/100);
+	if ($group_discount && $discountableTotal) { // group discount
+		$discount_amount=$discountableTotal*($group_discount/100);
 		$grandTotal-=$discount_amount;
 	}
 	// { postage
-	$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
+	$postage=OnlineStore_getPostageAndPackaging($deliveryTotal, '', 0);
 	if ($postage['total']) {
 		$grandTotal+=$postage['total'];
 	}
