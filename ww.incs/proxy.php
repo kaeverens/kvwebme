@@ -22,15 +22,13 @@
 require 'basics.php';
 require SCRIPTBASE . 'ww.admin/admin_libs.php';
 
-$url = addslashes( @$_GET [ 'url' ] );
+$url = @$_GET [ 'url' ];
 
 /**
  * make sure host and referer are the same
  */
 $referer = @$_SERVER[ 'HTTP_REFERER' ];
-$referer = preg_replace( '/^http:\/\//', '', $referer );
-$referer = explode( '/', $referer );
-$referer = $referer[ 0 ];
+$referer = preg_replace( '/^https?:\/\/([^\/]*)\/.*/', '\1', $referer );
 $host = $_SERVER[ 'SERVER_NAME' ];
 
 if( $host != $referer )
