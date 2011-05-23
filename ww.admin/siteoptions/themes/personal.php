@@ -69,66 +69,32 @@ foreach( $files as $file ){
 
 }
 
-/**
- * page javascript
- */
-$script = '
-$( "#tabs" ).tabs( );
-
-$( ".theme_variant" ).each( show_screenshot );
-$( ".theme_variant" ).change( show_screenshot );
-
-function show_screenshot( ){
-        var screenshot = $( ":selected", this ).attr( "screenshot" );
-        $( this ).closest( "div" ).find( "img" ).attr( "src", screenshot );
-}
-
-$( ".theme-preview-personal" ).click( function( ){
-        $( "#preview-frame" ).attr( "src", "" );
-        var name = $( this ).attr( "title" );
-	var variant = $( this ).closest( "form" ).find( ".theme_variant" ).val( );
-        $( "#preview-dialog" ).attr( "title", name + " - Theme Preview"  );
-        $( "#preview-frame" ).attr( "src", "/?__theme=" + name + "&__theme_variant=" + variant );
-        $( "#preview-frame" ).attr( "height", $( window ).height( ) - 140 );
-        $( "#preview-frame" ).attr( "width", $( window ).width( ) -220 );
-        $( "#preview-dialog" ).dialog( { modal: true, width: $( window ).width( ) - 200, height: $( window ).height( ) - 60 } );
-} );
-
-';
-
-WW_addInlineScript( $script );
+WW_addScript('/ww.admin/siteoptions/themes/themes.js');
 
 $notification = @$_GET[ 'uploaded' ];
+if (@$_REQUEST['msg']) {
+	$msg='<em>'.htmlspecialchars($_REQUEST['msg']).'</em>';
+}
 if( $notification == 'true' )
 	$msg = '<em>Theme Uploaded Successfuly!</em>';
 elseif( $notification == 'false' )
 	$msg = '<em>There was an error uploading the theme. Please do not include any PHP files.</em>';
 
-/**
- * display theme
- */
-echo '
-<div id="preview-dialog" style="display:none">
-<iframe src="" id="preview-frame">
-        &nbsp;
-</iframe>
+// { display theme
+echo '<div id="preview-dialog" style="display:none">
+<iframe src="javascript:;" id="preview-frame"></iframe>
 </div>
 <h2>Themes</h2>
 <div id="tabs">
-
 	<ul>
 		<li><a href="#tabs-1">Personal</a></li>
 		<li><a href="/ww.admin/siteoptions/themes/download.php">Download</a></li>
 		<li><a href="/ww.admin/siteoptions/themes/upload.php">Upload</a></li>
 	</ul>
-
 	<div id="tabs-1">
 	' . @$msg . '
 <table id="themes-table"><tr>';
-
-/**
- * loop through themes, print them
- */
+// { loop through themes, print them
 for( $i = 0; $i < count( $themes ); ++$i ){
 
         if( $i % 3 == 0 )
@@ -161,14 +127,14 @@ for( $i = 0; $i < count( $themes ); ++$i ){
         echo '</select></p>
         <p>
                 <input type="submit" class="install-theme" name="install-theme" value="Install" />
-                <input type="submit" class="install-theme" name="delete-theme" value="Delete"/> 
+                <input type="submit" class="install-theme" onclick="if (!confirm(\'are you sure you want to delete this theme?\')) return false;" name="delete-theme" value="Delete"/> 
                 <a class="theme-preview theme-preview-personal" title="' . $themes[ $i ][ 'name' ] . '">Preview</a>
         </p></form></td>';
 
 }
-
+// }
 echo '</tr></table><br style="clear:both"/>
 </div>
 </div>
 ';
-?>
+// }

@@ -16,7 +16,7 @@ require SCRIPTBASE . 'ww.admin/admin_libs.php';
 
 echo '
 <script type="text/javascript">
-$( document ).ready( function( ){
+$(function( ){
 
 	/**
 	 * make sure its a zip file
@@ -36,7 +36,7 @@ $( document ).ready( function( ){
 
 <h2>Theme Upload</h2>
 <p><i>This uploader can be used to upload themes from your local computer.</i></p>
-<form enctype="multipart/form-data" action="/ww.admin/siteoptions/themes/theme-upload.php" method="post">
+<form id="themes-upload-form" enctype="multipart/form-data" action="/ww.admin/siteoptions/themes/theme-upload.php" method="post" target="upload-iframe">
 <table id="theme-upload">
 	<tr>
 		<td><input type="file" name="theme-zip" id="theme-zip"/></td>
@@ -45,7 +45,5 @@ $( document ).ready( function( ){
 	</tr>
 </table>
 </form>
+<iframe name="upload-iframe" style="display:none" href="javascript:;"></iframe>
 ';
-
-
-?>
