@@ -69,6 +69,7 @@ if( !isset( $_POST[ 'install-theme' ] ) && !isset( $_POST[ 'upload-theme' ] )
 // { make temporary dir and move uploaded file there
 $themes_personal = USERBASE . 'themes-personal/';
 $temp_dir = USERBASE . 'themes-personal/temp_dir/';
+shell_exec( 'rm -rf ' . $temp_dir ); // start fresh
 shell_exec( 'mkdir ' . $temp_dir );
 move_uploaded_file( $_FILES[ 'theme-zip' ][ 'tmp_name' ], $temp_dir . $_FILES[ 'theme-zip' ][ 'name' ] );
 echo '<script>parent.themes_dialog("<p>unzipping archive</p>");</script>';
@@ -77,21 +78,33 @@ $name = reset( explode( '.', $_FILES[ 'theme-zip' ][ 'name' ] ) );
 $theme_folder = $temp_dir . $name;
 // }
 // { identify the theme format, and convert if necessary
+$failure_message='';
 if (file_exists($theme_folder.'/h') && file_exists($theme_folder.'/c')
 	&& file_exists($theme_folder.'/screenshot.png')
 ) { // kvWebME format
 	// nothing to do
 }
+else if (file_exists($theme_folder.'/index.php')
+	&& file_exists($theme_folder.'/single.php')
+) { // wordpress
+	echo '<script>parent.themes_dialog("<p>Wordpress theme detected. Trying to convert.</p>");</script>';
+	require 'convert-wordpress.php';
+//	shell_exec( 'rm -rf ' . $temp_dir );
+}
 else { // unknown format!
 	echo '<script>parent.themes_dialog("<em>Unknown theme format. Failed to install!</em>");</script>';
+	shell_exec( 'rm -rf ' . $temp_dir );
 	exit;
 }
 // }
 // { if theme fails check, remove temp dir and throw error
-$msg=Theme_findErrors( $theme_folder );
-if( $msg ){
+$msg='';
+if (!$failure_message) {
+	$msg=Theme_findErrors( $theme_folder );
+}
+if( $msg || $failure_message ){
 	shell_exec( 'rm -rf ' . $temp_dir );
-	echo '<script>parent.themes_dialog("<em>installation failed: '.$msg.'</em>");</script>';
+	echo '<script>parent.themes_dialog("<em>installation failed: '.$failure_message.$msg.'</em>");</script>';
 	exit;
 }
 // }
@@ -101,15 +114,14 @@ if ( is_dir( $theme_folder . '/cs' ) ) {
 }
 // }
 // { remove temp dir and extract to themes-personal
-shell_exec( 'cd ' . $themes_personal . ' && unzip -o temp_dir/' . $_FILES[ 'theme-zip' ][ 'name' ] );
+shell_exec('rm -rf '.$themes_personal.'/'.$name);
+rename($temp_dir.'/'.$name, $themes_personal.'/'.$name);
+#shell_exec( 'cd ' . $themes_personal . ' && unzip -o temp_dir/' . $_FILES[ 'theme-zip' ][ 'name' ] );
 shell_exec( 'rm -rf ' . $temp_dir );
-
 if( isset( $_POST[ 'install-theme' ] ) ){
         $DBVARS['theme'] = $name;
-
 	if( isset( $variant ) )
 		$DBVARS[ 'theme_variant' ] = $variant;
-
         config_rewrite( );
         cache_clear( 'pages' );
 }
