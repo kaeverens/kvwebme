@@ -60,7 +60,7 @@
 				$( '.ratings-wrapper' ).hover( function( ){
 					clearTimeout( methods.tooltipTimeout );
 					methods.tooltip( $( this ) );
-					$.post( methods.settings.saveRemotely + '/ww.plugins/ratings/info.php',
+					$.get( methods.settings.saveRemotely + '/ww.plugins/ratings/info.php',
 						{ 'name' : $( this ).parent( ).data( 'ratings' ).name },
 						function( html ){
 							$( '#ratings-tooltip' ).html( html );
@@ -177,7 +177,7 @@
 
     // { saveRating
     saveRating : function( $this, index ){
-      $.post( methods.settings.saveRemotely + '/ww.plugins/ratings/save.php', {
+      $.get( methods.settings.saveRemotely + '/ww.plugins/ratings/save.php', {
           'name' : $this.data( 'ratings' ).name,
           'type' : $this.data( 'ratings' ).type,
           'rating' : index
@@ -192,7 +192,7 @@
 
     // { getRating
     getRating : function( id ){
-      $.post( methods.settings.saveRemotely + '/ww.plugins/ratings/get_rating.php', {
+      $.get( methods.settings.saveRemotely + '/ww.plugins/ratings/get_rating.php', {
           'name' : id
         },  
         function( rating ){

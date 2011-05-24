@@ -13,7 +13,7 @@
 require '../../ww.incs/basics.php';
 
 // { validate input
-$name = addslashes( @$_POST[ 'name' ] );
+$name = addslashes( @$_GET[ 'name' ] );
 if( $name == '' )
 	exit;
 // }

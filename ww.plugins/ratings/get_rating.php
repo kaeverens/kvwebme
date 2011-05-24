@@ -12,8 +12,8 @@
 
 require '../../ww.incs/basics.php';
 
-// { get and validate post data
-$name = addslashes( @$_POST[ 'name' ] );
+// { get and validate get data
+$name = addslashes( @$_GET[ 'name' ] );
 if( $name == '' )
 	exit;
 // }

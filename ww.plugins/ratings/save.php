@@ -12,10 +12,10 @@
 
 require '../../ww.incs/basics.php';
 
-// { get and validate post data
-$name = addslashes( @$_POST[ 'name' ] );
-$type = addslashes( @$_POST[ 'type' ] );
-$rating = ( int ) @$_POST[ 'rating' ];
+// { get and validate get data
+$name = addslashes( @$_GET[ 'name' ] );
+$type = addslashes( @$_GET[ 'type' ] );
+$rating = ( int ) @$_GET[ 'rating' ];
 $user = ( @$_SESSION[ 'userdata' ][ 'id' ] == 0 ) ?
 	$_SESSION[ 'userdata' ][ 'id' ] :
 	$_SESSION[ 'REMOTE_ADDR' ];
