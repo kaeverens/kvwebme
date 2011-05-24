@@ -17,7 +17,7 @@ echo '
 <script type="text/javascript" src="/ww.plugins/ratings/ratings.js"></script>
 <script type="text/javascript">
 $( document ).ready( function( ){
-	$( ".ratings" ).ratings( );
+	$( ".ratings" ).ratings( { saveRemotely : "/ww.incs/proxy.php?url=http://kvweb.me" } );
 });
 $( ".theme_variant" ).each( show_screenshot );
 $( ".theme_variant" ).change( show_screenshot );

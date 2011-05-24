@@ -12,14 +12,13 @@
 
 require '../../ww.incs/basics.php';
 
-if( @$_SESSION[ 'userdata' ][ 'id' ] == 0 )
-	die( 'login' );
-
 // { get and validate post data
 $name = addslashes( @$_POST[ 'name' ] );
 $type = addslashes( @$_POST[ 'type' ] );
 $rating = ( int ) @$_POST[ 'rating' ];
-$user = @$_SESSION[ 'userdata' ][ 'id' ];
+$user = ( @$_SESSION[ 'userdata' ][ 'id' ] == 0 ) ?
+	$_SESSION[ 'userdata' ][ 'id' ] :
+	$_SESSION[ 'REMOTE_ADDR' ];
 $date = date( 'm-d-Y' );
 
 if( $rating == '' || $name == '' )

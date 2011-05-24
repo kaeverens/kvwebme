@@ -19,6 +19,9 @@
 
 		selector : null,
 		tooltipTimeout	: false,
+		settings : {
+			saveRemotely : '',
+		},
 
 		// { init method
 		init : function( ){
@@ -57,7 +60,7 @@
 				$( '.ratings-wrapper' ).hover( function( ){
 					clearTimeout( methods.tooltipTimeout );
 					methods.tooltip( $( this ) );
-					$.post( '/ww.plugins/ratings/info.php',
+					$.post( methods.settings.saveRemotely + '/ww.plugins/ratings/info.php',
 						{ 'name' : $( this ).parent( ).data( 'ratings' ).name },
 						function( html ){
 							$( '#ratings-tooltip' ).html( html );
@@ -140,15 +143,15 @@
 			$( '#ratings-tooltip' ).remove( );
 
 			$( 'body' ).prepend( '<div id="ratings-tooltip" style="background:#fff;'
-				+ 'border:1px solid #000;height:60px;border-radius:5px;padding:4px;'
-				+ 'z-index:100;position:absolute;display:none">test<img src="/ww.plugins'
+				+ 'border:1px solid #000;height:40px;border-radius:5px;padding:4px;'
+				+ 'z-index:100;position:absolute;display:none"><img src="/ww.plugins'
 				+ '/ratings/i/loading.gif"/></div>'
 			);
 	
 			var tip = $( '#ratings-tooltip' );
 			var topOffset = tip.height( );
 			var x = ( $this.offset( ).left ) + 'px';  
-			var y = ( $this.offset( ).top + topOffset - 40 ) + 'px';
+			var y = ( $this.offset( ).top + topOffset - 20 ) + 'px';
 			tip.css({ 'top' : y, 'left' : x });
 
 			tip.fadeIn( 'fast' );
@@ -174,7 +177,7 @@
 
     // { saveRating
     saveRating : function( $this, index ){
-      $.post( '/ww.plugins/ratings/save.php', {
+      $.post( methods.settings.saveRemotely + '/ww.plugins/ratings/save.php', {
           'name' : $this.data( 'ratings' ).name,
           'type' : $this.data( 'ratings' ).type,
           'rating' : index
@@ -189,7 +192,7 @@
 
     // { getRating
     getRating : function( id ){
-      $.post( '/ww.plugins/ratings/get_rating.php', {
+      $.post( methods.settings.saveRemotely + '/ww.plugins/ratings/get_rating.php', {
           'name' : id
         },  
         function( rating ){
@@ -245,8 +248,9 @@
 	};
 
 	// { $.fn.ratings
-	$.fn.ratings = function( ){
+	$.fn.ratings = function( options ){
 
+		$.extend( methods.settings, options );
 
 		methods.init.apply( this );	
 
