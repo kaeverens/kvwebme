@@ -25,6 +25,12 @@ if( $version == 0 ){
 	$version = 1;
 
 }
+if( $version == 1 ){
+
+	dbQuery( 'alter table ratings change user user text' );
+
+	$version = 2;
+}
 
 $DBVARS[ $pname . '|version' ] = $version;
 config_rewrite( );

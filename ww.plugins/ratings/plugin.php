@@ -7,14 +7,14 @@
  *
  * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
  * @license    GPL 2.0
- * @version    1.0
+ * @version    2.0
  */
 
 // { plugin array
 $plugin = array( 
 
 	'name'		=>	'Ratings',
-	'version'	=>	1,
+	'version'	=>	2,
 	'description'	=>	'Rate anything'
 );
 // }

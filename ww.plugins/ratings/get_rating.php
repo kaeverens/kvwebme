@@ -22,6 +22,9 @@ $ratings = dbAll( 'select * from ratings where name="' . $name . '"' );
 if( count( $ratings ) == 0 )
 	die( '0' );
 
+
+// removed temporarily
+/*
 // { exclude and delete ratings over a year old
 $valid = array( );
 $lastyear = mktime( 0, 0, 0, date( 'm' ), date( 'd' ), date( 'Y' ) -1 );
@@ -35,6 +38,8 @@ for( $i = 0; $i < count( $ratings ); ++$i ){
 }
 $ratings = $valid;
 // }
+*/
+
 
 // { calculate rating
 $rating = 0;
