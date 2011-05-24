@@ -73,9 +73,19 @@ shell_exec( 'rm -rf ' . $temp_dir ); // start fresh
 shell_exec( 'mkdir ' . $temp_dir );
 move_uploaded_file( $_FILES[ 'theme-zip' ][ 'tmp_name' ], $temp_dir . $_FILES[ 'theme-zip' ][ 'name' ] );
 echo '<script>parent.themes_dialog("<p>unzipping archive</p>");</script>';
-shell_exec( 'cd ' . $temp_dir . ' && unzip -o ' . $_FILES[ 'theme-zip' ][ 'name' ] );
+shell_exec( 'cd ' . $temp_dir . ' && unzip ' . $_FILES[ 'theme-zip' ][ 'name' ] );
 $name = reset( explode( '.', $_FILES[ 'theme-zip' ][ 'name' ] ) );
 $theme_folder = $temp_dir . $name;
+if (!file_exists($theme_folder)) { // argh... why do people do this?
+	$files=new DirectoryIterator($temp_dir);
+	mkdir($theme_folder);
+	foreach ($files as $file) {
+		if ($file->isDot() || $file->getFilename()==$name.'.zip') {
+			continue;
+		}
+		rename($file->getPathname(), $theme_folder.'/'.$file->getFilename());
+	}
+}
 // }
 // { identify the theme format, and convert if necessary
 $failure_message='';
@@ -89,11 +99,18 @@ else if (file_exists($theme_folder.'/index.php')
 ) { // wordpress
 	echo '<script>parent.themes_dialog("<p>Wordpress theme detected. Trying to convert.</p>");</script>';
 	require 'convert-wordpress.php';
+	shell_exec( 'rm -rf ' . $temp_dir );
+}
+else if (file_exists($theme_folder.'/index.html')
+	&& strpos(file_get_contents($theme_folder.'/index.html'), 'freecsstemplates.org')
+) { // freecsstemplates.org
+	echo '<script>parent.themes_dialog("<p>freecsstemplates.org theme detected. Trying to convert.</p>");</script>';
+	require 'convert-freecsstemplates.org.php';
 //	shell_exec( 'rm -rf ' . $temp_dir );
 }
 else { // unknown format!
 	echo '<script>parent.themes_dialog("<em>Unknown theme format. Failed to install!</em>");</script>';
-	shell_exec( 'rm -rf ' . $temp_dir );
+//	shell_exec( 'rm -rf ' . $temp_dir );
 	exit;
 }
 // }

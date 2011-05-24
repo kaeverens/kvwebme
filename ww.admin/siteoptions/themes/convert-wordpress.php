@@ -1,5 +1,5 @@
 <?php
-$failure_message='test';
+$failure_message='';
 if (!isset($theme_folder)) { // called directly. don't do this.
 	exit;
 }
@@ -41,7 +41,8 @@ do {
 	// { navigation
 	$h=str_replace( '<?php echo home_url(); ?>', '/', $h);
 	$h=str_replace( '<?php the_title(); ?>', '{{$pagename}}', $h);
-	$h=preg_replace('#<\?php wp_nav_menu\(.*\);\s*\?>#', '{{MENU}}', $h);
+	$h=preg_replace('#<\?php wp_nav_menu\(.*\);\s*\?>#', '{{MENU direction="horizontal"}}', $h);
+	$h=preg_replace('#(href|src|action)="//#', '\1="/', $h);
 	// }
 	// { convertable objects
 	$h=str_replace( '<?php bloginfo(\'name\'); ?>', '{{$WEBSITE_TITLE}}', $h);
@@ -52,8 +53,10 @@ do {
 	$h=str_replace('<?php the_ID(); ?>', '{{$PAGEDATA->id}}', $h);
 	// }
 	// { translations
-	$h=preg_replace('#<\?php _e\(\s*\'([^\']*)\'[^\)]*\); \?>#', '\1', $h);
-	$h=preg_replace('#<\?php __\(\s*\'([^\']*)\'[^\)]*\); \?>#', '\1', $h);
+	$h=preg_replace('#<\?php _e\(\s*\'([^\']*)\'[^\)]*\);#', '\1<?php ', $h);
+	$h=preg_replace('#<\?php __\(\s*\'([^\']*)\'[^\)]*\);#', '\1<?php ', $h);
+	$h=preg_replace('#<\?php _e\(\s*"([^"]*)"[^\)]*\);#', '\1<?php ', $h);
+	$h=preg_replace('#<\?php __\(\s*"([^"]*)"[^\)]*\);#', '\1<?php ', $h);
 	// }
 	// { stylesheet
 	$h=str_replace('<?php bloginfo( \'stylesheet_url\' ); ?>', '{{$THEMEDIR}}/style.css', $h);
@@ -62,18 +65,19 @@ do {
 	$h=str_replace('<?php else : ?> <?php endif; ?>', '<?php endif; ?>', $h);
 	$h=str_replace(array("\n", "\r", "\t", '  '), ' ', $h);
 	$h=str_replace('<?php language_attributes(); ?>', '', $h);
-	$h=preg_replace('#<meta[^>]*Content-Type.*?/>#', '', $h);
+	$h=preg_replace('#<meta[^>]*(Content-Type|charset).*?/>#', '', $h);
 	$h=preg_replace('#<\?php\s*wp_link_pages(.*?);\s*\?>#', '', $h);
 	$h=preg_replace('#<title.*?</title>#', '', $h);
 	$h=str_replace('<?php wp_footer(); ?>', '', $h);
 	$h=str_replace('<?php $the_title = wp_title(\' - \', false); if ($the_title != \'\') : ?> <?php endif; ?>', '', $h);
 	$h=str_replace('<?php if (is_home()) echo \' class="current_page_item"\'; ?>', '', $h);
-	$h=str_replace('<?php if ( is_singular() && get_option( \'thread_comments\' ) ) wp_enqueue_script( \'comment-reply\' ); ?>', '', $h);
+	$h=preg_replace('#<\?php\s*if\s*\(\s*is_singular\(\)\s*&&\s*get_option\(\s*\'thread_comments\'\s*\)\s*\)\s*wp_enqueue_script\(\s*\'comment-reply\'\s*\);#', '<?php ', $h);
+	$h=preg_replace('#<\?php\s*if\s*\(\s*is_singular\(\)\s*\)\s*wp_enqueue_script\(\s*\'comment-reply\'\s*\);#', '<?php ', $h);
 	$h=preg_replace('#<span[^>]*><\?php\s*the_tags\(.*?\);\s*\?></span>#', '', $h);
 	$h=str_replace('<?php if ( is_active_sidebar(\'footer-widget-area\') ) dynamic_sidebar(\'footer-widget-area\'); ?>', '', $h);
 	$h=str_replace('<?php if ( is_singular() ) { if ( is_active_sidebar(\'singular-widget-area\') ) dynamic_sidebar(\'singular-widget-area\'); } ?>', '', $h);
 	$h=str_replace('<?php if (!is_singular()) { if ( is_active_sidebar(\'not-singular-widget-area\') ) dynamic_sidebar(\'not-singular-widget-area\'); } ?>', '', $h);
-	$h=str_replace( '<a href="http://wordpress.org/">WordPress</a>', '', $h);
+	$h=str_replace( 'Powered by <a href="http://wordpress.org/">WordPress</a>', '', $h);
 	$h=preg_replace('#<\?php\s*if\(function_exists\([^\)]*\)\)\s*{.*?}\s*\?>#', '', $h);
 	$h=preg_replace('#<\?php\s*wp_list_bookmarks\(.*?\);\s*\?>#', '', $h);
 	$h=preg_replace('#<\?php\s*wp_get_archives\(.*?\);\s*\?>#', '', $h);
@@ -85,6 +89,9 @@ do {
 	$h=preg_replace('#<span[^>]*>\s*</span>#', '', $h);
 	$h=preg_replace('#<ul[^>]*>\s*</ul>#', '', $h);
 	$h=preg_replace('#<!--.*?-->#', '', $h);
+	$h=preg_replace('#/\*.*?\*/#', '', $h);
+	$h=preg_replace('#<\?php\s*\?>#', '', $h);
+	$h=preg_replace('#<\?php\\s*echo\s*THEME_URL;\s*\?>#', '{{$THEMEDIR}}', $h);
 	$h=preg_replace('#<div\s*class="widget">\s*<h3>[^>]*</h3>\s*</div>#', '', $h);
 	$h=str_replace('<?php if ( is_singular() ) { ?> <?php } else { ?> <?php } ?>', '', $h);
 	$h=preg_replace('#<\?php\s*if\s*\(\s*!dynamic_sidebar\(\'.*?\'\)\s*\)\s*:\s*\?>\s*<\?php\s*endif;\s*\?>#', '', $h);
@@ -123,7 +130,6 @@ $h=preg_replace('#<!DOCTYPE[^>]*>#', "<!doctype html>\n", $h);
 $n=substr_count($h, '<?php');
 if ($n) {
 	$failure_message=$n.' instances of <code>&lt;?php</code> remaining in template';
-#	mail('kae@localhost', 'test', $h);
 	return;
 }
 mkdir ($theme_folder.'/h');
@@ -140,7 +146,6 @@ function Theme_removeAllPHPFiles($dir) {
 			Theme_removeAllPHPFiles($dir.'/'.$file->getFilename());
 		}
 		else if (preg_match('/\.php/', $file->getFilename())) {
-#			return $file->getPathname();
 			unlink($file->getPathname());
 		}
 	}
