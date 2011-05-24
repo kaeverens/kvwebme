@@ -14,14 +14,17 @@ require '../../../ww.incs/basics.php';
 require SCRIPTBASE . 'ww.admin/admin_libs.php';
 
 echo '
+<script type="text/javascript" src="/ww.plugins/ratings/ratings.js"></script>
 <script type="text/javascript">
-
+$( document ).ready( function( ){
+	$( ".ratings" ).ratings( );
+});
 $( ".theme_variant" ).each( show_screenshot );
 $( ".theme_variant" ).change( show_screenshot );
 
 function show_screenshot( ){
         var screenshot = $( ":selected", this ).attr( "screenshot" );
-        $( this ).closest( "div" ).find( "img" ).attr( "src", screenshot );
+	$( this ).closest( "div" ).find( ".screenshot" ).attr( "src", screenshot );
 }
 
 $( ".install-theme" ).click( function( ){
@@ -93,7 +96,8 @@ for( $i = 0; $i < count( $themes ); ++$i ){
 		<form action="/ww.admin/siteoptions.php?page=themes&action=download" method="post">
 		<input type="hidden" value="' . $themes[ $i ][ 'id' ] . '" name="theme_id"/>
 		<h3> ' . $themes[ $i ][ 'name' ] . $status . '</h3>
-		<p><img src="" width="240px" height="172px"/></p>
+		<p><img src="" width="240px" height="172px" class="screenshot"/></p>
+	  <p class="ratings" id="themes_' . $themes[ $i ][ 'id' ] . '" type="theme">ratings</p>
 		<p>' . $themes[ $i ][ 'description' ] . '</p>
 		<p>Variant: <select name="theme_variant" class="theme_variant">';
 
