@@ -5,7 +5,8 @@
  *
  * displays themes from the theme server
  *
- * @author	 Conor Mac Aoidh <conormacaoidh@gmail.com>
+ * @author  Conor Mac Aoidh <conormacaoidh@gmail.com>
+ * @author  Kae Verens <kae@kvsites.ie>
  * @license	GPL 2.0
  * @version	1.0
  */
@@ -16,15 +17,16 @@ require SCRIPTBASE . 'ww.admin/admin_libs.php';
 echo '
 <script type="text/javascript" src="/ww.plugins/ratings/ratings.js"></script>
 <script type="text/javascript">
-$( document ).ready( function( ){
+$( function( ){
 	$( ".ratings" ).ratings( { saveRemotely : "/ww.incs/proxy.php?url=http://kvweb.me" } );
 });
-$( ".theme_variant" ).each( show_screenshot );
-$( ".theme_variant" ).change( show_screenshot );
+$( ".theme_variant" )
+	.each( show_screenshot )
+	.change( show_screenshot );
 
 function show_screenshot( ){
 		var screenshot = $( ":selected", this ).attr( "screenshot" );
-		$( this ).closest( "div" ).find( "img" ).attr( "src", screenshot );
+		$( this ).closest( "div" ).find( ".screenshot" ).attr( "src", screenshot );
 }
 
 $( ".install-theme" ).click( function( ){
@@ -98,18 +100,18 @@ for( $i = 0; $i < count( $themes ); ++$i ){
 		<h3> ' . $themes[ $i ][ 'name' ] . $status . '</h3>
 		<p><img src="http://kvweb.me/ww.plugins/themes-api/api.php?screenshot=true&id=' . $themes[ $i ][ 'id' ] . '"/></p>
 	  <p class="ratings" id="themes_' . $themes[ $i ][ 'id' ] . '" type="theme">ratings</p>
-		<p>' . $themes[ $i ][ 'description' ] . '</p>
-		<p>Variant: <select name="theme_variant" class="theme_variant">';
-
+		<p>' . $themes[ $i ][ 'description' ] . '</p>';
+	if (count($themes[ $i ][ 'variants' ])) {
+		echo '<p>Variant: <select name="theme_variant" class="theme_variant">';
 			/**
 			 * get all variants
 			 */
 			foreach( $themes[ $i ][ 'variants' ] as $variant ){
 					echo '<option screenshot="' . $themes[ $i ][ 'screenshot' ] . '&variant=' . $variant . '">' . $variant . '</option>';
 			}
-
-	echo '</select></p>
-	<p>
+		echo '</select></p>';
+	}
+	echo '<p>
 		<input type="submit" class="install-theme" name="install-theme" installed="' . $theme_installed . '" value="Download & Install" />
 		<input type="submit" class="install-theme" name="download-theme" installed="' . $theme_installed . '" value="Download"/> 
 		<a class="theme-preview theme-preview-download" title="' . $themes[ $i ][ 'name' ] . '" >Preview</a>
