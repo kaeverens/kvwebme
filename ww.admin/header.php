@@ -43,8 +43,8 @@ foreach($PLUGINS as $pname=>$p){
 	<body<?php
 	if(isset($_REQUEST['frontend-admin']))echo ' class="frontend-admin"';
 	?>>
-		<div id="header"> 
 <?php
+	echo '<div id="header">';
 	// { setup standard menu items
 	$menus=array(
 		'Pages'=>array(
@@ -108,7 +108,7 @@ foreach($PLUGINS as $pname=>$p){
 	}
 	admin_menu_show($menus,'top','menu');
 	// }
+	echo '</div>';
 ?>
-		</div>
 		<div id="wrapper">
 			<div id="main">

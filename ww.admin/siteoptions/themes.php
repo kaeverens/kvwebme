@@ -6,8 +6,8 @@
  * switches between theme operations
  *
  * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
+ * @author     Kae Verens <kae@kvsites.ie>
  * @license    GPL 2.0
- * @version    1.0
  */
 
 $action = @$_GET[ 'action' ];
@@ -22,5 +22,3 @@ switch( $action ){
 	default:
 		require SCRIPTBASE . 'ww.admin/siteoptions/themes/personal.php';
 }
-
-?>

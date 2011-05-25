@@ -5,9 +5,9 @@
  *
  * displays themes from the theme server
  *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
+ * @author	 Conor Mac Aoidh <conormacaoidh@gmail.com>
+ * @license	GPL 2.0
+ * @version	1.0
  */
 
 require '../../../ww.incs/basics.php';
@@ -23,8 +23,8 @@ $( ".theme_variant" ).each( show_screenshot );
 $( ".theme_variant" ).change( show_screenshot );
 
 function show_screenshot( ){
-        var screenshot = $( ":selected", this ).attr( "screenshot" );
-	$( this ).closest( "div" ).find( ".screenshot" ).attr( "src", screenshot );
+		var screenshot = $( ":selected", this ).attr( "screenshot" );
+		$( this ).closest( "div" ).find( "img" ).attr( "src", screenshot );
 }
 
 $( ".install-theme" ).click( function( ){
@@ -41,13 +41,13 @@ $( ".install-theme" ).click( function( ){
 } );
 
 $( ".theme-preview-download" ).click( function( ){
-        $( "#preview-frame" ).attr( "src", "" );
+		$( "#preview-frame" ).attr( "src", "" );
 	var name = $( this ).attr( "title" );
-        var variant = $( this ).closest( "form" ).find( ".theme_variant" ).val( );
-        $( "#preview-dialog" ).attr( "title", name + " - Theme Preview"  );
-        $( "#preview-frame" ).attr( "src", "http://kvweb.me/preview?__theme=" + name + "&__theme_variant=" + variant );
+		var variant = $( this ).closest( "form" ).find( ".theme_variant" ).val( );
+		$( "#preview-dialog" ).attr( "title", name + " - Theme Preview"  );
+		$( "#preview-frame" ).attr( "src", "http://kvweb.me/preview?__theme=" + name + "&__theme_variant=" + variant );
 	$( "#preview-frame" ).attr( "height", $( window ).height( ) - 140 );
-        $( "#preview-frame" ).attr( "width", $( window ).width( ) -220 );
+		$( "#preview-frame" ).attr( "width", $( window ).width( ) -220 );
 	$( "#preview-dialog" ).dialog( { modal: true, width: $( window ).width( ) - 200, height: $( window ).height( ) - 60 } );
 } );
 </script>
@@ -88,7 +88,7 @@ for( $i = 0; $i < count( $themes ); ++$i ){
 	if( $i % 3 == 0 )
 		echo '</tr><tr>';
 
-        $class = ( !( ( $i - 1 ) % 3 ) ) ? ' class="middle"' : '';
+		$class = ( !( ( $i - 1 ) % 3 ) ) ? ' class="middle"' : '';
 
 	echo '<td' . @$class . '>';
 
@@ -96,17 +96,17 @@ for( $i = 0; $i < count( $themes ); ++$i ){
 		<form action="/ww.admin/siteoptions.php?page=themes&action=download" method="post">
 		<input type="hidden" value="' . $themes[ $i ][ 'id' ] . '" name="theme_id"/>
 		<h3> ' . $themes[ $i ][ 'name' ] . $status . '</h3>
-		<p><img src="" width="240px" height="172px" class="screenshot"/></p>
+		<p><img src="http://kvweb.me/ww.plugins/themes-api/api.php?screenshot=true&id=' . $themes[ $i ][ 'id' ] . '"/></p>
 	  <p class="ratings" id="themes_' . $themes[ $i ][ 'id' ] . '" type="theme">ratings</p>
 		<p>' . $themes[ $i ][ 'description' ] . '</p>
 		<p>Variant: <select name="theme_variant" class="theme_variant">';
 
-	        /**
-	         * get all variants
-	         */
-	        foreach( $themes[ $i ][ 'variants' ] as $variant ){
-	                echo '<option screenshot="' . $themes[ $i ][ 'screenshot' ] . '&variant=' . $variant . '">' . $variant . '</option>';
-	        }
+			/**
+			 * get all variants
+			 */
+			foreach( $themes[ $i ][ 'variants' ] as $variant ){
+					echo '<option screenshot="' . $themes[ $i ][ 'screenshot' ] . '&variant=' . $variant . '">' . $variant . '</option>';
+			}
 
 	echo '</select></p>
 	<p>

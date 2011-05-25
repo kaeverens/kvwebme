@@ -5,9 +5,9 @@
  *
  * displays themes from the theme server
  *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
+ * @author	 Conor Mac Aoidh <conormacaoidh@gmail.com>
+ * @license	GPL 2.0
+ * @version	1.0
  */
 
 $themes = array( );
@@ -40,22 +40,22 @@ foreach( $files as $file ){
 				if( $f == '.' || $f == '..' )
 					continue;
 
-		                /**
-		                 * get file name and extention
-		                 */
-		                $fname = explode( '.', $f );
-		                $ext = end( $fname );
-		                $fname = reset( $fname );
+						/**
+						 * get file name and extention
+						 */
+						$fname = explode( '.', $f );
+						$ext = end( $fname );
+						$fname = reset( $fname );
 
-		                /**
-		                 * if css files are present, make sure they have
-		                 * corresponding png files
-		                 */
-		                if( $ext == 'css' ){
-		                        if( in_array( $fname . '.png', $fs ) ){
+						/**
+						 * if css files are present, make sure they have
+						 * corresponding png files
+						 */
+						if( $ext == 'css' ){
+								if( in_array( $fname . '.png', $fs ) ){
 						array_push( $variants, $fname );
 					}
-		                }
+						}
 
 			}
 
@@ -97,39 +97,40 @@ echo '<div id="preview-dialog" style="display:none">
 // { loop through themes, print them
 for( $i = 0; $i < count( $themes ); ++$i ){
 
-        if( $i % 3 == 0 )
-                echo '</tr><tr>';
+		if( $i % 3 == 0 )
+				echo '</tr><tr>';
 
 	$status = ( $DBVARS[ 'theme' ] == $themes[ $i ][ 'name' ] ) ? ' - Current Theme' : '' ;
 	$current = ( $DBVARS[ 'theme' ] == $themes[ $i ][ 'name' ] ) ? ' style="background:#FCFFB2"' : '';
 
-        $class = ( !( ( $i - 1 ) % 3 ) ) ? ' class="middle"' : '';
+		$class = ( !( ( $i - 1 ) % 3 ) ) ? ' class="middle"' : '';
 
-        echo '<td' . $class . $current . '>';
+		echo '<td' . $class . $current . '>';
 
-        echo '<div class="theme-container">
-                <form action="/ww.admin/siteoptions.php?page=themes&action=install" method="post">
-                <input type="hidden" value="' . $themes[ $i ][ 'name' ] . '" name="theme_name"/>
-                <h3>' . $themes[ $i ][ 'name' ] . @$status . '</h3>
-                <p><img src="/ww.skins/' . $themes[ $i ][ 'name' ] . '/screenshot.png" width="240px" height="172px"/></p>
-                <p>Variant: <select name="theme_variant" class="theme_variant">';
+		echo '<div class="theme-container">
+				<form action="/ww.admin/siteoptions.php?page=themes&action=install" method="post">
+				<input type="hidden" value="' . $themes[ $i ][ 'name' ] . '" name="theme_name"/>
+				<h3>' . $themes[ $i ][ 'name' ] . @$status . '</h3>
+				<p><img src="/ww.skins/' . $themes[ $i ][ 'name' ] . '/screenshot.png" width="240px" height="172px"/></p>';
+		if (count ($themes[ $i ][ 'variants' ])) {
+			echo '<p>Variant: <select name="theme_variant" class="theme_variant">';
+			/**
+			 * get all variants
+			 */
+			foreach( $themes[ $i ][ 'variants' ] as $variant ){
+					$cur = ( $DBVARS[ 'theme' ] == $themes[ $i ][ 'name' ] && $DBVARS['theme_variant'] == $variant ) ?
+							' selected="selected"' :
+							'';
+					echo '<option screenshot="/ww.skins/' . $themes[ $i ][ 'name' ] . '/cs/' . $variant. '.png" ' . $cur . '>' . $variant . '</option>';
+			}
+		}
+		echo '</select></p>';
 
-                /**
-                 * get all variants
-                 */
-                foreach( $themes[ $i ][ 'variants' ] as $variant ){
-                        $cur = ( $DBVARS[ 'theme' ] == $themes[ $i ][ 'name' ] && $DBVARS['theme_variant'] == $variant ) ?
-                                ' selected="selected"' :
-                                '';
-                        echo '<option screenshot="/ww.skins/' . $themes[ $i ][ 'name' ] . '/cs/' . $variant. '.png" ' . $cur . '>' . $variant . '</option>';
-                }
-
-        echo '</select></p>
-        <p>
-                <input type="submit" class="install-theme" name="install-theme" value="Install" />
-                <input type="submit" class="install-theme" onclick="if (!confirm(\'are you sure you want to delete this theme?\')) return false;" name="delete-theme" value="Delete"/> 
-                <a class="theme-preview theme-preview-personal" title="' . $themes[ $i ][ 'name' ] . '">Preview</a>
-        </p></form></td>';
+		echo '<p>
+				<input type="submit" class="install-theme" name="install-theme" value="Install" />
+				<input type="submit" class="install-theme" onclick="if (!confirm(\'are you sure you want to delete this theme?\')) return false;" name="delete-theme" value="Delete"/> 
+				<a class="theme-preview theme-preview-personal" title="' . $themes[ $i ][ 'name' ] . '">Preview</a>
+		</p></form></td>';
 
 }
 // }
