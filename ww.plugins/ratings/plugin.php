@@ -12,11 +12,42 @@
 
 // { plugin array
 $plugin = array( 
-
 	'name'		=>	'Ratings',
 	'version'	=>	2,
-	'description'	=>	'Rate anything'
+	'description'	=>	'Rate anything',
+  'frontend'=>array(
+		'template_functions'=>array(
+			'RATINGS'=>array(
+				'function' => 'ratings_template_function'
+			)   
+		)   
+	)
 );
 // }
+
+/**
+ * ratings_template_function
+ *
+ * replaces {{RATINGS}} with a rating interface
+ */
+function ratings_template_function( $vars ){
+	$name = @$vars[ 'name' ];
+	$type = @$vars[ 'type' ];
+
+	if( $name == '' )
+		return '';
+
+	$script = '
+		$(function( ){
+			$( ".ratings" ).ratings( );
+		});
+	';
+
+	WW_addScript( '/ww.plugins/ratings/ratings.js' );
+	WW_addInlineScript( $script );
+
+	return '<div class="ratings" id="' . $name . '" type="' . $type . '">'
+	. 'ratings</div>';
+}
 
 ?>
