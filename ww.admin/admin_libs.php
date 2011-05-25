@@ -254,7 +254,7 @@ function sanitise_html($original_html) {
 		$html = str_replace('{{LINERETURN}}{{CARRIAGERETURN}}', "{{CARRIAGERETURN}}", $html);
 		$html = str_replace('>{{CARRIAGERETURN}}','>',$html);
 		$html = str_replace('{{CARRIAGERETURN}}{{CARRIAGERETURN}}', '{{CARRIAGERETURN}}', $html);
-		$html = preg_replace('/\s+/',' ',$html);
+	//	$html = preg_replace('/\s+/',' ',$html);
 		$html = preg_replace("/<p>\s*/",'<p>',$html);
 		$html = preg_replace("#\s*<br( ?/)?>\s*#",'<br />',$html);
 		$html = preg_replace("#\s*<li>\s*#",'<li>',$html);
