@@ -45,7 +45,7 @@
 
 				methods.writeElements( $this );
 				$this.append(
-					'<a class="rateme" type="' 
+					'<a class="rateme" style="display:inline;margin-left:4px" type="' 
 					+ $this.data( 'ratings' ).type + '" name="' 
 					+ $this.data( 'ratings' ).name + '">Rate Me</a>'
 				);
@@ -181,12 +181,8 @@
           'name' : $this.data( 'ratings' ).name,
           'type' : $this.data( 'ratings' ).type,
           'rating' : index
-        },  
-        function( html ){
-          if( html == 'login' )
-						 $this.html( '<a href="/_r?type=loginpage"><i>login to rate this item</i></a>' );
-        }   
-      );  
+        }
+      );
     },  
     // }
 
@@ -229,7 +225,7 @@
     // { writeElements
     writeElements : function( sel ){
 
-      var html = '<div class="ratings-wrapper">'
+      var html = '<div class="ratings-wrapper" style="display:inline-block">'
         + '<div class="stars">'
         + '<img src="/ww.plugins/ratings/i/star.gif" class="star"/>'
         + '<img src="/ww.plugins/ratings/i/star.gif" class="star"/>'

@@ -16,9 +16,9 @@ require '../../ww.incs/basics.php';
 $name = addslashes( @$_GET[ 'name' ] );
 $type = addslashes( @$_GET[ 'type' ] );
 $rating = ( int ) @$_GET[ 'rating' ];
-$user = ( @$_SESSION[ 'userdata' ][ 'id' ] == 0 ) ?
-	$_SESSION[ 'userdata' ][ 'id' ] :
-	$_SESSION[ 'REMOTE_ADDR' ];
+$user = ( ( int ) @$_SESSION[ 'userdata' ][ 'id' ] == 0 ) ?
+	$_SERVER[ 'REMOTE_ADDR' ] :
+	$_SESSION[ 'userdata' ][ 'id' ];
 $date = date( 'm-d-Y' );
 
 if( $rating == '' || $name == '' )
@@ -26,15 +26,31 @@ if( $rating == '' || $name == '' )
 
 // }
 
+// { make sure user hasn't already voted
+$query = dbRow( 'select id from ratings'
+	. ' where user="' . $user . '"'
+	. ' and name="' . $name . '"'
+);
+// }
+
 // { add item to db, or update existing item
-dbQuery( 'insert into ratings values(
-	"",
-	"' . $name . '",
-	"' . $rating . '",
-	"' . $type . '",
-	"' . $date . '",
-	"' . $user . '"
-)' );
+if( $query == false ){
+	dbQuery( 'insert into ratings values(
+		"",
+		"' . $name . '",
+		"' . $rating . '",
+		"' . $type . '",
+		"' . $date . '",
+		"' . $user . '"
+	)' );
+}
+else{
+	dbQuery( 'update ratings set '
+		. 'rating="' . $rating . '"'
+		. ' and date="' . $date . '"'
+		. ' where name="' . $name . '"'
+	);
+}
 // }
 
 ?>
