@@ -399,11 +399,94 @@ function userregistration_register(){
 	// }
 }
 function userregistration_showProfile(){
-	$ud=$_SESSION['userdata'];
-	$name=$ud['name']?$ud['name']:'';
-	$c='<a class="logout" href="/?logout=1">log out</a><h2>User Profile: '.htmlspecialchars($name).'</h2><table>';
-	$c.='</table>';
-	return $c;
+	$uid = addslashes( $_SESSION['userdata'][ 'id' ] );
+	$user = dbRow( 'select * from user_accounts where id=' . $uid );
+
+	$phone = ( $user[ 'phone' ] == '' ) ?
+		'<a href="javascript:edit_user_dialog(' . $user[ 'id' ] . ');">Add</a>' :
+		htmlspecialchars( $user[ 'phone' ] );
+	
+	$address = ( $user[ 'address' ] == '' ) ?
+		'<a href="javascript:edit_user_dialog(' . $user[ 'id' ] . ');">Add</a>' :
+		$user[ 'address' ];
+
+	// get array of groups the user is a member of
+	$groups = array( );
+	$group_ids = dbAll( 
+		'select groups_id from users_groups where user_accounts_id=' . $uid
+	);
+	foreach( $group_ids as $key => $id )
+		array_push(
+			$groups,
+			dbOne( 'select name from groups where id=' . $id[ 'groups_id' ], 'name' )
+		);
+	$groups = implode( ',', $groups );
+
+	$html = '<a class="logout" href="/?logout=1" style="float:right">Logout</a>
+	<h2>' . htmlspecialchars( $user[ 'name' ] ) . '</h2>
+	<table id="user-info" style="border:1px solid #ccc;margin:10px">
+		<tr>
+			<th>Email:</th><td>' . htmlspecialchars( $user[ 'email' ] ) . '</td>
+		</tr>
+		<tr>
+			<th>Group(s):</th><td>' . htmlspecialchars( $groups ) . '</td>
+		</tr>
+		<tr>
+			<th>Phone:</th><td>' . $phone . '</td>
+		</tr>
+		<tr>
+			<th>Address:</th><td>' . $address . '</td>
+		</tr>';
+
+	$html .= '</table>	
+	<p>
+	<a href="javascript:edit_user_dialog(' . $user[ 'id' ] . ');" id="edit-user-info">
+		Edit Details
+	</a>
+	<a href="javascript:change_password_dialog(' . $user[ 'id' ] . ');"
+	id="user-change-password" style="diplay:inline">Change Password</a></p>
+	';
+
+	$script = '
+		function edit_user_dialog( id ){
+			$( "<div id=\'users-dialog\' title=\'Edit User Details\'></div>" )
+			.html( "Loading..." )
+			.dialog({
+				modal : true,
+				buttons : {
+					"Save" : function( ){
+						var name = $( "input[name=\'user-name\']" ).val( );
+						if( name == "" ){
+							$( "#error" ).html( "the name field is required" );
+							return false;
+						}
+						var phone = $( "input[name=\'user-phone\']" ).val( );
+						var address = $( "textarea[name=\'user-address\']" ).val( );
+						$.post(
+							"/ww.plugins/privacy/frontend/save_user_info.php",
+							{ "name" : name, "phone" : phone, "address" : address }	
+						);
+						location.reload( true );
+					},
+					"Cancel" : function( ){
+						$( "#users-dialog" ).dialog( "close" ).remove( );
+					}
+				}
+			});
+			$.get(
+				"/ww.plugins/privacy/frontend/edit_user_info.php",
+				function( html ){
+					$( "#users-dialog" ).html( html );
+				}
+			);
+		}
+	';
+	WW_addInlineScript( $script );
+	WW_addScript( '/ww.plugins/privacy/frontend/change_password.js' );
+
+	$html .= plugin_trigger( 'privacy_user_profile', array( $user ) );
+
+	return $html;
 }
 function loginBox(){
 	$page=Page::getInstanceByType(3);
@@ -417,5 +500,11 @@ function loginBox(){
 	}
 	return $c;
 }
-$html=userloginandregistrationDisplay();
-WW_addInlineScript('$(function(){$(".tabs").tabs()});');
+
+// if not logged in display login box
+if( !isset( $_SESSION[ 'userdata' ][ 'id' ] ) ){
+	$html=userloginandregistrationDisplay();
+	WW_addInlineScript('$(function(){$(".tabs").tabs()});');
+}
+else
+	$html = userregistration_showProfile( );	

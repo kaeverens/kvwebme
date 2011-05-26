@@ -155,12 +155,23 @@ function has_page_permissions($val){
 function has_access_permissions($val){
 	return true;
 }
-function plugin_trigger($trigger_name){
+function plugin_trigger( $trigger_name, $params = null ){
 	global $PLUGIN_TRIGGERS,$PAGEDATA;
 	if(!isset($PLUGIN_TRIGGERS[$trigger_name]))return;
 	$c='';
 	foreach($PLUGIN_TRIGGERS[$trigger_name] as $fn) {
-		$c.=$fn($PAGEDATA);
+		if( $params == null ){
+			$c .= $fn( $PAGEDATA );
+		}
+		else{
+			if( is_array( $params ) ){
+				// push PAGEDATA to begining of array
+				array_unshift( $params, $PAGEDATA );
+				$c .= call_user_func_array( $fn, $params );
+			}
+			else
+				$c .= $fn( $PAGEDATA, $params );
+		}
 	}
 	return $c;
 }
