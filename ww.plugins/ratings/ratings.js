@@ -146,7 +146,7 @@
 				+ 'border:1px solid #000;height:40px;border-radius:5px;padding:4px;'
 				+ 'z-index:100;position:absolute;display:none">'
 			  + '<img src="' + methods.settings.saveRemotely
-				+ 'ww.plugins/ratings/i/loading.gif"/></div>'
+				+ '/ww.plugins/ratings/i/loading.gif"/></div>'
 			);
 	
 			var tip = $( '#ratings-tooltip' );
@@ -231,7 +231,7 @@
 
 			for( var i = 0; i < 4; ++i )
         html += '<img src="' + methods.settings.saveRemotely 
-						+ 'ww.plugins/ratings/i/star.gif" class="star"/>'
+						+ '/ww.plugins/ratings/i/star.gif" class="star"/>'
 
       html += '</div>';
 
