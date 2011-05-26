@@ -1,5 +1,5 @@
 <?php
-$c='<div id="userauthentication-widget" widget-id="'
+$c='<div id="userauthentication-widget" style="margin:3px" widget-id="'
 	.$widget_id.'-'.$vars->id.'">'
 	.'log in with <button>email/password</button>';
 if (isset($vars->external_login)

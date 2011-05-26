@@ -41,7 +41,8 @@ function UserAuthentication_showWidget($vars=null, $widget_id) {
 		WW_addScript('/ww.plugins/privacy/frontend/widget-login.js');
 		return $c;
 	}
-	return '<div id="userauthentication-widget">Logged in as <strong>'
+	return '<div id="userauthentication-widget" style="margin:3px">Logged in as <strong>'
 		.$_SESSION['userdata']['name'].'</strong>'
-		.' [<a href="/?logout">log out</a>]</div>';
+		.' [<a href="/?logout">log out</a>]'
+		.'[<a href="/_r?type=loginpage">edit profile</a>]</div>';
 }
