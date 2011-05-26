@@ -86,6 +86,12 @@ if ($version==7) { // add online_store_vouchers
 		) default charset=utf8');
 	$version=8;
 }
+if( $version==8) { // add user_id column to online_store_orders
+	dbQuery(
+		'alter table online_store_orders add user_id int default 0 after callback'
+	);
+	$version = 9;
+}
 
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();

@@ -37,13 +37,13 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		$fields='{}';
 	}
 	$fields=json_decode($fields);
-	foreach ($fields as $name=>$field) {
+	foreach ($fields as $name=>$field) { 
 		if (!$field->show) {
 			continue;
-		}
-		if ($field->required && (!isset($_REQUEST[$name]) || !$_REQUEST[$name])) {
+		} 
+		if (isset( $field->required ) && $field->required && (!isset($_REQUEST[$name]) || !$_REQUEST[$name])) {
 			$errors[]='You must enter the "'.htmlspecialchars($name).'" field.';
-		}
+		} 
 	}
 	// }
 	// { if no payment method is selected, then choose the first available
@@ -71,7 +71,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		}
 	}
 	// }
-	// { check that payment method is valid
+	// { check t hat payment method is valid
 	switch($_REQUEST['_payment_method_type']){
 		case 'PayPal': // {
 			if(
@@ -103,18 +103,19 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 	if (count($errors)) {
 		$c.='<div class="errors"><em>'.join('</em><br /><em>', $errors)
 			.'</em></div>';
-	}
+	} 
 	else {
-		$formvals=addslashes(json_encode($_REQUEST));
+		$formvals = addslashes( json_encode( $_REQUEST ) );
 		$items=addslashes(json_encode($_SESSION['online-store']['items']));
 		$total=OnlineStore_getFinalTotal();
 		// { save data
 		dbQuery(
-			'insert into online_store_orders (form_vals,total,items,date_created)'
-			." values('$formvals', $total, '$items', now())"
+			'insert into online_store_orders (form_vals,total,items,date_created,user_id)'
+			." values('$formvals', $total, '$items', now(), '"
+			. @$_SESSION[ 'userdata' ][ 'id' ] . "' )"
 		);
 		$id=dbOne('select last_insert_id() as id', 'id');
-		// }
+		 // }
 		// { generate invoice
 		require_once SCRIPTBASE . 'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
 		$smarty = new Smarty;
@@ -240,7 +241,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		unset($_SESSION['online-store']);
 		// }
 		$submitted=1;
-	}
+	} 
 }
 
 if (!$submitted) {
