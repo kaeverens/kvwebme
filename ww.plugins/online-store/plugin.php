@@ -46,7 +46,7 @@ $plugin=array(
 		'initialisation-completed' => 'OnlineStore_startup',
 		'privacy_user_profile' => 'OnlineStore_user_profile'
 	),
-	'version' => '9'
+	'version' => '10'
 );
 // }
 // { currency symbols
@@ -376,10 +376,10 @@ function OnlineStore_showBasketWidget($vars=null) {
 		}
 	}
 	if (@$_SESSION['userdata']['id']) {
-		$html.='<div id="onlinestore-lists">'
-			.'<a href="javascript:;" class="onlinestore-load-list">load list</a>';
+		$html.='<div id="onlinestore-lists"><span>Lists: </span>'
+			.'<a href="javascript:;" class="onlinestore-load-list">load</a>';
 		if (count(@$_SESSION['online-store']['items'])) {
-			$html.=' | <a href="javascript:;" class="onlinestore-save-list">save list</a>';
+			$html.=' | <a href="javascript:;" class="onlinestore-save-list">save</a>';
 		}
 		$html.='</div>';
 	}

@@ -86,11 +86,19 @@ if ($version==7) { // add online_store_vouchers
 		) default charset=utf8');
 	$version=8;
 }
-if( $version==8) { // add user_id column to online_store_orders
+if ($version==8) { // add user_id column to online_store_orders
 	dbQuery(
 		'alter table online_store_orders add user_id int default 0 after callback'
 	);
 	$version = 9;
+}
+if ($version==9) { // add online_store_lists table
+	dbQuery(
+		'create table online_store_lists('
+		.'name text, user_id int, details text'
+		.')default charset=utf8'
+	);
+	$version=10;
 }
 
 $DBVARS[$pname.'|version']=$version;

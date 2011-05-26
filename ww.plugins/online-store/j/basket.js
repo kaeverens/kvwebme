@@ -81,6 +81,51 @@ function os_reset_basket(res){
 	$('.online-store-basket-widget').html(html);
 	os_setup_basket_events();
 }
+function OnlineStore_saveList(){
+	var name=prompt('What name do you want to give to this list?', 'default');
+	if (!name){
+		return;
+	}
+	$.post('/ww.plugins/online-store/frontend/list-save.php',{
+		'name': name
+	}, function(ret){
+		if (ret.error) {
+			return alert(ret.error);
+		}
+		document.location=document.location.toString();
+	});
+}
+function OnlineStore_loadList(){
+	$.post('/ww.plugins/online-store/frontend/list-list.php', function(ret){
+		if (ret.error) {
+			return alert(ret.error);
+		}
+		if (!ret.names.length) {
+			return alert('you have no shopping lists saved');
+		}
+		var html='<ul>';
+		for (var i=0;i<ret.names.length;++i) {
+			html+='<li><a href="javascript:;">'+htmlspecialchars(ret.names[i])
+				+'</a></li>';
+		}
+		html+='</ul>';
+		$('<div id="onlinestore-load-lists"><p>Choose one of your saved lists.</p>'
+			+html+'</div>')
+			.dialog({
+				"modal":true
+			});
+		$('#onlinestore-load-lists a').click(function(){
+			$.post('/ww.plugins/online-store/frontend/list-load.php',{
+				"name":$(this).text()
+			}, function(ret){
+				if (ret.error) {
+					return alert(ret.error);
+				}
+				document.location=document.location.toString();
+			});
+		});
+	});
+}
 function os_setup_basket_events(){
 	$('tr.os_item_numbers .amt').each(function(){
 		var $this=$(this);
@@ -99,5 +144,7 @@ function os_setup_basket_events(){
 	$('.amt .amt-plus').click(os_add_one);
 	$('.amt .amt-minus').click(os_subtract_one);
 	$('.amt .amt-del').click(os_remove_all);
+	$('.onlinestore-save-list').click(OnlineStore_saveList);
+	$('.onlinestore-load-list').click(OnlineStore_loadList);
 }
 $(os_setup_basket_events);
