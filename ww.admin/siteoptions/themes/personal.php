@@ -112,7 +112,7 @@ for( $i = 0; $i < count( $themes ); ++$i ){
 				<input type="hidden" value="' . $themes[ $i ][ 'name' ] . '" name="theme_name"/>
 				<h3>' . $themes[ $i ][ 'name' ] . @$status . '</h3>
 				<p><img src="/ww.skins/' . $themes[ $i ][ 'name' ] . '/screenshot.png" width="240px" height="172px"/></p>';
-		if (count ($themes[ $i ][ 'variants' ])) {
+		if (count (@$themes[ $i ][ 'variants' ])) {
 			echo '<p>Variant: <select name="theme_variant" class="theme_variant">';
 			/**
 			 * get all variants

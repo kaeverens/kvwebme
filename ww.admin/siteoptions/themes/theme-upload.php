@@ -133,14 +133,14 @@ if ( is_dir( $theme_folder . '/cs' ) ) {
 // { remove temp dir and extract to themes-personal
 shell_exec('rm -rf '.$themes_personal.'/'.$name);
 rename($temp_dir.'/'.$name, $themes_personal.'/'.$name);
-#shell_exec( 'cd ' . $themes_personal . ' && unzip -o temp_dir/' . $_FILES[ 'theme-zip' ][ 'name' ] );
 shell_exec( 'rm -rf ' . $temp_dir );
 if( isset( $_POST[ 'install-theme' ] ) ){
-        $DBVARS['theme'] = $name;
-	if( isset( $variant ) )
+	$DBVARS['theme'] = $name;
+	if( isset( $variant ) ) {
 		$DBVARS[ 'theme_variant' ] = $variant;
-        config_rewrite( );
-        cache_clear( 'pages' );
+	}
+	config_rewrite( );
+	cache_clear( 'pages' );
 }
 // }
 echo '<script>parent.document.location="/ww.admin/siteoptions.php?page=themes&msg=Theme Uploaded";</script>';

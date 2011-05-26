@@ -12,13 +12,12 @@
 
 $action = @$_GET[ 'action' ];
 switch( $action ){
-
-        case 'install':
-                require SCRIPTBASE . 'ww.admin/siteoptions/themes/install.php';
-        break;;
+	case 'install':
+		require SCRIPTBASE . 'ww.admin/siteoptions/themes/install.php';
+		break;
 	case 'download':
 		require SCRIPTBASE . 'ww.admin/siteoptions/themes/theme-download.php';
-	break;
+		break;
 	default:
 		require SCRIPTBASE . 'ww.admin/siteoptions/themes/personal.php';
 }
