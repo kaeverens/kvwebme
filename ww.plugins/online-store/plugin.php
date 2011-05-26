@@ -375,6 +375,14 @@ function OnlineStore_showBasketWidget($vars=null) {
 			$html.='<em>empty</em>';
 		}
 	}
+	if (@$_SESSION['userdata']['id']) {
+		$html.='<div id="onlinestore-lists">'
+			.'<a href="javascript:;" class="onlinestore-load-list">load list</a>';
+		if (count(@$_SESSION['online-store']['items'])) {
+			$html.=' | <a href="javascript:;" class="onlinestore-save-list">save list</a>';
+		}
+		$html.='</div>';
+	}
 	$html.='</div>';
 	WW_addScript('/ww.plugins/online-store/j/basket.js');
 	return $html;
