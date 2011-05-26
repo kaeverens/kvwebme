@@ -1,0 +1,20 @@
+/**
+ * api.css, KV-Webme Themes Repository
+ *
+ * this is an optional file which contains
+ * default css rules for the javascript themes
+ * api.
+ *
+ * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
+ * @license    GPL 2.0
+ * @version    1.0
+ */
+.themes-container{ position:absolute;top:0;background:#ccc;width:850px;float:left }
+.theme-container{ margin:10px; width:260px; float:left }
+/*.themes-list-container{ overflow:hidden;width:600px }
+.themes-list{ margin:5px; border: 1px solid #ccc;height:280px;max-width:100%;background:#fff;position:relative }
+.themes-next,.themes-prev{ position:absolute;height:280px;background:#ccc;top:0;border:1px solid #ccc; }
+.themes-next{ right:-20px;border-top-right-radius: 8px; border-bottom-right-radius: 8px }
+.themes-prev{ left:-20px; border-top-left-radius: 8px; border-bottom-left-radius: 8px }
+h2{ font-size: 16px; }
+.theme-container{ margin:10px; width:260px }*/
