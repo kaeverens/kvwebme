@@ -21,7 +21,7 @@
 		tooltipTimeout	: false,
 		settings : {
 			saveRemotely : '',
-		},
+		}, 
 
 		// { init method
 		init : function( ){
@@ -144,8 +144,9 @@
 
 			$( 'body' ).prepend( '<div id="ratings-tooltip" style="background:#fff;'
 				+ 'border:1px solid #000;height:40px;border-radius:5px;padding:4px;'
-				+ 'z-index:100;position:absolute;display:none"><img src="/ww.plugins'
-				+ '/ratings/i/loading.gif"/></div>'
+				+ 'z-index:100;position:absolute;display:none">'
+			  + '<img src="' + methods.settings.saveRemotely
+				+ 'ww.plugins/ratings/i/loading.gif"/></div>'
 			);
 	
 			var tip = $( '#ratings-tooltip' );
@@ -226,13 +227,15 @@
     writeElements : function( sel ){
 
       var html = '<div class="ratings-wrapper" style="display:inline-block">'
-        + '<div class="stars">'
-        + '<img src="/ww.plugins/ratings/i/star.gif" class="star"/>'
-        + '<img src="/ww.plugins/ratings/i/star.gif" class="star"/>'
-        + '<img src="/ww.plugins/ratings/i/star.gif" class="star"/>'
-        + '<img src="/ww.plugins/ratings/i/star.gif" class="star"/>'
-        + '<img src="/ww.plugins/ratings/i/star.gif" class="star"/>'
-        + '</div>';
+        + '<div class="stars">';
+
+			for( var i = 0; i < 4; ++i )
+        html += '<img src="' + methods.settings.saveRemotely 
+						+ 'ww.plugins/ratings/i/star.gif" class="star"/>'
+
+      html += '</div>';
+
+			console.log( html );
 
       $( sel ).html( html );
 

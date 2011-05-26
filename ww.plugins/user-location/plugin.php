@@ -14,6 +14,7 @@
 // { define $plugin
 $plugin=array(
 	'name'            => 'User - Get Location',
+	'description' => 'Utility to find the location of a user',
 	'admin' => array(
 		'page_type' => 'User_getLocation_admin'
 	),

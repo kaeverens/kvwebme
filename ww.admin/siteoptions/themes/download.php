@@ -15,7 +15,7 @@ require '../../../ww.incs/basics.php';
 require SCRIPTBASE . 'ww.admin/admin_libs.php';
 
 echo '
-<script type="text/javascript" src="/ww.plugins/ratings/ratings.js"></script>
+<script type="text/javascript" src="/ww.incs/proxy.php?url=http://kvweb.me/ww.plugins/ratings/ratings.js"></script>
 <script type="text/javascript">
 $( function( ){
 	$( ".ratings" ).ratings( { saveRemotely : "/ww.incs/proxy.php?url=http://kvweb.me" } );

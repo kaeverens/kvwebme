@@ -3,7 +3,7 @@
 /**
  * plugin.php, KV-Webme Ratings Plugin
  *
- * plugin file for the themes api
+ * plugin file for the ratings plugin
  *
  * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
  * @license    GPL 2.0
