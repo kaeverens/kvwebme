@@ -31,7 +31,7 @@ if(isset($_REQUEST['action'])){
 			.'email="'.addslashes($_REQUEST['email']).'",'
 			.'password="'.md5($_REQUEST['password']).'",'
 			.'name="'.addslashes($_REQUEST['name']).'",active=1,'
-			.'parent=0,date_created=now()'
+			.'parent=0'
 		);
 		mysql_query("insert into groups (id,name) values(1,'administrators')");
 		mysql_query("insert into users_groups values(1,1)");

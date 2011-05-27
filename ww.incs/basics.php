@@ -236,10 +236,13 @@ else if (@$DBVARS['theme']) {
 }
 else{
 	if (!file_exists(THEME_DIR)) {
-		die(
-			'error: theme directory '.THEME_DIR.' does not exist. please '
-			.'create it and make sure it is writable by the web server.'
-		);
+		@mkdir(THEME_DIR);
+		if (!file_exists(THEME_DIR)) {
+			die(
+				'error: theme directory '.THEME_DIR.' does not exist. please '
+				.'create it and make sure it is writable by the web server.'
+			);
+		}
 	}
 	$dir=new DirectoryIterator(THEME_DIR);
 	$themes_found=0;

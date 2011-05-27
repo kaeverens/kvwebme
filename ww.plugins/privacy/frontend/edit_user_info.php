@@ -13,7 +13,7 @@
 
 require '../../../ww.incs/basics.php';
 
-$id = addslashes( @$_SESSION[ 'userdata' ][ 'id' ] );
+$id = (int)@$_SESSION[ 'userdata' ][ 'id' ];
 if( $id == 0 )
 	exit;
 
