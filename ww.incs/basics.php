@@ -1,6 +1,5 @@
 <?php
 @session_start();
-require 'Log.php';
 if(!defined('START_TIME'))define('START_TIME',microtime(true));
 spl_autoload_register('WebME_autoload');
 function WebME_autoload($name) {
@@ -100,7 +99,6 @@ function dbRow($query) {
 	return $q->fetch(PDO::FETCH_ASSOC);
 }
 function ob_show_and_log($type,$header=''){
-	$log = Log::singleton('file',USERBASE.'/log.txt',$type,array('locking'=>true,'timeFormat'=>'%Y-%m-%d %H:%M:%S'));
 	$length=ob_get_length();
 	$num_queries=isset($GLOBALS['db'])?$GLOBALS['db']->num_queries:0;
 	switch($type){
@@ -124,17 +122,22 @@ function ob_show_and_log($type,$header=''){
 			$location='unknown_type_'.$type;
 		//}
 	}
-	$log->log(
-		$_SERVER['REMOTE_ADDR']
-		.'	'.$location
-		.'	'.(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'')
-		.'	'.(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'')
-		.'	'.memory_get_peak_usage()
-		.'	'.$length
-		.'	'.(microtime(true)-START_TIME)
-		.'	'.$num_queries
+	file_put_contents(
+		USERBASE.'/log.txt',
+		date('Y-m-d H:i:s').' '.$type.' [info] '
+			.$_SERVER['REMOTE_ADDR']
+			.'	'.$location
+			.'	'.(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'')
+			.'	'.(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'')
+			.'	'.memory_get_peak_usage()
+			.'	'.$length
+			.'	'.(microtime(true)-START_TIME)
+			.'	'.$num_queries."\n",
+		FILE_APPEND|LOCK_EX
 	);
-	if($header)header($header);
+	if ($header) {
+		header($header);
+	}
 	ob_flush();
 }
 function admin_can_create_top_pages(){
