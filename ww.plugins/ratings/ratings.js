@@ -195,7 +195,7 @@
         function( rating ){
           if( rating == 'login' )
             $( '#' + id ).html( '<a href="/_r?type=loginpage"><i>login to rate this item</i></a>' );
-          else if( rating != 0 ){ 
+          else if( rating != 'none' ){ 
             methods.opacityAll(
 							parseInt( rating ),
 							1,
@@ -229,13 +229,11 @@
       var html = '<div class="ratings-wrapper" style="display:inline-block">'
         + '<div class="stars">';
 
-			for( var i = 0; i < 4; ++i )
+			for( var i = 0; i <= 4; ++i )
         html += '<img src="' + methods.settings.saveRemotely 
 						+ '/ww.plugins/ratings/i/star.gif" class="star"/>'
 
       html += '</div>';
-
-			console.log( html );
 
       $( sel ).html( html );
 

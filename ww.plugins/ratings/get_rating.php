@@ -20,7 +20,7 @@ if( $name == '' )
 
 $ratings = dbAll( 'select * from ratings where name="' . $name . '"' );
 if( count( $ratings ) == 0 )
-	die( '0' );
+	die( 'none' );
 
 
 // removed temporarily

@@ -21,7 +21,7 @@ $user = ( ( int ) @$_SESSION[ 'userdata' ][ 'id' ] == 0 ) ?
 	$_SESSION[ 'userdata' ][ 'id' ];
 $date = date( 'm-d-Y' );
 
-if( $rating == '' || $name == '' )
+if( $name == '' )
 	die( 'error' );
 
 // }
@@ -43,13 +43,15 @@ if( $query == false ){
 		"' . $date . '",
 		"' . $user . '"
 	)' );
+	die( 'insert' );
 }
 else{
 	dbQuery( 'update ratings set '
 		. 'rating="' . $rating . '"'
-		. ' and date="' . $date . '"'
+		. ',date="' . $date . '"'
 		. ' where name="' . $name . '"'
 	);
+	die( 'update' );
 }
 // }
 
