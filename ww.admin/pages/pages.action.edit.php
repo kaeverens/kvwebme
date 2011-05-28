@@ -53,9 +53,20 @@ dbQuery($q);
 // { page_vars
 dbQuery('delete from page_vars where page_id="'.$id.'"');
 $pagevars=isset($_REQUEST['page_vars'])?$_REQUEST['page_vars']:array();
-if(is_array($pagevars))foreach($pagevars as $k=>$v){
-	if(is_array($v))$v=json_encode($v);
-	dbQuery('insert into page_vars (name,value,page_id) values("'.addslashes($k).'","'.addslashes($v).'",'.$id.')');
+if (is_array($pagevars)) {
+	if (isset($pagevars['google-site-verification'])) {
+		$pagevars['google-site-verification']=preg_replace(
+			'#.*content="([^"]*)".*#',
+			'\1',
+			$pagevars['google-site-verification']
+		);
+	}
+	foreach($pagevars as $k=>$v){
+		if (is_array($v)) {
+			$v=json_encode($v);
+		}
+		dbQuery('insert into page_vars (name,value,page_id) values("'.addslashes($k).'","'.addslashes($v).'",'.$id.')');
+	}
 }
 // }
 if(isset($_REQUEST['recursively_update_page_templates']))recursively_update_page_templates($id,$template);
