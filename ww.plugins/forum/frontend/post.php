@@ -103,7 +103,6 @@ dbQuery(
 // }
 // { alert subscribers that a new post is available
 $post_author=User::getInstance($_SESSION['userdata']['id']);
-$post_author_name=$post_author->dbVals['name'];
 $row=dbRow(
 	'select subscribers,name from forums_threads where id='.$thread_id
 );
@@ -113,11 +112,11 @@ $url=Page::getInstance($forum['page_id'])->getRelativeUrl().'?forum-f='.$forum_i
 foreach ($subscribers as $subscriber) {
 	$user=User::getInstance($subscriber);
 	mail(
-		$user->dbVals['email'],
+		$user->get('email'),
 		'['.$_SERVER['HTTP_HOST'].'] '.$row['name'],
 		"A new post has been added to this forum thread which you are subscribed to.\n\n"
 		.'http://www.'.$_SERVER['HTTP_HOST'].$url."\n\n"
-		.$post_author_name." said:\n".str_repeat('=',80)."\n".$body."\n".str_repeat('=',80),
+		.$post_author->get('name')." said:\n".str_repeat('=',80)."\n".$body."\n".str_repeat('=',80),
 		'From: no-reply@'.$_SERVER['HTTP_HOST']."\nReply-to: no-reply@".$_SERVER['HTTP_HOST']
 	);
 }

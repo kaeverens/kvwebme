@@ -128,12 +128,12 @@
 		// { refresh
 		refresh : function( element ){
 
-			if( element == null ){ // if no params refresh all
+//			if( element == null ){ // if no params refresh all
 				methods.selector.each( function( ){
 					methods.getRating( $( this ).data( 'ratings' ).name );
 				});
 				return;
-			}
+//			}
 
 			methods.getRating( element.data( 'ratings' ).name );
 
@@ -216,7 +216,6 @@
 
     // { opactiyAll
     opacityAll : function( index, value, stars ){
-			console.log( stars );
 			stars.each( function( i ){
 
         $( this ).css({

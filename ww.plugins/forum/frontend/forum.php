@@ -122,8 +122,8 @@ function Forum_showForum(&$PAGEDATA, &$id) {
 		foreach ($threads as $thread) {
 			$user=User::getInstance($thread['creator_id']);
 			$last_user=User::getInstance($thread['last_post_by']);
-			$user_name=$user?$user->dbVals['name']:'';
-			$last_user_name=$last_user?$last_user->dbVals['name']:'';
+			$user_name=$user?$user->get('name'):'';
+			$last_user_name=$last_user?$last_user->get('name'):'';
 			$c.='<tr><td><a href="'.$PAGEDATA->getRelativeUrl()
 				.'?forum-f='.$id.'&amp;forum-t='.$thread['id'].'">'
 				.htmlspecialchars($thread['name']).'</td><td>'
@@ -202,16 +202,15 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 	);
 	foreach ($posts as $post) {
 		$user=User::getInstance($post['author_id']);
-		// 89.126.104.138 
 		$c.='<tr p-data=\'({"id":'.$post['id']
 			.',"cdate":"'.$post['created_date'].'"'
 			.',"uid":'.$post['author_id'].'})\'>'
 			.'<td class="user-details"><a name="forum-c-'.$post['id']
-			.'"></a>'.htmlspecialchars($user->dbVals['name']).'</td>'
+			.'"></a>'.htmlspecialchars($user->get('name')).'</td>'
 			.'<td><div class="post-header">Posted: '
 			.date_m2h($post['created_date'], 'datetime')
 			.'</div></td></tr>';
-		$emailHash=md5(trim(strtolower($user->dbVals['email'])));
+		$emailHash=md5(trim(strtolower($user->get('email'))));
 		$c.='<tr><td><img src="http://www.gravatar.com/avatar/'
 			.$emailHash.'" />';
 		$c.='</td><td class="post">'.bb2html($post['body'])

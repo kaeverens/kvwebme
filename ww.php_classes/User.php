@@ -12,11 +12,28 @@ class User{
 		$this->dbVals=$r;
 		self::$instances[$this->id] =& $this;
 	}
-	static function getInstance($id=0,$r=false,$enabled=true){
-		if (!is_numeric($id)) return false;
-		if (!array_key_exists($id,self::$instances)) new User($id,$r,$enabled);
-		if(!isset(self::$instances[$id]))return false;
+	static function getInstance($id=0, $r=false, $enabled=true){
+		if (!is_numeric($id)) {
+			return false;
+		}
+		if (!array_key_exists($id,self::$instances)) {
+			new User($id, $r, $enabled);
+		}
+		if (!isset(self::$instances[$id])) {
+			return false;
+		}
 		return self::$instances[$id];
+	}
+	function get($name) {
+		if (!isset($this->vals)) {
+			$this->vals=json_decode($this->dbVals['extras'], true);
+			$this->vals['id']=(int)$this->dbVals['id'];
+			$this->vals['email']=$this->dbVals['email'];
+			$this->vals['name']=$this->dbVals['name'];
+			$this->vals['phone']=$this->dbVals['phone'];
+			$this->vals['address']=$this->dbVals['address'];
+		}
+		return @$this->vals[$name];
 	}
 	function getGroupHighest($name) {
 		$groups=$this->getGroups();
