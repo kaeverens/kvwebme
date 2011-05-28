@@ -12,7 +12,7 @@ function recursively_update_page_templates ($id, $template) {
 	dbQuery('update pages set template="'.addslashes($template).'" where id in ('.join(',',$ids).')');
 }
 require_once dirname(__FILE__).'/pages.action.common.php';
-$pid=(int)$_REQUEST['parent'];
+$pid=(int)@$_REQUEST['parent'];
 $l=dbRow("SELECT * FROM site_vars WHERE name='languages'");
 // {
 $keywords=$_REQUEST['keywords'];

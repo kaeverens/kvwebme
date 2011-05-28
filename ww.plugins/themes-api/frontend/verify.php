@@ -148,8 +148,11 @@ foreach( $html as $file ){
 	$panels = array( );
 	preg_match_all( '/\{\{PANEL name="?([^"}]*)"?\}\}/', $contents, $panels );
 
-	if( !in_array( array( 'header', 'footer' ), $panels[ 1 ] ) && ( !in_array( 'left', $panels[ 1 ] ) && !in_array( 'right', $panels[ 1 ] ) ) )
+	if ( !in_array( array( 'header', 'footer' ), $panels[ 1 ] )
+		&& ( !in_array( 'sidebar1', $panels[ 1 ] ) && !in_array( 'sidebar2', $panels[ 1 ] ) )
+	) {
 		themes_api_error( 'panels', $id );
+	}
 
 	/**
 	 * remove metadata tag and replace with

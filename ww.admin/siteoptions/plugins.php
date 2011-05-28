@@ -60,7 +60,7 @@ foreach( $dir as $plugin ){
       continue;
 	$available[ $name ] = array( 
 		'name' => $plugin[ 'name' ],
-		'description' => $plugin[ 'description' ],
+		'description' => @$plugin[ 'description' ],
 		'version' => ( @$plugin[ 'version' ] == 0 ) ? '0' : $plugin[ 'version' ]
 	);
 }	

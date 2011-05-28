@@ -216,7 +216,8 @@
 
     // { opactiyAll
     opacityAll : function( index, value, stars ){
-      stars.each( function( i ){
+			console.log( stars );
+			stars.each( function( i ){
 
         $( this ).css({
           'opacity' : value,

@@ -101,7 +101,7 @@ function RecommendThisSite_show(&$page, &$vars) {
 				.'</li></ul>';
 		}
 		else {
-			return RecommendThisSite_send(&$page, &$vars);
+			return RecommendThisSite_send($page, $vars);
 		}
 	}
 	return $html.RecommendThisSite_showForm($page, $vars);

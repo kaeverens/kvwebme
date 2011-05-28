@@ -122,13 +122,15 @@ function Forum_showForum(&$PAGEDATA, &$id) {
 		foreach ($threads as $thread) {
 			$user=User::getInstance($thread['creator_id']);
 			$last_user=User::getInstance($thread['last_post_by']);
+			$user_name=$user?$user->dbVals['name']:'';
+			$last_user_name=$last_user?$last_user->dbVals['name']:'';
 			$c.='<tr><td><a href="'.$PAGEDATA->getRelativeUrl()
 				.'?forum-f='.$id.'&amp;forum-t='.$thread['id'].'">'
 				.htmlspecialchars($thread['name']).'</td><td>'
 				.($thread['num_posts']-1).'</td>'
-				.'<td>'.$user->dbVals['name'].'</td><td>'
+				.'<td>'.htmlspecialchars($user_name).'</td><td>'
 				.date_m2h($thread['last_post_date'], 'datetime').', by '
-				.htmlspecialchars($last_user->dbVals['name']).'</td></tr>';
+				.htmlspecialchars($last_user_name).'</td></tr>';
 		}
 		$c.='</table>';
 	}
