@@ -50,15 +50,16 @@ if(!count($rs)){
 }
 
 // { products list
-echo '<div><table class="datatable"><thead><tr><th>Name</th>'
+echo '<div><table class="datatable"><thead><tr><th>Name</th><th>ID</th>'
 	.'<th>Enabled</th><th>&nbsp;</th></tr></thead><tbody>';
 foreach($rs as $r){
 	/* do not delete the HTML comment in the next line - it's there
 	 * for datatables magic. without it, sorting will not work. */
+	$link='plugin.php?_plugin=products&amp;_page=products-edit&amp;id='.$r['id'];
 	echo '<tr id="product-row-'.$r['id'].'">'
 		.'<td class="edit-link"><!-- '.htmlspecialchars($r['name']).' -->'
-		.'<a href="plugin.php?_plugin=products&amp;_page=products-edit&amp;id='
-		.$r['id'].'">'.htmlspecialchars($r['name']).'</td>'
+		.'<a href="'.$link.'">'.htmlspecialchars($r['name']).'</td>'
+		.'<td>'.$r['id'].'</td>'
 		.'<td>'.($r['enabled']=='1'?'Yes':'No').'</td>'
 		.'<td><a class="delete-product" href="javascript:;" title="delete">[x]</a>'
 		.'</td></tr>';
