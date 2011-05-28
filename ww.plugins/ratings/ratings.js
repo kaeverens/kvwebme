@@ -85,7 +85,6 @@
 							$( this ).index( )
 						);
 						$( '#rateme-dialog' ).dialog( 'close' );
-						methods.refresh( );
            },
           mouseenter : function( ){
             methods.opacityAll( 
@@ -127,11 +126,16 @@
 		// }
 
 		// { refresh
-		refresh : function( ){
+		refresh : function( element ){
 
-			methods.selector.each( function( ){
-				methods.getRating( $( this ).data( 'ratings' ).name );
-			});
+			if( element == null ){ // if no params refresh all
+				methods.selector.each( function( ){
+					methods.getRating( $( this ).data( 'ratings' ).name );
+				});
+				return;
+			}
+
+			methods.getRating( element.data( 'ratings' ).name );
 
 		},
 		// }
@@ -182,7 +186,10 @@
           'name' : $this.data( 'ratings' ).name,
           'type' : $this.data( 'ratings' ).type,
           'rating' : index
-        }
+        },
+				function( ){
+					methods.refresh( $this );
+				}
       );
     },  
     // }
