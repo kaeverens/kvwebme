@@ -56,6 +56,10 @@ else if ($dom->getElementById('sidebar1')) {
 		$col2='sidebar2';
 	}
 }
+else if ($dom->getElementById('sidebar')) {
+	$col1='sidebar';
+	$content='content';
+}
 // }
 
 $dom=empty_element($dom, 'menu');
@@ -101,10 +105,13 @@ foreach ($files as $file) {
 		$css=file_get_contents($file->getPathname());
 		// { menus
 		$css=preg_replace('/(#menu1\s*){/', '\1,#menu-fg-0,.fg-menu-container{', $css);
+		$css=str_replace(array("\n", "\r", "\t"),' ', $css);
+		$css=preg_replace('/\s+/', ' ', $css);
 		$css=preg_replace('/(#menu1\s*ul\s*){/', '\1,#menu-fg-0 ul,.fg-menu-container ul{', $css);
 		$css=preg_replace('/(#menu1\s*li\s*){/', '\1,#menu-fg-0 li,.fg-menu-container li{', $css);
 		$css=preg_replace('/(#menu1\s*a\s*){/', '\1,#menu-fg-0 a,.fg-menu-container a{', $css);
 		$css=preg_replace('/(#menu1\s*a:hover\s*){/', '\1,#menu-fg-0 a:hover,.fg-menu-container a:hover{', $css);
+		$css=preg_replace('/(#menu\s+a\s*{[^}]*)display\s*:\s*block\s*;/', '\1display:inline-block;', $css);
 		$css.='.fg-menu-container{padding-bottom:0 !important}';
 		// }
 		file_put_contents($file->getPathname(), $css);
