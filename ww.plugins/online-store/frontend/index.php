@@ -71,7 +71,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		}
 	}
 	// }
-	// { check t hat payment method is valid
+	// { check that payment method is valid
 	switch($_REQUEST['_payment_method_type']){
 		case 'PayPal': // {
 			if(
@@ -161,10 +161,11 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			if ($item['vat']) {
 				$vattable+=$totalItemCost;
 			}
-			if (!isset($item['_deliver_free']) || !$item['_deliver_free']) {
+			echo '<!-- '; var_dump($item); echo ' -->';
+			if (!isset($item['delivery_free']) || !$item['delivery_free']) {
 				$deliveryTotal+=$totalItemCost;
 			}
-			if (!isset($item['_not_discountable']) || !$item['_not_discountable']) {
+			if (!isset($item['not_discountable']) || !$item['not_discountable']) {
 				$discountableTotal+=$totalItemCost;
 			}
 		}
@@ -193,7 +194,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$grandTotal-=$discount_amount;
 		}
 		// { postage
-		$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
+		$postage=OnlineStore_getPostageAndPackaging($deliveryTotal, '', 0);
 		if ($postage['total']) {
 			$grandTotal+=$postage['total'];
 			$table.='<tr><td class="p_and_p" style="text-align: right;" colspan="3">'
