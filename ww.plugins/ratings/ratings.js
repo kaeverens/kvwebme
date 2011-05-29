@@ -50,22 +50,21 @@
 					+ $this.data( 'ratings' ).name + '">Rate Me</a>'
 				);
 
-				methods.getRating( $this.data( 'ratings' ).name );
-
 			});
+
+			// get the ratings of everything
+			var ids = [];
+			methods.selector.each( function( ){
+				ids.push( $( this ).data( 'ratings' ).name );
+			});
+			methods.getRatings( ids );
 			// }
 
-      // { add general rating events
+      // { add general rating events 
 
-				$( '.ratings-wrapper' ).hover( function( ){
+				$( '.ratings-wrapper' ).hover ( function( ){
 					clearTimeout( methods.tooltipTimeout );
 					methods.tooltip( $( this ) );
-					$.get( methods.settings.saveRemotely + '/ww.plugins/ratings/info.php',
-						{ 'name' : $( this ).parent( ).data( 'ratings' ).name },
-						function( html ){
-							$( '#ratings-tooltip' ).html( html );
-						}
-					);
 				}, function( ){
 					methods.tooltipTimeout = setTimeout( 
 						methods.tooltipLeave,
@@ -122,21 +121,21 @@
       // }
 
 
-		},
-		// }
+		}, 
+		// } 
 
 		// { refresh
-		refresh : function( element ){
-
-//			if( element == null ){ // if no params refresh all
-				methods.selector.each( function( ){
-					methods.getRating( $( this ).data( 'ratings' ).name );
-				});
-				return;
-//			}
-
-			methods.getRating( element.data( 'ratings' ).name );
-
+		refresh : function( ){
+			methods.selector.each(function( ){
+				var rating = $( this ).data( 'ratings' ).rating;
+				if( rating != 'none' ){
+					methods.opacityAll(
+						parseInt( rating ),
+						1,
+						$( '.star', $( this ) )
+					);
+				}
+			});
 		},
 		// }
 
@@ -145,12 +144,16 @@
 
 			// remove previous tooltip if present
 			$( '#ratings-tooltip' ).remove( );
+			var item = $this.parent( );
+			var rating = ( typeof( item.data( 'ratings' ).rating ) == 'number' ) ?
+				( item.data( 'ratings' ).rating + 1 ) :
+				0;
 
 			$( 'body' ).prepend( '<div id="ratings-tooltip" style="background:#fff;'
 				+ 'border:1px solid #000;height:40px;border-radius:5px;padding:4px;'
 				+ 'z-index:100;position:absolute;display:none">'
-			  + '<img src="' + methods.settings.saveRemotely
-				+ '/ww.plugins/ratings/i/loading.gif"/></div>'
+			  + item.data( 'ratings' ).voters + ' people have rated this<br/>'
+				+ 'Average Stars: ' + rating + '</div>'
 			);
 	
 			var tip = $( '#ratings-tooltip' );
@@ -187,37 +190,56 @@
           'type' : $this.data( 'ratings' ).type,
           'rating' : index
         },
-				function( ){
-					methods.refresh( $this );
+				function( response ){
+					if( response == 'updated' ){
+						
+					}
 				}
       );
+			// calculate new average and update rating clientside
+			var votes = $this.data( 'ratings' ).voters;
+			if( votes == 0 ){
+				var average = index;
+				var votes = 1;
+			}
+			else{
+				var rating = $this.data( 'ratings' ).rating;
+				var average = ( rating * votes ) + index;
+				average = average / ++votes;
+				// round off average
+				average = Math.round(
+										average * Math.pow( 10, 2 )
+									) / Math.pow( 10, 2 );
+			}
+			// store results
+			$this.data( 'ratings' ).rating = average;
+			$this.data( 'ratings' ).voters = votes;
+			methods.refresh( );
     },  
     // }
 
-    // { getRating
-    getRating : function( id ){
-      $.get( methods.settings.saveRemotely + '/ww.plugins/ratings/get_rating.php', {
-          'name' : id
+    // { getRatings
+    getRatings : function( ids ){
+      $.get( methods.settings.saveRemotely + '/ww.plugins/ratings/get_ratings.php', {
+          'names' : ids.join( ',' )
         },  
-        function( rating ){
-          if( rating == 'login' )
-            $( '#' + id ).html( '<a href="/_r?type=loginpage"><i>login to rate this item</i></a>' );
-          else if( rating != 'none' ){ 
-            methods.opacityAll(
-							parseInt( rating ),
-							1,
-							$( '.star', '#' + id )
-						);  
-					}
-        }   
+        function( ratings ){
+					selectors = '#' + ids.join( ',#' );
+					$( selectors ).each( function(){
+						var name = $( this ).data( 'ratings' ).name;
+						$( this ).data( 'ratings' ).rating = ratings[ name ].rating;
+						$( this ).data( 'ratings' ).voters = ratings[ name ].voters;
+					});
+					methods.refresh( );
+				},
+				'json'
       );
     },  
     // }
 
     // { opactiyAll
     opacityAll : function( index, value, stars ){
-			stars.each( function( i ){
-
+      stars.each( function( i ){
         $( this ).css({
           'opacity' : value,
           'filter' : 'alpha( opacity=' + ( value * 100 ) + ' )'
