@@ -41,7 +41,9 @@ function os_status(id,current_status){
 	target.remove();
 }
 function os_update_fields(force){
-	if(!force && !window.ckeditor_body.checkDirty()){
+	if (!$('#online-stores-fields').length
+		|| (!force && !window.ckeditor_body.checkDirty())
+	) {
 		return;
 	}
 	var $wrapper=$('#online-stores-fields').empty();
