@@ -21,7 +21,7 @@ $( "#next" ).click( function( ){
 	$( "#carousel" ).themesCarousel( "next" );
 } );
 $( "#prev" ).click( function( ){
-	$( "#carousel" ).themesCarousel( "prev" );
+	$( "#carousel" ).themesCarousel( "previous" );
 } );
 ';
 WW_addInlineScript( $script );
