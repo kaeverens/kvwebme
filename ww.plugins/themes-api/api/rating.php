@@ -36,14 +36,20 @@ if( $count == 0 )
  */
 $start = ( int ) @$_GET[ 'start' ];
 
-/**
- * get themes from db
- */
-$themes = dbAll( 'select id, name, author, description, version, last_updated, author_url, tags, rating from themes_api where moderated="yes" order by last_updated desc limit ' . $start . ', ' . $count );
+$ratings = dbAll( 
+	'select name, avg( rating ) from ratings where type="theme" group by name order by rating desc'
+);
 
-/**
- * die if error or empty
- */
+$ids = array( );
+for( $i = 0; $i < count( $ratings ); ++$i ){
+	$id = end( explode( '_', $ratings[ $i ][ 'name' ] ) );
+	array_push( $ids, $id );
+}
+
+$themes = dbAll( 'select id,name,author,description,version,last_updated,author_url'
+	. ',tags from themes_api where moderated="yes" and ( id=' 
+	. implode( ' or id=', $ids ) . ' ) limit ' . $start . ',' . $count );
+
 if( $themes == false || count( $themes ) == 0 )
 	die( 'none' );
 
@@ -66,29 +72,8 @@ for( $i = 0; $i < count( $themes ); ++$i ){
 	
 }
 
-$ratings = dbAll( 
-	'select name, avg( rating ) from ratings where type="theme" group by name order by rating desc'
-);
-
-
-$reorder = array( );
-$i = 0;
-foreach( $ratings as $rating ){
-	$id = end( explode( '_', $rating[ 'name' ] ) );
-	$theme = themes_api_get_theme_from_id( $themes, $id );
-	if( $theme != '' ){
-		$reorder[ $i ] = $theme;
-		++$i;
-	}
-}
-
-foreach( $themes as $theme ){
-	if( themes_api_get_theme_from_id( $reorder, $theme[ 'id' ] ) == '' )
-		array_push( $reorder, $theme );
-}
-
 /**
  * json_encode and print results
  */
-$themes = json_encode( $reorder );
+$themes = json_encode( $themes );
 die( $themes );

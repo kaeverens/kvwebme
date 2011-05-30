@@ -68,6 +68,7 @@
 		filterBy : function( by ){ // changes how themes are filtered
 			this.themes = {};
 			this.filter = by;
+			this.tempFade = true;
 			this.displayNext( );
 		},
 
