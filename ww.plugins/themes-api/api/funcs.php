@@ -171,4 +171,11 @@ function themes_api_curl( $url ){
         return $response;
 }
 
+function themes_api_get_theme_from_id( $themes, $id ){
+	foreach( $themes as $theme ){
+		if( $theme[ 'id' ] == $id )
+			return $theme;
+	}
+}
+
 ?>

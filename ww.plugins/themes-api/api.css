@@ -9,8 +9,10 @@
  * @license    GPL 2.0
  * @version    1.0
  */
-.themes-container{ position:absolute;top:0;background:#ccc;width:850px;float:left }
-.theme-container{ margin:10px; width:260px; float:left }
+.themes-container{ position:absolute;top:0;min-width:850px; }
+.themes-container table{ background: #fff; border: 1px solid #ccc; border-radius: 5px; border-spacing:0 }
+.theme-container{ width:260px;padding:10px;height:300px }
+.middle{ background: #eee } 
 /*.themes-list-container{ overflow:hidden;width:600px }
 .themes-list{ margin:5px; border: 1px solid #ccc;height:280px;max-width:100%;background:#fff;position:relative }
 .themes-next,.themes-prev{ position:absolute;height:280px;background:#ccc;top:0;border:1px solid #ccc; }

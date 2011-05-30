@@ -2,219 +2,255 @@
  * api.js, KV-Webme Themes Repository
  *
  * file for accessing apects of the repository via js
-
-plan
-
-load 3 themes,	=> function
-display them,	=> function
-when next is clicked	=> bind
-check if themes are already downloaded => function
-[if not]
-	load 3 themes,	=> function
-display them,	=> function
-
-when previous is clicked => bind
-check if themes are already downloaded => function
-[if not]
-        load 3 themes,  => function
-display them,   => function
-
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
  */
-
-/**
- * load jquery carousel
- */
-$.getScript( '/ww.plugins/themes-api/files/jcarousel.jquery.min.js' );
-
-/**
- * list_themes
- *
- * lists the themes in a <ul>
- */
-function list_themes( themes ){
-
-	var html = '<div class="themes-list-container">'
-		+ '<a class="themes-prev"><</a>'
-		+ '<ul class="themes-list">';
-
-	for( var i = 0; i < themes.length; ++i ){
-
-		html +='<li>'
-			+ '<div class="theme-container">'
-				+ '<h2><a href="http://kvweb.me">' + themes[ i ].name + '</a></h2>'
-				+ '<a href="http://kvweb.me/"><img src="' + themes[ i ].screenshot + '" width="240px" height="172px"/>'
-				+ '<p>' + themes[ i ].short_description + '</p>'
-				+ '<p><a href="http://kvweb.me/">Read More..</a></p>'
-			+ '</div>'
-			+  '</li>';
-	}
-
-	html += '</ul>'
-		+ '<a class="themes-next">></a>'
-		+ '</div>';
-
-	return html;
-
-}
 
 /**
  * add .themesCarousel
  */
 (function( $ ){
 
-	var themes = { };
-	var position = 0;
-	var selector;
-	var settings = {
-                        'display'       :       'recent',
-                        'items'         :       3,
-                        'scroll'        :       1
-	};
+	var Carousel = {
 
-	var getThemesLength = function( ){
+		themes : {},
 
-		var size = 0, key;
+		position : 0,
 
-		for ( key in themes )
-			++size;
+		tempFade : false,
 
-		return size;
+		selector : null,
 
-	};
+		// holds the current number of items being displayed
+		// - always less than settings.items
+		current : 0,
 
-	var mergeThemes = function( result ){
+		// how the themes are filtered,
+		// should be made into an option at
+		// some stage
+		filter : 'recent',
 
-		var length = getThemesLength( );
+		settings : {
+			items	: 6,
+			rows	: 2,
+			repeat	: true,
+			fade : false,
+			loop : true,
+			// shows a select box of methods
+			// of filtering the themes by categories
+			filterOptions : true,
+			// custom display function
+			// must increment this.current and
+			// this.position
+			display : null,
+		},
 
-		for( var key in result ){
-			themes[ length ] = result[ key ];
-			++length;
-		}		
+		themesLength : function( ){
+			var size = 0, key;
 
-	};
+			for ( key in this.themes )
+				++size;
 
-	var getThemes = function( complete ){
+			return size;
+		},
 
-		var rand = Math.floor( Math.random( ) * 101 );
-		var length = getThemesLength( );
+		mergeThemes : function( new_themes ){
+	    var length = this.themesLength( );
 
-                $.ajax( {
-			url : '/ww.incs/proxy.php?url=http://kvweb.me/ww.plugins/themes-api/api.php?recent=true&count=' + settings.items + '&start=' + length + '&rand=' + rand,
-//			url : '/ww.incs/proxy.php?url=http://webme.l/ww.plugins/themes-api/api.php?recent=true&count=' + settings.items + '&start=' + length + '&rand=' + rand,
-			success : function( result ){
+  	  for( var key in new_themes ){ 
+    	  this.themes[ length ] = new_themes[ key ];
+      	++length;
+	    } 
+		},
 
-				mergeThemes( result );
+		search : function( value ){
+			alert( value );
+		},
 
-				if( )
-					$( '.slider' ).html( displayThemes( 0 ) );
-				else
-					displayNext( );
+		filterBy : function( by ){ // changes how themes are filtered
+			this.themes = {};
+			this.filter = by;
+			this.displayNext( );
+		},
 
-				//$( '.slider', selector ).html( displayThemes( 0 ) );
-				
-                	},
-			error : function( ){
-				position -= settings.items;
-			},
-			dataType : 'json' 
-		});
-
-	};
-
-	var displayThemes = function( start ){
-
-		var html = '<div class="themes-container">';
-
-		for( var i = 0; i < settings.items; ++i ){
-
-			if( !themes[ start ] )
-				break;
-
-	                html += '<div class="theme-container">'
-                	                + '<h2><a href="http://kvweb.me">' + themes[ start ].name + '</a></h2>'
-                        	        + '<a href="http://kvweb.me/"><img src="' + themes[ start ].screenshot + '" width="240px" height="172px"/>'
-                                	+ '<p>' + themes[ start ].short_description + '</p>'
-	                                + '<p><a href="http://kvweb.me/">Read More..</a></p>'
-        	                + '</div>';
-
-			++start;
-
-		}
-
-		html += '</div>';
-
-		return html;
-	};
-
-	var displayNext = function( ){
-
-		position += settings.items;
-
-		alert( position + " >= " + settings.items + "=" + ( position >= getThemesLength( ) ) );
-
-		if( position >= getThemesLength( ) )
-			getThemes( );
-		else{
-			var html = displayThemes( position );
-	                $( '.themes-container', selector ).css({ 'left' : '-850px' });
-        	        $( '.slider', selector )
-                	        .prepend( $( html ).css({ 'left' : '0' }) )
-                        	.css({ 'left' : '850px' } )
-	                        .animate({ 'left' : '0' }, 2000, function( ){
-        	                        $( '.slider .themes-container:last', selector ).remove( );
-                	        });
-
-		}
-	};
-
-	var displayPrevious = function( ){
-
-		if( position == 0 )
-			return;
-
-		position -= settings.items;
-
-		var html = displayThemes( position );
-		$( '.themes-container', selector ).css({ 'left' : '850px' });
-		$( '.slider', selector )
-			.prepend( $( html ).css({ 'left' : '0' }) )
-			.css({ 'left' : '-850px' } )
-			.animate({ 'left' : '0' }, 2000, function( ){		
-				$( '.slider .themes-container:last', selector ).remove( );
+		getThemes : function( ){
+			$.ajax({
+				url : '/ww.incs/proxy.php?url=http://kvweb.me/ww.plugins/themes-api/'
+//				url : '/ww.plugins/themes-api/'
+				+ 'api.php?' + this.filter + '=true&count=' + this.settings.items
+				+ '&start=' + this.themesLength( ),
+				success : function( complete ){
+					Carousel.mergeThemes( complete );
+					Carousel.displayNext( );
+				},
+				error : function( msg ){
+					if( msg.responseText == 'none' ){
+						Carousel.position = 0;
+						Carousel.displayNext( );
+					}
+				},
+				dataType : 'json'
 			});
+		}, 	 
 
-	};
+		displayThemes : function( ){ 
 
-	$.fn.themesCarousel = function( options ){
+			// this should be incremented in a custom display function
+			this.current = 0;
 
-		/**
-		 * allow for next and prev events
-		 */
+			// allow for custom display function
+			if( typeof( this.settings.display ) == 'function' )
+				return this.settings.display( );
+
+			var html = '<div class="themes-container"><table><tr>';
+
+	    for( var i = 0; i < this.settings.items; ++i ){
+
+				if( this.themes[ this.position ] == undefined ) 
+	        break;
+
+				if( i % ( this.settings.items / this.settings.rows ) === 0 )
+					html += '</tr><tr>';
+
+				var middle = ( !( ( i - 1 ) % this.settings.items ) ) ?
+					' middle' :
+					'';
+
+				html += '<td class="theme-container' + middle + '">'
+				+ '<h2><a href="http://kvweb.me">' + this.themes[ this.position ].name + '</a></h2>'
+				+ '<a href="http://kvweb.me/"><img src="' + this.themes[ this.position ].screenshot + '" width="240px" height="172px"/>'
+				+ '<p>' + this.themes[ this.position ].short_description + '</p>'
+				+ '<p><a href="http://kvweb.me/">Read More..</a></p>'
+				+ '</td>';
+
+				++this.position;
+				++this.current;
+
+			}   
+
+			html += '</tr></table></div>';
+
+			return html;
+		},
+
+		displayNext : function( ){
+      if( this.position >= this.themesLength( ) )
+        this.getThemes( );
+      else{  
+				if( this.settings.fade == true || this.tempFade == true ){
+					this.fadeNext( );
+					this.tempFade = false;
+				}
+				else
+					this.slideNext( );
+			} 
+		}, 
+
+		fadeNext : function( ){
+			var html = this.displayThemes( );
+			$( '.slider', this.selector )
+				.css({ 'display' : 'none' })
+				.html( html )
+				.fadeIn( 'slow' );
+		}, 
+
+		slideNext : function( ){
+			var html = this.displayThemes( );
+			$( '.themes-container', this.selector ).css({ 'left' : '-850px' });
+			$( '.slider', this.selector )
+				.append( $( html ).css({ 'left' : '0' }) )
+				.css({ 'left' : '850px' } ) 
+				.animate({ 'left' : '0' }, 2000, function( ){
+					$( '.slider .themes-container:first', this.selector ).remove( );
+				});  
+		}, 
+
+		displayPrevious : function( ){
+			// { if position = 0
+			if( this.position == this.settings.items ){
+				if( this.settings.loop == true )
+					this.position = this.themesLength( ) - this.current;
+				else
+					return;
+			}
+			else
+				this.position -= ( this.current + this.settings.items );
+			// }
+
+			if( this.settings.fade == true )
+				this.fadeNext( );
+			else
+				this.slidePrevious( );
+		},
+
+		slidePrevious : function( ){
+	    var html = this.displayThemes( );
+  	  $( '.themes-container', this.selector ).css({ 'left' : '850px' }); 
+    	$( '.slider', this.selector )
+      	.prepend( $( html ).css({ 'left' : '0' }) )
+	      .css({ 'left' : '-850px' } ) 
+  	    .animate({ 'left' : '0' }, 2000, function( ){   
+    	    $( '.slider .themes-container:last', this.selector ).remove( );
+      	}); 
+		},
+
+		init : function( ){
+
+			// fade in the first time
+			this.tempFade = true;
+			this.displayNext( );
+
+			// { add some css rules
+			var height = ( 340 * this.settings.rows ) + 'px';
+	    $( this.selector ).css({ 'overflow-x' : 'hidden', 'width' : '850px' }); 
+
+	    $( this.selector ).html(
+				'<div class="themes-carousel-wrapper">'
+				+ '<div class="themes-carousel-options"></div>'
+				+ '<div style="position:relative;height:'
+				+ height + '" class="slider">'
+					+ '<br style="clear:both"/>'
+				+ '</div></div>'
+			);
+
+			if( this.settings.filterOptions ){
+				var filter = '<select name="themes_filter">'
+					+ '<option value="recent" selected="selected">Recently Added</option>'
+					+ '<option value="downloads">Most Downloads</option>'
+					+ '<option value="rating">Highest Rated</option>'
+				+ '</select>';
+
+				$( '.themes-carousel-options' ).html( filter );
+
+				$( 'select[name="themes_filter"]' ).click(function( ){
+					var value = $( this ).val( );
+					Carousel.filterBy( value );
+				});
+			}
+			// }
+		} 
+
+	}
+
+	$.fn.themesCarousel = function( options, value ){
+
 		if( typeof( options ) == 'string' ){
 			switch( options ){
 				case 'next':
-					displayNext( );
+					Carousel.displayNext( );
 				break;
-				case 'prev':
-					displayPrevious( );
+				case 'previous':
+					Carousel.displayPrevious( );
+				break;
+				case 'search':
+					if( value != null )
+						Carousel.search( value );
 				break;
 			}
-			return this;
 		}
-
-		if( options )
-			$.extend( settings, options );
-
-		selector = this.selector;
-
-		$( selector ).css({ 'overflow' : 'hidden', 'width' : '850px' });
-		$( selector ).html( '<div style="position:relative;height:340px" class="slider"></div>' );
-
-		getThemes( );
+		else{
+			$.extend( this.settings, options );
+			Carousel.selector = this.selector;
+			Carousel.init( );
+		}
 
 		return this;
 

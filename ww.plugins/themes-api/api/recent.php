@@ -45,7 +45,7 @@ $themes = dbAll( 'select id, name, author, description, version, last_updated, a
  * die if error or empty
  */
 if( $themes == false || count( $themes ) == 0 )
-	die( '{error:"none"}' );
+	die( 'none' );
 
 /**
  * add screenshots, html files and

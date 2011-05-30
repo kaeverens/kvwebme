@@ -23,10 +23,16 @@ $( "#next" ).click( function( ){
 $( "#prev" ).click( function( ){
 	$( "#carousel" ).themesCarousel( "previous" );
 } );
+$( "#themes_search" ).click( function( ){
+	var value = $( this ).val( );
+	$( "#carousel" ).themesCarousel( "search", value );
+});
 ';
 WW_addInlineScript( $script );
 
-$html = '<h1>Themes Repository</h1>
+$html = '
+<input type="text" name="themes_search" /><input type="submit" name="Search" id="themes_search"/>
+<h1>Themes Repository</h1>
 <div id="carousel"></div>
 <a id="prev">Previous</a>
 <a id="next">Next</a>
