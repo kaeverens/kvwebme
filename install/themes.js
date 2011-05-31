@@ -79,6 +79,7 @@ $( function( ){
 	callback : function( ){
 		$( '.ratings', Carousel.selector ).ratings({ saveRemotely : "/ww.incs/proxy.php?url=http://kvweb.me" } );
 	},
-	loop : true
+	loop : true,
+	error : 'If you have no internet connection, please <a href="/install/step7.php?theme=skipped">click here to proceed.</a>',
 	});
 });

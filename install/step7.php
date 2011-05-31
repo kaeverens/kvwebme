@@ -2,7 +2,7 @@
 
 require 'header.php';
 
-if(!$_SESSION['theme_selected']){ // user shouldn't be here
+if(!$_SESSION['theme_selected']&&@$_GET['theme']!='skipped'){ // user shouldn't be here
   header('Location: /install/step6.php');
 	exit;
 }

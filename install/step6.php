@@ -76,7 +76,7 @@ window.installed_themes = [];
 <h1>Select Themes</h1>
 
 <div id="themes-carousel">
-Loading...
+Loading.. If you have no internet connection, please <a href="/install/step7.php?theme=skipped">click here to proceed.</a>
 </div>
 <div id="preview-dialog" style="display:none">
 <iframe src="javascript:;" id="preview-frame"></iframe>

@@ -28,6 +28,10 @@
 		repeat	: true,
 		fade : false,
 		loop : false,
+		// error message to be displayed if server cannot
+		// be reached
+		error : 'There was an error contacting themes server.'
+			+ 'Please try reloading the page',
 		// shows a select box of methods
 		// of filtering the themes by categories
 		filterOptions : true,
@@ -89,10 +93,8 @@
 						Carousel.displayNext( );
 					}
 					else{
-						$( '.slider .themes-container', this.selector ).html(
-							'There was an error contacting themes server. Please try'
-							+ ' reloading the page'
-						);
+					
+						$( '.slider .themes-container', this.selector ).html( Carousel.settings.error );
 					}
 				},
 				dataType : 'json'
