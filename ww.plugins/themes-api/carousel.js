@@ -67,6 +67,9 @@
 			this.themes = {};
 			this.filter = by;
 			this.tempFade = true;
+			$( '.slider .themes-container', this.selector ).html(
+				'Loading...'
+			);
 			this.displayNext( );
 		},
 	
@@ -77,14 +80,11 @@
 				+ 'api.php?' + this.filter + '=true&count=' + this.settings.items
 				+ '&start=' + this.themesLength( ),
 				success : function( complete ){
-					Carousel.mergeThemes( complete );
-					Carousel.displayNext( );
-				},
-				error : function( msg ){
-					if( msg.responseText == 'none' ){
+					if( complete == 'none' )
 						Carousel.position = 0;
-						Carousel.displayNext( );
-					}
+					else
+						Carousel.mergeThemes( complete );
+					Carousel.displayNext( );
 				},
 				dataType : 'json'
 			});
