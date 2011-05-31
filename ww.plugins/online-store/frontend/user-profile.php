@@ -15,10 +15,14 @@
 $html = '<h2>Online Store - Order History</h2>';
 
 $history = array( );
-$orders = dbAll( 'select id,status,total,user_id,date_created from online_store_orders' );
- 	foreach( $orders as $order ){
-	if( $order[ 'user_id' ] != 0 && $order[ 'user_id' ] == $user[ 'id' ] )
+$orders = dbAll(
+	'select id,status,total,user_id,date_created from online_store_orders'
+	.' order by date_created desc'
+);
+foreach( $orders as $order ){
+	if( $order[ 'user_id' ] != 0 && $order[ 'user_id' ] == $user[ 'id' ] ) {
 		array_push( $history, $order );
+	}
 }
 
 if( count( $history ) == 0 )
