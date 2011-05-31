@@ -141,11 +141,9 @@
 
 		displayNext : function( ){
       if( this.position >= this.themesLength( ) ){
-				console.log( 'position: ' + this.position + 'getting more themes, cache: ' + this.themesLength( ) );
         this.getThemes( );
 			}
       else{  
-				console.log( 'position: ' +this.position + 'reading from cache, cache: ' + this.themesLength( ) );
 				if( this.settings.fade == true || this.tempFade == true ){
 					this.fadeNext( );
 					this.tempFade = false;
@@ -190,7 +188,6 @@
 						this.position = this.themesLength( ) - this.current;
 					else
 						this.position = this.themesLength( ) - remainder;
-					console.log( 'here' + this.current );
 				}
 				else
 					return;
@@ -198,8 +195,6 @@
 			else
 				this.position -= ( this.current + this.settings.items );
 			// }
-
-			console.log( 'position' + this.position + ' previous, cache:' + this.themesLength( ) );
 
 			if( this.settings.fade == true )
 				this.fadeNext( );
