@@ -134,7 +134,7 @@ function themes_api_download_link( $id ){
  */
 function themes_api_display_image( $file ){
 
-	if (!file_exists($file)) {
+	if (!file_exists($file) || !filesize($file)) {
 		die('file '.$file.' does not exist');
 	}
 
