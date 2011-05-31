@@ -16,8 +16,8 @@ header('Content-type: text/xml; charset=utf-8');
 echo '<?xml version="1.0" encoding="UTF-8"?>'."\n";
 echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 $rs=dbAll(
-	'select id,edate,importance,name from pages where importance>0 order by '
-	.'importance desc'
+	'select id,edate,importance,name from pages where importance>0 '
+	.'&& !(special&2) order by importance desc'
 );
 foreach ($rs as $r) {
 	$page=Page::getInstance($r['id']);
