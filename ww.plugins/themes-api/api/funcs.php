@@ -192,7 +192,7 @@ function themes_api_add_download_count( $themes ){
 				$themes[ $i ][ 'downloads' ] = $download[ 'count(id)' ];
 		}
 		if( !isset( $themes[ $i ][ 'downloads' ] ) )
-			$theme[ $i ][ 'downloads' ] = 0;
+			$themes[ $i ][ 'downloads' ] = 0;
 	}
 	
 	return $themes;

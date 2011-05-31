@@ -16,7 +16,7 @@ WW_addScript( '/ww.plugins/themes-api/carousel.js' );
 WW_addCSS( '/ww.plugins/themes-api/api.css' );
 
 $script = '
-$( "#carousel" ).themesCarousel( );
+$( "#carousel" ).themesCarousel({loop:true});
 $( "#next" ).click( function( ){
 	$( "#carousel" ).themesCarousel( "next" );
 } );

@@ -3,7 +3,6 @@
  *
  * file for accessing apects of the repository via js
  */
-
  var Carousel = {
 
 	themes : {},
@@ -28,7 +27,7 @@
 		rows	: 2,
 		repeat	: true,
 		fade : false,
-		loop : true,
+		loop : false,
 		// shows a select box of methods
 		// of filtering the themes by categories
 		filterOptions : true,
@@ -65,6 +64,7 @@
 
 		filterBy : function( by ){ // changes how themes are filtered
 			this.themes = {};
+			this.position = 0;
 			this.filter = by;
 			this.tempFade = true;
 			$( '.slider .themes-container', this.selector ).html(
@@ -80,11 +80,20 @@
 				+ 'api.php?' + this.filter + '=true&count=' + this.settings.items
 				+ '&start=' + this.themesLength( ),
 				success : function( complete ){
-					if( complete == 'none' )
-						Carousel.position = 0;
-					else
-						Carousel.mergeThemes( complete );
+					Carousel.mergeThemes( complete );
 					Carousel.displayNext( );
+				},
+				error : function( error ){
+					if( error.responseText == 'none' && Carousel.settings.loop == true ){
+						Carousel.position = 0;
+						Carousel.displayNext( );
+					}
+					else{
+						$( '.slider .themes-container', this.selector ).html(
+							'There was an error contacting themes server. Please try'
+							+ ' reloading the page'
+						);
+					}
 				},
 				dataType : 'json'
 			});
@@ -131,9 +140,12 @@
 		},
 
 		displayNext : function( ){
-      if( this.position >= this.themesLength( ) )
+      if( this.position >= this.themesLength( ) ){
+				console.log( 'position: ' + this.position + 'getting more themes, cache: ' + this.themesLength( ) );
         this.getThemes( );
+			}
       else{  
+				console.log( 'position: ' +this.position + 'reading from cache, cache: ' + this.themesLength( ) );
 				if( this.settings.fade == true || this.tempFade == true ){
 					this.fadeNext( );
 					this.tempFade = false;
@@ -172,14 +184,22 @@
 		displayPrevious : function( ){
 			// { if position = 0
 			if( this.position == this.settings.items ){
-				if( this.settings.loop == true )
-					this.position = this.themesLength( ) - this.current;
+				if( this.settings.loop == true ){
+					var remainder = this.themesLength( ) % this.current;
+					if( remainder == 0 )
+						this.position = this.themesLength( ) - this.current;
+					else
+						this.position = this.themesLength( ) - remainder;
+					console.log( 'here' + this.current );
+				}
 				else
 					return;
 			}
 			else
 				this.position -= ( this.current + this.settings.items );
 			// }
+
+			console.log( 'position' + this.position + ' previous, cache:' + this.themesLength( ) );
 
 			if( this.settings.fade == true )
 				this.fadeNext( );

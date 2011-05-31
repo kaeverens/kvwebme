@@ -76,7 +76,9 @@ $( function( ){
 					html += '</select></p>';
 				}
 				
-				html += '<input type="submit" class="install-theme" name="install-theme"'
+				html += '<p><i>Total Downloads: ' + Carousel.themes[ Carousel.position ].downloads
+					+ '</i></p>'
+					+ '<input type="submit" class="install-theme" name="install-theme"'
 					+ ' installed="' + installed + '" value="Download & Install" />'
 					+ '<input type="submit" class="install-theme" name="download-theme"'
 					+ ' installed="' + installed + '" value="Download"/>'
@@ -93,5 +95,7 @@ $( function( ){
 	},
 	callback : function( ){
 		$( '.ratings', Carousel.selector ).ratings({ saveRemotely : "/ww.incs/proxy.php?url=http://kvweb.me" } );
-	}});
+	},
+	loop : true
+	});
 });

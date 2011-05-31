@@ -37,7 +37,7 @@ if( $count == 0 )
 $start = ( int ) @$_GET[ 'start' ];
 
 $ratings = dbAll( 
-	'select name, avg( rating ) from ratings where type="theme" group by name order by rating desc'
+	'select name, avg(rating) from ratings where type="theme" group by name order by rating desc'
 );
 
 $ids = array( );
