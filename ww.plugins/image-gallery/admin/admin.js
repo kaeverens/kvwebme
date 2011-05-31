@@ -69,3 +69,15 @@ function update_image(data) {
 	}
 	$('#image-gallery-image'+id).attr('title', caption);
 }
+function imagegallery_showoverlay(){
+	var $overlay = $('<div class="ui-widget-overlay"></div>').appendTo('body');
+	setOverlayDimensionsToCurrentDocumentDimensions(); //remember to call this when the document dimensions change
+	$(window).resize(function(){
+		setOverlayDimensionsToCurrentDocumentDimensions();
+	});
+	function setOverlayDimensionsToCurrentDocumentDimensions() {
+		$('.ui-widget-overlay').width($(document).width());
+		$('.ui-widget-overlay').height($(document).height());
+	}
+	$('your images are uploading. please wait').dialog();
+}

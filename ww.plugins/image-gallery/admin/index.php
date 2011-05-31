@@ -237,6 +237,6 @@ if(isset($GLOBALS['PLUGINS']['online-store'])){
 }
 // }
 $c.='</div>';
-ww_addScript('/ww.plugins/image-gallery/j/admin.js');
+ww_addScript('/ww.plugins/image-gallery/admin/admin.js');
 ww_addScript('/ww.plugins/image-gallery/j/make-tabs.js');
 $c.='<link rel="stylesheet" href="/ww.plugins/image-gallery/admin/admin.css" />';
