@@ -164,7 +164,7 @@ function forum_user_profile( $PAGEDATA, $user ){
 	</table>';
 
 	$recent = dbAll(
-		'select * from forums_posts where author_id=' . $user[ 'id' ] . ' limit 4'
+		'select * from forums_posts where author_id=' . $user[ 'id' ] . ' order by created_date desc limit 4'
 	);
 
 	$ids = array( );
@@ -177,7 +177,7 @@ function forum_user_profile( $PAGEDATA, $user ){
 		. implode( ' or id=', $ids )
 	);
 
-	$html .= '<h1>Forum - Recent Posts</h1>
+	$html .= '<h1>Forum - You Recent Posts</h1>
 	<table style="border:1px solid #ccc;margin:10px">
 		<tr>
 			<th>Thread</th>
