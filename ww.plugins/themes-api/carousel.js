@@ -122,7 +122,7 @@
 					' middle' :
 					'';
 
-				html += '<td class="theme-container' + middle + '">'
+				html += '<td class="carousel-theme-container' + middle + '">'
 				+ '<h2><a href="http://kvweb.me">' + this.themes[ this.position ].name + '</a></h2>'
 				+ '<a href="http://kvweb.me/"><img src="' + this.themes[ this.position ].screenshot + '" width="240px" height="172px"/>'
 				+ '<p>' + this.themes[ this.position ].short_description + '</p>'
@@ -216,13 +216,9 @@
 		},
 
 		init : function( ){
-			// fade in the first time
-			this.tempFade = true;
-			this.displayNext( );
-
 			// { add some css rules
 			var height = ( 340 * this.settings.rows ) + 'px';
-	    $( this.selector ).css({ 'overflow' : 'hidden', 'width' : '860px' }); 
+	    $( this.selector ).css({ 'overflow-y' : 'hidden', 'overflow-x' : 'visible', 'width' : '860px' }); 
 
 	    $( this.selector ).html(
 				'<div class="themes-carousel-wrapper">'
@@ -259,6 +255,11 @@
 			$( '.next' ).live( 'click', function( ){
 				Carousel.displayNext( );
 			});
+
+      // fade in the first time
+      this.tempFade = true;
+      this.displayNext( );
+
 		} 
 
 };
