@@ -12,7 +12,7 @@
 
 require SCRIPTBASE . 'ww.plugins/themes-api/api/funcs.php';
 
-WW_addScript( '/ww.plugins/themes-api/api.js' );
+WW_addScript( '/ww.plugins/themes-api/carousel.js' );
 WW_addCSS( '/ww.plugins/themes-api/api.css' );
 
 $script = '
@@ -34,8 +34,8 @@ $html = '
 <input type="text" name="themes_search" /><input type="submit" name="Search" id="themes_search"/>
 <h1>Themes Repository</h1>
 <div id="carousel"></div>
-<a id="prev">Previous</a>
-<a id="next">Next</a>
+<div id="previous">P</div>
+<div id="next" style="position:relative;top:0;background:#000;color:#fff;padding:30px">N</div>
 <br style="clear:both"/>
 ';
 

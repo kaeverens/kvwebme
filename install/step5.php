@@ -34,7 +34,6 @@ if(!file_exists('../.private/config.php')){
 	exit;
 }
 
-echo '<p><strong>Success!</strong> Your WebME installation is complete. Please <a href="/">click here</a> to go to the root of the site.</p>';
-unset($_SESSION['db_vars']);
+header( 'location: step6.php' );
 
 require 'footer.php';

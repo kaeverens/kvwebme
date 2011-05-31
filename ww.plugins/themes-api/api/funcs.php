@@ -178,4 +178,23 @@ function themes_api_get_theme_from_id( $themes, $id ){
 	}
 }
 
+function themes_api_add_download_count( $themes ){
+	$ids = array( );
+	foreach( $themes as $theme )
+		array_push( $ids, $theme[ 'id' ] );
+
+	$downloads = dbAll( 'select count(id),theme from themes_downloads where theme='
+	. implode( ' or theme=', $ids ) . ' group by theme'  );  
+
+	for( $i = 0; $i < count( $themes ); ++$i ){
+		foreach( $downloads as $download ){
+			if( $download[ 'theme' ] == $themes[ $i ][ 'id' ] )
+				$themes[ $i ][ 'downloads' ] = $download[ 'count(id)' ];
+		}
+		if( !isset( $themes[ $i ][ 'downloads' ] ) )
+			$theme[ $i ][ 'downloads' ] = 0;
+	}
+	
+	return $themes;
+}
 ?>

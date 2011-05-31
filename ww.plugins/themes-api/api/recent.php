@@ -63,6 +63,8 @@ for( $i = 0; $i < count( $themes ); ++$i ){
 
 }
 
+$themes = themes_api_add_download_count( $themes );
+
 /**
  * json_encode and print results
  */

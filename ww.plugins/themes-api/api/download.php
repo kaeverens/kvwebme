@@ -47,6 +47,12 @@ if( $theme == false )
 if( $theme[ 'moderated' ] == 'no' && ( !isset( $_SESSION[ 'userdata' ] ) && !isset( $_SESSION[ 'userdate' ][ 'groups' ][ 'moderators' ] ) ) )
 	die( 'This theme is awaiting moderation and has not been deemed as safe yet.' );
 
+// save in database
+$referrer = @$_SERVER[ 'HTTP_REFERER' ];
+$ip = @$_SERVER[ 'REMOTE_ADDR' ];
+dbQuery( 'insert into themes_downloads values("",' . $id . ',"'
+	. $referrer . '","' . $ip . '",now())');
+
 /**
  * download file
  */

@@ -15,7 +15,7 @@ $plugin=array(
 	'frontend' => array(
 		'page_type' => 'dynamic_search_front'
 	),
-	'version' => '0.3'
+	'version' => 3
 );
 
 function dynamic_search_front(){

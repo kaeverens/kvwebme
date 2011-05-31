@@ -54,6 +54,11 @@ if( $version == 1 ){
 
 	$version = 2;
 }
+if( $version == 2 ){
+	dbQuery( 'create table themes_downloads ( id int auto_increment primary key,'
+		.'theme text, referrer text, ip text, downloaded date )' );
+	$version = 3;
+}
 
 /**
  * upgrade the $DBVARS array and rewrite the config file

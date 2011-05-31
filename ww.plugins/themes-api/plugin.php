@@ -7,7 +7,7 @@
  *
  * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
  * @license    GPL 2.0
- * @version    1.0
+ * @version    3.0
  */
 
 /**
@@ -17,7 +17,7 @@
 $plugin = array( 
 
 	'name'		=>	'Themes API',
-	'version'	=>	2,
+	'version'	=>	3,
 	'description'	=>	'Private Plugin for themes API',
 	'hide_from_admin'=>	true,
 	'admin'		=>	array(
@@ -66,14 +66,20 @@ function themes_api_files_check( $vars ){
 	/**
 	 * if you are a moderator, then you can download
 	 */
-	if( isset( $_SESSION[ 'userdata' ] ) && isset( $_SESSION[ 'userdata' ][ 'groups' ][ 'moderators' ] ) )
-		return true; 
+	//if( isset( $_SESSION[ 'userdata' ] ) && isset( $_SESSION[ 'userdata' ][ 'groups' ][ 'moderators' ] ) )
+		//return true; 
 
 	$id = $file[ 3 ];
 	$moderated = dbOne( 'select moderated from themes_api where id=' . $id, 'moderated' );
 
 	if( $moderated == 'no' )
 		die( 'This theme is awaiting moderation and has not been deemed as safe yet.' );
+
+	// save in database
+	$referrer = @$_SERVER[ 'HTTP_REFERER' ];
+	$ip = @$_SERVER[ 'REMOTE_ADDR' ];
+	dbQuery( 'insert into themes_downloads values("",' . $id . ',"'
+		. $referrer . '","' . $ip . '",now())');
 
 }
 

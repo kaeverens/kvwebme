@@ -1,14 +1,14 @@
 <?php
 
 /**
- * api/rating.php, KV-Webme Themes API
+ * api/downloads.php, KV-Webme Themes API
  *
- * returns a number of highest rated themes, where
+ * returns a number of most downloaded themes, where
  * count is the number of themes to return,
  * 10 is the default value
  * * paramaters that can be given:
  *
- * rating       -       should be boolean true
+ * downloads	-       should be boolean true
  * count	-	number of themes to return, default = 10
  * start	-	offset to start query from, default = 0
  *
@@ -20,8 +20,8 @@
 /**
  * make sure api rules are being followed
  */
-$rating = @$_GET[ 'rating' ];
-if( $rating != 'true' )
+$downloads = @$_GET[ 'downloads' ];
+if( $downloads != 'true' )
 	exit;
 
 /**
@@ -36,22 +36,25 @@ if( $count == 0 )
  */
 $start = ( int ) @$_GET[ 'start' ];
 
-$ratings = dbAll( 
-	'select name, avg( rating ) from ratings where type="theme" group by name order by rating desc'
-);
+$downloads = dbAll( 'select count(id),theme from themes_downloads'
+	. ' group by theme desc limit ' . $start . ',' . $count  );
 
 $ids = array( );
-for( $i = 0; $i < count( $ratings ); ++$i ){
-	$id = end( explode( '_', $ratings[ $i ][ 'name' ] ) );
-	array_push( $ids, $id );
-}
+foreach( $downloads as $download )
+	array_push( $ids, $download[ 'theme' ] );
 
-$themes = dbAll( 'select id,name,author,description,version,last_updated,author_url'
+$themes_tmp = dbAll( 'select id,name,author,description,version,last_updated,author_url'
 	. ',tags from themes_api where moderated="yes" and ( id=' 
-	. implode( ' or id=', $ids ) . ' ) limit ' . $start . ',' . $count );
+	. implode( ' or id=', $ids ) . ' )' );
 
-if( $themes == false || count( $themes ) == 0 )
+if( $themes_tmp == false || count( $themes_tmp ) == 0 )
 	die( 'none' );
+
+$themes = array( );
+foreach( $downloads as $download ){
+	$theme = themes_api_get_theme_from_id( $themes_tmp, $download[ 'theme' ] );
+	array_push( $themes, $theme );
+}
 
 /**
  * add screenshots, html files and
@@ -66,10 +69,7 @@ for( $i = 0; $i < count( $themes ); ++$i ){
 	$themes[ $i ][ 'screenshot' ] = themes_api_get_screenshot( $id );
         $themes[ $i ][ 'variants' ] = themes_api_get_variants( $id );
 	$themes[ $i ][ 'download' ] = themes_api_download_link( $id );
-	$rating = ( isset( $ratings[ $themes[ $i ][ 'name' ] ] ) ) ?
-		$ratings[ $themes[ $i ][ 'name' ] ] :
-		0;
-	
+
 }
 
 $themes = themes_api_add_download_count( $themes );
