@@ -1,17 +1,17 @@
 <?php
 error_reporting(0);
-if(file_exists('../.private/config.php')){
+session_start();
+if(file_exists('../.private/config.php')&&!isset($_SESSION['config_written'])){
 	echo '<p><strong>Config file already exists</strong>. Please remove the /install directory.</p>';
 	exit;
 }
-session_start();
 
 $home_dir = substr( dirname( __FILE__ ), 0, -7);
 echo '
 <!doctype html>
 <html>
 <head>
-	<title>WebME admin area</title>
+	<title>WebME Installer</title>
 
 	<link rel="stylesheet" type="text/css" href="/j/cluetip/jquery.cluetip.css" />
 	<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />

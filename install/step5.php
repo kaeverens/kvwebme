@@ -34,6 +34,6 @@ if(!file_exists('../.private/config.php')){
 	exit;
 }
 
-header( 'location: step6.php' );
+$_SESSION[ 'config_written' ] = true;
 
-require 'footer.php';
+header( 'location: step6.php' );
