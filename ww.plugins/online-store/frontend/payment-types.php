@@ -12,17 +12,14 @@ if($page->type!='online-store'){
 
 // { build list of payment methods
 $arr=array();
-if(
-	isset($page->vars['online_stores_realex_sharedsecret'])
-	&& $page->vars['online_stores_realex_sharedsecret']
-){
+if (@$page->vars['online_stores_realex_sharedsecret']) {
 	$arr['Realex']='Credit Card';
 }
-if(
-	isset($page->vars['online_stores_paypal_address'])
-	&& $page->vars['online_stores_paypal_address']
-){
+if (@$page->vars['online_stores_paypal_address']) {
 	$arr['PayPal']='PayPal';
+}
+if (@$page->vars['online_stores_bank_transfer_account_number']) {
+	$arr['Bank Transfer']='Bank Transfer';
 }
 // }
 

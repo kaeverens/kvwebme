@@ -48,15 +48,14 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 	// }
 	// { if no payment method is selected, then choose the first available
 	if (!isset($_REQUEST['_payment_method_type']) || $_REQUEST['_payment_method_type']=='') {
-		if (isset($PAGEDATA->vars['online_stores_paypal_address'])
-			&& $PAGEDATA->vars['online_stores_paypal_address']!=''
-		) {
+		if (@$PAGEDATA->vars['online_stores_paypal_address']) {
 			$_REQUEST['_payment_method_type'] = 'PayPal';
 		}
-		else if (isset($PAGEDATA->vars['online_stores_realex_sharedsecret'])
-			&& $PAGEDATA->vars['online_stores_realex_sharedsecret']
-		) {
+		else if (@$PAGEDATA->vars['online_stores_realex_sharedsecret']) {
 			$_REQUEST['_payment_method_type'] = 'Realex';
+		}
+		else if (@$PAGEDATA->vars['online_stores_bank_transfer_account_number']) {
+			$_REQUEST['_payment_method_type'] = 'Bank Transfer';
 		}
 	}
 	// }
@@ -74,19 +73,19 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 	// { check that payment method is valid
 	switch($_REQUEST['_payment_method_type']){
 		case 'PayPal': // {
-			if(
-				!isset($PAGEDATA->vars['online_stores_paypal_address'])
-				|| !$PAGEDATA->vars['online_stores_paypal_address']
-			){
+			if (!@$PAGEDATA->vars['online_stores_paypal_address']) {
 				$errors[]='PayPal payment method not available.';
 			}
 			break;
 		// }
+		case 'Bank Transfer': // {
+			if (!@$PAGEDATA->vars['online_stores_bank_transfer_account_number']) {
+				$errors[]='Bank Transfer payment method not available.';
+			}
+			break;
+		// }
 		case 'Realex': // {
-			if(
-				!isset($PAGEDATA->vars['online_stores_realex_sharedsecret'])
-				|| !$PAGEDATA->vars['online_stores_realex_sharedsecret']
-			){
+			if (!@$PAGEDATA->vars['online_stores_realex_sharedsecret']) {
 				$errors[]='Realex payment method not available.';
 			}
 			break;
@@ -224,6 +223,17 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		// }
 		// { show payment button
 		switch($_REQUEST['_payment_method_type']){
+			case 'Bank Transfer': // {
+				$msg=$PAGEDATA->vars['online_stores_bank_transfer_message'];
+				$msg=str_replace('{{$total}}', OnlineStore_numToPrice($grandTotal), $msg);
+				$msg=str_replace('{{$invoice_number}}', $id, $msg);
+				$msg=str_replace('{{$bank_name}}', htmlspecialchars($PAGEDATA->vars['online_stores_bank_transfer_bank_name']), $msg);
+				$msg=str_replace('{{$account_name}}', htmlspecialchars($PAGEDATA->vars['online_stores_bank_transfer_account_name']), $msg);
+				$msg=str_replace('{{$account_number}}', htmlspecialchars($PAGEDATA->vars['online_stores_bank_transfer_account_number']), $msg);
+				$msg=str_replace('{{$sort_code}}', htmlspecialchars($PAGEDATA->vars['online_stores_bank_transfer_sort_code']), $msg);
+				$c.=$msg;
+				break;
+			// }
 			case 'PayPal': // {
 				$c.='<p>Your order has been recorded. Please click the button below '
 					.'to go to PayPal for payment. Thank you.</p>';

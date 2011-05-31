@@ -174,6 +174,7 @@ $c.='<th>VAT</th><td><input name="page_vars[online_stores_vat_percent]"'
 $c.='<tr><th>Payment Types</th><td colspan="3"><div class="tabs">';
 $c.='<ul>';
 $c.='<li><a href="#online-store-payments-paypal">PayPal</a></li>';
+$c.='<li><a href="#online-store-payments-bank-transfer">Bank Transfer</a></li>';
 $c.='<li><a href="#online-store-payments-realex">Realex</a></li>';
 $c.='</ul>';
 // { paypal
@@ -185,6 +186,58 @@ if (isset($vars['online_stores_paypal_address'])) {
 	$c.=' value="'.htmlspecialchars($vars['online_stores_paypal_address']).'"';
 }
 $c.=' /></td></tr></table></div>';
+// }
+// { bank transfer
+$c.='<div id="online-store-payments-bank-transfer">';
+$c.='<table>';
+// { bank name
+$c.='<tr><th>Bank Name</th>';
+$c.='<td><input name="page_vars[online_stores_bank_transfer_bank_name]"';
+if (isset($vars['online_stores_bank_transfer_bank_name'])) {
+	$c.=' value="'.htmlspecialchars($vars['online_stores_bank_transfer_bank_name']).'"';
+}
+$c.=' /></td></tr>';
+// }
+// { sort code
+$c.='<tr><th>Sort Code</th>';
+$c.='<td><input name="page_vars[online_stores_bank_transfer_sort_code]"';
+if (isset($vars['online_stores_bank_transfer_sort_code'])) {
+	$c.=' value="'.htmlspecialchars($vars['online_stores_bank_transfer_sort_code']).'"';
+}
+$c.=' /></td></tr>';
+// }
+// { account name
+$c.='<tr><th>Account Name</th>';
+$c.='<td><input name="page_vars[online_stores_bank_transfer_account_name]"';
+if (isset($vars['online_stores_bank_transfer_account_name'])) {
+	$c.=' value="'.htmlspecialchars($vars['online_stores_bank_transfer_account_name']).'"';
+}
+$c.=' /></td></tr>';
+// }
+// { account number
+$c.='<tr><th>Account Number</th>';
+$c.='<td><input name="page_vars[online_stores_bank_transfer_account_number]"';
+if (isset($vars['online_stores_bank_transfer_account_number'])) {
+	$c.=' value="'.htmlspecialchars($vars['online_stores_bank_transfer_account_number']).'"';
+}
+$c.=' /></td></tr>';
+// }
+// { message
+$c.='<tr><th>Message to buyer</th>';
+if (!@$vars['online_stores_bank_transfer_message']) {
+	$vars['online_stores_bank_transfer_message']='<p>Thank you for your purchase.'
+		.' Please send {{$total}} to the following bank account, quoting the '
+		.'invoice number {{$invoice_number}}:</p>'."\n<table>\n<tr><th>Bank</th>"
+		.'<td>{{$bank_name}}</td></tr>'."\n<tr><th>Account Name</th><td>"
+		.'{{$account_name}}</td></tr>'."\n<tr><th>Sort Code</th><td>"
+		.'{{$sort_code}}</td></tr>'."\n<tr><th>Account Number</th><td>"
+		.'{{$account_number}}</td></tr>'."\n</table>";
+}
+$c.='<td><textarea name="page_vars[online_stores_bank_transfer_message]">'
+	.htmlspecialchars($vars['online_stores_bank_transfer_message'])
+	.'</textarea></td></tr>';
+// }
+$c.='</table></div>';
 // }
 // { realex
 $c.='<div id="online-store-payments-realex">'
