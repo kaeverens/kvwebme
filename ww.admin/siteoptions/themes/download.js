@@ -35,23 +35,25 @@ $( function( ){
 
 	$( "#themes-carousel" ).themesCarousel({ display : function( ){
 
+
       var html = '<div class="themes-container"><table><tr>';
 
       for( var i = 0; i < Carousel.settings.items; ++i ){
 
         if( Carousel.themes[ Carousel.position ] == undefined )
           break;
-      
+
         if( i % ( Carousel.settings.items / Carousel.settings.rows ) === 0 )
-          html += '</tr><tr>';
+				          html += '</tr><tr>';
 
 				installed = ( $.inArray( Carousel.themes[ Carousel.position ].name,
 												window.installed_themes ) != -1 ) ? 1 : 0;
+
 				stat = ( installed ) ? ' - Already Installed' : '';
 
         var middle = ( !( ( i - 1 ) % ( Carousel.settings.items / Carousel.settings.rows ) ) ) ?
-          ' middle' :
-          '';
+					' middle' :
+					'';
 
         html += '<td class="carousel-theme-container' + middle + '">'
 				+ '<form action="/ww.admin/siteoptions.php?page=themes&action=download" method="post">'
@@ -68,14 +70,14 @@ $( function( ){
 				// print variants, if present
 				if( Carousel.themes[ Carousel.position ].variants.length ){
 					html += '<p>Variant: <select name="theme_variant" class="theme_variant">';
-					for( var i in Carousel.themes[ Carousel.position ].variants ){
+					for( var e in Carousel.themes[ Carousel.position ].variants ){
 						html += '<option screenshot="' + Carousel.themes[ Carousel.position ].screenshot
-						+ '&variant=' + Carousel.themes[ Carousel.position ].variants[ i ]
-						+ '">' + Carousel.themes[ Carousel.position ].variants[ i ] + '</option>';
+						+ '&variant=' + Carousel.themes[ Carousel.position ].variants[ e ]
+						+ '">' + Carousel.themes[ Carousel.position ].variants[ e ] + '</option>';
 					}
 					html += '</select></p>';
 				}
-				
+			
 				html += '<p><i>Total Downloads: ' + Carousel.themes[ Carousel.position ].downloads
 					+ '</i></p>'
 					+ '<input type="submit" class="install-theme" name="install-theme"'
