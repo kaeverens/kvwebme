@@ -168,9 +168,10 @@ function plugin_trigger( $trigger_name, $params = null ){
 		}
 		else{
 			if( is_array( $params ) ){
+				$temp = $params;
 				// push PAGEDATA to begining of array
-				array_unshift( $params, $PAGEDATA );
-				$c .= call_user_func_array( $fn, $params );
+				array_unshift( $temp, $PAGEDATA );
+				$c .= call_user_func_array( $fn, $temp );
 			}
 			else
 				$c .= $fn( $PAGEDATA, $params );

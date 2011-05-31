@@ -22,7 +22,8 @@ $plugin=array(
 		'page_type' => 'Forum_frontend'
 	),
 	'triggers'=>array(
-		'building-rss-links'  =>'Forum_getRssLink'
+		'building-rss-links'  =>'Forum_getRssLink',
+		'privacy_user_profile' => 'forum_user_profile',
 	),
 	'rss-handler' => 'Forum_rssHandler',
 	'version' => 6
@@ -116,4 +117,96 @@ function Forum_getRssLink($PAGEDATA) {
 			$PAGEDATA->getRelativeURL().'?_p=rss&p=forum'
 		)
 		:false;
+}
+
+function forum_user_profile( $PAGEDATA, $user ){
+
+	$script = '
+	$(function(){
+		$(".rating").ratings();
+	});
+	';
+
+	WW_addScript( '/ww.plugins/ratings/ratings.js' );
+	WW_addInlineScript( $script );
+
+	$threads = dbOne(
+		'select count(id) from forums_threads where creator_id=' . $user[ 'id' ],
+		'count(id)'
+	);
+
+	$posts = dbOne(
+		'select count(id) from forums_posts where author_id=' . $user[ 'id' ],
+		'count(id)'
+	);
+
+	$emailHash = md5( trim( strtolower( $user[ 'email' ] ) ) );
+
+	$html = '<h1>Forum</h1>
+	<table style="border:1px solid #ccc;margin:10px">
+		<tr>
+			<td rowspan="3">
+		    <img src="http://www.gravatar.com/avatar/
+				   ' . $emailHash . '" />
+			</td>
+			<th>Threads Created:</th>
+			<td>' . $threads . '</tr>
+		</tr>
+		<tr>
+			<th>Posts:</th>
+			<td>' . $posts . '</td>
+		</tr>
+		<tr>
+			<th>Helpfulness Rating:</th>
+			<td><p id="forum_user_' . $user[ 'id' ] . '"
+			class="rating" type="forum_user">rating</p></td>
+		</tr>
+	</table>';
+
+	$recent = dbAll(
+		'select * from forums_posts where author_id=' . $user[ 'id' ] . ' limit 4'
+	);
+
+	$ids = array( );
+	foreach( $recent as $post ){
+		if( !in_array( $post[ 'thread_id' ], $ids ) )
+			array_push( $ids, $post[ 'thread_id' ] );
+	}
+	$threads = dbAll(
+		'select * from forums_threads where id='
+		. implode( ' or id=', $ids )
+	);
+
+	$html .= '<h1>Forum - Recent Posts</h1>
+	<table style="border:1px solid #ccc;margin:10px">
+		<tr>
+			<th>Thread</th>
+			<th>Date</th>
+			<th>Post</th>
+		</tr>';
+
+	foreach( $recent as $post ){
+		foreach( $threads as $thread ){
+			if( $thread[ 'id' ] == $post[ 'thread_id' ] ){
+				$thread_id = $thread[ 'id' ];
+				$name = $thread[ 'name' ];
+				$forum = $thread[ 'forum_id' ];
+				break;
+			}
+		}
+		$pagename = dbOne(
+			'select name from pages where id=(select page_id from forums where id=1)',
+			'name'
+		);
+		$link = '/' . $pagename . '?forum-f=' . $forum . '&forum-t=' . $thread_id;
+		$html .= '<tr>
+			<td><a href="' . $link . '">' . $name . '</a></td>
+			<td>' . date_m2h( $post[ 'created_date' ] ) . '</td>
+			<td>' . substr( $post[ 'body' ], 0, 40 ) . ' [...]</td>
+		</tr>';
+	}
+
+	$html .= '</table>';
+
+	return $html;
 }

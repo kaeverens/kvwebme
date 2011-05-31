@@ -187,6 +187,9 @@ function Forum_showForums(&$PAGEDATA, &$forums) {
 function Forum_showThread(&$PAGEDATA, &$id) {
 	require_once SCRIPTBASE.'ww.incs/bb2html.php';
 	WW_addCSS('/ww.plugins/forum/frontend/forum.css');
+	$script='$(function(){$(".ratings").ratings();});';
+	WW_addScript('/ww.plugins/ratings/ratings.js');
+	WW_addInlineScript($script);
 	$thread=dbRow('select * from forums_threads where id='.$id);
 	$forum_id=$thread['forum_id'];
 	if (!$thread || !count($thread)) {
@@ -210,9 +213,16 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 			.'<td><div class="post-header">Posted: '
 			.date_m2h($post['created_date'], 'datetime')
 			.'</div></td></tr>';
+		$count_posts=dbOne(
+			'select count(id) from forums_posts where author_id='.$user->get('id'),
+			'count(id)'
+		);
 		$emailHash=md5(trim(strtolower($user->get('email'))));
 		$c.='<tr><td><img src="http://www.gravatar.com/avatar/'
-			.$emailHash.'" />';
+			.$emailHash.'" /><span>Posts: '.$count_posts.'</span>'
+			. '<p>Helpfulness:'
+			. '<span class="ratings" id="forum_user_'.$user->get('id').'"'
+			. ' type="forum_user">rating</span></p>';
 		$c.='</td><td class="post">'.bb2html($post['body'])
 			.'</td></tr>';
 	}
