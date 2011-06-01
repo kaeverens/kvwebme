@@ -223,6 +223,34 @@ if (isset($vars['online_stores_bank_transfer_account_number'])) {
 $c.=' /></td></tr>';
 // }
 // { message
+// add ckeditor
+$script='
+        var bbcode_editor=CKEDITOR.replace( "bank_transfer_message", {
+                extraPlugins : "bbcode",
+                removePlugins : "bidi,button,dialogadvtab,div,filebrowser,flash,format,forms,horizontalrule,iframe,indent,justify,liststyle,pagebreak,showborders,stylescombo,table,tabletools,templates",
+                toolbar : [
+                                ["Source", "-", "Save","NewPage","-","Undo","Redo"],
+                                ["Find","Replace","-","SelectAll","RemoveFormat"],
+                                ["Link", "Unlink", "Image"],
+                                "/",
+                                ["FontSize", "Bold", "Italic","Underline"],
+                                ["NumberedList","BulletedList","-","Blockquote"],
+                                ["TextColor", "-", "Smiley","SpecialChar", "-", "Maximize"]
+                        ],
+                smiley_images : [
+                                "regular_smile.gif","sad_smile.gif","wink_smile.gif","teeth_smile.gif","tounge_smile.gif",
+                                "embaressed_smile.gif","omg_smile.gif","whatchutalkingabout_smile.gif","angel_smile.gif","shades_smile.gif",
+                                "cry_smile.gif","kiss.gif"
+                        ],
+                smiley_descriptions : [
+                                "smiley", "sad", "wink", "laugh", "cheeky", "blush", "surprise",
+                                "indecision", "angel", "cool", "crying", "kiss"
+                        ]
+        });
+';
+WW_addScript('/j/ckeditor-3.6/ckeditor.js');
+WW_addScript('/j/ckeditor-3.6/adapters/jquery.js');
+WW_addInlineScript($script);
 $c.='<tr><th>Message to buyer</th>';
 if (!@$vars['online_stores_bank_transfer_message']) {
 	$vars['online_stores_bank_transfer_message']='<p>Thank you for your purchase.'
@@ -233,7 +261,7 @@ if (!@$vars['online_stores_bank_transfer_message']) {
 		.'{{$sort_code}}</td></tr>'."\n<tr><th>Account Number</th><td>"
 		.'{{$account_number}}</td></tr>'."\n</table>";
 }
-$c.='<td><textarea name="page_vars[online_stores_bank_transfer_message]">'
+$c.='<td><textarea name="page_vars[online_stores_bank_transfer_message]" id="bank_transfer_message">'
 	.htmlspecialchars($vars['online_stores_bank_transfer_message'])
 	.'</textarea></td></tr>';
 // }
