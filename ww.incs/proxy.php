@@ -39,8 +39,10 @@ if( $host != $referer )
  */
 if( strpos( $url, '?' ) !== 0 ){
 	$querystring = $_SERVER[ 'QUERY_STRING' ];
-	$querystring = '?' . end( explode( '?', $querystring ) );
-	$url = reset( explode( '?', $url ) ) . $querystring;
+	$explode=explode('?',$querystring);
+	$querystring = '?'.end($explode);
+	$explode=explode('?',$url);
+	$url = reset($explode) . $querystring;
 }
 
 $content = curl( $url );
