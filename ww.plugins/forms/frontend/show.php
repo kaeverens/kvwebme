@@ -395,13 +395,13 @@ function Form_showForm(
 	}
 	$script='';
 	if ($has_date) {
-		$script.='$("input.date").datepicker({"dateFormat":"yy-mm-dd"});';
+		WW_addInlineScript(
+			'$("input.date").datepicker({"dateFormat":"yy-mm-dd",'
+			.'"changeMonth":true,"changeYear":true});'
+		);
 	}
 	if ($has_ccdate) {
-		$script.='$("input.ccdate").datepicker({"dateFormat":"yy-mm"});';
-	}
-	if ($script) {
-		$c.='<script>'.$script.'</script>';
+		WW_addInlineScript('$("input.ccdate").datepicker({"dateFormat":"yy-mm"});');
 	}
 	return $c;
 }
