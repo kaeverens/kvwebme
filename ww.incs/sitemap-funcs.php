@@ -19,6 +19,9 @@ require_once SCRIPTBASE . 'ww.incs/menus.php';
   * @return string HTML sitemap
   */
 function Sitemap_get() {
+	if (@$GLOBALS['DBVARS']['disable-hidden-sitemap']) {
+		return '';
+	}
 	global $PAGEDATA;
 	$rs=Menu_getChildren(0, $PAGEDATA->id);
 	return '<ul>'.Sitemap_getLinks($rs).'</ul>';

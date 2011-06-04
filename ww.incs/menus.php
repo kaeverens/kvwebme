@@ -197,8 +197,10 @@ function Menu_show($b) {
 			$links++;
 		}
 	}
-	$c.='<a class="menuItemTop nojs" href="'.$PAGEDATA->getRelativeURL()
-		.'?webmespecial=sitemap">Site Map</a>';
+	if (!@$GLOBALS['DBVARS']['disable-hidden-sitemap']) {
+		$c.='<a class="menuItemTop nojs" href="'.$PAGEDATA->getRelativeURL()
+			.'?webmespecial=sitemap">'.__('Site Map').'</a>';
+	}
 	$c.='</div>';
 	if ($vals['mode']=='two-tier') {
 		$pid=$PAGEDATA->getTopParentId();

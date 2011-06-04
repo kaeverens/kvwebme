@@ -15,11 +15,17 @@ echo '<h2>General</h2>';
 // { handle actions
 if ($action=='Save') {
 	$DBVARS['f_cache']=$_REQUEST['f_cache'];
+	if (@$_REQUEST['disable-hidden-sitemap']) {
+		$DBVARS['disable-hidden-sitemap']=1;
+	}
+	else {
+		unset($DBVARS['disable-hidden-sitemap']);
+	}
 	$DBVARS['site_title']=$_REQUEST['site_title'];
 	if (@$_REQUEST['canonical_name']) {
 		$DBVARS['canonical_name']=$_REQUEST['canonical_name'];
 	}
-	else if (isset($DBVARS['canonical_name']) ) {
+	else {
 		unset($DBVARS['canonical_name']);
 	}
 	$DBVARS['site_subtitle']=$_REQUEST['site_subtitle'];
@@ -55,6 +61,7 @@ if ($action=='Save') {
 		unset($DBVARS['site_page_length_limit']);
 	}
 	config_rewrite();
+	cache_clear();
 	echo '<em>options updated</em>';
 }
 if ($action=='remove_logo') {
@@ -77,7 +84,7 @@ $canonical_name=@$DBVARS['canonical_name']
 	:'';
 echo '<tr><th>Canonical Domain Name</th><td><input name="canonical_name" '
 	.'placeholder="leave blank to accept multiple domain names"'
-	.$canonical_name.' type="url" /></td></tr>';
+	.$canonical_name.' /></td></tr>';
 // }
 // { logo
 echo '<tr><th>Logo</th><td><input type="file" name="site_logo" /><br />';
@@ -124,6 +131,16 @@ foreach ($arr as $k=>$v) {
 	}
 	echo ">$k</option>";
 }
+echo '</select></td></tr>';
+// }
+// { disable hidden menu sitemap
+echo '<tr><th>Disable the hidden sitemap (<a href="/Home?webmespecial=sitemap">this</a>)</th><td>'
+	.'<select name="disable-hidden-sitemap"><option value="0">No</option>';
+echo '<option value="1"';
+if (@$DBVARS['disable-hidden-sitemap']) {
+	echo ' selected="selected"';
+}
+echo ">Yes</option>";
 echo '</select></td></tr>';
 // }
 echo '</table><input type="submit" name="action" value="Save" /></form>';
