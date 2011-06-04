@@ -137,22 +137,27 @@ foreach ($q2 as $r2) {
 	switch($r2['type']){
 		case 'selectbox':case 'hidden': // {
 			$c.= wInput(
-				'formfieldElementsExtra['.($i++).']',
+				'formfieldElementsExtra['.$i.']',
 				'textarea',
 				$r2['extra'],
 				'small'
 			);
 			break; // }
 		case 'html-block': // {
-			$c.='<textarea name="formfieldElementsExtra['.($i++)
+			$c.='<textarea name="formfieldElementsExtra['.$i
 				.']" class="ckeditor">'
 				.htmlspecialchars($r2['extra'])
 				.'</textarea>';
 			break; // }
+		case 'textarea': // {
+			$c.='<input type="hidden" name="formfieldElementsExtra['.$i
+				.']" class="forms-textarea" value="'.$r2['extra'].'"/>';
+			break; // }
 		default: // {
-			$c.= wInput('formfieldElementsExtra['.($i++).']', 'hidden', $r2['extra']);
+			$c.= wInput('formfieldElementsExtra['.$i.']', 'hidden', $r2['extra']);
 			// }
 	}
+	$i++;
 	$c.= '</td></tr></table></li>';
 }
 $c.= '</ul></div>';

@@ -28,5 +28,27 @@ $(function(){
 			var curpage=+$this.attr('current-page');
 			change_page($this, curpage, curpage-1);
 		});
+		$this.find('textarea').each(function(){
+			var $this=$(this);
+			var maxlength=+$this.attr('maxlength');
+			var softmaxlength=+$this.attr('softmaxlength');
+			if (maxlength) {
+				$this.keyup(function(){
+					if ($this.val().length>maxlength) {
+						$this.val($this.val().substring(0,maxlength));
+					}
+				});
+			}
+			if (softmaxlength) {
+				$this.keyup(function(){
+					if ($this.val().length>softmaxlength) {
+						$this.addClass('warning');
+					}
+					else {
+						$this.removeClass('warning');
+					}
+				});
+			}
+		});
 	});
 });

@@ -51,4 +51,20 @@ $(function(){
 		}
 	});
 	$('#form_fields select').live('change',form_updateReplyto);
+	$('.forms-textarea').each(function(){
+		var $this=$(this);
+		var $parent=$this.closest('td');
+		var vals=$this.val();
+		if (!vals) {
+			vals='0,0';
+		}
+		vals=vals.split(/,/);
+		var html='max characters: <input value="'+vals[0]+'" class="small"/>, '
+			+'warn after: <input value="'+vals[1]+'" class="small"/>';
+		$parent.append(html)
+			.find('input').change(function(){
+				var $inps=$parent.find('input');
+				$this.val($($inps[1]).val()+','+$($inps[2]).val());
+			});
+	});
 });

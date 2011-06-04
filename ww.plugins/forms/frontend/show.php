@@ -318,9 +318,14 @@ function Form_showForm(
 				}
 				break; // }
 			case 'textarea': // {
+				if (!$r2['extra']) {
+					$r2['extra']='0,0';
+				}
+				list($max, $softmax)=explode(',', $r2['extra']);
 				$d=$only_show_contents
 					?$_REQUEST[$name]
-					:'<textarea id="'.$name.'" name="'.$name.'" class="'.$class.'">'
+					:'<textarea maxlength="'.$max.'" softmaxlength="'.$softmax.'" '
+						.'id="'.$name.'" name="'.$name.'" class="'.$class.'">'
 						.$_REQUEST[$name].'</textarea>';
 				break; // }
 			default: // { # input boxes, and anything which was not handled already
