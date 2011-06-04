@@ -19,11 +19,11 @@ if ($_REQUEST['time']<time()-3600) {
 	exit;
 }
 
-function SiteCredits_apiVerify($vars, $md5) {
+function SiteCredits_apiVerify($vars, $sha1) {
 	ksort($vars);
 	$vars['time']=(int)$vars['time'];
 	$json=json_encode($vars);
-	return md5($json.'|'.$GLOBALS['DBVARS']['sitecredits-apikey']) == $md5;
+	return sha1($json.'|'.$GLOBALS['DBVARS']['sitecredits-apikey']) == $sha1;
 }
 
 switch ($_REQUEST['action']) {
@@ -31,9 +31,9 @@ switch ($_REQUEST['action']) {
 		if (SiteCredits_apiVerify(array(
 			'action'=>'check-credits',
 			'time'=>$_REQUEST['time']),
-			$_REQUEST['md5']
+			$_REQUEST['sha1']
 		)) {
-			echo '{"credits":'.(float)$GLOBALS['DBVARS']['sitecredits-credits'].'}';
+			echo '{"credits":'.(float)@$GLOBALS['DBVARS']['sitecredits-credits'].'}';
 			exit;
 		}
 		break; // }
@@ -42,10 +42,11 @@ switch ($_REQUEST['action']) {
 			'action'=>'add-credits',
 			'credits'=>(float)$_REQUEST['credits'],
 			'time'=>$_REQUEST['time']),
-			$_REQUEST['md5']
+			$_REQUEST['sha1']
 		)) {
 			$credits=(float)@$GLOBALS['DBVARS']['sitecredits-credits'];
-			$GLOBALS['DBVARS']['sitecredits-credits']=$credits+(float)$_REQUEST['credits'];
+			$GLOBALS['DBVARS']['sitecredits-credits']=
+				$credits + (float)$_REQUEST['credits'];
 			config_rewrite();
 			echo '{"credits":'.(float)$GLOBALS['DBVARS']['sitecredits-credits'].'}';
 			exit;

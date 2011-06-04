@@ -25,7 +25,10 @@
 	settings : {
 		items	: 6,
 		rows	: 2,
-		repeat	: true,
+		width : '860px',
+		nextLinkText: 'Next',
+		prevLinkText: 'Previous',
+		repeat: true,
 		fade : false,
 		loop : false,
 		// error message to be displayed if server cannot
@@ -124,9 +127,9 @@
 					' middle' :
 					'';
 
-				html += '<td class="carousel-theme-container' + middle + '">'
+				html += '<td style="width:240px" class="carousel-theme-container' + middle + '">'
 				+ '<h2><a href="http://kvweb.me">' + this.themes[ this.position ].name + '</a></h2>'
-				+ '<a href="http://kvweb.me/"><img src="' + this.themes[ this.position ].screenshot + '" width="240px" height="172px"/>'
+				+ '<a href="http://kvweb.me/"><img src="' + this.themes[ this.position ].screenshot + '" style="width:240px;height:172px"/>'
 				+ '<p>' + this.themes[ this.position ].short_description + '</p>'
 				+ '<p><a href="http://kvweb.me/">Read More..</a></p>'
 				+ '</td>';
@@ -220,7 +223,7 @@
 		init : function( ){
 			// { add some css rules
 			var height = ( 340 * this.settings.rows ) + 'px';
-	    $( this.selector ).css({ 'overflow-y' : 'hidden', 'overflow-x' : 'visible', 'width' : '860px' }); 
+	    $( this.selector ).css({ 'overflow-y' : 'hidden', 'overflow-x' : 'visible', 'width' : this.settings.width }); 
 
 	    $( this.selector ).html(
 				'<div class="themes-carousel-wrapper">'
@@ -233,8 +236,8 @@
 
 			if( this.settings.filterOptions ){
 				var filter = '<span style="float:right">'
-				+ '<a class="previous" href="javascript:;">Previous</a> | '
-				+ '<a class="next" href="javascript:;">Next</a> '
+				+ '<a class="previous" href="javascript:;">'+this.settings.prevLinkText+'</a> | '
+				+ '<a class="next" href="javascript:;">'+this.settings.nextLinkText+'</a> '
 				+ '<select name="themes_filter">'
 					+ '<option value="recent" selected="selected">Recently Added</option>'
 					+ '<option value="downloads">Most Downloads</option>'
