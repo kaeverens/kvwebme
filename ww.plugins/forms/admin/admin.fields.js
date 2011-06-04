@@ -1,4 +1,6 @@
-window.form_input_types=['input box','email','textarea','date','checkbox','selectbox','hidden','ccdate','html-block'];
+window.form_input_types=['input box', 'email', 'textarea', 'date',
+	'checkbox', 'selectbox', 'hidden', 'ccdate', 'html-block', 'page-next',
+	'page-previous', 'page-break'];
 function formfieldsAddRow(){
 	formfieldElements++;
 	$('<li><table width="100%"><tr><td width="20%"><input name="formfieldElementsName['+formfieldElements+']" /></td><td width="20%"><select name="formfieldElementsType['+formfieldElements+']"><option>'+form_input_types.join('</option><option>')+'</option></select></td><td width="10%"><input type="checkbox" name="formfieldElementsIsRequired['+formfieldElements+']" /></td><td></td></tr></table></li>').appendTo($('#form_fields'));

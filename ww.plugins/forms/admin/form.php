@@ -110,7 +110,8 @@ $arr=array(
 	'email'=>'email', 'input box'=>'input box', 'textarea'=>'textarea',
 	'date'=>'date', 'checkbox'=>'checkbox', 'selectbox'=>'selectbox',
 	'hidden'=>'hidden message', 'ccdate'=>'credit card expiry date',
-	'html-block'=>'html block'
+	'html-block'=>'html block', 'page-next'=>'next page',
+	'page-previous'=>'previous page', 'page-break'=>'page break'
 );
 foreach ($q2 as $r2) {
 	$c.= '<li><table width="100%"><tr><td width="20%">'

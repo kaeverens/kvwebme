@@ -169,7 +169,7 @@ function Form_showForm(
 		$vars['forms_template']='';
 	}
 	if (!$vars['forms_template']||$vars['forms_template']=='&nbsp;') {
-		$c.='<table>';
+		$c.='<div><table>';
 	}
 	$required=array();
 	$q2=dbAll(
@@ -225,6 +225,7 @@ function Form_showForm(
 		if (!isset($_REQUEST[$name])) {
 			$_REQUEST[$name]='';
 		}
+		$table_break=0;
 		switch ($r2['type']) {
 			case 'checkbox': // {
 				if ($only_show_contents) {
@@ -284,6 +285,19 @@ function Form_showForm(
 				break; // }
 			case 'html-block': // {
 				$d=$r2['extra'];
+				$table_break=true;
+				break; // }
+			case 'page-next': // {
+				$d='<a href="javascript:;" class="form-page-next">Next</a>';
+				$table_break=true;
+				break; // }
+			case 'page-previous': // {
+				$d='<a href="javascript:;" class="form-page-previous">Previous</a>';
+				$table_break=true;
+				break; // }
+			case 'page-break': // {
+				$d='</div><div style="display:none">';
+				$table_break=true;
 				break; // }
 			case 'selectbox': // {
 				if ($only_show_contents) {
@@ -329,7 +343,7 @@ function Form_showForm(
 			);
 		}
 		else {
-			if ($r2['type']=='html-block') {
+			if ($table_break) {
 				$c.='</table>'.$d.'<table>';
 			}
 			else {
@@ -371,7 +385,9 @@ function Form_showForm(
 		$c.='<br />* indicates required fields';
 	}
 	if (!$vars['forms_template']||$vars['forms_template']=='&nbsp;') {
-		$c.='</th></tr></table>';
+		$c.='</th></tr></table></div>';
+		$c=str_replace('<table></table>', '', $c);
+		WW_addScript('/ww.plugins/forms/frontend/show.js');
 	}
 	$c.='</fieldset>';
 	if (!$only_show_contents && $show_submit) {
