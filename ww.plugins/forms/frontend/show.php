@@ -66,8 +66,9 @@ function Form_send($page, $vars) {
 				$values[$r2['name']]=$val;
 				$plaintext.=htmlspecialchars($r2['name'])."\n"
 					.htmlspecialchars($val).$separator;
-			break;
-			// }
+				break; // }
+			case 'html-block': // { not inputs - don't add them
+				break; // }
 			default: // {
 				$val=getVar($name);
 				$values[$r2['name']]=$val;
@@ -236,8 +237,7 @@ function Form_showForm(
 					}
 					$d.=' class="'.$class.' checkbox" />';
 				}
-			break;
-			// }
+				break; // }
 			case 'ccdate': // {
 				if ($_REQUEST[$name]=='') {
 					$_REQUEST[$name]=date('Y-m');
@@ -254,8 +254,7 @@ function Form_showForm(
 						.$_REQUEST[$name].'" class="ccdate" />';
 				}
 				$has_ccdate=true;
-			break;
-			// }
+				break; // }
 			case 'date': // {
 				if ($_REQUEST[$name]=='') {
 					$_REQUEST[$name]=date('Y-m-d');
@@ -265,28 +264,27 @@ function Form_showForm(
 					'<input name="'.$name.'" value="'
 						.$_REQUEST[$name].'" class="date" />';
 				$has_date=true;
-			break;
-			// }
+				break; // }
 			case 'email': // {
 				$d=$only_show_contents
 					?$_REQUEST[$name]
 					:'<input id="'.$name.'" name="'.$name.'" value="'.$val
 						.'" class="email'.$class.' text" />';
-			break;
-			// }
+				break; // }
 			case 'file': // {
 				$d=$only_show_contents
 					?'<i>files attached</i>'
 					:'<input id="'.$name.'" name="'.$name.'" type="file" />';
-			break;
-			// }
+				break; // }
 			case 'hidden': // {
 				$d=$only_show_contents
 					?htmlspecialchars($r2['extra'])
 					:'<textarea id="'.$name.'" name="'.$name.'" class="'.$class
 						.' hidden">'.htmlspecialchars($r2['extra']).'</textarea>';
-			break;
-			// }
+				break; // }
+			case 'html-block': // {
+				$d=$r2['extra'];
+				break; // }
 			case 'selectbox': // {
 				if ($only_show_contents) {
 					$d=$_REQUEST[$name];
@@ -304,15 +302,13 @@ function Form_showForm(
 					}
 					$d.='</select>';
 				}
-			break;
-			// }
+				break; // }
 			case 'textarea': // {
 				$d=$only_show_contents
 					?$_REQUEST[$name]
 					:'<textarea id="'.$name.'" name="'.$name.'" class="'.$class.'">'
 						.$_REQUEST[$name].'</textarea>';
-			break;
-			// }
+				break; // }
 			default: // { # input boxes, and anything which was not handled already
 				$d=$only_show_contents
 					?$_REQUEST[$name]
@@ -332,12 +328,17 @@ function Form_showForm(
 				$vars['forms_template']
 			);
 		}
-		else{
-			$c.='<tr><th>'.htmlspecialchars($r2['name']);
-			if ($r2['isrequired']) {
-				$c.='<sup>*</sup>';
+		else {
+			if ($r2['type']=='html-block') {
+				$c.='</table>'.$d.'<table>';
 			}
-			$c.="</th>\n\t<td>".$d."</td></tr>\n\n";
+			else {
+				$c.='<tr><th>'.htmlspecialchars($r2['name']);
+				if ($r2['isrequired']) {
+					$c.='<sup>*</sup>';
+				}
+				$c.="</th>\n\t<td>".$d."</td></tr>\n\n";
+			}
 		}
 		$cnt++;
 	}

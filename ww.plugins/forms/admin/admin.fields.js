@@ -1,7 +1,7 @@
-window.form_input_types=['input box','email','textarea','date','checkbox','selectbox','hidden','ccdate'];
+window.form_input_types=['input box','email','textarea','date','checkbox','selectbox','hidden','ccdate','html-block'];
 function formfieldsAddRow(){
 	formfieldElements++;
-	$('<li><table width="100%"><tr><td width="30%"><input name="formfieldElementsName['+formfieldElements+']" /></td><td width="30%"><select name="formfieldElementsType['+formfieldElements+']"><option>'+form_input_types.join('</option><option>')+'</option></select></td><td width="10%"><input type="checkbox" name="formfieldElementsIsRequired['+formfieldElements+']" /></td><td></td></tr></table></li>').appendTo($('#form_fields'));
+	$('<li><table width="100%"><tr><td width="20%"><input name="formfieldElementsName['+formfieldElements+']" /></td><td width="20%"><select name="formfieldElementsType['+formfieldElements+']"><option>'+form_input_types.join('</option><option>')+'</option></select></td><td width="10%"><input type="checkbox" name="formfieldElementsIsRequired['+formfieldElements+']" /></td><td></td></tr></table></li>').appendTo($('#form_fields'));
 	$('#form_fields').sortable();
 	$('#form_fields input,#form_fields select,#form_fields textarea').bind('click.sortable mousedown.sortable',function(ev){
 		ev.target.focus();

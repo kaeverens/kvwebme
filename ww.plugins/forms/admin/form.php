@@ -97,10 +97,10 @@ $c.= '<tr><th>Record In DB</th><td>'
 // }
 $c.= '</table></div>';
 // }
-// { form field
+// { form fields
 $c.= '<div id="fields">';
 $c.= '<table id="formfieldsTable" width="100%">'
-	.'<tr><th width="30%">Name</th><th width="30%">Type</th>'
+	.'<tr><th width="20%">Name</th><th width="20%">Type</th>'
 	.'<th width="10%">Required</th><th id="extrasColumn">'
 	.'<a href="javascript:formfieldsAddRow()">add field</a></th></tr></table>';
 $c.='<ul id="form_fields" style="list-style:none">';
@@ -109,16 +109,17 @@ $i=0;
 $arr=array(
 	'email'=>'email', 'input box'=>'input box', 'textarea'=>'textarea',
 	'date'=>'date', 'checkbox'=>'checkbox', 'selectbox'=>'selectbox',
-	'hidden'=>'hidden message', 'ccdate'=>'credit card expiry date'
+	'hidden'=>'hidden message', 'ccdate'=>'credit card expiry date',
+	'html-block'=>'html block'
 );
 foreach ($q2 as $r2) {
-	$c.= '<li><table width="100%"><tr><td width="30%">'
+	$c.= '<li><table width="100%"><tr><td width="20%">'
 		.wInput(
 			'formfieldElementsName['.$i.']',
 			'',
 			htmlspecialchars($r2['name'])
 		)
-		.'</td><td width="30%">'
+		.'</td><td width="20%">'
 		.wInput(
 			'formfieldElementsType['.$i.']',
 			'select',
@@ -140,8 +141,13 @@ foreach ($q2 as $r2) {
 				$r2['extra'],
 				'small'
 			);
-		break;
-		// }
+			break; // }
+		case 'html-block': // {
+			$c.='<textarea name="formfieldElementsExtra['.($i++)
+				.']" class="ckeditor">'
+				.htmlspecialchars($r2['extra'])
+				.'</textarea>';
+			break; // }
 		default: // {
 			$c.= wInput('formfieldElementsExtra['.($i++).']', 'hidden', $r2['extra']);
 			// }
@@ -167,4 +173,4 @@ $c.= '</div>';
 $c.= '</div>';
 // }
 $c.= '<script>var formfieldElements='.$i.';</script>'
-	.'<script src="/ww.plugins/forms/admin/admin.fields.min.js"></script>';
+	.'<script src="/ww.plugins/forms/admin/admin.fields.js"></script>';
