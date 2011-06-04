@@ -124,7 +124,7 @@ if (isset($DBVARS['canonical_name'])
 		.$_SERVER['REQUEST_URI'];
 	redirect($url);
 }
-if (!isset($DBVARS['version']) || $DBVARS['version']<34) {
+if (!isset($DBVARS['version']) || $DBVARS['version']<35) {
 	redirect('/ww.incs/upgrade.php');
 }
 $id=getVar('pageid', 0);
@@ -146,6 +146,16 @@ if (!$id) {
 		$r=Page::getInstanceByName($page);
 		if ($r && isset($r->id)) {
 			$id=$r->id;
+			$PAGEDATA=Page::getInstance($id)->initValues();
+			if (@$PAGEDATA->vars['_short_url']) {
+				$s=dbOne('select short_url from short_urls where page_id='.$id, 'short_url');
+				if ($s!=$page) {
+					redirect('/'.$s, 301);
+				}
+			}
+		}
+		if (!$id) {
+			$id=(int)dbOne('select page_id from short_urls where short_url="'.addslashes($page).'"', 'page_id');
 		}
 	}
 	if (!$id) {

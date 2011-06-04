@@ -230,6 +230,7 @@ echo '<td>';
 echo '<h4>MetaData</h4><table>';
 echo '<tr><th>keywords</th><td>'.wInput('keywords','',htmlspecialchars($page['keywords'])).'</td></tr>';
 echo '<tr><th>description</th><td>'.wInput('description','',htmlspecialchars($page['description'])).'</td></tr>';
+echo '<tr><th>Short URL</th><td><input name="short_url" value="'.htmlspecialchars(dbOne('select short_url from short_urls where page_id='.$id, 'short_url')).'" /></td></tr>';
 $importance=(float)$page['importance'];
 if ($importance<.1) {
 	$importance=.5;

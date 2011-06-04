@@ -57,7 +57,7 @@ function getVar($v, $d = '') {
 function inc_common($f) {
 	include_once SCRIPTBASE . 'common/' . $f;
 }
-function redirect($addr, $type=302){
+function redirect($addr, $type=301){
 	if ($type==301) {
 		header('HTTP/1.1 301 Moved Permanently');
 	}

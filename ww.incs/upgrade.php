@@ -363,6 +363,10 @@ if ( $version == 33 ) { // clear cache...
 	cache_clear('pages');
 	$version = 34;
 }
+if ($version==34) { // add page id to short_url
+	dbQuery('alter table short_urls add page_id int default 0');
+	$version=35;
+}
 
 $DBVARS['version']=$version;
 cache_clear();
