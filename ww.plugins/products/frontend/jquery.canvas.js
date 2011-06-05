@@ -3,17 +3,13 @@
 		
 	// where can be 'under' (default), 'over', 'unshift', 'push' 
 	$.fn.canvas = function( where) { 	// reuse if where is not there
-		//console.log( 'canvas, iterating DOM elements');
 		$( this).each( function() {
 			var $this = $( this);
-			//console.log( 'canvas, working DOM element,', $this);
 			
 			var w = $this.width();
 			var h = $this.height();
-			//console.log( 'canvas, dimensions [w=' + w + ',h=' + h + ']');
 			
 			if ( ! where) where = 'under';
-			//console.log( 'canvas, where to put is [' + where + ']');
 			
 			// first, remove all former canvas objects in this div
 			$this.find( '.cnvsWrapper').remove();
@@ -214,7 +210,6 @@
 		}
 		cnvs.style = function( style) {
 			if ( style) this.laststyle = style;
-			//console.log( 'cnvs.style, applying style,', this.laststyle);
 			for ( var name in this.laststyle) this.c[ name] = this.laststyle[ name];
 		}
 		

@@ -33,7 +33,7 @@ $( function( ){
 		$( "#preview-dialog" ).dialog( { modal: true, width: $( window ).width( ) - 200, height: $( window ).height( ) - 60 } );
 	});
 
-	$( "#themes-carousel" ).themesCarousel({ display : function( ){
+	$( "#themes-carousel" ).themesCarousel({ 'display' : function( ){
 
 
       var html = '<div class="themes-container"><table><tr>';

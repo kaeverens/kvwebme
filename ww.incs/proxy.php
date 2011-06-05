@@ -30,9 +30,9 @@ $url = @$_GET [ 'url' ];
 $referer = @$_SERVER[ 'HTTP_REFERER' ];
 $referer = preg_replace( '/^https?:\/\/([^\/]*)\/.*/', '\1', $referer );
 $host = $_SERVER[ 'SERVER_NAME' ];
-
-if( $host != $referer )
+if ( $host != $referer ) {
 	exit;
+}
 
 /**
  * get rest of query string and pass to url

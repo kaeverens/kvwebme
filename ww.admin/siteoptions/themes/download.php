@@ -15,10 +15,7 @@ require '../../../ww.incs/basics.php';
 require SCRIPTBASE . 'ww.admin/admin_libs.php';
 
 echo '
-<script type="text/javascript" src="/ww.incs/proxy.php?url=http://kvweb.me/ww.plugins/ratings/ratings.js"></script>
-<script type="text/javascript" src="/ww.incs/proxy.php?url=http://kvweb.me/ww.plugins/themes-api/carousel.js"></script>
-<script type="text/javascript" src="/ww.admin/siteoptions/themes/download.js">
-</script>
+<script type="text/javascript" src="/ww.admin/siteoptions/themes/download.js"></script>
 <link rel="stylesheet" type="text/css" href="/ww.plugins/themes-api/api.css"/>
 ';
 

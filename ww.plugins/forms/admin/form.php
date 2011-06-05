@@ -174,7 +174,7 @@ $c.= '<div id="success">'
 // { template
 $c.= '<div id="template">';
 $c.= '<p>Leave blank to have an auto-generated template displayed.</p>';
-$c.= ckeditor('page_vars[forms_template]', $vars['forms_template']);
+$c.= ckeditor('page_vars[forms_template]', @$vars['forms_template']);
 $c.= '</div>';
 $c.= '</div>';
 // }

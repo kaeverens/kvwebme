@@ -13,18 +13,15 @@
  */
 
 (function( $ ){
-
 	// { methods
 	var methods = {
-
-		selector : null,
-		tooltipTimeout	: false,
-		settings : {
-			saveRemotely : '',
-		}, 
-
+		'selector' : '',
+		'tooltipTimeout'	: false,
+		'settings' : {
+			'saveRemotely' : ''
+		},
 		// { init method
-		init : function( ){
+		'init' : function( ){
 			
 			methods.selector = this;
 
@@ -36,9 +33,9 @@
 				if( !data ){
 
 					$this.data( 'ratings', {
-						selector:	$this,
-						name		: $this.attr( 'id' ),
-						type		: $this.attr( 'type' )
+						'selector':	$this,
+						'name'		: $this.attr( 'id' ),
+						'type'		: $this.attr( 'type' )
 					});
 
 				}
@@ -74,7 +71,7 @@
 
         // { star click, mouseenter, mouseleave
         $( '#rateme-dialog .star' ).live( {
-          click : function( ){
+          'click' : function( ){
 						var stars = $( '#rateme-dialog .star' );
             methods.opacityAll( 4, 0.4, stars );
             methods.opacityAll( $( this ).index( ), 1, stars );
@@ -85,14 +82,14 @@
 						);
 						$( '#rateme-dialog' ).dialog( 'close' );
            },
-          mouseenter : function( ){
+          'mouseenter' : function( ){
             methods.opacityAll( 
 							$( this ).index( ),
 							1,
 							$( '#rateme-dialog .star' )
 						);
           },
-          mouseleave : function( ){
+          'mouseleave' : function( ){
             methods.opacityAll( 
 							4, 
 							0.4, 
@@ -112,9 +109,9 @@
 					);
           methods.writeElements( $( '#rateme-dialog' ) );
           $( '#rateme-dialog' ).dialog({
-            resizable : false,
-            height : 140,
-            modal : true
+            'resizable' : false,
+            'height' : 140,
+            'modal' : true
           }); 
         }); 
          // }
@@ -123,9 +120,8 @@
 
 		}, 
 		// } 
-
 		// { refresh
-		refresh : function( ){
+		'refresh' : function( ){
 			methods.selector.each(function( ){
 				var rating = $( this ).data( 'ratings' ).rating;
 				if( rating != 'none' ){
@@ -138,9 +134,8 @@
 			});
 		},
 		// }
-
 		// { tooltip
-		tooltip : function( $this ){
+		'tooltip' : function( $this ){
 
 			// remove previous tooltip if present
 			$( '#ratings-tooltip' ).remove( );
@@ -173,18 +168,16 @@
 			// }
 		},
 		// }
-
 		// { tooltipLeave
-		tooltipLeave : function( ){
+		'tooltipLeave' : function( ){
 
 			$( document ).unbind( 'mousemove.ratings' );	
 			$( '#ratings-tooltip' ).fadeOut( 'fast' );			
 
 		},
 		// }
-
     // { saveRating
-    saveRating : function( $this, index ){
+    'saveRating' : function( $this, index ){
       $.get( methods.settings.saveRemotely + '/ww.plugins/ratings/save.php', {
           'name' : $this.data( 'ratings' ).name,
           'type' : $this.data( 'ratings' ).type,
@@ -217,9 +210,8 @@
 			methods.refresh( );
     },  
     // }
-
     // { getRatings
-    getRatings : function( ids ){
+    'getRatings' : function( ids ){
       $.get( methods.settings.saveRemotely + '/ww.plugins/ratings/get_ratings.php', {
           'names' : ids.join( ',' )
         },  
@@ -236,9 +228,8 @@
       );
     },  
     // }
-
-    // { opactiyAll
-    opacityAll : function( index, value, stars ){
+    // { opacityAll
+    'opacityAll' : function( index, value, stars ){
       stars.each( function( i ){
         $( this ).css({
           'opacity' : value,
@@ -251,16 +242,15 @@
       }); 
     },  
     // }
-
     // { writeElements
-    writeElements : function( sel ){
+    'writeElements' : function( sel ){
 
       var html = '<div class="ratings-wrapper" style="display:inline-block">'
         + '<div class="stars">';
 
 			for( var i = 0; i <= 4; ++i )
         html += '<img src="' + methods.settings.saveRemotely 
-						+ '/ww.plugins/ratings/i/star.gif" class="star"/>'
+						+ '/ww.plugins/ratings/i/star.gif" class="star"/>';
 
       html += '</div>';
 
@@ -270,9 +260,7 @@
 
     }   
     // }
-
 	};
-
 	// { $.fn.ratings
 	$.fn.ratings = function( options ){
 
@@ -283,5 +271,4 @@
 		return this;
   }	
 	// }
-
 })( jQuery );

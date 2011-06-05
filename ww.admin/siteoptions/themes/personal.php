@@ -139,3 +139,7 @@ echo '</tr></table><br style="clear:both"/>
 </div>
 ';
 // }
+echo '
+<script src="/ww.plugins/ratings/ratings.js"></script>
+<script src="/ww.plugins/themes-api/carousel.js"></script>
+';

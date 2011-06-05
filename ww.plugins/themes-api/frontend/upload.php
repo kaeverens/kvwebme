@@ -36,7 +36,6 @@ WW_addCSS( '/ww.plugins/themes-api/files/jquery-ui-1.8.12.custom.css' );
 
 $script = '
 	function displayTags( tags ){
-		console.log( tags );
 		var html = "";
 		for( var i in tags )
 			html += "<span id=\'" + tags[ i ] + "\'>" + tags[ i ] + " <a class=\'x\' href=\'javascript:;\'>[x]</a>, </span>";
@@ -51,7 +50,6 @@ $script = '
 			if( tags[ i ] != tag )
 				new_tags.push( tags[ i ] );
 		}
-		console.log( new_tags );
 		displayTags( new_tags );
 		$( "#hidden-tags" ).val( new_tags.join( "," ) );
 	});

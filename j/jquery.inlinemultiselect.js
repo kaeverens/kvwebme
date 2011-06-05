@@ -136,11 +136,7 @@
 		},options||{});
 		/* log to console */
 		var logToConsole = function(msg) {
-			if (typeof console == "undefined" || !options.showConsoleLog) {
 				return;
-			} else {
-				console.log(msg);
-			}
 		};
 		return this.each(function(){
 			/* this only makes sense on multiple select lists! */

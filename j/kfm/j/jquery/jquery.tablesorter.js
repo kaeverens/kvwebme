@@ -116,11 +116,7 @@
 			this.benchmark = benchmark;
 			
 			function log(s) {
-				if (typeof console != "undefined" && typeof console.debug != "undefined") {
-					console.log(s);
-				} else {
 					alert(s);
-				}
 			}
 						
 			/* parsers utils */
