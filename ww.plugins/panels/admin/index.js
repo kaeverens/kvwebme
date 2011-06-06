@@ -17,7 +17,7 @@ function showWidgetForm(w){
 		return;
 	}
 	var p=w.data('widget');
-	var form=$('<form class="'+p.type+'"/>').appendTo(w);
+	var form=$('<form class="panel-'+p.type+'"/>').appendTo(w);
 	if(ww.widgetForms[p.type]){
 		$('<button style="float:right">Save</button>')
 			.click(function(){
@@ -85,26 +85,41 @@ function widget_toggle_disabled(ev){
 	updateWidgets(w.closest('.panel-wrapper'));
 }
 function widget_visibility(ev){
-	var el=ev.target,vis=[];
+	var el=ev.target,vis=[],hid=[];
 	var w=$(el).closest('.widget-wrapper');
 	var wd=w.data('widget');
-	if(wd.visibility)vis=wd.visibility;
-	$.get('/ww.plugins/panels/admin/get-visibility.php?visibility='+vis,function(options){
-		var d=$('<form><p>This panel will be visible in <select name="panel_visibility_pages[]" multiple="multiple">'+options+'</select>. If you want it to be visible in all pages, please choose <b>none</b> to indicate that no filtering should take place.</p></form>');
+	if (wd.visibility) {
+		vis=wd.visibility;
+	}
+	if (wd.hidden) {
+		hid=wd.hidden;
+	}
+	$.get('/ww.plugins/panels/admin/get-visibility.php?visibility='+vis+'&hidden='+hid, function(res){
+		var d=$('<form><p>If nothing is selected here then the widget is visible on all pages that support it.</p><p>Visible in <select name="panel_visibility_pages[]" multiple="multiple">'+res.visible+'</select></p><p>Hidden in <select name="panel_hidden_pages[]" multiple="multiple">'+res.hidden+'</select></p></form>');
 		d.dialog({
 			width:300,
 			height:400,
 			close:function(){
 				$('#panel_visibility_pages').remove();
+				$('#panel_hidden_pages').remove();
 				d.remove();
 			},
 			buttons:{
 				'Save':function(){
+					// { visible on
 					var arr=[];
 					$('input[name="panel_visibility_pages[]"]:checked').each(function(){
 						arr.push(this.value);
 					});
 					wd.visibility=arr;
+					// }
+					// { hidden on
+					arr=[];
+					$('input[name="panel_hidden_pages[]"]:checked').each(function(){
+						arr.push(this.value);
+					});
+					wd.hidden=arr;
+					// }
 					w.data('widget',wd);
 					updateWidgets(w.closest('.panel-wrapper'));
 					d.dialog('close');
@@ -118,7 +133,7 @@ function widget_visibility(ev){
 			'separator':', ',
 			'endSeparator':' and '
 		});
-	});
+	}, 'json');
 }
 function panel_remove(i){
 	var p=ww.panels[i];
@@ -130,23 +145,32 @@ function panel_remove(i){
 	});
 }
 function panel_visibility(id){
-	$.get('/ww.plugins/panels/admin/get-visibility.php',{'id':id},function(options){
-		var d=$('<form><p>This panel will be visible in <select name="panel_visibility_pages[]" multiple="multiple">'+options+'</select>. If you want it to be visible in all pages, please choose <b>none</b> to indicate that no filtering should take place.</p></form>');
+	$.post('/ww.plugins/panels/admin/get-visibility.php',{'id':id},function(res){
+		var d=$('<form><p>If nothing is selected here then the page is visible on all pages that support it.</p><p>Visible in <select name="panel_visibility_pages[]" multiple="multiple">'+res.visible+'</select></p><p>Hidden in <select name="panel_hidden_pages[]" multiple="multiple">'+res.hidden+'</select></form>');
 		d.dialog({
 			modal:true,
 			width:300,
 			height:400,
 			close:function(){
 				$('#panel_visibility_pages').remove();
+				$('#panel_hidden_pages').remove();
 				d.remove();
 			},
 			buttons:{
 				'Save':function(){
-					var arr=[];
+					// { visible in
+					var vis=[];
 					$('input[name="panel_visibility_pages[]"]:checked').each(function(){
-						arr.push(this.value);
+						vis.push(this.value);
 					});
-					$.get('/ww.plugins/panels/admin/save-visibility.php?id='+id+'&pages='+arr);
+					// }
+					// { hidden in
+					var hid=[];
+					$('input[name="panel_hidden_pages[]"]:checked').each(function(){
+						hid.push(this.value);
+					});
+					// }
+					$.get('/ww.plugins/panels/admin/save-visibility.php?id='+id+'&vis='+vis+'&hid='+hid);
 					d.dialog('close');
 				},
 				'Close':function(){
@@ -158,7 +182,7 @@ function panel_visibility(id){
 			'separator':', ',
 			'endSeparator':' and '
 		});
-	});
+	},'json');
 }
 function panels_init(panel_column){
 	for(var i=0;i<ww.panels.length;++i){

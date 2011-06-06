@@ -1,4 +1,5 @@
 <?php
+// { plugin configuration
 $plugin=array(
 	'name'=>'Panels',
 	'description'=>'Allows content sections to be displayed throughout the site.',
@@ -14,14 +15,16 @@ $plugin=array(
 			)
 		)
 	),
-	'version'=>4
+	'version'=>5
 );
-function panels_show($vars){
+// }
+
+function panels_show($vars) {
 	$name=isset($vars['name'])?$vars['name']:'';
 	// { load panel data
 	$p=cache_load('panels',md5($name));
 	if($p===false){
-		$p=dbRow('select id,visibility,disabled,body from panels where name="'.addslashes($name).'" limit 1');
+		$p=dbRow('select id,visibility,hidden,disabled,body from panels where name="'.addslashes($name).'" limit 1');
 		if(!$p){
 			dbQuery("insert into panels (name,body) values('".addslashes($name)."','{\"widgets\":[]}')");
 			return '';
@@ -30,15 +33,31 @@ function panels_show($vars){
 	}
 	// }
 	// { is the panel visible?
-	if($p['disabled'])return '';
-	if($p['visibility'] && $p['visibility']!='[]'){
-		$visibility=json_decode($p['visibility']);
-		if(!in_array($GLOBALS['PAGEDATA']->id,$visibility))return '';
+	if ($p['disabled']) { // if the panel is disabled, it's not visible anywhere
+		return '';
 	}
+	// { is the panel explicitly only to be shown on certain pages?
+	if ($p['visibility'] && $p['visibility']!='[]') {
+		$visibility=json_decode($p['visibility']);
+		if(!in_array($GLOBALS['PAGEDATA']->id, $visibility)) {
+			return '';
+		}
+	}
+	// }
+	// { is the panel explicitly not allowed on certain pages?
+	if ($p['hidden'] && $p['hidden']!='[]') {
+		$hidden=json_decode($p['hidden']);
+		if(in_array($GLOBALS['PAGEDATA']->id, $hidden)) {
+			return '';
+		}
+	}
+	// }
 	// }
 	// { get the panel content
 	$widgets=json_decode($p['body']);
-	if(!count($widgets->widgets))return '';
+	if (!count($widgets->widgets)) {
+		return '';
+	}
 	// }
 	// { show the panel content
 	$h='';
@@ -49,6 +68,11 @@ function panels_show($vars){
 		}
 		if (isset($widget->visibility) && count($widget->visibility)
 			&& !in_array($GLOBALS['PAGEDATA']->id, $widget->visibility)
+		) {
+			continue;
+		}
+		if (isset($widget->hidden) && count($widget->hidden)
+			&& in_array($GLOBALS['PAGEDATA']->id, $widget->hidden)
 		) {
 			continue;
 		}

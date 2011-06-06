@@ -1,10 +1,13 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if(!is_admin())die('access denied');
+if (!is_admin()) {
+	die('access denied');
+}
 
-if(isset($_REQUEST['id']) && isset($_REQUEST['pages'])){
+if (isset($_REQUEST['id']) && isset($_REQUEST['vis']) && isset($_REQUEST['hid'])) {
 	$id=(int)$_REQUEST['id'];
-	$json='['.addslashes($_REQUEST['pages']).']';
-	dbQuery("update panels set visibility='$json' where id=$id");
+	$vis='['.addslashes($_REQUEST['vis']).']';
+	$hid='['.addslashes($_REQUEST['hid']).']';
+	dbQuery("update panels set visibility='$vis',hidden='$hid' where id=$id");
 	cache_clear('panels');
 }
