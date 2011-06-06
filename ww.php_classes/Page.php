@@ -61,7 +61,12 @@ class Page{
 		if(!isset($r['type']))$r['type']=0;
 		if(!isset($r['special']))$r['special']=0;
 		if(!isset($r['name']))$r['name']='NO NAME SUPPLIED';
-		foreach ($r as $k=>$v) $this->{$k}=$v;
+		foreach ($r as $k=>$v) {
+			$this->{$k}=$v;
+		}
+		if (!isset($r['alias'])) {
+			$r['alias']=$r['name'];
+		}
 		$this->urlname=$r['name'];
 		if(!isset($_SESSION['viewing_language']))$_SESSION['viewing_language']='en';
 		if(isset($_SESSION['translation']) && $_SESSION['viewing_language']!='en'){

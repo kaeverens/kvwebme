@@ -15,6 +15,7 @@ foreach ($files as $file) {
 	}
 	$f=file_get_contents($base.'/css/'.$file->getFilename());
 	foreach ($images as $p) {
+continue;
 		if (!file_exists($base.'/images/'.$p[1])) {
 			$f2=file_get_contents('http://'.$_SERVER['HTTP_HOST'].'/'.$p[0]);
 			file_put_contents($base.'/images/'.$p[1], $f2);

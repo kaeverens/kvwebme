@@ -20,8 +20,13 @@ function empty_element($dom, $id) {
 
 // { figure out header element
 $header='';
-if ($dom->getElementById('header')) {
+$d=$dom->getElementById('header');
+if ($d) {
 	$header='header';
+	$dhtml=$d->ownerDocument->saveXML( $d ); 
+	if (strpos($dhtml, 'id="logo"') && strpos($dhtml, 'id="menu"')) {
+		$header='logo';
+	}
 }
 else if ($dom->getElementById('logo')) {
 	$header='logo';
@@ -58,7 +63,12 @@ else if ($dom->getElementById('sidebar1')) {
 }
 else if ($dom->getElementById('sidebar')) {
 	$col1='sidebar';
-	$content='content';
+	if ($dom->getElementById('main')) {
+		$content='main';
+	}
+	else {
+		$content='content';
+	}
 }
 // }
 
@@ -112,6 +122,9 @@ foreach ($files as $file) {
 		$css=preg_replace('/(#menu1\s*a\s*){/', '\1,#menu-fg-0 a,.fg-menu-container a{', $css);
 		$css=preg_replace('/(#menu1\s*a:hover\s*){/', '\1,#menu-fg-0 a:hover,.fg-menu-container a:hover{', $css);
 		$css=preg_replace('/(#menu\s+a\s*{[^}]*)display\s*:\s*block\s*;/', '\1display:inline-block;', $css);
+		$css=preg_replace('#}\s*#', "}\n", $css);
+		$css=preg_replace('#/\*#', "\n/*", $css);
+		$css=preg_replace('#\*/#', "*/\n", $css);
 		$css.='.fg-menu-container{padding-bottom:0 !important}';
 		// }
 		file_put_contents($file->getPathname(), $css);

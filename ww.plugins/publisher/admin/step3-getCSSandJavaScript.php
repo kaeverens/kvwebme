@@ -17,7 +17,7 @@ foreach ($files as $file) {
 	}
 	$f=file_get_contents($base.'/'.$file->getFilename());
 	// { get list of css files
-	$css[]=array('/css/', 'ww.css.css');
+	$css[]=array('/css/', 'ww.css.css'); // [original, new]
 	preg_match_all('/"([^"]*\.css)"/', $f, $matches);
 	foreach ($matches[1] as $m) {
 		$css[]=array($m, str_replace('/', '@', $m));

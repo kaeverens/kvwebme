@@ -97,7 +97,7 @@ function Menu_getChildren(
 		}
 		$rs[$k]['classes']=join(' ', $c);
 		$rs[$k]['link']=$PAGEDATA->getRelativeURL();
-		$rs[$k]['name']=$PAGEDATA->alias;
+		$rs[$k]['name']=$PAGEDATA->alias?$PAGEDATA->alias:$PAGEDATA->name;
 		$rs[$k]['parent']=$parentid;
 		$menuitems[]=$rs[$k];
 	}
@@ -192,7 +192,7 @@ function Menu_show($b) {
 				$r['classes'].=' first';
 			}
 			$c.='<a id="ajaxmenu_link'.$r['id'].'" class="'.$r['classes'].'" href="'
-				.$page->getRelativeURL().'">'.$spanl.htmlspecialchars($page->alias)
+				.$page->getRelativeURL().'">'.$spanl.htmlspecialchars($page->alias?$page->alias:$page->name)
 				.$spanr.'</a>';
 			$links++;
 		}

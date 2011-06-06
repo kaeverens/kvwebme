@@ -17,7 +17,7 @@ $plugin=array(
 	'admin' => array(
 			'menu'=>array(
 				'Site Options>Publisher'=>'publish'
-			),
+			)
 	),
 	'description' => 'download a static version of your website',
 	'version'     => 1
