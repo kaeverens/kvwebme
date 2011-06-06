@@ -3,7 +3,7 @@ echo '<table style="width:95%"><tr>';
 echo '<td class="splitter-panel splitter-panel-left"><h3>Widgets</h3><p>Drag a widget into a panel on the right.</p><div id="widgets"></div><br style="clear:both" /></td>';
 echo '<td style="width:220px" class="splitter-panel splitter-panel-right"><h3>Panels</h3><p>Click a header to open it.</p><div id="panels"></div><br style="clear:both" /></td></tr>';
 echo '</table>';
-echo '<link rel="stylesheet" type="text/css" href="/ww.plugins/panels/c/admin.css" />';
+echo '<link rel="stylesheet" href="/ww.plugins/panels/c/admin.css" />';
 // { panel and widget data
 echo '<script>';
 // { panels
@@ -52,5 +52,6 @@ echo '};';
 // }
 // }
 ?>
-</script><script src="/ww.plugins/panels/j/admin.js"></script>
+</script>
+<script src="/ww.plugins/panels/admin/index.js"></script>
 <script src="/j/jquery.inlinemultiselect.js"></script>
