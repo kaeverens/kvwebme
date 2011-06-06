@@ -149,7 +149,7 @@ function Forum_showForum(&$PAGEDATA, &$id) {
 	}
 	else {
 		$c.='<div class="forum-not-logged-in">In order to post to this forum,'
-			.' you must <a href="/ww.incs/redirector.php?type=loginpage">login'
+			.' you must <a href="/_r?type=loginpage">login'
 			.'</a> first.</div>';
 	}
 	// }
@@ -237,7 +237,7 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 	}
 	else {
 		$c.='<div class="forum-not-logged-in">In order to post to this thread,'
-			.' you must <a href="/ww.incs/redirector.php?type=loginpage">login'
+			.' you must <a href="/_r?type=loginpage">login'
 			.'</a> first.</div>';
 	}
 	// }
