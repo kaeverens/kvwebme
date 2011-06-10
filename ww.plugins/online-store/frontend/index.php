@@ -169,7 +169,8 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			}
 		}
 		$table.='<tr class="os_basket_totals">'
-			.'<td colspan="3" style="text-align:right">'
+			.'<td colspan="2" class="nobord">&nbsp;</td>'
+			.'<td style="text-align:right">'
 			.'Subtotal</td><td class="totals amountcell">'
 			.OnlineStore_numToPrice($grandTotal)
 			.'</td></tr>';
@@ -178,7 +179,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$code=$_REQUEST['os_voucher'];
 			$voucher_amount=OnlineStore_voucherAmount($code, $email, $grandTotal);
 			if ($voucher_amount) {
-				$table.='<tr><td class="voucher" style="text-align: right;" colspan="3">'
+				$table.='<tr><td colspan="2" class="nobord">&nbsp;</td><td class="voucher" style="text-align: right;">'
 					.'Voucher ('.htmlspecialchars($code).')</td><td class="totals amountcell">-'
 					.OnlineStore_numToPrice($voucher_amount).'</td></tr>';
 				$grandTotal-=$voucher_amount;
@@ -187,7 +188,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		}
 		if ($group_discount) { // group discount
 			$discount_amount=$grandTotal*($group_discount/100);
-			$table.='<tr><td class="group-discount" style="text-align:right;" colspan="3">'
+			$table.='<tr><td colspan="2" class="nobord">&nbsp;</td><td class="group-discount" style="text-align:right;">'
 				.'Group Discount ('.$group_discount.'%)</td><td class="totals">-'
 				.OnlineStore_numToPrice($discount_amount).'</td></tr>';
 			$grandTotal-=$discount_amount;
@@ -196,19 +197,19 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		$postage=OnlineStore_getPostageAndPackaging($deliveryTotal, '', 0);
 		if ($postage['total']) {
 			$grandTotal+=$postage['total'];
-			$table.='<tr><td class="p_and_p" style="text-align: right;" colspan="3">'
+			$table.='<tr><td colspan="2" class="nobord">&nbsp;</td><td class="p_and_p" style="text-align: right;">'
 				.'Postage and Packaging (P&amp;P)</td><td class="amountcell">'
 				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
 		}
 		// }
 		if ($vattable && $_SESSION['onlinestore_vat_percent']) {
-			$table.='<tr><td style="text-align:right" class="vat" colspan="3">VAT ('.$_SESSION['onlinestore_vat_percent'].'% on '
+			$table.='<tr><td colspan="2" class="nobord">&nbsp;</td><td style="text-align:right" class="vat">VAT ('.$_SESSION['onlinestore_vat_percent'].'% on '
 				.OnlineStore_numToPrice($vattable).')</td><td class="amountcell">';
 			$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);
 			$table.=OnlineStore_numToPrice($vat).'</td></tr>';
 			$grandTotal+=$vat;
 		}
-		$table.='<tr class="os_basket_amountcell"><td style="text-align: right;" colspan="3">Total Due</td>'
+		$table.='<tr class="os_basket_amountcell"><td colspan="2" class="nobord">&nbsp;</td><td class="totalcell" style="text-align: right;">Total Due</td>'
 			.'<td class="amountcell">'.OnlineStore_numToPrice($grandTotal).'</td></tr>';
 		$table.='</table>';
 		$smarty->assign('_invoice_table', $table);

@@ -17,6 +17,7 @@ $plugin=array(
 	'admin' => array(
 		'page_type' => 'OnlineStore_adminPageForm',
 		'menu' => array(
+			'Online Store>Wizard'		=> 'wizard',
 			'Online Store>Orders'   => 'list-pages',
 			'Online Store>Vouchers' => 'vouchers',
 			'Online Store>Options'  => 'site-options'

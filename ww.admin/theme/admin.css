@@ -515,3 +515,25 @@ div.help{
 #themes-table th{ border-bottom:1px solid #ccc }
 #browse-options{ }
 #browse-options span{ display:inline }
+#register-progress{ list-style-type:none }
+#register-progress li{ display:block;padding:3px }
+#slider{
+	margin: 10px;
+	position:relative;
+	min-height:500px;
+	width:710px;
+	overflow-y:visible;
+	overflow-x:hidden;
+}
+.register-container{ position:absolute;width:700px; }
+.register-container th{ text-align:left }
+#online-store-wizard{ 
+	margin-left:200px;
+	border:1px solid #eee;
+	width:720px;
+	overflow-x:hidden;
+}
+.invoice-preview{
+	border:1px solid #000
+}
+.realex,.transfer,.paypal{display:none}
