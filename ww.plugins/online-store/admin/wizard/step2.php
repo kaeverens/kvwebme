@@ -23,14 +23,14 @@ if(isset($_POST['wizard-name'])){ // validate post data
 echo '
 <h2>Payment Details</h2>
 <i>Now, some basic details about payment. Everything here is optional, if
-you don\'t know what it is the just leave it blank</i>
+you don\'t know what it is then just leave it blank</i>
 <table>';
 
 // { admin email address
 echo '
 	<tr>
-		<th>What is your email address?</th>
-		<td><input type="text" name="wizard-email" value="'.$_SESSION['userdata']['email'].'"/></td>
+		<th>What is your email address? When purchases are made, you will be alerted at this address.</th>
+		<td><input type="email" name="wizard-email" value="'.$_SESSION['userdata']['email'].'"/></td>
 	</tr>';
 // }
 // { Users must log in to purchase
@@ -38,8 +38,8 @@ echo '
 	<tr>
 		<th>Should customers log in before purchasing?</th>
 		<td><select name="wizard-login">
-			<option value="yes">Yes</option>
 			<option value="no">No</option>
+			<option value="yes">Yes</option>
 		</select></td>
 	</tr>';
 // }

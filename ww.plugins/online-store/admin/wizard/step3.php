@@ -55,7 +55,7 @@ if(isset($_POST['wizard-login'])){ // validate post data
 }
 
 echo '<h2>Company Details</h2>
-<i>These details are used to populate the invoice sent to users.
+<i>These details are used to populate the invoice sent to customers.
 Fields left blank will simply not appear on the invoice</i>
 <table>';
 
@@ -74,8 +74,8 @@ echo '
 // { company address
 echo '<tr>
 	<th>Address</th>
-	<td rowspan="3"><textarea name="wizard-company-address" style="width:95%">
-	</textarea></td>';
+	<td rowspan="3"><textarea name="wizard-company-address" style="width:95%">'
+	.'</textarea></td>';
 // }
 // { company fax
 echo '
