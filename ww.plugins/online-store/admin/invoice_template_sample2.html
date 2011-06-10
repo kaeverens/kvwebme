@@ -1,0 +1,65 @@
+<style type="text/css">
+{literal}
+*{ font-family: Arial;font-size:8pt; }
+    #onlinestore-invoice{ width:99%; border-right:1px solid #000; border-spacing: 0 }
+    #onlinestore-invoice th{ border-top: .5mm solid #000; border-left: .5mm solid #000 }
+    #onlinestore-invoice td{ border-left: .5mm solid #000;padding:3px;vertical-align:top }
+    #onlinestore-invoice th, .total_payable, #totalCell{ font-weight: bold; border-bottom: .5mm solid #000 }
+    .header{ font-size: 13pt; font-weight: bold }
+    .os_basket_totals td{ border-top:.5mm solid #000 }
+    .nobord{ border-left: 0!important }
+    .descriptionheader{ width:70% }
+		.amountcell,.totalcell{ border-bottom:1px solid #000 }
+   	#onlinestore-invoice table{height:14cm;}
+#onlinestore-invoice thead{height:.5cm}
+#onlinestore-invoice tfoot{height:4cm}
+{/literal}</style>
+<!-- body_text //-->
+<div style="float: right;">
+	<h2 class="header" style="text-align: right;">
+		Invoice</h2>
+	<table id="details">
+		<tbody>
+			<tr>
+				<td style="text-align: right;">
+					Date:</td>
+				<td>
+					<span style="font-size: 8pt;">{$smarty.now|date_format}</span></td>
+			</tr>
+			<tr>
+				<td style="text-align: right;">
+					<b>Invoice No.:</b></td>
+				<td>
+					{$_invoicenumber}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div id="logo">
+	<strong>COMPANY NAME</strong><br />
+	Address, Town, County, Country<br />
+	Tel: 1234 5678 &nbsp; &nbsp; Fax: 1234 5678<br />
+	Email: sales@example.com</div>
+<div id="invoiceinfo">
+	VAT: 12345678<br />
+	<div style="margin-right: 30px;">
+		<!-- DELIVERY ADDRESS <p>%DELIVERYADDRESS%</p> --></div>
+	<p style="margin-left: 30px;">
+		{if $Billing_FirstName} {$Billing_FirstName} {$Billing_Surname}<br />
+		{$Billing_Street}<br />
+		{$Billing_Street2}<br />
+		{$Billing_Town}<br />
+		{$Billing_County}<br />
+		{$Billing_Country} {else} {$FirstName} {$Surname}<br />
+		{$Street}<br />
+		{$Street2}<br />
+		{$Town}<br />
+		{$County}<br />
+		{$Country} {/if}</p>
+	<p id="invoicetable">
+		{$_invoice_table}</p>
+	<p>
+		<b>Thank you for your business.</b></p>
+</div>
+<p>
+	&nbsp;</p>
