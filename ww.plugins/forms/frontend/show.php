@@ -165,11 +165,31 @@ function Form_showForm(
 	if ($err) {
 		$c.='<div class="errorbox">'.$err.'</div>';
 	}
+	switch(@$vars['forms_htmltype']) {
+		case 'div': // {
+			$vals_wrapper_start='';
+			$vals_field_start='<div><span>';
+			$vals_field_middle='</span>';
+			$vals_field_end='</div>';
+			$vals_2col_start='<div>';
+			$vals_2col_end='</div>';
+			$vals_wrapper_end='';
+			break; // }
+		default: // {
+			$vals_wrapper_start='<table>';
+			$vals_field_start='<tr><th>';
+			$vals_field_middle='</th><td>';
+			$vals_field_end='</td></tr>';
+			$vals_2col_start='<tr><td colspan="2">';
+			$vals_2col_end='</td></tr>';
+			$vals_wrapper_end='</table>';
+		// }
+	}
 	if ($vars['forms_template'] && strpos($vars['forms_template'], '{{')===false) {
 		$vars['forms_template']='';
 	}
 	if (!$vars['forms_template']||$vars['forms_template']=='&nbsp;') {
-		$c.='<div><table>';
+		$c.='<div>'.$vals_wrapper_start;
 	}
 	$required=array();
 	$q2=dbAll(
@@ -322,9 +342,10 @@ function Form_showForm(
 					$r2['extra']='0,0';
 				}
 				list($max, $softmax)=explode(',', $r2['extra']);
+				$maxlength=$max?'maxlength="'.$max.'" ':'';
 				$d=$only_show_contents
 					?$_REQUEST[$name]
-					:'<textarea maxlength="'.$max.'" softmaxlength="'.$softmax.'" '
+					:'<textarea '.$maxlength.' softmaxlength="'.$softmax.'" '
 						.'id="'.$name.'" name="'.$name.'" class="'.$class.'">'
 						.$_REQUEST[$name].'</textarea>';
 				break; // }
@@ -349,23 +370,23 @@ function Form_showForm(
 		}
 		else {
 			if ($table_break) {
-				$c.='</table>'.$d.'<table>';
+				$c.=$vals_wrapper_end.$d.$vals_wrapper_start;
 			}
 			else {
-				$c.='<tr><th>'.htmlspecialchars($r2['name']);
+				$c.=$vals_field_start.htmlspecialchars($r2['name']);
 				if ($r2['isrequired']) {
 					$c.='<sup>*</sup>';
 				}
-				$c.="</th>\n\t<td>".$d."</td></tr>\n\n";
+				$c.=$vals_field_middle.$d.$vals_field_end;
 			}
 		}
 		$cnt++;
 	}
 	if ($vars['forms_captcha_required'] && !$only_show_contents) {
 		require_once SCRIPTBASE.'ww.incs/recaptcha.php';
-		$row='<tr><td colspan="2">'.Recaptcha_getHTML().'</td></tr>';
+		$row=$vals_2col_start.Recaptcha_getHTML().$vals_2col_end;
 		if ($vars['forms_template']) {
-			$vars['forms_template'].='<table>'.$row.'</table>';
+			$vars['forms_template'].=$vals_wrapper_start.$row.$vals_wrapper_end;
 		}
 		else {
 			$c.=$row;
@@ -375,7 +396,7 @@ function Form_showForm(
 		$c.=$vars['forms_template'];
 	}
 	else {
-		$c.='<tr><th colspan="2" class="submitrow">';
+		$c.=$vals_2col_start;
 	}
 	if ($only_show_contents) {
 		return $c.'</fieldset>';
@@ -390,7 +411,7 @@ function Form_showForm(
 		$c.='<br />* indicates required fields';
 	}
 	if (!$vars['forms_template']||$vars['forms_template']=='&nbsp;') {
-		$c.='</th></tr></table></div>';
+		$c.=$vals_2col_end.$vals_wrapper_end.'</div>';
 		$c=str_replace('<table></table>', '', $c);
 		WW_addScript('/ww.plugins/forms/frontend/show.js');
 	}

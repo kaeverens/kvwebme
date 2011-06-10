@@ -18,23 +18,13 @@ if (!$edit && isset($replytoid) && $replytoid) {
 // { tabs nav
 $c.= '<div class="tabs">'
 	.'<ul>'
+	.'<li><a href="#main">Main Details</a></li>'
 	.'<li><a href="#f-header">Header</a></li>'
 	.'<li><a href="#footer">Footer</a></li>'
-	.'<li><a href="#main">Main Details</a></li>'
 	.'<li><a href="#fields">Form Fields</a></li>'
 	.'<li><a href="#success">Success Message</a></li>'
 	.'<li><a href="#template">Template</a></li>'
 	.'</ul>';
-// }
-// { header
-$c.='<div id="f-header"><p>Text to be shown above the form</p>'
-	.ckeditor('body', $page['body'])
-	.'</div>';
-// }
-// { footer
-$c.='<div id="footer"><p>Text to appear below the form.</p>';
-$c.=ckeditor('page_vars[footer]',(isset($vars['footer'])?$vars['footer']:''));
-$c.='</div>';
 // }
 // { main details
 $c.= '<div id="main"><table>';
@@ -95,7 +85,25 @@ $c.= '<tr><th>Record In DB</th><td>'
 	.date('Y-m-d', mktime(0, 0, 0, date("m")-1, date("d"), date("Y")))
 	.'" />. <a href="javascript:form_export('.$id.')">export</a></td></tr>';
 // }
+// { source type
+$c.='<tr><th>HTML type</th><td><select name="page_vars[forms_htmltype]">'
+	.'<option>table</option><option';
+if ('div'==@$vars['forms_htmltype']) {
+	$c.=' selected="selected"';
+}
+$c.='>div</option></select></td></tr>';
+// }
 $c.= '</table></div>';
+// }
+// { header
+$c.='<div id="f-header"><p>Text to be shown above the form</p>'
+	.ckeditor('body', $page['body'])
+	.'</div>';
+// }
+// { footer
+$c.='<div id="footer"><p>Text to appear below the form.</p>';
+$c.=ckeditor('page_vars[footer]',(isset($vars['footer'])?$vars['footer']:''));
+$c.='</div>';
 // }
 // { form fields
 $c.= '<div id="fields">';
