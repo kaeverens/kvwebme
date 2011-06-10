@@ -25,7 +25,7 @@ function panels_show($vars) {
 	$p=cache_load('panels',md5($name));
 	if($p===false){
 		$p=dbRow('select id,visibility,hidden,disabled,body from panels where name="'.addslashes($name).'" limit 1');
-		if(!$p){
+		if(!is_array($p)){
 			dbQuery("insert into panels (name,body) values('".addslashes($name)."','{\"widgets\":[]}')");
 			return '';
 		}

@@ -16,5 +16,5 @@ require SCRIPTBASE.'ww.plugins/dynamic-search/frontend/search.php';
 $sub=@$_GET['dynamic_search_submit'];
 require SCRIPTBASE.'ww.plugins/dynamic-search/frontend/'
 	.($sub=='')
-	?'display.php';
+	?'display.php'
 	:'results.php';
