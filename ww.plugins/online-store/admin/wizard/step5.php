@@ -238,9 +238,7 @@ if($body!=''){
 
 cache_clear();
 
-echo '<h2>Wizard Complete</h2>
-Your store has been created! Please click <a href="pages.php?id='.$store_id.'">here</a> to edit it,
-<a href="plugin.php?_plugin=products&_page=products">here</a> to add
-products and <a href="../'.str_replace(' ','-',$_SESSION['wizard']['name']).'">here</a> to view it the frontend.';
-
-?>
+echo '<h2>Wizard Complete</h2>'
+	.'Your store has been created! Please click '
+	.'<a href="/ww.admin/plugin.php?_plugin=products&_page=products-edit">here</a> '
+	.'to start adding products.';

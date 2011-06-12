@@ -71,6 +71,19 @@ else if ($dom->getElementById('sidebar')) {
 	}
 }
 // }
+// { footer columns
+$fcol1='';
+$fcol2='';
+$fcol3='';
+if ($dom->getElementById('column1')) {
+	$fcol1='column1';
+}
+if ($dom->getElementById('column2')) {
+	$fcol2='column2';
+}
+if ($dom->getElementById('column3')) {
+	$fcol3='column3';
+}
 
 $dom=empty_element($dom, 'menu');
 $dom=empty_element($dom, $col1);
@@ -80,6 +93,9 @@ if ($col2) {
 $dom=empty_element($dom, $content);
 $dom=empty_element($dom, $header);
 $dom=empty_element($dom, 'footer');
+$dom=empty_element($dom, $fcol1);
+$dom=empty_element($dom, $fcol2);
+$dom=empty_element($dom, $fcol3);
 
 $h=$dom->saveHTML();
 $h=preg_replace('#(<link.*?href=")([^"]*).css"#', '\1{{$THEMEDIR}}/c/\2.css"', $h);
@@ -90,9 +106,19 @@ $h=preg_replace('#(<[^>]* id="'.$col1.'"[^>]*>)(</div>)#', '\1{{PANEL name="side
 if ($col2) {
 	$h=preg_replace('#(<[^>]* id="'.$col2.'"[^>]*>)(</div>)#', '\1{{PANEL name="sidebar2"}}\2', $h);
 }
+if ($fcol1) {
+	$h=preg_replace('#(<[^>]* id="'.$fcol1.'"[^>]*>)(</div>)#', '\1{{PANEL name="footer-column1"}}\2', $h);
+}
+if ($fcol2) {
+	$h=preg_replace('#(<[^>]* id="'.$fcol2.'"[^>]*>)(</div>)#', '\1{{PANEL name="footer-column2"}}\2', $h);
+}
+if ($fcol3) {
+	$h=preg_replace('#(<[^>]* id="'.$fcol3.'"[^>]*>)(</div>)#', '\1{{PANEL name="footer-column3"}}\2', $h);
+}
 $h=preg_replace('#(<[^>]* id="'.$content.'"[^>]*>)(</div>)#', '\1{{$PAGECONTENT}}\2', $h);
 $h=str_replace('<div id="footer"></div>', '<div id="footer">{{PANEL name="footer"}}</div>', $h);
 $h=str_replace('<div id="menu"></div>', '<div id="menu">{{MENU direction="horizontal"}}</div>', $h);
+$h=preg_replace('#<div style="clear: both;">[^<]*</div>#', '<div style="clear: both;"></div>', $h);
 
 $h=preg_replace('#<meta[^>]*>#', '', $h);
 $h=preg_replace('#<title[^>]*>[^>]*>#', '', $h);
@@ -125,6 +151,8 @@ foreach ($files as $file) {
 		$css=preg_replace('#}\s*#', "}\n", $css);
 		$css=preg_replace('#/\*#', "\n/*", $css);
 		$css=preg_replace('#\*/#', "*/\n", $css);
+		$css=str_replace('.current_page_item a','a.ajaxmenu_currentPage', $css);
+		$css=str_replace('li.current_page_item','a.ajaxmenu_currentPage', $css);
 		$css.='.fg-menu-container{padding-bottom:0 !important}';
 		// }
 		file_put_contents($file->getPathname(), $css);

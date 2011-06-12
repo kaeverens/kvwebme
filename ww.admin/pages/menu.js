@@ -59,7 +59,7 @@ function pages_add_node(name,id,pid){
 	var node=$jstree.jstree(
 		'create',
 		pel,
-		"first",
+		"last",
 		{'attr':{'id':'page_'+id},'data':name},
 		function(){
 			$jstree.jstree('deselect_all');
