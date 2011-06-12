@@ -184,7 +184,7 @@ var Wizard={
 			case 2:
 			break;
 		}
-		$('#register-progress').slideBackground('#register-progress li:nth-child('+(this.stage)+')');
+		$('#register-progress').slideBackground('#register-progress li:eq('+(this.stage-1)+')');
 	}
 };
 

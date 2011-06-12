@@ -136,6 +136,7 @@ $books=array(
 	'fields'=>array(
 		'ISBN' => 'inputbox',
 		'Ebook ISBN'=>'inputbox',
+		'Author'=>'inputbox',
 		'Description' => 'textarea',
 	),
 	'single'=>'
@@ -149,6 +150,8 @@ $books=array(
 							{{$_name}}</h1>
 						<p>
 							<b>Price:</b> {{PRODUCTS_FULL_PRICE}}</p>
+						<p>
+							<b>Author:</b> {{$author}}</p>
 						<p>
 							<b>ISBN:</b> {{$isbn}}</p>
 						<p>

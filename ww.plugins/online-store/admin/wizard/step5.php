@@ -18,6 +18,34 @@ if(isset($_POST['wizard-products-type'])){ // save post data
 	$product_type=$_POST['wizard-products-type'];
 }
 
+// { install required plugins
+$plugins=$DBVARS['plugins'];
+if(!in_array('products',$plugins)){ // install products plugin
+	$plugins[]='products';
+	$DBVARS['plugins']=$plugins;
+	$DBVARS['products|version']=0;
+	config_rewrite();
+	// load products upgrade.php
+	$version=0;
+	require SCRIPTBASE.'ww.plugins/products/upgrade.php';
+}
+if(!in_array('panels',$plugins)){ // install panels plugin
+	$plugins[]='panels';
+	$DBVARS['plugins']=$plugins;
+	$DBVARS['panels|version']=0;
+	config_rewrite();
+	// load panels upgrade.php
+	$version=0;
+	require SCRIPTBASE.'ww.plugins/panels/upgrade.php';
+}
+if($_SESSION['wizard']['payment']['login']=='yes'
+	&& !in_array('privacy',$plugins)){ // install privacy plugin
+	$plugins[]='privacy';
+	$DBVARS['plugins']=$plugins;
+	$DBVARS['privacy|version']=0;
+	config_rewrite();
+}
+// }
 // { add product type
 if(in_array($product_type,$types))
 	$type=${$product_type};
@@ -93,6 +121,7 @@ dbQuery('insert into page_vars (page_id,name,value) values'
 	$store_vals=array(
 		'online_stores_admin_email' => $_SESSION['wizard']['payment']['email'],
 		'online_stores_vat_percent' => 0,
+		'online_stores_requires_login' => $_SESSION['wizard']['payment']['login'],
 	);
 
 	// { paypal
@@ -184,6 +213,26 @@ dbQuery('insert into page_vars (page_id,name,value) values'
 	dbQuery($query);
 	// }
 
+// }
+// { add online store widget to sidebar1 if exists
+$body=dbOne('select body from panels where name="sidebar1" limit 1','body');
+if($body!=''){
+	$body=json_decode($body,true);
+	$store_widget=array(
+		'type' => 'online-store',
+		'name' => $_SESSION['wizard']['name'],
+		'panel' => '',
+		'' => 'on',
+		'template' => '',
+		'visibility' => array(
+			$products_id,
+			$store_id,
+		),
+	);
+	array_push($body['widgets'],$store_widget);
+	$body=addslashes(json_encode($body));
+	dbQuery('update panels set body="'.$body.'" where name="sidebar1" limit 1');
+}
 // }
 
 echo '<h2>Wizard Complete</h2>
