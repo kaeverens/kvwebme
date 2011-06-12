@@ -78,7 +78,8 @@ dbQuery('insert into products_types set'
 	.' name="'.$product_type.'",'
 	.' multiview_template="'.addslashes($type['multi']).'",'
 	.' singleview_template="'.addslashes($type['single']).'",'
-	.' data_fields="'.addslashes($fields).'"'
+	.' data_fields="'.addslashes($fields).'",'
+  .' is_for_sale=1'
 );
 $product_type_id=dbLastInsertId();
 // }
@@ -164,7 +165,7 @@ dbQuery('insert into page_vars (page_id,name,value) values'
 			=>	(@$_SESSION['wizard']['payment']['realex']==1)?
 					$_SESSION['wizard']['payment']['realex-secret']:
 					'',
-		'online_stores_realex_redirect_to'
+		'online_store_redirect_to'
 			=>	(@$_SESSION['wizard']['payment']['realex']==1)?
 					$_SESSION['wizard']['payment']['realex-redirect']:
 					'',
@@ -229,14 +230,17 @@ if($body!=''){
 			$store_id,
 		),
 	);
-	array_push($body['widgets'],$store_widget);
+	array_unshift($body['widgets'],$store_widget);
 	$body=addslashes(json_encode($body));
 	dbQuery('update panels set body="'.$body.'" where name="sidebar1" limit 1');
 }
 // }
 
+cache_clear();
+
 echo '<h2>Wizard Complete</h2>
-Your store has been created! Please click here to edit it, here to add
-products and here to view it the frontend.';
+Your store has been created! Please click <a href="pages.php?id='.$store_id.'">here</a> to edit it,
+<a href="plugin.php?_plugin=products&_page=products">here</a> to add
+products and <a href="../'.str_replace(' ','-',$_SESSION['wizard']['name']).'">here</a> to view it the frontend.';
 
 ?>

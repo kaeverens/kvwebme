@@ -17,7 +17,8 @@ and populating it with products.</i></p>
 <table>
 <tr>
 	<th>Store Name</th>
-	<td><input type="text" name="wizard-name" value="My Store"/></td>
+	<td><input type="text" name="wizard-name" value="Products"/></td>
+	<td><i>This is the name for the page that the products will be shown in</i></p>
 </tr>
 </table>
 <input type="submit" value="Begin" class="next-link" style="float:right"/>';

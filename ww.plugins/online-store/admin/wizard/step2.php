@@ -36,7 +36,7 @@ echo '
 // { Users must log in to purchase
 echo '
 	<tr>
-		<th>Should customers log in before purchasing?</th>
+		<th>Do customers need to log in before purchasing?</th>
 		<td><select name="wizard-login">
 			<option value="no">No</option>
 			<option value="yes">Yes</option>
@@ -146,7 +146,7 @@ echo '<tr id="Realex-toggle" style="display:none">
 			<tr>
 				<td colspan="2">
 					Note that some manual configuration is necessary. You will need to provide RealEx with a template (see their Real Auth Developers Guide for an example), and with the following Response ScriptURL:
-					http://webme.l/ww.plugins/online-store/verify/realex.php
+					http://'.$_SERVER['SERVER_NAME'].'/ww.plugins/online-store/verify/realex.php
 				</td>
 			</tr>
 		</table>

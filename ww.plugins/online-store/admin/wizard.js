@@ -4,9 +4,6 @@ $(function(){
 		var id=$(this).attr('id').replace(" ","-");
 		$('#'+id+'-toggle').toggle();
 	});
-	$('#redirect-after-payment').remoteselectoptions({
-			url:"/ww.admin/pages/get_parents.php"
-	});
 	$('.next-link').live('click',function(){
 		Wizard.submit();
 	});
@@ -182,6 +179,9 @@ var Wizard={
 	nextScript:function(){
 		switch(this.stage){
 			case 2:
+				$('#redirect-after-payment').remoteselectoptions({
+					url:"/ww.admin/pages/get_parents.php"
+				});
 			break;
 		}
 		$('#register-progress').slideBackground('#register-progress li:eq('+(this.stage-1)+')');
