@@ -146,8 +146,7 @@ function forum_user_profile( $PAGEDATA, $user ){
 	<table style="border:1px solid #ccc;margin:10px">
 		<tr>
 			<td rowspan="3">
-		    <img src="http://www.gravatar.com/avatar/
-				   ' . $emailHash . '" />
+		    <img src="http://www.gravatar.com/avatar/' . $emailHash . '" />
 			</td>
 			<th>Threads Created:</th>
 			<td>' . $threads . '</tr>
@@ -198,7 +197,7 @@ function forum_user_profile( $PAGEDATA, $user ){
 			'select name from pages where id=(select page_id from forums where id=1)',
 			'name'
 		);
-		$link = '/' . $pagename . '?forum-f=' . $forum . '&forum-t=' . $thread_id;
+		$link = '/_r?type=forum&forum-f=' . $forum . '&forum-t=' . $thread_id;
 		$html .= '<tr>
 			<td><a href="' . $link . '">' . $name . '</a></td>
 			<td>' . date_m2h( $post[ 'created_date' ] ) . '</td>
