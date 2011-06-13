@@ -137,6 +137,12 @@ if ($page=='' && isset($_GET['search']) || isset($_GET['s'])) {
 	$id=$p->id;
 }
 // }
+// { is maintenance mode enabled?
+if($DBVARS['maintenance-mode']=='yes'){
+	if(!is_admin())
+		die($DBVARS['maintenance-mode-message']);
+}
+// }
 // { get current page id
 if (!$id) {
 	if ($page) {

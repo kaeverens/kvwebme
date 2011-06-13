@@ -15,6 +15,8 @@ echo '<h2>General</h2>';
 // { handle actions
 if ($action=='Save') {
 	$DBVARS['f_cache']=$_REQUEST['f_cache'];
+	$DBVARS['maintenance-mode']=$_REQUEST['maintenance-mode'];
+	$DBVARS['maintenance-mode-message']=$_REQUEST['maintenance-mode-message'];
 	if (@$_REQUEST['disable-hidden-sitemap']) {
 		$DBVARS['disable-hidden-sitemap']=1;
 	}
@@ -142,6 +144,33 @@ if (@$DBVARS['disable-hidden-sitemap']) {
 }
 echo ">Yes</option>";
 echo '</select></td></tr>';
+// }
+// { mantinence mode
+$script='$(function(){
+	$("select[name=\'maintenance-mode\']").change(function(){
+		$("#maintenance-message").toggle();
+	});
+});';
+WW_addInlineScript($script);
+$display=' style="display:none"';
+echo '<tr><th>Enable maintenance mode</th><td>
+	<select name="maintenance-mode">
+		<option value="No">No</option>
+		<option value="yes"';
+if(@$DBVARS['maintenance-mode']=='yes'){
+	echo ' selected="selected"';
+	$display='';
+}
+echo '>Yes</option>
+</select></td></tr>';
+$message=(@$DBVARS['maintenance-mode-message']=='')?
+	'<h1>Temporarily Unavailable</h1>
+	<p>This website is undergoing maintenance and is temporarily unavailable.</p>':
+	$DBVARS['maintenance-mode-message'];
+echo '<tr '.$display.' id="maintenance-message">
+	<th>Maintenance mode message:</th>
+	<td>'.ckeditor('maintenance-mode-message',$message).'</td>
+</tr>';
 // }
 echo '</table><input type="submit" name="action" value="Save" /></form>';
 // }
