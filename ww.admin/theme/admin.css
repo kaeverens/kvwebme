@@ -520,10 +520,8 @@ div.help{
 #slider{
 	margin: 10px;
 	position:relative;
-	min-height:500px;
+	min-height:400px;
 	width:710px;
-	overflow-y:visible;
-	overflow-x:hidden;
 }
 .register-container{ position:absolute;width:700px; }
 .register-container th{ text-align:left }

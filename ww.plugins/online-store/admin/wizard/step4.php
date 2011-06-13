@@ -29,6 +29,7 @@ if(isset($_POST['wizard-company-name'])){ // validate post data
 
 echo '
 <h2>Products</h2>
+<div style="height:300px;overflow:auto">
 <table>
 	<tr>
 		<th>What type of products are you selling?</th>
@@ -55,7 +56,7 @@ echo '</select></td>
 		Preview</button></td>
 	</tr>
 </table>
-</div>
+</div></div>
 ';
 
 echo '<input type="submit" value="Back" class="back-link"/>'

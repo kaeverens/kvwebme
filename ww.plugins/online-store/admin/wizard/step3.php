@@ -57,6 +57,7 @@ if(isset($_POST['wizard-login'])){ // validate post data
 echo '<h2>Company Details</h2>
 <i>These details are used to populate the invoice sent to customers.
 Fields left blank will simply not appear on the invoice</i>
+<div style="height:300px;overflow:auto">
 <table>';
 
 // { company name
@@ -117,9 +118,6 @@ echo '<tr>
 ';
 // }
 
-echo '</table>';
-
+echo '</table></div>';
 echo '<input type="submit" value="Back" class="back-link"/>'
 . '<input type="submit" value="Next" class="next-link" style="float:right"/>';
-
-?>

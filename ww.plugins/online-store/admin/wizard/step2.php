@@ -24,6 +24,7 @@ echo '
 <h2>Payment Details</h2>
 <i>Now, some basic details about payment. Everything here is optional, if
 you don\'t know what it is then just leave it blank</i>
+<div style="height:300px;overflow:auto">
 <table>';
 
 // { admin email address
@@ -154,7 +155,7 @@ echo '<tr id="Realex-toggle" style="display:none">
 </tr>';
 // }
 
-echo '</table>';
+echo '</table></div>';
 
 echo '<input type="submit" value="Back" class="back-link"/>'
 . '<input type="submit" value="Next" class="next-link" style="float:right"/>';

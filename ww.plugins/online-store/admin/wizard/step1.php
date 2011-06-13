@@ -14,6 +14,7 @@ echo '
 <h2>Online Store Wizard</h2>
 <p><i>This wizard will guide you through the process of creating an online store
 and populating it with products.</i></p>
+<div style="height:300px;overflow:auto">
 <table>
 <tr>
 	<th>Store Name</th>
@@ -21,6 +22,5 @@ and populating it with products.</i></p>
 	<td><i>This is the name for the page that the products will be shown in</i></p>
 </tr>
 </table>
-<input type="submit" value="Begin" class="next-link" style="float:right"/>';
-
-?>
+</div>
+<input type="submit" value="Next" class="next-link" style="float:right"/>';
