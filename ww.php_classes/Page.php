@@ -116,8 +116,7 @@ class Page{
 	static function getInstanceByType($type=0){
 		if (!array_key_exists($type,self::$instancesByType)) new Page($type,2);
 		if(!isset(self::$instancesByType[$type])){
-			echo 'page of type '.$type.' does not exist';
-			exit;
+			return false;
 		}
 		return self::$instancesByType[$type];
 	}
