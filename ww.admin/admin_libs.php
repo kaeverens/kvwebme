@@ -318,12 +318,6 @@ function sanitise_html($original_html) {
 	$html = str_replace('{{LINERETURN}}', "\r", $html);
 	return $html;
 }
-
-/**
- * curl
- * 
- * gets the contents of a url
- */
 function curl( $url ){
         $ch = curl_init( );
         curl_setopt( $ch, CURLOPT_URL, $url );
@@ -332,13 +326,6 @@ function curl( $url ){
         curl_close( $ch );
         return $response;
 }
-
-/** 
- * get_template_names
- *
- * returns an array of the templates in the
- * themes-personal directory
- */
 function get_template_names( ){
 
 	$themes = array( );
@@ -360,4 +347,43 @@ function get_template_names( ){
         closedir( $handler );
 
 	return $themes;
+}
+function recursive_dependencies_check($plugins){
+	$new_plugs=array();
+	foreach($plugins as $plug){
+		if(!is_dir(SCRIPTBASE.'ww.plugins/'.$plug)
+			||!file_exists(SCRIPTBASE.'ww.plugins/'.$plug.'/plugin.php'))
+			// plugin doesn't exist
+			return $plug;
+		global $PLUGINS;
+		if(isset($PLUGINS[$plug])) // if installed load from memory
+			$plugin=$PLUGINS[$plug];
+		else{ // else include plugin file
+			// if already included then it must be
+			// already on the list
+			require_once SCRIPTBASE.'ww.plugins/'.$plug.'/plugin.php';
+		}
+		if(isset($plugin['dependencies'])){
+			$dependencies=(strpos($plugin['dependencies'],',')===false)?
+				array($plugin['dependencies']):
+				explode(',',$plugin['dependencies']);
+			foreach($dependencies as $dependency){
+				if(!in_array($dependency,$plugins)
+					&&!in_array($dependency,$new_plugs)){
+					array_push($new_plugs,$dependency);
+				}
+			}
+		}
+		array_push($new_plugs,$plug);
+		$plugin=array();
+	}
+	$diff=array_diff($new_plugs,$plugins);
+	$new_plugs=array_merge($plugins,$new_plugs);
+	if(is_array($diff)&&count($diff)!=0){
+		$check=recursive_dependencies_check($diff);
+		if(!is_array($check))
+			return $check;
+		$new_plugs=array_merge($new_plugs,$check);
+	}
+	return array_unique($new_plugs);
 }

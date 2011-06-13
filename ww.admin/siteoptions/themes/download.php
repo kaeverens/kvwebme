@@ -16,7 +16,7 @@ require SCRIPTBASE . 'ww.admin/admin_libs.php';
 
 echo '
 <script type="text/javascript" src="/ww.admin/siteoptions/themes/download.js"></script>
-<link rel="stylesheet" type="text/css" href="/ww.plugins/themes-api/api.css"/>
+<link rel="stylesheet" type="text/css" href="http://kvweb.me/ww.plugins/themes-api/api.css"/>
 ';
 
 echo '<div id="public-repository"><p>Choosing a theme here will download it into your private repository. If you already have a copy of the chosen theme there, then your copy will be over-written.</p>';

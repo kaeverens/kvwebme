@@ -15,7 +15,7 @@
 echo '<h2>Plugins</h2>';
 
 if($action=='Save'){ // handle actions
-  // { get hidden plugins (those that the admin must install manually using teh site config)
+  // { get hidden plugins (those that the admin must install manually using the site config)
   $tmp_hidden=array();
   foreach($PLUGINS as $name=>$plugin){
     if(isset($plugin['hide_from_admin']) && $plugin['hide_from_admin'])$tmp_hidden[]=$name;
@@ -25,11 +25,23 @@ if($action=='Save'){ // handle actions
   $tmp=array();
   foreach($_POST['plugins'] as $name=>$var)if(file_exists(SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php'))$tmp[]=$name;
   // }
-  $DBVARS['plugins']=array_merge($tmp,$tmp_hidden);
-  config_rewrite();
-  echo '<em>plugins updated</em>';
-  echo '<a href="./siteoptions.php?page=plugins">reloading page to refresh database</a>';
-  echo '<script type="text/javascript">window.setTimeout("document.location=\'./siteoptions.php?page=plugins\'",1000);</script>';
+	$plugins=array_merge($tmp,$tmp_hidden);
+	$plugins=recursive_dependencies_check($plugins);
+	if(is_array($plugins)){
+	  $DBVARS['plugins']=$plugins;
+	  config_rewrite();
+		header('location: siteoptions.php?page=plugins&message=updated');
+	}
+	// dependency doesn't exist
+	header('location: siteoptions.php?page=plugins&message=failed');
+}
+
+$msg=@$_GET['message'];
+if($message=='updated'){
+	echo '<em>plugins updated</em>';
+}
+elseif($message=='failed'){
+	echo'<em>update failed</em><p>failed to meet the plugin dependencies</p>';
 }
 
 // { build array of available and installed plugins
