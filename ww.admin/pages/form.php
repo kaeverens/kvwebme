@@ -14,11 +14,8 @@ if ((!isset($_REQUEST['id']) || $_REQUEST['id']==0) && (!isset($_REQUEST['action
 // { take care of actions
 $id=isset($_REQUEST['id'])
 	?(int)$_REQUEST['id']
-	:2;
+	:0;
 $parent=isset($_REQUEST['parent'])?(int)$_REQUEST['parent']:0;
-$hide_from_admin=isset($_REQUEST['hide_from_admin'])?
-	$_REQUEST['hide_from_admin']:
-	0;
 $action=isset($_REQUEST['action'])?$_REQUEST['action']:'';
 $msgs='';
 include('pages.funcs.php');
@@ -56,13 +53,7 @@ if($id && $edit){ // check that page exists
 $page_vars=array();
 if(isset($msgs) && $msgs!='')echo $msgs;
 if($edit){
-	if(isset($_REQUEST['newpage_dialog']) && $page['special']&2){
-		if($page['parent']!=0){
-			$parentvars=die('select * from pagevars where id='.$page['parent']);
-			die(print_r($parentvars));
-		}
-		$page['special']-=2;
-	}
+	if(isset($_REQUEST['newpage_dialog']) && $page['special']&2)$page['special']-=2;
 	$pvq=dbAll("SELECT * FROM page_vars WHERE page_id=$id");
 	foreach($pvq as $pvr)$page_vars[$pvr['name']]=$pvr['value'];
 }
@@ -284,7 +275,7 @@ echo '</table>';
 echo '</td><td>';
 // { special
 echo '<h4>Special</h4>';
-$specials=array('Is Home Page', 'Does not appear in navigation','Is not summarised');
+$specials=array('Is Home Page', 'Does not appear in navigation', 'Is not summarised');
 for($i=0;$i<count($specials);++$i){
 	if($specials[$i]!=''){
 		echo wInput('special['.$i.']','checkbox',($page['special']&pow(2,$i))?1:0).$specials[$i].'<br />';
