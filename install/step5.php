@@ -24,7 +24,10 @@ $config='<'."?php
 	'userbase' => '".addslashes($_SESSION['userbase'])."',
 	'plugins'  => 'panels',
 	'theme_variant' => '',
-	'version'  => 1
+	'version'  => 1,
+	'maintenance-mode'=>'yes',
+	'maintenance-mode-message'=>'<h1>Temporarily Unavailable</h1>
+	 <p>This website is undergoing maintenance and is temporarily unavailable.</p>',
 );";
 
 file_put_contents('../.private/config.php',$config);
