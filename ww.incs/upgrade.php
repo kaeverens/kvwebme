@@ -371,9 +371,16 @@ if($version==35){ // convert user address to new format
 	$users=dbAll('select id,address from user_accounts');
 	$query='update user_accounts set address=CASE ';
 	for($i=0;$i<count($users);++$i){
+		$add=(@$users[$i]['address']=='')?
+			array():
+			explode('\n',$users[$i]['address']);
+		$s=count($add);
 		$address=json_encode(array(
 			'default' => array(
-				'address' => @$users[$i]['address'],
+				'street' => @$add[$s-4],
+				'street2' => @$add[$s-3],
+				'town' => @$add[$s-2],
+				'county' => @$add[$s-1],
 				'country' => '',
 				'default' => 'yes',
 			),

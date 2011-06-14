@@ -14,8 +14,11 @@ if(isset($_REQUEST['action'])){
 		// { address
 		foreach($_POST['address'] as $name=>$address){
 			$addresses[$name]=array(
-				'address'=>$address,
-				'country'=>@$_POST['country-'.$name]
+				'street'=>@$_POST['street-'.$name],
+        'street2'=>@$_POST['street2-'.$name],
+        'town'=>@$_POST['town-'.$name],
+        'county'=>@$_POST['county-'.$name],
+				'country'=>@$_POST['country-'.$name],
 			);
 			if($_POST['default-address']==$name)
 				$addresses[$name]['default']='yes';
@@ -81,7 +84,7 @@ if(isset($_REQUEST['id'])){
 	$id=(int)$_REQUEST['id'];
 	$r=dbRow("select * from user_accounts where id=$id");
 	if(!is_array($r) || !count($r)){
-		$r=array('id'=>-1,'email'=>'','name'=>'','phone'=>'','active'=>0,'address'=>array('default'=>array('address'=>'','country'=>'','default'=>'yes')),'parent'=>$_SESSION['userdata']['id']);
+		$r=array('id'=>-1,'email'=>'','name'=>'','phone'=>'','active'=>0,'address'=>array('default'=>array('street'=>'','street2'=>'','town'=>'','county'=>'','country'=>'','default'=>'yes')),'parent'=>$_SESSION['userdata']['id']);
 	}
 	echo '<div id="tabs">
 	<ul>
@@ -134,9 +137,22 @@ foreach($r['address'] as $name=>$address){
 		<th colspan="2"><input type="radio"'.$select.' name="default-address" value="'.$name.'"/>
 		<h3>'.str_replace('-',' ',$name).'</h3>
 		<a href="javascript:;" class="delete-add">[-]</a></th>
+		<input type="hidden" name="address['.$name.']"/>
 	<tr>
-		<th>Address</th>
-		<td><textarea name="address['.$name.']">'.$address['address'].'</textarea></td>
+		<th>Street</th>
+		<td><input type="text" name="street-'.$name.'" value="'.$address['street'].'"/></td>
+	</tr>
+	<tr>
+		<th>Street 2</th>
+		<td><input type="text" name="street2-'.$name.'" value="'.$address['street2'].'"/></td>
+	</tr>
+	<tr>
+		<th>Town</th>
+		<td><input type="text" name="town-'.$name.'" value="'.$address['town'].'"/></td>
+	</tr>
+	<tr>
+		<th>County</th>
+		<td><input type="text" name="county-'.$name.'" value="'.$address['county'].'"/></td>
 	</tr>
 	<tr>
 		<th>Country</th>

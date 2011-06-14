@@ -73,7 +73,10 @@ $(function(){
 				'Save':function(){
 					var name=$('input[name="add-name"]').val();
 					var safe=name.replace(" ","-");
-          var add=$('textarea[name=add]').val();
+          var street=$('input[name="add-street"]').val();
+          var street2=$('input[name="add-street2"]').val();
+          var town=$('input[name="add-town"]').val();
+          var county=$('input[name="add-county"]').val();
           var country=$('input[name="add-country"]').val();
 					$('#add-content').append(
 						'<table class="address-table"><tr>'
@@ -81,12 +84,16 @@ $(function(){
 							+ 'default-address" value="'+safe+'"/>'
 							+ '<h3>'+name+'</h3>'
 							+ '<a href="javascript:;" class="delete-add">[-]</a></th>'
-							+ '<tr>'
-							+ '<th>Address</th>'
-							+ '<td><textarea name="address['+safe+']">'
-							+ add+'</textarea></td>'
-							+ '</tr> <tr>'
-							+ '<th>Country</th>'
+							+ '<input type="hidden" name="address['+safe+']"/>'
+							+ '<tr><th>Street</th>'
+							+ '<td><input type="text" name="street-'+safe+'" value="'+street+'"/></td>'
+							+ '</tr><tr><th>Street 2</th>'
+							+ '<td><input type="text" name="street2-'+safe+'" value="'+street2+'"/></td>'
+							+ '</tr><tr><th>Town</th>'
+							+ '<td><input type="text" name="town-'+safe+'" value="'+town+'"/></td>'
+							+ '</tr><tr><th>County</th>'
+							+ '<td><input type="text" name="county-'+safe+'" value="'+county+'"/></td>'
+							+ '</tr><tr><th>Country</th>'
 							+ '<td><input type="text" name="country-'+safe+'"'
 							+ 'value="'+country+'"/></td>'
 							+ '</tr>'
@@ -106,8 +113,20 @@ $(function(){
 				+ '<td><input type="text" name="add-name" value=""/></td>'
 			+ '</tr>'
 			+ '<tr>'
-				+ '<th>Address</th>'
-				+ '<td><textarea name="add"></textarea></td>'
+				+ '<th>Street</th>'
+				+ '<td><input type="text" name="add-street"/></td>'
+			+ '</tr>'
+			+ '<tr>'
+				+ '<th>Street 2</th>'
+				+ '<td><input type="text" name="add-street2"/></td>'
+			+ '</tr>'
+			+ '<tr>'
+				+ '<th>Town</th>'
+				+ '<td><input type="text" name="add-town"/></td>'
+			+ '</tr>'
+			+ '<tr>'
+				+ '<th>County</th>'
+				+ '<td><input type="text" name="add-county"/></td>'
 			+ '</tr>'
 			+ '<tr>'
 				+ '<th>Country</th>'
