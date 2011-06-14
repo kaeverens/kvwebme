@@ -367,7 +367,23 @@ if ($version==34) { // add page id to short_url
 	dbQuery('alter table short_urls add page_id int default 0');
 	$version=35;
 }
-
+if($version==35){ // convert user address to new format
+	$users=dbAll('select id,address from user_accounts');
+	$query='update user_accounts set address=CASE ';
+	for($i=0;$i<count($users);++$i){
+		$address=json_encode(array(
+			'default' => array(
+				'address' => @$users[$i]['address'],
+				'country' => '',
+				'default' => 'yes',
+			),
+		));
+		$query.='when id='.$users[$i]['id'].' then "'.addslashes($address).'"';
+	}
+	$query.=' ELSE address END;';
+	dbQuery($query);
+	$version=36;
+}
 $DBVARS['version']=$version;
 cache_clear();
 config_rewrite();

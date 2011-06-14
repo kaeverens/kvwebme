@@ -148,8 +148,13 @@ echo '</select></td></tr>';
 // { mantinence mode
 $script='$(function(){
 	$("select[name=\'maintenance-mode\']").change(function(){
-		$("#maintenance-message").toggle();
+		$(".maintenance-message").toggle();
 	});
+  $( "#add-ip" ).click( function( ){
+		var test=prompt("Please enter the IP Address");
+		alert(test);
+	});
+
 });';
 WW_addInlineScript($script);
 $display=' style="display:none"';
@@ -162,12 +167,19 @@ if(@$DBVARS['maintenance-mode']=='yes'){
 	$display='';
 }
 echo '>Yes</option>
-</select></td></tr>';
+</select></td></tr>
+<input type="hidden" name="maintenance-mode-ips" value="'.
+@$DBVARS['maintenance-mode-ips'].'"/>
+<tr class="maintenance-message" '.$display.'>
+	<th>IP Addresses</th>
+	<td><span id="ips">'.@$DBVARS['maintenance-mode-ips'].'</span>
+	<a href="javascript:;" id="add-ip">[+]</a></td>
+</tr>';
 $message=(@$DBVARS['maintenance-mode-message']=='')?
 	'<h1>Temporarily Unavailable</h1>
 	<p>This website is undergoing maintenance and is temporarily unavailable.</p>':
 	$DBVARS['maintenance-mode-message'];
-echo '<tr '.$display.' id="maintenance-message">
+echo '<tr '.$display.' class="maintenance-message">
 	<th>Maintenance mode message:</th>
 	<td>'.ckeditor('maintenance-mode-message',$message).'</td>
 </tr>';

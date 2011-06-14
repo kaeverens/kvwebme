@@ -65,4 +65,58 @@ $(function(){
 			}
 		});
 	});
+	$('#tabs').tabs();
+	$('#new-address').click(function(){
+		$('<div id="new-dialog" title="New Address"></div>').dialog({
+			modal:true,
+			buttons:{
+				'Save':function(){
+					var name=$('input[name="add-name"]').val();
+					var safe=name.replace(" ","-");
+          var add=$('textarea[name=add]').val();
+          var country=$('input[name="add-country"]').val();
+					$('#add-content').append(
+						'<table class="address-table"><tr>'
+							+ '<th colspan="2"><input type="radio" name="'
+							+ 'default-address" value="'+safe+'"/>'
+							+ '<h3>'+name+'</h3>'
+							+ '<a href="javascript:;" class="delete-add">[-]</a></th>'
+							+ '<tr>'
+							+ '<th>Address</th>'
+							+ '<td><textarea name="address['+safe+']">'
+							+ add+'</textarea></td>'
+							+ '</tr> <tr>'
+							+ '<th>Country</th>'
+							+ '<td><input type="text" name="country-'+safe+'"'
+							+ 'value="'+country+'"/></td>'
+							+ '</tr>'
+							+ '<th></tr></table>'
+					);
+					$(this).dialog('close').remove();
+				},
+				'Cancel':function(){
+					$(this).dialog('close').remove();
+				}
+			}
+		});
+		$('#new-dialog').html(
+			'<table>'
+			+ '<tr>'
+				+ '<th>Name</th>'
+				+ '<td><input type="text" name="add-name" value=""/></td>'
+			+ '</tr>'
+			+ '<tr>'
+				+ '<th>Address</th>'
+				+ '<td><textarea name="add"></textarea></td>'
+			+ '</tr>'
+			+ '<tr>'
+				+ '<th>Country</th>'
+				+ '<td><input type="text" name="add-country" value=""/></td>'
+			+ '</tr>'
+			+ '</table>'
+		);
+	});
+	$('.delete-add').live('click',function(){
+		$(this).closest('.address-table').fadeOut('show').remove();
+	});
 });
