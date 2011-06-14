@@ -220,7 +220,7 @@ if (@$_REQUEST['__theme'] && strpos($_REQUEST['__theme'], '/')===false
 ) {
 	$_SESSION['theme_override']=array(
 		$_REQUEST['__theme'],
-		$_REQUEST['__theme_variant'],
+		@$_REQUEST['__theme_variant'],
 		time()
 	);
 	define('THEME', $_REQUEST['__theme']);

@@ -28,10 +28,11 @@ you don\'t know what it is then just leave it blank</i>
 <table>';
 
 // { admin email address
+$email=@$_SESSION['userdata']['email'];
 echo '
 	<tr>
 		<th>What is your email address? When purchases are made, you will be alerted at this address.</th>
-		<td><input type="email" name="wizard-email" value="'.$_SESSION['userdata']['email'].'"/></td>
+		<td><input type="email" name="wizard-email" value="'.htmlspecialchars($email).'"/></td>
 	</tr>';
 // }
 // { Users must log in to purchase
