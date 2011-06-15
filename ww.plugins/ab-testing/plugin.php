@@ -7,6 +7,9 @@ $plugin=array(
 	'frontend' => array(
 		'body_override' => 'ABTesting_frontend'
 	),
+	'triggers'=>array(
+		'page-object-loaded'=>'ABTesting_record'
+	),
 	'description' => 'Provide different page bodies to readers, '
 		.'to see which are more successful',
 	'version'=>1
@@ -24,4 +27,7 @@ function ABTesting_admin($page, $page_vars) {
 function ABTesting_frontend($page) {
 	require dirname(__FILE__).'/frontend.php';
 	return $body;
+}
+function ABTesting_record($page) {
+	require dirname(__FILE__).'/record.php';
 }
