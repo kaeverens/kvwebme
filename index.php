@@ -138,7 +138,7 @@ if ($page=='' && isset($_GET['search']) || isset($_GET['s'])) {
 }
 // }
 // { is maintenance mode enabled?
-if($DBVARS['maintenance-mode']=='yes'){
+if(@$DBVARS['maintenance-mode']=='yes'){
 	if(!is_admin())
 		die($DBVARS['maintenance-mode-message']);
 }
