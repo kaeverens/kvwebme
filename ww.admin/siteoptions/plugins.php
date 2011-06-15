@@ -103,13 +103,12 @@ echo '
 		<li><a href="#available">Available</a></li>
 	</ul>
 	<div id="installed">
-		<table id="installed_plugins" class="display" style="width:600px">
+		<table id="installed_plugins" class="display" style="width:100%">
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>Version</th>
-					<th style="width:60%">Description</th>
 					<th>Installed</th>
+					<th style="width:90%">Description</th>
 				</tr>
 			</thead>
 			<tbody>';
@@ -117,9 +116,8 @@ echo '
 foreach( $installed as $name => $plugin ){
 	echo '<tr>
 		<td>' . $plugin[ 'name' ] . '</td>
-		<td>' . $plugin[ 'version' ] . '</td>
-		<td>' . $plugin[ 'description' ] . '</td>
 		<td><input type="checkbox" name="plugins[' . $name . ']" checked="checked"/></td>
+		<td>' . $plugin[ 'description' ] . '</td>
 	</tr>';
 }
 
@@ -133,9 +131,8 @@ echo '</tbody>
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>Version</th>
-					<th>Description</th>
 					<th>Installed</th>
+					<th style="width:90%">Description</th>
 				</tr>
 			</thead>
 			<tbody>';
@@ -143,9 +140,8 @@ echo '</tbody>
 foreach( $available as $name => $plugin ){
 	echo '<tr>
 		<td>' . $plugin[ 'name' ] . '</td>
-		<td>' . $plugin[ 'version' ] . '</td>
-		<td>' . $plugin[ 'description' ] . '</td>
 		<td><input type="checkbox" name="plugins[' . $name . ']"/></td>
+		<td>' . $plugin[ 'description' ] . '</td>
 	</tr>';
 }
 
