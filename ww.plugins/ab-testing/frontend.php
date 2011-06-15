@@ -1,6 +1,6 @@
 <?php
 $smarty=smarty_setup(USERBASE.'/ww.cache/pages');
-if (!isset($_SESSION['ab_testing']['p'.$page->id])) {
+if (!isset($_SESSION['ab_testing']['p'.$page->id]) || !file_exists(USERBASE.'/ww.cache/pages/template_ab_'.$page->id.'_0')) {
 	if (!file_exists(USERBASE.'/ww.cache/pages/template_ab_'.$page->id.'_0')) {
 		$vs=explode('<div>ABTESTINGDELIMITER</div>', $page->body);
 		for ($i=0; $i<count($vs); ++$i) {

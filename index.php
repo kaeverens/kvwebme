@@ -405,8 +405,16 @@ $smarty->assign(
 	@$PAGEDATA->alias?$PAGEDATA->alias:$PAGEDATA->name
 );
 if (isset($DBVARS['theme_variant']) && $DBVARS['theme_variant']) {
-	$c.='<link rel="stylesheet" href="/ww.skins/'.THEME.'/cs/'
-		.$DBVARS['theme_variant'].'.css" />';
+	if (!file_exists(
+		THEME_DIR.'/'.THEME.'/cs/'.$DBVARS['theme_variant'].'.css'
+	)) {
+		unset($DBVARS['theme_variant']);
+		config_rewrite();
+	}
+	else {
+		$c.='<link rel="stylesheet" href="/ww.skins/'.THEME.'/cs/'
+			.$DBVARS['theme_variant'].'.css" />';
+	}
 }
 // }
 // { favicon
