@@ -24,6 +24,11 @@ if($importance<0.1)$importance=0.5;
 if($importance>1)$importance=1;
 $template=$_REQUEST['template'];
 $original_body=(isset($_REQUEST['body']))?$_REQUEST['body']:'';
+foreach ($GLOBALS['PLUGINS'] as $plugin) {
+	if (isset($plugin['admin']['body_override'])) {
+		$original_body=$plugin['admin']['body_override'](false);
+	}
+}
 $body=$original_body;
 $body=sanitise_html($body);
 $name = transcribe( $_REQUEST['name'] );

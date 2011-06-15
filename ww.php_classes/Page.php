@@ -180,6 +180,11 @@ class Page{
 		return $this;
 	}
 	function render(){
+		foreach ($GLOBALS['PLUGINS'] as $plugin) {
+			if (isset($plugin['frontend']['body_override'])) {
+				return $plugin['frontend']['body_override']($this);
+			}
+		}
 		$smarty=smarty_setup(USERBASE.'/ww.cache/pages');
 		if(!file_exists(USERBASE.'/ww.cache/pages/template_'.$this->id)){
 			file_put_contents(USERBASE.'/ww.cache/pages/template_'.$this->id,$this->body);

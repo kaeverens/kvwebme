@@ -5,10 +5,21 @@ if (!is_admin()) {
 	exit;
 }
 
-if ((!isset($_REQUEST['id']) || $_REQUEST['id']==0) && (!isset($_REQUEST['action']) || $_REQUEST['action']!='Insert Page Details')) {
+if ((!isset($_REQUEST['id']) || $_REQUEST['id']==0)
+	&& (!isset($_REQUEST['action']) || $_REQUEST['action']!='Insert Page Details')
+) {
 	echo '<p>Please use the navigation menu on the left to choose a page or '
 		.'to create a new one.</p>';
 	exit;
+}
+
+function Page_showBody(&$page, &$page_vars) {
+	foreach ($GLOBALS['PLUGINS'] as $plugin) {
+		if (isset($plugin['admin']['body_override'])) {
+			return $plugin['admin']['body_override']($page, $page_vars);
+		}
+	}
+	return ckeditor('body',$page['body']);
 }
 
 // { take care of actions
@@ -74,10 +85,10 @@ echo '<form enctype="multipart/form-data" id="pages_form" class="pageForm"'
 echo '<div style="float:right">'.wInput('action','submit',($edit?'Update Page Details':'Insert Page Details')).'</div>';
 if($page['special']&2 && !isset($_REQUEST['newpage_dialog']))echo '<em>NOTE: this page is currently hidden from the front-end navigation. Use the "Advanced Options" to un-hide it.</em>';
 echo wInput('id','hidden',$page['id']);
-echo '<div id="pages-tabs" class="tabs">';
-echo '<ul>';
-echo '<li><a href="#pages-common">Common Details</a></li>';
-echo '<li><a href="#pages-advanced">Advanced Options</a></li>';
+echo '<div id="pages-tabs" class="tabs">'
+	.'<ul>'
+	.'<li><a href="#pages-common">Common Details</a></li>'
+	.'<li><a href="#pages-advanced">Advanced Options</a></li>';
 foreach($PLUGINS as $n=>$p){
 	if(isset($p['admin']['page_panel'])){
 		$name = $p['admin']['page_panel']['name'];
@@ -166,9 +177,9 @@ if (isset($page['original_body'])) {
 }
 switch($page['type']){
 	case '0': case '5': // { normal
-		echo '<tr><th><div class="help body"></div>body</th><td colspan="5">';
-		echo ckeditor('body',$page['body']);
-		echo '</td></tr>';
+		echo '<tr><th><div class="help body"></div>body</th><td colspan="5">'
+			.Page_showBody($page, $page_vars)
+			.'</td></tr>';
 		break;
 	// }
 	case '4': // { page summaries
@@ -186,21 +197,21 @@ switch($page['type']){
 		break;
 	// }
 	case '9': // { table of contents
-		echo '<tr><td colspan="6"><div class="tabs">';
-		echo '<ul>';
-		echo '<li><a href="#table-of-contents-header">Header</a></li>';
-		echo '<li><a href="#table-of-contents-footer">Footer</a></li>';
-		echo '</ul>';
-		echo '<div id="table-of-contents-header">';
-		echo '<p>This will appear above the table of contents.</p>';
-		echo ckeditor('body',$page['body']).'</div>';
-		echo '<div id="table-of-contents-footer">';
-		echo '<p>This will appear below the table of contents.</p>';
+		echo '<tr><td colspan="6"><div class="tabs">'
+			.'<ul>'
+			.'<li><a href="#table-of-contents-header">Header</a></li>'
+			.'<li><a href="#table-of-contents-footer">Footer</a></li>'
+			.'</ul>'
+			.'<div id="table-of-contents-header">'
+			.'<p>This will appear above the table of contents.</p>'
+			.Page_showBody($page, $page_vars).'</div>'
+			.'<div id="table-of-contents-footer">'
+			.'<p>This will appear below the table of contents.</p>';
 		if (!isset($page_vars['footer'])) {
 			$page_vars['footer']='';
 		}
-		echo ckeditor('page_vars[footer]', $page_vars['footer']).'</div>';
-		echo '</div></td></tr>';
+		echo ckeditor('page_vars[footer]', $page_vars['footer']).'</div>'
+			.'</div></td></tr>';
 		break;
 	// }
 	default: // { plugin
