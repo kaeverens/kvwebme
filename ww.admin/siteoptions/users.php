@@ -126,7 +126,7 @@ if(isset($_REQUEST['id'])){
 // }
 // { address
 echo '<div id="address">
-<a id="new-address" style="float:right">[+] Add Address</a>
+<a id="new-address" href="javascript:;" style="float:right">[+] Add Address</a>
 <div id="add-content">
 ';
 if(!is_array($r['address']))

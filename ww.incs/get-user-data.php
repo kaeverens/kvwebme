@@ -23,7 +23,6 @@ $user=dbRow('select id,name,email,phone,address,parent,extras,last_login,last_vi
 if($user==false)
 	exit;
 
-unlink($user['password']); // dont release user password
 $user['address']=json_decode($user['address'],true);
 $user['extras']=json_decode($user['extras'],true);
 

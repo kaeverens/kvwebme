@@ -405,10 +405,6 @@ function userregistration_showProfile(){
 	$phone = ( $user[ 'phone' ] == '' ) ?
 		'<a href="javascript:edit_user_dialog(' . $user[ 'id' ] . ');">Add</a>' :
 		htmlspecialchars( $user[ 'phone' ] );
-	
-	$address = ( $user[ 'address' ] == '' ) ?
-		'<a href="javascript:edit_user_dialog(' . $user[ 'id' ] . ');">Add</a>' :
-		$user[ 'address' ];
 
 	// get array of groups the user is a member of
 	$groups = array( );
@@ -422,8 +418,21 @@ function userregistration_showProfile(){
 		);
 	$groups = implode( ',', $groups );
 
-	$html = '<a class="logout" href="/?logout=1" style="float:right">Logout</a>
+	$html='<a class="logout" href="/?logout=1" style="float:right">Logout</a>
 	<h2>' . htmlspecialchars( $user[ 'name' ] ) . '</h2>
+	<div id="tabs">
+		<ul>
+			<li><a href="#details">User Details</a></li>
+			<li><a href="#address">Address</a></li>
+		</ul>
+		<div id="details">
+
+	<p style="float:right">
+	<a href="javascript:edit_user_dialog(' . $user[ 'id' ] . ');" id="edit-user-info">
+		Edit Details
+	</a>
+	<a href="javascript:change_password_dialog(' . $user[ 'id' ] . ');"
+	id="user-change-password" style="diplay:inline">Change Password</a></p>
 	<table id="user-info" style="border:1px solid #ccc;margin:10px">
 		<tr>
 			<th>Email:</th><td>' . htmlspecialchars( $user[ 'email' ] ) . '</td>
@@ -433,19 +442,33 @@ function userregistration_showProfile(){
 		</tr>
 		<tr>
 			<th>Phone:</th><td>' . $phone . '</td>
-		</tr>
-		<tr>
-			<th>Address:</th><td>' . $address . '</td>
 		</tr>';
 
-	$html .= '</table>	
-	<p>
-	<a href="javascript:edit_user_dialog(' . $user[ 'id' ] . ');" id="edit-user-info">
-		Edit Details
-	</a>
-	<a href="javascript:change_password_dialog(' . $user[ 'id' ] . ');"
-	id="user-change-password" style="diplay:inline">Change Password</a></p>
-	';
+	$html .= '</table></div>
+	<div id="address"><a id="new-address" href="javascript:add_address();" style="float:right">[+] Add Address</a>
+		<div id="address-container">
+		<table>
+		';
+
+	$addresses=json_decode($user['address'],true);
+	foreach($addresses as $name=>$address){
+	  $select=(@$address['default']=='yes')?' checked="checked"':'';
+	  $html.='
+			<tr>
+				<td>
+					<input type="radio"'.$select.' name="default-address" value="'.$name.'"/>
+				</td>
+				<td>'.str_replace(' ','-',$name).'</td>
+				<td>
+					<a href="javascript:edit_address(\''.$name.'\');" class="edit-addr" name="'.$name.'">[edit]</a>
+					<a href="javascript:;" class="delete-addr" name="'.$name.'">[delete]</a>
+				</td>
+			</tr>
+		';
+	}
+
+	$html.='</table></div><br style="clear:both"/></div>
+	</div>';
 
 	$script = '
 		function edit_user_dialog( id ){
@@ -461,10 +484,9 @@ function userregistration_showProfile(){
 							return false;
 						}
 						var phone = $( "input[name=\'user-phone\']" ).val( );
-						var address = $( "textarea[name=\'user-address\']" ).val( );
 						$.post(
 							"/ww.plugins/privacy/frontend/save_user_info.php",
-							{ "name" : name, "phone" : phone, "address" : address }	
+							{ "name" : name, "phone" : phone }	
 						);
 						location.reload( true );
 					},
@@ -480,6 +502,89 @@ function userregistration_showProfile(){
 				}
 			);
 		}
+		function edit_address(id){
+			$( "<div id=\'users-dialog\' title=\'Edit Address\'></div>" )
+			.html( "Loading..." )
+			.dialog({
+				modal : true,
+				buttons : {
+					"Save" : function( ){
+	          var name=$(\'input[name="add-name"]\').val();
+	          var street=$(\'input[name="add-street"]\').val();
+	          var street2=$(\'input[name="add-street2"]\').val();
+	          var town=$(\'input[name="add-town"]\').val();
+	          var county=$(\'input[name="add-county"]\').val();
+	          var country=$(\'input[name="add-country"]\').val();
+						$.post(
+							"/ww.plugins/privacy/frontend/save_user_info.php?action=update",
+							{
+								"name" : name,
+								"street" : street,
+								"street2" : street2,
+								"town" : town,
+								"county" : county,
+								"country" : country,
+							}	
+						);
+						userdata.address[name]={
+							"name" : name,
+							"street" : street,
+							"street2" : street2,
+							"town" : town,
+							"county" : county,
+							"country" : country
+						};
+						$( "#users-dialog" ).dialog( "close" ).remove( );
+					},
+					"Cancel" : function( ){
+						$( "#users-dialog" ).dialog( "close" ).remove( );
+					}
+				}
+			});
+
+			street=userdata.address[id].street;
+			street2=userdata.address[id].street2;
+			town=userdata.address[id].town;
+			county=userdata.address[id].county;
+			country=userdata.address[id].country;
+
+			$("#users-dialog").html(
+      \'<table>\'
+			+ \'<input type="hidden" name="add-name" value="\'+id+\'"/>\'
+      + \'<tr>\'
+        + \'<th>Street</th>\'
+        + \'<td><input type="text" name="add-street" value="\'+street+\'"/></td>\'
+      + \'</tr>\'
+      + \'<tr>\'
+        + \'<th>Street 2</th>\'
+        + \'<td><input type="text" name="add-street2" value="\'+street2+\'"/></td>\'
+      + \'</tr>\'
+      + \'<tr>\'
+        + \'<th>Town</th>\'
+        + \'<td><input type="text" name="add-town" value="\'+town+\'"/></td>\'
+      + \'</tr>\'
+      + \'<tr>\'
+        + \'<th>County</th>\'
+        + \'<td><input type="text" name="add-county" value="\'+county+\'"/></td>\'
+      + \'</tr>\'
+      + \'<tr>\'
+        + \'<th>Country</th>\'
+        + \'<td><input type="text" name="add-country" value="\'+country+\'"/></td>\'
+      + \'</tr>\'
+      + \'</table>\'
+			);
+		}
+		$(function(){
+			$("#tabs").tabs();
+		});
+		$(".delete-addr").live("click",function(){
+			var name=$(this).attr("name");
+			$(this).parent().parent().fadeOut("slow").remove();
+			$.get(
+				"/ww.plugins/privacy/frontend/save_user_info.php?action=delete"
+				+"&address="+name
+			);
+		});
 	';
 	WW_addInlineScript( $script );
 	WW_addScript( '/ww.plugins/privacy/frontend/change_password.js' );

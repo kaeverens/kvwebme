@@ -34,12 +34,6 @@ echo '
 			<input type="text" value="' . $user[ 'phone' ] . '" name="user-phone"/>
 		</td>
 	</tr>
-	<tr>
-		<th>Address:</th>	
-		<td>
-			<textarea name="user-address">' . $user[ 'address' ] . '</textarea>
-		</td>
-	</tr>
 </table>';
 
 ?>

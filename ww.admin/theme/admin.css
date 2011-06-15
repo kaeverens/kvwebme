@@ -535,3 +535,5 @@ div.help{
 	border:1px solid #000
 }
 .realex,.transfer,.paypal{display:none}
+.address-table{ float:left }
+.address-table h3{ display:inline }

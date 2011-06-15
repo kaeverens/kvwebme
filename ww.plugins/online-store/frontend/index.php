@@ -97,6 +97,21 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		// }
 	}
 	// }
+	// { check if new address was entered
+	if(isset($_SESSION['userdata'])&&isset($_POST['save-address'])){
+		$_user=dbRow('select address from user_accounts where id='.$_SESSION['userdata']['id']);
+		$address=json_decode($_user['address'],true);
+		$address[$_POST['save-address']]=array(
+			'street'=>$_POST['Street'],
+			'street2'=>$_POST['Street2'],
+			'town'=>$_POST['Town'],
+			'county'=>$_POST['County'],
+			'country'=>$_POST['Country'],
+		);
+		$address=addslashes(json_encode($address));
+		dbQuery('update user_accounts set address="'.$address.'" where id='.$_SESSION['userdata']['id']);
+	}
+	// }
 	unset($_REQUEST['action']);
 	unset($_REQUEST['page']);
 	if (count($errors)) {
