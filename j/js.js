@@ -90,4 +90,29 @@ $(function(){
 	var id=el.id.replace(/ajaxmenu/,'');
 	if(id && id=='am_top')return;
 	loadScript('/j/menu.php?pageid='+pagedata.id);
+	$('a[target=popup]').click(function(){
+		$('<img src="'+$(this).attr('href')+'"/>')
+			.css({
+				'position':'fixed',
+				'left':'-3000px',
+				'top':0
+			})
+			.load(function(){
+				$(this)
+					.css({
+						'opacity':0,
+						'left':($(window).width()-this.offsetWidth)/2,
+						'top':($(window).height()-this.offsetHeight)/2,
+						'z-index':2000
+					})
+					.animate({
+						'opacity':1
+					});
+			})
+			.click(function(){
+				$(this).remove();
+			})
+			.appendTo(document.body);
+		return false;
+	});
 });
