@@ -91,6 +91,8 @@ $(function(){
 	if(id && id=='am_top')return;
 	loadScript('/j/menu.php?pageid='+pagedata.id);
 	$('a[target=popup]').click(function(){
+		var bg=$('<div style="position:fixed;left:0;top:0;right:0;bottom:0;opacity:.3;background:#000"/>')
+			.appendTo(document.body);
 		$('<img src="'+$(this).attr('href')+'"/>')
 			.css({
 				'position':'fixed',
@@ -110,6 +112,7 @@ $(function(){
 					});
 			})
 			.click(function(){
+				bg.remove();
 				$(this).remove();
 			})
 			.appendTo(document.body);
