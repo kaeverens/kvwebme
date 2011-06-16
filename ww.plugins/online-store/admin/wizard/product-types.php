@@ -44,10 +44,6 @@ $default_single='
 		</tr>
 	</tbody>
 </table>
-<h2>
-	Related</h2>
-<p>
-	{{PRODUCTS_RELATED}}</p>
 ';
 $default_multi='
 <table style="width:150px¨">
