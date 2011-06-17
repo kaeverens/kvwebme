@@ -38,7 +38,7 @@ switch($type){
 			}
 		}
 		$p=Pages::getInstancesByType($type);
-		if (!count($p)) {
+		if (!count($p) || !count($p->pages)) {
 			$url='/';
 		}
 		else {
