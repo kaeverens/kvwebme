@@ -61,6 +61,7 @@ if (is_array($rs) && count($rs)) {
 		.'<table width="100%" class="datatable desc"><thead><tr>'
 		.'<th>Date</th>'
 		.'<th>Amount</th>'
+		.'<th>Items</th>'
 		.'<th>Invoice</th>'
 		.'<th>Checkout Form</th>'
 		.'<th>Status</th>'
@@ -69,6 +70,7 @@ if (is_array($rs) && count($rs)) {
 		$c.='<tr><td><span style="display:none">'.$r['date_created'].'</span>'
 			.date_m2h($r['date_created']).'</td><td>'.$csym.sprintf('%.2f',$r['total'])
 			.'</td>'
+			.'<td><a href="javascript:os_listItems('.$r['id'].')">items</a></td>'
 			.'<td><a href="javascript:os_invoice('.$r['id'].')">Invoice</a>'
 			.' (<a href="javascript:os_invoice('.$r['id'].',true)">print</a>)</td>'
 			.'<td>'

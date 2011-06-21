@@ -12,6 +12,30 @@ function os_invoice(id, print){
 		autoResize: true
 	}).width(ww-130).height(wh-130);    
 }
+function os_listItems(id){
+	var $d=$('<p>Getting list of ordered items - please wait...</p>').dialog({
+		"modal":true
+	});
+	$.post('/ww.plugins/online-store/admin/get-list-of-items-ordered.php',{
+		'id':id
+	}, function(ret){
+		$d.remove();
+		if (ret.error) {
+			return alert(ret.error);
+		}
+		var html='<table><tr><th>Name</th><th>Amount</th></tr>';
+		for (var i=0;i<ret.length;++i) {
+			html+='<tr><td>'+ret[i].name+'</td><td>'+ret[i].amt+'</td></tr>';
+		}
+		html+='</table>';
+		$(html).dialog({
+			"modal":true,
+			"close":function() {
+				$(this).remove();
+			}
+		});
+	});
+}
 function os_form_vals(id){
 	var w=$(window);
 	var wh=w.height(),ww=w.width();
