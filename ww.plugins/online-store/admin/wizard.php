@@ -10,8 +10,14 @@
  * @version    1.0
  */
 
-WW_addScript('/ww.plugins/online-store/admin/wizard.js');
+$p=Pages::getInstancesByType('online-store');
+if (@count($p->pages)) {
+	echo '<em>You already have an online-store checkout page created.</em>';
+	echo '<p>Maybe you want to <a href="./plugin.php?_plugin=products&_page='
+		.'products-edit">add a new product</a> instead?</p>';
+}
 
+WW_addScript('/ww.plugins/online-store/admin/wizard.js');
 echo '<h1>Online Store Wizard</h1>
 <div id="preview-dialog"></div>
 <ul class="left-menu" id="register-progress" style="list-style-type:none">
@@ -30,5 +36,3 @@ echo '<h1>Online Store Wizard</h1>
 	</div>
 </div>
 ';
-
-?>

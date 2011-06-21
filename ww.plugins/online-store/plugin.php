@@ -17,10 +17,10 @@ $plugin=array(
 	'admin' => array(
 		'page_type' => 'OnlineStore_adminPageForm',
 		'menu' => array(
-			'Online Store>Wizard'		=> 'wizard',
-			'Online Store>Orders'   => 'list-pages',
-			'Online Store>Vouchers' => 'vouchers',
-			'Online Store>Options'  => 'site-options'
+			'Online Store>Orders'              => 'list-pages',
+			'Online Store>Vouchers'            => 'vouchers',
+			'Online Store>Options'             => 'site-options',
+			'Online Store>Create New Checkout' => 'wizard'
 		),
 		'widget' => array(
 			'form_url' => '/ww.plugins/online-store/admin/widget-form.php'
