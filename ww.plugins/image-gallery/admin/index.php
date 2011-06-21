@@ -212,7 +212,7 @@ foreach($effects as $effect){
 $c.='</select></td></tr>';
 // }
 // { hover
-$options=array('popup'=>'Popup','zoom'=>'Zoom');
+$options=array('zoom'=>'Zoom','popup'=>'Popup');
 $c.='<tr><th>Images on hover:</th>';
 $c.='<td><select name="page_vars[image_gallery_hover]">';
 foreach($options as $value=>$option){

@@ -68,7 +68,36 @@ var Gallery={
 			if(Gallery.options.hover!='popup')
 				return false;
 		});
-		
+
+		if(this.options.display=='list'){
+			$('#next-link').live('mouseenter',function(){
+				$(this).addClass('hover');
+				$elm=$(this);
+				setTimeout(function(){
+					if($elm.hasClass('hover')){
+						Gallery.displayNext();
+						$elm.removeClass('hover');
+						$elm.trigger('mouseenter');
+					}
+				},500);
+			}).live('mouseleave',function(){
+				$(this).removeClass('hover');
+			});	
+			$('#prev-link').live('mouseenter',function(){
+				$(this).addClass('hover');
+				$elm=$(this);
+				setTimeout(function(){
+					if($elm.hasClass('hover')){
+						Gallery.displayPrevious();
+						$elm.removeClass('hover');
+						$elm.trigger('mouseenter');
+					}
+				},500);
+			}).live('mouseleave',function(){
+				$(this).removeClass('hover');
+			});
+		}
+
 		if(this.options.hover=='zoom'){
 			$('.images-container img').live('mouseenter',function(){
 				$(this).addClass('img-hover');
@@ -166,6 +195,27 @@ var Gallery={
 		this.height=(this.options.thumbsize+15)*this.options.rows;
 		$('#gallery-container').css({'height':this.height+'px'});
 		if(this.options.links==true){ // next/prev links
+			if(this.options.display=='list'){
+				$('#gallery-image .ad-image').append(
+					'<div id="big-prev-link"></div><div id="big-next-link"></div>'
+				);
+				$('#big-next-link,#big-prev-link').css({'height':this.options.imageHeight+'px'});
+				$('#big-next-link').live('click',function(){
+					var n=parseInt($('.ad-image img').attr('num'));
+					if(n!=Gallery.count())
+						++n;
+					Gallery.displayNext();
+					Gallery.displayImage((n+1));
+				});
+				$('#big-prev-link').live('click',function(){
+					var n=parseInt($('.ad-image img').attr('num'));
+					--n;
+					var ret=Gallery.displayPrevious();
+					if(ret==false&&n==-1)
+						return false;
+					Gallery.displayImage(n);
+				});
+			}
 			this.gallery().append(
 				'<div id="prev-link"></div><div id="next-link"></div>'
 			);
@@ -219,6 +269,9 @@ var Gallery={
 	displayNext:function(){
 		switch(this.options.display){
 			case 'list':
+				if($('.ad-thumb-list').hasClass('working'))
+					return;
+				$('.ad-thumb-list').addClass('working');
 				var current=$('.ad-thumb-list li:eq(0)');
 				var width=current.width();
 				var left=parseInt($('#slider').css('left'));
@@ -233,8 +286,14 @@ var Gallery={
 				}
 				if(next>=$('.holder-list > li').size())
 					this.displayList();
-				$('.ad-thumb-list li:first').remove();
 				$('.holder-list li:eq('+next+')').clone().appendTo('.ad-thumb-list');
+				$('#slider').animate({
+					'left':(left-width)+'px'
+				},500,function(){
+					$('.ad-thumb-list li:first').remove();
+					$('#slider').css({'left':left+'px'});
+					$('.ad-thumb-list').removeClass('working')
+				});
 				++this.listPosition;
 			break;
 			case 'grid':
@@ -256,12 +315,29 @@ var Gallery={
 	displayPrevious:function(){
 		switch(this.options.display){
 			case 'list':
+				if($('.ad-thumb-list').hasClass('working'))
+					return;
+				$('.ad-thumb-list').addClass('working');
+				var current=$('.ad-thumb-list li:last');
+				var width=current.width();
 				var left=parseInt($('#slider').css('left'));
-				if(left>0)
+				var prev=(this.listPosition-this.options.items-1);
+				if(prev<0){
+					$('.ad-thumb-list').removeClass('working');
 					return this.bump('right');
-				var offset=left+(this.options.thumbsize*2);
+				}
+				$('.holder-list li:eq('+prev+')')
+					.clone()
+					.prependTo('.ad-thumb-list');
 				$('#slider')
-					.animate({'left':offset+'px'},200);
+					.css({'left':'-'+width+'px'})
+					.animate({
+						'left':left+'px'
+					},500,function(){
+						$('.ad-thumb-list li:last').remove();
+						$('.ad-thumb-list').removeClass('working')
+					});
+				--this.listPosition;
 			break;
 			case 'grid':
 				if(this.position<=(this.options.rows*this.options.items))
@@ -285,6 +361,7 @@ var Gallery={
 			,200,function(){
 			$(this).animate({'left':0},200);
 		});
+		return false;
 	},
 	displayImage:function(e){
 		if(!this.images.files[e])
@@ -310,7 +387,8 @@ var Gallery={
 				+ this.options.imageHeight+',height='
 				+ this.options.imageWidth
 			)
-			.attr('title',this.images.files[e].caption);
+			.attr('title',this.images.files[e].caption)
+			.attr('num',e);
 	},
 	caption:function(){
 		var caption=$('.ad-image img').attr('title');

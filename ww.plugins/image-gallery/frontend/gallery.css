@@ -1,9 +1,7 @@
-.ad-gallery{ position:relative;background:#fff }
+.ad-gallery{ position:relative }
 #gallery-container{
 	position:relative;
 	overflow:hidden;
-	border-top:1px solid #ddd;
-	border-bottom:1px solid #ddd;
 }
 #slider{
 	position:absolute;
@@ -18,24 +16,21 @@
 	margin:0;
 	border-spacing:0;
 }
-#prev-link,#next-link{
+#prev-link,#next-link,
+#big-prev-link,#big-next-link{
 	position:absolute;
 	top:0px;
 	width:35px;
-	border-top:1px solid #ddd;
-	border-bottom:1px solid #ddd;
 	cursor:pointer;
 }
-#prev-link{
+#big-prev-link,#prev-link{
 	left:-35px;
-	border-left:1px solid #ddd;
-	background:#fff url('/ww.plugins/image-gallery/frontend/arrow-left.png')
+	background: url('/ww.plugins/image-gallery/frontend/arrow-left.png')
 		center no-repeat;
 }
-#next-link{
+#next-link,#big-next-link{
 	right:-35px;
-	border-right:1px solid #ddd;
-	background:#fff url('/ww.plugins/image-gallery/frontend/arrow-right.png')
+	background: url('/ww.plugins/image-gallery/frontend/arrow-right.png')
 		center no-repeat;
 }
 .image-selected{
@@ -45,7 +40,6 @@
 	color:#fff;
 	background:rgba(15, 15, 15, 0.6);
 	font-weight:bold;
-
 }
 .ad-image{
 	position:relative;
@@ -79,4 +73,8 @@
 .img-hover{
 	border:1px solid #000;
 	z-index:100;
+}
+#gallery-image{
+	text-align:center;
+	margin:0 auto;
 }
