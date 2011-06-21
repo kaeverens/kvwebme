@@ -4,21 +4,7 @@ require_once KFM_BASE_PATH.'/api/api.php';
 require_once KFM_BASE_PATH.'/initialise.php';
 function image_gallery_show($PAGEDATA){
 	$vars=$PAGEDATA->vars;
-	// {
 	$c=$PAGEDATA->render();
-	$start=getVar('start');
-	if(!$start)$start=0;
-	$vars=array_merge(array(
-		'image_gallery_directory'    =>'/',
-		'image_gallery_x'            =>3,
-		'image_gallery_y'            =>2,
-		'image_gallery_thumbsize'    =>150,
-		'image_gallery_captionlength'=>100,
-		'image_gallery_type'         =>'simple gallery',
-		'image_gallery_forsale'      =>false
-	),$vars);
-	$imagesPerPage=$vars['image_gallery_x']*$vars['image_gallery_y'];
-	// }
 	$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$vars['image_gallery_directory']));
 	$images=kfm_loadFiles($dir_id);
 	$images=$images['files'];
@@ -27,26 +13,26 @@ function image_gallery_show($PAGEDATA){
 		$vars['footer']='';
 	}
 	if($n){
-		switch($vars['image_gallery_type']){
-			case 'ad-gallery':
-				require dirname(__FILE__).'/gallery-type-ad.php';
-				break;
-			default:
-				require dirname(__FILE__).'/gallery-type-simple.php';
-		}
-		if($vars['image_gallery_forsale']){
-			$prices=array();
-			for($i=0;isset($vars['image_gallery_prices_'.$i]);++$i){
-				$price=(float)preg_replace('/[^0-9.]/','',$vars['image_gallery_prices_'.$i]);
-				if(!$price)continue;
-				$prices[]=array(
-					$vars['image_gallery_pricedescs_'.$i],
-					$price
-				);
-			}
-			$c.='<script>var ig_prices='.json_encode($prices).';</script>';
-			WW_addScript('/ww.plugins/image-gallery/j/online-store.js');
-		}
+		// { display the template
+		require_once SCRIPTBASE.'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
+		require SCRIPTBASE.'ww.plugins/image-gallery/frontend/template-functions.php';
+		$smarty=new Smarty;
+		$smarty->compile_dir=USERBASE.'/ww.cache/templates_c';
+		if(!file_exists(USERBASE.'/ww.cache/templates_c'))
+			mkdir(USERBASE.'/ww.cache/templates_c'); 
+		if(!file_exists(USERBASE.'/ww.cache/templates_c/image-gallery'))
+			mkdir(USERBASE.'/ww.cache/templates_c/image-gallery');
+		$smarty->assign('pagedata',$PAGEDATA);
+		$smarty->register_function('GALLERY_IMAGE','image_gallery_template_image');
+		$smarty->register_function('GALLERY_IMAGES','image_gallery_template_images');
+		$smarty->left_delimiter='{{';
+		$smarty->right_delimiter='}}';
+		$c.=$smarty->fetch(
+			USERBASE.'ww.cache/image-gallery/'.$PAGEDATA->id
+		);
+		WW_addScript('/ww.plugins/image-gallery/frontend/gallery.js');
+		WW_addCSS('/ww.plugins/image-gallery/frontend/gallery.css');
+		// }
 		return $c.$vars['footer'];
 	}
 	else{

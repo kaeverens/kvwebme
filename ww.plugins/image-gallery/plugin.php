@@ -1,6 +1,7 @@
 <?php
 $plugin=array(
 	'name' => 'Image Gallery',
+	'version'=>1,
 	'admin' => array(
 		'page_type' => 'image_gallery_admin_page_form'
 	),

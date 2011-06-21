@@ -81,3 +81,28 @@ function imagegallery_showoverlay(){
 	}
 	$('your images are uploading. please wait').dialog();
 }
+$(function(){
+	var previous;
+	$('#gallery-template-type').focus(function(){
+		previous=this.value;
+	}).change(function(){
+		var content;
+		if(previous=='custom')
+			$(this).data('custom',{'value':CKEDITOR.instances['page_vars[gallery-template]'].getData()});
+		var tpl=$(this).val();
+		if(tpl=='custom'){
+			content=($(this).data('custom'))?
+				$(this).data('custom').value:
+				'';
+			CKEDITOR.instances['page_vars[gallery-template]'].setData(content);
+		}
+		else{
+			$.get(
+				'/ww.plugins/image-gallery/admin/types/'+tpl+'.tpl',
+				function(html){
+					CKEDITOR.instances['page_vars[gallery-template]'].setData(html);
+				}
+			);
+		}
+	});
+});

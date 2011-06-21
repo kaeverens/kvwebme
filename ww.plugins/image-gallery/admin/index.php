@@ -19,52 +19,40 @@ function image_gallery_get_subdirs($base,$dir){
 	}
 	return $arr;
 }
-$gvars=array(
-	'image_gallery_directory'    =>'',
-	'image_gallery_x'            =>3,
-	'image_gallery_y'            =>2,
-	'image_gallery_autostart'    =>0,
-	'image_gallery_slidedelay'   =>5000,
-	'image_gallery_thumbsize'    =>150,
-	'image_gallery_captionlength'=>100,
-	'image_gallery_type'         =>'ad-gallery'
-);
-foreach($gvars as $n=>$v)if(isset($vars[$n]))$gvars[$n]=$vars[$n];
 $cssurl=false;
 $c = '<div id="image-gallery-tabs">';
 $c.= '<ul>';
 $c.= '<li><a href="#image-gallery-images">Images</a></li>';
+$c.= '<li><a href="#image-gallery-template">Gallery Template</a></li>';
 $c.= '<li><a href="#image-gallery-header">Header</a></li>';
 $c.= '<li><a href="#image-gallery-footer">Footer</a></li>';
 $c.= '<li><a href="#image-gallery-advanced">Advanced Settings</a></li>';
-if (isset($GLOBALS['PLUGINS']['online-store'])) {
-	$c.= '<li><a href="#image-gallery-shop">Online Store</a></li>';
+if(isset($GLOBALS['PLUGINS']['online-store'])){
+	$c.='<li><a href="#image-gallery-shop">Online Store</a></li>';
 }
 $c.= '</ul>';
 // { images
 $c.='<div id="image-gallery-images">';
-if (!$gvars['image_gallery_directory']
-	|| !is_dir(USERBASE.'f/'.$gvars['image_gallery_directory'])
-) {
-	if (!is_dir(USERBASE.'f/image-galleries')) {
+if (!$vars['image_gallery_directory']||!is_dir(USERBASE.'f/'.$vars['image_gallery_directory'])){
+	if(!is_dir(USERBASE.'f/image-galleries')) {
 		mkdir(USERBASE.'f/image-galleries');
 	}
-	$invalid = '/[^A-Za-z0-9_\-]/';
+	$invalid='/[^A-Za-z0-9_\-]/';
 	$p=Page::getInstance($page['id']);
-	$name = preg_replace($invalid, '_', $p->getRelativeUrl());
-	$gvars['image_gallery_directory']='/image-galleries/page-'.$name;
-	$dir=USERBASE.'f/'.$gvars['image_gallery_directory'];
-	if (!file_exists($dir)) {
+	$name=preg_replace($invalid, '_', $p->getRelativeUrl());
+	$vars['image_gallery_directory']='/image-galleries/page-'.$name;
+	$dir=USERBASE.'f/'.$vars['image_gallery_directory'];
+	if (!file_exists($dir)){
 		mkdir($dir);
 	}
 }
-$dir=preg_replace('/^\//','',$gvars['image_gallery_directory']);
+$dir=preg_replace('/^\//','',$vars['image_gallery_directory']);
 $dir_id=kfm_api_getDirectoryID($dir);
 $images=kfm_loadFiles($dir_id);
 $images=$images['files'];
 $n=count($images);
 $c.='<iframe src="/ww.plugins/image-gallery/admin/uploader.php'
-	.'?image_gallery_directory='.urlencode($gvars['image_gallery_directory']).'"'
+	.'?image_gallery_directory='.urlencode($vars['image_gallery_directory']).'"'
 	.' style="width:400px;height:50px;border:0;overflow:hidden">'
 	.'</iframe>'
 	.'<script>window.kfm={alert:function(){}};window.kfm_vars={};'
@@ -100,6 +88,38 @@ else{
 }
 $c.='</div>';
 // }
+// { gallery template
+$types=array(
+	'List',
+	'Grid',
+	'Simple',
+	'Custom',
+);
+$c.='<div id="image-gallery-template">'
+	.'<p>This controls how the gallery is displayed, choose from some of the layouts listed below.</p>'
+	.'Gallery Layout: <select name="page_vars[gallery-template-type]'
+	.'" id="gallery-template-type">';
+foreach($types as $type){
+	$c.='<option';
+	if(@$vars['gallery-template-type']==strtolower($type))
+		$c.=' selected="selected"';
+	$c.=' value="'.strtolower($type).'">'.$type.'</option>';
+}
+$c.='</select><br/>';
+if($vars['gallery-template-type']=='')
+	$vars['gallery-template-type']='list';
+if($vars['gallery-template-type']=='custom'){
+	$content=(@$vars['gallery-template']=='')?
+		'{{GALLERY_IMAGE}}{{GALLERY_IMAGES}}':
+		$vars['gallery-template'];
+}
+else
+	$content=file_get_contents(
+		SCRIPTBASE
+		.'ww.plugins/image-gallery/admin/types/'.$vars['gallery-template-type'].'.tpl');
+$c.=ckeditor('page_vars[gallery-template]',$content,0);
+$c.='</div>';
+// }
 // { header
 $c.='<div id="image-gallery-header">'
 	.'<p>This text will appear above the gallery.</p>';
@@ -121,19 +141,19 @@ $c.='</div>';
 // { advanced settings
 $c.='<div id="image-gallery-advanced">';
 if(
-	!isset($gvars['image_gallery_directory']) 
-	|| !$gvars['image_gallery_directory']
+	!isset($vars['image_gallery_directory']) 
+	|| !$vars['image_gallery_directory']
 ) {
-	$gvars['image_gallery_directory']='/';
+	$vars['image_gallery_directory']='/';
 }
 $c.='<table><tr><th>Image Directory</th>'
 	.'<td><select id="image_gallery_directory" '
 	.'name="page_vars[image_gallery_directory]">'
-	.'<option value="'.htmlspecialchars($gvars['image_gallery_directory']).'">'
-	.htmlspecialchars($gvars['image_gallery_directory']).'</option>';
+	.'<option value="'.htmlspecialchars($vars['image_gallery_directory']).'">'
+	.htmlspecialchars($vars['image_gallery_directory']).'</option>';
 foreach(image_gallery_get_subdirs(USERBASE.'f','') as $d){
 	$c.='<option value="'.htmlspecialchars($d).'"';
-	if($d==$gvars['image_gallery_directory'])$c.=' selected="selected"';
+	if($d==$vars['image_gallery_directory'])$c.=' selected="selected"';
 	$c.='>'.htmlspecialchars($d).'</option>';
 }
 $c.='</select></td>';
@@ -143,100 +163,81 @@ $c.='<td colspan="2">'
 	.'onclick="javascript:window.open(\'/j/kfm/'
 	.'?startup_folder=\'+$(\'#image_gallery_directory\').attr(\'value\'),'
 	.'\'kfm\',\'modal,width=800,height=600\');">Manage Images</a></td></tr>';
+// { columns
 $c.='<tr><th>Columns</th><td>'
 	.'<input name="page_vars[image_gallery_x]" value="'
-	.(int)$gvars['image_gallery_x'].'" /></td>';
-// { gallery type
-$c.='<th>Gallery Type</th><td><select name="page_vars[image_gallery_type]">';
-$types=array('ad-gallery','simple gallery');
-foreach($types as $t){
-	$c.='<option value="'.$t.'"';
-	if(isset($gvars['image_gallery_type']) && $gvars['image_gallery_type']==$t)$c.=' selected="selected"';
-	$c.='>'.$t.'</option>';
-}
-$c.='</select></td></tr>';
+	.(int)$vars['image_gallery_x'].'" /></td>';
+// }
+// { main image height
+$height=(int)@$vars['image_gallery_image_y'];
+$height=($height==0)?350:$height;
+$c.='<th>Main Image Height</th>';
+$c.='<td><input name="page_vars[image_gallery_image_y]"';
+$c.=' value="'.$height.'"/>';
 // }
 // { rows
 $c.='<tr><th>Rows</th><td>'
 	.'<input name="page_vars[image_gallery_y]" value="'
-	.(int)$gvars['image_gallery_y'].'" /></td>';
+	.(int)$vars['image_gallery_y'].'" /></td>';
 // }
-// { autostart the slideshow
-$c.='<th>Autostart slide-show</th><td>'
-	.'<select name="page_vars[image_gallery_autostart]">'
-	.'<option value="0">No</option><option value="1"';
-if($gvars['image_gallery_autostart'])$c.=' selected="selected"';
-$c.='>Yes</option></select></td></tr>';
+// { main image width
+$width=(int)@$vars['image_gallery_image_x'];
+$width=($width==0)?350:$width;
+$c.='<th>Main Image Width</th>';
+$c.='<td><input name="page_vars[image_gallery_image_x]"';
+$c.=' value="'.$width.'"/>';
 // }
-// { caption length
-$cl=(int)$gvars['image_gallery_captionlength'];
-$cl=$cl?$cl:100;
-$c.='<tr><th>Caption Length</th><td>'
-	.'<input name="page_vars[image_gallery_captionlength]" value="'.$cl.'" />'
-	.'</td>';
-// }
-// { slide delay
-$sd=(int)$gvars['image_gallery_slidedelay'];
-$c.='<th>Slide Delay</th><td>'
-	.'<input name="page_vars[image_gallery_slidedelay]" class="small" '
-	.'value="'.$sd.'" />ms</td></tr>';
-// }
-$ts=(int)$gvars['image_gallery_thumbsize'];
+// { thumbnail size
+$ts=(int)$vars['image_gallery_thumbsize'];
 $ts=$ts?$ts:150;
 $c.='<tr><th>Thumb Size</th><td>'
 	.'<input name="page_vars[image_gallery_thumbsize]" value="'.$ts.'" />'
-	.'</td></tr>';
+	.'</td>';
+// }
+// { main image effects
+$effects=array(
+	'fade',
+	'slideUp',
+	'slideDown',
+);
+$width=($width==0)?350:$width;
+$c.='<th>Main Image Effects</th>';
+$c.='<td><select name="page_vars[image_gallery_effect]">';
+foreach($effects as $effect){
+	$c.='<option';
+	if($effect==@$vars['image_gallery_effect'])
+		$c.=' selected="selected"';
+	$c.='>'.$effect.'</option>';
+}
+$c.='</select></td></tr>';
+// }
+// { hover
+$options=array('popup'=>'Popup','zoom'=>'Zoom');
+$c.='<tr><th>Images on hover:</th>';
+$c.='<td><select name="page_vars[image_gallery_hover]">';
+foreach($options as $value=>$option){
+	$c.='<option value="'.$value.'"';
+	if($value==@$vars['image_gallery_hover'])
+		$c.=' selected="selected"';
+	$c.='>'.$option.'</option>';
+}
+$c.='</select></td></tr>';
+// }
 $c.='</table>';
 $c.='</div>';
 // }
-// { online store
-if(isset($GLOBALS['PLUGINS']['online-store'])){
-	$c.='<div id="image-gallery-shop"><table>';
-	// { for sale
-	$c.='<tr><th>Are these images for sale?</th><td>'
-	.'<select name="page_vars[image_gallery_forsale]">'
-	.'<option value="">No</option>';
-	$c.='<option value="yes"';
-	if(
-		isset($vars['image_gallery_forsale']) 
-		&& $vars['image_gallery_forsale']=='yes'
-	) {
-		$c.=' selected="selected"';
-	}
-	$c.='>Yes</option></select></td></tr>';
-	// }
-	// { prices
-	$c.='<tr><th>Prices</th><td>';
-	$ps=array();
-	for($i=0;isset($vars['image_gallery_prices_'.$i]);++$i){
-		$price=preg_replace('/[^0-9.]/','',$vars['image_gallery_prices_'.$i]);
-		if(!((float)$price))continue;
-		$ps[]
-			=array(
-				'description'=>$vars['image_gallery_pricedescs_'.$i],
-				'price'=>(float)$price
-			);
-	}
-	for($cnt=0;isset($ps[$cnt]);++$cnt){
-		$c.='<input class="medium" '
-			.'name="page_vars[image_gallery_pricedescs_'.$cnt.']" '
-			.'value="'.htmlspecialchars($ps[$cnt]['description']).'" />'
-			.'<input class="ig_price small" '
-			.'name="page_vars[image_gallery_prices_'.$cnt.']" '
-			.'value="'.$ps[$cnt]['price'].'" /><br />';
-		}
-	$c.='<input class="medium" '
-		.'name="page_vars[image_gallery_pricedescs_'.$cnt.']" '
-		.'value="description" />'
-		.'<input class="ig_price small" '
-		.'name="page_vars[image_gallery_prices_'.$cnt.']" value="0" /><br />';
-	$c.='<a id="ig_prices_more" href="javascript:image_gallery_add_price()">'
-		.'[more]</a></td></tr>';
-	// }
-	$c.='</table><script>var ig_price_count='.$cnt.';</script></div>';
-}
-// }
 $c.='</div>';
+
+if (!is_dir(USERBASE.'ww.cache/image-gallery')) {
+  mkdir(USERBASE.'ww.cache/image-gallery');
+}
+if (file_exists(USERBASE.'ww.cache/image-gallery/'.$page['id'])) {
+  unlink(USERBASE.'ww.cache/image-gallery/'.$page['id']);
+} 
+file_put_contents(
+  USERBASE.'ww.cache/image-gallery/'.$page['id'],
+  $vars['gallery-template']
+);
 ww_addScript('/ww.plugins/image-gallery/admin/admin.js');
 ww_addScript('/ww.plugins/image-gallery/j/make-tabs.js');
 $c.='<link rel="stylesheet" href="/ww.plugins/image-gallery/admin/admin.css" />';
