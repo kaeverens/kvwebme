@@ -69,7 +69,7 @@ function os_reset_basket(res){
 		html+='<tr class="os_item_name" product="'+md5+'">'
 			+'<td colspan="4"><a href="'
 			+item.url+'">'+item.short_desc
-			+'</a></td></tr><tr class="os_item_numbers" product="'+ret.md5+'">' 
+			+'</a></td></tr><tr class="os_item_numbers" product="'+item.md5+'">' 
 			+'<td>&nbsp;</td><td>'+pagedata.currency+item.cost
 			+'</td><td class="amt">'+item.amt+'</td><td class="item-total">'
 			+(item.cost*item.amt)+'</td></tr>';

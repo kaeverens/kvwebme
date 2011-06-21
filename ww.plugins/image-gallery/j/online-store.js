@@ -50,6 +50,6 @@ function ig_reset_cart(res){
 	os_reset_basket(res);
 	os_wheres_the_basket($('#ig-ad-addtocart'));
 }
-$(document).ready(function(){
+$(function(){
 	if($('.ad-gallery').length)ig_setup_ad_store();
 });

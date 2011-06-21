@@ -42,13 +42,13 @@ if (!$fp) {
 
 			// check that payment_amount/payment_currency are correct
 			$order=dbRow("SELECT * FROM online_store_orders WHERE id=$id");
-			if ($order['total'] != $_POST['mc_gross']) {
+			if (round($order['total']) != round($_POST['mc_gross'])) {
 				$str='';
 				foreach ($_POST as $key => $value) {
 					$str.=$key." = ". $value."\n";
 				}
 				mail(
-					'kae@verens.com', 
+					'info@'.preg_replace('/^www\./', '', $_SERVER['HTTP_HOST']), 
 					$_SERVER['HTTP_HOST'].' paypal hack'
 					, $str
 				);
