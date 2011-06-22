@@ -2,6 +2,8 @@
 $kfm_do_not_save_session=true;
 require_once KFM_BASE_PATH.'/api/api.php';
 require_once KFM_BASE_PATH.'/initialise.php';
+$c.='<p>To edit products, please <a href="/ww.admin/plugin.php?_plugin='
+	.'products&amp;_page=products" target="_top">click here</a>.</p>';
 $c.= '<div class="tabs">';
 $c.= '<ul>';
 $c.= '<li><a href="#products-main">Main Details</a></li>';
