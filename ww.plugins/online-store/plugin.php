@@ -282,7 +282,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 	* @return array
 	*/
 function OnlineStore_getPostageAndPackaging($total,$country,$weight){
-	if (!OnlineStore_getNumItems() || !$total) {
+	if (!OnlineStore_getNumItems()) {
 		return array('name'=>'none', 'total'=>0);
 	}
 	$pandps=OnlineStore_getPostageAndPackagingData();
@@ -317,6 +317,12 @@ function OnlineStore_getPostageAndPackagingSubtotal($cstrs,$total,$country,$weig
 			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
 		}
 		if ($cstr->type=='total_more_than_or_equal_to' && $total>=$cstr->value) {
+			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
+		}
+		if ($cstr->type=='numitems_less_than_or_equal_to' && OnlineStore_getNumItems()<=$cstr->value) {
+			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
+		}
+		if ($cstr->type=='numitems_more_than_or_equal_to' && OnlineStore_getNumItems()>=$cstr->value) {
 			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
 		}
 	}

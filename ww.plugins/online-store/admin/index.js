@@ -217,6 +217,7 @@ function pandp_rebuild_constraints(prefix){
 		cstr.type=el.value;
 		switch(cstr.type){
 			case 'set_value': case 'total_less_than_or_equal_to': case 'total_more_than_or_equal_to':
+			case 'numitems_less_than_or_equal_to': case 'numitems_more_than_or_equal_to':
 			case 'total_weight_less_than_or_equal_to': case 'total_weight_more_than_or_equal_to': // {
 				cstr.value=document.getElementById('pandp_constraint_value_'+prefix+i).value;
 				break;
@@ -266,7 +267,9 @@ function pandp_show_constraints(i, cstrs_old){
 		['total_less_than_or_equal_to','if total <='],
 		['total_more_than_or_equal_to','if total >='],
 		['total_weight_less_than_or_equal_to','if weight <='],
-		['total_weight_more_than_or_equal_to','if weight >=']
+		['total_weight_more_than_or_equal_to','if weight >='],
+		['numitems_less_than_or_equal_to','if num items <='],
+		['numitems_more_than_or_equal_to','if num items >=']
 	];
 	var wrapper=$('#pandp_constraint_wrapper_'+i);
 	for(var j=0;j<cstrs.length;++j){
@@ -291,6 +294,7 @@ function pandp_show_constraints(i, cstrs_old){
 				break;
 			// }
 			case 'total_less_than_or_equal_to': case 'total_more_than_or_equal_to':
+			case 'numitems_less_than_or_equal_to': case 'numitems_more_than_or_equal_to':
 			case 'total_weight_less_than_or_equal_to': case 'total_weight_more_than_or_equal_to': // {
 				if(!cstr.value)cstr.value=0;
 				$('<input id="pandp_constraint_value_'+i+'_'+j+'" class="small">')
