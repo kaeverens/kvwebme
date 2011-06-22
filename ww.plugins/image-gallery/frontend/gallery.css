@@ -25,16 +25,21 @@
 }
 #big-prev-link,#prev-link{
 	left:-35px;
+}
+#big-prev-link:hover,#prev-link:hover{
 	background: url('/ww.plugins/image-gallery/frontend/arrow-left.png')
 		center no-repeat;
 }
 #next-link,#big-next-link{
 	right:-35px;
+}
+#next-link:hover,#big-next-link:hover{
 	background: url('/ww.plugins/image-gallery/frontend/arrow-right.png')
 		center no-repeat;
 }
 .image-selected{
 	border:2px solid #000;
+	opacity:1;
 }
 .dark-background{
 	color:#fff;
@@ -43,6 +48,8 @@
 }
 .ad-image{
 	position:relative;
+	margin:0 auto;
+	text-align:center;
 }
 .ad-image-description{
 	display:none;
@@ -77,4 +84,16 @@
 #gallery-image{
 	text-align:center;
 	margin:0 auto;
+}
+.images-container a:hover,.images-container a:active,.images-container a:focus{
+	border:none;
+	outline:0;
+}
+.ad-gallery{
+	margin:0 auto;
+	text-align:center;
+	padding:0;
+}
+.images-container img{
+	border:2px solid #ccc;
 }

@@ -84,6 +84,7 @@ else{
 	$c.='<em>no images yet. please upload some.</em>';
 }
 $c.='</div>';
+$c.='<br style="clear:both"/>';
 // }
 // { gallery template
 $types=array(
@@ -194,8 +195,8 @@ $c.='<tr><th>Thumb Size</th><td>'
 // { main image effects
 $effects=array(
 	'fade',
-	'slideUp',
-	'slideDown',
+	'slideVertical',
+	'slideHorizontal',
 );
 $width=($width==0)?350:$width;
 $c.='<th>Main Image Effects</th>';
@@ -209,7 +210,7 @@ foreach($effects as $effect){
 $c.='</select></td></tr>';
 // }
 // { hover
-$options=array('zoom'=>'Zoom','popup'=>'Popup');
+$options=array('hover'=>'Hover','zoom'=>'Zoom','popup'=>'Popup');
 $c.='<tr><th>Images on hover:</th>';
 $c.='<td><select name="page_vars[image_gallery_hover]">';
 foreach($options as $value=>$option){
@@ -224,19 +225,19 @@ $c.='</select></td></tr>';
 // { slideshow
 $options=array('false'=>'No','true'=>'Yes');
 $c.='<tr><th>Autostart Slide-show:</th>';
-$c.='<td><select name="page_vars[image_gallery_slideshow]">';
+$c.='<td><select name="page_vars[image_gallery_autostart]">';
 foreach($options as $value=>$option){
 	$c.='<option value="'.$value.'"';
-	if($value==@$vars['image_gallery_slideshow'])
+	if($value==@$vars['image_gallery_autostart'])
 		$c.=' selected="selected"';
 	$c.='>'.$option.'</option>';
 }
-$time=(isset($vars['image_gallery_slideshowTime']))?
-	$vars['image_gallery_slideshowTime']:
+$time=(isset($vars['image_gallery_slidedelay']))?
+	$vars['image_gallery_slidedelay']:
 	2500;
 $c.='</select></td>';
 $c.='<th>Slide delay:</th>';
-$c.='<td><input type="text" name="page_vars[image_gallery_slideshowTime]" ';
+$c.='<td><input type="text" name="page_vars[image_gallery_slidedelay]" ';
 $c.=' value="'.$time.'"/> ms</td></tr>';
 // }
 // }
