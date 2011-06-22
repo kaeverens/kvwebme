@@ -450,6 +450,7 @@ class ProductType{
 				$suffix='';
 			}
 			$val=$product->get($f->n);
+			$required=@$f->r?' required':'';
 			switch($f->t) {
 				case 'checkbox': // {
 					$smarty->assign(
@@ -458,14 +459,24 @@ class ProductType{
 					);
 				break; // }
 				case 'date': // {
-					$smarty->assign(
-						$f->n,
-						$prefix.date_m2h($val).$suffix
-					);
+					if (@$f->u) {
+						$smarty->assign(
+							$f->n,
+							'<input class="product-field date '.$f->n.$required
+							.'" name="products_values_'.$f->n.'"/>'
+						);
+						WW_addInlineScript('$("input.date").datepicker({"dateFormat":"yy-mm-dd"});');
+					}
+					else {
+						$smarty->assign(
+							$f->n,
+							$prefix.date_m2h($val).$suffix
+						);
+					}
 				break; // }
 				case 'selectbox': // {
-					if (isset($f->u) && $f->u) {
-						$h='<select name="products_values_'.$f->n.'">';
+					if (@$f->u) {
+						$h='<select name="products_values_'.$f->n.'" class="'.$required.'">';
 						if ($f->e=='') {
 							$f->e=$val;
 						}
@@ -499,11 +510,11 @@ class ProductType{
 					);
 				break; // }
 				default: // { everything else
-					if (isset($f->u) && $f->u) {
+					if (@$f->u) {
 						$smarty->assign(
 							$f->n,
-							'<input class="product-field '.$f->n
-							.'" name="products_values_'.$f->n.'" />'
+							'<input class="product-field '.$f->n.$required
+							.'" name="products_values_'.$f->n.'"/>'
 						);
 					}
 					else {
@@ -515,7 +526,7 @@ class ProductType{
 					// }
 			}
 		}
-		$smarty->assign('_name',$product->vals['name']);
+		$smarty->assign('_name',$product->name);
 		return '<div class="products-product" id="products-'.$product->get('id')
 			.'">'.$smarty->fetch(
 				USERBASE.'/ww.cache/products/templates/types_'.$template.'_'.$this->id

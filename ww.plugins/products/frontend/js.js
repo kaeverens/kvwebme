@@ -58,20 +58,32 @@ $(function(){
 			if (!/products_values_/.test(this.name)) {
 				return;
 			}
-			inps.push([this.name, $(this).val()]);
+			inps.push([this.name, $(this).val(), this.className]);
 		});
 		for (var i=0;i<inps.length;++i) {
 			$('<input type="hidden" name="'+inps[i][0]+'" />')
 				.val(inps[i][1])
+				.addClass(inps[i][2])
 				.appendTo($form);
 		}
 	});
 	var paddtocart=0;
 	$('form.products-addtocart,form.products-addmanytocart').submit(function(){
+		var $this=$(this);
+		var found=0;
+		$this.find('input.required').each(function(){
+			if (!$(this).val()) {
+				found=1;
+			}
+		});
+		if (found) { // blank required fields found
+			alert('please enter all required fields');
+			return false;
+		}
 		$.post('/ww.plugins/products/frontend/add-to-cart.php',
-			$(this).serializeArray(),
+			$this.serializeArray(),
 			function(){
-				document.location=document.location;
+				document.location=document.location.toString();
 			}
 		);
 		return false;
