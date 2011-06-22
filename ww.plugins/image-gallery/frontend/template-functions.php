@@ -16,8 +16,14 @@ function image_gallery_template_images($params,&$smarty){
 	if($hover==''&&!empty($pagedata->vars['image_gallery_hover'])){
 		$hover=' hover="'.$pagedata->vars['image_gallery_hover'].'"';
 	}
+	$slideshow=(empty($pagedata->vars['image_gallery_slideshow']))?
+		'':
+		' slideshow="'.$pagedata->vars['image_gallery_slideshow'].'"';
+	$slideshowTime=(empty($pagedata->vars['image_gallery_slideshowTime']))?
+		'':
+		' slideshowtime="'.$pagedata->vars['image_gallery_slideshowTime'].'"';
 	$display=(empty($params['display']))?'':' display="'.$params['display'].'"';
-	$html='<div class="ad-gallery"'.$display.$hover.$coulmns.$rows.' thumbsize="'
+	$html='<div class="ad-gallery"'.$display.$hover.$coulmns.$rows.$slideshow.$slideshowTime.' thumbsize="'
 		.$pagedata->vars['image_gallery_thumbsize'].'">';
 	$html.='</div>';
 	return $html;

@@ -27,9 +27,6 @@ $c.= '<li><a href="#image-gallery-template">Gallery Template</a></li>';
 $c.= '<li><a href="#image-gallery-header">Header</a></li>';
 $c.= '<li><a href="#image-gallery-footer">Footer</a></li>';
 $c.= '<li><a href="#image-gallery-advanced">Advanced Settings</a></li>';
-if(isset($GLOBALS['PLUGINS']['online-store'])){
-	$c.='<li><a href="#image-gallery-shop">Online Store</a></li>';
-}
 $c.= '</ul>';
 // { images
 $c.='<div id="image-gallery-images">';
@@ -223,11 +220,29 @@ foreach($options as $value=>$option){
 }
 $c.='</select></td></tr>';
 // }
+// }
+// { slideshow
+$options=array('false'=>'No','true'=>'Yes');
+$c.='<tr><th>Autostart Slide-show:</th>';
+$c.='<td><select name="page_vars[image_gallery_slideshow]">';
+foreach($options as $value=>$option){
+	$c.='<option value="'.$value.'"';
+	if($value==@$vars['image_gallery_slideshow'])
+		$c.=' selected="selected"';
+	$c.='>'.$option.'</option>';
+}
+$time=(isset($vars['image_gallery_slideshowTime']))?
+	$vars['image_gallery_slideshowTime']:
+	2500;
+$c.='</select></td>';
+$c.='<th>Slide delay:</th>';
+$c.='<td><input type="text" name="page_vars[image_gallery_slideshowTime]" ';
+$c.=' value="'.$time.'"/> ms</td></tr>';
+// }
+// }
 $c.='</table>';
 $c.='</div>';
-// }
 $c.='</div>';
-
 if (!is_dir(USERBASE.'ww.cache/image-gallery')) {
   mkdir(USERBASE.'ww.cache/image-gallery');
 }

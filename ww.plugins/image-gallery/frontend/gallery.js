@@ -1,27 +1,60 @@
+// gallery object
+//
+// used to create image galleries of different
+// layouts/types
+// @author Conor Mac Aoidh <conormacaoidh@gmail.com>
 var Gallery={
-	options:{
+	options:{ // default options for the gallery
+		// list, grid or custom
 		display:'list',
+		// columns, rows
 		items:6,
 		rows:1,
-		transition:'fade',
+		// thumbnail size
 		thumbsize:90,
+		// set false to disable next and previous links
+		// - these can be set up manually
 		links:true,
+		// "hover" effect. although the popup actually
+		// happens on click, the zoom happens on hover
 		hover:'popup',
+		// main image dimensions
 		imageHeight:350,
 		imageWidth:350,
+		// main image transition effect
 		effect:'fade',
+		// this option adds partial support for changing
+		// the amount of items loaded each time the next/prev
+		// links are clicked. only tested with vals 1 and 2
 		listSwitch:2,
-		//only works on list mode
+		// slideshow
 		slideshow:false,
+		// slideshow interval between slide change
+		slideshowTime:2500,
+		// custom display functions
+		// for adding a new method of
+		// displaying the gallery
+		customDisplayInit:null,
+		customDisplayNext:null,
+		customDisplayPrevious:null,
+		customDisplaySlideshow:null,
 	},
+	// keeps track of how far through the images.files
+	// array the grid display is
 	position:0,
-	listPosition:0,
 	width:0,
+	// grid display - the count of how many items are
+	// displayed currently
 	current:0,
 	height:0,
+	// used to hold the timeout for the slideshow function
+	t:null,
+	// holds the images associated with this gallery
+	// populated in the init function
 	images:{},
+	// returns a selector for gallery-images
 	gallery:function(){ return $('.ad-gallery') },
-	init:function(){
+	init:function(){ // collects options from html and sets events
 		// { get options from html
 		var display=this.gallery().attr('display');
 		if(display)
@@ -45,8 +78,12 @@ var Gallery={
 		var hover=this.gallery().attr('hover');
 		if(hover)
 			this.options.hover=hover;
+		var slide=this.gallery().attr('slideshow');
+		if(slide){
+			this.options.slideshow=slide;
+			this.options.slideshowTime=this.gallery().attr('slideshowtime');
+		}
 		// }
-
 		$.get(
 			'/ww.plugins/image-gallery/frontend/get-images.php?id='+pagedata.id,
 			function(items){
@@ -55,14 +92,23 @@ var Gallery={
 			},
 			'json'
 		);
-		$('#next-link').live('click',function(){
+		$('#next-link').live('click',function(){	
+			if(Gallery.options.slideshow==true)
+				clearTimeout(Gallery.t);
+			if($('.ad-thumb-list').hasClass('working'))
+				return;
 			Gallery.displayNext();
 		});
 		$('#prev-link').live('click',function(){
+			if(Gallery.options.slideshow==true)
+				clearTimeout(Gallery.t);
+			if($('.ad-thumb-list').hasClass('working'))
+				return;
 			Gallery.displayPrevious();
 		});
-
 		$('.images-container a').live('click',function(){
+			if(Gallery.options.slideshow==true)
+				clearTimeout(Gallery.t);
 			var i=$(this).attr('id');
 			$('.images-container img').removeClass('image-selected');
 			$('img',this).addClass('image-selected');
@@ -70,9 +116,10 @@ var Gallery={
 			if(Gallery.options.hover!='popup')
 				return false;
 		});
-
 		if(this.options.display=='list'){
 			$('#next-link').live('mouseenter',function(){
+				if(Gallery.options.slideshow==true)
+					clearTimeout(Gallery.t);
 				$(this).addClass('hover');
 				$elm=$(this);
 				setTimeout(function(){
@@ -86,6 +133,8 @@ var Gallery={
 				$(this).removeClass('hover');
 			});	
 			$('#prev-link').live('mouseenter',function(){
+				if(Gallery.options.slideshow==true)
+					clearTimeout(Gallery.t);
 				$(this).addClass('hover');
 				$elm=$(this);
 				setTimeout(function(){
@@ -99,9 +148,10 @@ var Gallery={
 				$(this).removeClass('hover');
 			});
 		}
-
 		if(this.options.hover=='zoom'){
 			$('.images-container img').live('mouseenter',function(){
+				if(Gallery.options.slideshow==true)
+					clearTimeout(Gallery.t);
 				$(this).addClass('img-hover');
 				$elm=$(this);
 				setTimeout(function(){
@@ -147,14 +197,13 @@ var Gallery={
 			});
 		}
 	},
-	// counts the images object
-  count:function(){
+  count:function(){ // counts the images object
     var size = 0, key;
     for (key in this.images.files)
       ++size;
     return size;
   },
-	display:function(){
+	display:function(){ // initial display function - gets called once
 		this.displayImage(0);
 		var html='<div id="gallery-container">'
 							+'<div id="slider"></div>'
@@ -162,8 +211,8 @@ var Gallery={
 		this.gallery().html(html);
 		switch(this.options.display){	
 			case 'custom':
-				if(typeof(this.options.customDisplay)=='function'){
-					return this.options.customDisplay;
+				if(typeof(this.options.customDisplayInit)=='function'){
+					return this.options.customDisplayInit();
 					break;
 				}
 				else
@@ -189,6 +238,8 @@ var Gallery={
 					);
 					$('#big-next-link,#big-prev-link').css({'height':this.options.imageHeight+'px'});
 					$('#big-next-link').live('click',function(){
+						if(Gallery.options.slideshow==true)
+							clearTimeout(Gallery.t);
 						if(!$('.ad-thumb-list').hasClass('working')){
 								var n=parseInt($('.ad-image img').attr('num'));
 								$('#'+n+' img').removeClass('image-selected');
@@ -199,6 +250,8 @@ var Gallery={
 						}
 					});
 					$('#big-prev-link').live('click',function(){
+						if(Gallery.options.slideshow==true)
+							clearTimeout(Gallery.t);
 						if(!$('.ad-thumb-list').hasClass('working')){
 							var n=parseInt($('.ad-image img').attr('num'));
 							$('#'+n+' img').removeClass('image-selected');
@@ -230,8 +283,11 @@ var Gallery={
 			$('#next-link,#prev-link').css({'height':this.height+'px'});
 		}
 		$('.images-container img:first').addClass('image-selected');		
+		if(this.options.slideshow=='true'){ // activate slideshow
+			setTimeout("Gallery.slideshow()",this.options.slideshowTime);
+		}
 	},
-	displayGrid:function(){
+	displayGrid:function(){ // shows the grid display using a carousel
 		var file,size=this.options.thumbsize,popup
 		,row=0,html='<table class="images-container"><tr>';
 		this.current=0;
@@ -255,7 +311,7 @@ var Gallery={
 		html+='</tr></table>';
 		$('#slider').append(html);
 	},
-	displayList:function(els){
+	displayList:function(els){ // displays elements from this.images.files in a list
 		var file,size=this.options.thumbsize,popup,
 		html='',i;
 		for(i=els[0];i<=els[els.length-1];++i){
@@ -271,8 +327,15 @@ var Gallery={
 		};
 		return html;
 	},
-	displayNext:function(num){
+	displayNext:function(num){ // displays the next "page" of content
 		switch(this.options.display){
+			case 'custom':
+				if(typeof(this.options.customDisplayNext)=='function'){
+					return this.options.customDisplayNext();
+					break;
+				}
+				else
+					this.options.display='list';
 			case 'list':
 				if($('.ad-thumb-list').hasClass('working'))
 					return;
@@ -319,8 +382,15 @@ var Gallery={
 			break;
 		}
 	},
-	displayPrevious:function(num){
+	displayPrevious:function(num){ // does the opposite of displayNext
 		switch(this.options.display){
+			case 'custom':
+				if(typeof(this.options.customDisplayPrevious)=='function'){
+					return this.options.customDisplayPrevious();
+					break;
+				}
+				else
+					this.options.display='list';
 			case 'list':
 				if($('.ad-thumb-list').hasClass('working'))
 					return;
@@ -366,8 +436,7 @@ var Gallery={
 			break;
 		}
 	},
-	// bump effect
-	bump:function(offset){
+	bump:function(offset){ // bump effect
 		var pos=parseInt($('#slider').css('left'));
 		$('#slider').animate(
 			{'left':(offset=='left')?(pos-20)+'px':(pos+20)+'px'}
@@ -376,7 +445,7 @@ var Gallery={
 		});
 		return false;
 	},
-	displayImage:function(e){
+	displayImage:function(e){ // displays the main "big" image if present
 		if(!this.images.files[e])
 			return;
 		$('.ad-image span').hide();
@@ -403,7 +472,7 @@ var Gallery={
 			.attr('title',this.images.files[e].caption)
 			.attr('num',e);
 	},
-	caption:function(){
+	caption:function(){ // displays the caption on the main image
 		var caption=$('.ad-image img').attr('title');
 		if(caption=="")
 			return;
@@ -415,7 +484,36 @@ var Gallery={
 			})
 			.slideDown('fast');
 	},
+	slideshow:function(){ // creates a slideshow using settimeout
+		var n=parseInt($('.ad-image img').attr('num'));
+		$('#'+n+' img').removeClass('image-selected');
+		n=((n+1)==Gallery.count())?0:++n;
+		$('#'+n+' img').addClass('image-selected');
+		switch(this.options.display){	
+			case 'custom':
+				if(typeof(this.options.customDisplaySlideshow)=='function'){
+					return this.options.customDisplaySlideshow();
+					break;
+				}
+				else
+					this.options.display='list';
+			case 'list':	
+				Gallery.displayNext(1);
+				Gallery.displayImage(n);
+			break;
+			case 'grid':
+				if(n!=0&&n%(this.options.items*this.options.rows)==0)
+					Gallery.displayNext();
+				else if(n==(this.count()-1))
+					Gallery.displayPrevious();
+				Gallery.displayImage(n);
+			break;
+		}
+		Gallery.t=setTimeout("Gallery.slideshow()",Gallery.options.slideshowTime);
+	},
 };
+
 $(function(){
+	// initialise the gallery
 	Gallery.init();
 });
