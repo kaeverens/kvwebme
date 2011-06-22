@@ -210,7 +210,7 @@ foreach($effects as $effect){
 $c.='</select></td></tr>';
 // }
 // { hover
-$options=array('hover'=>'Hover','zoom'=>'Zoom','popup'=>'Popup');
+$options=array('opacity'=>'Opacity','zoom'=>'Zoom','popup'=>'Popup');
 $c.='<tr><th>Images on hover:</th>';
 $c.='<td><select name="page_vars[image_gallery_hover]">';
 foreach($options as $value=>$option){
@@ -220,7 +220,6 @@ foreach($options as $value=>$option){
 	$c.='>'.$option.'</option>';
 }
 $c.='</select></td></tr>';
-// }
 // }
 // { slideshow
 $options=array('false'=>'No','true'=>'Yes');
