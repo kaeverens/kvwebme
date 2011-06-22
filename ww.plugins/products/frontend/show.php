@@ -315,12 +315,10 @@ function Products_getAddManyToCartButton($params, &$smarty) {
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'"/></form>';
 }
-function products_image($params, &$smarty) {
+function products_image($params, &$smarty){
 	$params=array_merge(array(
 		'width'=>128,
 		'height'=>128,
-		'nolink'=>0,
-		'magnifier'=>0
 	),$params);
 	$product=$smarty->_tpl_vars['product'];
 	$vals=$product->vals;
@@ -348,10 +346,13 @@ function products_image($params, &$smarty) {
 	}
 	$img='<img src="/kfmget/'.$iid
 		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" />'
-		.'<br /><span class="caption">'.htmlspecialchars($image->caption).'</span>';
-	return $params['nolink']
-		?'<div class="main-image-big">'.$img.'</div>'
-		:'<div class="main-image-big"><a href="/kfmget/'.$iid.'">'.$img.'</a></div>';
+		.'<br /><span class="caption">'.htmlspecialchars($image->caption).'</span>';	
+	return '<div id="gallery-image" width="'.$params['width'].'" height="'.$params['height'].'" effect="fade">'
+		. '<div class="ad-image">'
+			. '<span class="dark-background ad-image-description" style="display:none"></span>'
+			. $img
+		. '</div>'
+		. '</div>';
 }
 function products_image_not_found($params,&$smarty) {
 	$s=$params['width']<$params['height']?$params['width']:$params['height'];
@@ -360,6 +361,13 @@ function products_image_not_found($params,&$smarty) {
 	return $pt->getMissingImage($s);
 }
 function products_images($params,&$smarty){
+	$params=array_merge(array(
+		'thumbsize'=>60,
+		'display'=>'list',
+		'hover'=>'opacity',
+		'columns'=>3,
+		'rows'=>1,
+	),$params);
 	WW_addScript('/ww.plugins/image-gallery/frontend/gallery.js');
 	WW_addCSS('/ww.plugins/image-gallery/frontend/gallery.css');
 	$script='$(function(){
@@ -378,14 +386,10 @@ function products_images($params,&$smarty){
 	WW_addInlineScript($script);
 	$product=$smarty->_tpl_vars['product'];
 	$vals=$product->vals;
-	$html='<div id="gallery-image" width="125" height="125" effect="fade">'
-		. '<div class="ad-image">'
-			. '<span class="dark-background ad-image-description" style="display:none"></span>'
-			. '<img src="">'
-		. '</div>'
-		. '</div>';
-	$html.='<div class="ad-gallery" display="list" hover="opacity" cols="3"';
-	$html.=' thumbsize="60" directory="'.addslashes($vals['images_directory']).'">';
+	$html='<div class="ad-gallery" display="'.$params['display'].'" ';
+	$html.=' hover="'.$params['hover'].'" cols="'.$params['columns'].'"';
+	$html.=' rows="'.$params['rows'].'" thumbsize="'.$params['thumbsize'].'"';
+	$html.=' directory="'.addslashes($vals['images_directory']).'">';
 	$html.='</div>';
 	return $html;
 }
