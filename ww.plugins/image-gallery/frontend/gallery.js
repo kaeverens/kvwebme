@@ -41,6 +41,7 @@ var Gallery={
 		customDisplayNext:null,
 		customDisplayPrevious:null,
 		customDisplaySlideshow:null,
+		customDisplayImageCallback:null,
 	},
 	// keeps track of how far through the images.files
 	// array the grid display is
@@ -527,26 +528,31 @@ var Gallery={
 			.attr('num',e)
 			.one('load',function(){
 				var width=$('.ad-image img').width();
-				var height=$('.ad-image img').height();
-				$('.ad-image').css({'width':width+'px','height':height+'px'});
+				$('.ad-image').css({'width':width+'px','height':Gallery.options.imageHeight+'px'});
 				switch(Gallery.options.effect){
           case 'fade': 
-            $(this).fadeIn('slow',Gallery.caption); 
+            $(this).fadeIn('slow',Gallery.displayImageCallback); 
           break; 
           case 'slideVertical': 
             if(current<e) 
-              $(this).show('slide',{'direction':'up'},500,Gallery.caption); 
+              $(this).show('slide',{'direction':'up'},500,Gallery.displayImageCallback); 
             else 
-              $(this).show('slide',{'direction':'down'},500,Gallery.caption); 
+              $(this).show('slide',{'direction':'down'},500,Gallery.displayImageCallback); 
           break; 
           case 'slideHorizontal': 
             if(current<e) 
-              $(this).show('slide',{'direction':'right'},500,Gallery.caption); 
+              $(this).show('slide',{'direction':'right'},500,Gallery.displayImageCallback); 
             else 
-              $(this).show('slide',{'direction':'left'},500,Gallery.caption); 
+              $(this).show('slide',{'direction':'left'},500,Gallery.displayImageCallback); 
           break; 
 				}
 			});
+	},
+	displayImageCallback:function(){ // executed when display image animation complete
+		Gallery.caption();
+		if(typeof(Gallery.options.customDisplayImageCallback)=='function'){
+			return Gallery.options.customDisplayImageCallback();
+		}
 	},
 	caption:function(){ // displays the caption on the main image
 		var caption=$('.ad-image img').attr('title');

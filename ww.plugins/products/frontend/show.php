@@ -374,14 +374,15 @@ function products_images($params,&$smarty){
 		$(".main-image-big").each(function(){
 			$(this).remove();
 		});
-		$(".products-addtocart,.products-addmanytocart").live("click",function(){
+		$(".products-addtocart,.products-addmanytocart").append(
+			"<input type=\"hidden\" name=\"image-selected\"/>"
+		);
+		Gallery.options.customDisplayImageCallback=function(){
 			var image=$(".ad-image img").attr("src").split(",");
 			image=image[0].split("/");
 			image=image[2];
-			$(this).append(
-				"<input type=\'hidden\' name=\'image-selected\' value=\'"+image+"\'/>"
-			);
-		});
+			$(\'input[name="image-selected"]\').val(image);
+		};
 	});';
 	WW_addInlineScript($script);
 	$product=$smarty->_tpl_vars['product'];

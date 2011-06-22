@@ -51,6 +51,10 @@
 	margin:0 auto;
 	text-align:center;
 }
+.ad-image img{
+	position:absolute;
+	bottom:0;
+}
 .ad-image-description{
 	display:none;
 	position:absolute;
@@ -62,6 +66,7 @@
 	padding:7px;
 	width:100%;
 	display:block;
+	z-index:2;
 }
 .list ul{
 	list-style-type:none;
