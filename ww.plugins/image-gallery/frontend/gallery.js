@@ -242,8 +242,6 @@ var Gallery={
 					});
 				}
 			});
-			$('#gallery-image').css({'width':this.imageWidth});
-			$('#gallery-image').css({'height':this.imageHeight});
 		}
 	},
   count:function(){ // counts the images object
@@ -270,7 +268,7 @@ var Gallery={
 				var items=this.gallery().attr('cols');
 				this.options.items=(items)?parseInt(items):6;
 				this.options.rows=1;
-				this.width=((this.options.thumbsize+10)*this.options.items);
+				this.width=((this.options.thumbsize)*this.options.items);
 				this.gallery().addClass('list');
 				var els=[];
 				for(var i=0;i<this.options.items;++i)
@@ -282,7 +280,6 @@ var Gallery={
 				this.gallery().css({'width':this.width+'px'});
 				this.height=(this.options.thumbsize+15);
 				$('.ad-thumb-list').css({'height':this.height+'px'});
-
 				if(this.options.links==true){ // next/prev links
 					$('#gallery-image .ad-image').append(
 						'<div id="big-prev-link"></div><div id="big-next-link"></div>'
@@ -384,7 +381,7 @@ var Gallery={
 					' style="opacity:0.7"':
 					''
 				);
-			html+='<li>'
+			html+='<li style="width:'+size+'px">'
 					+ '<a href="/kfmget/'+file.id+'" id="'+i+'"'+popup+'>'
 						+ '<img src="/kfmget/'+file.id+',width='+size+',height='+size+'"/>'
 					+ '</a>'
@@ -530,7 +527,8 @@ var Gallery={
 			.attr('num',e)
 			.one('load',function(){
 				var width=$('.ad-image img').width();
-				$('.ad-image').css({'width':width+'px'});
+				var height=$('.ad-image img').height();
+				$('.ad-image').css({'width':width+'px','height':height+'px'});
 				switch(Gallery.options.effect){
           case 'fade': 
             $(this).fadeIn('slow',Gallery.caption); 
