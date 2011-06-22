@@ -9,11 +9,16 @@ $page_id=(int)@$_GET['id'];
 if($page_id==0)
 	exit;
 
-$vars=dbRow('select value from page_vars where page_id='
-	.$page_id.' and name="image_gallery_directory"');
-if(!$vars)
-	exit;
-$image_dir=$vars['value'];
+// get image_gallery_directory from post
+$image_dir=@$_POST['image_gallery_directory'];
+if($image_dir==''){ // fall back to getting it from page_vars
+	$vars=dbRow('select value from page_vars where page_id='
+		.$page_id.' and name="image_gallery_directory"');
+	if(!$vars)
+		exit;
+	$image_dir=$vars['value'];
+}
+
 $dir=preg_replace('/^\//','',$image_dir);
 $dir_id=kfm_api_getDirectoryID($dir);
 $images=kfm_loadFiles($dir_id);

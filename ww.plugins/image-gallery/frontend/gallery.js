@@ -31,6 +31,9 @@ var Gallery={
 		slideshow:false,
 		// slideshow interval between slide change
 		slideshowTime:2500,
+		// default is empty string, only used for non image-gallery plugin
+		// uses of the gallery
+		directory:'',
 		// custom display functions
 		// for adding a new method of
 		// displaying the gallery
@@ -63,15 +66,11 @@ var Gallery={
 		if(thumbsize)
 			this.options.thumbsize=parseInt(thumbsize);
 		var imageHeight=$('#gallery-image').attr('height');
-		if(imageHeight){
+		if(imageHeight)
 			this.options.imageHeight=imageHeight;
-			$('#gallery-image').css({'height':imageHeight});
-		}
 		var imageWidth=$('#gallery-image').attr('width');
-		if(imageWidth){
+		if(imageWidth)
 			this.options.imageWidth=imageWidth;
-			$('#gallery-image').css({'width':imageWidth});
-		}
 		var effect=$('#gallery-image').attr('effect');
 		if(effect)
 			this.options.effect=effect;
@@ -83,15 +82,23 @@ var Gallery={
 			this.options.slideshow=slide;
 			this.options.slideshowTime=this.gallery().attr('slideshowtime');
 		}
+		var directory=this.gallery().attr('directory');
+		if(directory)
+			this.options.directory=directory;
+
 		// }
-		$.get(
+		$.post(
 			'/ww.plugins/image-gallery/frontend/get-images.php?id='+pagedata.id,
+			{'image_gallery_directory':Gallery.options.directory },
 			function(items){
 				Gallery.images=items;
+				if(Gallery.images.files.length==0)
+					return Gallery.noImages();
 				Gallery.display();
 			},
 			'json'
 		);
+
 		if(this.options.display=='grid'){
 			$('#next-link')
 				.css({
@@ -235,6 +242,8 @@ var Gallery={
 					});
 				}
 			});
+			$('#gallery-image').css({'width':this.imageWidth});
+			$('#gallery-image').css({'height':this.imageHeight});
 		}
 	},
   count:function(){ // counts the images object
@@ -362,8 +371,12 @@ var Gallery={
 		var file,size=this.options.thumbsize,popup,
 		html='',i;
 		for(i=els[0];i<=els[els.length-1];++i){
-			if(!Gallery.images.files[i])
-				return false;
+			if(!Gallery.images.files[i]){
+				if(i==els[0])
+					return false;
+				else
+					return html;
+			}
 			file=Gallery.images.files[i];
 			popup=(Gallery.options.hover=='popup')?
 				' target="popup"':
@@ -394,8 +407,6 @@ var Gallery={
 				$('.ad-thumb-list').addClass('working');
 				var current=parseInt($('.ad-thumb-list li:last a').attr('id'));
 				var max=(num==null)?this.options.listSwitch:num,width=0;
-				for(var i=0;i<max;++i)
-					width+=$('.ad-thumb-list li:eq('+i+')').width();
 				var left=parseInt($('#slider').css('left'));
 				var list=[];
 				for(var i=1;i<=max;++i)
@@ -408,11 +419,15 @@ var Gallery={
 						list[i]=i;
 					item=this.displayList(list);
 				}
+				var count=item.split('li');
+				count=(count.length-1)/2;
+				for(var i=0;i<count;++i)
+					width+=$('.ad-thumb-list li:eq('+i+')').width();
 				$('.ad-thumb-list').append(item);
 				$('#slider').animate({
 					'left':(left-width)+'px'
 				},2000,function(){
-					for(var i=0;i<max;++i)
+					for(var i=0;i<count;++i)
 						$('.ad-thumb-list li:eq(0)').remove();
 					$('#slider').css({'left':left+'px'});
 					$('.ad-thumb-list').removeClass('working')
@@ -449,8 +464,6 @@ var Gallery={
 				$('.ad-thumb-list').addClass('working');
 				var current=parseInt($('.ad-thumb-list li:first a').attr('id'));
 				var max=(num==null)?this.options.listSwitch:num,width=0;
-				for(var i=1;i<=max;++i)
-					width+=$('.ad-thumb-list li:eq('+(this.options.items-i)+')').width();
 				var left=parseInt($('#slider').css('left'));
 				var list=[];
 				for(var i=1;i<=max;++i)
@@ -463,13 +476,17 @@ var Gallery={
 						list[(i-1)]=(pos+(i-max)-1);
 					item=this.displayList([(pos-2),(pos-1)]);
 				}
+				var count=item.split('li');
+				count=(count.length-1)/2;
+				for(var i=1;i<count;++i)
+					width+=$('.ad-thumb-list li:eq('+(this.options.items-i)+')').width();
 				$('.ad-thumb-list').prepend(item);
 				$('#slider')
 					.css({'left':'-'+width+'px'})
 					.animate({
 						'left':left+'px'
 					},2000,function(){
-						for(var i=0;i<max;++i)
+						for(var i=0;i<count;++i)
 							$('.ad-thumb-list li:last').remove();
 						$('.ad-thumb-list').removeClass('working');
 					});
@@ -580,6 +597,10 @@ var Gallery={
 		clearTimeout(Gallery.t);
 		Gallery.t=setTimeout("Gallery.slideshow()",Gallery.options.slideshowTime);
 	},
+	noImages:function(){ // die message - there are no images
+		this.gallery().html('<p><i>No Images were found</i></p>');
+		return;
+	}
 };
 
 $(function(){

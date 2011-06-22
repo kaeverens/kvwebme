@@ -20,7 +20,7 @@ $(function(){
 		// }
 		// { type
 		row+='<td width="20%"><select id="product_type_fd'+i+'_type">';
-		var types=['inputbox','textarea','date','checkbox','selectbox'];
+		var types=['inputbox','textarea','date','checkbox','selectbox','selected-image'];
 		for(var j=0;j<types.length;++j){
 			row+='<option value="'+types[j]+'"';
 			if(types[j]==rdata.t)row+=' selected="selected"';

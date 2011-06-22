@@ -14,6 +14,7 @@
 // { plugin declaration
 $plugin=array(
 	'name' => 'Products',
+	'dependencies'=>'image-gallery',
 	'admin' => array(
 		'menu' => array(
 			'Products>Products'   => 'products',

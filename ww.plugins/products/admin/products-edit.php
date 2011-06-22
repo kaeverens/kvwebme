@@ -4,6 +4,8 @@ if (!is_admin()) {
 }
 
 function Products_showDataField($df,$def){
+	if($def['t']=='selected-image')
+		return;
 	echo '<tr><th>'.htmlspecialchars($def['n']).'</th><td>';
 	switch($def['t']){
 		case 'checkbox': // {
@@ -59,7 +61,6 @@ function Products_showDataField($df,$def){
 	}
 	echo '</td></tr>';
 }
-
 // { set up initial variables
 if (isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
 	$id=(int)$_REQUEST['id'];
@@ -283,6 +284,39 @@ echo '<th><div class="help products/enabled"></div>Enabled</th>'
 if(!$pdata['enabled'])echo ' selected="selected"';
 echo '>No</option></select></td>';
 // }
+// { images directory
+if(!isset($pdata['images_directory']) 
+	|| !$pdata['images_directory'] 
+	|| $pdata['images_directory']=='/'
+	|| !is_dir(USERBASE.'f/'.$pdata['images_directory'])
+){
+	if(!is_dir(USERBASE.'f/products/product-images')){
+		mkdir(USERBASE.'f/products/product-images',0777,true);
+	}
+	$pdata['images_directory']='/products/product-images/'.md5(rand().microtime());
+	mkdir(USERBASE.'f'.$pdata['images_directory']);
+}
+if (!is_dir(USERBASE.'f'.$pdata['images_directory'])) {    
+	$parent_id = kfm_api_getDirectoryId('products/product-images');
+	$pos = strrpos($pdata['images_directory'], '/');
+	$dname='';
+	if ($pos===false) {
+		$dname = $pdata['images_directory'];
+	}
+	else if (isset($_REQUEST['images_directory'])) {
+		$dname = substr($_REQUEST['images_directory'], $pos);
+	}
+	if ($dname!='') {
+		_createDirectory($parent_id, $dname);
+	}
+}
+echo '<td colspan="2">'
+	.'<a style="background:#ff0;font-weight:bold;color:red;display:block;'
+	.'text-align:center;" href="#page_vars[images_directory]" '
+	.'onclick="javascript:window.open(\'/j/kfm/'
+	.'?startup_folder='.addslashes($pdata['images_directory']).'\'+'
+	.'\'kfm\',\'modal,width=800,height=600\');">Manage Images</a></td>';
+// }
 // { page link
 if ($id) {
 	echo '<th>Product Page</th><td id="product_table_link_holder">';
@@ -320,31 +354,6 @@ else {
 // }
 echo '</tr><tr>';
 // { images
-if(!isset($pdata['images_directory']) 
-	|| !$pdata['images_directory'] 
-	|| $pdata['images_directory']=='/'
-	|| !is_dir(USERBASE.'f/'.$pdata['images_directory'])
-){
-	if(!is_dir(USERBASE.'f/products/product-images')){
-		mkdir(USERBASE.'f/products/product-images',0777,true);
-	}
-	$pdata['images_directory']='/products/product-images/'.md5(rand().microtime());
-	mkdir(USERBASE.'f'.$pdata['images_directory']);
-}
-if (!is_dir(USERBASE.'f'.$pdata['images_directory'])) {    
-	$parent_id = kfm_api_getDirectoryId('products/product-images');
-	$pos = strrpos($pdata['images_directory'], '/');
-	$dname='';
-	if ($pos===false) {
-		$dname = $pdata['images_directory'];
-	}
-	else if (isset($_REQUEST['images_directory'])) {
-		$dname = substr($_REQUEST['images_directory'], $pos);
-	}
-	if ($dname!='') {
-		_createDirectory($parent_id, $dname);
-	}
-}
 echo '<input type="hidden" 
 	name="images_directory" value="'.$pdata['images_directory'].'" />';
 echo '<th><div class="help products/images"></div>Images</th><td colspan="5">';

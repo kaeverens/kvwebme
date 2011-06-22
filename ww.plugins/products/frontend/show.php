@@ -349,26 +349,9 @@ function products_image($params, &$smarty) {
 	$img='<img src="/kfmget/'.$iid
 		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" />'
 		.'<br /><span class="caption">'.htmlspecialchars($image->caption).'</span>';
-	if ($params['nolink']) {
-		return $img;
-	}
-	if ($params['magnifier']) {
-		WW_addScript(
-			'/ww.plugins/products/j/jquery.magnifier.0.2/js/jquery.magnifier/js/'
-			.'jquery.magnifier.0.2.js'
-		);
-		WW_addCSS(
-			'/ww.plugins/products/j/jquery.magnifier.0.2/js/jquery.magnifier/css/jquery.magnifier.css'
-		);
-		WW_addInlineScript('$("a[rel*=magnify]").magnify()');
-		return '<style>div#dio-sensor{'
-			.'cursor: url("/ww.plugins/products/frontend/magnifying-glass.png"), crosshair}'
-			.'</style>'
-			.'<a href="/kfmget/'.$iid.'" rel="magnify">'.$img.'</a>';
-	}
 	return $params['nolink']
-		?$img
-		:'<a class="products-lightbox" href="/kfmget/'.$iid.'">'.$img.'</a>';
+		?'<div class="main-image-big">'.$img.'</div>'
+		:'<div class="main-image-big"><a href="/kfmget/'.$iid.'">'.$img.'</a></div>';
 }
 function products_image_not_found($params,&$smarty) {
 	$s=$params['width']<$params['height']?$params['width']:$params['height'];
@@ -376,28 +359,35 @@ function products_image_not_found($params,&$smarty) {
 	$pt=ProductType::getInstance($product->vals['product_type_id']);
 	return $pt->getMissingImage($s);
 }
-function products_images($params,&$smarty) {
-	$params=array_merge(array(
-		'width'=>48,
-		'height'=>48
-	),$params);
+function products_images($params,&$smarty){
+	WW_addScript('/ww.plugins/image-gallery/frontend/gallery.js');
+	WW_addCSS('/ww.plugins/image-gallery/frontend/gallery.css');
+	$script='$(function(){
+		$(".main-image-big").each(function(){
+			$(this).remove();
+		});
+		$(".products-addtocart,.products-addmanytocart").live("click",function(){
+			var image=$(".ad-image img").attr("src").split(",");
+			image=image[0].split("/");
+			image=image[2];
+			$(this).append(
+				"<input type=\'hidden\' name=\'image-selected\' value=\'"+image+"\'/>"
+			);
+		});
+	});';
+	WW_addInlineScript($script);
 	$product=$smarty->_tpl_vars['product'];
 	$vals=$product->vals;
-	if (!$vals['images_directory'])return ''; // TODO: no-image here
-	$directory = $vals['images_directory'];
-	$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$directory));
-	if (!$dir_id)return ''; // TODO: no-image here
-	$images=kfm_loadFiles($dir_id);
-	$arr=array();
-	if (count($images['files'])<2) {
-		return ''; // no point showing only one image
-	}
-	foreach($images['files'] as $image) {
-		$arr[]='<img src="/kfmget/'.$image['id']
-			.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'"'
-			.' title="'.htmlspecialchars($image['caption']).'" />';
-	}
-	return '<div class="product-images">'.join('',$arr).'</div>';
+	$html='<div id="gallery-image" width="125" height="125" effect="fade">'
+		. '<div class="ad-image">'
+			. '<span class="dark-background ad-image-description" style="display:none"></span>'
+			. '<img src="">'
+		. '</div>'
+		. '</div>';
+	$html.='<div class="ad-gallery" display="list" hover="opacity" cols="3"';
+	$html.=' thumbsize="60" directory="'.addslashes($vals['images_directory']).'">';
+	$html.='</div>';
+	return $html;
 }
 function products_link ($params, &$smarty) {
 	$product= $smarty->_tpl_vars['product'];
