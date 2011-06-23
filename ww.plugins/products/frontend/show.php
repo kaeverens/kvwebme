@@ -368,6 +368,37 @@ function products_images($params,&$smarty){
 		'columns'=>3,
 		'rows'=>1,
 	),$params);
+	// { make sure there is at least one image
+	$product=$smarty->_tpl_vars['product'];
+	$vals=$product->vals;
+	if (!$vals['images_directory']) {
+		return products_image_not_found($params,$smarty);
+	}
+	$iid=0;
+	if ($vals['image_default']) {
+		$iid=$vals['image_default'];
+		$image=kfmImage::getInstance($iid);
+		if (!$image->exists())$iid=0;
+	}
+	if (!$iid) {
+		$directory = $vals['images_directory'];
+		$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$directory));
+		if (!$dir_id)return products_image_not_found($params,$smarty);
+		$images=kfm_loadFiles($dir_id);
+		if (count($images['files'])) {
+			$image=$images['files'][0];
+			$iid=$image['id'];
+		}
+	}
+	if (!$iid) {
+		return products_image_not_found($params,$smarty);
+	}
+	if(count($images['files'])==1){
+		WW_addInlineScript(
+			'$(function(){$(".ad-gallery").css({"display":"none"});});'
+		);
+	}
+	// }
 	WW_addScript('/ww.plugins/image-gallery/frontend/gallery.js');
 	WW_addCSS('/ww.plugins/image-gallery/frontend/gallery.css');
 	$script='$(function(){
