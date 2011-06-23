@@ -22,8 +22,11 @@ function image_gallery_template_images($params,&$smarty){
 	$slideshowTime=(empty($pagedata->vars['image_gallery_slidedelay']))?
 		'':
 		' slideshowtime="'.$pagedata->vars['image_gallery_slidedelay'].'"';
+	$ratio=(empty($pagedata->vars['image_gallery_ratio']))?
+		'':
+		' ratio="'.$pagedata->vars['image_gallery_ratio'].'"';
 	$display=(empty($params['display']))?'':' display="'.$params['display'].'"';
-	$html='<div class="ad-gallery"'.$display.$hover.$columns.$rows.$slideshow.$slideshowTime.' thumbsize="'
+	$html='<div class="ad-gallery"'.$display.$hover.$columns.$rows.$slideshow.$slideshowTime.$ratio.' thumbsize="'
 		.$pagedata->vars['image_gallery_thumbsize'].'">';
 	$html.='</div>';
 	return $html;

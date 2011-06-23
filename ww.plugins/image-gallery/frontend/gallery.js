@@ -23,6 +23,8 @@ var Gallery={
 		imageWidth:350,
 		// main image transition effect
 		effect:'fade',
+		// set the ratio ( of the thumbnails ) - normal or crop
+		ratio:'normal',
 		// this option adds partial support for changing
 		// the amount of items loaded each time the next/prev
 		// links are clicked. only tested with vals 1 and 2
@@ -87,7 +89,9 @@ var Gallery={
 		var directory=this.gallery().attr('directory');
 		if(directory)
 			this.options.directory=directory;
-
+		var ratio=this.gallery().attr('ratio');
+		if(ratio)
+			this.options.ratio=ratio;
 		// }
 		$.post(
 			'/ww.plugins/image-gallery/frontend/get-images.php?id='+pagedata.id,
@@ -272,7 +276,7 @@ var Gallery={
 				var items=this.gallery().attr('cols');
 				this.options.items=(items)?parseInt(items):6;
 				this.options.rows=1;
-				this.width=((this.options.thumbsize+6)*this.options.items);
+				this.width=((this.options.thumbsize+2)*this.options.items);
 				this.gallery().addClass('list');
 				var els=[];
 				for(var i=0;i<this.options.items;++i)
@@ -357,9 +361,13 @@ var Gallery={
 					' style="opacity:0.7"':
 					''
 				);
-			html+='<td>'
-					+ '<a href="/kfmget/'+file.id+'" id="'+Gallery.position+'"'+popup+'>'
-						+ '<img src="/kfmget/'+file.id+',width='+size+',height='+size+'"/>'
+			var dimensions=Gallery.ratio(file);
+			style=(Gallery.options.ratio=='crop')?
+				' style="width:'+size+'px;height:'+size+'px;overflow:hidden"':'';
+			html+='<td style="width:'+size+'px">'
+					+ '<a href="/kfmget/'+file.id+'" id="'+Gallery.position+'"'+popup+style+'>'
+						+ '<img src="/kfmget/'+file.id+',width='+dimensions[0]
+						+',height='+dimensions[1]+'"/>'
 					+ '</a>'
 				+ '</td>';
 			++Gallery.position;
@@ -385,9 +393,13 @@ var Gallery={
 					' style="opacity:0.7"':
 					''
 				);
-			html+='<li style="width:'+size+'px">'
-					+ '<a href="/kfmget/'+file.id+'" id="'+i+'"'+popup+'>'
-						+ '<img src="/kfmget/'+file.id+',width='+size+',height='+size+'"/>'
+			var dimensions=Gallery.ratio(file);
+			style=(Gallery.options.ratio=='crop')?
+				' style="width:'+size+'px;height:'+size+'px;overflow:hidden"':'';
+			html+='<li style="width:'+size+'px;">'
+					+ '<a href="/kfmget/'+file.id+'" id="'+i+'"'+popup+style+'>'
+						+ '<img src="/kfmget/'+file.id+',width='+dimensions[0]+','
+						+ 'height='+dimensions[1]+'"/>'
 					+ '</a>'
 				+ '</li>';
 		};
@@ -558,8 +570,8 @@ var Gallery={
 		}
 	},
 	caption:function(){ // displays the caption on the main image
-		if(typeof(Gallery.options.customeDisplayCaption)=='function')
-			return Gallery.options.customeDisplayCaption();
+		if(typeof(Gallery.options.customDisplayCaption)=='function')
+			return Gallery.options.customDisplayCaption();
 		var caption=$('.ad-image img').attr('title');
 		if(caption=="")
 			return;
@@ -609,7 +621,21 @@ var Gallery={
 	noImages:function(){ // die message - there are no images
 		this.gallery().html('<p><i>No Images were found</i></p>');
 		return;
-	}
+	},
+	ratio:function(file){
+		if(this.options.ratio=='normal')
+			return [this.options.thumbsize,this.options.thumbsize];
+		if(file.height>file.width)
+			return [
+				this.options.thumbsize,
+				(file.height*(this.options.thumbsize/file.width))
+			];
+		else
+			return [
+				(file.width*(this.options.thumbsize/file.height)),
+				this.options.thumbsize
+			];
+	},
 };
 
 $(function(){

@@ -67,7 +67,8 @@ if($n){
 		.'id="image-gallery-dchk-'.$images[$i]['id'].'" />'
 		.'<a href="javascript:;" id="image-gallery-dbtn-'.$images[$i]['id'].'"'
 		.'class="image-gallery-delete-link">delete</a><br />'
-		.'<a href="javascript:;" caption="'.$images[$i]['caption'].'"'
+		.'<a href="javascript:;" caption="'
+		.htmlspecialchars(@$images[$i]['caption']).'"'
 		.'class="image-gallery-caption-link" id="image-gallery-caption-link-'
 		.$images[$i]['id'].'">';
 		if (isset($images[$i]['caption'])&&!empty($images[$i]['caption'])) {
@@ -216,6 +217,18 @@ $c.='<td><select name="page_vars[image_gallery_hover]">';
 foreach($options as $value=>$option){
 	$c.='<option value="'.$value.'"';
 	if($value==@$vars['image_gallery_hover'])
+		$c.=' selected="selected"';
+	$c.='>'.$option.'</option>';
+}
+$c.='</select></td>';
+// }
+// { ratio crop/normal
+$options=array('normal'=>'Normal','crop'=>'Crop');
+$c.='<th>Thumbnail Ratio:</th>';
+$c.='<td><select name="page_vars[image_gallery_ratio]">';
+foreach($options as $value=>$option){
+	$c.='<option value="'.$value.'"';
+	if($value==@$vars['image_gallery_ratio'])
 		$c.=' selected="selected"';
 	$c.='>'.$option.'</option>';
 }

@@ -94,11 +94,11 @@
 	border:none;
 	outline:0;
 }
+.images-container a{
+	display:block;
+}
 .ad-gallery{
 	margin:0 auto;
 	text-align:center;
 	padding:0;
-}
-.images-container img{
-	border:2px solid #ccc;
 }
