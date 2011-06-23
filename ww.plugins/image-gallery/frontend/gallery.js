@@ -42,6 +42,7 @@ var Gallery={
 		customDisplayPrevious:null,
 		customDisplaySlideshow:null,
 		customDisplayImageCallback:null,
+		customDisplayCaption:null,
 	},
 	// keeps track of how far through the images.files
 	// array the grid display is
@@ -244,6 +245,8 @@ var Gallery={
 				}
 			});
 		}
+		$('#gallery-image').css({'height':Gallery.options.imageHeight+'px',
+			'width':Gallery.options.imageWidth+'px'});
 	},
   count:function(){ // counts the images object
     var size = 0, key;
@@ -269,7 +272,7 @@ var Gallery={
 				var items=this.gallery().attr('cols');
 				this.options.items=(items)?parseInt(items):6;
 				this.options.rows=1;
-				this.width=((this.options.thumbsize)*this.options.items);
+				this.width=((this.options.thumbsize+6)*this.options.items);
 				this.gallery().addClass('list');
 				var els=[];
 				for(var i=0;i<this.options.items;++i)
@@ -521,8 +524,8 @@ var Gallery={
 			.hide()
 			.attr(
 				'src','/kfmget/'+this.images.files[e].id+',width='
-				+ this.options.imageHeight+',height='
-				+ this.options.imageWidth
+				+ this.options.imageWidth+',height='
+				+ this.options.imageHeight
 			)
 			.attr('title',this.images.files[e].caption)
 			.attr('num',e)
@@ -555,6 +558,8 @@ var Gallery={
 		}
 	},
 	caption:function(){ // displays the caption on the main image
+		if(typeof(Gallery.options.customeDisplayCaption)=='function')
+			return Gallery.options.customeDisplayCaption();
 		var caption=$('.ad-image img').attr('title');
 		if(caption=="")
 			return;
