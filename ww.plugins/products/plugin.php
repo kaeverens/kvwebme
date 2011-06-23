@@ -198,8 +198,8 @@ function products_add_to_cart(){
 		$_SERVER['HTTP_REFERER'],
 		$vat,
 		$id,
-		(int)$product->vals['online-store']['_deliver_free'],
-		(int)$product->vals['online-store']['_not_discountable']
+		(int)(@$product->vals['online-store']['_deliver_free']),
+		(int)(@$product->vals['online-store']['_not_discountable'])
 	);
 }
 function Products_listCategories($params, &$smarty){
@@ -509,7 +509,14 @@ class ProductType{
 						$f->n,
 						$prefix.$h.$suffix
 					);
-				break; // }
+					break; // }
+				case 'selected-image': // {
+					$smarty->assign(
+						$f->n,
+						'<input type="hidden" name="products_values_'.$f->n.'" '
+						.'class="product-field '.$f->n.$required.'"/>'
+					);
+					break; // }
 				default: // { everything else
 					if (@$f->u) {
 						$smarty->assign(
