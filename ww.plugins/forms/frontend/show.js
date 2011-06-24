@@ -50,5 +50,19 @@ $(function(){
 				});
 			}
 		});
+		$this.find('input[type=email].verify').change(function(){
+			var $this=$(this);
+			var name=$this.attr('name');
+			$.post('/ww.plugins/forms/frontend/send-verification.php',{
+				'name':name,
+				'email':$this.val()
+			}, function(ret) {
+				if (ret.error) {
+					return alert(ret.error);
+				}
+				$this.next().css('display', 'block');
+				alert('please check your email for a verification code, and fill it in');
+			});
+		});
 	});
 });

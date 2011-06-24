@@ -56,8 +56,15 @@ function Form_send($page, $vars) {
 					$plaintext.='selected option: '
 						.htmlspecialchars($r2['name']).$separator;
 				}
-			break;
+				break;
 			// }
+			case 'email': // {
+				if ($r2['extra']) {
+					if (@$_REQUEST[$name.'_verify']!=$_SESSION['form_input_email_verify_'.$name]) {
+						$err.='<em>Email validation code was not correct.</em><br />';
+					}
+				}
+				break; // }
 			case 'date':case 'ccdate': // {
 				$val=date_m2h(@$_REQUEST[$name]);
 				if ($r2['type']=='ccdate') {
@@ -77,9 +84,9 @@ function Form_send($page, $vars) {
 					.htmlspecialchars($val).$separator;
 				// }
 		}
-		if ($r2['isrequired']&&$val=='')
+		if ($r2['isrequired']&&$_REQUEST[$name]=='')
 			$err.='<em>You must fill in the <strong>' . $r2['name'] . '</strong> field.</em><br />';
-		if ($r2['type']=='email' && !filter_var($val, FILTER_VALIDATE_EMAIL))
+		if ($r2['type']=='email' && !filter_var($_REQUEST[$name], FILTER_VALIDATE_EMAIL))
 			$err.='<em>You must provide a valid email in the <strong>' . $r2['name'] . '</strong> field.</em><br />';
 	}
 	if ($vars['forms_captcha_required']) {
@@ -287,10 +294,19 @@ function Form_showForm(
 				$has_date=true;
 				break; // }
 			case 'email': // {
+				if ($r2['extra']) {
+					$class.=' verify';
+					$verify='<input style="display:none" name="'.$name
+						.'_verify" value="" placeholder="verification code"/>';
+					$_SESSION['form_input_email_verify_'.$name]=rand(10000, 99999);
+				}
+				else {
+					$verify='';
+				}
 				$d=$only_show_contents
 					?$_REQUEST[$name]
-					:'<input id="'.$name.'" name="'.$name.'" value="'.$val
-						.'" class="email'.$class.' text" />';
+					:'<input type="email" id="'.$name.'" name="'.$name.'" value="'.$val
+						.'" class="email'.$class.' text" />'.$verify;
 				break; // }
 			case 'file': // {
 				$d=$only_show_contents

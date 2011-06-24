@@ -161,6 +161,11 @@ foreach ($q2 as $r2) {
 			$c.='<input type="hidden" name="formfieldElementsExtra['.$i
 				.']" class="forms-textarea" value="'.$r2['extra'].'"/>';
 			break; // }
+		case 'email': // {
+			$c.='<input type="checkbox" name="formfieldElementsExtra['.$i
+				.']"'.($r2['extra']?' checked="checked"':'').'/>tick this if you '
+				.'want the reader to verify their email address before submitting.';
+			break; // }
 		default: // {
 			$c.= wInput('formfieldElementsExtra['.$i.']', 'hidden', $r2['extra']);
 			// }
