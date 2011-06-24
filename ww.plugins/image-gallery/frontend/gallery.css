@@ -25,17 +25,21 @@
 }
 #big-prev-link,#prev-link{
 	left:-35px;
-}
-#big-prev-link:hover,#prev-link:hover{
 	background: url('/ww.plugins/image-gallery/frontend/arrow-left.png')
 		center no-repeat;
+	opacity:.7;
+}
+#big-prev-link:hover,#prev-link:hover{
+	opacity:1;
 }
 #next-link,#big-next-link{
 	right:-35px;
-}
-#next-link:hover,#big-next-link:hover{
 	background: url('/ww.plugins/image-gallery/frontend/arrow-right.png')
 		center no-repeat;
+	opacity:.7;
+}
+#next-link:hover,#big-next-link:hover{
+	opacity:1;
 }
 .image-selected{
 	border:2px solid #000;
@@ -54,6 +58,7 @@
 .ad-image img{
 	position:absolute;
 	bottom:0;
+	left:0;
 }
 .ad-image-description{
 	display:none;
@@ -101,4 +106,8 @@
 	margin:0 auto;
 	text-align:center;
 	padding:0;
+}
+
+#image-gallery-wrapper{
+	text-align:center;
 }

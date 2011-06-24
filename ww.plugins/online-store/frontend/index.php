@@ -317,7 +317,7 @@ if (!$submitted) {
 			if ($item['vat'] && !$user_is_vat_free) {
 				$vattable+=$totalItemCost;
 			}
-			if (!isset($item['delivery_free']) || !$item['delivery_free']) {
+			if (!(@$item['delivery_free'])) {
 				$deliveryTotal+=$totalItemCost;
 			}
 			if (!isset($item['not_discountable']) || !$item['not_discountable']) {

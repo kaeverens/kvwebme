@@ -412,7 +412,7 @@ function products_images($params,&$smarty){
 			var image=$(".ad-image img").attr("src").split(",");
 			image=image[0].split("/");
 			image=image[2];
-			$(\'input[name="image-selected"]\').val(image);
+			$(\'input[name="products_values_image"]\').val(image);
 		};
 	});';
 	WW_addInlineScript($script);

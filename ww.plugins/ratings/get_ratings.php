@@ -31,25 +31,27 @@ $ratings = dbAll( $query );
 
 // { calculate ratings
 $scores = array( );
-for( $i = 0; $i < count( $names ); ++$i ){
-	$count = 0;
-	$num = 0;
-	foreach( $ratings as $rating ){
-		if( $rating[ 'name' ] == $names[ $i ] ){
-			$count += $rating[ 'rating' ];
-			++$num;
+if ($ratings!==false) {
+	for( $i = 0; $i < count( $names ); ++$i ) {
+		$count = 0;
+		$num = 0;
+		foreach ( $ratings as $rating ) {
+			if( $rating[ 'name' ] == $names[ $i ] ) {
+				$count += $rating[ 'rating' ];
+				++$num;
+			}
 		}
+		if ( $count == 0 ) {
+			$count = 'none';
+		}
+		else {
+			$count = ( $count / $num );
+		}
+		$scores[ $names[ $i ] ][ 'rating' ] = $count;
+		$scores[ $names[ $i ] ][ 'voters' ] = $num;
 	}
-	if( $count == 0 )
-		$count = 'none';
-	else
-		$count = ( $count / $num );
-	$scores[ $names[ $i ] ][ 'rating' ] = $count;
-	$scores[ $names[ $i ] ][ 'voters' ] = $num;
-
 }
 // }
 
 echo json_encode( $scores );
 exit;
-?>

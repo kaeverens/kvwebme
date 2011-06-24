@@ -264,7 +264,7 @@ if (file_exists(USERBASE.'ww.cache/image-gallery/'.$page['id'])) {
 } 
 file_put_contents(
   USERBASE.'ww.cache/image-gallery/'.$page['id'],
-  $vars['gallery-template']
+  @$vars['gallery-template']
 );
 ww_addScript('/ww.plugins/image-gallery/admin/admin.js');
 ww_addScript('/ww.plugins/image-gallery/j/make-tabs.js');

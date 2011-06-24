@@ -153,6 +153,7 @@ function products_add_to_cart(){
 	$long_desc='';
 	$md5='';
 	$pt=ProductType::getInstance($product->vals['product_type_id']);
+	$long_desc='';
 	foreach ($_REQUEST as $k=>$v){
 		if (strpos($k, 'products_values_')===0) {
 			$n=str_replace('products_values_', '', $k);
@@ -177,12 +178,16 @@ function products_add_to_cart(){
 						continue;
 					}
 					break; // }
+				case 'selected-image': // {
+					$v='http://'.$_SERVER['HTTP_HOST'].'/kfmget/'.$v;
+					$long_desc='<img style="float:left" src="'.$v.',width=60,height=60"/>';
+					break; // }
 			}
 			$vals[]=$n.': '.$v;
 		}
 	}
 	if (count($vals)) {
-		$long_desc=join("\n", $vals);
+		$long_desc.=join("\n", $vals).'<br style="clear:left"/>';
 		$md5=','.md5($long_desc.'products_'.$id);
 	}
 	// }
@@ -492,9 +497,8 @@ class ProductType{
 								$bits=explode('|', $e);
 								$p=(float)$bits[1];
 								if ($p) {
-									$e=$bits[0].' ('
-										.($bits[1]>0?'+'.$bits[1]:$bits[1])
-										.')';
+									$e=$bits[0]
+										.($bits[1]>0?' - add '.($_SESSION['currency']['symbol']).$bits[1]:$bits[1]);
 								}
 							}
 							$h.='<option value="'.htmlspecialchars($o).'">'

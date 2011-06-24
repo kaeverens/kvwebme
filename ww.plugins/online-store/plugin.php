@@ -281,8 +281,8 @@ function OnlineStore_showBasketWidget($vars=null) {
 	*
 	* @return array
 	*/
-function OnlineStore_getPostageAndPackaging($total,$country,$weight){
-	if (!OnlineStore_getNumItems()) {
+function OnlineStore_getPostageAndPackaging($total, $country, $weight) {
+	if (!OnlineStore_getNumItems() || !$total) {
 		return array('name'=>'none', 'total'=>0);
 	}
 	$pandps=OnlineStore_getPostageAndPackagingData();

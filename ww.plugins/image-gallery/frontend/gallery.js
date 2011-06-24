@@ -44,7 +44,7 @@ var Gallery={
 		customDisplayPrevious:null,
 		customDisplaySlideshow:null,
 		customDisplayImageCallback:null,
-		customDisplayCaption:null,
+		customDisplayCaption:null
 	},
 	// keeps track of how far through the images.files
 	// array the grid display is
@@ -104,13 +104,12 @@ var Gallery={
 			},
 			'json'
 		);
-
 		if(this.options.display=='grid'){
 			$('#next-link')
 				.css({
 					'background'
 					:'url("/ww.plugins/image-gallery/frontend/arrow-left.png") center no-repeat',
-					'opacity':'0.3',
+					'opacity':'0.7'
 				})
 				.live('click',function(){	
 				if(Gallery.options.slideshow=='true')
@@ -123,7 +122,7 @@ var Gallery={
 			.css({
 				'background'
 				:'url("/ww.plugins/image-gallery/frontend/arrow-right.png") center no-repeat',
-				'opacity':'0.3',
+				'opacity':'0.7'
 			})
 			.live('click',function(){
 				if(Gallery.options.slideshow=='true')
@@ -133,7 +132,6 @@ var Gallery={
 				Gallery.displayPrevious();
 			});
 		}
-
 		$('.images-container a').live('click',function(){
 			if(Gallery.options.slideshow=='true')
 				Gallery.resetTimeout();
@@ -196,11 +194,12 @@ var Gallery={
 						width=parseInt($elm.attr('w'))*1.25;
 						$elm
 							.attr('t','true')
+
 							.animate({
 								'width':width+'px',
 								'height':height+'px',
 								'margin-left':'-12.5%',
-								'margin-top':'-12.5%',
+								'margin-top':'-12.5%'
 							},
 								300,
 								function(){
@@ -216,7 +215,7 @@ var Gallery={
 					$(this).animate({
 						'width':width+'px',
 						'height':height+'px',
-						'margin':'0',
+						'margin':'0'
 					},
 						300
 					);
@@ -527,6 +526,7 @@ var Gallery={
 		});
 		return false;
 	},
+
 	displayImage:function(e){ // displays the main "big" image if present
 		if(!this.images.files[e])
 			return;
@@ -563,6 +563,7 @@ var Gallery={
 				}
 			});
 	},
+
 	displayImageCallback:function(){ // executed when display image animation complete
 		Gallery.caption();
 		if(typeof(Gallery.options.customDisplayImageCallback)=='function'){
@@ -579,7 +580,7 @@ var Gallery={
 		$('.ad-image span')
 			.html(caption)
 			.css({
-				'width':width+'px',
+				'width':width+'px'
 			})
 			.slideDown('fast');
 	},
@@ -635,7 +636,7 @@ var Gallery={
 				(file.width*(this.options.thumbsize/file.height)),
 				this.options.thumbsize
 			];
-	},
+	}
 };
 
 $(function(){
