@@ -534,6 +534,9 @@ var Gallery={
 		$('.ad-image span').hide();
 		$('.ad-image img')
 			.hide()
+			.click(function(){
+				lightbox_show($(this).attr('src').replace(/,.*/, ''));
+			})
 			.attr(
 				'src','/kfmget/'+this.images.files[e].id+',width='
 				+ this.options.imageWidth+',height='

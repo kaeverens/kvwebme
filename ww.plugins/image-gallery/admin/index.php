@@ -104,7 +104,7 @@ foreach($types as $type){
 		$c.=' selected="selected"';
 	$c.=' value="'.strtolower($type).'">'.$type.'</option>';
 }
-$c.='</select><br/>';
+$c.='</select>Note: to create a custom layout, choose <strong>Custom</strong><br />';
 if($vars['gallery-template-type']=='')
 	$vars['gallery-template-type']='list';
 if($vars['gallery-template-type']=='custom'){
@@ -187,7 +187,7 @@ $c.='<td><input name="page_vars[image_gallery_image_x]"';
 $c.=' value="'.$width.'"/>';
 // }
 // { thumbnail size
-$ts=(int)$vars['image_gallery_thumbsize'];
+$ts=(int)@$vars['image_gallery_thumbsize'];
 $ts=$ts?$ts:150;
 $c.='<tr><th>Thumb Size</th><td>'
 	.'<input name="page_vars[image_gallery_thumbsize]" value="'.$ts.'" />'
