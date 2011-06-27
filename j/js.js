@@ -143,8 +143,13 @@ $(function(){
 	var id=el.id.replace(/ajaxmenu/,'');
 	if(id && id=='am_top')return;
 	loadScript('/j/menu.php?pageid='+pagedata.id);
-	$('a[target=popup]').click(function(){
+	$('a[target=popup]').live('click', function(){
 		lightbox_show($(this).attr('href'));
 		return false;
 	});
-});
+	if (!window.console) {
+		window.console={
+			"log":function(v){}
+		};
+	}
+});	

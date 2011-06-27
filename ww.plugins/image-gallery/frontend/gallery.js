@@ -63,35 +63,24 @@ var Gallery={
 	gallery:function(){ return $('.ad-gallery') },
 	init:function(){ // collects options from html and sets events
 		// { get options from html
-		var display=this.gallery().attr('display');
-		if(display)
-			this.options.display=display;
-		var thumbsize=this.gallery().attr('thumbsize');
-		if(thumbsize)
-			this.options.thumbsize=parseInt(thumbsize);
-		var imageHeight=$('#gallery-image').attr('height');
-		if(imageHeight)
-			this.options.imageHeight=imageHeight;
-		var imageWidth=$('#gallery-image').attr('width');
-		if(imageWidth)
-			this.options.imageWidth=imageWidth;
-		var effect=$('#gallery-image').attr('effect');
-		if(effect)
-			this.options.effect=effect;
-		var hover=this.gallery().attr('hover');
-		if(hover)
-			this.options.hover=hover;
-		var slide=this.gallery().attr('slideshow');
-		if(slide){
-			this.options.slideshow=slide;
-			this.options.slideshowTime=this.gallery().attr('slideshowtime');
+		var $gallery=this.gallery();
+		var opts={};
+		var names={
+			"display":"display", "thumbsize":"thumbsize", "imageHeight":"height",
+			"imageWidth":"width", "effect":"effect", "hover":"hover",
+			"slideshow":"slideshow", "directory":"directory", "ratio":"ratio"
+		};
+		for (var k in names) {
+			var val=$gallery.attr(names[k]);
+			if (val) {
+				opts[k]=val;
+			}
 		}
-		var directory=this.gallery().attr('directory');
-		if(directory)
-			this.options.directory=directory;
-		var ratio=this.gallery().attr('ratio');
-		if(ratio)
-			this.options.ratio=ratio;
+		$.extend(this.options, opts);
+		this.options.thumbsize=parseInt(this.options.thumbsize);
+		if (this.options.slideshow) {
+			this.options.slideshowTime=$gallery.attr('slideshowtime');
+		}
 		// }
 		$.post(
 			'/ww.plugins/image-gallery/frontend/get-images.php?id='+pagedata.id,
@@ -106,31 +95,21 @@ var Gallery={
 		);
 		if(this.options.display=='grid'){
 			$('#next-link')
-				.css({
-					'background'
-					:'url("/ww.plugins/image-gallery/frontend/arrow-left.png") center no-repeat',
-					'opacity':'0.7'
-				})
 				.live('click',function(){	
-				if(Gallery.options.slideshow=='true')
-					Gallery.resetTimeout();
-				if($('.ad-thumb-list').hasClass('working'))
-					return;
-				Gallery.displayNext();
-			});
+					if(Gallery.options.slideshow=='true')
+						Gallery.resetTimeout();
+					if($('.ad-thumb-list').hasClass('working'))
+						return;
+					Gallery.displayNext();
+				});
 			$('#prev-link')	
-			.css({
-				'background'
-				:'url("/ww.plugins/image-gallery/frontend/arrow-right.png") center no-repeat',
-				'opacity':'0.7'
-			})
-			.live('click',function(){
-				if(Gallery.options.slideshow=='true')
-					Gallery.resetTimeout();
-				if($('.ad-thumb-list').hasClass('working'))
-					return;
-				Gallery.displayPrevious();
-			});
+				.live('click',function(){
+					if(Gallery.options.slideshow=='true')
+						Gallery.resetTimeout();
+					if($('.ad-thumb-list').hasClass('working'))
+						return;
+					Gallery.displayPrevious();
+				});
 		}
 		$('.images-container a').live('click',function(){
 			if(Gallery.options.slideshow=='true')
@@ -267,10 +246,8 @@ var Gallery={
 			case 'custom':
 				if(typeof(this.options.customDisplayInit)=='function'){
 					return this.options.customDisplayInit();
-					break;
 				}
-				else
-					this.options.display='list';
+				this.options.display='list';
 			case 'list':
 				var items=this.gallery().attr('cols');
 				this.options.items=(items)?parseInt(items):6;
@@ -343,32 +320,20 @@ var Gallery={
 		}
 	},
 	displayGrid:function(){ // shows the grid display using a carousel
-		var file,size=this.options.thumbsize,popup
-		,row=0,html='<table class="images-container"><tr>';
+		var file,size=this.options.thumbsize,row=0,j,html='<table class="images-container"><tr>';
 		this.current=0;
 		$.each(this.images.files,function(i){
 			if(i%Gallery.options.items==0){
 				++row;
 				html+='</tr><tr>';
 			}
-			if(row==(Gallery.options.rows+1)||!Gallery.images.files[Gallery.position])
+			j=Gallery.position;
+			if(row==(Gallery.options.rows+1)||!Gallery.images.files[j])
 				return false;
-			file=Gallery.images.files[Gallery.position];
-			popup=(Gallery.options.hover=='popup')?
-				' target="popup"':
-				((Gallery.options.hover=='opacity')?
-					' style="opacity:0.7"':
-					''
-				);
+			file=Gallery.images.files[j];
 			var dimensions=Gallery.ratio(file);
-			style=(Gallery.options.ratio=='crop')?
-				' style="width:'+size+'px;height:'+size+'px;overflow:hidden"':'';
 			html+='<td style="width:'+size+'px">'
-					+ '<a href="/kfmget/'+file.id+'" id="'+Gallery.position+'"'+popup+style+'>'
-						+ '<img src="/kfmget/'+file.id+',width='+dimensions[0]
-						+',height='+dimensions[1]+'"/>'
-					+ '</a>'
-				+ '</td>';
+					+ Gallery.imgHTML(file.id, j, dimensions, size)+ '</td>';
 			++Gallery.position;
 			++Gallery.current;
 		});
@@ -376,43 +341,35 @@ var Gallery={
 		$('#slider').append(html);
 	},
 	displayList:function(els){ // displays elements from this.images.files in a list
-		var file,size=this.options.thumbsize,popup,
-		html='',i;
+		var file,size=this.options.thumbsize,html='',i;
 		for(i=els[0];i<=els[els.length-1];++i){
 			if(!Gallery.images.files[i]){
-				if(i==els[0])
-					return false;
-				else
-					return html;
+				return i==els[0]?false:html;
 			}
 			file=Gallery.images.files[i];
-			popup=(Gallery.options.hover=='popup')?
-				' target="popup"':
-				((Gallery.options.hover=='opacity')?
-					' style="opacity:0.7"':
-					''
-				);
 			var dimensions=Gallery.ratio(file);
-			style=(Gallery.options.ratio=='crop')?
-				' style="width:'+size+'px;height:'+size+'px;overflow:hidden"':'';
 			html+='<li style="width:'+size+'px;">'
-					+ '<a href="/kfmget/'+file.id+'" id="'+i+'"'+popup+style+'>'
-						+ '<img src="/kfmget/'+file.id+',width='+dimensions[0]+','
-						+ 'height='+dimensions[1]+'"/>'
-					+ '</a>'
+				+Gallery.imgHTML(file.id, i, dimensions, size)
 				+ '</li>';
 		};
 		return html;
+	},
+	imgHTML: function(fid, id, xy, size) {
+		var style=Gallery.options.ratio=='crop'
+			?' style="width:'+size+'px;height:'+size+'px;overflow:hidden"':'';
+		var popup=Gallery.options.hover=='popup'
+			?' target="popup"'
+			:(Gallery.options.hover=='opacity'?' style="opacity:0.7"':'');
+		return '<a href="/kfmget/'+fid+'" id="'+id+'"'+popup+style+'><img src="'
+			+'/kfmget/'+fid+',width='+xy[0]+',height='+xy[1]+'"/></a>';
 	},
 	displayNext:function(num){ // displays the next "page" of content
 		switch(this.options.display){
 			case 'custom':
 				if(typeof(this.options.customDisplayNext)=='function'){
 					return this.options.customDisplayNext();
-					break;
 				}
-				else
-					this.options.display='list';
+				this.options.display='list';
 			case 'list':
 				if($('.ad-thumb-list').hasClass('working'))
 					return;
@@ -444,7 +401,7 @@ var Gallery={
 					$('#slider').css({'left':left+'px'});
 					$('.ad-thumb-list').removeClass('working')
 				});
-			break;
+				break;
 			case 'grid':
 				if(this.position==this.count())
 					return this.bump('left');
@@ -454,11 +411,11 @@ var Gallery={
 				$('#slider .images-container:last')
 					.css({'left':0});
 				$('#slider')
-				.css({'left':this.width+'px'})
-				.animate({'left':'0'},1750,function(){
-        	$('#slider .images-container:first').remove();
-				});
-			break;
+					.css({'left':this.width+'px'})
+					.animate({'left':0},1750,function(){
+      	  	$('#slider .images-container:first').remove();
+					});
+				break;
 		}
 	},
 	displayPrevious:function(num){ // does the opposite of displayNext
@@ -466,10 +423,8 @@ var Gallery={
 			case 'custom':
 				if(typeof(this.options.customDisplayPrevious)=='function'){
 					return this.options.customDisplayPrevious();
-					break;
 				}
-				else
-					this.options.display='list';
+				this.options.display='list';
 			case 'list':
 				if($('.ad-thumb-list').hasClass('working'))
 					return;
@@ -502,7 +457,7 @@ var Gallery={
 							$('.ad-thumb-list li:last').remove();
 						$('.ad-thumb-list').removeClass('working');
 					});
-			break;
+				break;
 			case 'grid':
 				if(this.position<=(this.options.rows*this.options.items))
 					return this.bump('right');
@@ -514,7 +469,7 @@ var Gallery={
 					.animate({'left':0},1750,function(){
 						$('#slider .images-container:first').remove();
 					});
-			break;
+				break;
 		}
 	},
 	bump:function(offset){ // bump effect
@@ -527,43 +482,37 @@ var Gallery={
 		return false;
 	},
 	displayImage:function(e){ // displays the main "big" image if present
-		if(!this.images.files[e])
+		var files=this.images.files;
+		if(!files[e])
 			return;
 		var current=$('.ad-image img').attr('num');
 		var sequence=[];
-		for (var i=0;i<this.images.files.length;++i) {
-			sequence[i]=this.images.files[i].id;
+		for (var i=0;i<files.length;++i) {
+			sequence[i]=files[i].id;
 		}
 		$('.ad-image span').hide();
 		$('.ad-image img')
 			.hide()
 			.attr(
-				'src','/kfmget/'+this.images.files[e].id+',width='
+				'src','/kfmget/'+files[e].id+',width='
 				+ this.options.imageWidth+',height='
 				+ this.options.imageHeight
 			)
-			.attr('title',this.images.files[e].caption)
+			.attr('title',files[e].caption)
 			.attr('num',e)
 			.attr('sequence', sequence)
 			.one('load',function(){
-				var width=$('.ad-image img').width();
-				$('.ad-image').css({'width':width+'px','height':Gallery.options.imageHeight+'px'});
+				$('.ad-image').css({'width':$('.ad-image img').width()+'px','height':Gallery.options.imageHeight+'px'});
 				switch(Gallery.options.effect){
           case 'fade': 
             $(this).fadeIn('slow',Gallery.displayImageCallback); 
-          break; 
+          	break; 
           case 'slideVertical': 
-            if(current<e) 
-              $(this).show('slide',{'direction':'up'},500,Gallery.displayImageCallback); 
-            else 
-              $(this).show('slide',{'direction':'down'},500,Gallery.displayImageCallback); 
-          break; 
+						$(this).show('slide',{'direction':(current<e?'up':'down')},500,Gallery.displayImageCallback);
+          	break; 
           case 'slideHorizontal': 
-            if(current<e) 
-              $(this).show('slide',{'direction':'right'},500,Gallery.displayImageCallback); 
-            else 
-              $(this).show('slide',{'direction':'left'},500,Gallery.displayImageCallback); 
-          break; 
+						$(this).show('slide',{'direction':(current<e?'right':'left')},500,Gallery.displayImageCallback);
+          	break; 
 				}
 			});
 	},
@@ -582,9 +531,7 @@ var Gallery={
 		var width=$('.ad-image img').width()-14;
 		$('.ad-image span')
 			.html(caption)
-			.css({
-				'width':width+'px'
-			})
+			.css('width', width+'px')
 			.slideDown('fast');
 	},
 	slideshow:function(){ // creates a slideshow using settimeout
@@ -593,7 +540,7 @@ var Gallery={
 		$('.ad-image').addClass('working');
 		var n=parseInt($('.ad-image img').attr('num'));
 		$('#'+n+' img').removeClass('image-selected');
-		n=((n+1)==Gallery.count())?0:++n;
+		n=(n+1)==Gallery.count()?0:++n;
 		$('#'+n+' img').addClass('image-selected');
 		switch(this.options.display){	
 			case 'custom':
@@ -606,39 +553,31 @@ var Gallery={
 			case 'list':	
 				Gallery.displayNext(1);
 				Gallery.displayImage(n);
-			break;
+				break;
 			case 'grid':
 				if(n!=0&&n%(this.options.items*this.options.rows)==0)
 					Gallery.displayNext();
 				else if(n==(this.count()-1))
 					Gallery.displayPrevious();
 				Gallery.displayImage(n);
-			break;
+				break;
 		}
 		Gallery.t=setTimeout("Gallery.slideshow()",Gallery.options.slideshowTime);
 		$('.ad-image').removeClass('working');
 	},
 	resetTimeout:function(){ // resets the slideshow timeout
 		clearTimeout(Gallery.t);
-		Gallery.t=setTimeout("Gallery.slideshow()",Gallery.options.slideshowTime);
+		Gallery.t=setTimeout("Gallery.slideshow()", Gallery.options.slideshowTime);
 	},
 	noImages:function(){ // die message - there are no images
-		this.gallery().html('<p><i>No Images were found</i></p>');
-		return;
+		return this.gallery().html('<p><i>No Images were found</i></p>');
 	},
 	ratio:function(file){
 		if(this.options.ratio=='normal')
 			return [this.options.thumbsize,this.options.thumbsize];
-		if(file.height>file.width)
-			return [
-				this.options.thumbsize,
-				(file.height*(this.options.thumbsize/file.width))
-			];
-		else
-			return [
-				(file.width*(this.options.thumbsize/file.height)),
-				this.options.thumbsize
-			];
+		return file.height>file.width
+			?[this.options.thumbsize, (file.height*(this.options.thumbsize/file.width))]
+			:[(file.width*(this.options.thumbsize/file.height)), this.options.thumbsize];
 	}
 };
 
