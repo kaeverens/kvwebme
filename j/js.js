@@ -94,7 +94,7 @@ function lightbox_show(src, sequence, seq_num) {
 	}
 	var left_arrow='',right_arrow='';
 	var width_to_add=26;
-	if (sequence) {
+	if (sequence.length) {
 		sequence=sequence.toString().split(',');
 		var lnum=+seq_num-1;
 		if (lnum<0) {
@@ -144,7 +144,18 @@ $(function(){
 	if(id && id=='am_top')return;
 	loadScript('/j/menu.php?pageid='+pagedata.id);
 	$('a[target=popup]').live('click', function(){
-		lightbox_show($(this).attr('href'));
+		var src=$(this).attr('href');
+		var sequence=[],num=0,id;
+		if (window.Gallery) {
+			for (var i=0;i<Gallery.images.files.length;++i) {
+				id=Gallery.images.files[i].id;
+				if ('/kfmget/'+id == src) {
+					num=i;
+				}
+				sequence[i]='/kfmget/'+id;
+			}
+		}
+		lightbox_show(src, sequence, num);
 		return false;
 	});
 	if (!window.console) {
