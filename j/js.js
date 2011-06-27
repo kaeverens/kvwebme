@@ -84,14 +84,37 @@ var Json = {
 		return $.toJSON(arr);
 	}
 };
-function lightbox_show(src) {
+function lightbox_show(src, sequence, seq_num) {
+	$('#lightbox-image').closest('table').dialog('close');
 	var max_width=parseInt($(window).width()*.9),
 		max_height=parseInt($(window).height()*.9);
 	if (/kfmget\/[0-9]/.test(src)) {
 		src=src.replace(/,.*/, '');
 		src=src+',width='+max_width+',height='+max_height;
 	}
-	$('<table><tr><td><img id="lightbox-image" src="'+src+'"/></td></tr></table>')
+	var left_arrow='',right_arrow='';
+	var width_to_add=26;
+	if (sequence) {
+		sequence=sequence.toString().split(',');
+		var lnum=+seq_num-1;
+		if (lnum<0) {
+			lnum=sequence.length-1;
+		}
+		left_arrow='<td><a href="javascript:lightbox_show(\''
+			+sequence[lnum]+'\',\''+sequence+'\','+lnum
+			+');"><img src="/ww.plugins/image-gallery/frontend/arrow-left.png"/>'
+			+'</a></td>';
+		var rnum=+seq_num+1;
+		if (rnum>=sequence.length) {
+			rnum=0;
+		}
+		right_arrow='<td><a href="javascript:lightbox_show(\''
+			+sequence[rnum]+'\',\''+sequence+'\','+rnum
+			+');"><img src="/ww.plugins/image-gallery/frontend/arrow-right.png"/>'
+			+'</a></td>';
+		width_to_add+=60;
+	}
+	$('<table><tr>'+left_arrow+'<td><img id="lightbox-image" src="'+src+'"/></td>'+right_arrow+'</tr></table>')
 		.dialog({
 			"modal":true,
 			"close":function(){
@@ -105,7 +128,7 @@ function lightbox_show(src) {
 			$this[0].height*=.9;
 		}
 		$this.closest('table').dialog({
-			width:$this[0].offsetWidth+26
+			width:$this[0].offsetWidth+width_to_add
 		});
 		var $dialog=$this.closest('.ui-dialog');
 		$dialog.css({

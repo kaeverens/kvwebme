@@ -84,10 +84,12 @@ function Form_send($page, $vars) {
 					.htmlspecialchars($val).$separator;
 				// }
 		}
-		if ($r2['isrequired']&&$_REQUEST[$name]=='')
+		if ($r2['isrequired'] && @$_REQUEST[$name]=='') {
 			$err.='<em>You must fill in the <strong>' . $r2['name'] . '</strong> field.</em><br />';
-		if ($r2['type']=='email' && !filter_var($_REQUEST[$name], FILTER_VALIDATE_EMAIL))
+		}
+		if ($r2['type']=='email' && !filter_var(@$_REQUEST[$name], FILTER_VALIDATE_EMAIL)) {
 			$err.='<em>You must provide a valid email in the <strong>' . $r2['name'] . '</strong> field.</em><br />';
+		}
 	}
 	if ($vars['forms_captcha_required']) {
 		require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/recaptcha.php';

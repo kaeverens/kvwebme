@@ -526,17 +526,17 @@ var Gallery={
 		});
 		return false;
 	},
-
 	displayImage:function(e){ // displays the main "big" image if present
 		if(!this.images.files[e])
 			return;
 		var current=$('.ad-image img').attr('num');
+		var sequence=[];
+		for (var i=0;i<this.images.files.length;++i) {
+			sequence[i]=this.images.files[i].id;
+		}
 		$('.ad-image span').hide();
 		$('.ad-image img')
 			.hide()
-			.click(function(){
-				lightbox_show($(this).attr('src').replace(/,.*/, ''));
-			})
 			.attr(
 				'src','/kfmget/'+this.images.files[e].id+',width='
 				+ this.options.imageWidth+',height='
@@ -544,6 +544,7 @@ var Gallery={
 			)
 			.attr('title',this.images.files[e].caption)
 			.attr('num',e)
+			.attr('sequence', sequence)
 			.one('load',function(){
 				var width=$('.ad-image img').width();
 				$('.ad-image').css({'width':width+'px','height':Gallery.options.imageHeight+'px'});
@@ -566,7 +567,6 @@ var Gallery={
 				}
 			});
 	},
-
 	displayImageCallback:function(){ // executed when display image animation complete
 		Gallery.caption();
 		if(typeof(Gallery.options.customDisplayImageCallback)=='function'){
@@ -645,4 +645,13 @@ var Gallery={
 $(function(){
 	// initialise the gallery
 	Gallery.init();
+	$('.ad-image img')
+		.live('click', function(){
+			var $this=$(this);
+			var sequence=$this.attr('sequence').split(',');
+			for (var i=0;i<sequence.length;++i) {
+				sequence[i]='/kfmget/'+sequence[i];
+			}
+			lightbox_show($this.attr('src').replace(/,.*/, ''), sequence, $this.attr('num'));
+		})
 });
