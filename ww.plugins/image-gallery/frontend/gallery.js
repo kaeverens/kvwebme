@@ -59,15 +59,20 @@ var Gallery={
 	// holds the images associated with this gallery
 	// populated in the init function
 	images:{},
+	cached_gallery:null,
 	// returns a selector for gallery-images
-	gallery:function(){ return $('.ad-gallery') },
+	gallery:function(){
+		if (!Gallery.cached_gallery) {
+			Gallery.cached_gallery= $('.ad-gallery');
+		}
+		return Gallery.cached_gallery;
+	},
 	init:function(){ // collects options from html and sets events
 		// { get options from html
 		var $gallery=this.gallery();
 		var opts={};
 		var names={
-			"display":"display", "thumbsize":"thumbsize", "imageHeight":"height",
-			"imageWidth":"width", "effect":"effect", "hover":"hover",
+			"display":"display", "thumbsize":"thumbsize","hover":"hover",
 			"slideshow":"slideshow", "directory":"directory", "ratio":"ratio"
 		};
 		for (var k in names) {
@@ -81,6 +86,17 @@ var Gallery={
 		if (this.options.slideshow) {
 			this.options.slideshowTime=$gallery.attr('slideshowtime');
 		}
+		var opts={};
+		var names=[
+			"imageHeight","imageWidth","effect"
+		];
+		for(var k in names){
+			var val=$('#gallery-image').attr(names[k]);
+			if(val){
+				opts[names[k]]=val;
+			}
+		}
+		$.extend(this.options,opts);
 		// }
 		$.post(
 			'/ww.plugins/image-gallery/frontend/get-images.php?id='+pagedata.id,
