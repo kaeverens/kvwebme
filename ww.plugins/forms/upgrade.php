@@ -5,7 +5,7 @@
   * PHP Version 5
   *
 	* @category   Whatever
-  * @package    WebworksWebme
+  * @package    Webme
   * @subpackage Form
   * @author     Kae Verens <kae@kvsites.ie>
   * @license    GPL Version 2

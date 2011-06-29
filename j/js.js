@@ -94,8 +94,8 @@ function lightbox_show(src, sequence, seq_num) {
 	}
 	var left_arrow='',right_arrow='';
 	var width_to_add=26;
-	if (sequence.length) {
-		sequence=sequence.toString().split(',');
+	sequence=sequence.toString().split(',');
+	if (sequence.length>1) {
 		var lnum=+seq_num-1;
 		if (lnum<0) {
 			lnum=sequence.length-1;

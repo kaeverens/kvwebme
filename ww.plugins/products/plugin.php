@@ -482,14 +482,18 @@ class ProductType{
 				break; // }
 				case 'selectbox': // {
 					if (@$f->u) {
+						$valid_entries=explode("\n", $val);
+						foreach ($valid_entries as $k=>$v) {
+							$valid_entries[$k]=trim($v);
+						}
 						$h='<select name="products_values_'.$f->n.'" class="'.$required.'">';
-						if ($f->e=='') {
+						if (!(@$f->e)) {
 							$f->e=$val;
 						}
 						$es=explode("\n", $f->e);
 						foreach ($es as $e) {
 							$e=trim($e);
-							if ($e=='') {
+							if ($e=='' || !in_array($e, $valid_entries)) {
 								continue;
 							}
 							$o=$e;
