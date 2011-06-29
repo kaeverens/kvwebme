@@ -103,8 +103,11 @@ var Gallery={
 			{'image_gallery_directory':Gallery.options.directory },
 			function(items){
 				Gallery.images=items;
-				if(Gallery.images.files.length==0)
+				var length=Gallery.images.files.length;
+				if(length==0)
 					return Gallery.noImages();
+				else if(length==1)
+					Gallery.options.links=false;
 				Gallery.display();
 			},
 			'json'
