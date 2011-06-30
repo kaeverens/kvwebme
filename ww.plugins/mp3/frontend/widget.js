@@ -3,7 +3,7 @@ var MP3={
 		link_to_play:false,
 		play_button:false,
 		big_play_button:false,
-		progress:false,
+		progress:false
 	},
 	t:0, // holds the position timeout
 	playing:false, // true if file is being played
@@ -49,15 +49,14 @@ var MP3={
 				var $this=$(this);
 				if(MP3.options.big_play_button)
 					return MP3.mainButton($this);
-				var playing=$this.attr('playing');
-				if(playing){
+				if($this.hasClass('playing')){
 					MP3.pause();
-					$this.attr('playing',false);
+					$this.removeClass('playing');
 				}
 				else{
 					var file=$this.attr('href');
 					MP3.play(file);
-					$this.attr('playing',true);
+					$this.addClass('playing');
 				}
 				return false;
 			});
@@ -103,13 +102,12 @@ var MP3={
 		jwplayer('mp3-container').setup({
 			flashplayer:'/ww.plugins/mp3/frontend/player.swf',
 			file:file,
-			height:270,
-			width:480
+			height:10,
+			width:10
 		});
-		$('#mp3-container_wrapper').css({'left':0,'top':0,'width':0,'height':0});
-		jwplayer().play();
-		if(this.options.progress)
-			this.beginProgress();
+		$('#mp3-container_wrapper').css({'left':'-10000px','top':0});
+		jwplayer('mp3-container').onPlay(MP3.beginProgress);
+		jwplayer('mp3-container').play();
 	},
 	pause:function(){
 		this.playing=false;
@@ -123,16 +121,32 @@ var MP3={
 			button.addClass('playing');
 		var file=$this.attr('href');
 		$this.attr('position','');
+		$('.mp3_playlist li a').each(function(){
+			$(this).removeClass('playing');
+		});
+		$this.addClass('playing');
 		button.attr('file',file);
 		MP3.play(file);
 		return false;
 	},
 	beginProgress:function(){
 		this.t=setTimeout(function(){
-			var position=(jwplayer().getPosition()/jwplayer().getDuration()*100);
+			var position=jwplayer().getPosition();
+			var duration=jwplayer().getDuration();
+			var percentage=(position/duration*100);
 			$('.mp3_progress').progressbar({'value':position});
+			$('.mp3_position').html(MP3.millToSec(position));
+			$('.mp3_duration').html(MP3.millToSec(duration));
 			MP3.beginProgress();
-		},600);
+		},999);
+	},
+	millToSec:function(time){
+		var minutes=parseInt((time/60)%60);
+		var seconds=parseInt(Math.round(time%60));
+		if(isNaN(minutes)||isNaN(seconds))
+			return '00:00';
+		var result=(minutes<10?"0"+minutes:minutes)+':'+(seconds<10?'0'+seconds:seconds);
+		return result;
 	}
 };
 $(function(){

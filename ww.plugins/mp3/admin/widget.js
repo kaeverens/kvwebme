@@ -34,7 +34,6 @@ function mp3_edit(ev){
 				+ '<span style="float:right">'
 					+ '<a class="mp3_add_link" href="javascript:;">[+] Add File</a>'
 				+ '</span><br style="clear:both"/>'
-				+ '<form class="mp3_form">'
 				+ '<input type="hidden" name="mp3_id" value="'+res.id+'"/>'
 				+ '<table class="mp3_table">'
 					+ '<tr>'
@@ -64,49 +63,48 @@ function mp3_edit(ev){
 				+ '<textarea style="width:600px;height:250px;" id="mp3_template'
 				+ ww.mp3.editor_instances+'" name="mp3_template'
 				+ ww.mp3.editor_instances+'">'+res.template+'</textarea>'
-				+ '</div></form></div>';
-			$('<div id="mp3_dialog">'+html+'</div>')
-			.dialog({ // dialog creation
-				minWidth:630,
-				minHeight:450,
-				height:450,
-				width:630,
-				modal:true,
-				beforeclose:function(){
-					if(!ww.mp3.rte)return;
-					ww.mp3.rte.destroy();
-					ww.mp3.rte=null;
-				},
-				buttons:{
-					Save:function(){
-						var data=$('.mp3_form').serializeObject();
-						data.mp3_template=
-							CKEDITOR.instances['mp3_template'+ww.mp3.editor_instances]
-							.getData();
-						console.log(data);
-						$.post(
-							'/ww.plugins/mp3/admin/widget-form.php',
-							data,
-							function(ret){
-								if(ret.id!=ret.id_was)
-									$('#mp3_editlink_'+ret.id_was)
-										.attr('id','mp3_editlink_'+ret.id);
-								var id=ret.id;
-								var w=$(el).closest('.widget-wrapper');
-								var wd=w.data('widget');
-								wd.id=id;
-								w.data('widget',wd);
-								updateWidgets(w.closest('.panel-wrapper'));
-							},
-							'json'
-						);
-						$(this).dialog('close').remove();
+				+ '</div></div>';
+			$('<form id="mp3_dialog">'+html+'</form>')
+				.dialog({ // dialog creation
+					minWidth:630,
+					minHeight:450,
+					height:450,
+					width:630,
+					modal:true,
+					beforeclose:function(){
+						if(!ww.mp3.rte)return;
+						ww.mp3.rte.destroy();
+						ww.mp3.rte=null;
 					},
-					Close:function(){
-						$(this).dialog('close').remove();
-					},
-				}
-			});
+					buttons:{
+						Save:function(){
+							var data=$('#mp3_dialog').serializeObject();
+							data.mp3_template=
+								CKEDITOR.instances['mp3_template'+ww.mp3.editor_instances]
+								.getData();
+							$.post(
+								'/ww.plugins/mp3/admin/widget-form.php',
+								data,
+								function(ret){
+									if(ret.id!=ret.id_was)
+										$('#mp3_editlink_'+ret.id_was)
+											.attr('id','mp3_editlink_'+ret.id);
+									var id=ret.id;
+									var w=$(el).closest('.widget-wrapper');
+									var wd=w.data('widget');
+									wd.id=id;
+									w.data('widget',wd);
+									updateWidgets(w.closest('.panel-wrapper'));
+								},
+								'json'
+							);
+							$(this).dialog('close').remove();
+						},
+						Close:function(){
+							$(this).dialog('close').remove();
+						},
+					}
+				});
 			$('#mp3_dialog .mp3_content').tabs();
 			ww.mp3.rte=CKEDITOR.replace(
 				'mp3_template'+ww.mp3.editor_instances,
