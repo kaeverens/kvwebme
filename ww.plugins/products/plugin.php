@@ -491,7 +491,7 @@ class ProductType{
 							$f->e=$val;
 						}
 						$es=explode("\n", $f->e);
-						foreach ($es as $e) {
+						foreach ($valid_entries as $e) {
 							$e=trim($e);
 							if ($e=='' || !in_array($e, $valid_entries)) {
 								continue;
@@ -524,6 +524,21 @@ class ProductType{
 						'<input type="hidden" name="products_values_'.$f->n.'" '
 						.'class="product-field '.$f->n.$required.'"/>'
 					);
+					break; // }
+				case 'textarea': // { everything else
+					if (@$f->u) {
+						$smarty->assign(
+							$f->n,
+							'<textarea class="product-field '.$f->n.$required
+							.'" name="products_values_'.$f->n.'"></textarea>'
+						);
+					}
+					else {
+						$smarty->assign(
+							$f->n,
+							$prefix.$val.$suffix
+						);
+					}
 					break; // }
 				default: // { everything else
 					if (@$f->u) {

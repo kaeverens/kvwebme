@@ -125,6 +125,7 @@ $(function(){
 	$('#products-form').submit(products_form_validate);
 });
 $('#product_type_id').change(function() {
+return;
 	$('#data-fields-table').remove();
 	var newType = $(this).val();
 	var product = $(this).attr('product');
