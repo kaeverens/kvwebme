@@ -534,7 +534,7 @@ var Gallery={
 					.attr('num',e)
 					.attr('sequence', sequence)
 					.one('load',function(){
-						$('.ad-image').css({'width':$('.ad-image img').width()+'px','height':Gallery.options.imageHeight+'px'});
+						$('.ad-image').css({'width':Gallery.options.imageWidth+'px','height':Gallery.options.imageHeight+'px'});
 						switch(Gallery.options.effect){
     		      case 'fade': 
         		    $(this).fadeIn('slow',Gallery.displayImageCallback); 
