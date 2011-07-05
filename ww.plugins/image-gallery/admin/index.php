@@ -1,24 +1,4 @@
 <?php
-$kfm_do_not_save_session=true;
-require_once KFM_BASE_PATH.'/api/api.php';
-require_once KFM_BASE_PATH.'/initialise.php';
-function image_gallery_get_subdirs($base,$dir){
-	$arr=array();
-	$D=new DirectoryIterator($base.$dir);
-	$ds=array();
-	foreach($D as $dname){
-		$d=$dname.'';
-		if($d{0}=='.')continue;
-		if(!is_dir($base.$dir.'/'.$d))continue;
-		$ds[]=$d;
-	}
-	asort($ds);
-	foreach($ds as $d){
-		$arr[]=$dir.'/'.$d;
-		$arr=array_merge($arr,image_gallery_get_subdirs($base,$dir.'/'.$d));
-	}
-	return $arr;
-}
 $cssurl=false;
 $c = '<div id="image-gallery-tabs">';
 $c.= '<ul>';
@@ -30,6 +10,7 @@ $c.= '<li><a href="#image-gallery-advanced">Advanced Settings</a></li>';
 $c.= '</ul>';
 // { images
 $c.='<div id="image-gallery-images">';
+// { image gallery directory - if not exists create it
 if (!$vars['image_gallery_directory']||!is_dir(USERBASE.'f/'.$vars['image_gallery_directory'])){
 	if(!is_dir(USERBASE.'f/image-galleries')) {
 		mkdir(USERBASE.'f/image-galleries');
@@ -43,43 +24,75 @@ if (!$vars['image_gallery_directory']||!is_dir(USERBASE.'f/'.$vars['image_galler
 		mkdir($dir);
 	}
 }
-$dir=preg_replace('/^\//','',$vars['image_gallery_directory']);
-$dir_id=kfm_api_getDirectoryID($dir);
-$images=kfm_loadFiles($dir_id);
-$images=$images['files'];
+$c.='<input type="hidden" name="page_vars[image_gallery_directory]" value="';
+$c.=$vars['image_gallery_directory'].'"/>';
+// }
+// { uploader
+WW_addScript('/ww.plugins/image-gallery/files/swfobject.js');
+WW_addScript('/ww.plugins/image-gallery/files/uploadify.jquery.min.js');
+WW_addCSS('/ww.plugins/image-gallery/files/uploadify.css');
+$script='
+$(function(){
+	$("#uploader").uploadify({
+		"uploader":"/ww.plugins/image-gallery/files/uploadify.swf",
+		"script":"/ww.plugins/image-gallery/admin/upload.php",
+		"cancelImg":"/ww.plugins/image-gallery/files/cancel.png",
+		"multi":"true",
+		"buttonText":"Upload Files",
+		"removeCompleted":"true",
+		"fileDataName":"file_upload",
+		"scriptData":{
+			"PHPSESSID":"'.session_id().'",
+			"gallery_id":"'.$page['id'].'"
+		},
+		"onComplete":function(event,ID,fileObj,response,data){
+			console.log("test");
+			$.post(
+				"/ww.plugins/image-gallery/admin/new-files.php",
+				{
+					"gallery_id":"'.$page['id'].'",
+					"id":response
+				},
+				function(html){
+					$("#image-gallery-wrapper").append(html);
+				}
+			);
+		},
+		"fileExt":"*.jpg,*.jpeg,*.png,*.gif",
+		"auto":true
+	});
+});
+';
+WW_addInlineScript($script);
+$c.='<div id="upload">';
+$c.='<input type="file" name="file_upload" id="uploader"/>';
+$c.='</div>';
+// }
+$images=dbAll(
+	'select * from image_gallery where gallery_id='.$page['id'].' order by position asc'
+);
 $n=count($images);
-$c.='<iframe src="/ww.plugins/image-gallery/admin/uploader.php'
-	.'?image_gallery_directory='.urlencode($vars['image_gallery_directory']).'"'
-	.' style="width:400px;height:50px;border:0;overflow:hidden">'
-	.'</iframe>'
-	.'<script>window.kfm={alert:function(){}};window.kfm_vars={};'
-	.'function x_kfm_loadFiles(){}function kfm_dir_openNode(){'
-	.'document.location="/ww.admin/pages/form.php?id="+window.page_menu_currentpage;}'
-	.'</script>';
 if($n){
-	$c.='<div id="image-gallery-wrapper">';
+	$c.='<p>Note: Drag the images to reorder them</p>';
+	$c.='<ul id="image-gallery-wrapper">';
 	for($i=0;$i<$n;$i++){
-		$c.='<div><img src="/kfmget/'.$images[$i]['id'].','
-		.'width=64,height=64" id="image-gallery-image'.$images[$i]['id'].'" '
-		.'title="'.str_replace('\\\\n','<br />',$images[$i]['caption']).'" />'
-		.'<br />'
-		.'<input type="checkbox" '
-		.'id="image-gallery-dchk-'.$images[$i]['id'].'" />'
-		.'<a href="javascript:;" id="image-gallery-dbtn-'.$images[$i]['id'].'"'
-		.'class="image-gallery-delete-link">delete</a><br />'
-		.'<a href="javascript:;" caption="'
-		.htmlspecialchars(@$images[$i]['caption']).'"'
-		.'class="image-gallery-caption-link" id="image-gallery-caption-link-'
-		.$images[$i]['id'].'">';
-		if (isset($images[$i]['caption'])&&!empty($images[$i]['caption'])) {
-			$c.='Edit Caption';
-		}
-		else {
-			$c.='Add Caption';
-		}
-		$c.='</a></div>';
+		$id=$images[$i]['id'];
+		$meta=json_decode($images[$i]['meta'],true);
+		$caption=(isset($meta['caption'])&&$meta['caption']!='')?
+			' title="'.$meta['caption'].'"':
+			'';
+		$c.='<li class="gallery-image-container" id="image_'.$id.'">'
+			.'<img src="/ww.plugins/image-gallery/get-image.php?uri='.$vars['image_gallery_directory'].'/'.$meta['name'].',width=64,height=64"'
+			.$caption.' id="image-gallery-image'.$id.'"/><br/>'
+			.'<a href="javascript:;" class="delete-img" id="'.$id.'">'
+			.'Delete</a><br/>'
+			.'<a href="javascript:;" class="edit-img" id="'.$id.'">';
+		$c.=(isset($meta['caption'])&&$meta['caption']!='')?
+			'Edit':'Add';
+		$c.=' Caption</a>'
+			.'</li>';
 	}
-	$c.='</div>';
+	$c.='</ul><br style="clear:both"/>';
 }
 else{
 	$c.='<em>no images yet. please upload some.</em>';
@@ -89,33 +102,21 @@ $c.='<br style="clear:both"/>';
 // }
 // { gallery template
 $types=array(
+	'---',
 	'List',
 	'Grid',
-	'Simple',
-	'Custom',
+	'Simple'
 );
 $c.='<div id="image-gallery-template">'
-	.'<p>This controls how the gallery is displayed, choose from some of the layouts listed below.</p>'
-	.'Gallery Layout: <select name="page_vars[gallery-template-type]'
-	.'" id="gallery-template-type">';
+	.'<p>This controls how the gallery is displayed, choose from some of the '
+	.'layouts listed below as a starting point. These layouts are only a guide, you may change them.</p>'
+	.'Gallery Layout: <select'
+	.' id="gallery-template-type">';
 foreach($types as $type){
-	$c.='<option';
-	if(@$vars['gallery-template-type']==strtolower($type))
-		$c.=' selected="selected"';
-	$c.=' value="'.strtolower($type).'">'.$type.'</option>';
+	$c.='<option value="'.strtolower($type).'">'.$type.'</option>';
 }
-$c.='</select>Note: to create a custom layout, choose <strong>Custom</strong><br />';
-if($vars['gallery-template-type']=='')
-	$vars['gallery-template-type']='list';
-if($vars['gallery-template-type']=='custom'){
-	$content=(@$vars['gallery-template']=='')?
-		'{{GALLERY_IMAGE}}{{GALLERY_IMAGES}}':
-		$vars['gallery-template'];
-}
-else
-	$content=file_get_contents(
-		SCRIPTBASE
-		.'ww.plugins/image-gallery/admin/types/'.$vars['gallery-template-type'].'.tpl');
+$c.='</select>';
+$content=$vars['gallery-template'];
 $c.=ckeditor('page_vars[gallery-template]',$content,0);
 $c.='</div>';
 // }
@@ -139,29 +140,7 @@ $c.='</div>';
 // }
 // { advanced settings
 $c.='<div id="image-gallery-advanced">';
-if(
-	!isset($vars['image_gallery_directory']) 
-	|| !$vars['image_gallery_directory']
-) {
-	$vars['image_gallery_directory']='/';
-}
-$c.='<table><tr><th>Image Directory</th>'
-	.'<td><select id="image_gallery_directory" '
-	.'name="page_vars[image_gallery_directory]">'
-	.'<option value="'.htmlspecialchars($vars['image_gallery_directory']).'">'
-	.htmlspecialchars($vars['image_gallery_directory']).'</option>';
-foreach(image_gallery_get_subdirs(USERBASE.'f','') as $d){
-	$c.='<option value="'.htmlspecialchars($d).'"';
-	if($d==$vars['image_gallery_directory'])$c.=' selected="selected"';
-	$c.='>'.htmlspecialchars($d).'</option>';
-}
-$c.='</select></td>';
-$c.='<td colspan="2">'
-	.'<a style="background:#ff0;font-weight:bold;color:red;display:block;'
-	.'text-align:center;" href="#page_vars[image_gallery_directory]" '
-	.'onclick="javascript:window.open(\'/j/kfm/'
-	.'?startup_folder=\'+$(\'#image_gallery_directory\').attr(\'value\'),'
-	.'\'kfm\',\'modal,width=800,height=600\');">Manage Images</a></td></tr>';
+$c.='<table>';
 // { columns
 $c.='<tr><th>Columns</th><td>'
 	.'<input name="page_vars[image_gallery_x]" value="'
@@ -267,5 +246,4 @@ file_put_contents(
   @$vars['gallery-template']
 );
 ww_addScript('/ww.plugins/image-gallery/admin/admin.js');
-ww_addScript('/ww.plugins/image-gallery/j/make-tabs.js');
 $c.='<link rel="stylesheet" href="/ww.plugins/image-gallery/admin/admin.css" />';

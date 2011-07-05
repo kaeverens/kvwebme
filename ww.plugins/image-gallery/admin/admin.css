@@ -1,6 +1,19 @@
-#image-gallery-wrapper div{
-	display:inline-block;
-	width:70px;
-	height:80px;
-	text-align:center;
+#image-gallery-wrapper{
+	list-style-type:none;
+	margin:10px 0;
+	padding:0;
+}
+#image-gallery-wrapper li{
+	float:left;
+	padding:9px;
+	margin:1px;
+	width:64px;
+	height:110px;
+	border:1px dashed #ccc;
+	border-radius:4px;
+	background:#fff
+}
+#image-gallery-wrapper li.image-gallery-highlight{
+	border:1px solid #999;
+	background:#ccc;
 }

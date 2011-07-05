@@ -46,7 +46,7 @@ var Gallery={
 		customDisplayImageCallback:null,
 		customDisplayCaption:null
 	},
-	// keeps track of how far through the images.files
+	// keeps track of how far through the images
 	// array the grid display is
 	position:0,
 	width:0,
@@ -103,7 +103,7 @@ var Gallery={
 			{'image_gallery_directory':Gallery.options.directory },
 			function(items){
 				Gallery.images=items;
-				var length=Gallery.images.files.length;
+				var length=Gallery.images.length;
 				if(length==0)
 					return Gallery.noImages();
 				else if(length==1)
@@ -251,7 +251,7 @@ var Gallery={
 	},
   count:function(){ // counts the images object
     var size = 0, key;
-    for (key in this.images.files)
+    for (key in this.images)
       ++size;
     return size;
   },
@@ -341,46 +341,46 @@ var Gallery={
 	displayGrid:function(){ // shows the grid display using a carousel
 		var file,size=this.options.thumbsize,row=0,j,html='<table class="images-container"><tr>';
 		this.current=0;
-		$.each(this.images.files,function(i){
+		$.each(this.images,function(i){
 			if(i%Gallery.options.items==0){
 				++row;
 				html+='</tr><tr>';
 			}
 			j=Gallery.position;
-			if(row==(Gallery.options.rows+1)||!Gallery.images.files[j])
+			if(row==(Gallery.options.rows+1)||!Gallery.images[j])
 				return false;
-			file=Gallery.images.files[j];
+			file=Gallery.images[j];
 			var dimensions=Gallery.ratio(file);
 			html+='<td style="width:'+size+'px">'
-					+ Gallery.imgHTML(file.id, j, dimensions, size)+ '</td>';
+					+ Gallery.imgHTML(file.id, j, dimensions, size, file.url)+ '</td>';
 			++Gallery.position;
 			++Gallery.current;
 		});
 		html+='</tr></table>';
 		$('#slider').append(html);
 	},
-	displayList:function(els){ // displays elements from this.images.files in a list
+	displayList:function(els){ // displays elements from this.images in a list
 		var file,size=this.options.thumbsize,html='',i;
 		for(i=els[0];i<=els[els.length-1];++i){
-			if(!Gallery.images.files[i]){
+			if(!Gallery.images[i]){
 				return i==els[0]?false:html;
 			}
-			file=Gallery.images.files[i];
+			file=Gallery.images[i];
 			var dimensions=Gallery.ratio(file);
 			html+='<li style="width:'+size+'px;">'
-				+Gallery.imgHTML(file.id, i, dimensions, size)
+				+Gallery.imgHTML(file.id, i, dimensions, size, file.url)
 				+ '</li>';
 		};
 		return html;
 	},
-	imgHTML: function(fid, id, xy, size) {
+	imgHTML: function(fid, id, xy, size, url) {
 		var style=Gallery.options.ratio=='crop'
 			?' style="width:'+size+'px;height:'+size+'px;overflow:hidden"':'';
 		var popup=Gallery.options.hover=='popup'
 			?' target="popup"'
 			:(Gallery.options.hover=='opacity'?' style="opacity:0.7"':'');
-		return '<a href="/kfmget/'+fid+'" id="'+id+'"'+popup+style+'><img src="'
-			+'/kfmget/'+fid+',width='+xy[0]+',height='+xy[1]+'"/></a>';
+		return '<a href="'+url+'" id="'+id+'"'+popup+style+'><img src="'
+			+url+',width='+xy[0]+',height='+xy[1]+'"/></a>';
 	},
 	displayNext:function(num){ // displays the next "page" of content
 		switch(this.options.display){
@@ -501,7 +501,7 @@ var Gallery={
 		return false;
 	},
 	displayImage:function(e){ // displays the main "big" image if present
-		var files=this.images.files;
+		var files=this.images;
 		if(!files[e])
 			return;
 		var current=$('.ad-image img').attr('num');
@@ -513,7 +513,7 @@ var Gallery={
 		$('.ad-image img')
 			.hide()
 			.attr(
-				'src','/kfmget/'+files[e].id+',width='
+				'src',files[e].url+',width='
 				+ this.options.imageWidth+',height='
 				+ this.options.imageHeight
 			)

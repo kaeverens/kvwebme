@@ -35,10 +35,10 @@ function image_gallery_template_image($params,&$smarty){
 	$pagedata=$smarty->_tpl_vars['pagedata'];
 	$width=(empty($pagedata->vars['image_gallery_image_x']))?
 		'':
-		' width="'.$pagedata->vars['image_gallery_image_x'].'"';
+		' imageWidth="'.$pagedata->vars['image_gallery_image_x'].'"';
 	$height=(empty($pagedata->vars['image_gallery_image_y']))?
 		'':
-		' height="'.$pagedata->vars['image_gallery_image_y'].'"';
+		' imageHeight="'.$pagedata->vars['image_gallery_image_y'].'"';
 	$effect=(empty($pagedata->vars['image_gallery_effect']))?
 		'':
 		' effect="'.$pagedata->vars['image_gallery_effect'].'"';	
