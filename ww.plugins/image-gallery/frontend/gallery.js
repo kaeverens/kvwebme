@@ -534,7 +534,7 @@ var Gallery={
 					.attr('num',e)
 					.attr('sequence', sequence)
 					.one('load',function(){
-						$('.ad-image').css({'width':Gallery.options.imageWidth+'px','height':Gallery.options.imageHeight+'px'});
+						$('.ad-image').css({'width':$('.ad-image img').width()+'px','height':Gallery.options.imageHeight+'px'});
 						switch(Gallery.options.effect){
     		      case 'fade': 
         		    $(this).fadeIn('slow',Gallery.displayImageCallback); 
@@ -552,6 +552,7 @@ var Gallery={
 				$.getScript('/ww.plugins/image-gallery/frontend/jwplayer.js',function(){
 					var width=Gallery.options.imageWidth;
 					var height=Gallery.options.imageHeight;
+					$('.ad-image').css({'width':width+'px','height':height+'px'});
 					$('.ad-image img')
 						.hide()
 						.attr('src','')
@@ -566,6 +567,7 @@ var Gallery={
 						'width':width
 					});
 					jwplayer().play();
+					Gallery.displayImageCallback();
 				});
 			break;
 		}
