@@ -11,6 +11,7 @@ $c.= '</ul>';
 // { images
 $c.='<div id="image-gallery-images">';
 // { image gallery directory - if not exists create it
+$c.='<a href="javascript:;" style="float:right" id="video">Add Video File</a>';
 if (!$vars['image_gallery_directory']||!is_dir(USERBASE.'f/'.$vars['image_gallery_directory'])){
 	if(!is_dir(USERBASE.'f/image-galleries')) {
 		mkdir(USERBASE.'f/image-galleries');
@@ -78,19 +79,33 @@ if($n){
 	for($i=0;$i<$n;$i++){
 		$id=$images[$i]['id'];
 		$meta=json_decode($images[$i]['meta'],true);
-		$caption=(isset($meta['caption'])&&$meta['caption']!='')?
-			' title="'.$meta['caption'].'"':
-			'';
-		$c.='<li class="gallery-image-container" id="image_'.$id.'">'
-			.'<img src="/ww.plugins/image-gallery/get-image.php?uri='.$vars['image_gallery_directory'].'/'.$meta['name'].',width=64,height=64"'
-			.$caption.' id="image-gallery-image'.$id.'"/><br/>'
-			.'<a href="javascript:;" class="delete-img" id="'.$id.'">'
-			.'Delete</a><br/>'
-			.'<a href="javascript:;" class="edit-img" id="'.$id.'">';
-		$c.=(isset($meta['caption'])&&$meta['caption']!='')?
-			'Edit':'Add';
-		$c.=' Caption</a>'
-			.'</li>';
+		switch($images[$i]['media']){
+			case 'image':
+				$caption=(isset($meta['caption'])&&$meta['caption']!='')?
+					' title="'.$meta['caption'].'"':
+					'';
+				$c.='<li class="gallery-image-container" id="image_'.$id.'">'
+					.'<img src="/ww.plugins/image-gallery/get-image.php?uri='.$vars['image_gallery_directory'].'/'.$meta['name'].',width=64,height=64"'
+					.$caption.' id="image-gallery-image'.$id.'"/><br/>'
+					.'<a href="javascript:;" class="delete-img" id="'.$id.'">'
+					.'Delete</a><br/>'
+					.'<a href="javascript:;" class="edit-img" id="'.$id.'">';
+				$c.=(isset($meta['caption'])&&$meta['caption']!='')?
+					'Edit':'Add';
+				$c.=' Caption</a>'
+					.'</li>';
+			break;
+			case 'video':
+				$image=($meta['image']=='')?
+					'/ww.plugins/image-gallery/files/video.png':
+					'/ww.plugins/image-gallery/get-image.php?uri='.$meta['image'].',width=64,height=64';
+				$c.='<li class="gallery-image-container" id="image_'.$id.'">'
+					.'<img src="'.$image.'"'
+					.' id="image-gallery-image'.$id.'"/><br/>'
+					.'<a href="javascript:;" class="delete-img" id="'.$id.'">'
+					.'Delete</a></li>';
+			break;
+		}
 	}
 	$c.='</ul><br style="clear:both"/>';
 }

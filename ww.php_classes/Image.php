@@ -11,20 +11,26 @@ class Image{
 	private $caching;
 	private $cache_dir;
 	public function __construct($file,$caching=false){
-		if(!file_exists($file))
-			return false;
-		$dimensions=getimagesize($file);
-		$this->cache_dir=USERBASE.'ww.cache/webme-images-cache/';
-		$this->type=$dimensions['mime'];
 		$this->file=$file;
-		$this->width=$dimensions[0];
-		$this->height=$dimensions[1];
-		$this->caching=$caching;
+		$this->cache_dir=USERBASE.'ww.cache/webme-images-cache/';
 		if($caching){ // if caching is enabled make sure dirs are present
 			if(!is_dir($this->cache_dir)){
 				mkdir($this->cache_dir);
 			}
+			if(strpos($file,'http://')!==false){
+				$name=md5($file);
+				if(!file_exists($this->cache_dir.$name)){
+					$content=Image::curl($file);
+					file_put_contents($this->cache_dir.$name,$content);
+				}
+				$this->file=$this->cache_dir.$name;
+			}
 		}
+		$dimensions=getimagesize($this->file);
+		$this->type=$dimensions['mime'];
+		$this->width=$dimensions[0];
+		$this->height=$dimensions[1];
+		$this->caching=$caching;
 	}
 	public function resize($w,$h,$crop=false){
 		if($this->caching){
@@ -53,7 +59,7 @@ class Image{
 				$newwidth=$w;
 			}
 		}
-		$this->render();
+		$this->image=Image::render($this->type,$this->file);
 		$dst=imagecreatetruecolor($newwidth,$newheight);
 		imagecopyresampled($dst,$this->image,0,0,0,0,$newwidth,$newheight,$width,$height);
 		$this->image=$dst;
@@ -62,22 +68,22 @@ class Image{
 			$this->display($this->cache_dir.$name);
 		}
 	}
-	private function render(){
-		switch($this->type){
+	public static function render($type,$file){
+		switch($type){
 			case 'image/jpeg':
-				$this->image=imagecreatefromjpeg($this->file);
+				return imagecreatefromjpeg($file);
 			break;
 			case 'image/png':
-				$this->image=imagecreatefrompng($this->file);
+				return imagecreatefrompng($file);
 			break;
 			case 'image/gif':
-				$this->image=imagecreatefromgif($this->file);
+				return imagecreatefromgif($file);
 			break;
 		}
 	}
 	public function display($file=false){
 		if($this->image=='')
-			$this->render();
+			$this->image=Image::render($this->type,$this->file);
 		header('Content-Type: '.$this->type);
 		switch($this->type){
 			case 'image/jpeg':
@@ -90,6 +96,14 @@ class Image{
 				imagegif($this->image,$file);
 			break;
 		}
+	}
+	public static function curl($url){
+		$ch=curl_init();
+		curl_setopt($ch,CURLOPT_URL,$url);
+		curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+		$response=curl_exec($ch);
+		curl_close($ch);
+		return $response;
 	}
 }
 ?>

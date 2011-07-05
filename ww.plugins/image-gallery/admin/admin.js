@@ -74,4 +74,39 @@ $(function(){
 			}
 		});
 	});
+	$('#video').click(function(){
+		$(
+			'<div title="Add Video File">'
+			+ 'Link: '
+			+ '<input type="text" id="link" value="http://"/><br/>'
+			+ 'Thumbnail: '
+			+ '<input type="text" id="image" value="http://"/>'
+			+ '</div>'
+		).dialog({
+			modal:true,
+			buttons:{
+				Save:function(){
+					var link=$('#link').val();
+					var image=$('#image').val();
+					var id=$('#id').val();
+					$.post(
+						'/ww.plugins/image-gallery/admin/new-video.php',
+						{ 'link':link,"id":id,"image":image }
+					);
+					if(image==''||image=='http://')
+						image='/ww.plugins/image-gallery/files/video.png';
+					var c='<li class="gallery-image-container" id="image_'+id+'">'
+					+'<img src="/ww.plugins/image-gallery/get-image.php?uri='+image+',width=64,height=64"'
+					+' id="image-gallery-image'+id+'"/><br/>'
+					+'<a href="javascript:;" class="delete-img" id="'+id+'">'
+					+'Delete</a><br/></li>';
+					$('#image-gallery-wrapper').append(c);
+					$(this).dialog('close').remove();
+				},
+				Cancel:function(){
+					$(this).dialog('close').remove();
+				}
+			}
+		});
+	});
 });

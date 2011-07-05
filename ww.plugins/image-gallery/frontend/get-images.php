@@ -42,14 +42,30 @@ else{ // fall back to reading from database
 	$f=array();
 	foreach($files as $file){
 		$meta=json_decode($file['meta'],true);
-		array_push($f,array(
-			'id'=>$file['id'],
-			'name'=>$meta['name'],
-			'width'=>$meta['width'],
-			'height'=>$meta['height'],
-			'caption'=>$meta['caption'],
-			'url'=>'/ww.plugins/image-gallery/get-image.php?uri='.$dir.'/'.$meta['name']
-		));
+		switch($file['media']){
+			case 'image':
+				array_push($f,array(
+					'id'=>$file['id'],
+					'name'=>$meta['name'],
+					'media'=>$file['media'],
+					'width'=>$meta['width'],
+					'height'=>$meta['height'],
+					'caption'=>$meta['caption'],
+					'url'=>'/ww.plugins/image-gallery/get-image.php?uri='.$dir.'/'.$meta['name']
+				));
+			break;
+			case 'video':
+				$image=($meta['image']=='')?
+					'/ww.plugins/image-gallery/files/video.png':
+					$meta['image'];
+				array_push($f,array(
+					'id'=>$file['id'],
+					'media'=>$file['media'],
+					'image'=>'/ww.plugins/image-gallery/get-image.php?uri='.$image,
+					'href'=>$meta['href']
+				));
+			break;
+		}
 	}
 }
 die(json_encode($f));
