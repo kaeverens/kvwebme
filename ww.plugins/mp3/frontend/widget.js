@@ -68,11 +68,15 @@ var MP3={
 					$this.removeClass('playing');
 					var position=jwplayer().getPosition();
 					$this.attr('position',position);
+					if($this.hasClass('image'))
+						$this.html('Pause');
 					MP3.pause();
 				}
 				else{
 					var file=$this.attr('file');
 					var position=$this.attr('position');
+					if($this.hasClass('image'))
+						$this.html('Play');
 					if(position)
 						jwplayer().seek(position);
 					else if(file)
@@ -107,6 +111,7 @@ var MP3={
 		});
 		$('#mp3-container_wrapper').css({'left':'-10000px','top':0});
 		jwplayer('mp3-container').onPlay(MP3.beginProgress);
+		jwplayer().setVolume(70);
 		jwplayer('mp3-container').play();
 	},
 	pause:function(){

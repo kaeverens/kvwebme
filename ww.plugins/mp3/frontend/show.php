@@ -58,23 +58,20 @@ function mp3_play($params,&$smarty){
 	$opts=array(
 		'image_link'=>false,
 	);
-	$opts=array_merge($opts,$params);
-	echo '<a href="javascript:;" class="mp3_play_link">';
-	if($opts['image_link'])
-		echo '&nbsp;';
-	else
+	array_merge($opts,$params);
+	$image=($opts['image_link'])?' image':'';
+	echo '<a href="javascript:;" class="mp3_play_link'.$image.'">';
+	if($opts['image_link']==false)
 		echo 'PLAY';
+	else
+		echo '&nbsp;';
 	echo '</a>';
 }
 function mp3_progress($params,&$smarty){
 	$opts=array(
 		'show_times'=>false,
 	);
-	$opts=array_merge($opts,$params);
+	array_merge($opts,$params);
 	$times=($opts['show_times'])?' times="true"':'';
-	echo '<div class="progress_wrapper">';
-	echo 	'<div class="mp3_progress"'.$times.'></div>';
-  echo  '<div class="mp3_duration">00:00</div>';
-	echo 	'<div class="mp3_position">00:00</div>';
-	echo '</div>';
+	echo '<div class="mp3_progress"'.$times.'></div>';
 }

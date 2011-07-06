@@ -246,8 +246,14 @@ var Gallery={
 				}
 			});
 		}
-		$('#gallery-image').css({'height':Gallery.options.imageHeight+'px',
-			'width':Gallery.options.imageWidth+'px'});
+		$('#gallery-image')
+			.css({
+				'height':Gallery.options.imageHeight+'px',
+				'width':Gallery.options.imageWidth+'px'
+			});
+		setTimeout(function(){
+			$('#gallery-image').addClass('imagegallery-converted');
+		}, 1000);
 	},
 	count:function(){ // counts the images object
 		var size=0,key;
@@ -566,6 +572,7 @@ var Gallery={
 						'height':height,
 						'width':width
 					});
+					jwplayer().setVolume(70);
 					jwplayer().play();
 					Gallery.displayImageCallback();
 				});

@@ -57,12 +57,15 @@ function mp3_edit(ev){
 					+ '</tr>';
 				++e;
 			}
+			var template=(res.template&&res.template!='')?
+				res.template:
+				'{{LIST link_to_play="true"}}<br/>{{PLAY}}{{PROGRESS show_time="true"}}';
 			html+='</table></div>'
 				+ '<div id="template">'
 				+ '<p><b>Available Tags:{{LIST}} {{PLAY}} {{PROGRESS}}</b></p>'
 				+ '<textarea style="width:600px;height:250px;" id="mp3_template'
 				+ ww.mp3.editor_instances+'" name="mp3_template'
-				+ ww.mp3.editor_instances+'">'+res.template+'</textarea>'
+				+ ww.mp3.editor_instances+'">'+template+'</textarea>'
 				+ '</div></div>';
 			$('<form id="mp3_dialog">'+html+'</form>')
 				.dialog({ // dialog creation

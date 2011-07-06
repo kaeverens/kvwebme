@@ -55,12 +55,12 @@
 	margin:0 auto;
 	text-align:center;
 }
-.ad-image img{
+.imagegallery-converted .ad-image img{
 	position:absolute;
 	bottom:0;
 	left:0;
 }
-.ad-image-description{
+.imagegallery-converted .ad-image-description{
 	display:none;
 	position:absolute;
 	left:0;
