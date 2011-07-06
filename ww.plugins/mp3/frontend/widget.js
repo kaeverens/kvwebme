@@ -12,13 +12,13 @@ var MP3={
 		var opts={};
 		var names=[
 			'link_to_play',
-			'play_button',
+			'play_button'
 		];
 		var list=$('.mp3_playlist');
 		for(var i=0;i<names.length;++i) {
 			var val=list.attr(names[i]);
 			if(val){
-				opts[names[i]]=Boolean(val);
+				opts[names[i]]=(val==='true');
 			}
 		}
 		$.extend(this.options,opts);
@@ -98,12 +98,12 @@ var MP3={
 	play:function(file){ // play an mp3 file
 		this.playing=true;
 		$('#mp3-container_wrapper').remove();
-		$('body').append('<div id="mp3-container" style="display:none"></div>');
+		$('<div id="mp3-container"></div>').appendTo(document.body);
 		jwplayer('mp3-container').setup({
 			flashplayer:'/ww.plugins/mp3/frontend/player.swf',
 			file:file,
-			height:10,
-			width:10
+			height:100,
+			width:300
 		});
 		$('#mp3-container_wrapper').css({'left':'-10000px','top':0});
 		jwplayer('mp3-container').onPlay(MP3.beginProgress);
