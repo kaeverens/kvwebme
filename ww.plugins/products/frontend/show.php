@@ -394,9 +394,7 @@ function products_images($params,&$smarty){
 		return products_image_not_found($params,$smarty);
 	}
 	if(count($images['files'])==1){
-		WW_addInlineScript(
-			'$(function(){$(".ad-gallery").css({"display":"none"});});'
-		);
+		return '';
 	}
 	// }
 	WW_addScript('/ww.plugins/image-gallery/frontend/gallery.js');
