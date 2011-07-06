@@ -68,14 +68,14 @@ var MP3={
 					$this.removeClass('playing');
 					var position=jwplayer().getPosition();
 					$this.attr('position',position);
-					if($this.hasClass('image'))
+					if(!$this.hasClass('image'))
 						$this.html('Pause');
 					MP3.pause();
 				}
 				else{
 					var file=$this.attr('file');
 					var position=$this.attr('position');
-					if($this.hasClass('image'))
+					if(!$this.hasClass('image'))
 						$this.html('Play');
 					if(position)
 						jwplayer().seek(position);
