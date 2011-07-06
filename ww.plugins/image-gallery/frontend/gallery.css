@@ -55,16 +55,9 @@
 	margin:0 auto;
 	text-align:center;
 }
-.imagegallery-converted .ad-image img{
-	position:absolute;
-	bottom:0;
-	left:0;
-}
 .imagegallery-converted .ad-image-description{
 	display:none;
-	position:absolute;
 	left:0;
-	bottom:0;
 	position: absolute;
 	text-align:left;
 	text-decoration: none;
@@ -107,7 +100,6 @@
 	text-align:center;
 	padding:0;
 }
-
 #image-gallery-wrapper{
 	text-align:center;
 }

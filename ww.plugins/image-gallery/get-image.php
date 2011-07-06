@@ -8,8 +8,10 @@ if($uri=='')
 
 if(strpos($uri,',')!==false){ // width and height
 	$uri=explode(',',$uri);
-	$width=end(explode('=',$uri[1]));
-	$height=end(explode('=',$uri[2]));
+	$width=explode('=',$uri[1]);
+	$width=end($width);
+	$height=explode('=',$uri[2]);
+	$height=end($height);
 	$uri=$uri[0];
 }
 

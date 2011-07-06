@@ -592,10 +592,14 @@ var Gallery={
 		if(caption=="")
 			return;
 		var width=$('.ad-image img').width()-14;
+		var offset=$('.ad-image img').height();
 		$('.ad-image span')
 			.html(caption)
-			.css('width', width+'px')
-			.slideDown('fast');
+			.css({'width':width+'px','display':'none'});
+		var height=$('.ad-image span').height();
+		$('.ad-image span')
+			.css({'top':(offset-height)+'px'})
+			.fadeIn('fast');
 	},
 	slideshow:function(){ // creates a slideshow using settimeout
 		if($('.ad-image').hasClass('working'))

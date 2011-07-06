@@ -345,8 +345,7 @@ function products_image($params, &$smarty){
 		return products_image_not_found($params,$smarty);
 	}
 	$img='<img src="/kfmget/'.$iid
-		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" />'
-		.'<br /><span class="caption">'.htmlspecialchars($image->caption).'</span>';	
+		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" />';	
 	return '<div id="gallery-image" width="'.$params['width'].'" height="'.$params['height'].'" effect="fade">'
 		. '<div class="ad-image">'
 			. '<span class="dark-background ad-image-description" style="display:none"></span>'
