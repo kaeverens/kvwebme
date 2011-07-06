@@ -47,7 +47,7 @@ else{ // fall back to reading from database
 				array_push($f,array(
 					'id'=>$file['id'],
 					'name'=>$meta['name'],
-					'media'=>$file['media'],
+					'media'=>'image',
 					'width'=>$meta['width'],
 					'height'=>$meta['height'],
 					'caption'=>$meta['caption'],
@@ -60,7 +60,7 @@ else{ // fall back to reading from database
 					$meta['image'];
 				array_push($f,array(
 					'id'=>$file['id'],
-					'media'=>$file['media'],
+					'media'=>$'video',
 					'image'=>'/ww.plugins/image-gallery/get-image.php?uri='.$image,
 					'href'=>$meta['href']
 				));
