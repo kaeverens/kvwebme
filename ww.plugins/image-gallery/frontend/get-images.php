@@ -23,6 +23,7 @@ if($image_dir!=''&&is_dir(USERBASE.'f'.$image_dir)){ // load from kfm for stuff 
 			'id'=>$file['id'],
 			'name'=>$file['name'],
 			'width'=>$file['width'],
+			'media'=>'image',
 			'height'=>$file['height'],
 			'caption'=>$file['caption'],
 			'url'=>'/kfmget/'.$file['id']
@@ -60,7 +61,7 @@ else{ // fall back to reading from database
 					$meta['image'];
 				array_push($f,array(
 					'id'=>$file['id'],
-					'media'=>$'video',
+					'media'=>'video',
 					'image'=>'/ww.plugins/image-gallery/get-image.php?uri='.$image,
 					'href'=>$meta['href']
 				));
