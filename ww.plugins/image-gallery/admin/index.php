@@ -38,9 +38,9 @@ $(function(){
 		"uploader":"/ww.plugins/image-gallery/files/uploadify.swf",
 		"script":"/ww.plugins/image-gallery/admin/upload.php",
 		"cancelImg":"/ww.plugins/image-gallery/files/cancel.png",
-		"multi":"true",
+		"multi":true,
 		"buttonText":"Upload Files",
-		"removeCompleted":"true",
+		"removeCompleted":true,
 		"fileDataName":"file_upload",
 		"scriptData":{
 			"PHPSESSID":"'.session_id().'",
@@ -54,11 +54,15 @@ $(function(){
 					"id":response
 				},
 				function(html){
-					$("#image-gallery-wrapper").append(html);
+					if($("#image-gallery-wrapper"))
+						$("#image-gallery-wrapper").append(html);
+					else
+						$("#image-gallery-images").append("<ul id=\'image-gallery-wrapper\'>"+html+"</ul>");
 				}
 			);
 		},
-		"fileExt":"*.jpg,*.jpeg,*.png,*.gif",
+		"fileExt":"*.jpg;*.jpeg;*.png;*.gif",
+		"fileDesc":"Images Only",
 		"auto":true
 	});
 });
@@ -158,7 +162,7 @@ $c.='<table>';
 // { columns
 $c.='<tr><th>Columns</th><td>'
 	.'<input name="page_vars[image_gallery_x]" value="'
-	.(int)$vars['image_gallery_x'].'" /></td>';
+	.((isset($vars['image_gallery_x']))?$vars['image_gallery_x']:3).'" /></td>';
 // }
 // { main image height
 $height=(int)@$vars['image_gallery_image_y'];
@@ -170,7 +174,7 @@ $c.=' value="'.$height.'"/>';
 // { rows
 $c.='<tr><th>Rows</th><td>'
 	.'<input name="page_vars[image_gallery_y]" value="'
-	.(int)$vars['image_gallery_y'].'" /></td>';
+	.((isset($vars['image_gallery_y']))?$vars['image_gallery_y']:2).'" /></td>';
 // }
 // { main image width
 $width=(int)@$vars['image_gallery_image_x'];
@@ -244,6 +248,23 @@ $c.='</select></td>';
 $c.='<th>Slide delay:</th>';
 $c.='<td><input type="text" name="page_vars[image_gallery_slidedelay]" ';
 $c.=' value="'.$time.'"/> ms</td></tr>';
+// }
+// { show links
+$options=array('true'=>'Yes','false'=>'No');
+$c.='<tr><th>Show prev/next links:</th>';
+$c.='<td><select name="page_vars[image_gallery_links]">';
+foreach($options as $value=>$option){
+	$c.='<option value="'.$value.'"';
+	if($value==@$vars['image_gallery_links'])
+		$c.=' selected="selected"';
+	$c.='>'.$option.'</option>';
+}
+$c.='</select></td></tr>';
+$c.='<tr><th>Gallery Container Width:</th>';
+$c.='<td><input type="text" name="page_vars[image_gallery_width]" ';
+$c.=' value="'.@$vars['image_gallery_width'].'"/></td>';
+$c.='<td><i>If left blank this value will be calculated manually, this is the recommended method.</i></td>';
+$c.='</tr>';
 // }
 // }
 $c.='</table>';

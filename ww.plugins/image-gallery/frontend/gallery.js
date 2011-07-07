@@ -13,7 +13,6 @@ var Gallery={
 		// thumbnail size
 		thumbsize:90,
 		// set false to disable next and previous links
-		// - these can be set up manually
 		links:true,
 		// "hover" effect. although the popup actually
 		// happens on click, the zoom and opacity happen on hover
@@ -29,6 +28,9 @@ var Gallery={
 		// the amount of items loaded each time the next/prev
 		// links are clicked. only tested with vals 1 and 2
 		listSwitch:2,
+		// allows for a manual override of the gallery width
+		// if null, the width will be calculated by javascript
+		galleryWidth:null,
 		// slideshow
 		slideshow:false,
 		// slideshow interval between slide change
@@ -73,7 +75,8 @@ var Gallery={
 		var opts={};
 		var names={
 			"display":"display", "thumbsize":"thumbsize","hover":"hover",
-			"slideshow":"slideshow", "directory":"directory", "ratio":"ratio"
+			"slideshow":"slideshow", "directory":"directory", "ratio":"ratio",
+			"links":"links","galleryWidth":"galleryWidth"
 		};
 		for (var k in names) {
 			var val=$gallery.attr(names[k]);
@@ -277,7 +280,12 @@ var Gallery={
 				var items=this.gallery().attr('cols');
 				this.options.items=(items)?parseInt(items):6;
 				this.options.rows=1;
-				this.width=((this.options.thumbsize+2)*this.options.items);
+				if(this.options.galleryWidth==null){
+					this.width=((this.options.thumbsize+4)*this.options.items)+4;
+				}
+				else{
+					this.width=this.options.galleryWidth;
+				}
 				this.gallery().addClass('list');
 				var els=[];
 				for(var i=0;i<this.options.items;++i)
@@ -327,7 +335,12 @@ var Gallery={
 				this.options.rows=(rows)?parseInt(rows):4;
 				this.gallery().addClass('grid');
 				this.displayGrid();
-				this.width=((this.options.thumbsize+2)*this.options.items)+4;
+				if(this.options.galleryWidth==null){
+					this.width=((this.options.thumbsize+4)*this.options.items)+4;
+				}
+				else{
+					this.width=this.options.galleryWidth;
+				}
 				this.gallery().css({'width':this.width+'px'});
 			break;
 		}

@@ -4,31 +4,32 @@ require_once KFM_BASE_PATH.'/api/api.php';
 require_once KFM_BASE_PATH.'/initialise.php';
 function image_gallery_template_images($params,&$smarty){
 	$pagedata=$smarty->_tpl_vars['pagedata'];
-	$rows=(empty($pagedata->vars['image_gallery_y']))?
-		'':
-		' rows="'.$pagedata->vars['image_gallery_y'].'"';
-	$columns=(empty($pagedata->vars['image_gallery_x']))?
-		'':
-		' cols="'.$pagedata->vars['image_gallery_x'].'"';
-	$hover=(empty($params['hover']))?
-		'':
-		' hover="'.$params['hover'].'"';
-	if($hover==''&&!empty($pagedata->vars['image_gallery_hover'])){
-		$hover=' hover="'.$pagedata->vars['image_gallery_hover'].'"';
+	$args=array(
+		'image_gallery_x'=>'cols',
+		'image_gallery_y'=>'rows',
+		'image_gallery_hover'=>'hover',
+		'image_gallery_autostart'=>'slideshow',
+		'image_gallery_slidedelay'=>'slideshowTime',
+		'image_gallery_ratio'=>'ratio',
+		'image_gallery_links'=>'links',
+		'image_gallery_ratio'=>'ratio',
+		'image_gallery_width'=>'galleryWidth',
+		'image_gallery_thumbsize'=>'thumbsize'
+	);
+	$new_args=array();
+	foreach($args as $name=>$value){
+		if(isset($pagedata->vars[$name]))
+			$new_args[$value]=$pagedata->vars[$name];
 	}
-	$slideshow=(empty($pagedata->vars['image_gallery_autostart']))?
-		'':
-		' slideshow="'.$pagedata->vars['image_gallery_autostart'].'"';
-	$slideshowTime=(empty($pagedata->vars['image_gallery_slidedelay']))?
-		'':
-		' slideshowtime="'.$pagedata->vars['image_gallery_slidedelay'].'"';
-	$ratio=(empty($pagedata->vars['image_gallery_ratio']))?
-		'':
-		' ratio="'.$pagedata->vars['image_gallery_ratio'].'"';
-	$display=(empty($params['display']))?'':' display="'.$params['display'].'"';
-	$html='<div class="ad-gallery"'.$display.$hover.$columns.$rows.$slideshow.$slideshowTime.$ratio.' thumbsize="'
-		.$pagedata->vars['image_gallery_thumbsize'].'">';
-	$html.='</div>';
+	if(!empty($params['hover']))
+		$new_args['hover']=$params['hover'];
+	if(!empty($params['display']))
+		$new_args['display']=$params['display'];
+	$html='<div class="ad-gallery"';
+	foreach($new_args as $arg=>$value){
+		$html.=' '.$arg.'="'.$value.'"';
+	}
+	$html.='></div>';
 	return $html;
 }
 function image_gallery_template_image($params,&$smarty){

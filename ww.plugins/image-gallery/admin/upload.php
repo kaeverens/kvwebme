@@ -1,16 +1,10 @@
 <?php
-
 $session_id = @$_POST[ 'PHPSESSID' ];
 session_id( $session_id );
 
 require '../../../ww.incs/basics.php';
-require SCRIPTBASE . 'ww.incs/bb2html.php';
 
-/**
- * check user is logged in
- */
-$user_id = ( int ) @$_SESSION[ 'userdata' ][ 'id' ];
-if( $user_id == 0 )
+if(!is_admin())
 	exit;
 
 $gallery_id=(int)@$_POST['gallery_id'];
