@@ -147,8 +147,9 @@ $(function(){
 		var src=$(this).attr('href');
 		var sequence=[],num=0,id;
 		if (window.Gallery) {
-			for (var i=0;i<Gallery.images.files.length;++i) {
-				id=Gallery.images.files[i].id;
+			var files=Gallery.images.files||Gallery.images;
+			for (var i=0;i<files.length;++i) {
+				id=files[i].id;
 				if ('/kfmget/'+id == src) {
 					num=i;
 				}
@@ -156,7 +157,6 @@ $(function(){
 			}
 		}
 		lightbox_show(src, sequence, num);
-		return false;
 	});
 	if (!window.console) {
 		window.console={
