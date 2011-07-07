@@ -76,6 +76,42 @@ function Form_send($page, $vars) {
 				break; // }
 			case 'html-block': // { not inputs - don't add them
 				break; // }
+			case 'file': // { build $files array which emulates the $_FILES array
+				// { first remove old uploads
+				$dir=USERBASE.'f/.files/forms/';
+				if(!is_dir($dir))
+					break;
+				$fs=new DirectoryIterator($dir);
+				$time=time();
+				foreach($fs as $f){
+					if($f->isDot())
+						continue;
+					if($f->isDir()){
+						$diff=$time-$f->getMTime();
+						if($diff>600){ // file is older than 10 minutes
+							WW_Directory::delete($f->getPathname());
+						}
+					}
+				}
+				// }
+				$session_id=session_id();
+				$dir.=$session_id;
+				if(!is_dir($dir))
+					break;
+				$_FILES=array();
+				$uploads=new DirectoryIterator($dir);
+				foreach($uploads as $upload){
+					if($upload->isDot()||$upload->isDir())
+						continue;
+					array_push($_FILES,array(
+						'name'=>$upload->getFileName(),
+						'type'=>mime_content_type($upload->getPathname()),
+						'tmp_name'=>$upload->getPathname(),
+						'error'=>0,
+						'size'=>$upload->getSize()
+					));
+				}
+				break; // }
 			default: // {
 				$val=getVar($name);
 				$values[$r2['name']]=$val;
@@ -144,6 +180,9 @@ function Form_send($page, $vars) {
 			Form_saveValues($page['id']);
 		}
 		$c.='<div id="thankyoumessage">'.$vars['forms_successmsg'].'</div>';
+	}
+	if(is_dir(USERBASE.'f/.files/forms/'.session_id())){ // remove uploaded files
+		WW_Directory::delete(USERBASE.'f/.files/forms/'.session_id());
 	}
 	return $c;
 }
@@ -311,9 +350,44 @@ function Form_showForm(
 						.'" class="email'.$class.' text" />'.$verify;
 				break; // }
 			case 'file': // {
-				$d=$only_show_contents
-					?'<i>files attached</i>'
-					:'<input id="'.$name.'" name="'.$name.'" type="file" />';
+				if($only_show_contents)
+					$d='<i>files attached</i>';
+				else{
+					WW_addScript('/ww.plugins/forms/j/swfobject.js');
+					WW_addScript('/ww.plugins/forms/j/uploadify.jquery.min.js');
+					WW_addCSS('/ww.plugins/forms/j/uploadify.css');
+					$opts=explode(':',$r2['extra']);
+					$multi=($opts[0]=='on')?'true':'false';
+					$script='
+					$(function(){
+						$("#'.$name.'").uploadify({
+							"uploader":"/ww.plugins/forms/j/uploadify.swf",
+							"script":"/ww.plugins/forms/frontend/file-upload.php",
+							"cancelImg":"/ww.plugins/forms/j/cancel.png",
+							"multi":'.$multi.',
+							"removeCompleted":false,
+							"fileDataName":"file-upload",
+							"scriptData":{
+								"PHPSESSID":"'.session_id().'"
+							},
+							"onComplete":function(event,ID,fileObj,response,data){
+								if(response=="deleted"){
+									alert("You have uploaded too many large files. These files'
+									.' have been deleted to conserve space. Please reload the '
+									.'page and try again with less or smaller files.");
+								}
+							},
+							"fileExt":"'.$opts[1].'",
+							"fileDesc":" ",
+							"auto":true
+						});
+					});
+					';
+					WW_addInlineScript($script);
+					$d='<div id="upload">';
+					$d.='<input type="file" id="'.$name.'" name="file-upload"/>';
+					$d.='</div>';
+				}
 				break; // }
 			case 'hidden': // {
 				$d=$only_show_contents

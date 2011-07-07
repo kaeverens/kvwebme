@@ -119,7 +119,8 @@ $arr=array(
 	'date'=>'date', 'checkbox'=>'checkbox', 'selectbox'=>'selectbox',
 	'hidden'=>'hidden message', 'ccdate'=>'credit card expiry date',
 	'html-block'=>'html block', 'page-next'=>'next page',
-	'page-previous'=>'previous page', 'page-break'=>'page break'
+	'page-previous'=>'previous page', 'page-break'=>'page break',
+	'file'=>'file upload'
 );
 foreach ($q2 as $r2) {
 	$c.= '<li><table width="100%"><tr><td width="20%">'
@@ -165,6 +166,10 @@ foreach ($q2 as $r2) {
 			$c.='<input type="checkbox" name="formfieldElementsExtra['.$i
 				.']"'.($r2['extra']?' checked="checked"':'').'/>tick this if you '
 				.'want the reader to verify their email address before submitting.';
+			break; // }
+		case 'file': // {
+			$c.='<input type="hidden" name="formfieldElementsExtra['.$i
+				.']" class="file-inputs" value="'.$r2['extra'].'"/>';
 			break; // }
 		default: // {
 			$c.= wInput('formfieldElementsExtra['.$i.']', 'hidden', $r2['extra']);
