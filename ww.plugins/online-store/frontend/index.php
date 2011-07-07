@@ -175,7 +175,6 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			if ($item['vat']) {
 				$vattable+=$totalItemCost;
 			}
-			echo '<!-- '; var_dump($item); echo ' -->';
 			if (!isset($item['delivery_free']) || !$item['delivery_free']) {
 				$deliveryTotal+=$totalItemCost;
 			}
@@ -285,10 +284,10 @@ if (!$submitted) {
 			$group_discount=$user->getGroupHighest('discount');
 		}
 		$c.='<table id="onlinestore-checkout" width="100%"><tr>';
-		$c.='<th>Item</th>';
+		$c.='<th style="width:60%">Item</th>';
 		$c.='<th>Price</th>';
 		$c.='<th>Amount</th>';
-		$c.='<th>Total</th>';
+		$c.='<th class="totals">Total</th>';
 		$c.='</tr>';
 		$grandTotal = 0;
 		$deliveryTotal=0;
@@ -296,7 +295,9 @@ if (!$submitted) {
 		$vattable=0;
 		$has_vatfree=false;
 		foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
-			$c.='<tr product="'.$md5.'" class="os_item_numbers '.$md5.'"><td>';
+			$c.='<tr product="'.$md5.'" class="os_item_numbers '.$md5.'">';
+			// { item name and details
+			$c.='<td class="products-itemname">';
 			if (isset($item['url'])&&!empty($item['url'])) {
 				$c.='<a href="'.$item['url'].'">';
 			}
@@ -308,10 +309,17 @@ if (!$submitted) {
 				$c.='<sup>1</sup>';
 				$has_vatfree=true;
 			}
-			$c.='</td><td>'.OnlineStore_numToPrice($item['cost']).'</td>';
+			$c.='</td>';
+			// }
+			// { cost per item
+			$c.='<td>'.OnlineStore_numToPrice($item['cost']).'</td>';
+			// }
+			// { amount
 			$c.='<td class="amt"><span class="'.$md5.'-amt amt-num">'
 				.$item['amt']
 				.'</span></td>';
+			// }
+			// { total cost of the item
 			$totalItemCost=$item['cost']*$item['amt'];
 			$grandTotal+=$totalItemCost;
 			if ($item['vat'] && !$user_is_vat_free) {
@@ -324,9 +332,11 @@ if (!$submitted) {
 				$discountableTotal+=$totalItemCost;
 			}
 			$c.='<td class="'.$md5.'-item-total totals">'
-				.OnlineStore_numToPrice($totalItemCost).'</td></tr>';
+				.OnlineStore_numToPrice($totalItemCost).'</td>';
+			// }
+			$c.='</tr>';
 			if ($item['long_desc']) {
-				$c.='<tr><td colspan="3">'.$item['long_desc'].'</td><td></td></tr>';
+				$c.='<tr><td colspan="3" class="products-longdescription">'.$item['long_desc'].'</td><td></td></tr>';
 			}
 		}
 		$c.='<tr class="os_basket_totals"><td style="text-align: right;" colspan="3">Subtotal</td>'
