@@ -47,7 +47,6 @@ $(function(){
 			"gallery_id":"'.$page['id'].'"
 		},
 		"onComplete":function(event,ID,fileObj,response,data){
-			console.log("test");
 			$.post(
 				"/ww.plugins/image-gallery/admin/new-files.php",
 				{
