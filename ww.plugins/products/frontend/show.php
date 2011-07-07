@@ -392,9 +392,6 @@ function products_images($params,&$smarty){
 	if (!$iid) {
 		return products_image_not_found($params,$smarty);
 	}
-	if(count($images['files'])==1){
-		return '';
-	}
 	// }
 	WW_addScript('/ww.plugins/image-gallery/frontend/gallery.js');
 	WW_addCSS('/ww.plugins/image-gallery/frontend/gallery.css');
@@ -413,9 +410,10 @@ function products_images($params,&$smarty){
 		};
 	});';
 	WW_addInlineScript($script);
+	$style=count($images['files'])==1?'style="display:none"':'';
 	$product=$smarty->_tpl_vars['product'];
 	$vals=$product->vals;
-	$html='<div class="ad-gallery" display="'.$params['display'].'" ';
+	$html='<div '.$style.' class="ad-gallery" display="'.$params['display'].'" ';
 	$html.=' hover="'.$params['hover'].'" cols="'.$params['columns'].'"';
 	$html.=' rows="'.$params['rows'].'" thumbsize="'.$params['thumbsize'].'"';
 	$html.=' directory="'.addslashes($vals['images_directory']).'">';
