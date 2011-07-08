@@ -147,13 +147,12 @@ $(function(){
 		var src=$(this).attr('href');
 		var sequence=[],num=0,id;
 		if (window.Gallery) {
-			var files=Gallery.images.files||Gallery.images;
-			for (var i=0;i<files.length;++i) {
-				id=files[i].id;
-				if ('/kfmget/'+id == src) {
+			for (var i=0;i<Gallery.images.length;++i) {
+				id=Gallery.images[i].id;
+				if (Gallery.images[i].url==src) {
 					num=i;
 				}
-				sequence[i]='/kfmget/'+id;
+				sequence[i]=Gallery.images[i].url;
 			}
 		}
 		lightbox_show(src, sequence, num);
