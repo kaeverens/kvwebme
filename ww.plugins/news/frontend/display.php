@@ -17,14 +17,19 @@ function News_displayCalendar(&$PAGEDATA) {
 		.'<td id="events_list">&nbsp;</td>'
 		.'</tr></table>';
 }
-function News_displayHeadlines() {
-	$items_per_page=5;
+function News_displayHeadlines($PAGEDATA) {
+	$items_per_page=(isset($PAGEDATA->vars['news_items']))?
+		$PAGEDATA->vars['news_items']:
+		5;
 	$p=isset($_REQUEST['news_page'])?(int)$_REQUEST['news_page']:0;
 	if($p<0) $p=0;
 	
 	$arr=cache_load('pages', 'news-'.$GLOBALS['id'].'-'.$p.'-'.$items_per_page);
 	if ($arr===false) {
-		$rs=dbAll('select * from pages where parent='.$GLOBALS['id']." order by associated_date desc,cdate desc limit $p,$items_per_page");
+		$order_by=(isset($PAGEDATA->vars['news_order']))?
+			addslashes($PAGEDATA->vars['news_order']):
+			'associated_date desc';
+		$rs=dbAll('select * from pages where parent='.$GLOBALS['id'].' order by '.$order_by.',cdate desc limit '.$p.','.$items_per_page);
 		$num_stories=dbOne('select count(id) as num from pages where parent='.$GLOBALS['id'],'num');
 		cache_save('pages', 'news-'.$GLOBALS['id'].'-'.$p.'-'.$items_per_page, array($num_stories, $rs));
 	}
@@ -45,10 +50,22 @@ function News_displayHeadlines() {
 	$links=array();
 	foreach($rs as $r){
 		$page=Page::getInstance($r['id'],$r);
+		$content=(isset($PAGEDATA->vars['news_display'])&&$PAGEDATA->vars['news_display']=='full')?
+			$page->render():
+			substr(
+				preg_replace('/<[^>]*>/','',
+					preg_replace('#<h1>[^<]*</h1>#','',
+						$page->render()
+					)
+				)
+			,0,600);
+		$date=(isset($PAGEDATA->vars['news_title'])&&$PAGEDATA->vars['news_title']=='yes')?
+			'<h2 class="news-header"><a href="'.$page->getRelativeURL().'">'.htmlspecialchars($page->name).'</a></h2>'
+			.'<a class="news-date" href="'.$page->getRelativeURL().'">posted on '.date_m2h($page->associated_date).'</a>':
+			'';
 		if(!isset($page->associated_date) || !$page->associated_date)$page->associated_date=$page->cdate;
-		$links[]='<h2 class="news-header"><a href="'.$page->getRelativeURL().'">'.htmlspecialchars($page->name).'</a></h2>'
-			.'<a class="news-date" href="'.$page->getRelativeURL().'">posted on '.date_m2h($page->associated_date).'</a>'
-			.'<p class="news-paragraph">'.substr(preg_replace('/<[^>]*>/','',preg_replace('#<h1>[^<]*</h1>#','',$page->render())),0,600).'...</p>'
+		$links[]=$date
+			.'<p class="news-paragraph">'.$content.'...</p>'
 		;
 	}
 	$html.=join('<div class="news-break"></div>',$links);
@@ -65,6 +82,6 @@ switch($PAGEDATA->vars['news_type']) {
 		$html=News_displayCalendar($PAGEDATA);
 	break; // }
 	default: // { headlines
-		$html=News_displayHeadlines();
+		$html=News_displayHeadlines($PAGEDATA);
 	// }
 }
