@@ -156,6 +156,7 @@ $(function(){
 			}
 		}
 		lightbox_show(src, sequence, num);
+		return false;
 	});
 	if (!window.console) {
 		window.console={

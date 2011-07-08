@@ -64,5 +64,10 @@ $(function(){
 				alert('please check your email for a verification code, and fill it in');
 			});
 		});
+		$this.find('input[type=email].verify').each(function() {
+			if ($(this).val()!='') {
+				$(this).change();
+			}
+		});
 	});
 });
