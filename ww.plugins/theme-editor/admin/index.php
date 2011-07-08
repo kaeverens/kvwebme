@@ -94,14 +94,6 @@ foreach ($files as $file) {
 }
 echo '</ul>';
 // }
-// { other
-echo '<h2>other</h2><ul>';
-echo '<li><a href="/ww.admin/plugin.php?_plugin=theme-editor&amp;_page=inde'
-	.'x&amp;other=restore" onclick="return confirm(\'This will overwrite your'
-	.' local changes by restoring the original version of the theme.\');">res'
-	.'tore</a></li>';
-echo '</ul>';
-// }
 echo '</div>';
 // }
 // { content
