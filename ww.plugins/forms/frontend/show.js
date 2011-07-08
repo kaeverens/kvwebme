@@ -70,4 +70,15 @@ $(function(){
 			}
 		});
 	});
+	$('.download-delete-item').click(function(){
+		var $this=$(this);
+		var id=$this.attr('id');
+		$.post(
+			'/ww.plugins/forms/frontend/delete-item.php',
+			{
+				'id':id
+			}
+		);
+		$this.parent().parent().fadeOut('fast');
+	});
 });

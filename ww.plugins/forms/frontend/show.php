@@ -175,14 +175,14 @@ function Form_send($page, $vars) {
 				'<html><head></head><body>'.$form.'</body></html>',
 				$_FILES
 			);
+			if(is_dir(USERBASE.'f/.files/forms/'.session_id())){ // remove uploaded files
+				WW_Directory::delete(USERBASE.'f/.files/forms/'.session_id());
+			}
 		}
 		if ($vars['forms_record_in_db']) {
 			Form_saveValues($page['id']);
 		}
 		$c.='<div id="thankyoumessage">'.$vars['forms_successmsg'].'</div>';
-	}
-	if(is_dir(USERBASE.'f/.files/forms/'.session_id())){ // remove uploaded files
-		WW_Directory::delete(USERBASE.'f/.files/forms/'.session_id());
 	}
 	return $c;
 }
@@ -350,8 +350,9 @@ function Form_showForm(
 						.'" class="email'.$class.' text" />'.$verify;
 				break; // }
 			case 'file': // {
-				if($only_show_contents)
-					$d='<i>files attached</i>';
+				if($only_show_contents){
+					$d='files attached';
+				}
 				else{
 					WW_addScript('/ww.plugins/forms/j/swfobject.js');
 					WW_addScript('/ww.plugins/forms/j/uploadify.jquery.min.js');
@@ -379,16 +380,41 @@ function Form_showForm(
 									.'page and try again with less or smaller files.");
 								}
 							},
+							"onAllComplete":function(){
+								$("input[type=submit]").attr("disabled",false);
+							},
+							"onSelect":function(){
+								$("input[type=submit]").attr("disabled","disabled");
+							},
 							"fileExt":"'.$opts[1].'",
 							"fileDesc":" ",
 							"auto":true
 						});
-					});
-					';
+					});';
 					WW_addInlineScript($script);
 					$d='<div id="upload">';
 					$d.='<input type="file" id="'.$name.'" name="file-upload"/>';
 					$d.='</div>';
+					// { add existing files
+					$dir=USERBASE.'f/.files/forms/'.session_id();
+					if(is_dir($dir)){
+						$files=array();
+						$uploads=new DirectoryIterator($dir);
+						foreach($uploads as $upload){
+							if($upload->isDot()||$upload->isDir())
+								continue;
+							$bytes=$upload->getSize();
+							$kb=round(($bytes/1024),2);
+							$d.='<div class="uploadifyQueueItem completed">'
+								.'<div class="cancel"><a class="download-delete-item" href="javascript:;" id="'.$upload->getFileName().'">'
+									.'<img border="0" src="/ww.plugins/forms/j/cancel.png"></a>'
+								.'</div>'
+								.'<span class="fileName">'.$upload->getFileName().' ('.$kb.' KB)</span>'
+								.'<span class="percentage"> - Completed</span>'
+							.'</div>';
+						}
+					}
+					// }
 				}
 				break; // }
 			case 'hidden': // {
