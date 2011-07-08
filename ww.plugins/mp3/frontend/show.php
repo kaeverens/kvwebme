@@ -1,10 +1,21 @@
 <?php
 function mp3_frontend_widget($vars=null){
-	$files=json_decode(
-		dbOne('select fields from mp3_plugin where id='.$vars->id,'fields')
-	,true);
+	$db=dbRow('select fields,template from mp3_plugin where id='.$vars->id);
+	$files=json_decode($db['fields'],true);
 	if(count($files)==0)
 		return 'No files yet';
+	// { if template doesnt exist, create it
+	$template=USERBASE.'ww.cache/mp3/';
+	if(!is_dir($template))
+		mkdir($template);
+	$template.=$vars->id;
+	if(!file_exists($template)){
+		file_put_contents(
+			$template,
+			$db['template']
+		);
+	}
+	// }
 	// { display the template
 	require_once SCRIPTBASE.'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
 	$smarty=new Smarty;

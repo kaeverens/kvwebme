@@ -74,6 +74,8 @@ var MP3={
 				}
 				else{
 					var file=$this.attr('file');
+					if(!file)
+						return $('.mp3_playlist li:first a').trigger('click');
 					var position=$this.attr('position');
 					if(!$this.hasClass('image'))
 						$this.html('Play');
