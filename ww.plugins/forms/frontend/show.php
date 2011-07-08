@@ -235,7 +235,7 @@ function Form_showForm(
 	}
 	if ($vars['forms_template'] && strpos($vars['forms_template'], '{{')===false) {
 		$vars['forms_template']='';
-	}
+	} // }}
 	if (!$vars['forms_template']||$vars['forms_template']=='&nbsp;') {
 		$c.='<div>'.$vals_wrapper_start;
 	}
@@ -331,7 +331,7 @@ function Form_showForm(
 				$d=$only_show_contents?
 					date_m2h($_REQUEST[$name]):
 					'<input name="'.$name.'" value="'
-						.$_REQUEST[$name].'" class="date" />';
+						.$_REQUEST[$name].'" class="date" placeholder="yyyy-mm-dd" />';
 				$has_date=true;
 				break; // }
 			case 'email': // {
@@ -357,6 +357,8 @@ function Form_showForm(
 					WW_addScript('/ww.plugins/forms/j/uploadify.jquery.min.js');
 					WW_addCSS('/ww.plugins/forms/j/uploadify.css');
 					$opts=explode(':',$r2['extra']);
+					if(!isset($opts[0])||!isset($opts[1]))
+						$opts=array('off','*.jpg;*.gif;*.png;*.jpeg;*.doc;*.xls;*.txt;*.odt;*.zip;*.xlsx;*.docx;*.mp3;*.ogg;*.wav;*.acc');
 					$multi=($opts[0]=='on')?'true':'false';
 					$script='
 					$(function(){
@@ -400,16 +402,31 @@ function Form_showForm(
 				$table_break=true;
 				break; // }
 			case 'page-next': // {
-				$d='<a href="javascript:;" class="form-page-next">Next</a>';
-				$table_break=true;
+				if ($only_show_contents) {
+					$d='';
+				}
+				else {
+					$d='<a href="javascript:;" class="form-page-next">Next</a>';
+					$table_break=true;
+				}
 				break; // }
 			case 'page-previous': // {
-				$d='<a href="javascript:;" class="form-page-previous">Previous</a>';
-				$table_break=true;
+				if ($only_show_contents) {
+					$d='';
+				}
+				else {
+					$d='<a href="javascript:;" class="form-page-previous">Previous</a>';
+					$table_break=true;
+				}
 				break; // }
 			case 'page-break': // {
-				$d='</div><div style="display:none">';
-				$table_break=true;
+				if ($only_show_contents) {
+					$d='';
+				}
+				else {
+					$d='</div><div style="display:none">';
+					$table_break=true;
+				}
 				break; // }
 			case 'selectbox': // {
 				if ($only_show_contents) {
