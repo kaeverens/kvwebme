@@ -172,6 +172,9 @@ if (!$id) {
 		if (!$page) {
 			$r=Page::getInstanceBySpecial($special);
 			if ($r && isset($r->id)) {
+				if ($special==1) {
+					redirect($r->getRelativeUrl());
+				}
 				$id=$r->id;
 			}
 		}
