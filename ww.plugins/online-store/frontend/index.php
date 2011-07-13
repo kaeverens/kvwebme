@@ -142,7 +142,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$smarty->assign($key, $val);
 		}
 		// { table of items
-		$table='<table id="onlinestore-invoice" width="100%"><tr><th class="quantityheader">Quantity</th>'
+		$table='<table id="onlinestore-invoice" style="clear:both" width="100%"><tr><th class="quantityheader">Quantity</th>'
 			.'<th class="descriptionheader">Description</th>'
 			.'<th class="unitamountheader">'
 			.'Unit Price</th><th class="amountheader">Amount</th></tr>';

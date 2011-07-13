@@ -241,7 +241,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 					.'<td>'.OnlineStore_numToPrice($item['cost']).'</td>';
 				// { amount
 				$html.='<td class="amt"><span class="'.$md5.'-amt">'.$item['amt'].'</span>'
-					.' [<a class="amt-del" href="javascript:;">x</a>]'
+					.' [<a title="remove" class="amt-del" href="javascript:;">x</a>]'
 					.'</td>';
 				// }
 				$html.='<td class="'.$md5.'-item-total">'
