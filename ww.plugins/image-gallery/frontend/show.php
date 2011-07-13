@@ -13,6 +13,18 @@ function image_gallery_show($PAGEDATA){
 		$vars['footer']='';
 	}
 	if($n){
+		// { if template doesn't exist, create it
+		$template=USERBASE.'ww.cache/image-gallery/';
+		if(!is_dir($template))
+			mkdir($template);
+		$template.=$PAGEDATA->id;
+		if(!file_exists($template)){
+			file_put_contents(
+				$template,
+				$PAGEDATA->vars['gallery-template']
+			);
+		}
+		// }
 		// { display the template
 		require_once SCRIPTBASE.'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
 		require SCRIPTBASE.'ww.plugins/image-gallery/frontend/template-functions.php';
