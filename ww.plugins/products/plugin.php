@@ -150,7 +150,6 @@ function products_add_to_cart(){
 	// { find "custom" values
 	$price_amendments=0;
 	$vals=array();
-	$long_desc='';
 	$md5='';
 	$pt=ProductType::getInstance($product->vals['product_type_id']);
 	$long_desc='';
@@ -183,7 +182,7 @@ function products_add_to_cart(){
 					$long_desc='<img style="float:left" src="'.$v.',width=60,height=60"/>';
 					break; // }
 			}
-			$vals[]=$n.': '.$v;
+			$vals[]='<span>'.$n.'</span>: '.$v;
 		}
 	}
 	if (count($vals)) {
