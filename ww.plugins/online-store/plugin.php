@@ -394,6 +394,9 @@ function OnlineStore_getFinalTotal() {
 	*/
 function OnlineStore_getNumItems(){
 	$num=0;
+	if (!isset($_SESSION['online-store']['items'])) {
+		return 0;
+	}
 	$cart=&$_SESSION['online-store']['items'];
 	foreach ($cart as $item) {
 		$num+=$item['amt'];
