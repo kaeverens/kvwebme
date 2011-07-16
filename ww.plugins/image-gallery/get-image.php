@@ -14,20 +14,19 @@ if(strpos($uri,',')!==false){ // width and height
 	$height=end($height);
 	$uri=$uri[0];
 }
-
 if(strpos($uri,'http://')===false){
 	$loc=USERBASE.'f/'.$uri;
 	if(!file_exists($loc)){
-		$loc=SCRIPTBASE.$uri;
-		if(!file_exists($loc))
-			exit;
+		header('HTTP/1.0 404 Not Found');
+		echo 'file '.$loc.' not found';
+		exit;
 	}
 	$uri=$loc;
 }
 
-$image=new Image($uri,true);
-if(isset($width)&&isset($height))
+$image=new Image($uri, true);
+if (isset($width)&&isset($height)) {
 	$image->resize($width,$height);
+}
 
 $image->display();
-?>

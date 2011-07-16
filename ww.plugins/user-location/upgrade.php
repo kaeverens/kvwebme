@@ -6,7 +6,7 @@
   *
 	* @category   Whatever
   * @package    Webme
-  * @subpackage
+  * @subpackage None
   * @author     Kae Verens <kae@kvsites.ie>
   * @license    GPL Version 2
   * @link       www.kvweb.me

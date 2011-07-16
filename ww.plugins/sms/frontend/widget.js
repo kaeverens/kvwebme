@@ -1,6 +1,10 @@
 function sms_get_phone_error(val){
-	if(val.replace(/[^0-9]/,'')!=val)return 1; // numbers only
-	if(!val.test(/^44|^353/))return 2; // only Ireland and UK numbers currently allowed
+	if (val.replace(/[^0-9]/,'')!=val) {
+		return 1; // numbers only
+	}
+	if (!val.test(/^44|^353/)) {
+		return 2; // only Ireland and UK numbers currently allowed
+	}
 	return 0;
 }
 $('input.sms-phone').live('change',function(){
@@ -19,8 +23,12 @@ $('.sms-subscribe button').live('click',function(){
 	});
 	var name=$container.find('.sms-name').val();
 	var phone=$container.find('.sms-phone').val();
-	if(!name)return alert('Name must not be empty');
-	if(sms_get_phone_error(phone))return alert('please check the Phone field.');
+	if (!name) {
+		return alert('Name must not be empty');
+	}
+	if (sms_get_phone_error(phone)) {
+		return alert('please check the Phone field.');
+	}
 	$.post('/ww.plugins/sms/frontend/subscribe.php',{
 		"ids":ids.join(','),
 		"name":name,
@@ -29,6 +37,8 @@ $('.sms-subscribe button').live('click',function(){
 		if(res.err){
 			alert(res.errmsg);
 		}
-		else alert('Thank you - you have been subscribed.');
+		else {
+			alert('Thank you - you have been subscribed.');
+		}
 	},'json');
 });

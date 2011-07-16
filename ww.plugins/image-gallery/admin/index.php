@@ -16,10 +16,7 @@ if (!$vars['image_gallery_directory']||!is_dir(USERBASE.'f/'.$vars['image_galler
 	if(!is_dir(USERBASE.'f/image-galleries')) {
 		mkdir(USERBASE.'f/image-galleries');
 	}
-	$invalid='/[^A-Za-z0-9_\-]/';
-	$p=Page::getInstance($page['id']);
-	$name=preg_replace($invalid, '_', $p->getRelativeUrl());
-	$vars['image_gallery_directory']='/image-galleries/page-'.$name;
+	$vars['image_gallery_directory']='/image-galleries/imagegallery-'.$page['id'];
 	$dir=USERBASE.'f/'.$vars['image_gallery_directory'];
 	if (!file_exists($dir)){
 		mkdir($dir);

@@ -58,8 +58,7 @@ function User_getLocation_admin($page, $vars) {
 /**
   * if the user doesn't have location data set, make sure to set it
   *
-  * @param array $page the page's db row
-	* @param array $vars any meta data the page has
+  * @param array $PAGEDATA the page object
   *
   * @return string stuff
   */

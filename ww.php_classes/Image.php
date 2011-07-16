@@ -32,11 +32,12 @@ class Image{
 		$this->height=$dimensions[1];
 		$this->caching=$caching;
 	}
-	public function resize($w,$h,$crop=false){
+	public function resize($w, $h, $crop=false){
 		if($this->caching){
-			$name=md5($this->file.$w.$h.$crop);
-			if(file_exists($this->cache_dir.$name))
+			$name=md5($this->file.'|'.$w.'|'.$h.'|'.$crop);
+			if(file_exists($this->cache_dir.$name)) {
 				return $this->file=$this->cache_dir.$name;
+			}
 		}
 		$width=$this->width;
 		$height=$this->height;
@@ -59,7 +60,7 @@ class Image{
 				$newwidth=$w;
 			}
 		}
-		$this->image=Image::render($this->type,$this->file);
+		$this->image=Image::render($this->type, $this->file);
 		$dst=imagecreatetruecolor($newwidth,$newheight);
 		imagecopyresampled($dst,$this->image,0,0,0,0,$newwidth,$newheight,$width,$height);
 		$this->image=$dst;
@@ -106,4 +107,3 @@ class Image{
 		return $response;
 	}
 }
-?>

@@ -4,15 +4,29 @@ session_id( $session_id );
 
 require '../../../ww.incs/basics.php';
 
-if(!is_admin())
+if(!is_admin()) {
 	exit;
+}
 
 $gallery_id=(int)@$_POST['gallery_id'];
-if($gallery_id==0)
+if (!$gallery_id) {
 	exit;
+}
 
-$dir=dbOne('select value from page_vars where name="image_gallery_directory"'
-	. ' and page_id='.$gallery_id,'value');
+$dir=dbOne(
+	'select value from page_vars where name="image_gallery_directory"'
+	. ' and page_id='.$gallery_id,
+	'value'
+);
+if (!$dir) {
+	$dir='image-galleries/imagegallery-'.$gallery_id;
+}
+$dir=USERBASE.'f/'.$dir;
+
+if (!file_exists($dir)) {
+	@mkdir(USERBASE.'f/image-galleries'); // parent dir
+	mkdir($dir);
+}
 
 $position=dbOne('select position from image_gallery where gallery_id=1265'
 .' order by position desc limit 1','position');
@@ -32,7 +46,7 @@ $last_id=dbLastInsertId();
 
 move_uploaded_file(
 	$_FILES['file_upload']['tmp_name'],
-	USERBASE.'f'.$dir.'/'.$_FILES['file_upload']['name']
+	$dir.'/'.$_FILES['file_upload']['name']
 );
 
 echo $last_id;
