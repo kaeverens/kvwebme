@@ -22,7 +22,6 @@ function CSS_colourCode($code){
 		foreach ($chars as $k=>$v) {
 			$chars[$k]=$v.$v;
 		}
-		var_dump($chars);
 		$code=join('', $chars);
 	}
 	return $code;

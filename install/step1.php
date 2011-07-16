@@ -28,6 +28,11 @@ if(isset($_REQUEST['action'])){
 		echo '<p>Please check your values and try again.</p>';
 	}
 	else{
+		// if database doesn't exist, try create it
+		if (!mysql_select_db($_SESSION['db_vars']['db_name'])) {
+			mysql_query('create database `'.addslashes($_REQUEST['db_name']).'`');
+		}
+		// if it still doesn't exist, fail
 		if(!mysql_select_db($_SESSION['db_vars']['db_name'])){
 			echo '<p>Please provide an existing database name.</p>';
 		}

@@ -3,7 +3,7 @@ require_once dirname(__FILE__).'/basics.php';
 require_once SCRIPTBASE . 'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
 function Core_getJQueryScripts() {
 	global $DBVARS;
-	$jquery_versions=array('1.6.1', '1.8.13');
+	$jquery_versions=array('1.6.2', '1.8.14');
 	if (isset($DBVARS['offline']) && $DBVARS['offline']) {
 		require SCRIPTBASE.'/ww.incs/get-offline-files.php';
 		$jurls=Core_getOfflineJQueryScripts($jquery_versions);
@@ -164,7 +164,7 @@ function Template_logoDisplay($vars) {
 		`convert $from -geometry $geometry $to`;
 	}
 	$size=getimagesize($image_file);
-	return '<img id="logo" src="/i/blank.gif" style="'
+	return '<img class="logo" src="/i/blank.gif" style="'
 		.'background:url(/f/skin_files/logo-'.$geometry.'.png) no-repeat;'
 		.'width:'.$size[0].'px;height:'.$size[1].'px;" />';
 }

@@ -27,7 +27,8 @@ $config='<'."?php
 	'version'  => 1,
 	'maintenance-mode'=>'yes',
 	'maintenance-mode-message'=>'<h1>Temporarily Unavailable</h1>
-	 <p>This website is undergoing maintenance and is temporarily unavailable.</p>',
+	<p>This website is undergoing maintenance and is temporarily unavailable.</p>
+	<p>If you are an admin of this site, you can <a href=\"/ww.admin/\">log in here</a>.</p>',
 );";
 
 file_put_contents('../.private/config.php',$config);

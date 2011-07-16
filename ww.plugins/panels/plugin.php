@@ -78,7 +78,7 @@ function panels_show($vars) {
 		}
 		$h.='<div class="panel-widget panel-widget-'.$widget->type.'">';
 		if (isset($widget->header_visibility) && $widget->header_visibility) {
-			$h.='<h4 class="panel-widget-header '.preg_replace('/[^a-z0-9A-Z\-]/','',$widget->name).'">'.htmlspecialchars($widget->name).'</h4>';
+			$h.='<h2 class="panel-widget-header '.preg_replace('/[^a-z0-9A-Z\-]/','',$widget->name).'">'.htmlspecialchars($widget->name).'</h2>';
 		}
 		if (isset($PLUGINS[$widget->type])) {
 			if (isset($PLUGINS[$widget->type]['frontend']['widget'])) {
