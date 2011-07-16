@@ -1,6 +1,20 @@
 <?php
+/**
+	* Backup plugin backup script
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if(!is_admin())die('access denied');
+if (!is_admin()) {
+	die('access denied');
+}
 
 $password=addslashes($_REQUEST['password']);
 if (!$password) {
@@ -28,12 +42,12 @@ $theme=$DBVARS['theme'];
 
 $data=array();
 $tables=dbAll('show tables');
-foreach($tables as $table){
-	foreach($table as $k=>$v){
+foreach ($tables as $table) {
+	foreach ($table as $k=>$v) {
 		$data[$v]=dbAll('select * from `'.$v.'`');
 	}
 }
-file_put_contents($dir.'/db.json',json_encode($data));
+file_put_contents($dir.'/db.json', json_encode($data));
 
 require CONFIG_FILE;
 unset($DBVARS['username']);
@@ -43,7 +57,7 @@ unset($DBVARS['db_name']);
 unset($DBVARS['userbase']);
 unset($DBVARS['theme_dir']);
 unset($DBVARS['theme_dir_personal']);
-file_put_contents($dir.'/config.json',json_encode($DBVARS));
+file_put_contents($dir.'/config.json', json_encode($DBVARS));
 
 $sname=$_SERVER['HTTP_HOST'].date('-Y-m-d').'.zip';
 `cd $tmpdir && zip -r -P "$password" $sname site`;

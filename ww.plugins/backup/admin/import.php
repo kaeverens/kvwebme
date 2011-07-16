@@ -1,13 +1,24 @@
 <?php
+/**
+	* Backup plugin import script
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 $errors=array();
 if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 	$tmpdir='/tmp/webmeBackup-import-'.md5($_SERVER['HTTP_HOST'].microtime(true));
 	mkdir($tmpdir);
 	$uname=$_FILES['file']['tmp_name'];
-#	$uname='/site.zip';
 	$password=addslashes($_POST['password']);
 	`cd $tmpdir && unzip -oP "$password" "$uname"`;
-	if(!file_exists( $tmpdir.'/site' )) {
+	if (!file_exists($tmpdir.'/site')) {
 		echo '<em>unzipping failed. incorrect password?</em>';
 	}
 	else {
@@ -20,17 +31,17 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 		`cd $udir && unzip -o $tmpdir/site/theme.zip`;
 
 		echo 'importing config file...<br />';
-		$config=json_decode(file_get_contents($tmpdir.'/site/config.json'),true);
+		$config=json_decode(file_get_contents($tmpdir.'/site/config.json'), true);
 		// { remove any version info from the archive - it could be out of date
 		foreach ($config as $key=>$val) {
-			if (preg_match('/.*\|version/',$key)) {
+			if (preg_match('/.*\|version/', $key)) {
 				unset($config[$key]);
 			}
 		}
 		// }
 		// { add back in any version info from the current site
-		foreach ($DBVARS as $key=>$val){
-			if (preg_match('/.*\|version/',$key)) {
+		foreach ($DBVARS as $key=>$val) {
+			if (preg_match('/.*\|version/', $key)) {
 				$config[$key]=$val;
 			}
 		}
@@ -42,7 +53,9 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 		$config['userbase']=$DBVARS['userbase'];
 		$config['theme_dir']=$DBVARS['theme_dir'];
 		$config['theme_dir_personal']=$DBVARS['theme_dir_personal'];
-		$config['plugins']=(isset($config['plugins']) && $config['plugins']!='')?explode(',',$config['plugins']):array();
+		$config['plugins']=(isset($config['plugins']) && $config['plugins']!='')
+			?explode(',', $config['plugins']):
+			array();
 		$DBVARS=$config;
 		config_rewrite();
 
@@ -51,11 +64,11 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 
 		echo 'extracting database...<br />';
 		$dbbackup=json_decode(file_get_contents($tmpdir.'/site/db.json'));
-		foreach($dbbackup as $name=>$vals){
+		foreach ($dbbackup as $name=>$vals) {
 			dbQuery('delete from '.addslashes($name));
 			foreach ($vals as $row) {
 				$parts=array();
-				foreach($row as $key=>$val){
+				foreach ($row as $key=>$val) {
 					$parts[]='`'.addslashes($key).'` = "'.addslashes($val).'" ';
 				}
 				$query='insert into `'.addslashes($name).'` set '.join(',', $parts);
@@ -75,8 +88,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 	}
 }
 
-if(count($errors)){
-	echo '<em>'.join('<br />',$errors).'</em>';
+if (count($errors)) {
+	echo '<em>'.join('<br />', $errors).'</em>';
 }
 echo '<em>NOTE: uploading a backup will OVERWRITE your present website.</em>'
 	.'<p>Please only upload if you are certain you need to!</p>'
