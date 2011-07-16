@@ -64,13 +64,6 @@ function kaejax_sendRequests(uri){
 	x.send(post_data);
 }
 // }
-function loadScript(url){
-	if($.inArray(url,loadedScripts)>-1)return 0;
-	loadedScripts.push(url);
-	if(kaejax_is_loaded&&/\.php/.test(url))url+=(/\?/.test(url)?'&':'?')+'kaejax_is_loaded';
-	$.getScript(url);
-	return 1;
-}
 window.ww={
 	CKEDITOR:'ckeditor'
 };
@@ -142,7 +135,7 @@ $(function(){
 	if(!el)return;
 	var id=el.id.replace(/ajaxmenu/,'');
 	if(id && id=='am_top')return;
-	loadScript('/j/menu.php?pageid='+pagedata.id);
+	$.getScript('/j/menu.php?pageid='+pagedata.id);
 	$('a[target=popup]').live('click', function(){
 		var src=$(this).attr('href');
 		var sequence=[],num=0,id;
