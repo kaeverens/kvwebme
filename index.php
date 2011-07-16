@@ -118,7 +118,6 @@ if (isset($https_required) && $https_required && !$_SERVER['HTTPS']) {
 if (isset($DBVARS['canonical_name'])
 	&& $_SERVER['HTTP_HOST']!=$DBVARS['canonical_name']
 ) {
-	$url=
 	$url=(@$_SERVER['HTTPS']=='on'?'https':'http')
 		.'://'.$DBVARS['canonical_name']
 		.$_SERVER['REQUEST_URI'];
@@ -138,9 +137,10 @@ if ($page=='' && isset($_GET['search']) || isset($_GET['s'])) {
 }
 // }
 // { is maintenance mode enabled?
-if(@$DBVARS['maintenance-mode']=='yes'){
-	if(!is_admin())
+if (@$DBVARS['maintenance-mode']=='yes') {
+	if (!is_admin()) {
 		die($DBVARS['maintenance-mode-message']);
+	}
 }
 // }
 // { get current page id
@@ -161,7 +161,11 @@ if (!$id) {
 			}
 		}
 		if (!$id) {
-			$id=(int)dbOne('select page_id from short_urls where short_url="'.addslashes($page).'"', 'page_id');
+			$id=(int)dbOne(
+				'select page_id from short_urls where short_url="'
+				.addslashes($page).'"',
+				'page_id'
+			);
 		}
 	}
 	if (!$id) {
@@ -264,19 +268,17 @@ else {
 					$not_found=false;
 				}
 			}
-			else{
-				foreach( $PLUGINS as $p ){
-
-					if( is_array( @$p[ 'frontend' ][ 'page_type' ] ) ){
-						foreach( $p[ 'frontend' ][ 'page_type' ] as $name => $function ){
-							if( $name == $PAGEDATA->type && function_exists( $function ) ){
-								$c .= $function( $PAGEDATA );
+			else {
+				foreach ( $PLUGINS as $p ) {
+					if (is_array(@$p[ 'frontend' ][ 'page_type' ])) {
+						foreach ($p[ 'frontend' ][ 'page_type' ] as $name => $function) {
+							if ($name == $PAGEDATA->type && function_exists($function)) {
+								$c .= $function($PAGEDATA);
 								$not_found = false;
 								break;
 							}
 						}
 					}
-
 				}
 			}
 			if ($not_found) {
@@ -408,9 +410,7 @@ $smarty->assign(
 	@$PAGEDATA->alias?$PAGEDATA->alias:$PAGEDATA->name
 );
 if (isset($DBVARS['theme_variant']) && $DBVARS['theme_variant']) {
-	if (!file_exists(
-		THEME_DIR.'/'.THEME.'/cs/'.$DBVARS['theme_variant'].'.css'
-	)) {
+	if (!file_exists(THEME_DIR.'/'.THEME.'/cs/'.$DBVARS['theme_variant'].'.css')) {
 		unset($DBVARS['theme_variant']);
 		config_rewrite();
 	}

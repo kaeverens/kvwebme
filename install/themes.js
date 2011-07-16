@@ -28,11 +28,13 @@ $( function( ){
 
       for( var i = 0; i < Carousel.settings.items; ++i ){
 
-        if( Carousel.themes[ Carousel.position ] == undefined )
+        if ( Carousel.themes[ Carousel.position ] == undefined ) {
           break;
+				}
 
-        if( i % ( Carousel.settings.items / Carousel.settings.rows ) === 0 )
-				          html += '</tr><tr>';
+        if( i % ( Carousel.settings.items / Carousel.settings.rows ) === 0 ) {
+				  html += '</tr><tr>';
+				}
 
         var middle = ( !( ( i - 1 ) % ( Carousel.settings.items / Carousel.settings.rows ) ) ) ?
 					' middle' :
