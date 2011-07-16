@@ -43,7 +43,7 @@ function pages_delete(node,tree){
 			document.location=document.location.toString();
 		}
 		else {
-			$('#pages-wrapper').jstree('remove',node);
+			$('#pages-wrapper').jstree('remove', node);
 		}
 	});
 }
