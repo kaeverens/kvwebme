@@ -1,6 +1,19 @@
 <?php
+/**
+	* kvWebME A/B Testing plugin frontend
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 $smarty=smarty_setup(USERBASE.'/ww.cache/pages');
-if (!isset($_SESSION['ab_testing']['p'.$page->id]) || !file_exists(USERBASE.'/ww.cache/pages/template_ab_'.$page->id.'_0')) {
+if (!isset($_SESSION['ab_testing']['p'.$page->id])
+	|| !file_exists(USERBASE.'/ww.cache/pages/template_ab_'.$page->id.'_0')
+) {
 	if (!file_exists(USERBASE.'/ww.cache/pages/template_ab_'.$page->id.'_0')) {
 		$vs=explode('<div>ABTESTINGDELIMITER</div>', $page->body);
 		for ($i=0; $i<count($vs); ++$i) {
@@ -27,4 +40,7 @@ if (!isset($_SESSION['ab_testing']['p'.$page->id]) || !file_exists(USERBASE.'/ww
 		$_SESSION['ab_testing_targets']['p'.$page->vars['abtesting-target']]=$page->id;
 	}
 }
-$body=$smarty->fetch(USERBASE.'/ww.cache/pages/template_ab_'.$page->id.'_'.$_SESSION['ab_testing']['p'.$page->id]);
+$body=$smarty->fetch(
+	USERBASE.'/ww.cache/pages/template_ab_'
+	.$page->id.'_'.$_SESSION['ab_testing']['p'.$page->id]
+);
