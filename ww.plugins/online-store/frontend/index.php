@@ -229,6 +229,13 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		$smarty->assign('_invoice_table', $table);
 		$smarty->assign('_invoicenumber', $id);
 		// }
+		if (!file_exists(USERBASE.'ww.cache/online-store/'.$PAGEDATA->id)) {
+			@mkdir(USERBASE.'ww.cache/online-store');
+			file_put_contents(
+				USERBASE.'ww.cache/online-store/'.$PAGEDATA->id,
+				$PAGEDATA->vars['online_stores_invoice']
+			);
+		}
 		$invoice=addslashes(
 			$smarty->fetch(
 				USERBASE.'ww.cache/online-store/'.$PAGEDATA->id
