@@ -84,6 +84,9 @@ var Gallery={
 				opts[k]=val;
 			}
 		}
+		if (opts.links=='true') {
+			opts.links=true;
+		}
 		$.extend(this.options, opts);
 		this.options.thumbsize=parseInt(this.options.thumbsize);
 		if (this.options.slideshow) {
