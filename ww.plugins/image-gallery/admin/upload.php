@@ -1,10 +1,23 @@
 <?php
+/**
+  * script for uploading images into an image gallery
+  *
+  * PHP Version 5
+  *
+  * @category   Whatever
+  * @package    None
+  * @subpackage None
+  * @author     Kae Verens <kae@kvsites.ie>
+  * @license    GPL Version 2
+  * @link       www.kvweb.me
+ */
+
 $session_id = @$_POST[ 'PHPSESSID' ];
-session_id( $session_id );
+session_id($session_id);
 
 require '../../../ww.incs/basics.php';
 
-if(!is_admin()) {
+if (!is_admin()) {
 	exit;
 }
 
@@ -28,19 +41,26 @@ if (!file_exists($dir)) {
 	mkdir($dir);
 }
 
-$position=dbOne('select position from image_gallery where gallery_id=1265'
-.' order by position desc limit 1','position');
+$position=dbOne(
+	'select position from image_gallery where gallery_id=1265'
+	.' order by position desc limit 1',
+	'position'
+);
 
 $dimensions=getimagesize($_FILES['file_upload']['tmp_name']);
-$meta=addslashes(json_encode(array(
-	'width'=>$dimensions[0],
-	'height'=>$dimensions[1],
-	'name'=>$_FILES['file_upload']['name'],
-	'caption'=>''
-)));
+$meta=addslashes(
+	json_encode(
+		array(
+			'width'=>$dimensions[0],
+			'height'=>$dimensions[1],
+			'name'=>$_FILES['file_upload']['name'],
+			'caption'=>''
+		)
+	)
+);
 
-$query='insert into image_gallery (gallery_id,position,media,meta) values';
-$query.='("'.$gallery_id.'","'.($position+1).'","image","'.$meta.'")';
+$query='insert into image_gallery (gallery_id,position,media,meta) values'
+	.'("'.$gallery_id.'","'.($position+1).'","image","'.$meta.'")';
 dbQuery($query);
 $last_id=dbLastInsertId();
 
@@ -51,4 +71,3 @@ move_uploaded_file(
 
 echo $last_id;
 exit;
-?>

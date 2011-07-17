@@ -47,8 +47,9 @@ $(function(){
 	$('.edit-img').live('click',function(){	
 		var id=$(this).attr('id');
 		var capt=$('#image-gallery-image'+id).attr('title');
-		if(!capt)
+		if(!capt) {
 			capt='';
+		}
 		$('<div title="Caption">'
 				+ 'Caption Text:'
 				+ '<input type="text" id="caption-text" value="'+capt+'"/>'
@@ -93,8 +94,9 @@ $(function(){
 						'/ww.plugins/image-gallery/admin/new-video.php',
 						{ 'link':link,"id":id,"image":image }
 					);
-					if(image==''||image=='http://')
+					if(image==''||image=='http://') {
 						image='/ww.plugins/image-gallery/files/video.png';
+					}
 					var c='<li class="gallery-image-container" id="image_'+id+'">'
 					+'<img src="/ww.plugins/image-gallery/get-image.php?uri='+image+',width=64,height=64"'
 					+' id="image-gallery-image'+id+'"/><br/>'
