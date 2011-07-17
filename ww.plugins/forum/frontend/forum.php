@@ -205,23 +205,35 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 	);
 	foreach ($posts as $post) {
 		$user=User::getInstance($post['author_id']);
+		if ($user) {
+			$user_name=$user->get('name');
+			$user_id=$post['author_id'];
+			$user_email=$user->get('email');
+		}
+		else {
+			$user_name='unknown';
+			$user_id=0;
+			$user_email='';
+		}
 		$c.='<tr p-data=\'({"id":'.$post['id']
 			.',"cdate":"'.$post['created_date'].'"'
 			.',"uid":'.$post['author_id'].'})\'>'
 			.'<td class="user-details"><a name="forum-c-'.$post['id']
-			.'"></a>'.htmlspecialchars($user->get('name')).'</td>'
+			.'"></a>'.htmlspecialchars($user_name).'</td>'
 			.'<td><div class="post-header">Posted: '
 			.date_m2h($post['created_date'], 'datetime')
 			.'</div></td></tr>';
-		$count_posts=dbOne(
-			'select count(id) from forums_posts where author_id='.$user->get('id'),
-			'count(id)'
-		);
-		$emailHash=md5(trim(strtolower($user->get('email'))));
+		$count_posts=$user_id
+			?dbOne(
+				'select count(id) from forums_posts where author_id='.$user->get('id'),
+				'count(id)'
+			)
+			:0;
+		$emailHash=md5(trim(strtolower($user_email)));
 		$c.='<tr><td><img src="http://www.gravatar.com/avatar/'
 			.$emailHash.'" /><span>Posts: '.$count_posts.'</span>'
 			. '<p>Helpfulness:'
-			. '<span class="ratings" id="forum_user_'.$user->get('id').'"'
+			. '<span class="ratings" id="forum_user_'.$user_email.'"'
 			. ' type="forum_user">rating</span></p>';
 		$c.='</td><td class="post">'.bb2html($post['body'])
 			.'</td></tr>';
