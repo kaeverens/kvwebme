@@ -39,10 +39,14 @@ function ImageGallery_show($PAGEDATA) {
 		$template=USERBASE.'ww.cache/image-gallery/';
 		@mkdir($template);
 		$template.=$PAGEDATA->id;
-		if (!file_exists($template)) {
+		if (!file_exists($template) || !filesize($template)) {
+			$thtml=@$PAGEDATA->vars['gallery-template'];
+			if (!$thtml) {
+				$thtml=file_get_contents(dirname(__FILE__).'/../admin/types/list.tpl');
+			}
 			file_put_contents(
 				$template,
-				$PAGEDATA->vars['gallery-template']
+				$thtml
 			);
 		}
 		// }
