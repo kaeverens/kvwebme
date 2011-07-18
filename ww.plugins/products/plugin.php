@@ -470,7 +470,12 @@ class ProductType{
 							'<input class="product-field date '.$f->n.$required
 							.'" name="products_values_'.$f->n.'"/>'
 						);
-						WW_addInlineScript('$("input.date").datepicker({"dateFormat":"yy-mm-dd"});');
+						$format=@$f->e?$f->e:'yy-mm-dd';
+						$y=date('Y');
+						WW_addInlineScript(
+							'$("input.date").datepicker({"dateFormat":"'.$format.'",'
+							.'changeYear:true,changeMonth:true,yearRange:"1900:'.$y.'"});'
+						);
 					}
 					else {
 						$smarty->assign(

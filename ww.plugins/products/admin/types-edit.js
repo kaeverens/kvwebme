@@ -45,7 +45,10 @@ $(function(){
 		// }
 		// { extra
 		if(rdata.t=='selectbox'){
-			row+='<td width="20%"><textarea id="product_type_fd'+i+'_extra" class="small">'+htmlspecialchars(rdata.e)+'</textarea></td>';
+			row+='<td width="20%"><textarea id="product_type_fd'+i+'_extra" class="small extra">'+htmlspecialchars(rdata.e)+'</textarea></td>';
+		}
+		else if (rdata.t=='date') {
+			row+='<td width="20%"><input id="product_type_fd'+i+'_extra" class="extra" value="'+htmlspecialchars(rdata.e)+'"/><br />format (eg: yy-mm-dd)</td>';
 		}
 		else {
 			row+='<td width="20%">&nbsp;</td>';
@@ -92,7 +95,7 @@ $(function(){
 				"s":$this.find('.product-type-fd-searchable')[0].checked?1:0,
 				"r":$this.find('.product-type-fd-required')[0].checked?1:0,
 				"u":$this.find('.product-type-fd-user-entered')[0].checked?1:0,
-				"e":$this.find('textarea.small').val()
+				"e":$this.find('.extra').val()
 			});
 		});
 		$('#data_fields').val(Json.toString(vals));
