@@ -54,7 +54,7 @@ $(function(){
 				$(this).remove();
 			}
 		});
-		$(this).closest('div.products-product').find('select,input').each(function(){
+		$(this).closest('div.products-product').find('select,input,textarea').each(function(){
 			if (!/products_values_/.test(this.name)) {
 				return;
 			}
