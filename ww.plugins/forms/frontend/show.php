@@ -330,8 +330,9 @@ function Form_showForm(
 				}
 				$d=$only_show_contents?
 					date_m2h($_REQUEST[$name]):
-					'<input name="'.$name.'" value="'
-						.$_REQUEST[$name].'" class="date" placeholder="yyyy-mm-dd" />';
+					'<input name="'.$name.'" value="'.$_REQUEST[$name].'" '
+					.'class="date" placeholder="yyyy-mm-dd" '
+					.'metadata="'.addslashes($r2['extra']).'"/>';
 				$has_date=true;
 				break; // }
 			case 'email': // {
@@ -555,12 +556,6 @@ function Form_showForm(
 		$c.='</form>';
 	}
 	$script='';
-	if ($has_date) {
-		WW_addInlineScript(
-			'$("input.date").datepicker({"dateFormat":"yy-mm-dd",'
-			.'"changeMonth":true,"changeYear":true});'
-		);
-	}
 	if ($has_ccdate) {
 		WW_addInlineScript('$("input.ccdate").datepicker({"dateFormat":"yy-mm"});');
 	}

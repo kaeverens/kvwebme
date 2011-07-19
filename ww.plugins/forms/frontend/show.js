@@ -81,4 +81,17 @@ $(function(){
 		);
 		$this.parent().parent().fadeOut('fast');
 	});
+	$("input.date").each(function(){
+		var $this=$(this);
+		var range=$this.attr('metadata').split(',');
+		if (range.length != 2) {
+			range=[1900,2100];
+		}
+		$this.datepicker({
+			"dateFormat":"yy-mm-dd",
+			"changeMonth":true,
+			"changeYear":true,
+			"yearRange":range[0]+':'+range[1]
+		});
+	});
 });

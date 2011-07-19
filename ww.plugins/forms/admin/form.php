@@ -144,6 +144,15 @@ foreach ($q2 as $r2) {
 		)
 		.'</td><td>';
 	switch($r2['type']){
+		case 'email': // {
+			$c.='<input type="checkbox" name="formfieldElementsExtra['.$i
+				.']"'.($r2['extra']?' checked="checked"':'').'/>tick this if you '
+				.'want the reader to verify their email address before submitting.';
+			break; // }
+		case 'file': // {
+			$c.='<input type="hidden" name="formfieldElementsExtra['.$i
+				.']" class="file-inputs" value="'.$r2['extra'].'"/>';
+			break; // }
 		case 'selectbox':case 'hidden': // {
 			$c.= wInput(
 				'formfieldElementsExtra['.$i.']',
@@ -158,21 +167,9 @@ foreach ($q2 as $r2) {
 				.htmlspecialchars($r2['extra'])
 				.'</textarea>';
 			break; // }
-		case 'textarea': // {
-			$c.='<input type="hidden" name="formfieldElementsExtra['.$i
-				.']" class="forms-textarea" value="'.$r2['extra'].'"/>';
-			break; // }
-		case 'email': // {
-			$c.='<input type="checkbox" name="formfieldElementsExtra['.$i
-				.']"'.($r2['extra']?' checked="checked"':'').'/>tick this if you '
-				.'want the reader to verify their email address before submitting.';
-			break; // }
-		case 'file': // {
-			$c.='<input type="hidden" name="formfieldElementsExtra['.$i
-				.']" class="file-inputs" value="'.$r2['extra'].'"/>';
-			break; // }
 		default: // {
-			$c.= wInput('formfieldElementsExtra['.$i.']', 'hidden', $r2['extra']);
+			$c.='<input type="hidden" name="formfieldElementsExtra['.$i
+				.']" class="forms-'.$r2['type'].'" value="'.$r2['extra'].'"/>';
 			// }
 	}
 	$i++;
