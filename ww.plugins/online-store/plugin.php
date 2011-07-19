@@ -222,7 +222,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 	else {
 		if (count($_SESSION['online-store']['items'])) {
 			$html.='<table class="os_basket">';
-			$html.='<tr class="os_basket_titles"><th>Price</th><th>Amount</th>'
+			$html.='<tr class="os_basket_titles"><th>Price</th><th>Amt</th>'
 				.'<th>Total</th></tr>';
 			foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
 				// { name
@@ -299,7 +299,7 @@ function OnlineStore_getPostageAndPackaging($total, $country, $weight) {
 function OnlineStore_getPostageAndPackagingData(){
 	$p=Page::getInstance($_SESSION['onlinestore_checkout_page']);
 	$p->initValues();
-	$r=$p->vars['online_stores_postage'];
+	$r=@$p->vars['online_stores_postage'];
 	if ($r=='' || $r=='[]') {
 		$r='[{"name":"no postage and packaging set","constraints":[{"type":"set_value","value":"0"}]}]';
 	}
