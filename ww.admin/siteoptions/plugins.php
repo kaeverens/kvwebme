@@ -36,7 +36,7 @@ if($action=='Save'){ // handle actions
 	header('location: siteoptions.php?page=plugins&message=failed');
 }
 
-$msg=@$_GET['message'];
+$message=@$_GET['message'];
 if($message=='updated'){
 	echo '<em>plugins updated</em>';
 }
