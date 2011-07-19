@@ -145,7 +145,7 @@ if (@$DBVARS['maintenance-mode']=='yes') {
 // }
 // { get current page id
 if (!$id) {
-	if ($page) {
+	if ($page) {         // find using the page name
 		if (strpos($page, '&')!==false) {
 			$page=preg_replace('/&.*/', '', $page);
 		}
@@ -168,7 +168,7 @@ if (!$id) {
 			);
 		}
 	}
-	if (!$id) {
+	if (!$id) {          // or maybe it's a "special" or the home page
 		$special=1;
 		if (isset($_GET['special'])&&$_GET['special']) {
 			$special=$_GET['special'];
@@ -180,6 +180,19 @@ if (!$id) {
 					redirect($r->getRelativeUrl());
 				}
 				$id=$r->id;
+			}
+		}
+	}
+	if (!$id && $page) { // ok - find the nearest existing page then
+		$unused_uri='';
+		while (!$id && strpos($page, '/')!==false) {
+			$l=strrpos($page, '/');
+			$unused_uri=substr($page, $l+1).'/'.$unused_uri;
+			$page=substr($page, 0, $l);
+			$r=Page::getInstanceByName($page);
+			if ($r && isset($r->id)) {
+				$id=$r->id;
+				$PAGE_UNUSED_URI=substr($unused_uri, 0, strlen($unused_uri)-1);
 			}
 		}
 	}
