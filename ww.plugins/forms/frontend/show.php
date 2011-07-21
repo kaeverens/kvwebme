@@ -22,7 +22,7 @@
   */
 function Form_show($page, $vars) {
 	$errors=array();
-	if ($_REQUEST['funcFormInput']=='submit') {
+	if (@$_REQUEST['funcFormInput']=='submit') {
 		require_once dirname(__FILE__).'/validate-and-send.php';
 		$errors=Form_validate($page, $vars);
 		if (!count($errors)) {

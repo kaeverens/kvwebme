@@ -183,7 +183,7 @@ function Form_send($page, $vars) {
 		webmeMail(
 			$to,
 			$from,
-			'['.$_SERVER['HOST_NAME'].'] '.$page['name'],
+			'['.$_SERVER['HTTP_HOST'].'] '.$page['name'],
 			'<html><head></head><body>'.$form.'</body></html>',
 			$_FILES
 		);
