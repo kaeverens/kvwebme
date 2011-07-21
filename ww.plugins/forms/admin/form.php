@@ -4,10 +4,10 @@
   *
   * PHP Version 5
   *
-  * @category   Whatever
-  * @package    WebworksWebme
+  * @category   None
+  * @package    None
   * @subpackage Form
-  * @author     Kae Verens <kae.ie>
+  * @author     Kae Verens <kae@kvsites.ie>
   * @license    GPL Version 2
   * @link       www.kvweb.me
  */
@@ -102,7 +102,7 @@ $c.='<div id="f-header"><p>Text to be shown above the form</p>'
 // }
 // { footer
 $c.='<div id="footer"><p>Text to appear below the form.</p>';
-$c.=ckeditor('page_vars[footer]',(isset($vars['footer'])?$vars['footer']:''));
+$c.=ckeditor('page_vars[footer]', (isset($vars['footer'])?$vars['footer']:''));
 $c.='</div>';
 // }
 // { form fields
@@ -148,11 +148,11 @@ foreach ($q2 as $r2) {
 			$c.='<input type="checkbox" name="formfieldElementsExtra['.$i
 				.']"'.($r2['extra']?' checked="checked"':'').'/>tick this if you '
 				.'want the reader to verify their email address before submitting.';
-			break; // }
+		break; // }
 		case 'file': // {
 			$c.='<input type="hidden" name="formfieldElementsExtra['.$i
 				.']" class="file-inputs" value="'.$r2['extra'].'"/>';
-			break; // }
+		break; // }
 		case 'selectbox':case 'hidden': // {
 			$c.= wInput(
 				'formfieldElementsExtra['.$i.']',
@@ -160,13 +160,13 @@ foreach ($q2 as $r2) {
 				$r2['extra'],
 				'small'
 			);
-			break; // }
+		break; // }
 		case 'html-block': // {
 			$c.='<textarea name="formfieldElementsExtra['.$i
 				.']" class="ckeditor">'
 				.htmlspecialchars($r2['extra'])
 				.'</textarea>';
-			break; // }
+		break; // }
 		default: // {
 			$c.='<input type="hidden" name="formfieldElementsExtra['.$i
 				.']" class="forms-'.$r2['type'].'" value="'.$r2['extra'].'"/>';

@@ -50,7 +50,7 @@ if ($version==2) { // forms_saved_values
 	$version=3;
 }
 if ($version==3) { // replace FIELD{blah} with blah
-	$r=dbAll('show tables like "page_vars"','table');
+	$r=dbAll('show tables like "page_vars"', 'table');
 	if (count($r)) {
 		$rs=dbAll('select * from page_vars where name="forms_replyto"');
 		foreach ($rs as $r) {

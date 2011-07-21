@@ -1,21 +1,33 @@
 <?php
+/**
+  * file uploads for Forms
+  *
+  * PHP Version 5
+  *
+  * @category   None
+  * @package    None
+  * @subpackage Form
+  * @author     Kae Verens <kae@kvsites.ie>
+  * @license    GPL Version 2
+  * @link       www.kvweb.me
+ */
 
 $session_id = @$_POST[ 'PHPSESSID' ];
-session_id( $session_id );
+session_id($session_id);
 
 require '../../../ww.incs/basics.php';
 
 $dir=USERBASE.'f/.files/forms/';
-if(!is_dir($dir)){ // make forms dir
+if (!is_dir($dir)) { // make forms dir
 	mkdir($dir);
 }
 $dir.=$session_id.'/';
-if(!is_dir($dir)){ // make dir named after $session_id
+if (!is_dir($dir)) { // make dir named after $session_id
 	mkdir($dir);
 }
 // { make sure too many files aren't being uploaded
 $size=WW_Directory::getSize($dir);
-if($size>52428800){ // greater than 50mb
+if ($size>52428800) { // greater than 50mb
 	WW_Directory::delete($dir);
 	echo 'deleted';
 	exit;
@@ -26,5 +38,3 @@ move_uploaded_file(
 	$dir.$_FILES['file-upload']['name']
 );
 echo 'upload';
-exit;
-?>

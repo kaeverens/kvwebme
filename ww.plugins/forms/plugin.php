@@ -4,8 +4,8 @@
   *
   * PHP Version 5
   *
-  * @category   Whatever
-  * @package    kvWebme
+  * @category   None
+  * @package    None
   * @subpackage Form
   * @author     Kae Verens <kae@kvsites.ie>
   * @license    GPL Version 2
@@ -52,10 +52,7 @@ function Form_adminPageForm($page, $vars) {
   */
 function Form_frontend($PAGEDATA) {
 	require dirname(__FILE__).'/frontend/show.php';
-	if (!isset($PAGEDATA->vars['footer'])) {
-		$PAGEDATA->vars['footer']='';
-	}
 	return $PAGEDATA->render()
 		.Form_show($PAGEDATA->dbVals, $PAGEDATA->vars)
-		.$PAGEDATA->vars['footer'];
+		.@$PAGEDATA->vars['footer'];
 }
