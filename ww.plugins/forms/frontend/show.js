@@ -69,7 +69,8 @@ $(function(){
 				$(this).change();
 			}
 		});
-	});
+	})
+		.validate(window.form_rules);
 	$('.download-delete-item').click(function(){
 		var $this=$(this);
 		var id=$this.attr('id');

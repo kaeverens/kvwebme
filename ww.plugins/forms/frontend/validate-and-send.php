@@ -4,9 +4,9 @@
   *
   * PHP Version 5
   *
-  * @category   Whatever
-  * @package    WebworksWebme
-  * @subpackage Form
+  * @category   None
+  * @package    None
+  * @subpackage None
   * @author     Kae Verens <kae@kvsites.ie>
   * @license    GPL Version 2
   * @link       www.kvweb.me
@@ -15,18 +15,14 @@
 /**
   * validate the inputs for a form
   *
-  * @param array $page page db row
-  * @param array $vars page meta data
+  * @param array &$vars        page meta data
+	* @param array &$form_fields array of fields
   *
   * @return an array of the errors
   */
-function Form_validate($page, $vars) {
-	global $recipientEmail;
+function Form_validate(&$vars, &$form_fields) {
 	$errors=array();
-	$q2=dbAll(
-		'select * from forms_fields where formsId="'.$page['id'].'" order by id'
-	);
-	foreach ($q2 as $r2) {
+	foreach ($form_fields as $r2) {
 		$name=preg_replace('/[^a-zA-Z0-9_]/', '', $r2['name']);
 		if ($r2['type']=='email' && $r2['extra']) {
 			if (@$_REQUEST[$name.'_verify']!=$_SESSION['form_input_email_verify_'.$name]) {
@@ -76,20 +72,17 @@ function Form_validate($page, $vars) {
 /**
   * sends a form, or displays the form instead with errors on top
   *
-  * @param array $page page db row
-  * @param array $vars page meta data
+  * @param array $page        page db row
+  * @param array $vars        page meta data
+	* @param array $form_fields array of fields
   *
   * @return HTML of either the result, or the form with errors on top
   */
-function Form_send($page, $vars) {
-	global $recipientEmail;
+function Form_send($page, $vars, &$form_fields) {
 	$c='';
 	$plaintext='';
 	$values=array();
-	$q2=dbAll(
-		'select * from forms_fields where formsId="'.$page['id'].'" order by id'
-	);
-	foreach ($q2 as $r2) {
+	foreach ($form_fields as $r2) {
 		$name=preg_replace('/[^a-zA-Z0-9_]/', '', $r2['name']);
 		$separator="\n".str_repeat('-', 80)."\n";
 		$val='';
@@ -168,7 +161,7 @@ function Form_send($page, $vars) {
 	$from_field=preg_replace('/[^a-zA-Z]/', '', $vars['forms_replyto']);
 	$from=isset($_REQUEST[$from_field])?$_REQUEST[$from_field]:'';
 	if ($vars['forms_send_as_email']) {
-		$form=Form_readonly($page['id'], $vars);
+		$form=Form_readonly($page['id'], $vars, $form_fields);
 		$to=$vars['forms_recipient'];
 		$form=str_replace(
 			array(
@@ -192,7 +185,7 @@ function Form_send($page, $vars) {
 		}
 	}
 	if ($vars['forms_record_in_db']) {
-		Form_saveValues($page['id']);
+		Form_saveValues($page['id'], $form_fields);
 	}
 	$c.='<div id="thankyoumessage">'.$vars['forms_successmsg'].'</div>';
 	return $c;
@@ -201,19 +194,17 @@ function Form_send($page, $vars) {
 /**
   * save submitted form values
   *
-  * @param integer $formid ID of the form being saved
+  * @param integer $formid       ID of the form being saved
+	* @param array   &$form_fields array of fields
   *
   * @return void
   */
-function Form_saveValues($formid) {
+function Form_saveValues($formid, &$form_fields) {
 	dbQuery(
 		"insert into forms_saved (forms_id,date_created) values($formid,now())"
 	);
 	$id=dbLastInsertId();
-	$q2=dbAll(
-		'select name from forms_fields where formsId="'.$formid.'" order by id'
-	);
-	foreach ($q2 as $r) {
+	foreach ($form_fields as $r) {
 		$name=preg_replace('/[^a-zA-Z0-9_]/', '', $r['name']);
 		if (isset($_REQUEST[$name])) {
 			$val=addslashes($_REQUEST[$name]);
@@ -232,12 +223,13 @@ function Form_saveValues($formid) {
 /**
   * get a readonly version of the form (for sending as email)
   *
-  * @param array $page_id page db row
-  * @param array &$vars   page meta data
+  * @param array $page_id      page db row
+  * @param array &$vars        page meta data
+	* @param array &$form_fields array of fields
   *
   * @return HTML of the form
   */
-function Form_readonly($page_id, &$vars) {
+function Form_readonly($page_id, &$vars, &$form_fields) {
 	if (!isset($_SESSION['forms'])) {
 		$_SESSION['forms']=array();
 	}
@@ -269,11 +261,8 @@ function Form_readonly($page_id, &$vars) {
 		$c.='<div>'.$vals_wrapper_start;
 	}
 	$required=array();
-	$q2=dbAll(
-		'select * from forms_fields where formsId="'.$page_id.'" order by id'
-	);
 	$cnt=0;
-	foreach ($q2 as $r2) {
+	foreach ($form_fields as $r2) {
 		$name=preg_replace('/[^a-zA-Z0-9_]/', '', $r2['name']);
 		$class='';
 		if ($r2['isrequired']) {

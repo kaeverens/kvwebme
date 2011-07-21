@@ -22,28 +22,30 @@
   */
 function Form_show($page, $vars) {
 	$errors=array();
+	$form_fields=dbAll(
+		'select * from forms_fields where formsId="'.$page['id'].'" order by id'
+	);
 	if (@$_REQUEST['funcFormInput']=='submit') {
 		require_once dirname(__FILE__).'/validate-and-send.php';
-		$errors=Form_validate($page, $vars);
+		$errors=Form_validate($vars, $form_fields);
 		if (!count($errors)) {
-			return Form_send($page, $vars);
+			return Form_send($page, $vars, $form_fields);
 		}
 	}
-	return Form_showForm($page, $vars, $errors);
+	return Form_showForm($page, $vars, $errors, $form_fields);
 }
 
 /**
   * show the form to be submitted
   *
-  * @param array $page   page db row
-  * @param array $vars   page meta data
-  * @param array $errors any errors that need to be shown
+  * @param array $page       page db row
+  * @param array $vars       page meta data
+  * @param array $errors     any errors that need to be shown
+	* @param array form_fields list of fields in the form
   *
   * @return HTML of the form
   */
-function Form_showForm(
-	$page, $vars, $errors=array()
-) {
+function Form_showForm($page, $vars, $errors, $form_fields) {
 	if (!isset($_SESSION['forms'])) {
 		$_SESSION['forms']=array();
 	}
@@ -80,13 +82,10 @@ function Form_showForm(
 		$c.='<div>'.$vals_wrapper_start;
 	}
 	$required=array();
-	$q2=dbAll(
-		'select * from forms_fields where formsId="'.$page['id'].'" order by id'
-	);
 	$cnt=0;
 	$has_date=false;
 	$has_ccdate=false;
-	foreach ($q2 as $r2) {
+	foreach ($form_fields as $r2) {
 		if ($r2['type']=='hidden') {
 			continue;
 		}
@@ -343,15 +342,50 @@ function Form_showForm(
 	if (!$vars['forms_template']||$vars['forms_template']=='&nbsp;') {
 		$c.=$vals_2col_end.$vals_wrapper_end.'</div>';
 		$c=str_replace('<table></table>', '', $c);
+		WW_addInlineScript(
+			'var form_rules='
+			.json_encode(Form_getValidationRules($vars, $form_fields)).';'
+		);
 		WW_addScript('forms/frontend/show.js');
 		$c.='<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/'
 			.'jquery.validate.min.js"></script>';
 	}
-	$c.='</fieldset>';
-	$c.='</form>';
-	$script='';
+	$c.='</fieldset></form>';
 	if ($has_ccdate) {
 		WW_addInlineScript('$("input.ccdate").datepicker({"dateFormat":"yy-mm"});');
 	}
 	return $c;
+}
+
+/**
+  * get the validation rules for the form
+  *
+  * @param array $vars        page meta data
+	* @param array $form_fields array of fields
+  *
+  * @return an array of the errors
+  */
+function Form_getValidationRules($vars, $form_fields) {
+	global $recipientEmail;
+	$rulesCollection=array();
+	$from_field=preg_replace('/[^a-zA-Z]/', '', $vars['forms_replyto']);
+	foreach ($form_fields as $r2) {
+		$rules=array();
+		$name=preg_replace('/[^a-zA-Z0-9_]/', '', $r2['name']);
+		if ($r2['isrequired'] || $name==$from_field) {
+			$rules['required']=true;
+		}
+		if ($r2['type']=='email') {
+			$rules['email']=true;
+		}
+		if (count($rules)) {
+			$rulesCollection[$name]=$rules;
+		}
+	}
+	// { check the captcha
+	if ($vars['forms_captcha_required']) {
+		$rulesCollection['recaptcha_challenge_field']=array('required'=>true);
+	}
+	// }
+	return $rulesCollection;
 }
