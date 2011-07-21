@@ -20,11 +20,27 @@ $(function(){
 					$this.attr('current-page', to);
 				});
 		}
+		function are_all_visible_elements_valid($this) {
+			var $divs=$this.find('>fieldset>div:visible');
+			var allvalid=true;
+			$divs.find('input,select').each(function(){
+				if (!$this.validate().element(this)) {
+					allvalid=false;
+				}
+			});
+			return allvalid;
+		}
 		$this.find('.form-page-next').click(function(){
+			if (!are_all_visible_elements_valid($this)) {
+				return;
+			}
 			var curpage=+$this.attr('current-page');
 			change_page($this, curpage, curpage+1);
 		});
 		$this.find('.form-page-previous').click(function(){
+			if (!are_all_visible_elements_valid($this)) {
+				return;
+			}
 			var curpage=+$this.attr('current-page');
 			change_page($this, curpage, curpage-1);
 		});
@@ -60,7 +76,7 @@ $(function(){
 				if (ret.error) {
 					return alert(ret.error);
 				}
-				$this.next().css('display', 'block');
+				$this.siblings('input').css('display', 'block');
 				alert('please check your email for a verification code, and fill it in');
 			});
 		});
