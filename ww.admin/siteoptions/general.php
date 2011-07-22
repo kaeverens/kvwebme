@@ -136,7 +136,8 @@ foreach ($arr as $k=>$v) {
 echo '</select></td></tr>';
 // }
 // { disable hidden menu sitemap
-echo '<tr><th>Disable the hidden sitemap (<a href="/Home?webmespecial=sitemap">this</a>)</th><td>'
+echo '<tr><th>Disable the hidden sitemap (<a href="/Home?webmespecial=sitem'
+	.'ap">this</a>)</th><td>'
 	.'<select name="disable-hidden-sitemap"><option value="0">No</option>';
 echo '<option value="1"';
 if (@$DBVARS['disable-hidden-sitemap']) {
@@ -162,7 +163,7 @@ echo '<tr><th>Enable maintenance mode</th><td>
 	<select name="maintenance-mode">
 		<option value="No">No</option>
 		<option value="yes"';
-if(@$DBVARS['maintenance-mode']=='yes'){
+if (@$DBVARS['maintenance-mode']=='yes') {
 	echo ' selected="selected"';
 	$display='';
 }
@@ -181,7 +182,7 @@ $message=(@$DBVARS['maintenance-mode-message']=='')?
 	$DBVARS['maintenance-mode-message'];
 echo '<tr '.$display.' class="maintenance-message">
 	<th>Maintenance mode message:</th>
-	<td>'.ckeditor('maintenance-mode-message',$message).'</td>
+	<td>'.ckeditor('maintenance-mode-message', $message).'</td>
 </tr>';
 // }
 echo '</table><input type="submit" name="action" value="Save" /></form>';

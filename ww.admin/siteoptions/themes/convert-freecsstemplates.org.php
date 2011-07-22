@@ -8,7 +8,7 @@ if (!isset($theme_folder)) { // called directly. don't do this.
 $dom=new DOMDocument();
 $dom->loadHTMLFile($theme_folder.'/index.html');
 
-function empty_element($dom, $id) {
+function Theme_emptyElement($dom, $id) {
 	$el=$dom->getElementById($id);
 	if ($el) {
 		while ($el->firstChild) {
@@ -23,7 +23,7 @@ $header='';
 $d=$dom->getElementById('header');
 if ($d) {
 	$header='header';
-	$dhtml=$d->ownerDocument->saveXML( $d ); 
+	$dhtml=$d->ownerDocument->saveXML($d); 
 	if (strpos($dhtml, 'id="logo"') && strpos($dhtml, 'id="menu"')) {
 		$header='logo';
 	}
@@ -85,41 +85,84 @@ if ($dom->getElementById('column3')) {
 	$fcol3='column3';
 }
 
-$dom=empty_element($dom, 'menu');
-$dom=empty_element($dom, $col1);
+$dom=Theme_emptyElement($dom, 'menu');
+$dom=Theme_emptyElement($dom, $col1);
 if ($col2) {
-	$dom=empty_element($dom, $col2);
+	$dom=Theme_emptyElement($dom, $col2);
 }
-$dom=empty_element($dom, $content);
-$dom=empty_element($dom, $header);
-$dom=empty_element($dom, 'footer');
-$dom=empty_element($dom, $fcol1);
-$dom=empty_element($dom, $fcol2);
-$dom=empty_element($dom, $fcol3);
+$dom=Theme_emptyElement($dom, $content);
+$dom=Theme_emptyElement($dom, $header);
+$dom=Theme_emptyElement($dom, 'footer');
+$dom=Theme_emptyElement($dom, $fcol1);
+$dom=Theme_emptyElement($dom, $fcol2);
+$dom=Theme_emptyElement($dom, $fcol3);
 
 $h=$dom->saveHTML();
-$h=preg_replace('#(<link.*?href=")([^"]*).css"#', '\1{{$THEMEDIR}}/c/\2.css"', $h);
+$h=preg_replace(
+	'#(<link.*?href=")([^"]*).css"#',
+	'\1{{$THEMEDIR}}/c/\2.css"',
+	$h
+);
 $h=preg_replace('/\s+/', ' ', $h);
 $h=preg_replace('#<!DOCTYPE[^>]*>#', "<!doctype html>\n", $h);
-$h=preg_replace('#(<[^>]* id="'.$header.'"[^>]*>)(</div>)#', '\1{{PANEL name="header"}}\2', $h);
-$h=preg_replace('#(<[^>]* id="'.$col1.'"[^>]*>)(</div>)#', '\1{{PANEL name="sidebar1"}}\2', $h);
+$h=preg_replace(
+	'#(<[^>]* id="'.$header.'"[^>]*>)(</div>)#',
+	'\1{{PANEL name="header"}}\2',
+	$h
+);
+$h=preg_replace(
+	'#(<[^>]* id="'.$col1.'"[^>]*>)(</div>)#',
+	'\1{{PANEL name="sidebar1"}}\2',
+	$h
+);
 if ($col2) {
-	$h=preg_replace('#(<[^>]* id="'.$col2.'"[^>]*>)(</div>)#', '\1{{PANEL name="sidebar2"}}\2', $h);
+	$h=preg_replace(
+		'#(<[^>]* id="'.$col2.'"[^>]*>)(</div>)#',
+		'\1{{PANEL name="sidebar2"}}\2',
+		$h
+	);
 }
 if ($fcol1) {
-	$h=preg_replace('#(<[^>]* id="'.$fcol1.'"[^>]*>)(</div>)#', '\1{{PANEL name="footer-column1"}}\2', $h);
+	$h=preg_replace(
+		'#(<[^>]* id="'.$fcol1.'"[^>]*>)(</div>)#',
+		'\1{{PANEL name="footer-column1"}}\2',
+		$h
+	);
 }
 if ($fcol2) {
-	$h=preg_replace('#(<[^>]* id="'.$fcol2.'"[^>]*>)(</div>)#', '\1{{PANEL name="footer-column2"}}\2', $h);
+	$h=preg_replace(
+		'#(<[^>]* id="'.$fcol2.'"[^>]*>)(</div>)#',
+		'\1{{PANEL name="footer-column2"}}\2',
+		$h
+	);
 }
 if ($fcol3) {
-	$h=preg_replace('#(<[^>]* id="'.$fcol3.'"[^>]*>)(</div>)#', '\1{{PANEL name="footer-column3"}}\2', $h);
+	$h=preg_replace(
+		'#(<[^>]* id="'.$fcol3.'"[^>]*>)(</div>)#',
+		'\1{{PANEL name="footer-column3"}}\2',
+		$h
+	);
 }
-$h=preg_replace('#(<[^>]* id="'.$content.'"[^>]*>)(</div>)#', '\1{{$PAGECONTENT}}\2', $h);
-$h=str_replace('<div id="footer"></div>', '<div id="footer">{{PANEL name="footer"}}</div>', $h);
-$h=str_replace('<div id="menu"></div>', '<div id="menu">{{MENU direction="horizontal"}}</div>', $h);
-$h=preg_replace('#<div style="clear: both;">[^<]*</div>#', '<div style="clear: both;"></div>', $h);
-
+$h=preg_replace(
+	'#(<[^>]* id="'.$content.'"[^>]*>)(</div>)#',
+	'\1{{$PAGECONTENT}}\2',
+	$h
+);
+$h=str_replace(
+	'<div id="footer"></div>',
+	'<div id="footer">{{PANEL name="footer"}}</div>',
+	$h
+);
+$h=str_replace(
+	'<div id="menu"></div>',
+	'<div id="menu">{{MENU direction="horizontal"}}</div>',
+	$h
+);
+$h=preg_replace(
+	'#<div style="clear: both;">[^<]*</div>#',
+	'<div style="clear: both;"></div>',
+	$h
+);
 $h=preg_replace('#<meta[^>]*>#', '', $h);
 $h=preg_replace('#<title[^>]*>[^>]*>#', '', $h);
 $h=str_replace('<head>', '<head>{{$METADATA}}', $h);
@@ -140,19 +183,43 @@ foreach ($files as $file) {
 	if ($file->getExtension()=='css') {
 		$css=file_get_contents($file->getPathname());
 		// { menus
-		$css=preg_replace('/(#menu1\s*){/', '\1,#menu-fg-0,.fg-menu-container{', $css);
-		$css=str_replace(array("\n", "\r", "\t"),' ', $css);
+		$css=preg_replace(
+			'/(#menu1\s*){/',
+			'\1,#menu-fg-0,.fg-menu-container{',
+			$css
+		);
+		$css=str_replace(array("\n", "\r", "\t"), ' ', $css);
 		$css=preg_replace('/\s+/', ' ', $css);
-		$css=preg_replace('/(#menu1\s*ul\s*){/', '\1,#menu-fg-0 ul,.fg-menu-container ul{', $css);
-		$css=preg_replace('/(#menu1\s*li\s*){/', '\1,#menu-fg-0 li,.fg-menu-container li{', $css);
-		$css=preg_replace('/(#menu1\s*a\s*){/', '\1,#menu-fg-0 a,.fg-menu-container a{', $css);
-		$css=preg_replace('/(#menu1\s*a:hover\s*){/', '\1,#menu-fg-0 a:hover,.fg-menu-container a:hover{', $css);
-		$css=preg_replace('/(#menu\s+a\s*{[^}]*)display\s*:\s*block\s*;/', '\1display:inline-block;', $css);
+		$css=preg_replace(
+			'/(#menu1\s*ul\s*){/',
+			'\1,#menu-fg-0 ul,.fg-menu-container ul{',
+			$css
+		);
+		$css=preg_replace(
+			'/(#menu1\s*li\s*){/',
+			'\1,#menu-fg-0 li,.fg-menu-container li{',
+			$css
+		);
+		$css=preg_replace(
+			'/(#menu1\s*a\s*){/',
+			'\1,#menu-fg-0 a,.fg-menu-container a{',
+			$css
+		);
+		$css=preg_replace(
+			'/(#menu1\s*a:hover\s*){/',
+			'\1,#menu-fg-0 a:hover,.fg-menu-container a:hover{',
+			$css
+		);
+		$css=preg_replace(
+			'/(#menu\s+a\s*{[^}]*)display\s*:\s*block\s*;/',
+			'\1display:inline-block;',
+			$css
+		);
 		$css=preg_replace('#}\s*#', "}\n", $css);
 		$css=preg_replace('#/\*#', "\n/*", $css);
 		$css=preg_replace('#\*/#', "*/\n", $css);
-		$css=str_replace('.current_page_item a','a.ajaxmenu_currentPage', $css);
-		$css=str_replace('li.current_page_item','a.ajaxmenu_currentPage', $css);
+		$css=str_replace('.current_page_item a', 'a.ajaxmenu_currentPage', $css);
+		$css=str_replace('li.current_page_item', 'a.ajaxmenu_currentPage', $css);
 		$css.='.fg-menu-container{padding-bottom:0 !important}';
 		// }
 		file_put_contents($file->getPathname(), $css);

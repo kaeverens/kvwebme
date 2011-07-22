@@ -140,9 +140,6 @@ function ob_show_and_log($type,$header=''){
 	}
 	ob_flush();
 }
-function admin_can_create_top_pages(){
-	return has_page_permissions(1024);
-}
 function is_admin(){
 	return (isset($_SESSION['userdata']) && isset($_SESSION['userdata']['groups']['administrators']));
 }
@@ -151,12 +148,6 @@ function is_logged_in(){
 }
 function get_userid(){
 	return $_SESSION['userdata']['id'];
-}
-function has_page_permissions($val){
-	return true;
-}
-function has_access_permissions($val){
-	return true;
 }
 function plugin_trigger( $trigger_name, $params = null ){
 	global $PLUGIN_TRIGGERS,$PAGEDATA;

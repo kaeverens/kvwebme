@@ -132,17 +132,9 @@ if ($version==5) { // site_vars
 		'CREATE TABLE `site_vars` ( `name` text, `value` text)'
 		.'ENGINE=MyISAM DEFAULT CHARSET=utf8'
 	);
-	$version=6;
-}
-if ($version==6) { // permissions
-	dbQuery(
-		'CREATE TABLE `permissions` ( `id` int(11) default 0,'
-		.'`type` int(11) default 0, `value` text)'
-		.'ENGINE=MyISAM DEFAULT CHARSET=utf8'
-	);
 	$version=7;
 }
-if ($version==7) { // blog indexes
+if ($version<8) { // blog indexes
 	dbQuery(
 		'CREATE TABLE `blog_indexes` ( `pageid` int(11) default NULL,'
 		.'`parent` int(11) default NULL, `rss` text,'

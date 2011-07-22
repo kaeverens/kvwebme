@@ -40,12 +40,12 @@ $q='insert into pages set ord="'.$ord.'",importance="'.$importance.'",'
 	.'associated_date="'.addslashes($associated_date).'",'
 	.'alias="'.$alias.'"';
 $q.=',parent='.$pid;
-if(has_page_permissions(128))$q.=',special='.$special;else $q.=',special=0';
+$q.=',special='.$special;else $q.=',special=0';
 dbQuery($q);
 $id=dbOne('select last_insert_id() as id','id');
-dbQuery('insert into permissions set id="'.$id.'", type=1, value="'.get_userid().'=7'."\n\n4".'"');
 $msgs.='<em>New page created.</em>';
 dbQuery('update page_summaries set rss=""');
 cache_clear('menus');
 cache_clear('pages');
-echo '<script>window.parent.pages_add_node("'.addslashes($alias).'",'.$id.','.$pid.');</script>';
+echo '<script>window.parent.pages_add_node("'.addslashes($alias).'",'.$id
+	.','.$pid.');</script>';
