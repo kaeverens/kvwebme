@@ -31,7 +31,7 @@ if($importance>1)$importance=1;
 $ord=dbOne('select ord from pages where parent='.$pid.' order by ord desc limit 1','ord')+1;
 $original_body=(isset($_REQUEST['body']))?$_REQUEST['body']:'';
 $body=$original_body;
-$body=sanitise_html($body);
+$body=Core_sanitiseHtml($body);
 $q='insert into pages set ord="'.$ord.'",importance="'.$importance.'",'
 	.'keywords="'.$keywords.'",description="'.$description.'",cdate=now(),'
 	.'template="'.$template.'",edate=now(),name="'.$name.'",title="'.$title.'",'

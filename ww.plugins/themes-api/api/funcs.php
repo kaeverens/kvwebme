@@ -157,20 +157,6 @@ function themes_api_display_image( $file ){
 	readfile( $file );
 }
 
-/**
- * themes_api_curl
- * 
- * gets the contents of a url
- */
-function themes_api_curl( $url ){
-        $ch = curl_init( );
-        curl_setopt( $ch, CURLOPT_URL, $url );
-        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
-        $response = curl_exec( $ch );
-        curl_close( $ch );
-        return $response;
-}
-
 function themes_api_get_theme_from_id( $themes, $id ){
 	foreach( $themes as $theme ){
 		if( $theme[ 'id' ] == $id )
@@ -197,4 +183,3 @@ function themes_api_add_download_count( $themes ){
 	
 	return $themes;
 }
-?>

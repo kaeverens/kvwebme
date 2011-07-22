@@ -30,7 +30,7 @@ foreach ($GLOBALS['PLUGINS'] as $plugin) {
 	}
 }
 $body=$original_body;
-$body=sanitise_html($body);
+$body=Core_sanitiseHtml($body);
 $name = transcribe( $_REQUEST['name'] );
 $alias = addslashes( $_REQUEST[ 'name' ] );
 // { check that name is not duplicate of existing page
@@ -49,7 +49,7 @@ $q='update pages set importance="'.$importance.'"'
 	.',keywords="'.addslashes($keywords).'"'
 	.',description="'.addslashes($description).'"'
 	.',name="'.addslashes($name).'",title="'.addslashes($_POST['title']).'"'
-	.',original_body="'.addslashes(sanitise_html_essential($original_body)).'"'
+	.',original_body="'.addslashes(Core_sanitiseHtmlEssential($original_body)).'"'
 	.',body="'.addslashes($body).'",parent='.$pid
 	.',special='.$special
 	.',alias="'.$alias.'"';

@@ -33,7 +33,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='save'){
 	$id_was=$id;
 	$content=json_decode(utf8_decode($_REQUEST['html']));
 	foreach($content as $k=>$v){
-		$content[$k]->html=sanitise_html($v->html);
+		$content[$k]->html=Core_sanitiseHtml($v->html);
 	}
 	$html=json_encode($content);
 	$sql='content_snippets set content="'.addslashes($html).'"';

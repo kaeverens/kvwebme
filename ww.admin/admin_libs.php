@@ -200,7 +200,7 @@ function ckeditor($name, $value='', $height=250) {
 		.'false});});'
 		."//]]></script>";
 }
-function sanitise_html_essential($original_html) {
+function Core_sanitiseHtmlEssential($original_html) {
 	$original_html = str_replace("\n", '{{CARRIAGERETURN}}', $original_html);
 	$original_html = str_replace("\r", '{{LINERETURN}}', $original_html);
 	do {
@@ -326,8 +326,8 @@ function sanitise_html_essential($original_html) {
 	$html = str_replace('{{LINERETURN}}', "\r", $html);
 	return $html;
 }
-function sanitise_html($original_html) {
-	$original_html = sanitise_html_essential($original_html);
+function Core_sanitiseHtml($original_html) {
+	$original_html = Core_sanitiseHtmlEssential($original_html);
 	$original_html = html_fixImageResizes($original_html);
 	$original_html = str_replace("\n", '{{CARRIAGERETURN}}', $original_html);
 	$original_html = str_replace("\r", '{{LINERETURN}}', $original_html);
@@ -479,7 +479,7 @@ function sanitise_html($original_html) {
 	$html = str_replace('{{LINERETURN}}', "\r", $html);
 	return $html;
 }
-function curl($url) {
+function Core_getExternalFile($url) {
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

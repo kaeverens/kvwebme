@@ -21,7 +21,7 @@ if(isset($_GET['delete_banner']) && (int)$_GET['delete_banner']){
 if(isset($_POST['save_banner'])){
 	$id=(int)$_POST['id'];
 	$pages=@$_POST['pages_'.$id];
-	$html=sanitise_html($_POST['html_'.$id]);
+	$html=Core_sanitiseHtml($_POST['html_'.$id]);
 	$sql='set html="'.addslashes($html).'",name="'.addslashes($_POST['name']).'",pages='.(count($pages)?1:0);
 	if ($id) {
 		dbQuery("update banners_images $sql where id=$id");

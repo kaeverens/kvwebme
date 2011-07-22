@@ -27,7 +27,7 @@ if( $id == 0 )
 /**
  * get theme from api
  */
-$theme = curl( 'http://kvweb.me/ww.plugins/themes-api/api.php?theme=' . $id );
+$theme = Core_getExternalFile( 'http://kvweb.me/ww.plugins/themes-api/api.php?theme=' . $id );
 
 if( $theme == false )
         die( 'theme does not exist' );
@@ -40,7 +40,7 @@ echo '<h2>Downloading Theme</h2>';
  * downloading
  */
 echo 'Downloading...<br/>';
-$zipfile = curl( $theme[ 'download' ] );
+$zipfile = Core_getExternalFile( $theme[ 'download' ] );
 $theme_dir = USERBASE . 'themes-personal/';
 file_put_contents( $theme_dir . $theme[ 'name' ] . '.zip', $zipfile );
 

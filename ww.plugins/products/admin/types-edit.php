@@ -17,7 +17,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 	else{
 		$data_fields = $_REQUEST['data_fields'];
 		$data_fields=str_replace(array("\n","\r"),array('\n',''),$data_fields);
-		$singleview = sanitise_html($_REQUEST['singleview_template']);
+		$singleview = Core_sanitiseHtml($_REQUEST['singleview_template']);
 		if (strlen($singleview)<20) {
 			$singleview = '{{PRODUCTS_DATATABLE}}'.$singleview;
 		}

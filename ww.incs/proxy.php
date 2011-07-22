@@ -45,7 +45,7 @@ if( strpos( $url, '?' ) !== 0 ){
 	$url = reset($explode) . $querystring;
 }
 
-$content = curl( $url );
+$content = Core_getExternalFile( $url );
 
 echo $content;
 ?>
