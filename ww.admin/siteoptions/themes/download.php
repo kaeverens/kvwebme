@@ -13,6 +13,21 @@
 
 require '../../../ww.incs/basics.php';
 require SCRIPTBASE . 'ww.admin/admin_libs.php';
+function get_template_names( ) {
+	$themes = array();
+	$dir = USERBASE . 'themes-personal/';
+	$handler = opendir($dir);
+	while ($file = readdir($handler)) {
+		if ($file == '.' || $file == '..') {
+			continue;
+		}
+		if (is_dir($dir . $file)) {
+			array_push($themes, $file);
+		}
+	}
+	closedir($handler);
+	return $themes;
+}
 
 echo '
 <script type="text/javascript" src="/ww.admin/siteoptions/themes/download.js"></script>

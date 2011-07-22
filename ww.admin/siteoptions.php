@@ -2,6 +2,14 @@
 require 'header.php';
 echo '<h1>Site Options</h1>';
 
+function admin_verifypage($validlist, $default, $val) {
+	foreach ($validlist as $v) {
+		if ($v==$val) {
+			return $val;
+		}
+	}
+	return $default;
+}
 echo admin_menu(array(
 	'General'=>'siteoptions.php?page=general',
 	'Users'=>'siteoptions.php?page=users',

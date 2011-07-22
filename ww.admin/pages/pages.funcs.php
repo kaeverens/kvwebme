@@ -22,14 +22,15 @@ function showshortcuts($id,$parent){
 		echo '<ul>';
 		foreach($q as $r){
 			echo '<li>';
-			echo wInput('shortcuts['.$r['id'].']','checkbox');
+			echo '<input name="shortcuts['.$r['id'].']" type="checkbox"/>';
 			$r2=dbRow('select id,name from pagelinks where fromid="'.$id.'" and toid="'.$r['id'].'"');
 			if(count($r2)){
 				echo ' checked="checked"';
 				$r['name']=$r2['name'];
 			}
 			echo ' />';
-			echo wInput('shortcutsName['.$r['id'].']','text',htmlspecialchars($r['name']));
+			echo '<input name="shortcutsName['.$r['id'].']" value="'
+				.htmlspecialchars($r['name']).'"/>';
 			showshortcuts($id,$r['id']);
 			echo '</li>';
 		}
