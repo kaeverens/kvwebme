@@ -43,7 +43,8 @@ $ids = array( );
 foreach( $downloads as $download )
 	array_push( $ids, $download[ 'theme' ] );
 
-$themes_tmp = dbAll( 'select id,name,author,description,version,last_updated,author_url'
+$themes_tmp = dbAll(
+	'select id,name,author,description,version,last_updated,author_url'
 	. ',tags from themes_api where moderated="yes" and ( id=' 
 	. implode( ' or id=', $ids ) . ' )' );
 
@@ -52,7 +53,7 @@ if( $themes_tmp == false || count( $themes_tmp ) == 0 )
 
 $themes = array( );
 foreach( $downloads as $download ){
-	$theme = themes_api_get_theme_from_id( $themes_tmp, $download[ 'theme' ] );
+	$theme = ThemesApi_getThemeFromId( $themes_tmp, $download[ 'theme' ] );
 	array_push( $themes, $theme );
 }
 
@@ -66,13 +67,13 @@ for( $i = 0; $i < count( $themes ); ++$i ){
 	$id = $themes[ $i ][ 'id' ];
 	$themes[ $i ][ 'author' ] = $author;
 	$themes[ $i ][ 'short_description' ] = substr( $themes[ $i ][ 'description' ], 0, 26 ) . ' ...';
-	$themes[ $i ][ 'screenshot' ] = themes_api_get_screenshot( $id );
-        $themes[ $i ][ 'variants' ] = themes_api_get_variants( $id );
-	$themes[ $i ][ 'download' ] = themes_api_download_link( $id );
+	$themes[ $i ][ 'screenshot' ] = ThemesApi_getScreenshot( $id );
+        $themes[ $i ][ 'variants' ] = ThemesApi_getVariants( $id );
+	$themes[ $i ][ 'download' ] = ThemesApi_downloadLink( $id );
 
 }
 
-$themes = themes_api_add_download_count( $themes );
+$themes = ThemesApi_addDownloadCount( $themes );
 
 /**
  * json_encode and print results

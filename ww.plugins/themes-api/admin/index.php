@@ -1,14 +1,16 @@
 <?php
-
 /**
- * admin/index.php, KV-Webme Themes Repository
- *
- * switched between three side-menu options
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* switched between three side-menu options
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 $action = @$_GET[ 'action' ];
 
@@ -24,9 +26,9 @@ echo '<h1>Themes Repository</h1>
 /**
  * fetch themes from db
  */
-$themes = dbAll( 'select * from themes_api' );
+$themes=dbAll('select * from themes_api');
 
-switch( $action ){
+switch ($action) {
 	case 'approved':
 		require SCRIPTBASE . 'ww.plugins/themes-api/admin/approved.php';
 	break;

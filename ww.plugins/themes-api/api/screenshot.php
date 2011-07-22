@@ -1,35 +1,36 @@
 <?php
-
 /**
- * api/screenshot.php, KV-Webme Themes API
- *
- * displays a screenshot on the screen 
- *
- * parameters that can be given:
- *
- * screenshot	-       should be boolean true
- * id		-	id of theme
- * variant      -       name of variant screenshot to display
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @author     Kae Verens <kae@verens.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* displays a screenshot on the screen 
+	* parameters that can be given:
+	* screenshot	-       should be boolean true
+	* id		-	id of theme
+	* variant      -       name of variant screenshot to display
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 /**
  * make sure api rules are being followed
  */
 $recent = @$_GET[ 'screenshot' ];
-if( $recent != 'true' )
-        exit;
+if ($recent != 'true') {
+	exit;
+}
 
 /**
  * check if id is defined
  */
-$id = ( int ) @$_GET[ 'id' ];
-if( $id == 0 )
+$id = (int)@$_GET[ 'id' ];
+if ($id == 0) {
 	exit;
+}
 
 $theme_dir = USERBASE . 'f/themes_api/themes/' . $id . '/' . $id . '/';
 
@@ -38,31 +39,31 @@ $theme_dir = USERBASE . 'f/themes_api/themes/' . $id . '/' . $id . '/';
  * if not display theme screenshot
  */
 $variant = @$_GET[ 'variant' ];
-if( $variant == '' || !is_dir( $theme_dir . 'cs' ) ){
-	themes_api_display_image( $theme_dir . 'screenshot.png' );
+if ($variant == '' || !is_dir($theme_dir . 'cs')) {
+	ThemesApi_displayImage($theme_dir . 'screenshot.png');
 	exit;
 }
 
 /**
  * loop through theme dir
  */
-$handler = opendir( $theme_dir . 'cs' );
-while( $file = readdir( $handler ) ){
+$handler = opendir($theme_dir . 'cs');
+while ($file = readdir($handler)) {
 
-	if( $file == '.' && $file == '..' )
+	if ($file == '.' && $file == '..') {
 		continue;
+	}
 
 	/**
 	 * get file extention
 	 */
-	$name = explode( '.', $file );
-	$ext = end( $name );
-	$name = reset( $name );
+	$name = explode('.', $file);
+	$ext = end($name);
+	$name = reset($name);
 
-	if( $ext == 'png' && $name == $variant ){
-		themes_api_display_image( $theme_dir . 'cs/' . $name . '.' . $ext );
+	if ($ext == 'png' && $name == $variant) {
+		ThemesApi_displayImage($theme_dir . 'cs/' . $name . '.' . $ext);
 		break;
 	}
-
 }
-closedir( $handler );
+closedir($handler);

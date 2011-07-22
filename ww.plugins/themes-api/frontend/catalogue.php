@@ -1,19 +1,21 @@
 <?php
-
 /**
- * frontend/catalogue.php, KV-Webme Themes Repository
- *
- * displays a catalogue of themes
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* displays a catalogue of themes
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
-require SCRIPTBASE . 'ww.plugins/themes-api/api/funcs.php';
+require_once SCRIPTBASE . 'ww.plugins/themes-api/api/funcs.php';
 
-WW_addScript( '/ww.plugins/themes-api/carousel.js' );
-WW_addCSS( '/ww.plugins/themes-api/api.css' );
+WW_addScript('/ww.plugins/themes-api/carousel.js');
+WW_addCSS('/ww.plugins/themes-api/api.css');
 
 $script = '
 $( "#carousel" ).themesCarousel({loop:true});
@@ -28,15 +30,10 @@ $( "#themes_search" ).click( function( ){
 	$( "#carousel" ).themesCarousel( "search", value );
 });
 ';
-WW_addInlineScript( $script );
+WW_addInlineScript($script);
 
-$html = '
-<input type="text" name="themes_search" /><input type="submit" name="Search" id="themes_search"/>
-<h1>Themes Repository</h1>
-<div id="carousel"></div>
-<div id="previous">P</div>
-<div id="next" style="position:relative;top:0;background:#000;color:#fff;padding:30px">N</div>
-<br style="clear:both"/>
-';
-
-?>
+$html='<input type="text" name="themes_search" /><input type="submit" '
+	.'name="Search" id="themes_search"/> <h1>Themes Repository</h1>'
+	.'<div id="carousel"></div> <div id="previous">P</div>'
+	.'<div id="next" style="position:relative;top:0;background:#000;color:#ff'
+	.'f;padding:30px">N</div> <br style="clear:both"/>';

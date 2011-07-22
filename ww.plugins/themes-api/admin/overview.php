@@ -1,14 +1,16 @@
 <?php
-
 /**
- * admin/overview.php, KV-Webme Themes Repository
- *
- * gives a brief overview of the repository
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* gives a brief overview of the repository
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 /**
  * get the count of moderated and awaiting
@@ -16,27 +18,34 @@
  */
 $approved = 0;
 $moderate = 0;
-for( $i = 0; $i < count( $themes ); ++$i ){
-	if( $themes[ $i ][ 'moderated' ] == 'yes' )
+for ($i = 0; $i < count($themes); ++$i) {
+	if ($themes[ $i ][ 'moderated' ] == 'yes') {
 		++$approved;
-	else
+	}
+	else {
 		++$moderate;
+	}
 }
 
 /**
  * figure out who is in the moderation team
  */
-$id = dbOne( 'select id from groups where name="moderators"', 'id' );
-$users = dbAll( 'select name from user_accounts, users_groups where groups_id=' . $id . ' and user_accounts_id=id' );
+$id = dbOne('select id from groups where name="moderators"', 'id');
+$users = dbAll(
+	'select name from user_accounts, users_groups where groups_id=' 
+	. $id . ' and user_accounts_id=id'
+);
 $list = array( );
-for( $i = 0; $i < count( $users ); array_push( $list, $users[ $i ][ 'name' ] ), ++$i );
+for ( $i=0; $i<count($users); ++$i) {
+	array_push($list, $users[$i]['name'])
+}
 
 echo '
 <h2>Overview</h2>
 <table>
 	<tr>
 		<th>Total Themes:</th>
-		<td>' . count( $themes ) . '</td>
+		<td>' . count($themes) . '</td>
 	</tr>
 	<tr>
 		<th>Approved Themes:</th>
@@ -48,9 +57,6 @@ echo '
 	</tr>
 	<tr>
 		<th>Theme Moderators:</th>
-		<td>' . implode( ',', $list ) . '</td>
+		<td>' . implode(',', $list) . '</td>
 	</tr>
 </table>';
-
-
-?>

@@ -1,35 +1,34 @@
 <?php
-
 /**
- * frontend/clean.php, KV-Webme Themes Repository
- *
- * cleans both the user files directory and the db if a user
- * exits the form half way through completion
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* cleans the user files directory and db if a user
+	* exits the form half way through completion
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
-require '../../../ww.incs/basics.php';
-require SCRIPTBASE . 'ww.plugins/themes-api/api/funcs.php';
+require_once '../../../ww.incs/basics.php';
+require_once SCRIPTBASE . 'ww.plugins/themes-api/api/funcs.php';
 
 /**
  * check user is logged in
  */
-$user_id = ( int ) @$_SESSION[ 'userdata' ][ 'id' ];
-if( $user_id == 0 )
+$user_id = (int)@$_SESSION[ 'userdata' ][ 'id' ];
+if ($user_id == 0) {
 	exit;
-
+}
 /**
  * make sure input is valid
  */
-$id = ( int ) @$_POST[ 'id' ];
-if( $id == 0 )
+$id = (int) @$_POST[ 'id' ];
+if ($id == 0) {
 	exit;
+}
 
 echo $id;
-
-//themes_api_error( "", $id );
-
-?>

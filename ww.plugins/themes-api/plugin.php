@@ -24,29 +24,29 @@ $plugin = array(
 			'Themes Repository'	=>	'index'
 		),
 		'page_type'	=>	array( 
-			'Themes Catalogue' => 'themes_api_catalogue_admin',
-			'Upload Form' => 'themes_api_admin'
+			'Themes Catalogue' => 'ThemesApi_catalogueAdmin',
+			'Upload Form' => 'ThemesApi_admin'
 		),
 	),
 		'frontend'	=>	array(
 		'page_type'	=>	array(
-			'Themes Catalogue' => 'themes_api_catalogue_frontend',
-			'Upload Form'	=>	'themes_api_frontend',
+			'Themes Catalogue' => 'ThemesApi_catalogueFrontend',
+			'Upload Form'	=>	'ThemesApi_frontend',
 		),
-		'file_hook'	=>	'themes_api_files_check'
+		'file_hook'	=>	'ThemesApi_filesCheck'
 	)
 );
 
-function themes_api_frontend() {
+function ThemesApi_frontend() {
 	require SCRIPTBASE . 'ww.plugins/themes-api/frontend/upload.php';
 	return $html;
 }
 
-function themes_api_admin() {
+function ThemesApi_admin() {
 	echo 'this is the admin area page type';
 }
 
-function themes_api_files_check( $vars ) {
+function ThemesApi_filesCheck( $vars ) {
 	/**
 	 * check if this file should be handled
 	 * by this plugin
@@ -80,11 +80,11 @@ function themes_api_files_check( $vars ) {
 	);
 }
 
-function themes_api_catalogue_admin() {
+function ThemesApi_catalogueAdmin() {
 	echo '<h1>Themes Repository</h1>';
 }
 
-function themes_api_catalogue_frontend() {
+function ThemesApi_catalogueFrontend() {
 	require SCRIPTBASE . 'ww.plugins/themes-api/frontend/catalogue.php';
 	return $html;
 }

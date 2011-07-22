@@ -1,5 +1,18 @@
 <?php
 /**
+	* function library for the api
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+/**
  * api/funcs.php, KV-Webme Themes API
  *
  * function library for the api
@@ -10,129 +23,135 @@
  */
 
 /**
- * themes_api_get_screenshot
+ * ThemesApi_getScreenshot
  *
  * @param $id - id of theme
  *
  * returns the url of the theme screenshot
  */
-function themes_api_get_screenshot( $id ){
-	return themes_api_calculate_url( ) . '/ww.plugins/themes-api/api.php?screenshot=true&id=' . $id;
+function ThemesApi_getScreenshot($id){
+	return ThemesApi_calculateUrl()
+		.'/ww.plugins/themes-api/api.php?screenshot=true&id='.$id;
 }
 
 /**
- * themes_api_get_variants
+ * ThemesApi_getVariants
  * 
  * returns an array of css files associated
  * with the theme
  */
-function themes_api_get_variants( $id ){
+function ThemesApi_getVariants($id){
 
-	$variant_dir = USERBASE . 'f/themes_api/themes/' . $id . '/' . $id . '/cs/';
-	$variants = array( );
+	$variant_dir = USERBASE.'f/themes_api/themes/'.$id.'/'.$id.'/cs/';
+	$variants = array();
 
 	/**
 	 * if the dir doesn't exist return empty array
 	 */
-	if( !is_dir( $variant_dir ) )
+	if (!is_dir($variant_dir)) {
 		return $variants;
+	}
 
-        /**
-         * loop through theme dir
-         */
-        $handler = opendir( $variant_dir );
-        while( $file = readdir( $handler ) ){
+	/**
+	 * loop through theme dir
+	 */
+	$handler = opendir($variant_dir);
+	while ($file = readdir($handler)) {
 
-                if( $file == '.' || $file == '..' )
-                        continue;
-
-                /**
-                 * get file extention
-                 */
-		$name = explode( '.', $file );
-                $ext = end( $name );
-
-                if( $ext == 'css' ){
-			$name = reset( $name );
-                        array_push( $variants, $name );
+		if ($file == '.' || $file == '..') {
+			continue;
 		}
 
-        }
-        closedir( $handler );
+		/**
+		 * get file extention
+		 */
+		$name = explode('.', $file);
+		$ext = end($name);
 
-        return $variants;
+		if ($ext == 'css') {
+			$name = reset($name);
+			array_push($variants, $name);
+		}
+
+	}
+	closedir($handler);
+
+	return $variants;
 
 }
 
 /**
- * themes_api_calculate_url
+ * ThemesApi_calculateUrl
  *
  * Accurately calculates the server URL
  * 
  * @access public
  * @return string
  */
-function themes_api_calculate_url( ){
-        $url = 'http';
+function ThemesApi_calculateUrl() {
+	$url = 'http';
 
-        if( @$_SERVER[ 'HTTPS' ] == 'on' )
-                $url .= 's';
+	if (@$_SERVER[ 'HTTPS' ] == 'on') {
+		$url .= 's';
+	}
 
-        $url .= '://' . $_SERVER[ 'SERVER_NAME' ];
+	$url .= '://'.$_SERVER[ 'SERVER_NAME' ];
 
-        if( $_SERVER[ 'SERVER_PORT' ] != '80' )
-                $url .= ':' . $_SERVER[ 'SERVER_PORT' ];
+	if ($_SERVER[ 'SERVER_PORT' ] != '80') {
+		$url .= ':'.$_SERVER[ 'SERVER_PORT' ];
+	}
 
-        return $url;
+	return $url;
 }
 
 /**
- * themes_api_error
+ * ThemesApi_error
  * 
  * dies with an error message, before doing so
  * it cleans the contents of the themes-api/extract
  * directory and removes the theme from the server
  * and the database 
  */
-function themes_api_error( $msg, $id = null ){
-        /**
-         * remove temporary extract stuff
-         */
-        shell_exec( 'rm -rf ' . USERBASE . 'f/themes_api/extract/*' );
+function ThemesApi_error($msg, $id = null){
+	/**
+	 * remove temporary extract stuff
+	 */
+	shell_exec('rm -rf '.USERBASE.'f/themes_api/extract/*');
 
-        if( $id != 0 ){
+	if ($id != 0) {
 
-                /**
-                 * remove theme from server
-                 */
-                shell_exec( 'rm -rf ' . USERBASE . 'f/themes_api/themes/' . $id );
+		/**
+		 * remove theme from server
+		 */
+		shell_exec('rm -rf '.USERBASE.'f/themes_api/themes/'.$id);
 
-                /**
-                 * remove theme from database
-                 */
-                dbQuery( 'delete from themes_api where id=' . $id );
+		/**
+		 * remove theme from database
+		 */
+		dbQuery('delete from themes_api where id='.$id);
 
-        }
+	}
 
-        die( $msg );
+	die($msg);
 }
 
 /**
- * themes_api_download_link
+ * ThemesApi_downloadLink
  *
  * given the id and name of the theme this function
  * will return the download URL
  */
-function themes_api_download_link( $id ){
-	return themes_api_calculate_url( ) . '/ww.plugins/themes-api/api.php?download=true&id=' . $id;
+function ThemesApi_downloadLink($id){
+	return ThemesApi_calculateUrl()
+		.'/ww.plugins/themes-api/api.php?download=true&id='.$id;
 }
 
 /**
- * themes_api_display_image
+ * ThemesApi_displayImage
  *
  * display an image to the screen
  */
-function themes_api_display_image( $file ){
+function ThemesApi_displayImage($file){
 
 	if (!file_exists($file) || !filesize($file)) {
 		die('file '.$file.' does not exist');
@@ -151,34 +170,40 @@ function themes_api_display_image( $file ){
 	/**
 	 * set headers and read file
 	 */
-	header( 'Content-type: image/png' );
-	header( 'Content-Transfer-Encoding: Binary' );
-	header( 'Content-length: ' . filesize( $file ) );
-	readfile( $file );
+	header('Content-type: image/png');
+	header('Content-Transfer-Encoding: Binary');
+	header('Content-length: '.filesize($file));
+	readfile($file);
 }
 
-function themes_api_get_theme_from_id( $themes, $id ){
-	foreach( $themes as $theme ){
-		if( $theme[ 'id' ] == $id )
+function ThemesApi_getThemeFromId($themes, $id) {
+	foreach ($themes as $theme) {
+		if ($theme[ 'id' ] == $id) {
 			return $theme;
+		}
 	}
 }
 
-function themes_api_add_download_count( $themes ){
-	$ids = array( );
-	foreach( $themes as $theme )
-		array_push( $ids, $theme[ 'id' ] );
+function ThemesApi_addDownloadCount($themes) {
+	$ids = array();
+	foreach ($themes as $theme) {
+		array_push($ids, $theme[ 'id' ]);
+	}
 
-	$downloads = dbAll( 'select count(id),theme from themes_downloads where theme='
-	. implode( ' or theme=', $ids ) . ' group by theme'  );  
+	$downloads = dbAll(
+		'select count(id),theme from themes_downloads where theme='
+		. implode(' or theme=', $ids).' group by theme'
+	);
 
-	for( $i = 0; $i < count( $themes ); ++$i ){
-		foreach( $downloads as $download ){
-			if( $download[ 'theme' ] == $themes[ $i ][ 'id' ] )
+	for ($i = 0; $i < count($themes); ++$i) {
+		foreach ($downloads as $download) {
+			if ($download[ 'theme' ] == $themes[ $i ][ 'id' ]) {
 				$themes[ $i ][ 'downloads' ] = $download[ 'count(id)' ];
+			}
 		}
-		if( !isset( $themes[ $i ][ 'downloads' ] ) )
+		if (!isset($themes[ $i ][ 'downloads' ])) {
 			$themes[ $i ][ 'downloads' ] = 0;
+		}
 	}
 	
 	return $themes;
