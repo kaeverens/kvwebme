@@ -1,6 +1,15 @@
 <?php
 $scripts=array();
 $scripts_inline=array();
+// { built-in page types
+$pagetypes=array(
+	array(0, 'normal'),
+	array(1, 'redirect'),
+	array(9, 'table of contents'),
+	array(5, 'search results'),
+	array(4, 'page summaries')
+);
+// }
 function addMenuItem(&$arr,$file,$nav){
 	if(ereg('>',$nav)){
 		return;

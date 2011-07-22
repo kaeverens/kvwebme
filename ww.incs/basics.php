@@ -190,14 +190,6 @@ if (!file_exists(SCRIPTBASE . '.private/config.php')) {
 require SCRIPTBASE . '.private/config.php';
 if(isset($DBVARS['userbase']))define('USERBASE', $DBVARS['userbase']);
 else define('USERBASE', SCRIPTBASE);
-// { built-in page types
-$pagetypes=array(
-	array(0,'normal',0),
-	array(4,'page summaries',0),
-	array(5,'search results',0),
-	array(9,'table of contents',0)
-);
-// }
 $DBVARS['plugins']=(isset($DBVARS['plugins']) && $DBVARS['plugins']!='')?explode(',',$DBVARS['plugins']):array();
 if(!defined('CONFIG_FILE'))define('CONFIG_FILE',SCRIPTBASE.'.private/config.php');
 define('WORKDIR_IMAGERESIZES', USERBASE.'/f/.files/image_resizes/');

@@ -123,11 +123,9 @@ echo '</tr>';
 echo '<tr><th><div class="help type"></div>type</th><td><select name="type">';
 $found=0;
 if(preg_match('/^[0-9]*$/',$page['type']))foreach($pagetypes as $a){
-	if(has_access_permissions($a[2]) || !$a[2]){
-		if ($a[0]==$page['type']) {
-			echo '<option value="',$a[0],'" selected="selected">',htmlspecialchars($a[1]),'</option>';
-			$found=1;
-		}
+	if ($a[0]==$page['type']) {
+		echo '<option value="',$a[0],'" selected="selected">',htmlspecialchars($a[1]),'</option>';
+		$found=1;
 	}
 }
 $plugin=false;
@@ -182,6 +180,12 @@ switch($page['type']){
 			.'</td></tr>';
 		break;
 	// }
+	case '1': // { redirect
+		echo '<tr><th colspan="2">What URL would you like to redirect to</th>'
+			.'<td colspan="4"><input name="page_vars[redirect_to]" value="'
+			.htmlspecialchars($page_vars['redirect_to'])
+			.'" class="large"/></td></tr>';
+	break; // }
 	case '4': // { page summaries
 		echo '<tr><th>pages summarised from</th><td><select name="page_summary_parent"><option value="0">--  none  --</option>';
 		$r2=dbRow('select parent_id from page_summaries where page_id="'.$id.'" limit 1');

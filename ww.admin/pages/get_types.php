@@ -1,28 +1,27 @@
 <?php
-require '../../ww.incs/basics.php';
+require_once '../../ww.incs/basics.php';
+require_once '../admin_libs.php';
+if (!is_admin()) {
+	exit;
+}
 $selected=isset($_REQUEST['selected'])?$_REQUEST['selected']:0;
 foreach($pagetypes as $a){
-	$tmp='';
-	if(has_access_permissions($a[2]) || !$a[2]){
-//		$tmp=(is_int($selected) && $a[0]==$selected)?' selected="selected"':'';
-		echo '<option value="'.$a[0].'"'.$tmp.'>'.htmlspecialchars($a[1]).'</option>';
-	}
+	echo '<option value="'.$a[0].'">'.htmlspecialchars($a[1]).'</option>';
 }
 $plugin=false;
 foreach($PLUGINS as $n=>$p){
-	
 	if(isset($p['admin']['page_type'])){
 		if( is_array( $p[ 'admin' ][ 'page_type' ] ) ){
-			foreach( $p[ 'admin' ][ 'page_type' ] as $name => $type )
-				echo '<option value="' . htmlspecialchars( $name ) . '">' . htmlspecialchars( $name ) . '</option>';
+			foreach( $p[ 'admin' ][ 'page_type' ] as $name => $type ) {
+				echo '<option value="' . htmlspecialchars( $name ) . '">'
+					. htmlspecialchars( $name ) . '</option>';
+			}
 		}
 		else{
-			$tmp='';
 			if(!is_int($selected) && $selected==$n){
-//				$tmp='" selected="selected';
 				$plugin=$p;
 			}
-			echo '<option value="'.htmlspecialchars($n).$tmp.'">'.htmlspecialchars($n).'</option>';
+			echo '<option value="'.htmlspecialchars($n).'">'.htmlspecialchars($n).'</option>';
 		}
 	}
 }

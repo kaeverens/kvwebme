@@ -16,9 +16,16 @@ if(isset($_REQUEST['extra'])){
 	$fs=explode('|',$_REQUEST['extra']);
 	array_shift($fs);
 	foreach($fs as $f){
-		if(strpos($f,'..')!==false)continue;
+		if (strpos($f,'..')!==false) {
+			continue;
+		}
+		if ($f{0}!='/') {
+			$f='/ww.plugins/'.$f;
+		}
 		$fname=SCRIPTBASE.$f;
-		if(!preg_match('/\.js$/',$fname) || !file_exists($fname))continue;
+		if (!preg_match('/\.js$/',$fname) || !file_exists($fname)) {
+			continue;
+		}
 		$files[]=$fname;
 	}
 }

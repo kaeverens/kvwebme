@@ -258,6 +258,12 @@ else {
 			$c.=$PAGEDATA->render();
 		break;
 		// }
+		case '1': // { redirect
+			$redirect=@$PAGEDATA->vars['redirect_to'];
+			if ($redirect) {
+				redirect($redirect);
+			}
+		break; // }
 		case '4': // { sub-page summaries
 			require_once 'ww.incs/page.summaries.php';
 			$c.=PageSummaries_getHtml($PAGEDATA->id);
