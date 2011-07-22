@@ -1,38 +1,63 @@
 <?php
+/**
+  * News widget
+  *
+  * PHP Version 5
+  *
+  * @category   None
+  * @package    None
+  * @subpackage None
+  * @author     Kae Verens <kae@kvsites.ie>
+  * @author     Conol MacAoidh <conor@macaoidh.name>
+  * @license    GPL Version 2
+  * @link       www.kvweb.me
+ */
+
 $html='';
-if(!isset($vars->id)){
+if (!isset($vars->id)) {
 	$html='<em>No news page selected.</em>';
 	return;
 }
-if(!$vars->stories_to_show)$vars->stories_to_show=10;
-$rs=cache_load('pages','news'.$vars->id);
-if($rs===false){
-	$rs=dbAll('select id from pages where parent='.$vars->id.' order by associated_date desc,cdate desc limit 20');
+if (!$vars->stories_to_show) {
+	$vars->stories_to_show=10;
+}
+$rs=cache_load('pages', 'news'.$vars->id);
+if ($rs===false) {
+	$rs=dbAll(
+		'select id from pages where parent='.$vars->id
+		.' order by associated_date desc,cdate desc limit 20'
+	);
 	if ($rs!==false) {
 		cache_save('pages', 'news'.$vars->id, $rs);
 	}
 }
-if(!count($rs)){
+if (!count($rs)) {
 	$html='<em>No news items to display.</em>';
 	return;
 }
 $links=array();
-foreach($rs as $r){
+foreach ($rs as $r) {
 	$page=Page::getInstance($r['id']);
 	$body='';
 	if ($vars->characters_shown) {
 		$body=preg_replace('#<h1[^<]*</h1>#', '', $page->render());
-		$body=str_replace(array("\n","\r"),' ',$body);
+		$body=str_replace(array("\n", "\r"), ' ', $body);
 		$body=preg_replace('/<script[^>]*>.*?<\/script>/', '', $body);
 		$body=preg_replace('/<[^>]*>/', '', $body);
-		$body='<br /><i>'.substr($body,0,$vars->characters_shown).'...</i>';
+		$body='<br /><i>'.substr($body, 0, $vars->characters_shown).'...</i>';
 	}
-	$links[]='<a href="'.$page->getRelativeURL().'"><strong>'.htmlspecialchars($page->name).'</strong><div class="date">'.date_m2h($page->associated_date).'</div>'.$body.'</a>';
+	$links[]='<a href="'.$page->getRelativeURL().'"><strong>'
+		.htmlspecialchars($page->name).'</strong><div class="date">'
+		.date_m2h($page->associated_date).'</div>'.$body.'</a>';
 }
-$html.='<div id="news-wrapper-'.$vars->id.'" class="news_excerpts_wrapper"><ul class="news_excerpts"><li>'.join('</li><li>',$links).'</li></ul></div>';
-if(isset($vars->scrolling) && $vars->scrolling){
-	$n_items=isset($vars->stories_to_show) && is_numeric($vars->stories_to_show)?$vars->stories_to_show:2;
-	if(isset($vars->scrolling) && $vars->scrolling){
+$html.='<div id="news-wrapper-'.$vars->id
+	.'" class="news_excerpts_wrapper"><ul class="news_excerpts"><li>'
+	.join('</li><li>', $links).'</li></ul></div>';
+if (isset($vars->scrolling) && $vars->scrolling) {
+	$n_items=isset($vars->stories_to_show) && is_numeric($vars->stories_to_show)
+		?$vars->stories_to_show
+		:2;
+	if (isset($vars->scrolling) && $vars->scrolling) {
 		WW_addScript('/j/jquery.vticker-min.js');
 		WW_addCSS('/ww.plugins/news/c/scroller.css');
 		$html.='<script>$(function(){
