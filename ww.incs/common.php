@@ -57,12 +57,14 @@ function getVar($v, $d = '') {
 function inc_common($f) {
 	include_once SCRIPTBASE . 'common/' . $f;
 }
-function redirect($addr, $type=301){
+function redirect($addr, $type=301) {
 	if ($type==301) {
 		header('HTTP/1.1 301 Moved Permanently');
 	}
 	header('Location: '.$addr);
-	echo '<html><head><script type="text/javascript">setTimeout(function(){document.location="'.$addr.'";},10);</script></head><body><noscript>you need javascript to use this site</noscript></body></html>';
+	echo '<html><head><script type="text/javascript">setTimeout(function(){do'
+		.'cument.location="'.$addr.'";},10);</script></head><body><noscript>you'
+		.' need javascript to use this site</noscript></body></html>';
 	exit;
 }
 function webmeMail($from, $to, $subject, $message, $files = false) {
@@ -70,49 +72,49 @@ function webmeMail($from, $to, $subject, $message, $files = false) {
 	send_mail($from, $to, $subject, $message, $files);
 }
 $is_admin = 0;
-$sitedomain=str_replace('www.','',$_SERVER['HTTP_HOST']);
-if(strpos($_SERVER['REQUEST_URI'],'ww.admin/')!==false){
+$sitedomain=str_replace('www.', '', $_SERVER['HTTP_HOST']);
+if (strpos($_SERVER['REQUEST_URI'],'ww.admin/')!==false) {
 	$kfm_do_not_save_session=true;
 	require_once SCRIPTBASE . 'j/kfm/api/api.php';
 	require_once SCRIPTBASE . 'j/kfm/initialise.php';
 }
-function eventCalendarDisplay($a=0){
+function eventCalendarDisplay($a=0) {
 	include_once SCRIPTBASE . 'common/funcs.events.php';
 	return ww_eventCalendarDisplay($a);
 }
-function panelDisplay($a=0){
+function panelDisplay($a=0) {
 	include_once SCRIPTBASE . 'common/funcs.panels.php';
 	return ww_panelDisplay($a);
 }
-function imageDisplay($a=0){
+function imageDisplay($a=0) {
 	include_once SCRIPTBASE . 'common/funcs.image.display.php';
 	return func_image_display($a);
 }
-function menuDisplay($a=0){
+function menuDisplay($a=0) {
 	require_once SCRIPTBASE . 'ww.incs/menus.php';
 	return Menu_show($a);
 }
-function show404($a=0){
-	mail('kae@kvsites.ie', 'show404 called', 'remove the trace from /index.php and /ww.incs/common.php');
-	include_once SCRIPTBASE . 'ww.incs/404.php';
-	return ww_show404($a);
-}
-function smarty_setup($compile_dir){
-	global $DBVARS,$PLUGINS;
+function smarty_setup($compile_dir) {
+	global $DBVARS, $PLUGINS;
 	$smarty = new Smarty;
 	$smarty->left_delimiter = '{{';
 	$smarty->right_delimiter = '}}';
-	$smarty->assign('WEBSITE_TITLE',htmlspecialchars($DBVARS['site_title']));
-	$smarty->assign('WEBSITE_SUBTITLE',htmlspecialchars($DBVARS['site_subtitle']));
+	$smarty->assign('WEBSITE_TITLE',
+		htmlspecialchars($DBVARS['site_title'])
+	);
+	$smarty->assign(
+		'WEBSITE_SUBTITLE',
+		htmlspecialchars($DBVARS['site_subtitle'])
+	);
 	$smarty->assign('GLOBALS', $GLOBALS);
-	$smarty->register_function('BREADCRUMBS','Template_breadcrumbs');
+	$smarty->register_function('BREADCRUMBS', 'Template_breadcrumbs');
 	$smarty->register_function('LOGO', 'Template_logoDisplay');
 	$smarty->register_function('MENU', 'menuDisplay');
 	$smarty->register_function('nuMENU', 'menu_show_fg');
-	foreach($PLUGINS as $pname=>$plugin){
-		if(isset($plugin['frontend']['template_functions'])){
-			foreach($plugin['frontend']['template_functions'] as $fname=>$vals){
-				$smarty->register_function($fname,$vals['function']);
+	foreach ($PLUGINS as $pname=>$plugin) {
+		if (isset($plugin['frontend']['template_functions'])) {
+			foreach ($plugin['frontend']['template_functions'] as $fname=>$vals) {
+				$smarty->register_function($fname, $vals['function']);
 			}
 		}
 	}
@@ -134,7 +136,9 @@ function Template_breadcrumbs($id=0, $top=1) {
 	else {
 		$page=$GLOBALS['PAGEDATA'];
 	}
-	$c=$page->parent ? Template_breadcrumbs($page->parent,0) . ' &raquo; ' : '';
+	$c=$page->parent
+		? Template_breadcrumbs($page->parent, 0) . ' &raquo; '
+		: '';
 	$pre=$top?'<div class="breadcrumbs">':'';
 	$suf=$top?'</div>':'';
 	return $pre.$c.'<a href="' . $page->getRelativeURL() . '" title="' 
@@ -176,77 +180,98 @@ if ((isset($_REQUEST['action']) && $_REQUEST['action']=='login')
 	require_once dirname(__FILE__).'/user-authentication.php';
 }
 // }
-function menu_build_fg($parentid,$depth,$options){
+function menu_build_fg($parentid, $depth, $options) {
 	$PARENTDATA=Page::getInstance($parentid);
 	$PARENTDATA->initValues();
 	// { menu order
 	$order='ord,name';
-	if(isset($PARENTDATA->vars['order_of_sub_pages'])){
-		switch($PARENTDATA->vars['order_of_sub_pages']){
+	if (isset($PARENTDATA->vars['order_of_sub_pages'])) {
+		switch ($PARENTDATA->vars['order_of_sub_pages']) {
 			case 1: // { alphabetical
 				$order='name';
-				if($PARENTDATA->vars['order_of_sub_pages_dir'])$order.=' desc';
-				break;
-			// }
+				if ($PARENTDATA->vars['order_of_sub_pages_dir']) {
+					$order.=' desc';
+				}
+			break; // }
 			case 2: // { associated_date
 				$order='associated_date';
-				if($PARENTDATA->vars['order_of_sub_pages_dir'])$order.=' desc';
+				if ($PARENTDATA->vars['order_of_sub_pages_dir']) {
+					$order.=' desc';
+				}
 				$order.=',name';
-				break;
-			// }
+			break; // }
 			default: // { by admin order
 				$order='ord';
-				if($PARENTDATA->vars['order_of_sub_pages_dir'])$order.=' desc';
+				if ($PARENTDATA->vars['order_of_sub_pages_dir']) {
+					$order.=' desc';
+				}
 				$order.=',name';
-			// }
+				// }
 		}
 	}
 	// }
-	$rs=dbAll("select id,name,type from pages where parent='".$parentid."' and !(special&2) order by $order");
-	if($rs===false || !count($rs))return '';
+	$rs=dbAll(
+		"select id,name,type from pages where parent='".$parentid
+		."' and !(special&2) order by $order"
+	);
+	if ($rs===false || !count($rs)) {
+		return '';
+	}
 
 	$items=array();
-	foreach($rs as $r){
+	foreach ($rs as $r) {
 		$item='<li>';
 		$page=Page::getInstance($r['id']);
-		$item.='<a class="menu-fg menu-pid-'.$r['id'].'" href="'.$page->getRelativeUrl().'">'.htmlspecialchars($page->alias).'</a>';
-		$item.=menu_build_fg($r['id'],$depth+1,$options);
+		$item.='<a class="menu-fg menu-pid-'.$r['id'].'" href="'
+			.$page->getRelativeUrl().'">'.htmlspecialchars($page->alias).'</a>';
+		$item.=menu_build_fg($r['id'], $depth+1, $options);
 		$item.='</li>';
 		$items[]=$item;
 	}
 	$options['columns']=(int)$options['columns'];
 
 	// return top-level menu
-	if(!$depth)return '<ul>'.join('',$items).'</ul>';
+	if (!$depth) {
+		return '<ul>'.join('', $items).'</ul>';
+	}
 
 	if ($options['style_from']=='1') {
 		$s='';
-		if($options['background'])$s.='background:'.$options['background'].';';
-		if($options['opacity'])$s.='opacity:'.$options['opacity'].';';
-		if($s){
+		if ($options['background']) {
+			$s.='background:'.$options['background'].';';
+		}
+		if ($options['opacity']) {
+			$s.='opacity:'.$options['opacity'].';';
+		}
+		if ($s) {
 			$s=' style="'.$s.'"';
 		}
 	}
 
 	// return 1-column sub-menu
-	if($options['columns']<2)return '<ul'.$s.'>'.join('',$items).'</ul>';
+	if ($options['columns']<2) {
+		return '<ul'.$s.'>'.join('', $items).'</ul>';
+	}
 
 	// return multi-column submenu
 	$items_count=count($items);
 	$items_per_column=ceil($items_count/$options['columns']);
 	$c='<table'.$s.'><tr><td><ul>';
-	for($i=1;$i<$items_count+1;++$i){
+	for ($i=1;$i<$items_count+1;++$i) {
 		$c.=$items[$i-1];
-		if($i!=$items_count && !($i%$items_per_column))$c.='</ul></td><td><ul>';
+		if ($i!=$items_count && !($i%$items_per_column)) {
+			$c.='</ul></td><td><ul>';
+		}
 	}
 	$c.='</ul></td></tr></table>';
 	return $c;
 }
-function menu_show_fg($opts){
-	$md5=md5('menu_fg|'.print_r($opts,true));
-	$cache=cache_load('menus',$md5);
-	if($cache)return $cache;
-
+function menu_show_fg ($opts) {
+	$md5=md5('menu_fg|'.print_r($opts, true));
+	$cache=cache_load('menus', $md5);
+	if ($cache) {
+		return $cache;
+	}
 	$options=array(
 		'direction' => 0,  // 0: horizontal, 1: vertical
 		'parent'    => 0,  // top-level
@@ -257,48 +282,62 @@ function menu_show_fg($opts){
 		'style_from'=> 1,   // inherit sub-menu style from CSS (0) or options (1)
 		'state'	    => 0,  // 2=expand current page,1=expand all,0=contract all
 	);
-	foreach($opts as $k=>$v){
-		if(isset($options[$k]))$options[$k]=$v;
+	foreach ($opts as $k=>$v) {
+		if (isset($options[$k])) {
+			$options[$k]=$v;
+		}
 	}
-	if(!is_numeric($options['parent'])){
+	if (!is_numeric($options['parent'])) {
 		$r=Page::getInstanceByName($options['parent']);
-		if($r)$options['parent']=$r->id;
+		if ($r) {
+			$options['parent']=$r->id;
+		}
 	}
-	if(is_numeric($options['direction'])){
-		if($options['direction']=='0')$options['direction']='horizontal';
-		else $options['direction']='vertical';
+	if (is_numeric($options['direction'])) {
+		if ($options['direction']=='0') {
+			$options['direction']='horizontal';
+		}
+		else {
+			$options['direction']='vertical';
+		}
 	}
 	$options['type']=(int)$options['type'];
 	$items=array();
 	$menuid=$GLOBALS['fg_menus']++;
 	$md5=md5($options['parent'].'|0|'.json_encode($options));
-	
-	$html=cache_load('pages','fgmenu-'.$md5);
-	if($html===false){
-		$html=menu_build_fg($options['parent'],0,$options);
-		cache_save('pages','fgmenu-'.$md5,$html);
+	$html=cache_load('pages', 'fgmenu-'.$md5);
+	if ($html===false) {
+		$html=menu_build_fg($options['parent'], 0, $options);
+		cache_save('pages', 'fgmenu-'.$md5, $html);
 	}
-
-
 	if ($options['type']) {
 		WW_addScript('/j/menu-accordion/menu.js');
 		WW_addCSS('/j/menu-accordion/menu.css');
-		$class = ( $options[ 'state' ] == 0 ) ? ' contracted' : (( $options[ 'state' ] == 1 ) ? ' expanded' : ' expand-selected') ;
+		$class = ( $options[ 'state' ] == 0 )
+			? ' contracted'
+			: (( $options[ 'state' ] == 1 ) ? ' expanded' : ' expand-selected') ;
 		$c.= '<div class="menu-accordion'.$class.'">'.$html.'</div>';
 	}
-	else{
+	else {
 		WW_addScript('/j/fg.menu/fg.menu.js');
 		WW_addCSS('/j/fg.menu/fg.menu.css');
-		$c.='<div class="menu-fg menu-fg-'.$options['direction'].'" id="menu-fg-'.$menuid.'">'.$html.'</div>';
-		if($options['direction']=='vertical'){
-			$posopts="positionOpts: { posX: 'left', posY: 'top',
-				offsetX: 40, offsetY: 10, directionH: 'right', directionV: 'down',
-				detectH: true, detectV: true, linkToFront: false },";
+		$c.='<div class="menu-fg menu-fg-'.$options['direction'].'" id="menu-fg-'
+			.$menuid.'">'.$html.'</div>';
+		if ($options['direction']=='vertical') {
+			$posopts="positionOpts: { posX: 'left', posY: 'top',"
+				."offsetX: 40, offsetY: 10, directionH: 'right', directionV: 'down',"
+				."detectH: true, detectV: true, linkToFront: false },";
 		}
-		else{
+		else {
 			$posopts='';
 		}
-		WW_addInlineScript("$(function(){ $('#menu-fg-$menuid>ul>li>a').each(function(){ $(this).fgmenu({ content:$(this).next().outerHTML(), choose:function(ev,ui){ document.location=ui.item[0].childNodes(0).href; }, $posopts flyOut:true }); }); $('.menu-fg>ul>li').addClass('fg-menu-top-level'); });");
+		WW_addInlineScript(
+			"$(function(){ $('#menu-fg-$menuid>ul>li>a').each(function(){ $(this)"
+			.".fgmenu({ content:$(this).next().outerHTML(), choose:function(ev,ui"
+			."){ document.location=ui.item[0].childNodes(0).href; }, $posopts fly"
+			."Out:true }); }); $('.menu-fg>ul>li').addClass('fg-menu-top-level');"
+			."});"
+		);
 	}
 	return $c;
 }

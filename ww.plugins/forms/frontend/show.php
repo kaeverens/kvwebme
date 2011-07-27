@@ -98,7 +98,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 		if (isset($_REQUEST[$name])) {
 			$_SESSION['forms'][$name]=$_REQUEST[$name];
 		}
-		$val=getVar($name);
+		$val=@$_REQUEST[$name];
 		if (!$val && isset($_SESSION['userdata']) && $_SESSION['userdata']) {
 			switch($name){
 				case 'Email': case '__ezine_subscribe': // {

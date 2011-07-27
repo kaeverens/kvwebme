@@ -114,11 +114,11 @@ function html_unfixImageResizes($src) {
 }
 function wInput($name, $type='text', $value='', $class='') {
 	switch($type){
-		case 'checkbox': {
+		case 'checkbox': // {
 			$tmp=($value)?' checked="checked"':'';
 			return '<input name="'.$name.'" type="checkbox"'.$tmp.' />';
-		}
-		case 'select': {
+			// }
+		case 'select': // {
 			$ret='';
 			foreach ($value as $key=>$val) {
 				$selected=($key==$class)?' selected="selected"':'';
@@ -126,16 +126,16 @@ function wInput($name, $type='text', $value='', $class='') {
 					.htmlspecialchars($val).'</option>';
 			}
 			return '<select name="'.$name.'">'.$ret.'</select>';
-		}
-		case 'textarea': {
+			// }
+		case 'textarea': // {
 			$tmp=($class!='')?' class="'.$class.'"':'';
 			return '<textarea name="'.$name.'"'.$tmp.'>'.$value.'</textarea>';
-		}
-		default: {
+			// }
+		default: // {
 			$tmp=($value!='')?' value="'.$value.'"':'';
 			return '<input name="'.$name.'" id="'.$name.'" type="'.$type.'"'.$tmp
 				.' class="'.$class.'" />';
-		}
+			// }
 	}
 }
 function WW_addCSS($url) {

@@ -11,10 +11,19 @@
 	* @link     http://kvsites.ie/
 	*/
 
+/**
+  * function for downloading jQuery files
+  *
+  * @param array $jquery_versions versions of the scripts to download
+  *
+  * @return array URLs of the scripts
+  */
 function Core_getOfflineJQueryScripts($jquery_versions) {
 	if (!file_exists(USERBASE.'/f/.files/jquery-'.$jquery_versions[0].'.js')) {
-		$f=file_get_contents('https://ajax.googleapis.com/ajax/libs/jquery/'
-			.$jquery_versions[0].'/jquery.min.js');
+		$f=file_get_contents(
+			'https://ajax.googleapis.com/ajax/libs/jquery/'
+			.$jquery_versions[0].'/jquery.min.js'
+		);
 		if ($f) {
 			file_put_contents(
 				USERBASE.'/f/.files/jquery-'.$jquery_versions[0].'.js',
@@ -27,8 +36,10 @@ function Core_getOfflineJQueryScripts($jquery_versions) {
 		}
 	}
 	if (!file_exists(USERBASE.'/f/.files/jqueryui-'.$jquery_versions[1].'.js')) {
-		$f=file_get_contents('https://ajax.googleapis.com/ajax/libs/jqueryui/'
-			.$jquery_versions[1].'/jquery-ui.min.js');
+		$f=file_get_contents(
+			'https://ajax.googleapis.com/ajax/libs/jqueryui/'
+			.$jquery_versions[1].'/jquery-ui.min.js'
+		);
 		if ($f) {
 			file_put_contents(
 				USERBASE.'/f/.files/jqueryui-'.$jquery_versions[1].'.js',
@@ -41,8 +52,10 @@ function Core_getOfflineJQueryScripts($jquery_versions) {
 		}
 	}
 	if (!file_exists(USERBASE.'/f/.files/jqueryui-'.$jquery_versions[1].'.css')) {
-		$f=file_get_contents('http://ajax.googleapis.com/ajax/libs/jqueryui/'
-			.$jquery_versions[1].'/themes/base/jquery-ui.css');
+		$f=file_get_contents(
+			'http://ajax.googleapis.com/ajax/libs/jqueryui/'
+			.$jquery_versions[1].'/themes/base/jquery-ui.css'
+		);
 		if ($f) {
 			file_put_contents(
 				USERBASE.'/f/.files/jqueryui-'.$jquery_versions[1].'.css',

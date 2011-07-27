@@ -307,10 +307,6 @@ else {
 			}
 			// }
 	}
-	if ($c=='' && !$id) {
-		// delete this if it's never called by March 2011
-		$c=show404(str_replace('/', ' ', $_SERVER['REQUEST_URI']));
-	}
 }
 if (isset($PLUGINS['comments'])) {
 	$c.=plugin_trigger('page-content-created');

@@ -6,13 +6,13 @@
  * shows the plugins available on the cms and allows
  * them to be installed
  *
- * @authors    Conor Mac Aoidh <conormacaoidh@gmail.com>,
+ * @authors	Conor Mac Aoidh <conormacaoidh@gmail.com>,
  *						 Kae Verens <kae@vernes.com>
- * @license    GPL 2.0
- * @version    1.0
+ * @license	GPL 2.0
+ * @version	1.0
  */
 
-function recursive_dependencies_check($plugins) {
+function SiteOptions_dependenciesRecursiveCheck($plugins) {
 	$new_plugs=array();
 	foreach ($plugins as $plug) {
 		if (!is_dir(SCRIPTBASE.'ww.plugins/'.$plug)
@@ -48,7 +48,7 @@ function recursive_dependencies_check($plugins) {
 	$diff=array_diff($new_plugs, $plugins);
 	$new_plugs=array_merge($plugins, $new_plugs);
 	if (is_array($diff)&&count($diff)!=0) {
-		$check=recursive_dependencies_check($diff);
+		$check=SiteOptions_dependenciesRecursiveCheck($diff);
 		if (!is_array($check)) {
 			return $check;
 		}
@@ -59,20 +59,26 @@ function recursive_dependencies_check($plugins) {
 
 echo '<h2>Plugins</h2>';
 
-if($action=='Save'){ // handle actions
-  // { get hidden plugins (those that the admin must install manually using the site config)
-  $tmp_hidden=array();
-  foreach($PLUGINS as $name=>$plugin){
-    if(isset($plugin['hide_from_admin']) && $plugin['hide_from_admin'])$tmp_hidden[]=$name;
-  }
-  // }
-  // { get changes from form
-  $tmp=array();
-  foreach($_POST['plugins'] as $name=>$var)if(file_exists(SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php'))$tmp[]=$name;
-  // }
-	$plugins=array_merge($tmp,$tmp_hidden);
-	$plugins=recursive_dependencies_check($plugins);
-	if(is_array($plugins)){
+if ($action=='Save') { // handle actions
+	// { get hidden plugins (those the admin installs manually)
+	$tmp_hidden=array();
+	foreach ($PLUGINS as $name=>$plugin) {
+		if (isset($plugin['hide_from_admin']) && $plugin['hide_from_admin']) {
+			$tmp_hidden[]=$name;
+		}
+	}
+	// }
+	// { get changes from form
+	$tmp=array();
+	foreach ($_POST['plugins'] as $name=>$var) {
+		if (file_exists(SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php')) {
+			$tmp[]=$name;
+		}
+	}
+	// }
+	$plugins=array_merge($tmp, $tmp_hidden);
+	$plugins=SiteOptions_dependenciesRecursiveCheck($plugins);
+	if (is_array($plugins)) {
 	  $DBVARS['plugins']=$plugins;
 	  config_rewrite();
 		header('location: siteoptions.php?page=plugins&message=updated');
@@ -82,19 +88,20 @@ if($action=='Save'){ // handle actions
 }
 
 $message=@$_GET['message'];
-if($message=='updated'){
+if ($message=='updated') {
 	echo '<em>plugins updated</em>';
 }
-elseif($message=='failed'){
+elseif ($message=='failed') {
 	echo'<em>update failed</em><p>failed to meet the plugin dependencies</p>';
 }
 
 // { build array of available and installed plugins
-$installed = array( );
-foreach( $PLUGINS as $name => $plugin ){
+$installed = array();
+foreach ($PLUGINS as $name => $plugin) {
 	// exclude hidden plugins
-	if( isset( $plugin[ 'hide_from_admin' ] ) && $plugin[ 'hide_from_admin' ] )
+	if (isset($plugin[ 'hide_from_admin' ]) && $plugin['hide_from_admin']) {
 		continue;
+	}
 	$installed[ $name ] = array(
 		'name' => $plugin[ 'name' ],
 		'description' => $plugin[ 'description' ],
@@ -105,16 +112,19 @@ foreach( $PLUGINS as $name => $plugin ){
 
 // { build array of available plugins that aren't instaled
 $available = array( );
-$dir = new DirectoryIterator( SCRIPTBASE . 'ww.plugins' );
-foreach( $dir as $plugin ){
-	if( strpos( $plugin, '.' ) === 0 )
+$dir = new DirectoryIterator(SCRIPTBASE . 'ww.plugins');
+foreach ($dir as $plugin) {
+	if (strpos($plugin, '.')===0) {
 		continue;
-	$name = $plugin->getFilename( );
-	if( !is_dir( SCRIPTBASE . 'ww.plugins/' . $name )|| isset( $PLUGINS[ $name ] ) )
-      continue;
-	require_once(SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php');
-	if( isset( $plugin[ 'hide_from_admin' ] ) && $plugin[ 'hide_from_admin' ] )
-      continue;
+	}
+	$name = $plugin->getFilename();
+	if (!is_dir(SCRIPTBASE.'ww.plugins/'.$name)||isset($PLUGINS[$name])) {
+	  continue;
+	}
+	require_once SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php';
+	if (isset( $plugin[ 'hide_from_admin' ] ) && $plugin[ 'hide_from_admin' ]) {
+	  continue;
+	}
 	$available[ $name ] = array( 
 		'name' => $plugin[ 'name' ],
 		'description' => @$plugin[ 'description' ],
@@ -136,9 +146,9 @@ $(function( ){
 	});
 });
 ';
-WW_addScript( '/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js' );
-WW_addCSS( '/j/jquery.dataTables-1.7.5/jquery.dataTables.css' );
-WW_addInlineScript( $script );
+WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
+WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
+WW_addInlineScript($script);
 
 echo '
 <form method="post" action="siteoptions.php?page=plugins">
@@ -158,7 +168,7 @@ echo '
 			</thead>
 			<tbody>';
 
-foreach( $installed as $name => $plugin ){
+foreach ($installed as $name => $plugin) {
 	echo '<tr>
 		<td>' . $plugin[ 'name' ] . '</td>
 		<td><input type="checkbox" name="plugins[' . $name . ']" checked="checked"/></td>
@@ -182,7 +192,7 @@ echo '</tbody>
 			</thead>
 			<tbody>';
 
-foreach( $available as $name => $plugin ){
+foreach ($available as $name => $plugin) {
 	echo '<tr>
 		<td>' . $plugin[ 'name' ] . '</td>
 		<td><input type="checkbox" name="plugins[' . $name . ']"/></td>

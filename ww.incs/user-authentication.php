@@ -1,4 +1,16 @@
 <?php
+/**
+	* user authentication
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 if (isset($_REQUEST['action']) && $_REQUEST['action']=='login') {
 	// { variables
 	$email=$_REQUEST['email'];
@@ -17,8 +29,8 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']=='login') {
 		// { redirect if applicable
 		$redirect_url='';
 		if (isset($_POST['login_referer'])
-			&& strpos($_POST['login_referer'],'/')===0
-		){
+			&& strpos($_POST['login_referer'], '/')===0
+		) {
 			$redirect_url=$_POST['login_referer'];
 		}
 		else if (isset($PAGEDATA) && $PAGEDATA->vars['userlogin_redirect_to']) {
@@ -39,19 +51,19 @@ if (isset($_SESSION['userdata']['id'])) {
 		'update user_accounts set last_view=now() where id='
 		.$_SESSION['userdata']['id']
 	);
-	if (file_exists(
-		USERBASE.'/ww.cache/user-session-resets/'.$_SESSION['userdata']['id']
-	)) {
+	$fname=USERBASE.'/ww.cache/user-session-resets/'.$_SESSION['userdata']['id'];
+	if (file_exists($fname)) {
 		$_SESSION['userdata'] = dbRow(
 			'select * from user_accounts where id='.$_SESSION['userdata']['id']
 		);
-		unlink(
-			USERBASE.'/ww.cache/user-session-resets/'.$_SESSION['userdata']['id']
-		);
+		unlink($fname);
 	}
 	if (!isset($_SESSION['userdata']['groups'])) {
 		$USERGROUPS = array();
-		$rs = dbAll("select id,name from users_groups,groups where id=groups_id and user_accounts_id=" . $_SESSION['userdata']['id']);
+		$rs = dbAll(
+			"select id,name from users_groups,groups where id=groups_id and "
+			."user_accounts_id=" . $_SESSION['userdata']['id']
+		);
 		if ($rs) {
 			foreach ($rs as $r) {
 				$USERGROUPS[$r['name']] = $r['id'];

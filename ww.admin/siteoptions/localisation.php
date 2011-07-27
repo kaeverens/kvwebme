@@ -5,8 +5,8 @@ if($action=='Save'){
 	dbQuery("DELETE FROM site_vars");
 	// { languages
 	$langs='';
-	$lang_names=getVar('lang_name');
-	$lang_isos=getVar('lang_iso');
+	$lang_names=@$_REQUEST['lang_name'];
+	$lang_isos=@$_REQUEST['lang_iso'];
 	if(is_array($lang_names) && is_array($lang_isos)){
 		$langs=array();
 		for($i=0;$i<count($lang_names);++$i){
@@ -19,10 +19,10 @@ if($action=='Save'){
 	// }
 	// { currencies
 	$curs='';
-	$cur_names=getVar('cur_name');
-	$cur_isos=getVar('cur_iso');
-	$cur_symbols=getVar('cur_symbol');
-	$cur_values=getVar('cur_value');
+	$cur_names=@$_REQUEST['cur_name'];
+	$cur_isos=@$_REQUEST['cur_iso'];
+	$cur_symbols=@$_REQUEST['cur_symbol'];
+	$cur_values=@$_REQUEST['cur_value'];
 	if(is_array($cur_names) && is_array($cur_isos) && is_array($cur_values)){
 		$curs=array();
 		for($i=0;$i<count($cur_names);++$i){

@@ -1,4 +1,16 @@
 <?php
+/**
+	* front controller for stats page
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 require_once 'header.php';
 require_once 'stats/lib.php';
 echo '<h1>Website Statistics</h1>';

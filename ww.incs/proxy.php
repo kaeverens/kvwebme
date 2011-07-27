@@ -14,38 +14,38 @@
  *
  * url 		-	the url to load
  *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
+ * @author  Conor Mac Aoidh <conormacaoidh@gmail.com>
+ * @license GPL 2.0
+ * @version 1.0
  */
 
 require 'basics.php';
 require SCRIPTBASE . 'ww.admin/admin_libs.php';
 
-$url = @$_GET [ 'url' ];
+$url = @$_GET[ 'url' ];
 
 /**
  * make sure host and referer are the same
  */
 $referer = @$_SERVER[ 'HTTP_REFERER' ];
-$referer = preg_replace( '/^https?:\/\/([^\/]*)\/.*/', '\1', $referer );
+$referer = preg_replace('/^https?:\/\/([^\/]*)\/.*/', '\1', $referer);
 $host = $_SERVER[ 'SERVER_NAME' ];
-if ( $host != $referer ) {
+if ($host != $referer) {
 	exit;
 }
 
 /**
  * get rest of query string and pass to url
  */
-if( strpos( $url, '?' ) !== 0 ){
+if (strpos($url, '?') !== 0) {
 	$querystring = $_SERVER[ 'QUERY_STRING' ];
-	$explode=explode('?',$querystring);
+	$explode=explode('?', $querystring);
 	$querystring = '?'.end($explode);
-	$explode=explode('?',$url);
+	$explode=explode('?', $url);
 	$url = reset($explode) . $querystring;
 }
 
-$content = Core_getExternalFile( $url );
+$content = Core_getExternalFile($url);
 
 echo $content;
 ?>

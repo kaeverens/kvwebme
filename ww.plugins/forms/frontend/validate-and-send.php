@@ -88,7 +88,7 @@ function Form_send($page, $vars, &$form_fields) {
 		$val='';
 		switch ($r2['type']) {
 			case 'checkbox': // {
-				$val=getVar($name);
+				$val=@$_REQUEST[$name];
 				$values[$r2['name']]=($val=='on')?'yes':'no';
 				if ($val=='on') {
 					$plaintext.='selected option: '
@@ -150,7 +150,7 @@ function Form_send($page, $vars, &$form_fields) {
 				}
 			break; // }
 			default: // {
-				$val=getVar($name);
+				$val=@$_REQUEST[$name];
 				$values[$r2['name']]=$val;
 				$val=nl2br($val);
 				$plaintext.=htmlspecialchars($r2['name'])."\n"
@@ -272,7 +272,7 @@ function Form_readonly($page_id, &$vars, &$form_fields) {
 		if (isset($_REQUEST[$name])) {
 			$_SESSION['forms'][$name]=$_REQUEST[$name];
 		}
-		$val=getVar($name);
+		$val=@$_REQUEST[$name];
 		if (!$val && isset($_SESSION['userdata']) && $_SESSION['userdata']) {
 			switch($name){
 				case 'Email': case '__ezine_subscribe': // {

@@ -1,9 +1,9 @@
 <?php
 function userloginandregistrationDisplay(){
 	// { variables
-		$action=getVar('action');
-		$c='';
-		global $loggedin,$sitedomain,$DBVARS,$PAGEDATA;
+	$action=@$_REQUEST['action'];
+	$c='';
+	global $loggedin,$sitedomain,$DBVARS,$PAGEDATA;
 	// }
 	if (isset($_GET['hash']) && $_GET['hash'] && $_GET['email']) {
 		$r=dbRow("select * from user_accounts where email='".addslashes($_GET['email'])."' and verification_hash='".addslashes($_GET['hash'])."'");
@@ -71,7 +71,7 @@ function userloginandregistrationDisplay(){
 	if($c=='')$c=$PAGEDATA->render();
 	if($action=='Remind'){
 		// { variables
-			$email=getVar('email');
+			$email=@$_REQUEST['email'];
 		// }
 		$r=dbOne('select id from user_accounts where email="'.$email.'"','id');
 		if($r){
@@ -112,10 +112,10 @@ function userloginandregistrationDisplay(){
 function userLoginBoxDisplay(){
 	global $PAGEDATA;
 	$c='<div id="userLoginBoxDisplay">';
-	if(getVar('action')=='Login')$c.='<em>incorrect email or password given.</em>';
+	if(@$_REQUEST['action']=='Login')$c.='<em>incorrect email or password given.</em>';
 	if(isset($PAGEDATA->vars['userlogin_message_login']))$c.=$PAGEDATA->vars['userlogin_message_login'];
 	$c.='<form class="userLoginBox" action="'.$GLOBALS['PAGEDATA']->getRelativeUrl().'#tab=Login" method="post"><table>';
-	$c.='<tr><th><label for="email">Email</label></th><td><input type="text" name="email" value="'.getVar('email').'" /></td>';
+	$c.='<tr><th><label for="email">Email</label></th><td><input type="text" name="email" value="'.@$_REQUEST['email'].'" /></td>';
 	$c.='<th><label for="password">Password</label></th><td><input type="password" name="password" /></td></tr>';
 	$c.='</table><input type="submit" name="action" value="Login" />';
 	if(isset($_REQUEST['login_referer']))$c.='<input type="hidden" name="login_referer" value="'.htmlspecialchars($_REQUEST['login_referer'],ENT_QUOTES).'" />';
@@ -134,7 +134,7 @@ function userPasswordReminder(){
 	return $c;
 }
 function userregistration(){
-	if(getVar('a')=='Register')return userregistration_register();
+	if(@$_REQUEST['a']=='Register')return userregistration_register();
 	return userregistration_form();
 }
 function userregistration_form($error='',$alert=''){
@@ -151,9 +151,9 @@ function userregistration_form($error='',$alert=''){
 		.$GLOBALS['PAGEDATA']->getRelativeUrl()
 		.'#userregistration" method="post"><table>'
 		.'<tr><th>Name</th><td><input type="text" name="name" value="'
-		.htmlspecialchars(getVar('name')).'" /></td>'
+		.htmlspecialchars(@$_REQUEST['name']).'" /></td>'
 		.'<th>Email</th><td><input type="text" name="email" value="'
-		.htmlspecialchars(getVar('email')).'" /></td></tr>'
+		.htmlspecialchars(@$_REQUEST['email']).'" /></td></tr>'
 		.'<tr><th>Preferred Password</th><td><input name="pass1" type="password" /></td>'
 		.'<th>Repeat Password</th><td><input name="pass2" type="password" /></td></tr></table>';
 	if(isset($PAGEDATA->vars['privacy_extra_fields']) && strlen($PAGEDATA->vars['privacy_extra_fields'])>2){
@@ -175,7 +175,7 @@ function userregistration_form($error='',$alert=''){
 			if (isset($_REQUEST[$name])) {
 				$_SESSION['privacys'][$name]=$_REQUEST[$name];
 			}
-			$val=getVar($name);
+			$val=@$_REQUEST[$name];
 			if(!$val && isset($_SESSION['userdata']) && $_SESSION['userdata']){
 				switch($name){
 					case 'Email': case '__ezine_subscribe': // {
@@ -294,14 +294,14 @@ function userregistration_form($error='',$alert=''){
 function userregistration_register(){
 	global $DBVARS,$PAGEDATA;
 	// { variables
-		$name=getVar('name');
-		$email=getVar('email');
-		$phone=getVar('phone');
-		$usertype=getVar('usertype');
-		$address1=getVar('address1');
-		$address2=getVar('address2');
-		$address3=getVar('address3');
-		$howyouheard=getVar('howyouheard');
+		$name=@$_REQUEST['name'];
+		$email=@$_REQUEST['email'];
+		$phone=@$_REQUEST['phone'];
+		$usertype=@$_REQUEST['usertype'];
+		$address1=@$_REQUEST['address1'];
+		$address2=@$_REQUEST['address2'];
+		$address3=@$_REQUEST['address3'];
+		$howyouheard=@$_REQUEST['howyouheard'];
 		$pass1=$_REQUEST['pass1'];
 		$pass2=$_REQUEST['pass2'];
 	// }

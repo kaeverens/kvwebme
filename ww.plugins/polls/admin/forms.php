@@ -1,5 +1,4 @@
 <?php
-$translation=0;
 echo '<h3>'.($id?'Edit Poll':'New Poll').'</h3>';
 if($id){
 	$data=dbRow('select * from poll where id='.$id);
