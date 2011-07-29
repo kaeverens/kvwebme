@@ -4,18 +4,16 @@ require_once SCRIPTBASE . 'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
 function Core_getJQueryScripts() {
 	global $DBVARS;
 	$jquery_versions=array('1.6.2', '1.8.14');
-	if (isset($DBVARS['offline']) && $DBVARS['offline']) {
+	if (@$DBVARS['offline']) {
 		require SCRIPTBASE.'/ww.incs/get-offline-files.php';
 		$jurls=Core_getOfflineJQueryScripts($jquery_versions);
 	}
 	else {
+		$h='https://ajax.googleapis.com/ajax/libs/jquery';
 		$jurls=array(
-			'https://ajax.googleapis.com/ajax/libs/jquery/'
-			.$jquery_versions[0].'/jquery.min.js',
-			'https://ajax.googleapis.com/ajax/libs/jqueryui/'
-			.$jquery_versions[1].'/jquery-ui.min.js',
-			'http://ajax.googleapis.com/ajax/libs/jqueryui/'
-			.$jquery_versions[1].'/themes/base/jquery-ui.css'
+			$h.'/'.$jquery_versions[0].'/jquery.min.js',
+			$h.'ui/'.$jquery_versions[1].'/jquery-ui.min.js',
+			$h.'ui/'.$jquery_versions[1].'/themes/base/jquery-ui.css'
 		);
 	}
 	return '<script src="'.$jurls[0].'"></script>'
@@ -34,9 +32,6 @@ function date_m2h($d, $type = 'date') {
 	if ($type == 'date') {
 		return date('l jS F, Y', $utime);
 	}
-	if ($type == 'shortdate') {
-		return date('D jS M, Y', $utime);
-	}
 	if ($type == 'datetime') {
 		return date('D jS M, Y h:iA', $utime);
 	}
@@ -54,17 +49,11 @@ function getVar($v, $d = '') {
 	if ($v != strtolower($v)) return getVar(strtolower($v), $d);
 	return $d;
 }
-function inc_common($f) {
-	include_once SCRIPTBASE . 'common/' . $f;
-}
-function redirect($addr, $type=301) {
-	if ($type==301) {
-		header('HTTP/1.1 301 Moved Permanently');
-	}
+function redirect($addr) {
+	header('HTTP/1.1 301 Moved Permanently');
 	header('Location: '.$addr);
 	echo '<html><head><script type="text/javascript">setTimeout(function(){do'
-		.'cument.location="'.$addr.'";},10);</script></head><body><noscript>you'
-		.' need javascript to use this site</noscript></body></html>';
+		.'cument.location="'.$addr.'";},10);</script></head><body></body></html>';
 	exit;
 }
 function webmeMail($from, $to, $subject, $message, $files = false) {
@@ -78,18 +67,6 @@ if (strpos($_SERVER['REQUEST_URI'],'ww.admin/')!==false) {
 	require_once SCRIPTBASE . 'j/kfm/api/api.php';
 	require_once SCRIPTBASE . 'j/kfm/initialise.php';
 }
-function eventCalendarDisplay($a=0) {
-	include_once SCRIPTBASE . 'common/funcs.events.php';
-	return ww_eventCalendarDisplay($a);
-}
-function panelDisplay($a=0) {
-	include_once SCRIPTBASE . 'common/funcs.panels.php';
-	return ww_panelDisplay($a);
-}
-function imageDisplay($a=0) {
-	include_once SCRIPTBASE . 'common/funcs.image.display.php';
-	return func_image_display($a);
-}
 function menuDisplay($a=0) {
 	require_once SCRIPTBASE . 'ww.incs/menus.php';
 	return Menu_show($a);
@@ -99,7 +76,8 @@ function smarty_setup($compile_dir) {
 	$smarty = new Smarty;
 	$smarty->left_delimiter = '{{';
 	$smarty->right_delimiter = '}}';
-	$smarty->assign('WEBSITE_TITLE',
+	$smarty->assign(
+		'WEBSITE_TITLE',
 		htmlspecialchars($DBVARS['site_title'])
 	);
 	$smarty->assign(
@@ -173,7 +151,7 @@ function Template_logoDisplay($vars) {
 		.'width:'.$size[0].'px;height:'.$size[1].'px;" />';
 }
 // { user authentication
-if ((isset($_REQUEST['action']) && $_REQUEST['action']=='login')
+if (@$_REQUEST['action']=='login'
 	|| isset($_SESSION['userdata']['id'])
 	|| isset($_REQUEST['logout'])
 ) {

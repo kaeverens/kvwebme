@@ -2,11 +2,12 @@
 class Pages{
 	static $instancesByParent = array();
 	public $pages=array();
-	function __construct($constraint, $filter=true){
+	function __construct($constraint, $filter=true) {
 		global $isadmin;
 		$filter=($isadmin || !$filter)?'':' && !(special&2)';
 		$rs=dbAll(
-			"select * from pages where $constraint $filter order by special&2,ord,name"
+			"select * from pages where $constraint $filter "
+			."order by special&2,ord,name"
 		);
 		if (!count($rs)) {
 			$rs=array();
@@ -16,14 +17,14 @@ class Pages{
 		}
 		Pages::$instancesByParent[$constraint] =& $this;
 	}
-	static function getInstancesByType($type){
+	static function getInstancesByType($type) {
 		$constraint='type="'.addslashes($type).'"';
 		if (!array_key_exists($constraint, self::$instancesByParent)) {
 			new Pages($constraint, false);
 		}
 		return self::$instancesByParent[$constraint];
 	}
-	static function getInstancesByParent($pid=0, $filter=true){
+	static function getInstancesByParent($pid=0, $filter=true) {
 		if (!is_numeric($pid)) {
 			return false;
 		}
@@ -33,7 +34,7 @@ class Pages{
 		}
 		return self::$instancesByParent[$constraint];
 	}
-	static function precache($ids){
+	static function precache($ids) {
 		if (count($ids)) {
 			$rs3=dbAll('select * from pages where id in ('.join(',', $ids).')');
 			$pvars=dbAll('select * from page_vars where page_id in ('.join(',', $ids).')');

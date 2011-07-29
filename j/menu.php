@@ -69,4 +69,4 @@ else {
 	echo $d;
 }
 echo file_get_contents('menu.js');
-ob_show_and_log('menu');
+Core_flushBuffer('menu');

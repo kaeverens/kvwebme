@@ -1,7 +1,7 @@
 <?php
 require_once 'Log.php';
-if(!function_exists('ob_show_and_log')){
-function ob_show_and_log($type){
+if(!function_exists('Core_flushBuffer')){
+function Core_flushBuffer($type){
 	$log = &Log::singleton('file',USERBASE.'log.txt',$type,array('locking'=>true,'timeFormat'=>'%Y-%m-%d %H:%M:%S'));
 	$length=$GLOBALS['filesize'];
 	$num_queries=isset($GLOBALS['db'])?$GLOBALS['db']->num_queries:0;
@@ -35,4 +35,4 @@ function ob_show_and_log($type){
 	ob_flush();
 }
 }
-ob_show_and_log('file');
+Core_flushBuffer('file');

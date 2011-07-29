@@ -315,7 +315,7 @@ function Products_getAddManyToCartButton($params, &$smarty) {
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'"/></form>';
 }
-function products_image($params, &$smarty){
+function products_image($params, &$smarty) {
 	$params=array_merge(array(
 		'width'=>128,
 		'height'=>128,
@@ -346,20 +346,22 @@ function products_image($params, &$smarty){
 	}
 	$img='<img src="/kfmget/'.$iid
 		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" />';	
-	return '<div id="gallery-image" width="'.$params['width'].'" height="'.$params['height'].'" effect="fade">'
+	return '<div id="gallery-image" width="'.$params['width'].'" height="'
+		.$params['height'].'" effect="fade">'
 		. '<div class="ad-image">'
-			. '<span class="dark-background ad-image-description" style="display:none"></span>'
-			. $img
+		. '<span class="dark-background ad-image-description" style="display:no'
+		.'ne"></span>'
+		. $img
 		. '</div>'
 		. '</div>';
 }
-function products_image_not_found($params,&$smarty) {
+function products_image_not_found($params, &$smarty) {
 	$s=$params['width']<$params['height']?$params['width']:$params['height'];
 	$product=$smarty->_tpl_vars['product'];
 	$pt=ProductType::getInstance($product->vals['product_type_id']);
 	return $pt->getMissingImage($s);
 }
-function products_images($params,&$smarty){
+function products_images($params, &$smarty) {
 	$params=array_merge(array(
 		'thumbsize'=>60,
 		'display'=>'list',
@@ -429,11 +431,15 @@ function _Products_listCategories($params, &$smarty) {
 	if (!isset($params['parent'])) {
 		$parent=0;
 	}
-	$cats=dbAll('select * from products_categories where parent_id='.((int)$parent).' and enabled order by name');
+	$cats=dbAll(
+		'select * from products_categories where parent_id='
+		.((int)$parent).' and enabled order by name'
+	);
 	$html='<ul class="products-list-categories sc_subcatnames">';
 	foreach ($cats as $cat) {
 		$cat=ProductCategory::getInstance($cat['id']);
-		$html.='<li><a href="'.$cat->getRelativeUrl().'">'.htmlspecialchars($cat->vals['name']).'</a></li>';
+		$html.='<li><a href="'.$cat->getRelativeUrl().'">'
+			.htmlspecialchars($cat->vals['name']).'</a></li>';
 	}
 	$html.='</ul>';
 	return $html;
@@ -448,7 +454,8 @@ function _Products_listCategoryContents ($params, &$smarty) {
 	$html='<ul class="products-list-category-contents">';
 	foreach ($products->product_ids as $pid) {
 		$product=Product::getInstance($pid);
-		$html.='<li><a href="'.$product->getRelativeURL().'">'.htmlspecialchars($product->name).'</a></li>';
+		$html.='<li><a href="'.$product->getRelativeURL().'">'
+			.htmlspecialchars($product->name).'</a></li>';
 	}
 	$html.='</ul>';
 	return $html;
@@ -516,16 +523,17 @@ function products_reviews ($params, &$smarty) {
 			if (is_admin()|| $userid==$review['user_id']) {
 				// { Edit Review Link
 				$timeReviewMayBeEditedUntil
-					= dbOne('select 
+					= dbOne(
+						'select 
 						date_add('
-							.'\''.$review['cdate'].'\''
-							.', interval 15 minute
+						.'\''.$review['cdate'].'\''
+						.', interval 15 minute
 						)
 						as last_edit_time',
 						'last_edit_time'
 					);
 				$reviewMayBeEdited
-					= dbOne (
+					= dbOne(
 						'select \''.$timeReviewMayBeEditedUntil.'\'>now()
 						as can_edit_review',
 						'can_edit_review'
@@ -581,9 +589,9 @@ function products_reviews ($params, &$smarty) {
 function products_setup_smarty() {
 	$smarty=smarty_setup(USERBASE.'/ww.cache/products/templates_c');
 	$smarty->template_dir='/ww.cache/products/templates';
-	$smarty->assign('PAGEDATA',$GLOBALS['PAGEDATA']);
+	$smarty->assign('PAGEDATA', $GLOBALS['PAGEDATA']);
 	if (isset($_SESSION['userdata'])) {
-		$smarty->assign('USERDATA',$_SESSION['userdata']);
+		$smarty->assign('USERDATA', $_SESSION['userdata']);
 	}
 	return $smarty;
 }
@@ -613,18 +621,20 @@ function products_show($PAGEDATA) {
 	$limit=isset($PAGEDATA->vars['products_per_page'])
 		?(int)$PAGEDATA->vars['products_per_page']
 		:0;
-	if(isset($_REQUEST['products_per_page'])) {
+	if (isset($_REQUEST['products_per_page'])) {
 		$limit=(int)$_REQUEST['products_per_page'];
 	}
 	$start=isset($_REQUEST['start'])?(int)$_REQUEST['start']:0;
-	if ($start<0)$start=0;
+	if ($start<0) {
+		$start=0;
+	}
 	// }
 	// { set order fields
 	$order_by=isset($PAGEDATA->vars['products_order_by'])
 		?$PAGEDATA->vars['products_order_by']
 		:'';
 	$order_dir=isset($PAGEDATA->vars['products_order_direction'])
-		?(int)$PAGEDATA->vars['products_order_direction']#
+		?(int)$PAGEDATA->vars['products_order_direction']
 		:0;
 	// }
 	// { export button
@@ -632,7 +642,8 @@ function products_show($PAGEDATA) {
 	if (isset($PAGEDATA->vars['products_add_export_button'])
 		&& $PAGEDATA->vars['products_add_export_button']
 	) {
-		$export='<form id="products-export" action="/ww.plugins/products/frontend/export.php">'
+		$export='<form id="products-export" action="/ww.plugins/products/fronte'
+			.'nd/export.php">'
 			.'<input type="hidden" name="pid" value="'.$PAGEDATA->id.'" />'
 			.'<input type="submit" value="Export" />'
 			.'</form>';
@@ -681,7 +692,9 @@ function products_show_by_id($PAGEDATA,$id=0) {
 	if ($id==0) {
 		$id=(int)$PAGEDATA->vars['products_product_to_show'];
 	}
-	if ($id<1)return '<em>product '.$id.' does not exist.</em>';
+	if ($id<1) {
+		return '<em>product '.$id.' does not exist.</em>';
+	}
 	$product=Product::getInstance($id);
 	$typeID = $product->get('product_type_id');
 	$type=ProductType::getInstance($typeID);
@@ -690,21 +703,27 @@ function products_show_by_id($PAGEDATA,$id=0) {
 	}
 	return $type->render($product);
 }
-function products_show_by_category($PAGEDATA, $id=0, $start=0, $limit=0, $order_by='', $order_dir=0, $search='') {
+function products_show_by_category(
+	$PAGEDATA, $id=0, $start=0, $limit=0, $order_by='', $order_dir=0, $search=''
+) {
 	if ($id==0) {
 		$id=(int)$PAGEDATA->vars['products_category_to_show'];
 	}
-	$products=Products::getByCategory($id,$search);
-	return $products->render($PAGEDATA,$start,$limit,$order_by,$order_dir);
+	$products=Products::getByCategory($id, $search);
+	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
-function products_show_by_type($PAGEDATA, $id=0, $start=0, $limit=0, $order_by='', $order_dir=0, $search='') {
+function products_show_by_type(
+	$PAGEDATA, $id=0, $start=0, $limit=0, $order_by='', $order_dir=0, $search=''
+) {
 	if ($id==0) {
 		$id=(int)$PAGEDATA->vars['products_type_to_show'];
 	}
-	$products=Products::getByType($id,$search);
-	return $products->render($PAGEDATA,$start,$limit,$order_by,$order_dir);
+	$products=Products::getByType($id, $search);
+	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
-function products_show_all($PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0, $search='') {
+function products_show_all(
+	$PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0, $search=''
+) {
 	if (isset($_REQUEST['product_id'])) {
 		$product_id= $_REQUEST['product_id'];
 		$products= Products::getAll('', $product_id);
@@ -715,7 +734,7 @@ function products_show_all($PAGEDATA, $start=0, $limit=0, $order_by='', $order_d
 	else {
 		$products=Products::getAll($search);
 	}
-	return $products->render($PAGEDATA,$start,$limit,$order_by,$order_dir);
+	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
 function Products_showRelatedProducts($params, &$smarty) {
 	$product = $smarty->_tpl_vars['product'];
@@ -723,12 +742,18 @@ function Products_showRelatedProducts($params, &$smarty) {
 	$type='';
 
 	if (isset($params['type'])) {
-		$tid=dbOne('select id from products_relation_types where name="'.addslashes($params['type']).'"', 'id');
-		if($tid) {
+		$tid=dbOne(
+			'select id from products_relation_types where name="'
+			.addslashes($params['type']).'"',
+			'id'
+		);
+		if ($tid) {
 			$type=' and relation_id='.$tid;
 		}
 	}
-	$rs=dbAll('select to_id from products_relations where from_id='.$productID.$type);
+	$rs=dbAll(
+		'select to_id from products_relations where from_id='.$productID.$type
+	);
 	if (count($rs)) {
 		$h='';
 		foreach ($rs as $r) {
@@ -743,14 +768,18 @@ function Products_showRelatedProducts($params, &$smarty) {
 			if ($vals['image_default']) {
 				$iid=$vals['image_default'];
 				$image=kfmImage::getInstance($iid);
-				if (!$image->exists())$iid=0;
+				if (!$image->exists()) {
+					$iid=0;
+				}
 			}
 			if (!$iid) {
 				$directory = $vals['images_directory'];
-				$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$directory));
+				$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//', '', $directory));
 				if ($dir_id) {
 					$images=kfm_loadFiles($dir_id);
-					if (count($images['files']))$iid=$images['files'][0]['id'];
+					if (count($images['files'])) {
+						$iid=$images['files'][0]['id'];
+					}
 				}
 			}
 			if (!$iid) {
@@ -760,7 +789,8 @@ function Products_showRelatedProducts($params, &$smarty) {
 			$h.='<img src="/kfmget/'.$iid.'&amp;width=150&amp;height=150" /><br />'
 				.htmlspecialchars($p->name).'</a>';
 		}
-		return '<div class="product_list products_'.htmlspecialchars($params['type']).'">'.$h.'</div>';
+		return '<div class="product_list products_'
+			.htmlspecialchars($params['type']).'">'.$h.'</div>';
 	}
 	return 'none yet';
 }
@@ -799,7 +829,7 @@ class Products{
 		$vs, $md5, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc'
 	) {
 		$this->product_ids=cache_load('products', 'products_'.$md5);
-			if ($this->product_ids===false) {
+		if ($this->product_ids===false) {
 			if ($search!='') {
 				$arr=array();
 				foreach ($vs as $v) {
@@ -867,7 +897,7 @@ class Products{
 		if (!is_numeric($id)) {
 			return false;
 		}
-		$md5=md5($id.'|'.$search.'|'.join(',',$search_arr));
+		$md5=md5($id.'|'.$search.'|'.join(',', $search_arr));
 		if (!array_key_exists($md5, self::$instances)) {
 			$product_ids=array();
 			if ($search=='' && !count($search_arr)) {
@@ -896,7 +926,10 @@ class Products{
 				$product_ids[]=$r['id'];
 			}
 			new Products($product_ids, $md5, $search, $search_arr);
-			self::$instances[$md5]->subCategories=dbAll('select id,name from products_categories where parent_id='.$id.' and enabled order by name');
+			self::$instances[$md5]->subCategories=dbAll(
+				'select id,name from products_categories where parent_id='.$id
+				.' and enabled order by name'
+			);
 		}
 		return self::$instances[$md5];
 	}
@@ -907,7 +940,11 @@ class Products{
 		}
 		$cid=0;
 		foreach ($arr as $name) {
-			$cid=dbOne('select id from products_categories where parent_id='.$cid.' and name="'.addslashes($name).'" limit 1','id');
+			$cid=dbOne(
+				'select id from products_categories where parent_id='.$cid
+				.' and name="'.addslashes($name).'" limit 1',
+				'id'
+			);
 			if (!$cid) {
 				break;
 			}
@@ -1064,14 +1101,16 @@ class Products{
 						USERBASE.'/ww.cache/products/templates/types_multiview_'.$type->id.'_footer'
 					);
 				}
-			// }
+				// }
 		}
 		$categories='';
 		if (!isset($_REQUEST['products-search'])) {
 			if (isset($this->subCategories) && count($this->subCategories)) {
 				$categories='<ul class="categories">';
 				foreach ($this->subCategories as $cat) {
-					$categories.='<li><a href="'.$PAGEDATA->getRelativeUrl().'?product_cid='.$cat['id'].'">'.htmlspecialchars($cat['name']).'</a></li>';
+					$categories.='<li><a href="'.$PAGEDATA->getRelativeUrl()
+						.'?product_cid='.$cat['id'].'">'.htmlspecialchars($cat['name'])
+						.'</a></li>';
 				}
 				$categories.='</ul>';
 			}
@@ -1101,7 +1140,7 @@ class ProductCategory{
 		}
 		return self::$instances[$id];
 	}
-	function getRelativeUrl(){
+	function getRelativeUrl() {
 		// { see if there are any pages that use this category
 		// }
 		// { or get at least any product page

@@ -1,7 +1,7 @@
 <?php
 class CountriesList{
 	public $countries;
-	private $onChange;
+	private $_onChange;
 	// { list of countries
 	public $countriesList=array(
 		array('iso'=>'AFG', 'name'=>'Afghanistan'),
@@ -247,10 +247,10 @@ class CountriesList{
 		$this->disabled=array();
 		$this->selected=array();
 		if (!count($countries)) {
-			$this->loadDefaultCountries();
+			$this->_loadDefaultCountries();
 		}
 		else {
-			$this->buildIsoNameHash();
+			$this->_buildIsoNameHash();
 			$arr=array();
 			foreach ($countries as $country) {
 				if (isset($this->isoNameHash[$country])) {
@@ -264,7 +264,7 @@ class CountriesList{
 			}
 		}
 	}
-	private function buildIsoNameHash() {	// utility function
+	private function _buildIsoNameHash() {	// utility function
 		if (isset($this->isoNameHash)) {
 			return;
 		}
@@ -274,7 +274,7 @@ class CountriesList{
 			$this->isoNameHash[$country['iso']]=$country['name'];
 		}
 	}
-	private function loadDefaultCountries() {
+	private function _loadDefaultCountries() {
 		$this->countries=$this->countriesList;
 	}
 	static function iso3_to_iso2($iso) {
@@ -334,7 +334,7 @@ class CountriesList{
 	}
 	function getCountryName($iso) {
 		if (!isset($this->isoNameHash)) {
-			$this->buildIsoNameHash();
+			$this->_buildIsoNameHash();
 		}
 		return $this->isoNameHash[$iso];
 	}

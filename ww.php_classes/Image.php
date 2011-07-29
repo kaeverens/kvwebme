@@ -8,35 +8,35 @@ class Image{
 	public $width;
 	public $height;
 	public $type;
-	private $caching;
-	private $cache_dir;
+	private $_caching;
+	private $_cache_dir;
 	public function __construct($file, $caching=false) {
 		$this->file=$file;
-		$this->cache_dir=USERBASE.'ww.cache/webme-images-cache/';
+		$this->_cache_dir=USERBASE.'ww.cache/webme-images-cache/';
 		if ($caching) { // if caching is enabled make sure dirs are present
-			if (!is_dir($this->cache_dir)) {
-				mkdir($this->cache_dir);
+			if (!is_dir($this->_cache_dir)) {
+				mkdir($this->_cache_dir);
 			}
 			if (strpos($file, 'http://')!==false) {
 				$name=md5($file);
-				if (!file_exists($this->cache_dir.$name)) {
+				if (!file_exists($this->_cache_dir.$name)) {
 					$content=Image::curl($file);
-					file_put_contents($this->cache_dir.$name, $content);
+					file_put_contents($this->_cache_dir.$name, $content);
 				}
-				$this->file=$this->cache_dir.$name;
+				$this->file=$this->_cache_dir.$name;
 			}
 		}
 		$dimensions=getimagesize($this->file);
 		$this->type=$dimensions['mime'];
 		$this->width=$dimensions[0];
 		$this->height=$dimensions[1];
-		$this->caching=$caching;
+		$this->_caching=$caching;
 	}
 	public function resize($w, $h, $crop=false) {
-		if ($this->caching) {
+		if ($this->_caching) {
 			$name=md5($this->file.'|'.$w.'|'.$h.'|'.$crop);
-			if (file_exists($this->cache_dir.$name)) {
-				return $this->file=$this->cache_dir.$name;
+			if (file_exists($this->_cache_dir.$name)) {
+				return $this->file=$this->_cache_dir.$name;
 			}
 		}
 		$width=$this->width;
@@ -75,9 +75,9 @@ class Image{
 			$height
 		);
 		$this->image=$dst;
-		if ($this->caching) {
+		if ($this->_caching) {
 			$name=md5($this->file.$w.$h.$crop);
-			$this->display($this->cache_dir.$name);
+			$this->display($this->_cache_dir.$name);
 		}
 	}
 	public static function render($type, $file) {

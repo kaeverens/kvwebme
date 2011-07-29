@@ -114,7 +114,7 @@ function dbRow($query) {
 	}
 	return $q->fetch(PDO::FETCH_ASSOC);
 }
-function ob_show_and_log($type, $header='') {
+function Core_flushBuffer($type, $header='') {
 	$length=ob_get_length();
 	$num_queries=isset($GLOBALS['db'])?$GLOBALS['db']->num_queries:0;
 	switch ($type) {

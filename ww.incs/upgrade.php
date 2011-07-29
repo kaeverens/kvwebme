@@ -346,12 +346,12 @@ if ($version==31) { // add "date_created" to user_account
 	dbQuery('alter table user_accounts add date_created datetime');
 	$version=32;
 }
-if ( $version == 32 ) { // add "alias" field to pages table
-	dbQuery( 'alter table pages add alias text after associated_date' );
-	dbQuery( 'update pages set alias=name' );
+if ($version == 32) { // add "alias" field to pages table
+	dbQuery('alter table pages add alias text after associated_date');
+	dbQuery('update pages set alias=name');
 	$version = 33;
 }
-if ( $version == 33 ) { // clear cache...
+if ($version == 33) { // clear cache...
 	cache_clear('pages');
 	$version = 34;
 }
@@ -359,24 +359,26 @@ if ($version==34) { // add page id to short_url
 	dbQuery('alter table short_urls add page_id int default 0');
 	$version=35;
 }
-if($version==35){ // convert user address to new format
+if ($version==35) { // convert user address to new format
 	$users=dbAll('select id,address from user_accounts');
 	$query='update user_accounts set address=CASE ';
-	for($i=0;$i<count($users);++$i){
-		$add=(@$users[$i]['address']=='')?
-			array():
-			explode('\n',$users[$i]['address']);
+	for ($i=0;$i<count($users);++$i) {
+		$add=(@$users[$i]['address']=='')
+			?array()
+			:explode('\n', $users[$i]['address']);
 		$s=count($add);
-		$address=json_encode(array(
-			'default' => array(
-				'street' => @$add[$s-4],
-				'street2' => @$add[$s-3],
-				'town' => @$add[$s-2],
-				'county' => @$add[$s-1],
-				'country' => '',
-				'default' => 'yes',
-			),
-		));
+		$address=json_encode(
+			array(
+				'default' => array(
+					'street' => @$add[$s-4],
+					'street2' => @$add[$s-3],
+					'town' => @$add[$s-2],
+					'county' => @$add[$s-1],
+					'country' => '',
+					'default' => 'yes',
+				)
+			)
+		);
 		$query.='when id='.$users[$i]['id'].' then "'.addslashes($address).'"';
 	}
 	$query.=' ELSE address END;';

@@ -156,7 +156,7 @@ if (!$id) {
 			if (@$PAGEDATA->vars['_short_url']) {
 				$s=dbOne('select short_url from short_urls where page_id='.$id, 'short_url');
 				if ($s!=$page) {
-					redirect('/'.$s, 301);
+					redirect('/'.$s);
 				}
 			}
 		}
@@ -457,5 +457,5 @@ echo str_replace(
 
 header('X-page-generation: '.(microtime(true)-$ww_startup).'s');
 
-ob_show_and_log('page', 'Content-type: text/html; Charset=utf-8');
+Core_flushBuffer('page', 'Content-type: text/html; Charset=utf-8');
 // }

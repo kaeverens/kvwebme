@@ -105,4 +105,4 @@ function MimeType_get($f) {
 	}
 	return 'unknown/mimetype';
 }
-ob_show_and_log('file');
+Core_flushBuffer('file');

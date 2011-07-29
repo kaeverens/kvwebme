@@ -12,25 +12,34 @@
 
 require 'basics.php';
 
-if(!isset($_SESSION['userdata'])) // not logged in
+if (!isset($_SESSION['userdata'])) { // not logged in
 	exit;
+}
 
 $id=(int)@$_GET['id'];
-if($id=='')
+if ($id=='') {
 	exit;
+}
 
-$user=dbRow('select id,name,email,phone,address,parent,extras,last_login,last_view,date_created from user_accounts where id='.addslashes($id).' limit 1');
-if($user==false)
+$user=dbRow(
+	'select id,name,email,phone,address,parent,extras,last_login,last_view,da'
+	.'te_created from user_accounts where id='.addslashes($id).' limit 1'
+);
+if ($user==false) {
 	exit;
+}
 
-$user['address']=json_decode($user['address'],true);
-$user['extras']=json_decode($user['extras'],true);
+$user['address']=json_decode($user['address'], true);
+$user['extras']=json_decode($user['extras'], true);
 
-$groups=dbAll('select groups_id from users_groups where user_accounts_id='.$id.' limit 1');
+$groups=dbAll(
+	'select groups_id from users_groups where user_accounts_id='.$id.' limit 1'
+);
 
 $g=array();
-foreach($groups as $group)
-	array_push($g,$group['groups_id']);
+foreach ($groups as $group) {
+	array_push($g, $group['groups_id']);
+}
 
 $user['groups']=$g;
 

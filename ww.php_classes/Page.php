@@ -8,7 +8,7 @@ class Page{
 	static $instancesByType		= array();
 	public $vals;
 	function __construct($v, $byField=0, $fromRow=0, $pvq=0) {
-		# byField: 0=ID; 1=Name
+		// byField: 0=ID; 1=Name
 		if (!$byField && is_numeric($v)) {
 			if ($fromRow) {
 				$r=$fromRow;
