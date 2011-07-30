@@ -4,9 +4,6 @@ if (!defined('START_TIME')) {
 	define('START_TIME', microtime(true));
 }
 spl_autoload_register('WebME_autoload');
-function WebME_autoload($name) {
-	require $name . '.php';
-}
 function Core_cacheClear($type='') {
 	if (!is_dir(USERBASE.'/ww.cache/'.$type)) {
 		return;
@@ -54,6 +51,70 @@ function Core_configRewrite() {
 	}
 	$config="<?php\n\$DBVARS=array(\n	".join(",\n	", $tmparr2)."\n);";
 	file_put_contents(CONFIG_FILE, $config);
+}
+function Core_flushBuffer($type, $header='') {
+	$length=ob_get_length();
+	$num_queries=isset($GLOBALS['db'])?$GLOBALS['db']->num_queries:0;
+	switch ($type) {
+		case 'design_file': case 'file': // {
+			$location=$_SERVER['REQUEST_URI'];
+		break; // }
+		case 'menu': // {
+			$location='menu';
+		break; // }
+		case 'page': // {
+			$location=$GLOBALS['PAGEDATA']->id.'|'
+				.$GLOBALS['PAGEDATA']->getRelativeUrl();
+		break; // }
+		default: // {
+			$location='unknown_type_'.$type;
+			//}
+	}
+	file_put_contents(
+		USERBASE.'/log.txt',
+		date('Y-m-d H:i:s').' '.$type.' [info] '
+		.$_SERVER['REMOTE_ADDR']
+		.'	'.$location
+		.'	'.(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'')
+		.'	'.(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'')
+		.'	'.memory_get_peak_usage()
+		.'	'.$length
+		.'	'.(microtime(true)-START_TIME)
+		.'	'.$num_queries."\n",
+		FILE_APPEND|LOCK_EX
+	);
+	if ($header) {
+		header($header);
+	}
+	ob_flush();
+}
+function Core_isAdmin() {
+	return isset($_SESSION['userdata'])
+		&& isset($_SESSION['userdata']['groups']['administrators']);
+}
+function Core_trigger($trigger_name, $params = null) {
+	global $PLUGIN_TRIGGERS, $PAGEDATA;
+	if (!isset($PLUGIN_TRIGGERS[$trigger_name])) {
+		return;
+	}
+	$c='';
+	foreach ($PLUGIN_TRIGGERS[$trigger_name] as $fn) {
+		if ($params == null) {
+			$c .= $fn($PAGEDATA);
+		}
+		else {
+			if (is_array($params)) {
+				$temp = $params;
+				// push PAGEDATA to beginning of array
+				array_unshift($temp, $PAGEDATA);
+				$c .= call_user_func_array($fn, $temp);
+			}
+			else {
+				$c.= $fn($PAGEDATA, $params);
+			}
+		}
+	}
+	return $c;
 }
 function dbAll($query, $key='') {
 	$q = dbQuery($query);
@@ -114,75 +175,8 @@ function dbRow($query) {
 	}
 	return $q->fetch(PDO::FETCH_ASSOC);
 }
-function Core_flushBuffer($type, $header='') {
-	$length=ob_get_length();
-	$num_queries=isset($GLOBALS['db'])?$GLOBALS['db']->num_queries:0;
-	switch ($type) {
-		case 'design_file': case 'file': // {
-			$location=$_SERVER['REQUEST_URI'];
-		break; // }
-		case 'menu': // {
-			$location='menu';
-		break; // }
-		case 'page': // {
-			$location=$GLOBALS['PAGEDATA']->id.'|'
-				.$GLOBALS['PAGEDATA']->getRelativeUrl();
-		break; // }
-		default: // {
-			$location='unknown_type_'.$type;
-			//}
-	}
-	file_put_contents(
-		USERBASE.'/log.txt',
-		date('Y-m-d H:i:s').' '.$type.' [info] '
-		.$_SERVER['REMOTE_ADDR']
-		.'	'.$location
-		.'	'.(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'')
-		.'	'.(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'')
-		.'	'.memory_get_peak_usage()
-		.'	'.$length
-		.'	'.(microtime(true)-START_TIME)
-		.'	'.$num_queries."\n",
-		FILE_APPEND|LOCK_EX
-	);
-	if ($header) {
-		header($header);
-	}
-	ob_flush();
-}
-function Core_isAdmin() {
-	return isset($_SESSION['userdata'])
-		&& isset($_SESSION['userdata']['groups']['administrators']);
-}
-function is_logged_in() {
-	return isset($_SESSION['userdata']);
-}
-function get_userid() {
-	return $_SESSION['userdata']['id'];
-}
-function plugin_trigger($trigger_name, $params = null) {
-	global $PLUGIN_TRIGGERS, $PAGEDATA;
-	if (!isset($PLUGIN_TRIGGERS[$trigger_name])) {
-		return;
-	}
-	$c='';
-	foreach ($PLUGIN_TRIGGERS[$trigger_name] as $fn) {
-		if ($params == null) {
-			$c .= $fn($PAGEDATA);
-		}
-		else {
-			if (is_array($params)) {
-				$temp = $params;
-				// push PAGEDATA to beginning of array
-				array_unshift($temp, $PAGEDATA);
-				$c .= call_user_func_array($fn, $temp);
-			}
-			else {
-				$c.= $fn($PAGEDATA, $params);
-			}
-		}
-	}
-	return $c;
+function WebME_autoload($name) {
+	require $name . '.php';
 }
 define('SCRIPTBASE', $_SERVER['DOCUMENT_ROOT'] . '/');
 if (!file_exists(SCRIPTBASE . '.private/config.php')) {
@@ -307,4 +301,4 @@ if (!isset($ignore_webme_plugins)) {
 	}
 }
 // }
-plugin_trigger('initialisation-completed');
+Core_trigger('initialisation-completed');

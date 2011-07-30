@@ -28,7 +28,7 @@ if (!$group) {
 	echo '{"status":0, "message": "Error creating group"}';
 }
 else {
-	$user = get_userid();
+	$user =$_SESSION['userdata']['id'];
 	dbQuery(
 		'insert into users_groups (user_accounts_id, groups_id)'
 		.'values('.$user.', '.$group.')'

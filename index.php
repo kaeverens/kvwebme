@@ -211,7 +211,7 @@ else{
 		.'your first page.';
 	exit;
 }
-$c=plugin_trigger('page-object-loaded');
+$c=Core_trigger('page-object-loaded');
 // }
 // { if URL includes a plugin override, run that instead of displaying the page
 if (isset($_REQUEST['_p'])
@@ -309,7 +309,7 @@ else {
 	}
 }
 if (isset($PLUGINS['comments'])) {
-	$c.=plugin_trigger('page-content-created');
+	$c.=Core_trigger('page-content-created');
 }
 $pagecontent=$c.'<span class="end-of-page-content"></span>';
 // }
@@ -364,9 +364,9 @@ $c='<title>'.htmlspecialchars($title).'</title>';
 // { show stylesheet and javascript links
 $c.='WW_CSS_GOES_HERE';
 $c.='<style>.loggedin{display:'
-	.(is_logged_in()?'block':'none')
+	.(isset($_SESSION['userdata'])?'block':'none')
 	.'} .loggedinCell{display:'
-	.(is_logged_in()?'table-cell':'none')
+	.(isset($_SESSION['userdata'])?'table-cell':'none')
 	.'}</style>';
 $c.=Core_getJQueryScripts();
 $c.='<script src="WW_SCRIPTS_GO_HERE"></script>';
@@ -375,7 +375,7 @@ if (Core_isAdmin()) {
 }
 // { generate inline javascript
 $tmp='var pagedata={id:'.$PAGEDATA->id.''
-	.plugin_trigger('displaying-pagedata')
+	.Core_trigger('displaying-pagedata')
 	.'},';
 if (isset($_SESSION['userdata'])) {
 	$tmp.='userdata={isAdmin:'.(Core_isAdmin()?1:0)
@@ -440,7 +440,7 @@ if (file_exists(USERBASE.'/f/skin_files/favicon.ico')) {
 	$c.='<link rel="shortcut icon" href="/f/skin_files/favicon.ico" />';
 }
 // }
-$c.=plugin_trigger('building-metadata');
+$c.=Core_trigger('building-metadata');
 $smarty->assign('METADATA', $c);
 // }
 // { display the document

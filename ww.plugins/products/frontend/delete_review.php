@@ -23,8 +23,8 @@ $userid
 		where id='.$id, 
 		'user_id'
 	);
-$user= get_userid();
-if (!Core_isAdmin() || get_userid()!=$userid) {
+$user= $_SESSION['userdata']['id'];
+if (!Core_isAdmin() || $user!=$userid) {
 	die('You do not have permission to delete this review');
 }
 dbQuery('delete from products_reviews where id='.$id);

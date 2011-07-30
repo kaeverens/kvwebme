@@ -15,7 +15,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.php_classes/User.php';
 
 $id = $_REQUEST['id'];
-$userID = get_userid();
+$userID =$_SESSION['userdata']['id'];
 
 if (! ($userID==0 && Core_isAdmin())) { // not a superadmin
 	$user = User::getInstance($userID);

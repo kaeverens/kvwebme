@@ -14,7 +14,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.php_classes/User.php';
 $id = $_REQUEST['id'];
-$userID = get_userid();
+$userID =$_SESSION['userdata']['id'];
 $user = User::getInstance($userID);
 if ($userID) {
 	$usersGroups = $user->getGroups();

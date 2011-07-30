@@ -471,7 +471,7 @@ function Products_plusVat($params, &$smarty) {
 function products_reviews ($params, &$smarty) {
 	WW_addScript('/ww.plugins/products/frontend/delete.js');
 	WW_addScript('/ww.plugins/products/frontend/products-edit-review.js');
-	$userid = (int)get_userid();
+	$userid = (int)$_SESSION['userdata']['id'];
 	$product = $smarty->_tpl_vars['product'];
 	$productid = (int)$product->id;
 	$c='';
@@ -573,14 +573,14 @@ function products_reviews ($params, &$smarty) {
 				where user_id='.$userid.' and product_id='.$productid,
 				'id'
 			);
-		if (is_logged_in() && $userHasNotReviewedThisProduct) {
+		if (isset($_SESSION['userdata']) && $userHasNotReviewedThisProduct) {
 			$c.= products_submit_review_form($productid, $userid);
 		}
 	}
 	else {
 		$c.= '<em>Nobody has reviewed this product yet</em>';
 		$c.= '<br/>';
-		if (is_logged_in()) {
+		if (isset($_SESSION['userdata'])) {
 			$c.= products_submit_review_form($productid, $userid);
 		}
 	}

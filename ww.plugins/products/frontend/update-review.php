@@ -13,7 +13,7 @@
 */
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 $id= (int)$_REQUEST['id'];
-$loggedInUser= get_userid();
+$loggedInUser= $_SESSION['userdata']['id'];
 $userWhoLeftReview
 	= dbOne(
 		'select user_id from products_reviews where id='.$id,

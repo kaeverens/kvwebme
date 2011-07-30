@@ -735,7 +735,7 @@ function userregistration_showProfile() {
 	';
 	WW_addInlineScript($script);
 	WW_addScript('/ww.plugins/privacy/frontend/change_password.js');
-	$html .= plugin_trigger('privacy_user_profile', array($user));
+	$html .= Core_trigger('privacy_user_profile', array($user));
 	return $html;
 }
 function loginBox() {

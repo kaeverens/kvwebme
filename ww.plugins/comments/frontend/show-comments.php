@@ -137,8 +137,8 @@ function Comments_displayComments($page) {
   *
 **/
 function Comments_showCommentForm($pageID) {
-	if (is_logged_in()) {
-		$userID = get_userid();
+	if (isset($_SESSION['userdata'])) {
+		$userID =$_SESSION['userdata']['id'];
 		$user 
 			= dbRow(
 				'select name, email from user_accounts 
