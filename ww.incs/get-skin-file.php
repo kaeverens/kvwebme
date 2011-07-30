@@ -63,8 +63,8 @@ if ($mimetype=='text/css') {
 					$rules=$matches[2][$i];
 					$css='box-shadow:'.$rules.';'
 						.'-moz-box-shadow:'.$rules.';'
-						.'-webkit-box-shadow:'.$rules.';'
-				break; // }
+						.'-webkit-box-shadow:'.$rules.';';
+					break; // }
 				default:
 					$css=$matches[0][$i];
 			}
