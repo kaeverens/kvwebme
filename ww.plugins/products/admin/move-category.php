@@ -1,6 +1,6 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if(!is_admin())die('access denied');
+if(!Core_isAdmin())die('access denied');
 
 if(!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']))exit;
 if(!isset($_REQUEST['parent_id']) || !is_numeric($_REQUEST['parent_id']))exit;

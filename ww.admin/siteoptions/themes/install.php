@@ -34,7 +34,7 @@ if( isset( $_POST[ 'install-theme' ] ) ){
         if( $variant != '' )
                 $DBVARS['theme_variant'] = $variant;
 
-        config_rewrite( );
+        Core_configRewrite( );
         Core_cacheClear( 'pages' );
 
 }

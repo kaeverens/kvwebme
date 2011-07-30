@@ -1,6 +1,6 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if(!is_admin())die('access denied');
+if(!Core_isAdmin())die('access denied');
 
 if(isset($_REQUEST['sms_addressbook_id']))$sms_addressbook_id=$_REQUEST['sms_addressbook_id'];
 else $sms_addressbook_id='';

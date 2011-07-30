@@ -7,7 +7,7 @@ if(!session_id()){
 	if(isset($_GET['cms_session']))session_id($_GET['cms_session']);
 	session_start();
 }
-if($_SERVER['PHP_SELF']!='/j/kfm/get.php' && (!isset($GLOBALS['kfm_api_auth_override'])||!$GLOBALS['kfm_api_auth_override']) && !is_admin()){
+if($_SERVER['PHP_SELF']!='/j/kfm/get.php' && (!isset($GLOBALS['kfm_api_auth_override'])||!$GLOBALS['kfm_api_auth_override']) && !Core_isAdmin()){
 	echo 'access denied!';
 	exit;
 }

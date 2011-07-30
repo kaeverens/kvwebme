@@ -24,7 +24,7 @@ $errs=array();
 if (!$post_id) {
 	$errs[]='no post selected';
 }
-if (!is_admin()
+if (!Core_isAdmin()
 	&& dbOne(
 		'select author_id from forums_posts where id='.$post_id,
 		'author_id'

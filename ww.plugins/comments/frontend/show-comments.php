@@ -82,7 +82,7 @@ function Comments_displayComments($page) {
 		foreach ($comments as $comment) {
 			$id = $comment['id'];
 			$datetime = $comment['cdate'];
-			$allowedToEdit=is_admin() || (
+			$allowedToEdit=Core_isAdmin() || (
 				(isset($_SESSION['comment_ids'])&&is_array($_SESSION['comment_ids']))
 				&& in_array($id, $_SESSION['comment_ids'], false)
 			);

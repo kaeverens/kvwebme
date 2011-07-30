@@ -1,6 +1,6 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if(!is_admin())die('access denied');
+if(!Core_isAdmin())die('access denied');
 
 $url='http://textr.mobi/api.php?a=activate'
 	.'&email='.urlencode($DBVARS['sms_email'])

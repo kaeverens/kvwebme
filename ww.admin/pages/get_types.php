@@ -1,7 +1,7 @@
 <?php
 require_once '../../ww.incs/basics.php';
 require_once '../admin_libs.php';
-if (!is_admin()) {
+if (!Core_isAdmin()) {
 	exit;
 }
 $selected=isset($_REQUEST['selected'])?$_REQUEST['selected']:0;

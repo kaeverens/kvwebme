@@ -5,7 +5,7 @@ if (!$id) {
 }
 require '../../ww.incs/basics.php';
 require 'pages.funcs.php';
-if (!is_admin()) {
+if (!Core_isAdmin()) {
 	exit;
 }
 $no_echo_on_success=true;

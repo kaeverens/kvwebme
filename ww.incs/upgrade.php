@@ -387,7 +387,7 @@ if ($version==35) { // convert user address to new format
 }
 $DBVARS['version']=$version;
 Core_cacheClear();
-config_rewrite();
+Core_configRewrite();
 
 echo '<p>Site upgraded. Please <a href="/">click here</a> to return to the '
 	.'site.</p><script>document.location="/";</script>';

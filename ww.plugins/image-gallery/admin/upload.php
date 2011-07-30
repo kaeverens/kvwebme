@@ -17,7 +17,7 @@ session_id($session_id);
 
 require '../../../ww.incs/basics.php';
 
-if (!is_admin()) {
+if (!Core_isAdmin()) {
 	exit;
 }
 

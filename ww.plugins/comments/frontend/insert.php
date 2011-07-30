@@ -21,7 +21,7 @@ $site = isset($_REQUEST['site'])?$_REQUEST['site']:'';
 $page = $_REQUEST['page'];
 $comment = $_REQUEST['comment'];
 
-$trusted=($is_admin
+$trusted=($Core_isAdmin
 	|| dbOne('select value from site_vars where name="no_moderation"', 'value')
 )?1:0;
 if (!is_numeric($page)) {

@@ -138,7 +138,7 @@ if ($page=='' && isset($_GET['search']) || isset($_GET['s'])) {
 // }
 // { is maintenance mode enabled?
 if (@$DBVARS['maintenance-mode']=='yes') {
-	if (!is_admin()) {
+	if (!Core_isAdmin()) {
 		die($DBVARS['maintenance-mode-message']);
 	}
 }
@@ -370,7 +370,7 @@ $c.='<style>.loggedin{display:'
 	.'}</style>';
 $c.=Core_getJQueryScripts();
 $c.='<script src="WW_SCRIPTS_GO_HERE"></script>';
-if (is_admin()) {
+if (Core_isAdmin()) {
 	WW_addScript('/ww.admin/j/common.js');
 }
 // { generate inline javascript
@@ -378,7 +378,7 @@ $tmp='var pagedata={id:'.$PAGEDATA->id.''
 	.plugin_trigger('displaying-pagedata')
 	.'},';
 if (isset($_SESSION['userdata'])) {
-	$tmp.='userdata={isAdmin:'.(is_admin()?1:0)
+	$tmp.='userdata={isAdmin:'.(Core_isAdmin()?1:0)
 		.',id:'.$_SESSION['userdata']['id'];
 	if (isset($_SESSION['userdata']['discount'])) {
 		$tmp.=',discount:'.(int)$_SESSION['userdata']['discount'];
@@ -392,7 +392,7 @@ $tmp.=';document.write("<"+"style>'
 	.'a.nojs{display:none !important}<"+"/style>");';
 array_unshift($scripts_inline, $tmp);
 // }
-if (is_admin()) {
+if (Core_isAdmin()) {
 	WW_addScript('/ww.admin/j/admin-frontend.js');
 	WW_addScript('/j/ckeditor-3.6/ckeditor.js');
 	WW_addScript('/j/ckeditor-3.6/adapters/jquery.js');
@@ -427,7 +427,7 @@ $smarty->assign(
 if (isset($DBVARS['theme_variant']) && $DBVARS['theme_variant']) {
 	if (!file_exists(THEME_DIR.'/'.THEME.'/cs/'.$DBVARS['theme_variant'].'.css')) {
 		unset($DBVARS['theme_variant']);
-		config_rewrite();
+		Core_configRewrite();
 	}
 	else {
 		$c.='<link rel="stylesheet" href="/ww.skins/'.THEME.'/cs/'

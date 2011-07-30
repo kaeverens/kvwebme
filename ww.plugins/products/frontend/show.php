@@ -520,7 +520,7 @@ function products_reviews ($params, &$smarty) {
 			$c.= '   ';
 			$c.= '<b>Rated: </b>'.$review['rating'].'<br/>';
 			$c.= ($body).'<br/>';
-			if (is_admin()|| $userid==$review['user_id']) {
+			if (Core_isAdmin()|| $userid==$review['user_id']) {
 				// { Edit Review Link
 				$timeReviewMayBeEditedUntil
 					= dbOne(

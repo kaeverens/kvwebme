@@ -14,7 +14,7 @@
   * @link       www.kvweb.me
 **/
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if (!is_admin) {
+if (!Core_isAdmin) {
 	die('You do not have permission to create a group');
 }
 $forum = $_REQUEST['forum'];

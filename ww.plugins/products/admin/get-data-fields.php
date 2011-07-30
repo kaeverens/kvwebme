@@ -14,7 +14,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 $typeID = $_REQUEST['type'];
 $productID = $_REQUEST['product'];
-if (!is_admin()) {
+if (!Core_isAdmin()) {
 	die('You do not have permission to do this');
 }
 if (!is_numeric($typeID)||!is_numeric($productID)) {

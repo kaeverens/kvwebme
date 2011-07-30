@@ -1,6 +1,6 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if(!is_admin())die('access denied');
+if(!Core_isAdmin())die('access denied');
 require $_SERVER['DOCUMENT_ROOT'].'/ww.admin/admin_libs.php';
 if(isset($_REQUEST['get_content_snippet'])){
 	$id=(int)$_REQUEST['get_content_snippet'];

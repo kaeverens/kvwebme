@@ -1,5 +1,5 @@
 <?php
-if(!is_admin())exit;
+if(!Core_isAdmin())exit;
 require SCRIPTBASE.'ww.plugins/sms/admin/libs.php';
 
 if(!isset($DBVARS['sms_email']) || !$DBVARS['sms_email'] || !$DBVARS['sms_password']){

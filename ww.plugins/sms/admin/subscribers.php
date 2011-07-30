@@ -1,5 +1,5 @@
 <?php
-if(!is_admin())exit;
+if(!Core_isAdmin())exit;
 require SCRIPTBASE.'ww.plugins/sms/admin/libs.php';
 
 echo '<div id="sms_wrapper">';

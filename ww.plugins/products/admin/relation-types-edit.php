@@ -1,5 +1,5 @@
 <?php
-if(!is_admin())exit;
+if(!Core_isAdmin())exit;
 // { set up initial variables
 if(isset($_REQUEST['id']) && is_numeric($_REQUEST['id']))$id=(int)$_REQUEST['id'];
 else $id=0;

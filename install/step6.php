@@ -76,7 +76,7 @@ if (isset($_POST[ 'install-theme' ])) { // install theme if selected
 	if ( $variant != '' ) {
 		$DBVARS['theme_variant'] = $variant;
 	}
-	config_rewrite();
+	Core_configRewrite();
 	Core_cacheClear('pages');
 	$_SESSION[ 'theme_selected' ] = true;
 	header('location: step7.php');

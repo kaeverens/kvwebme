@@ -57,7 +57,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 			?explode(',', $config['plugins']):
 			array();
 		$DBVARS=$config;
-		config_rewrite();
+		Core_configRewrite();
 
 		echo 'updating database if necessary...<br />';
 		file_get_contents('http://'.$_SERVER['HTTP_HOST'].'/');

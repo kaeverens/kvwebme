@@ -1,5 +1,5 @@
 <?php
-if(!is_admin())exit;
+if(!Core_isAdmin())exit;
 echo '<p>Relation Types describe how products are related to each other. For example, "Also Bought", "Similar", "Part Of".</p>';
 if(isset($_REQUEST['delete']) && is_numeric($_REQUEST['delete'])){
 	dbQuery('delete from products_relation_types where id='.$_REQUEST['delete']);

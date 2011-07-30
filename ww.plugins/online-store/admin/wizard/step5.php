@@ -24,7 +24,7 @@ if(!in_array('products',$plugins)){ // install products plugin
 	$plugins[]='products';
 	$DBVARS['plugins']=$plugins;
 	$DBVARS['products|version']=0;
-	config_rewrite();
+	Core_configRewrite();
 	// load products upgrade.php
 	$version=0;
 	require SCRIPTBASE.'ww.plugins/products/upgrade.php';
@@ -33,7 +33,7 @@ if(!in_array('panels',$plugins)){ // install panels plugin
 	$plugins[]='panels';
 	$DBVARS['plugins']=$plugins;
 	$DBVARS['panels|version']=0;
-	config_rewrite();
+	Core_configRewrite();
 	// load panels upgrade.php
 	$version=0;
 	require SCRIPTBASE.'ww.plugins/panels/upgrade.php';
@@ -43,7 +43,7 @@ if($_SESSION['wizard']['payment']['login']=='yes'
 	$plugins[]='privacy';
 	$DBVARS['plugins']=$plugins;
 	$DBVARS['privacy|version']=0;
-	config_rewrite();
+	Core_configRewrite();
 }
 // }
 // { add product type

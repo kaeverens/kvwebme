@@ -14,9 +14,9 @@
 **/
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if (!is_admin()) {
+if (!Core_isAdmin()) {
 	exit ('You do not have permission to do this');
 }
 
 $DBVARS['comments_moderatorEmail']=$_REQUEST['email'];
-config_rewrite();
+Core_configRewrite();

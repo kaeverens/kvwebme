@@ -60,7 +60,7 @@ function webmeMail($from, $to, $subject, $message, $files = false) {
 	require_once dirname(__FILE__).'/mail.php';
 	send_mail($from, $to, $subject, $message, $files);
 }
-$is_admin = 0;
+$Core_isAdmin = 0;
 $sitedomain=str_replace('www.', '', $_SERVER['HTTP_HOST']);
 if (strpos($_SERVER['REQUEST_URI'],'ww.admin/')!==false) {
 	$kfm_do_not_save_session=true;

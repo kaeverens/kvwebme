@@ -19,7 +19,7 @@ $userWhoLeftReview
 		'select user_id from products_reviews where id='.$id,
 		'user_id'
 	);
-if (!(is_admin()||$loggedInUser==$userWhoLeftReview)) {
+if (!(Core_isAdmin()||$loggedInUser==$userWhoLeftReview)) {
 	die('You do not have sufficent privileges to edit this review');
 }
 $timeExpired 

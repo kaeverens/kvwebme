@@ -1,6 +1,6 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if(!is_admin())die('access denied');
+if(!Core_isAdmin())die('access denied');
 if(isset($_POST['get_mp3_files'])){ // get mp3 files via ajax
 	$id=(int)$_REQUEST['get_mp3_files'];
 	if($id!=0){

@@ -44,7 +44,7 @@ function Core_cacheSave($type, $md5, $vals) {
 		json_encode($vals)
 	);
 }
-function config_rewrite() {
+function Core_configRewrite() {
 	global $DBVARS;
 	$tmparr=$DBVARS;
 	$tmparr['plugins']=join(',', $DBVARS['plugins']);
@@ -150,7 +150,7 @@ function Core_flushBuffer($type, $header='') {
 	}
 	ob_flush();
 }
-function is_admin() {
+function Core_isAdmin() {
 	return isset($_SESSION['userdata'])
 		&& isset($_SESSION['userdata']['groups']['administrators']);
 }
@@ -291,7 +291,7 @@ if (!isset($ignore_webme_plugins)) {
 				:0;
 			require SCRIPTBASE . 'ww.plugins/'.$pname.'/upgrade.php';
 			$DBVARS[$pname.'|version']=$version;
-			config_rewrite();
+			Core_configRewrite();
 			header('Location: '.$_SERVER['REQUEST_URI']);
 			exit;
 		}

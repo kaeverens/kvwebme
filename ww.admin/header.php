@@ -4,7 +4,7 @@ header('Content-type: text/html; Charset=utf-8');
 date_default_timezone_set('Eire');
 require_once dirname(__FILE__).'/../ww.incs/common.php';
 // { if not logged in, show login page
-if (!is_admin()) {
+if (!Core_isAdmin()) {
 	include SCRIPTBASE . 'ww.admin/login.php';
 	exit;
 }

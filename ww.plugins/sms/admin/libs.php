@@ -1,5 +1,5 @@
 <?php
-if(!is_admin())exit;
+if(!Core_isAdmin())exit;
 
 function SMS_callApi($command,$urifrag=''){
 	global $DBVARS;

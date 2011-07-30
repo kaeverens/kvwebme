@@ -62,7 +62,7 @@ if ($action=='Save') {
 	else if (isset($DBVARS['site_page_length_limit'])) {
 		unset($DBVARS['site_page_length_limit']);
 	}
-	config_rewrite();
+	Core_configRewrite();
 	Core_cacheClear();
 	echo '<em>options updated</em>';
 }

@@ -1,6 +1,6 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if(!is_admin())die('access denied');
+if(!Core_isAdmin())die('access denied');
 
 $id=(int)$_REQUEST['id'];
 $r=dbRow('select subscribers from sms_addressbooks where id='.$id);

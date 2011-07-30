@@ -16,7 +16,7 @@ if (isset($_REQUEST['online_store_currency'])
 	&& isset($online_store_currencies[$_REQUEST['online_store_currency']])
 ) {
 	$DBVARS['online_store_currency']=$_REQUEST['online_store_currency'];
-	config_rewrite();
+	Core_configRewrite();
 }
 $csym=$online_store_currencies[$DBVARS['online_store_currency']][0];
 $c='<div class="tabs">';

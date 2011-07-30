@@ -36,7 +36,7 @@ switch ($_REQUEST['action']) {
 			$credits=(float)@$GLOBALS['DBVARS']['sitecredits-credits'];
 			$GLOBALS['DBVARS']['sitecredits-credits']=
 				$credits + (float)$_REQUEST['credits'];
-			config_rewrite();
+			Core_configRewrite();
 			echo '{"credits":'.(float)$GLOBALS['DBVARS']['sitecredits-credits'].'}';
 			exit;
 		}

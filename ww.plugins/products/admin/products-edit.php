@@ -1,5 +1,5 @@
 <?php
-if (!is_admin()) {
+if (!Core_isAdmin()) {
 	exit;
 }
 

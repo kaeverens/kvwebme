@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if (!is_admin()) {
+if (!Core_isAdmin()) {
 	die('You do not have permission to delete a forum');
 }
 $id = $_REQUEST['id'];

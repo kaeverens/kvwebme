@@ -17,7 +17,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/ww.php_classes/User.php';
 $id = $_REQUEST['id'];
 $userID = get_userid();
 
-if (! ($userID==0 && is_admin())) { // not a superadmin
+if (! ($userID==0 && Core_isAdmin())) { // not a superadmin
 	$user = User::getInstance($userID);
 	$usersGroups = $user->getGroups();
 	$thread 

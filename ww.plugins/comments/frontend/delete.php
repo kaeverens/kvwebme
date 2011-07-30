@@ -14,7 +14,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 
 $id = $_REQUEST['id'];
-$allowed = is_admin()||in_array($id, $_SESSION['comment_ids']);
+$allowed = Core_isAdmin()||in_array($id, $_SESSION['comment_ids']);
 if (!$allowed) {
 	die('You do not have permission to delete this comment');
 }

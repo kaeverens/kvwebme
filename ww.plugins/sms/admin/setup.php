@@ -1,5 +1,5 @@
 <?php
-if(!is_admin())exit;
+if(!Core_isAdmin())exit;
 
 if(isset($_REQUEST['account']) && $_REQUEST['account']=='new'){
 	echo '<table id="sms_account_setup">'

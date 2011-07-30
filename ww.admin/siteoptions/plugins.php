@@ -80,7 +80,7 @@ if ($action=='Save') { // handle actions
 	$plugins=SiteOptions_dependenciesRecursiveCheck($plugins);
 	if (is_array($plugins)) {
 	  $DBVARS['plugins']=$plugins;
-	  config_rewrite();
+	  Core_configRewrite();
 		header('location: siteoptions.php?page=plugins&message=updated');
 	}
 	// dependency doesn't exist

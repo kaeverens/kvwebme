@@ -1,5 +1,5 @@
 <?php
-if(!is_admin())die('access denied');
+if(!Core_isAdmin())die('access denied');
 ?>
 <p>Please use this <i>rarely</i> - it uses quite a bit of resources.</p>
 <p><a id="publisher-start" href="javascript:publisher_start()">click here</a> to start generating the published version of the site.</p>

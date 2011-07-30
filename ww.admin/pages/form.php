@@ -1,7 +1,7 @@
 <?php
 require_once '../../ww.incs/common.php';
 require_once '../admin_libs.php';
-if (!is_admin()) {
+if (!Core_isAdmin()) {
 	exit;
 }
 

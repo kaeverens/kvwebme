@@ -1,5 +1,5 @@
 <?php
-if(!is_admin())exit;
+if(!Core_isAdmin())exit;
 if(isset($_REQUEST['delete']) && is_numeric($_REQUEST['delete'])){
 	dbQuery('delete from products_types where id='.$_REQUEST['delete']);
 	echo '<em>Product Type deleted.</em>';

@@ -17,7 +17,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 
 $id = $_REQUEST['id'];
 
-if (!is_admin()) {
+if (!Core_isAdmin()) {
 	die('You do not have permission to delete comments');
 }
 if (!is_numeric($id)) {

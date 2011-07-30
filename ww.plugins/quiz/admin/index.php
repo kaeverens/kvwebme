@@ -92,7 +92,7 @@ switch ($action){
 	break; // }
 	case 'deleteQuiz': 
 		// { What to do if the user wants to delete a quiz and confirms it
-		if (!is_admin()) {
+		if (!Core_isAdmin()) {
 			die('Insufficent Privlages');
 		}
 		dbQuery("DELETE FROM quiz_quizzes WHERE id = '$id'");

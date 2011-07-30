@@ -4,7 +4,7 @@ if (!$id) {
 	exit;
 }
 require '../../ww.incs/basics.php';
-if (!is_admin()) {
+if (!Core_isAdmin()) {
 	exit;
 }
 

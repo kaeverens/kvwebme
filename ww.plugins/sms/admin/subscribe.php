@@ -1,6 +1,6 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if(!is_admin())die('access denied');
+if(!Core_isAdmin())die('access denied');
 
 if(!isset($_REQUEST['email'])
 	|| !filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL)
@@ -25,7 +25,7 @@ $json=json_decode($res);
 if($json->status){ // successful subscription. record details
 	$DBVARS['sms_email']=$_REQUEST['email'];
 	$DBVARS['sms_password']=$_REQUEST['pass'];
-	config_rewrite();
+	Core_configRewrite();
 }
 
 echo $res;
