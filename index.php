@@ -308,9 +308,7 @@ else {
 			// }
 	}
 }
-if (isset($PLUGINS['comments'])) {
-	$c.=Core_trigger('page-content-created');
-}
+$c.=Core_trigger('page-content-created');
 $pagecontent=$c.'<span class="end-of-page-content"></span>';
 // }
 // { load page template
@@ -324,25 +322,7 @@ else if (file_exists(THEME_DIR.'/'.THEME.'/h/_default.html')) {
 	$template=THEME_DIR.'/'.THEME.'/h/_default.html';
 }
 else {
-	$d=array();
-	if (!file_exists(THEME_DIR.'/'.THEME.'/h/')) {
-		die('no theme installed. please <a href="/ww.admin/">install one</a>');
-	}
-	$dir=new DirectoryIterator(THEME_DIR.'/'.THEME.'/h/');
-	foreach ($dir as $f) {
-		if ($f->isDot()) {
-			continue;
-		}
-		$n=$f->getFilename();
-		if (preg_match('/\.html$/', $n)) {
-			$d[]=preg_replace('/\.html$/', '', $n);
-		}
-	}
-	asort($d);
-	$template=$d[0];
-}
-if ($template=='') {
-	die('no template created. please create a template first');
+	require_once dirname(__FILE__).'ww.incs/template-find.php';
 }
 // }
 // { set up smarty
@@ -356,25 +336,20 @@ $smarty->assign('THEMEDIR', '/ww.skins/'.THEME);
 // }
 // { build metadata
 // { page title
-$title=($PAGEDATA->title!='')
+$title=$PAGEDATA->title
 	?$PAGEDATA->title
 	:str_replace('www.', '', $_SERVER['HTTP_HOST']).' > '.$PAGEDATA->alias;
 $c='<title>'.htmlspecialchars($title).'</title>';
 // }
 // { show stylesheet and javascript links
 $c.='WW_CSS_GOES_HERE';
-$c.='<style>.loggedin{display:'
-	.(isset($_SESSION['userdata'])?'block':'none')
-	.'} .loggedinCell{display:'
-	.(isset($_SESSION['userdata'])?'table-cell':'none')
-	.'}</style>';
 $c.=Core_getJQueryScripts();
 $c.='<script src="WW_SCRIPTS_GO_HERE"></script>';
 if (Core_isAdmin()) {
 	WW_addScript('/ww.admin/j/common.js');
 }
 // { generate inline javascript
-$tmp='var pagedata={id:'.$PAGEDATA->id.''
+$tmp='var pagedata={id:'.$PAGEDATA->id
 	.Core_trigger('displaying-pagedata')
 	.'},';
 if (isset($_SESSION['userdata'])) {
@@ -383,13 +358,11 @@ if (isset($_SESSION['userdata'])) {
 	if (isset($_SESSION['userdata']['discount'])) {
 		$tmp.=',discount:'.(int)$_SESSION['userdata']['discount'];
 	}
-	$tmp.='}';
+	$tmp.='};';
 }
 else {
-	$tmp.='userdata={isAdmin:0}';
+	$tmp.='userdata={isAdmin:0};';
 }
-$tmp.=';document.write("<"+"style>'
-	.'a.nojs{display:none !important}<"+"/style>");';
 array_unshift($scripts_inline, $tmp);
 // }
 if (Core_isAdmin()) {
@@ -414,9 +387,7 @@ if ($PAGEDATA->description) {
 	$c.='<meta http-equiv="description" content="'
 		.htmlspecialchars($PAGEDATA->description).'"/>';
 }
-if (isset($PAGEDATA->vars['google-site-verification'])
-	&& $PAGEDATA->vars['google-site-verification']
-) {
+if (@$PAGEDATA->vars['google-site-verification']) {
 	$c.='<meta name="google-site-verification" content="'
 		.htmlspecialchars($PAGEDATA->vars['google-site-verification']).'" />';
 }

@@ -13,10 +13,10 @@ if (!in_array($p, $DBVARS['plugins'])) {
 switch ($t) {
 	case 'admin':
 		$title='Administraton - '.$p;
-		break;
+	break;
 	case 'design':
 		$title='Design - '.$p;
-		break;
+	break;
 	default:
 		echo 'no such documentation type.';
 		exit;

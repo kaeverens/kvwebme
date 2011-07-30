@@ -1,9 +1,29 @@
 <?php
+/**
+	* functions used in pretty much every section of WebME
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 @session_start();
 if (!defined('START_TIME')) {
 	define('START_TIME', microtime(true));
 }
 spl_autoload_register('WebME_autoload');
+
+/**
+  * clear a cache or all caches
+  *
+  * @param string $type the cache to clear
+  *
+  * @return null
+  */
 function Core_cacheClear($type='') {
 	if (!is_dir(USERBASE.'/ww.cache/'.$type)) {
 		return;
@@ -23,6 +43,15 @@ function Core_cacheClear($type='') {
 		}
 	}
 }
+
+/**
+  * retrieve a cached variable if it exists
+  *
+  * @param string $type type of cache
+	* @param string $md5  unique identifier of the cache
+  *
+  * @return mixed the variable if it was cached, or false
+  */
 function Core_cacheLoad($type, $md5) {
 	if (file_exists(USERBASE.'/ww.cache/'.$type.'/'.$md5)) {
 		return json_decode(
@@ -32,6 +61,16 @@ function Core_cacheLoad($type, $md5) {
 	}
 	return false;
 }
+
+/**
+  * cache a variable
+  *
+  * @param string $type type of cache (page, product, etc)
+	* @param string $md5  unique identifier - not necessarily an MD5
+	* @param mixed  $vals the variable to encode and cache
+  *
+  * @return null
+  */
 function Core_cacheSave($type, $md5, $vals) {
 	if (!is_dir(USERBASE.'/ww.cache/'.$type)) {
 		mkdir(USERBASE.'/ww.cache/'.$type, 0777, true);
@@ -41,6 +80,12 @@ function Core_cacheSave($type, $md5, $vals) {
 		json_encode($vals)
 	);
 }
+
+/**
+  * rewrite the config file
+  *
+  * @return null
+  */
 function Core_configRewrite() {
 	global $DBVARS;
 	$tmparr=$DBVARS;
@@ -52,6 +97,15 @@ function Core_configRewrite() {
 	$config="<?php\n\$DBVARS=array(\n	".join(",\n	", $tmparr2)."\n);";
 	file_put_contents(CONFIG_FILE, $config);
 }
+
+/**
+  * log the request and send the buffer to the browser
+  *
+  * @param string $type   type of request
+  * @param string $header specific header to use
+  *
+  * @return null
+  */
 function Core_flushBuffer($type, $header='') {
 	$length=ob_get_length();
 	$num_queries=isset($GLOBALS['db'])?$GLOBALS['db']->num_queries:0;
@@ -88,10 +142,25 @@ function Core_flushBuffer($type, $header='') {
 	}
 	ob_flush();
 }
+
+/**
+  * is the viewer an admin?
+  *
+  * @return boolean true or false
+  */
 function Core_isAdmin() {
 	return isset($_SESSION['userdata'])
 		&& isset($_SESSION['userdata']['groups']['administrators']);
 }
+
+/**
+  * trigger an event
+  *
+  * @param string $trigger_name the event to trigger
+	* @param array  $params       parameters to pass to the event
+  *
+  * @return string results of the event
+  */
 function Core_trigger($trigger_name, $params = null) {
 	global $PLUGIN_TRIGGERS, $PAGEDATA;
 	if (!isset($PLUGIN_TRIGGERS[$trigger_name])) {
@@ -116,6 +185,15 @@ function Core_trigger($trigger_name, $params = null) {
 	}
 	return $c;
 }
+
+/**
+  * run a database query and return all resulting rows
+  *
+  * @param string $query the query to run
+	* @param string $key   if supplied, use this field for the row keys
+  *
+  * @return array the results
+  */
 function dbAll($query, $key='') {
 	$q = dbQuery($query);
 	if ($q === false) {
@@ -134,6 +212,12 @@ function dbAll($query, $key='') {
 	}
 	return $arr;
 }
+
+/**
+  * initialise the database
+  *
+  * @return object the database object
+  */
 function dbInit() {
 	if (isset($GLOBALS['db'])) {
 		return $GLOBALS['db'];
@@ -149,9 +233,24 @@ function dbInit() {
 	$GLOBALS['db']=$db;
 	return $db;
 }
+
+/**
+  * get the id from the last database insert query
+  *
+  * @return int last insert id
+  */
 function dbLastInsertId() {
-	return dbOne('select last_insert_id() as id', 'id');
+	return (int)dbOne('select last_insert_id() as id', 'id');
 }
+
+/**
+  * run a database query and return a single field
+  *
+  * @param string $query the query to run
+  * @param string $field the field to return
+  *
+  * @return mixed false if it failed, or the requested field if successful
+  */
 function dbOne($query, $field='') {
 	$r = dbRow($query);
 	if ($r === false) {
@@ -159,6 +258,14 @@ function dbOne($query, $field='') {
 	}
 	return $r[$field];
 }
+
+/**
+  * run a database query
+  *
+  * @param string $query the query to run
+  *
+  * @return mixed false if it failed, or the database resource if successful
+  */
 function dbQuery($query) {
 	$db=dbInit();
 	$q=$db->query($query);
@@ -168,6 +275,14 @@ function dbQuery($query) {
 	$db->num_queries++;
 	return $q;
 }
+
+/**
+  * run a database query and return a single row
+  *
+  * @param string $query the query to run
+  *
+  * @return array the returned row
+  */
 function dbRow($query) {
 	$q = dbQuery($query);
 	if ($q === false) {
@@ -175,9 +290,19 @@ function dbRow($query) {
 	}
 	return $q->fetch(PDO::FETCH_ASSOC);
 }
+
+/**
+  * autoloader for classes
+  *
+  * @param string $name the class name
+  *
+  * @return null
+  */
 function WebME_autoload($name) {
 	require $name . '.php';
 }
+
+// { set up constants
 define('SCRIPTBASE', $_SERVER['DOCUMENT_ROOT'] . '/');
 if (!file_exists(SCRIPTBASE . '.private/config.php')) {
 	echo '<html><body><p>No configuration file found</p>';
@@ -210,10 +335,13 @@ define('CKEDITOR', 'ckeditor');
 if (!defined('KFM_BASE_PATH')) {
 	define('KFM_BASE_PATH', SCRIPTBASE.'j/kfm/');
 }
+// }
+// { include path, for classes, etc
 set_include_path(
 	SCRIPTBASE.'ww.php_classes'.PATH_SEPARATOR.KFM_BASE_PATH.'classes'
 	.PATH_SEPARATOR.get_include_path()
 );
+// }
 // { theme variables
 if (isset($DBVARS['theme_dir_personal']) && $DBVARS['theme_dir_personal']) {
 	define('THEME_DIR', $DBVARS['theme_dir_personal']);
@@ -267,7 +395,7 @@ else {
 	define('THEME', $DBVARS['theme']);
 }
 // }
-// { plugin
+// { plugins
 $PLUGINS=array();
 $PLUGIN_TRIGGERS=array();
 if (!isset($ignore_webme_plugins)) {
