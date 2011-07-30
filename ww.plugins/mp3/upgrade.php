@@ -7,5 +7,3 @@ if($version<1){
 		)	default charset=utf8;');
 	$version=1;
 }
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();

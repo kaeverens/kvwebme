@@ -78,6 +78,3 @@ if ($version==5) { // make moderation optional defaulting to no
 	dbQuery('alter table forums add is_moderated tinyint(1) default 0');
 	$version=6;
 }
-
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();

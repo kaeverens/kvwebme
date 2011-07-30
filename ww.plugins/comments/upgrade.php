@@ -33,5 +33,3 @@ if ($version==2) {
 	dbQuery('alter table comments drop verificationhash');
 	$version = 3;
 }
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();

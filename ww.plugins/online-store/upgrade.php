@@ -100,6 +100,3 @@ if ($version==9) { // add online_store_lists table
 	);
 	$version=10;
 }
-
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();

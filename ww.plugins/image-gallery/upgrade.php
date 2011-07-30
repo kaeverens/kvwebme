@@ -137,7 +137,3 @@ if ($version==1) { // move from kfm to database orientated
 	}
 	$version=2;
 }
-
-// upgrade the $DBVARS array and rewrite the config file
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();

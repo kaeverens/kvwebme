@@ -16,6 +16,3 @@ if ($version==0) { // set site to offline mode
 	$DBVARS['offline']=1;
 	$version=1;
 }
-
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();

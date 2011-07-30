@@ -29,5 +29,3 @@ if($version=='2'){ // add directory of images
 	dbQuery('alter table content_snippets add images_directory text');
 	$version=3;
 }
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();

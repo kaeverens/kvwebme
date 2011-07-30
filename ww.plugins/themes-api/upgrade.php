@@ -68,9 +68,3 @@ if ( $version == 2 ) {
 	);
 	$version = 3;
 }
-
-/**
- * upgrade the $DBVARS array and rewrite the config file
- */
-$DBVARS[ $pname . '|version' ] = $version;
-config_rewrite();

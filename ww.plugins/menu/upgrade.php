@@ -36,6 +36,3 @@ if( $version == '6' ){
 	dbQuery( 'update menus set state=0' );
 	$version=7;
 }
-
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();

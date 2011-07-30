@@ -14,5 +14,3 @@ if ($version=='1') { // link url
 	dbQuery('alter table image_transitions add url text');
 	$version=2;
 }
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();

@@ -153,6 +153,3 @@ if ($version==18) { // add "sortNum" to products_categories
 	dbQuery('alter table products_categories add sortNum int default 0');
 	$version=19;
 }
-
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();

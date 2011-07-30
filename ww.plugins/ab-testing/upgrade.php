@@ -21,6 +21,3 @@ if ($version == 0) {
 	);
 	$version = 1;
 }
-
-$DBVARS[ $pname . '|version' ] = $version;
-config_rewrite();

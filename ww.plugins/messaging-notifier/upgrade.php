@@ -20,6 +20,3 @@ if($version==2){ // remove messaging_notifier_rows - doesn't need to be separate
 	dbQuery('alter table messaging_notifier add data text');
 	$version=3;
 }
-
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();

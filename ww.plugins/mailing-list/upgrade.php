@@ -50,6 +50,3 @@ if ($version=='3') { // *sigh*
 	dbQuery('alter table mailing_list add mobile text');
 	$version=4;
 }
-
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();

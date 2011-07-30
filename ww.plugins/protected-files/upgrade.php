@@ -37,6 +37,3 @@ if ($version == 5) { // add protected-by-group
 	dbQuery('update protected_files set details=\'{"type":1}\'');
 	$version=6;
 }
-
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();

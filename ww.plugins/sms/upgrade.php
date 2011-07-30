@@ -32,6 +32,3 @@ if ($version==0) { // online_store_orders
 	);
 	$version=1;
 }
-
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();

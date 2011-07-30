@@ -290,6 +290,8 @@ if (!isset($ignore_webme_plugins)) {
 				?(int)$DBVARS[$pname.'|version']
 				:0;
 			require SCRIPTBASE . 'ww.plugins/'.$pname.'/upgrade.php';
+			$DBVARS[$pname.'|version']=$version;
+			config_rewrite();
 			header('Location: '.$_SERVER['REQUEST_URI']);
 			exit;
 		}

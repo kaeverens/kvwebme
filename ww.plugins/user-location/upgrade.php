@@ -17,6 +17,3 @@ if ($version==0) { // add long/lat fields to table
 	dbQuery('alter table user_accounts add latitude float default 0');
 	$version=1;
 }
-
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();

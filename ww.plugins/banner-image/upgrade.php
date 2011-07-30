@@ -38,5 +38,3 @@ if($version=='2'){ // convert all image types to HTML, add a Name to each item
 	$version=3;
 }
 // note to self. drop "type" in a far future version. doing it right now would be dangerous.
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();

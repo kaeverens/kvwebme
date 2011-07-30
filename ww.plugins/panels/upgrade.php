@@ -14,6 +14,3 @@ if ($version==4) { // pages that this panel is hidden on.
 	dbQuery('alter table panels add hidden text');
 	$version=5;
 }
-
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();

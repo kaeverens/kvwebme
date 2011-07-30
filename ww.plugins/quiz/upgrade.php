@@ -54,5 +54,3 @@ if ($version==3) {
 	dbQuery('ALTER TABLE quiz_quizzes ADD enabled int');
 	$version = 4;
 }
-$DBVARS[$pname.'|version']=$version;
-config_rewrite();
