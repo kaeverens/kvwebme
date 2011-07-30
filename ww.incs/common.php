@@ -246,7 +246,7 @@ function menu_build_fg($parentid, $depth, $options) {
 }
 function menu_show_fg ($opts) {
 	$md5=md5('menu_fg|'.print_r($opts, true));
-	$cache=cache_load('menus', $md5);
+	$cache=Core_cacheLoad('menus', $md5);
 	if ($cache) {
 		return $cache;
 	}
@@ -283,10 +283,10 @@ function menu_show_fg ($opts) {
 	$items=array();
 	$menuid=$GLOBALS['fg_menus']++;
 	$md5=md5($options['parent'].'|0|'.json_encode($options));
-	$html=cache_load('pages', 'fgmenu-'.$md5);
+	$html=Core_cacheLoad('pages', 'fgmenu-'.$md5);
 	if ($html===false) {
 		$html=menu_build_fg($options['parent'], 0, $options);
-		cache_save('pages', 'fgmenu-'.$md5, $html);
+		Core_cacheSave('pages', 'fgmenu-'.$md5, $html);
 	}
 	if ($options['type']) {
 		WW_addScript('/j/menu-accordion/menu.js');

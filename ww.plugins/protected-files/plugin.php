@@ -25,10 +25,10 @@ function protectedFiles_log($fname,$success,$email='',$pf_id){
 function protectedFiles_check($vars){
 	global $PAGEDATA;
 	$fname=$vars['requested_file'];
-	$protected_files=cache_load('protected_files','all');
+	$protected_files=Core_cacheLoad('protected_files','all');
 	if(!$protected_files){
 		$protected_files=dbAll('select * from protected_files');
-		cache_save('protected_files','all',$protected_files);
+		Core_cacheSave('protected_files','all',$protected_files);
 	}
 	foreach($protected_files as $pr){
 		if(strpos($fname,$pr['directory'].'/')===0){

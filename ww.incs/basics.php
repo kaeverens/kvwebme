@@ -26,7 +26,7 @@ function Core_cacheClear($type='') {
 		}
 	}
 }
-function cache_load($type, $md5) {
+function Core_cacheLoad($type, $md5) {
 	if (file_exists(USERBASE.'/ww.cache/'.$type.'/'.$md5)) {
 		return json_decode(
 			file_get_contents(USERBASE.'/ww.cache/'.$type.'/'.$md5),
@@ -35,7 +35,7 @@ function cache_load($type, $md5) {
 	}
 	return false;
 }
-function cache_save($type, $md5, $vals) {
+function Core_cacheSave($type, $md5, $vals) {
 	if (!is_dir(USERBASE.'/ww.cache/'.$type)) {
 		mkdir(USERBASE.'/ww.cache/'.$type, 0777, true);
 	}

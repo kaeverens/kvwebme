@@ -3,7 +3,7 @@ function poll_display(){
 	$action=$_REQUEST['poll_action'];
 	if(!$action){
 		$md5=md5('view questions');
-		$cache=cache_load('polls',$md5);
+		$cache=Core_cacheLoad('polls',$md5);
 		if($cache)return $cache;
 	}
 	$poll=dbRow('select * from poll where enabled limit 1');
@@ -15,7 +15,7 @@ function poll_display(){
 	else $html.=poll_get_html($id,$poll);
 	$html.='</div>';
 	if(!$action){
-		cache_save('polls',$md5,$html);
+		Core_cacheSave('polls',$md5,$html);
 	}
 	return $html;
 }

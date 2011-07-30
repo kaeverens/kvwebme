@@ -50,7 +50,7 @@ if (!isset($_GET['pageid'])) {
 	exit;
 }
 $md5=md5($_GET['pageid'].'|'.$search_options);
-$cache=cache_load('menus', $md5);
+$cache=Core_cacheLoad('menus', $md5);
 
 ob_start();
 if ($cache) {
@@ -65,7 +65,7 @@ else {
 		$pid=$p->getTopParentId();
 		$d.='var currentTop='.$pid.';';
 	}
-	cache_save('menus', $md5, $d);
+	Core_cacheSave('menus', $md5, $d);
 	echo $d;
 }
 echo file_get_contents('menu.js');

@@ -1,10 +1,10 @@
 <?php
 function ImageTransition_show($vars) {
 	if (!is_array($vars) && isset($vars->id) && $vars->id) {
-		$r=cache_load('image-transitions', 'id'.$vars->id);
+		$r=Core_cacheLoad('image-transitions', 'id'.$vars->id);
 		if ($r===false) {
 			$r=dbRow('select * from image_transitions where id='.$vars->id);
-			cache_save('image-transitions', 'id'.$vars->id, $r);
+			Core_cacheSave('image-transitions', 'id'.$vars->id, $r);
 		}
 		if ($r && is_array($r)) {
 			$imgs=array();

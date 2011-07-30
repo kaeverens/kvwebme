@@ -104,7 +104,7 @@ if (isset($_REQUEST['action'])) {
 				'Reply-to: no-reply@'.$site."\nFrom: no-reply@".$site
 			);
 		}
-		cache_save('user-session-resets', $id, true);
+		Core_cacheSave('user-session-resets', $id, true);
 	}
 }
 // }

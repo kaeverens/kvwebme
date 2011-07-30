@@ -15,11 +15,11 @@ class Page{
 			}
 			else {
 				if ($v) {
-					$r=cache_load('pages', 'id'.$v);
+					$r=Core_cacheLoad('pages', 'id'.$v);
 					if ($r===false) {
 						$r=dbRow("select * from pages where id=$v limit 1");
 						if (count($r)) {
-							cache_save('pages', 'id'.$v, $r);
+							Core_cacheSave('pages', 'id'.$v, $r);
 						}
 					}
 				}
@@ -34,37 +34,37 @@ class Page{
 			}
 			$name=strtolower(str_replace('-', '_', $v));
 			$fname='page_by_name_'.md5($name);
-			$r=cache_load('pages', $fname);
+			$r=Core_cacheLoad('pages', $fname);
 			if ($r===false) {
 				$r=dbRow(
 					"select * from pages where name like '".addslashes($name)
 					."' limit 1"
 				);
 				if (count($r)) {
-					cache_save('pages', $fname, $r);
+					Core_cacheSave('pages', $fname, $r);
 				}
 			}
 		}
 		elseif ($byField == 2) { // by type
 			$fname='page_by_type_'.$v;
-			$r=cache_load('pages', $fname);
+			$r=Core_cacheLoad('pages', $fname);
 			if ($r===false) {
 				$r=dbRow("select * from pages where type='$v' limit 1");
 				if ($r===false) {
 					$r=array();
 				}
-				cache_save('pages', $fname, $r);
+				Core_cacheSave('pages', $fname, $r);
 			}
 		}
 		elseif ($byField == 3 && is_numeric($v)) { // by special
 			$fname='page_by_special_'.$v;
-			$r=cache_load('pages', $fname);
+			$r=Core_cacheLoad('pages', $fname);
 			if ($r===false) {
 				$r=dbRow("select * from pages where special&$v limit 1");
 				if ($r===false) {
 					$r=array();
 				}
-				cache_save('pages', $fname, $r);
+				Core_cacheSave('pages', $fname, $r);
 			}
 		}
 		elseif ($byField == 4) {
@@ -170,7 +170,7 @@ class Page{
 		}
 		$name=str_replace('-', '_', $name);
 		if (!array_key_exists($name.'/'.$parent, self::$instancesByNAndP)) {
-			$r=cache_load('pages', md5($parent.'|'.$name));
+			$r=Core_cacheLoad('pages', md5($parent.'|'.$name));
 			if ($r===false) {
 				$r=dbRow(
 					"SELECT * FROM pages WHERE parent=$parent AND name LIKE '"
@@ -179,7 +179,7 @@ class Page{
 				if ($r===false) {
 					$r=array();
 				}
-				cache_save('pages', md5($parent.'|'.$name), $r);
+				Core_cacheSave('pages', md5($parent.'|'.$name), $r);
 			}
 			if (!count($r)) {
 				return false;
@@ -230,10 +230,10 @@ class Page{
 		$this->vars=array();
 		if (!$pvq) {
 			$fname='page_vars_'.$this->id;
-			$pvq=cache_load('pages', $fname);
+			$pvq=Core_cacheLoad('pages', $fname);
 			if ($pvq===false) {
 				$pvq=dbAll("select * from page_vars where page_id=".$this->id);
-				cache_save('pages', $fname, $pvq);
+				Core_cacheSave('pages', $fname, $pvq);
 			}
 		}
 		foreach ($pvq as $pvr) {

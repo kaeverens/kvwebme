@@ -44,7 +44,7 @@ function News_displayHeadlines($PAGEDATA) {
 		$p=0;
 	}
 	
-	$arr=cache_load('pages', 'news-'.$GLOBALS['id'].'-'.$p.'-'.$items_per_page);
+	$arr=Core_cacheLoad('pages', 'news-'.$GLOBALS['id'].'-'.$p.'-'.$items_per_page);
 	if ($arr===false) {
 		$order_by=(isset($PAGEDATA->vars['news_order']))?
 			addslashes($PAGEDATA->vars['news_order']):
@@ -57,7 +57,7 @@ function News_displayHeadlines($PAGEDATA) {
 			'select count(id) as num from pages where parent='.$GLOBALS['id'],
 			'num'
 		);
-		cache_save(
+		Core_cacheSave(
 			'pages',
 			'news-'.$GLOBALS['id'].'-'.$p.'-'.$items_per_page,
 			array($num_stories, $rs)

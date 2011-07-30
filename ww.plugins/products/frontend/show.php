@@ -828,7 +828,7 @@ class Products{
 	function __construct(
 		$vs, $md5, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc'
 	) {
-		$this->product_ids=cache_load('products', 'products_'.$md5);
+		$this->product_ids=Core_cacheLoad('products', 'products_'.$md5);
 		if ($this->product_ids===false) {
 			if ($search!='') {
 				$arr=array();
@@ -874,7 +874,7 @@ class Products{
 				}
 			}
 			$this->product_ids=$vs;
-			cache_save('products', 'products_'.$md5, $vs);
+			Core_cacheSave('products', 'products_'.$md5, $vs);
 		}
 		self::$instances[$md5]=& $this;
 		return $this;

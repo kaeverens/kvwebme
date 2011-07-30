@@ -22,14 +22,14 @@ $plugin=array(
 function panels_show($vars) {
 	$name=isset($vars['name'])?$vars['name']:'';
 	// { load panel data
-	$p=cache_load('panels',md5($name));
+	$p=Core_cacheLoad('panels',md5($name));
 	if($p===false){
 		$p=dbRow('select id,visibility,hidden,disabled,body from panels where name="'.addslashes($name).'" limit 1');
 		if(!is_array($p)){
 			dbQuery("insert into panels (name,body) values('".addslashes($name)."','{\"widgets\":[]}')");
 			return '';
 		}
-		cache_save('panels',md5($name),$p);
+		Core_cacheSave('panels',md5($name),$p);
 	}
 	// }
 	// { is the panel visible?

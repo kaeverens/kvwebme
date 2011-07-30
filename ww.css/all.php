@@ -74,7 +74,7 @@ if ($css_code==false) {
 			);
 		}
 	}
-	cache_save('c', 'css-'.$name, $css_code);
+	Core_cacheSave('c', 'css-'.$name, $css_code);
 }
 
 header('Content-type: text/css; charset=utf-8');

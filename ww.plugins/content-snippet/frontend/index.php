@@ -1,11 +1,11 @@
 <?php
 function show_content_snippet($vars){
 	if(!is_array($vars) && isset($vars->id) && $vars->id){
-		$data=cache_load('content_snippets',$vars->id.'-data');
+		$data=Core_cacheLoad('content_snippets',$vars->id.'-data');
 		if($data===false){
 			$data=dbRow('select * from content_snippets where id='.$vars->id,'content');
 			$data['content']=json_decode($data['content'],true);
-			cache_save('content_snippets',$vars->id.'-data',$data);
+			Core_cacheSave('content_snippets',$vars->id.'-data',$data);
 		}
 		if(!is_array($data['content']) || !count($data['content'])) {
 			return '<p>this Content Snippet is not yet defined.</p>';

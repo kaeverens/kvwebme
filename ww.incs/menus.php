@@ -19,7 +19,7 @@ function Menu_getChildren(
 	$md5=md5(
 		$parentid.'|'.$currentpage.'|'.$isadmin.'|'.$topParent.'|'.$search_options
 	);
-	$cache=cache_load('menus', $md5);
+	$cache=Core_cacheLoad('menus', $md5);
 	if ($cache) {
 		return $cache;
 	}
@@ -101,7 +101,7 @@ function Menu_getChildren(
 		$rs[$k]['parent']=$parentid;
 		$menuitems[]=$rs[$k];
 	}
-	cache_save('menus', $md5, $menuitems);
+	Core_cacheSave('menus', $md5, $menuitems);
 	return $menuitems;
 }
 function Menu_show($b) {
@@ -110,7 +110,7 @@ function Menu_show($b) {
 		return '';
 	}
 	$md5=md5('ww_menudisplay|'.print_r($b, true));
-	$cache=cache_load('menus', $md5);
+	$cache=Core_cacheLoad('menus', $md5);
 	if ($cache) {
 		return $cache;
 	}
@@ -222,6 +222,6 @@ function Menu_show($b) {
 		}
 		$c.='</div>';
 	}
-	cache_save('menus', $md5, $c);
+	Core_cacheSave('menus', $md5, $c);
 	return $c;
 }

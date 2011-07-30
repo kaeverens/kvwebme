@@ -21,14 +21,14 @@ if (!isset($vars->id)) {
 if (!$vars->stories_to_show) {
 	$vars->stories_to_show=10;
 }
-$rs=cache_load('pages', 'news'.$vars->id);
+$rs=Core_cacheLoad('pages', 'news'.$vars->id);
 if ($rs===false) {
 	$rs=dbAll(
 		'select id from pages where parent='.$vars->id
 		.' order by associated_date desc,cdate desc limit 20'
 	);
 	if ($rs!==false) {
-		cache_save('pages', 'news'.$vars->id, $rs);
+		Core_cacheSave('pages', 'news'.$vars->id, $rs);
 	}
 }
 if (!count($rs)) {

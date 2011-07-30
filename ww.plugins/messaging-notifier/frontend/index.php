@@ -1,10 +1,10 @@
 <?php
 function show_messaging_notifier($vars) {
 	if (!is_array($vars) && isset($vars->id) && $vars->id) {
-		$data=cache_load('messaging_notifier', 'id'.$vars->id);
+		$data=Core_cacheLoad('messaging_notifier', 'id'.$vars->id);
 		if ($data===false) {
 			$data=dbOne('select data from messaging_notifier where id='.$vars->id,'data');
-			cache_save('messaging_notifier', 'id'.$vars->id, $data);
+			Core_cacheSave('messaging_notifier', 'id'.$vars->id, $data);
 		}
 		if ($data) {
 			return parse_messaging_notifier(json_decode($data),$vars);
@@ -30,7 +30,7 @@ function parse_messaging_notifier($data, $vars){
 	$altogether=array();
 	foreach($data as $r){
 		$md5=md5($r->url);
-		$f=cache_load('messaging-notifier',$md5);
+		$f=Core_cacheLoad('messaging-notifier',$md5);
 		if(1 || $f===false || (file_exists(USERBASE.'ww.cache/messaging-notifier/'.$md5) && filectime(USERBASE.'ww.cache/messaging-notifier/'.$md5)+$r->refresh*60 < time())){
 			switch($r->type){
 				case 'WebME News Page': // {
@@ -119,7 +119,7 @@ function messaging_notifier_get_rss($r){
 		$i['unixtime']=strtotime($unixtime->item(0)->nodeValue);
 		$arr[]=$i;
 	}
-	cache_save('messaging-notifier',md5($r->url),$arr);
+	Core_cacheSave('messaging-notifier',md5($r->url),$arr);
 	return $arr;
 }
 function messaging_notifier_get_webmeNews($r) {
@@ -141,7 +141,7 @@ function messaging_notifier_get_webmeNews($r) {
 		$i['description']=$item['body'];
 		$arr[]=$i;
 	}
-	cache_save('messaging-notifier',md5($r->url),$arr);
+	Core_cacheSave('messaging-notifier',md5($r->url),$arr);
 	return $arr;
 }
 function messaging_notifier_get_twitter($r){
@@ -163,7 +163,7 @@ function messaging_notifier_get_twitter($r){
 		$i['unixtime']=strtotime($unixtime->item(0)->nodeValue);
 		$arr[]=$i;
 	}
-	cache_save('messaging-notifier',md5($r->url),$arr);
+	Core_cacheSave('messaging-notifier',md5($r->url),$arr);
 	return $arr;
 }
 function messaging_notifier_get_phpbb3($r){
@@ -198,7 +198,7 @@ function messaging_notifier_get_phpbb3($r){
 			$arr[]=$i;
 		}
 	}
-	cache_save('messaging-notifier',md5($r->url),$arr);
+	Core_cacheSave('messaging-notifier',md5($r->url),$arr);
 	return $arr;
 }
 function messaging_notifier_get_email($r){
@@ -225,11 +225,11 @@ function messaging_notifier_get_email($r){
 	imap_expunge($mbox);
 	imap_close($mbox);
 	$md5=md5($r->url);
-	$c=cache_load('messaging-notifier',$md5);
+	$c=Core_cacheLoad('messaging-notifier',$md5);
 	if($c===false)$c=array();
 	$arr=array_merge($arr,$c);
 	krsort($arr);
 	$arr=array_slice($arr,0,10);
-	cache_save('messaging-notifier',$md5,$arr);
+	Core_cacheSave('messaging-notifier',$md5,$arr);
 	return $arr;
 }
