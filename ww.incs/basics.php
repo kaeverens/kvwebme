@@ -7,7 +7,7 @@ spl_autoload_register('WebME_autoload');
 function WebME_autoload($name) {
 	require $name . '.php';
 }
-function cache_clear($type='') {
+function Core_cacheClear($type='') {
 	if (!is_dir(USERBASE.'/ww.cache/'.$type)) {
 		return;
 	}
@@ -18,7 +18,7 @@ function cache_clear($type='') {
 			continue;
 		}
 		if (is_dir(USERBASE.'/ww.cache/'.$type.'/'.$f)) {
-			cache_clear($type.'/'.$f);
+			Core_cacheClear($type.'/'.$f);
 			rmdir(USERBASE.'/ww.cache/'.$type.'/'.$f);
 		}
 		else {

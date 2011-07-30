@@ -27,8 +27,8 @@ else {
 		if (!isset($no_echo_on_success)) {
 			$msgs.='<em>A page has been deleted.</em>';
 		}
-		cache_clear('menus');
-		cache_clear('pages');
+		Core_cacheClear('menus');
+		Core_cacheClear('pages');
 		dbQuery('update page_summaries set rss=""');
 	}
 	else {

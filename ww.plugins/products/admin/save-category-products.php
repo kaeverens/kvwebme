@@ -10,7 +10,7 @@ dbQuery('delete from products_categories_products where category_id='.$_REQUEST[
 foreach($_REQUEST['s'] as $p){
 	dbQuery('insert into products_categories_products set product_id='.((int)$p).',category_id='.$_REQUEST['id']);
 }
-cache_clear('products');
+Core_cacheClear('products');
 
 $data=products_categories_get_data($_REQUEST['id']);
 

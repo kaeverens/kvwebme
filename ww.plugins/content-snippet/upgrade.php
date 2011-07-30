@@ -20,7 +20,7 @@ if($version=='1'){ // convert to accordion
 				.addslashes(json_encode($arr))
 				.'" where id='.$r['id']);
 		}
-		cache_clear('content_snippets');
+		Core_cacheClear('content_snippets');
 	}
 	dbQuery('alter table content_snippets change html content text');
 	$version=2;

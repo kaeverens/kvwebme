@@ -70,7 +70,7 @@ if (isset($_POST['import'])) {
 			}
 		}
 	}
-	cache_clear('products');
+	Core_cacheClear('products');
 }
 // { display form
 echo '<form method="post" enctype="multipart/form-data">'

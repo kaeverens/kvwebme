@@ -45,7 +45,7 @@ dbQuery($q);
 $id=dbOne('select last_insert_id() as id','id');
 $msgs.='<em>New page created.</em>';
 dbQuery('update page_summaries set rss=""');
-cache_clear('menus');
-cache_clear('pages');
+Core_cacheClear('menus');
+Core_cacheClear('pages');
 echo '<script>window.parent.pages_add_node("'.addslashes($alias).'",'.$id
 	.','.$pid.');</script>';

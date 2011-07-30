@@ -49,7 +49,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='save'){
 		dbQuery($sql);
 		$id=dbOne('select last_insert_id() as id','id');
 	}
-	cache_clear('content_snippets');
+	Core_cacheClear('content_snippets');
 	$ret=array('id'=>$id,'id_was'=>$id_was);
 	echo json_encode($ret);
 	exit;

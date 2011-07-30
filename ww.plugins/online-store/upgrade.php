@@ -44,8 +44,8 @@ if ($version==4) { // callback
 	$version=5;
 }
 if ($version==5) { // clear caches
-	cache_clear('pages');
-	cache_clear('products');
+	Core_cacheClear('pages');
+	Core_cacheClear('products');
 	$version=6;
 }
 if ($version==6) { // change _apply_vat to _vatfree

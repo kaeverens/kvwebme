@@ -17,12 +17,16 @@ $plugin=array(
 	'hide_from_admin'=>	true,
 	'description' => 'admins can pay for credits, which are used to manage site subscriptions',
 	'admin' => array(
+		'menu' => array(
+			'Credits>Buy Credits' => 'buy'
+		)
 	),
 	'frontend' => array(
 	),
 	'triggers'      => array(
 		'page-object-loaded'=>'SiteCredits_isActive'
-	)
+	),
+	'version'=>3
 );
 // }
 

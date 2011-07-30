@@ -38,7 +38,7 @@ if (isset($_REQUEST['other']) && $_REQUEST['other']=='restore') {
 			$DBVARS['theme_dir'].'/'.$DBVARS['theme'],
 			$DBVARS['theme_dir_personal'].'/'.$DBVARS['theme']
 		);
-		cache_clear('pages');
+		Core_cacheClear('pages');
 	}
 }
 

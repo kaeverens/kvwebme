@@ -16,7 +16,7 @@ if(isset($_GET['delete_banner']) && (int)$_GET['delete_banner']){
 	$n=USERBASE.'f/skin_files/banner-image/'.$id.'_*';
 	`rm -fr $n`;
 	$updated='Banner Deleted';
-	cache_clear('banner-images');
+	Core_cacheClear('banner-images');
 }
 if(isset($_POST['save_banner'])){
 	$id=(int)$_POST['id'];
@@ -36,7 +36,7 @@ if(isset($_POST['save_banner'])){
 		foreach($pages as $k=>$v)dbQuery('insert into banners_pages set pageid='.((int)$v).",bannerid=$id");
 	}
 	$updated='Banner Saved';
-	cache_clear('banner-images');
+	Core_cacheClear('banner-images');
 }
 
 if(isset($updated)) echo '<em>'.$updated.'</em>';

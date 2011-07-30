@@ -74,8 +74,8 @@ $relations=dbAll(
 // }
 require_once $_SERVER['DOCUMENT_ROOT'].'/j/kfm/includes/directories.php';
 if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
-	cache_clear('products');
-	cache_clear('pages');
+	Core_cacheClear('products');
+	Core_cacheClear('pages');
 	$errors=array();
 	if(!isset($_REQUEST['name']) || $_REQUEST['name']=='') {
 		$errors[]='You must fill in the <strong>Name</strong>.';

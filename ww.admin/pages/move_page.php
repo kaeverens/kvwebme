@@ -12,6 +12,6 @@ for ($i=0;$i<count($order);++$i) {
 	$pid=(int)$order[$i];
 	dbQuery("update pages set ord=$i where id=$pid");
 }
-cache_clear('pages');
-cache_clear('menus');
+Core_cacheClear('pages');
+Core_cacheClear('menus');
 dbQuery('update page_summaries set rss=""');

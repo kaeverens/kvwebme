@@ -9,6 +9,6 @@ $id=(int)$_REQUEST['id'];
 $body=addslashes($_REQUEST['body']);
 $body=Core_sanitiseHtml($body);
 dbQuery("update pages set body='$body' where id=$id");
-cache_clear('pages');
+Core_cacheClear('pages');
 dbQuery('update page_summaries set rss=""');
 echo 'ok';

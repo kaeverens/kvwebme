@@ -100,8 +100,8 @@ if($_POST['type']==4){
 }
 $msgs.='<em>The page has been updated.</em>';
 dbQuery('update page_summaries set rss=""');
-cache_clear('menus');
-cache_clear('pages');
+Core_cacheClear('menus');
+Core_cacheClear('pages');
 if(isset($_REQUEST['frontend-admin'])){
 	echo '<script type="text/javascript">parent.location=parent.location;</script>';
 }

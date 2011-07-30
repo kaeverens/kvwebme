@@ -274,7 +274,7 @@ if (isset($_POST['import'])) {
 			echo '<em>Only csv files are permitted</em>';
 		}
 	}
-	cache_clear('products');
+	Core_cacheClear('products');
 }
 // { display form
 echo '<form method="post" enctype="multipart/form-data"><table>';
@@ -463,7 +463,7 @@ function Products_Import_pruneCats ($catID) {
 	*
 **/
 function Products_Import_createPage ($categories) {
-	cache_clear('pages');
+	Core_cacheClear('pages');
 	$names = array();
 	foreach ($categories as $cat) {
 		$page_id 

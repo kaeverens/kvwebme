@@ -9,4 +9,4 @@ foreach($answers as $answer){
 	dbQuery("insert into poll_answer set poll_id=$id,num=$num,answer='".addslashes($answer)."'");
 }
 echo '<em>Poll updated</em>';
-cache_clear('polls');
+Core_cacheClear('polls');

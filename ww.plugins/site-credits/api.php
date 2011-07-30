@@ -1,5 +1,4 @@
 <?php
-
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 
 if (!isset($PLUGINS['site-credits'])) {
@@ -27,16 +26,6 @@ function SiteCredits_apiVerify($vars, $sha1) {
 }
 
 switch ($_REQUEST['action']) {
-	case 'check-credits': // {
-		if (SiteCredits_apiVerify(array(
-			'action'=>'check-credits',
-			'time'=>$_REQUEST['time']),
-			$_REQUEST['sha1']
-		)) {
-			echo '{"credits":'.(float)@$GLOBALS['DBVARS']['sitecredits-credits'].'}';
-			exit;
-		}
-		break; // }
 	case 'add-credits': // {
 		if (SiteCredits_apiVerify(array(
 			'action'=>'add-credits',
@@ -52,6 +41,28 @@ switch ($_REQUEST['action']) {
 			exit;
 		}
 		break; // }
+	case 'check-credits': // {
+		if (SiteCredits_apiVerify(array(
+			'action'=>'check-credits',
+			'time'=>$_REQUEST['time']),
+			$_REQUEST['sha1']
+		)) {
+			echo '{"credits":'.(float)@$GLOBALS['DBVARS']['sitecredits-credits'].'}';
+			exit;
+		}
+		break; // }
+	case 'set-option': // {
+		dbQuery(
+			'delete from sitecredits_options where name="'
+			.addslashes($_REQUEST['payment-recipient']).'"'
+		);
+		dbQuery(
+			'insert into sitecredits_options set name="'
+			.addslashes($_REQUEST['name']).'", value="'
+			.addslashes($_REQUEST['value']).'"'
+		);
+		echo '{"credits":'.(float)@$GLOBALS['DBVARS']['sitecredits-credits'].'}';
+		exit; // }
 	default: // {
 		echo '{"error":"unknown action"}';
 		exit;

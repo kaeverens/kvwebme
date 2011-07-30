@@ -51,7 +51,7 @@ else {
 					'update pages set body="'
 					.addslashes($c).'",edate=now() where id='.$PAGEDATA->id
 				);
-				cache_clear('pages');
+				Core_cacheClear('pages');
 			}
 		}
 	}

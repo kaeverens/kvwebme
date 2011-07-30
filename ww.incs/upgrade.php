@@ -352,7 +352,7 @@ if ($version == 32) { // add "alias" field to pages table
 	$version = 33;
 }
 if ($version == 33) { // clear cache...
-	cache_clear('pages');
+	Core_cacheClear('pages');
 	$version = 34;
 }
 if ($version==34) { // add page id to short_url
@@ -386,7 +386,7 @@ if ($version==35) { // convert user address to new format
 	$version=36;
 }
 $DBVARS['version']=$version;
-cache_clear();
+Core_cacheClear();
 config_rewrite();
 
 echo '<p>Site upgraded. Please <a href="/">click here</a> to return to the '

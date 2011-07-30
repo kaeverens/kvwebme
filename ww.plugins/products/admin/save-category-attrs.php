@@ -17,7 +17,7 @@ dbQuery(
 	.',enabled="'.((int)$_REQUEST['enabled']).'"'
 	.',associated_colour="'.addslashes($_REQUEST['associated_colour']).'"'
 	.' where id='.$_REQUEST['id']);
-cache_clear('products');
+Core_cacheClear('products');
 
 $pageid	
 	= dbOne(

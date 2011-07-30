@@ -7,4 +7,4 @@ for($i=0;$i<count($answers);++$i){
 	dbQuery("insert into poll_answer set poll_id=$id,num=$i,answer='".addslashes($answer)."'");
 }
 echo '<em>Poll created</em>';
-cache_clear('polls');
+Core_cacheClear('polls');

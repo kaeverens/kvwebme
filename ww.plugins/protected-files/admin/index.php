@@ -41,7 +41,7 @@ if(isset($_REQUEST['action'])){
 		dbQuery("delete from protected_files where id=$id");
 		$id=0;
 	}
-	cache_clear('protected_files');
+	Core_cacheClear('protected_files');
 }
 
 $r=dbRow('select * from protected_files where id='.$id);

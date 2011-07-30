@@ -20,7 +20,7 @@ foreach ($p as $k=>$v) {
 dbQuery('insert into pages set '.join(',', $parts));
 $id=dbLastInsertId();
 dbQuery('update pages set name="'.addslashes($name).'_'.$id.'" where id='.$id);
-cache_clear('menus');
-cache_clear('pages');
+Core_cacheClear('menus');
+Core_cacheClear('pages');
 echo '{"name":"'.addslashes($name.'_'.$id).'","id":'.$id.',"pid":'
 	.$p['parent'].'}';

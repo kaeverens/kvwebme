@@ -63,7 +63,7 @@ if ($action=='Save') {
 		unset($DBVARS['site_page_length_limit']);
 	}
 	config_rewrite();
-	cache_clear();
+	Core_cacheClear();
 	echo '<em>options updated</em>';
 }
 if ($action=='remove_logo') {

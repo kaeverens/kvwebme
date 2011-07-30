@@ -6,7 +6,7 @@ else $id=0;
 // }
 
 if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
-	cache_clear('products');
+	Core_cacheClear('products');
 	$errors=array();
 	if(!isset($_REQUEST['name']) || $_REQUEST['name']=='') {
 		$errors[]='You must fill in the <strong>Name</strong>.';
@@ -65,7 +65,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 			$to=USERBASE.'f/products/types/'.$id.'/image-not-found.png';
 		}
 		echo '<em>Product Type saved</em>';
-		cache_clear('products/templates');
+		Core_cacheClear('products/templates');
 	}
 }
 

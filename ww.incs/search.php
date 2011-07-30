@@ -87,7 +87,7 @@ function Search_getPage() {
 			'insert into pages set cdate=now(),edate=now(),name="__search",'
 			.'alias="__search",body="",type=5,special=2,ord=5000'
 		);
-		cache_clear('pages', 'page_by_type_5');
+		Core_cacheClear('pages', 'page_by_type_5');
 		$p=Page::getInstanceByType(5);
 	}
 	return $p;

@@ -9,5 +9,5 @@ if (isset($_REQUEST['id']) && isset($_REQUEST['vis']) && isset($_REQUEST['hid'])
 	$vis='['.addslashes($_REQUEST['vis']).']';
 	$hid='['.addslashes($_REQUEST['hid']).']';
 	dbQuery("update panels set visibility='$vis',hidden='$hid' where id=$id");
-	cache_clear('panels');
+	Core_cacheClear('panels');
 }

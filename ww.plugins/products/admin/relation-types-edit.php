@@ -22,7 +22,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 			$id=dbOne('select last_insert_id() as id','id');
 		}
 		echo '<em>Relation Type saved</em>';
-		cache_clear('products/relation-types');
+		Core_cacheClear('products/relation-types');
 	}
 }
 

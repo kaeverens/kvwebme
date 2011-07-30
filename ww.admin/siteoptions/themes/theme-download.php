@@ -70,7 +70,7 @@ if( isset( $_POST[ 'install-theme' ] ) ){
 		$DBVARS['theme_variant'] = $variant;
 
 	config_rewrite( );
-	cache_clear( 'pages' );
+	Core_cacheClear( 'pages' );
 
 }
 

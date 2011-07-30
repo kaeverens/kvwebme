@@ -236,7 +236,7 @@ if($body!=''){
 }
 // }
 
-cache_clear();
+Core_cacheClear();
 
 echo '<h2>Wizard Complete</h2>'
 	.'Your store has been created! Please click '

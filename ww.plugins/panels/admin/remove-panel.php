@@ -5,5 +5,5 @@ if(!is_admin())die('access denied');
 if(isset($_REQUEST['id'])){
 	$id=(int)$_REQUEST['id'];
 	dbQuery("delete from panels where id=$id");
-	cache_clear('panels');
+	Core_cacheClear('panels');
 }
