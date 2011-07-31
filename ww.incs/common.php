@@ -37,18 +37,6 @@ function date_m2h($d, $type = 'date') {
 	}
 	return date(DATE_RFC822, $utime);
 }
-function getVar($v, $d = '') {
-	if (isset($_GLOBAL[$v])) return $_GLOBAL[$v];
-	if (isset($_SESSION[$v])) return $_SESSION[$v];
-	if (isset($_COOKIE[$v])) return $_COOKIE[$v];
-	if (isset($_GET[$v])) return $_GET[$v];
-	if (isset($_POST[$v])) return $_POST[$v];
-	if (isset($_FILES[$v])) return $_FILES[$v];
-	if (isset($_SESSION['userdata'][$v]) && $v != 'password') return $_SESSION['userdata'][$v];
-	if (isset($_SESSION['forms'][$v])) return $_SESSION['forms'][$v];
-	if ($v != strtolower($v)) return getVar(strtolower($v), $d);
-	return $d;
-}
 function redirect($addr) {
 	header('HTTP/1.1 301 Moved Permanently');
 	header('Location: '.$addr);
@@ -103,7 +91,8 @@ function smarty_setup($compile_dir) {
 /**
 	*  return a HTML string with "breadcrumb" links to the current page
 	*
-	* @param int $id ID of the root page to draw breadcrumbs from
+	* @param int $id  ID of the root page to draw breadcrumbs from
+	* @param int $top should this breadcrumb be wrapped?
 	*
 	* @return string
 	*/

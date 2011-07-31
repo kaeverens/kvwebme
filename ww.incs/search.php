@@ -19,8 +19,8 @@
 function Search_showResults() {
 	// { variables
 	global $PAGEDATA;
-	$start=getVar('start', 0);
-	$search=getVar('search');
+	$start=(int)@$_REQUEST['start'];
+	$search=@$_REQUEST['search'];
 	if (!$search) {
 		return '<em id="searchResultsTitle">no search text entered</em>';
 	}

@@ -13,10 +13,10 @@ require SCRIPTBASE . 'ww.admin/admin_libs.php';
 $admin_vars=array();
 // { common variables
 foreach (array('action','resize') as $v) {
-	$$v=getVar($v);
+	$$v=@$_REQUEST[$v];
 }
 foreach (array('show_items','start') as $v) {
-	$$v=getVar($v, 0);
+	$$v=(int)@$_REQUEST[$v];
 }
 $id=isset($_REQUEST['id'])?(int)$_REQUEST['id']:0;
 // }

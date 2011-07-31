@@ -10,6 +10,15 @@ $pagetypes=array(
 	array(4, 'page summaries')
 );
 // }
+
+/**
+  * generate HTML for a menu
+  *
+  * @param array  $list the list of pages to link to
+  * @param string $this the current page
+  *
+  * @return null
+  */
 function admin_menu($list, $this='') {
 	$arr=array();
 	foreach ($list as $key=>$val) {
@@ -22,6 +31,14 @@ function admin_menu($list, $this='') {
 	}
 	return '<div class="left-menu">'.join('', $arr).'</div>';
 }
+
+/**
+  * check images to see if they are really as large as the HTML says
+  *
+  * @param string $src the HTML source to check
+  *
+  * @return string the "fixed" source
+  */
 function html_fixImageResizes($src) {
 	// checks for image resizes done with HTML parameters or inline CSS
 	//   and redirects those images to pre-resized versions held elsewhere
@@ -93,6 +110,14 @@ function html_fixImageResizes($src) {
 	}
 	return $src;
 }
+
+/**
+  * replace any "fixed" images with the original image's src
+  *
+  * @param string $src the HTML to check
+  *
+  * @return string "unfixed" HTML
+  */
 function html_unfixImageResizes($src) {
 	// replace resized images with their originals
 	$count=preg_match_all(
@@ -112,6 +137,17 @@ function html_unfixImageResizes($src) {
 	}
 	return $src;
 }
+
+/**
+  * generate HTML of an input element
+  *
+  * @param string $name  the element's name
+  * @param string $type  the type of input element
+  * @param string $value the current value of the element
+  * @param string $class any classes to add
+  *
+  * @return null
+  */
 function wInput($name, $type='text', $value='', $class='') {
 	switch($type){
 		case 'checkbox': // {
@@ -138,6 +174,14 @@ function wInput($name, $type='text', $value='', $class='') {
 			// }
 	}
 }
+
+/**
+  * add an external CSS file to the document
+  *
+  * @param string $url URL of the external sheet
+  *
+  * @return null
+  */
 function WW_addCSS($url) {
 	global $css_urls;
 	if (!is_array($css_urls)) {
@@ -148,6 +192,14 @@ function WW_addCSS($url) {
 	}
 	$css_urls[]=$url;
 }
+
+/**
+  * add an external JS script to the document
+  *
+  * @param string $url URL of the external script
+  *
+  * @return null
+  */
 function WW_addScript($url) {
 	global $scripts;
 	if (in_array($url, $scripts)) {
@@ -155,6 +207,14 @@ function WW_addScript($url) {
 	}
 	$scripts[]=$url;
 }
+
+/**
+  * add a fragment of script to a list to be shown at the end of the document
+  *
+  * @param string $script the JS fragment to add
+  *
+  * @return null
+  */
 function WW_addInlineScript($script) {
 	global $scripts_inline;
 	$script=preg_replace(
@@ -167,6 +227,12 @@ function WW_addInlineScript($script) {
 	}
 	$scripts_inline[]=$script;
 }
+
+/**
+  * generate a list of external CSS scripts and build a <style> tag
+  *
+  * @return string the HTML
+  */
 function WW_getCSS() {
 	global $css_urls;
 	if (!is_array($css_urls)) {
@@ -178,6 +244,12 @@ function WW_getCSS() {
 	}
 	return '<link rel="stylesheet" href="'.htmlspecialchars($url).'" />';
 }
+
+/**
+  * generate a list of external JS scripts and build a <script> tag
+  *
+  * @return string the HTML
+  */
 function WW_getScripts() {
 	global $scripts,$scripts_inline;
 	if (!count($scripts)) {
@@ -189,6 +261,16 @@ function WW_getScripts() {
 	return '<script src="'.join('"></script><script src="', $scripts)
 		.'"></script>'.$inline;
 }
+
+/**
+  * output an RTE's HTML
+  *
+  * @param string $name   name of the textarea to replace
+  * @param string $value  prefill the textarea with this value
+  * @param int    $height the height of the RTE to show
+  *
+  * @return string the HTML of the RTE
+  */
 function ckeditor($name, $value='', $height=250) {
 	return '<textarea style="width:100%;height:'.$height.'px" name="'
 		.addslashes($name).'">'.htmlspecialchars($value).'</textarea>'
@@ -200,6 +282,14 @@ function ckeditor($name, $value='', $height=250) {
 		.'false});});'
 		."//]]></script>";
 }
+
+/**
+  * basically clean up HTML
+  *
+  * @param string $original_html the original HTML
+  *
+  * @return string sanitised HTML
+  */
 function Core_sanitiseHtmlEssential($original_html) {
 	$original_html = str_replace("\n", '{{CARRIAGERETURN}}', $original_html);
 	$original_html = str_replace("\r", '{{LINERETURN}}', $original_html);
@@ -326,6 +416,14 @@ function Core_sanitiseHtmlEssential($original_html) {
 	$html = str_replace('{{LINERETURN}}', "\r", $html);
 	return $html;
 }
+
+/**
+  * thoroughly clean up HTML
+  *
+  * @param string $original_html the original HTML
+  *
+  * @return string sanitised HTML
+  */
 function Core_sanitiseHtml($original_html) {
 	$original_html = Core_sanitiseHtmlEssential($original_html);
 	$original_html = html_fixImageResizes($original_html);
@@ -479,6 +577,14 @@ function Core_sanitiseHtml($original_html) {
 	$html = str_replace('{{LINERETURN}}', "\r", $html);
 	return $html;
 }
+
+/**
+  * retrieve an external file and return its contents
+  *
+  * @param string $url URL of the external file
+  *
+  * @return string contents of the file
+  */
 function Core_getExternalFile($url) {
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

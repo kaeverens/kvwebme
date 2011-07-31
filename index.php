@@ -126,8 +126,8 @@ if (isset($DBVARS['canonical_name'])
 if (!isset($DBVARS['version']) || $DBVARS['version']<36) {
 	redirect('/ww.incs/upgrade.php');
 }
-$id=getVar('pageid', 0);
-$page=getVar('page');
+$id=(int)@$_REQUEST['pageid'];
+$page=preg_replace('#/$#', '', @$_REQUEST['page']);
 // }
 // { is this a search?
 if ($page=='' && isset($_GET['search']) || isset($_GET['s'])) {
@@ -248,7 +248,7 @@ if (!$access_allowed) {
 		.'<form method="post"><input type="password" name="privacy_password" />'
 		.'<input type="submit" /></form>';
 }
-else if (getVar('webmespecial')=='sitemap') {
+elseif (@$_REQUEST['webmespecial']=='sitemap') {
 	require_once 'ww.incs/sitemap-funcs.php';
 	$c.=Sitemap_get();
 }
