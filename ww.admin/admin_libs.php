@@ -39,7 +39,7 @@ function admin_menu($list, $this='') {
   *
   * @return string the "fixed" source
   */
-function html_fixImageResizes($src) {
+function Core_fixImageResizes($src) {
 	// checks for image resizes done with HTML parameters or inline CSS
 	//   and redirects those images to pre-resized versions held elsewhere
 	preg_match_all('/<img [^>]*>/im', $src, $matches);
@@ -118,7 +118,7 @@ function html_fixImageResizes($src) {
   *
   * @return string "unfixed" HTML
   */
-function html_unfixImageResizes($src) {
+function Core_unfixImageResizes($src) {
 	// replace resized images with their originals
 	$count=preg_match_all(
 		'#/f/.files/image_resizes/(@_@[^"]*)(/[^"]*)"#',
@@ -426,7 +426,7 @@ function Core_sanitiseHtmlEssential($original_html) {
   */
 function Core_sanitiseHtml($original_html) {
 	$original_html = Core_sanitiseHtmlEssential($original_html);
-	$original_html = html_fixImageResizes($original_html);
+	$original_html = Core_fixImageResizes($original_html);
 	$original_html = str_replace("\n", '{{CARRIAGERETURN}}', $original_html);
 	$original_html = str_replace("\r", '{{LINERETURN}}', $original_html);
 	do {

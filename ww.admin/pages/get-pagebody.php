@@ -5,4 +5,4 @@ if (!Core_isAdmin()) {
 }
 
 $id=(int)$_REQUEST['id'];
-echo dbOne('select body from pages where id='.$id,'body');
+echo dbOne('select body from pages where id='.$id, 'body');

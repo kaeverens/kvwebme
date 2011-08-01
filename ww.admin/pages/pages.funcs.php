@@ -54,6 +54,10 @@ function showshortcuts($id, $parent) {
  *
  * replaces accented characters with their
  * non-accented equivellants
+ *
+ * @param string $string the string to transcribe
+ *
+ * @return string the transcribed string
  */
 function transcribe($string) {
     $a = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞ

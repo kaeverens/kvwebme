@@ -29,11 +29,11 @@ function find_old_files($dirname, $before_date) {
 			}
 			$GLOBALS['deleted']++;
 			$GLOBALS['saved']+=filesize($fname);
-			echo date('Y-m-d',fileatime($fname)).' '.$fname.'<br />';
+			echo date('Y-m-d', fileatime($fname)).' '.$fname.'<br />';
 			unlink($fname);
 		}
 	}
 }
-find_old_files(USERBASE.'f/.files',time()-3600*24*182);
+find_old_files(USERBASE.'f/.files', time()-3600*24*182);
 echo $deleted.' files deleted.<br />';
 echo $saved.' bytes saved.';

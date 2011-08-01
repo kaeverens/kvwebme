@@ -5,10 +5,13 @@ $(function(){
 	for(i=0;els[i];i++){
 		if(els[i].className!=''){
 			cn=els[i].className;
-			if(cn.indexOf(' ')>-1){
+			if (cn.indexOf(' ')>-1) {
 				cn=cn.split(" ");
-				for(var j=0;j<cn.length;++j)classes[cn[j]]=1;
-			}else{
+				for (var j=0;j<cn.length;++j) {
+					classes[cn[j]]=1;
+				}
+			}
+			else {
 				classes[cn]=1;
 			}
 		}

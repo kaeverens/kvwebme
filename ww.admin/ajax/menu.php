@@ -3,12 +3,12 @@ require '../../ww.incs/common.php';
 require SCRIPTBASE.'ww.admin/admin_libs.php';
 require SCRIPTBASE.'ww.incs/menus.php';
 require SCRIPTBASE.'ww.incs/kaejax.php';
-function AjaxMenu_getChildren($parentid, $currentpage=0){
+function AjaxMenu_getChildren($parentid, $currentpage=0) {
 	global $USERDATA,$PLUGINS;
 	$r=array();
 	switch (substr($parentid, 0, 3)) {
 		case 'am_':
-			switch($parentid){
+			switch ($parentid) {
 				case 'am_top': // { top level menu
 					$r[]=array('id'=>'am_pages','name'=>'pages','link'=>'pages.php');
 					$top=array();
@@ -17,7 +17,7 @@ function AjaxMenu_getChildren($parentid, $currentpage=0){
 							$vs=$vals['admin']['menu'];
 							// foreach menu such as "Top>Child", create the "Top" menu
 							foreach ($vs as $v=>$vopts) {
-								$top[preg_replace('/>.*/','',$v)]=true;
+								$top[preg_replace('/>.*/', '', $v)]=true;
 							}
 						}
 					}
@@ -34,10 +34,10 @@ function AjaxMenu_getChildren($parentid, $currentpage=0){
 						'name'=>'site options',
 						'link'=>'siteoptions.php'
 					);
-					$r[]=array('id'=>'am_stats','name'=>'stats','link'=>'stats.php');
-					break; // }
+					$r[]=array('id'=>'am_stats', 'name'=>'stats', 'link'=>'stats.php');
+				break; // }
 				default: // {
-					$parent=substr($parentid,3);
+					$parent=substr($parentid, 3);
 					foreach ($PLUGINS as $name=>$vals) {
 						if (isset($vals['admin']['menu'])) {
 							$v=$vals['admin']['menu'];

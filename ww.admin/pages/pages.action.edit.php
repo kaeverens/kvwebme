@@ -1,10 +1,10 @@
 <?php
-function recursively_update_page_templates ($id, $template) {
+function Core_recursivelyUpdatePageTemplates($id, $template) {
 	$pages=Pages::getInstancesByParent($id, false);
 	$ids=array();
 	foreach ($pages->pages as $page) {
 		$ids[]=$page->id;
-		recursively_update_page_templates($page->id, $template);
+		Core_recursivelyUpdatePageTemplates($page->id, $template);
 	}
 	if (!count($ids)) {
 		return;
@@ -104,7 +104,7 @@ if (is_array($pagevars)) {
 }
 // }
 if (isset($_REQUEST['recursively_update_page_templates'])) {
-	recursively_update_page_templates($id, $template);
+	Core_recursivelyUpdatePageTemplates($id, $template);
 }
 if ($_POST['type']==4) {
 	$r2=dbRow('select * from page_summaries where page_id="'.$id.'"');

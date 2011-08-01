@@ -2,8 +2,8 @@
 /**
 	* record code coverage stats
 	*
-	* to use this in your server, edit /etc/php.ini and add this file to auto_append_file
-	* then add coverage-prepend.php to auto_prepend_file.
+	* to use this in your server, edit /etc/php.ini and add this file to
+	* auto_append_file then add coverage-prepend.php to auto_prepend_file.
 	* requires xdebug to be installed.
 	*
 	* PHP version 5.2

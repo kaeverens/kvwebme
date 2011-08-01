@@ -4,7 +4,7 @@ if (isset($_REQUEST['special'])) {
 	$specials=$_REQUEST['special'];
 	if (is_array($specials)) {
 		foreach ($specials as $a=>$b) {
-			$special+=pow(2,$a);
+			$special+=pow(2, $a);
 		}
 	}
 }
@@ -27,6 +27,7 @@ if ($special&1) { // there can be only one homepage
 else {
 	if ($homes==0) {
 		$special+=1;
-		$msgs.='<em>This page has been marked as the site\'s Home Page, because there must always be one.</em>';
+		$msgs.='<em>This page has been marked as the site\'s Home Page, because'
+			.' there must always be one.</em>';
 	}
 }

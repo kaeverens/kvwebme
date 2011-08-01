@@ -135,7 +135,7 @@ $(function(){
 			return;
 		}
 		var email=$('#ww-pagecontent input[name=Email]').val();
-		$.post('/ww.plugins/online-store/frontend/voucher-check.php', {
+		$.post('/a/p=online-store/f=checkVoucher', {
 			"email": email,
 			"code" : code
 		}, function(ret) {

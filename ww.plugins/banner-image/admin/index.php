@@ -110,7 +110,7 @@ function banner_image_drawForm($id=0) {
 	echo '<tr><th>Banner</th><td><div id="banner_image_html">'
 		.ckeditor(
 			'html_'.$fdata['id'],
-			html_unfixImageResizes($fdata['html']),
+			Core_unfixImageResizes($fdata['html']),
 			0,
 			'',
 			180

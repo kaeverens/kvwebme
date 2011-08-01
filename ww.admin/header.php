@@ -5,7 +5,7 @@ date_default_timezone_set('Eire');
 require_once dirname(__FILE__).'/../ww.incs/common.php';
 // { if not logged in, show login page
 if (!Core_isAdmin()) {
-	include SCRIPTBASE . 'ww.admin/login.php';
+	require_once SCRIPTBASE . 'ww.admin/login.php';
 	exit;
 }
 // }
@@ -80,7 +80,7 @@ $menus['Help']=array( '_link'=>'http://kvweb.me/', '_target'=>'_blank');
 $menus['Log Out']=  array('_link'=>'/?logout=1');
 // }
 // { display menu as UL list
-function admin_menu_show($items, $name=false, $prefix='', $depth=0) {
+function Core_adminMenuShow($items, $name=false, $prefix='', $depth=0) {
 	$target=(isset($items['_target']))?' target="'.$items['_target'].'"':'';
 	if (isset($items['_link'])) {
 		echo '<a href="'.$items['_link'].'"'.$target.'>'.$name.'</a>';
@@ -109,7 +109,7 @@ function admin_menu_show($items, $name=false, $prefix='', $depth=0) {
 			continue;
 		}
 		echo '<li>';
-		admin_menu_show($subitems, $iname, $prefix.'-'.$name, $depth+1);
+		Core_adminMenuShow($subitems, $iname, $prefix.'-'.$name, $depth+1);
 		echo '</li>';
 	}
 	echo '</ul>';
@@ -117,7 +117,7 @@ function admin_menu_show($items, $name=false, $prefix='', $depth=0) {
 		echo '</div>';
 	}
 }
-admin_menu_show($menus, 'top', 'menu');
+Core_adminMenuShow($menus, 'top', 'menu');
 // }
 echo '</div>';
 // { if maintenance mode is enabled show warning

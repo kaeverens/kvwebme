@@ -10,14 +10,14 @@
  * @license    GPL 2.0
  */
 
-$action = @$_GET[ 'action' ];
-switch( $action ){
+$action = @$_GET['action'];
+switch ($action) {
 	case 'install':
 		require SCRIPTBASE . 'ww.admin/siteoptions/themes/install.php';
-		break;
+	break;
 	case 'download':
 		require SCRIPTBASE . 'ww.admin/siteoptions/themes/theme-download.php';
-		break;
+	break;
 	default:
 		require SCRIPTBASE . 'ww.admin/siteoptions/themes/personal.php';
 }

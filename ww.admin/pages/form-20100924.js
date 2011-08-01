@@ -1,6 +1,8 @@
 function pages_validate(){
 	var ok=pages_validate_name();
-	if(ok)return true;
+	if (ok) {
+		return true;
+	}
 	alert('Your form has errors. Hover the mouse over any inputs marked as errors to see explanations of those errors.');
 	return false;
 }
@@ -8,11 +10,19 @@ function pages_validate_name(){
 	var $name=$('#name');
 	var name=$name.val();
 	var errors=[];
-	if(name.length<4)errors.push('name must be at least 4 characters in length');
-	else{
-		if(/^[^0-9\w\u00C0-\u00FF]/.test(name))errors.push('Begins with non-alphanumeric character');
-		if(/[^0-9\w\u00C0-\u00FF]$/.test(name))errors.push('Ends with non-alphanumeric character');
-		if(name.replace(/[\-',0-9_ \w\u00C0-\u00FF]/g,'')!='')errors.push('Only use alphanumeric characters, spaces, hyphens or underscores');
+	if (name.length<4) {
+		errors.push('name must be at least 4 characters in length');
+	}
+	else {
+		if (/^[^0-9\w\u00C0-\u00FF]/.test(name)) {
+			errors.push('Begins with non-alphanumeric character');
+		}
+		if (/[^0-9\w\u00C0-\u00FF]$/.test(name)) {
+			errors.push('Ends with non-alphanumeric character');
+		}
+		if (name.replace(/[\-',0-9_ \w\u00C0-\u00FF]/g,'')!='') {
+			errors.push('Only use alphanumeric characters, spaces, hyphens or underscores');
+		}
 	}
 	if(!errors.length){
 		$name[0].className='';

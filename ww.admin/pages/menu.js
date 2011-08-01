@@ -14,7 +14,9 @@ function pages_new(p){
 		},
 		buttons:{
 			'Create Page': function() {
-				if($('#newpage_dialog input[name="name"]').val()=='')return alert('Name must be provided');
+				if ($('#newpage_dialog input[name="name"]').val()=='') {
+					return alert('Name must be provided');
+				}
 				document.getElementById('newpage_dialog').submit();
 				$(this).dialog('close');
 			},
@@ -37,7 +39,9 @@ function pages_copy(node, tree) {
 	}, 'json');
 }
 function pages_delete(node,tree){
-	if(!confirm("Are you sure you want to delete this page?"))return;
+	if (!confirm("Are you sure you want to delete this page?")) {
+		return;
+	}
 	$.getJSON('/ww.admin/pages/delete.php?id='+node[0].id.replace(/.*_/,''),function(){
 		if (node.find('li').length) {
 			document.location=document.location.toString();
@@ -79,7 +83,9 @@ $(function(){
 					'create' : {
 						'label'	: "Create Page", 
 						'visible'	: function (NODE, TREE_OBJ) { 
-							if(NODE.length != 1) return 0; 
+							if (NODE.length != 1) {
+								return 0;
+							}
 							return TREE_OBJ.check("creatable", NODE); 
 						}, 
 						'action':pages_add_subpage,
@@ -88,7 +94,9 @@ $(function(){
 					'remove' : {
 						'label'	: "Delete Page", 
 						'visible'	: function (NODE, TREE_OBJ) { 
-							if(NODE.length != 1) return 0; 
+							if (NODE.length != 1) {
+								return 0;
+							}
 							return TREE_OBJ.check("deletable", NODE); 
 						}, 
 						'action':pages_delete,
@@ -114,9 +122,13 @@ $(function(){
 			setTimeout(function(){
 				var p=node.parentNode.parentNode;
 				var nodes=$(p).find('>ul>li');
-				if(p.tagName=='DIV')p=-1;
+				if (p.tagName=='DIV') {
+					p=-1;
+				}
 				var new_order=[];
-				for(var i=0;i<nodes.length;++i)new_order.push(nodes[i].id.replace(/.*_/,''));
+				for (var i=0;i<nodes.length;++i) {
+					new_order.push(nodes[i].id.replace(/.*_/,''));
+				}
 				$.getJSON('/ww.admin/pages/move_page.php?id='+node.id.replace(/.*_/,'')+'&parent_id='+(p==-1?0:p.id.replace(/.*_/,''))+'&order='+new_order);
 			},1);
 		});

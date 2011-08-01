@@ -16,7 +16,7 @@ if (isset($_REQUEST['get_content_snippet'])) {
 			$json=json_decode(str_replace('\\\'', '\\\\\'', $r['content']));
 		}
 		for ($i=0; $i<count($json); ++$i) {
-			$json[$i]->html=html_unfixImageResizes($json[$i]->html);
+			$json[$i]->html=Core_unfixImageResizes($json[$i]->html);
 			while (strpos($json[$i]->html, '/f/.files/image_resizes//f/') !== false) {
 				$json[$i]->html=preg_replace(
 					'#/f/.files/image_resizes//f/([^\'"]*)/[0-9]*x[0-9]*.jpg#',

@@ -29,7 +29,9 @@ if ($id == 0) {
 /**
  * get theme from api
  */
-$theme = Core_getExternalFile('http://kvweb.me/ww.plugins/themes-api/api.php?theme=' . $id);
+$theme=Core_getExternalFile(
+	'http://kvweb.me/ww.plugins/themes-api/api.php?theme=' . $id
+);
 
 if ($theme == false) {
 	die('theme does not exist');

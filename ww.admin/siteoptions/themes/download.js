@@ -17,8 +17,9 @@ $( function( ){
 	  var installed = $( this ).attr( "installed" );
 	  if( installed == 1 ){
 	    var conf = confirm( "You already have a local copy of Carousel.theme. Proceeding will erase the theme from your local themes and replace it. Do you wish to proceed?" );
-	    if( conf == false )
+	    if( conf == false ) {
 	      return false;
+			}
 	  }
 	});
 
@@ -40,11 +41,13 @@ $( function( ){
 
       for( var i = 0; i < Carousel.settings.items; ++i ){
 
-        if( Carousel.themes[ Carousel.position ] == undefined )
+        if( Carousel.themes[ Carousel.position ] == undefined ) {
           break;
+				}
 
-        if( i % ( Carousel.settings.items / Carousel.settings.rows ) === 0 )
-				          html += '</tr><tr>';
+        if (i % ( Carousel.settings.items / Carousel.settings.rows ) === 0 ) {
+				  html += '</tr><tr>';
+				}
 
 				installed = ( $.inArray( Carousel.themes[ Carousel.position ].name,
 												window.installed_themes ) != -1 ) ? 1 : 0;

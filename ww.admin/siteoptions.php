@@ -2,7 +2,7 @@
 require 'header.php';
 echo '<h1>Site Options</h1>';
 
-function admin_verifypage($validlist, $default, $val) {
+function Core_verifyAdminPage($validlist, $default, $val) {
 	foreach ($validlist as $v) {
 		if ($v==$val) {
 			return $val;
@@ -10,15 +10,17 @@ function admin_verifypage($validlist, $default, $val) {
 	}
 	return $default;
 }
-echo admin_menu(array(
-	'General'=>'siteoptions.php?page=general',
-	'Users'=>'siteoptions.php?page=users',
-	'Themes'=>'siteoptions.php?page=themes',
-	'Plugins'=>'siteoptions.php?page=plugins'
-));
+echo admin_menu(
+	array(
+		'General'=>'siteoptions.php?page=general',
+		'Users'=>'siteoptions.php?page=users',
+		'Themes'=>'siteoptions.php?page=themes',
+		'Plugins'=>'siteoptions.php?page=plugins'
+	)
+);
 
-$page=admin_verifypage(
-	array('general','users','themes','plugins'),
+$page=Core_verifyAdminPage(
+	array('general', 'users', 'themes', 'plugins'),
 	'general',
 	isset($_REQUEST['page'])?$_REQUEST['page']:''
 );

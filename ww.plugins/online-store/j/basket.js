@@ -86,7 +86,7 @@ function OnlineStore_saveList(){
 	if (!name){
 		return;
 	}
-	$.post('/ww.plugins/online-store/frontend/list-save.php',{
+	$.post('/a/p=online-store/f=saveSavedList',{
 		'name': name
 	}, function(ret){
 		if (ret.error) {
@@ -96,7 +96,7 @@ function OnlineStore_saveList(){
 	});
 }
 function OnlineStore_loadList(){
-	$.post('/ww.plugins/online-store/frontend/list-list.php', function(ret){
+	$.post('/a/p=online-store/f=listSavedLists', function(ret){
 		if (ret.error) {
 			return alert(ret.error);
 		}
@@ -115,7 +115,7 @@ function OnlineStore_loadList(){
 				"modal":true
 			});
 		$('#onlinestore-load-lists a').click(function(){
-			$.post('/ww.plugins/online-store/frontend/list-load.php',{
+			$.post('/a/p=online-store/f=loadSavedList',{
 				"name":$(this).text()
 			}, function(ret){
 				if (ret.error) {

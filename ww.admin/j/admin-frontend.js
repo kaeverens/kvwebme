@@ -62,12 +62,14 @@ function admin_edit_pagecontent_close(){
 	document.location=document.location.toString().replace(/(#.*)?$/,'');
 }
 function admin_menubar_init(links){
-	if(!links)links=[
-		'<a href="javascript:admin_edit_pagecontent();">edit page content</a>',
-		'<a href="javascript:admin_edit_page();">advanced page editor</a>',
-		'<a href="/ww.admin/pages.php?action=edit&id='+pagedata.id+'" target="_blank">admin area</a>',
-		'<a href="/?logout=1">logout</a>'
-	];
+	if (!links) {
+		links=[
+			'<a href="javascript:admin_edit_pagecontent();">edit page content</a>',
+			'<a href="javascript:admin_edit_page();">advanced page editor</a>',
+			'<a href="/ww.admin/pages.php?action=edit&id='+pagedata.id+'" target="_blank">admin area</a>',
+			'<a href="/?logout=1">logout</a>'
+		];
+	}
 	$('#admin-menubar').remove();
 	$('<div id="admin-menubar">'+links.join()+'</div>').appendTo(document.body);
 }
