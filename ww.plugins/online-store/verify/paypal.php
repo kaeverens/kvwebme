@@ -7,7 +7,7 @@
 	*
 	* @category None
 	* @package  None
-	* @author   Kae Verens <kae.ie>
+	* @author   Kae Verens <kae@kvsites.ie>
 	* @license  GPL 2.0
 	* @link     None
 */
@@ -49,8 +49,8 @@ if (!$fp) {
 				}
 				mail(
 					'info@'.preg_replace('/^www\./', '', $_SERVER['HTTP_HOST']), 
-					$_SERVER['HTTP_HOST'].' paypal hack'
-					, $str
+					$_SERVER['HTTP_HOST'].' paypal hack',
+					$str
 				);
 				exit;
 			}

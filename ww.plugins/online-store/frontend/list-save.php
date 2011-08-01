@@ -1,4 +1,16 @@
 <?php
+/**
+	* record a shopping-list for future retrieval
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 
 header('Content-type: text/json');

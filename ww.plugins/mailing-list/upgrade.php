@@ -1,11 +1,16 @@
 <?php
-/*
-	Webme Mailing List Plugin
-	File: upgrade.php
-	Developer: Conor Mac Aoidh <http://macaoidh.name>
-	Developer: Kae Verens <kae@verens.com>
-	Report Bugs: <kae@verens.com>
-*/
+/**
+	* upgrade script for the mailing list plugin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conor@macaoidh.name>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 if ($version==0) {
 	dbQuery('create table if not exists mailing_list(id int auto_increment not null primary key,email text,name text,status text,hash text)default charset=utf8');

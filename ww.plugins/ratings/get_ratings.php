@@ -14,38 +14,40 @@ require '../../ww.incs/basics.php';
 
 // { get and validate get data 
 $names = @$_GET[ 'names' ];
-if( $names == '' )
+if ($names == '') {
 	exit;
-$names = explode( ',', $names );
+}
+$names = explode(',', $names);
 // }
 
 // { build query and execute
 $query = 'select * from ratings where ';
-for(  $i = 0; $i < count( $names ); ++$i ){
-	$query .= 'name="' . addslashes( $names[ $i ] ) . '"';
-	if( isset( $names[ ( $i + 1 ) ] ) )
+for ( $i = 0; $i < count($names); ++$i) {
+	$query .= 'name="' . addslashes($names[ $i ]) . '"';
+	if (isset($names[ ($i + 1) ])) {
 		$query .= ' or ';
+	}
 }
-$ratings = dbAll( $query );
+$ratings = dbAll($query);
 // }
 
 // { calculate ratings
-$scores = array( );
+$scores = array();
 if ($ratings!==false) {
-	for( $i = 0; $i < count( $names ); ++$i ) {
+	for ($i = 0; $i < count($names); ++$i) {
 		$count = 0;
 		$num = 0;
-		foreach ( $ratings as $rating ) {
-			if( $rating[ 'name' ] == $names[ $i ] ) {
+		foreach ($ratings as $rating) {
+			if ($rating[ 'name' ] == $names[ $i ]) {
 				$count += $rating[ 'rating' ];
 				++$num;
 			}
 		}
-		if ( $count == 0 ) {
+		if ($count == 0) {
 			$count = 'none';
 		}
 		else {
-			$count = ( $count / $num );
+			$count = ($count / $num);
 		}
 		$scores[ $names[ $i ] ][ 'rating' ] = $count;
 		$scores[ $names[ $i ] ][ 'voters' ] = $num;
@@ -53,5 +55,5 @@ if ($ratings!==false) {
 }
 // }
 
-echo json_encode( $scores );
+echo json_encode($scores);
 exit;

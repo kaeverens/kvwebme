@@ -1,19 +1,21 @@
 <?php
-
 /**
- * admin/wizard/step4.php, KV-Webme Online Store Plugin
- *
- * products
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* products
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
-require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-require SCRIPTBASE.'ww.plugins/online-store/admin/wizard/product-types.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
+require_once SCRIPTBASE.'ww.plugins/online-store/admin/wizard/product-types.php';
 
-if(isset($_POST['wizard-company-name'])){ // validate post data
+if (isset($_POST['wizard-company-name'])) { // validate post data
 	$_SESSION['wizard']['company']['name']=$_POST['wizard-company-name'];
 	$_SESSION['wizard']['company']['address']
 		=$_POST['wizard-company-address'];
@@ -35,7 +37,7 @@ echo '
 		<th>What type of products are you selling?</th>
 		<td><select name="wizard-products-type">';
 
-foreach($types as $type=>$template){
+foreach ($types as $type=>$template) {
 	echo '<option value="'.$template.'">'.$type.'</option>';
 }
 

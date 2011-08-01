@@ -11,6 +11,11 @@
 	* @link     None
 	*/
 
+/**
+  * function for showing HTML of a voucher input
+  *
+  * @return string the HTML
+  */
 function OnlineStore_showVoucherInput() {
 	$code=@$_REQUEST['os_voucher'];
 	return '<div id="os-voucher">Voucher Code: <input name="os_voucher" value="'
@@ -22,7 +27,9 @@ if (isset($PAGEDATA->vars['online_stores_requires_login'])
 	&& !isset($_SESSION['userdata'])
 ) {
 	$c='<h2>Login Required</h2>'
-		.'<p>You must be logged-in in order to use this online store. Please <a href="/_r?type=privacy">login / register</a> to access the checkout.</p>';
+		.'<p>You must be logged-in in order to use this online store. Please <a'
+		.' href="/_r?type=privacy">login / register</a> to access the checkout.'
+		.'</p>';
 	return;
 }
 WW_addScript('/ww.plugins/online-store/j/basket.js');
@@ -41,20 +48,25 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		if (!$field->show) {
 			continue;
 		} 
-		if (isset( $field->required ) && $field->required && (!isset($_REQUEST[$name]) || !$_REQUEST[$name])) {
+		if (@$field->required && (!isset($_REQUEST[$name]) || !$_REQUEST[$name])) {
 			$errors[]='You must enter the "'.htmlspecialchars($name).'" field.';
 		} 
 	}
 	// }
 	// { if no payment method is selected, then choose the first available
-	if (!isset($_REQUEST['_payment_method_type']) || $_REQUEST['_payment_method_type']=='') {
+	if (!isset($_REQUEST['_payment_method_type'])
+		|| $_REQUEST['_payment_method_type']==''
+	) {
 		if (@$PAGEDATA->vars['online_stores_paypal_address']) {
 			$_REQUEST['_payment_method_type'] = 'PayPal';
 		}
-		else if (@$PAGEDATA->vars['online_stores_realex_sharedsecret']) {
+		elseif (@$PAGEDATA->vars['online_stores_quickpay_merchantid']) {
+			$_REQUEST['_payment_method_type'] = 'QuickPay';
+		}
+		elseif (@$PAGEDATA->vars['online_stores_realex_sharedsecret']) {
 			$_REQUEST['_payment_method_type'] = 'Realex';
 		}
-		else if (@$PAGEDATA->vars['online_stores_bank_transfer_account_number']) {
+		elseif (@$PAGEDATA->vars['online_stores_bank_transfer_account_number']) {
 			$_REQUEST['_payment_method_type'] = 'Bank Transfer';
 		}
 	}
@@ -72,35 +84,39 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 	// }
 	// { check that payment method is valid
 	switch($_REQUEST['_payment_method_type']){
-		case 'PayPal': // {
-			if (!@$PAGEDATA->vars['online_stores_paypal_address']) {
-				$errors[]='PayPal payment method not available.';
-			}
-			break;
-		// }
 		case 'Bank Transfer': // {
 			if (!@$PAGEDATA->vars['online_stores_bank_transfer_account_number']) {
 				$errors[]='Bank Transfer payment method not available.';
 			}
-			break;
-		// }
+		break; // }
+		case 'PayPal': // {
+			if (!@$PAGEDATA->vars['online_stores_paypal_address']) {
+				$errors[]='PayPal payment method not available.';
+			}
+		break; // }
+		case 'QuickPay': // {
+			if (!@$PAGEDATA->vars['online_stores_quickpay_secret']) {
+				$errors[]='QuickPay payment method not available.';
+			}
+		break; // }
 		case 'Realex': // {
 			if (!@$PAGEDATA->vars['online_stores_realex_sharedsecret']) {
 				$errors[]='Realex payment method not available.';
 			}
-			break;
-		// }
+		break; // }
 		default: // {
 			$errors[]='Invalid payment method "'
 				.htmlspecialchars($_REQUEST['_payment_method_type'])
 				.'" selected.';
-		// }
+			// }
 	}
 	// }
 	// { check if new address was entered
-	if(isset($_SESSION['userdata'])&&isset($_POST['save-address'])){
-		$_user=dbRow('select address from user_accounts where id='.$_SESSION['userdata']['id']);
-		$address=json_decode($_user['address'],true);
+	if (isset($_SESSION['userdata'])&&isset($_POST['save-address'])) {
+		$_user=dbRow(
+			'select address from user_accounts where id='.$_SESSION['userdata']['id']
+		);
+		$address=json_decode($_user['address'], true);
 		$address[$_POST['save-address']]=array(
 			'street'=>$_POST['Street'],
 			'street2'=>$_POST['Street2'],
@@ -109,7 +125,10 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			'country'=>$_POST['Country'],
 		);
 		$address=addslashes(json_encode($address));
-		dbQuery('update user_accounts set address="'.$address.'" where id='.$_SESSION['userdata']['id']);
+		dbQuery(
+			'update user_accounts set address="'.$address.'" where id='
+			.$_SESSION['userdata']['id']
+		);
 	}
 	// }
 	unset($_REQUEST['action']);
@@ -119,7 +138,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			.'</em></div>';
 	} 
 	else {
-		$formvals = addslashes( json_encode( $_REQUEST ) );
+		$formvals = addslashes(json_encode($_REQUEST));
 		$items=addslashes(json_encode($_SESSION['online-store']['items']));
 		$total=OnlineStore_getFinalTotal();
 		// { save data
@@ -142,7 +161,8 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$smarty->assign($key, $val);
 		}
 		// { table of items
-		$table='<table id="onlinestore-invoice" style="clear:both" width="100%"><tr><th class="quantityheader">Quantity</th>'
+		$table='<table id="onlinestore-invoice" style="clear:both" width="100%"'
+			.'><tr><th class="quantityheader">Quantity</th>'
 			.'<th class="descriptionheader">Description</th>'
 			.'<th class="unitamountheader">'
 			.'Unit Price</th><th class="amountheader">Amount</th></tr>';
@@ -193,7 +213,8 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$code=$_REQUEST['os_voucher'];
 			$voucher_amount=OnlineStore_voucherAmount($code, $email, $grandTotal);
 			if ($voucher_amount) {
-				$table.='<tr><td colspan="2" class="nobord">&nbsp;</td><td class="voucher" style="text-align: right;">'
+				$table.='<tr><td colspan="2" class="nobord">&nbsp;</td><td class="v'
+					.'oucher" style="text-align: right;">'
 					.'Voucher ('.htmlspecialchars($code).')</td><td class="totals amountcell">-'
 					.OnlineStore_numToPrice($voucher_amount).'</td></tr>';
 				$grandTotal-=$voucher_amount;
@@ -202,7 +223,8 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		}
 		if ($group_discount) { // group discount
 			$discount_amount=$grandTotal*($group_discount/100);
-			$table.='<tr><td colspan="2" class="nobord">&nbsp;</td><td class="group-discount" style="text-align:right;">'
+			$table.='<tr><td colspan="2" class="nobord">&nbsp;</td><td class="gro'
+				.'up-discount" style="text-align:right;">'
 				.'Group Discount ('.$group_discount.'%)</td><td class="totals">-'
 				.OnlineStore_numToPrice($discount_amount).'</td></tr>';
 			$grandTotal-=$discount_amount;
@@ -211,20 +233,26 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		$postage=OnlineStore_getPostageAndPackaging($deliveryTotal, '', 0);
 		if ($postage['total']) {
 			$grandTotal+=$postage['total'];
-			$table.='<tr><td colspan="2" class="nobord">&nbsp;</td><td class="p_and_p" style="text-align: right;">'
+			$table.='<tr><td colspan="2" class="nobord">&nbsp;</td><td class="p_a'
+				.'nd_p" style="text-align: right;">'
 				.'Postage and Packaging (P&amp;P)</td><td class="amountcell">'
 				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
 		}
 		// }
 		if ($vattable && $_SESSION['onlinestore_vat_percent']) {
-			$table.='<tr><td colspan="2" class="nobord">&nbsp;</td><td style="text-align:right" class="vat">VAT ('.$_SESSION['onlinestore_vat_percent'].'% on '
+			$table.='<tr><td colspan="2" class="nobord">&nbsp;</td><td style="tex'
+				.'t-align:right" class="vat">VAT ('.$_SESSION['onlinestore_vat_perc'
+				.'ent'].'% on '
 				.OnlineStore_numToPrice($vattable).')</td><td class="amountcell">';
 			$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);
 			$table.=OnlineStore_numToPrice($vat).'</td></tr>';
 			$grandTotal+=$vat;
 		}
-		$table.='<tr class="os_basket_amountcell"><td colspan="2" class="nobord">&nbsp;</td><td class="totalcell" style="text-align: right;">Total Due</td>'
-			.'<td class="amountcell">'.OnlineStore_numToPrice($grandTotal).'</td></tr>';
+		$table.='<tr class="os_basket_amountcell"><td colspan="2" class="nobord'
+			.'">&nbsp;</td><td class="totalcell" style="text-align: right;">Total'
+			.' Due</td>'
+			.'<td class="amountcell">'.OnlineStore_numToPrice($grandTotal)
+			.'</td></tr>';
 		$table.='</table>';
 		$smarty->assign('_invoice_table', $table);
 		$smarty->assign('_invoicenumber', $id);
@@ -247,27 +275,61 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		switch($_REQUEST['_payment_method_type']){
 			case 'Bank Transfer': // {
 				$msg=$PAGEDATA->vars['online_stores_bank_transfer_message'];
-				$msg=str_replace('{{$total}}', OnlineStore_numToPrice($grandTotal), $msg);
-				$msg=str_replace('{{$invoice_number}}', $id, $msg);
-				$msg=str_replace('{{$bank_name}}', htmlspecialchars($PAGEDATA->vars['online_stores_bank_transfer_bank_name']), $msg);
-				$msg=str_replace('{{$account_name}}', htmlspecialchars($PAGEDATA->vars['online_stores_bank_transfer_account_name']), $msg);
-				$msg=str_replace('{{$account_number}}', htmlspecialchars($PAGEDATA->vars['online_stores_bank_transfer_account_number']), $msg);
-				$msg=str_replace('{{$sort_code}}', htmlspecialchars($PAGEDATA->vars['online_stores_bank_transfer_sort_code']), $msg);
+				$msg=str_replace(
+					'{{$total}}',
+					OnlineStore_numToPrice($grandTotal),
+					$msg
+				);
+				$msg=str_replace(
+					'{{$invoice_number}}',
+					$id,
+					$msg
+				);
+				$msg=str_replace(
+					'{{$bank_name}}',
+					htmlspecialchars(
+						$PAGEDATA->vars['online_stores_bank_transfer_bank_name']
+					),
+					$msg
+				);
+				$msg=str_replace(
+					'{{$account_name}}',
+					htmlspecialchars(
+						$PAGEDATA->vars['online_stores_bank_transfer_account_name']
+					),
+					$msg
+				);
+				$msg=str_replace(
+					'{{$account_number}}',
+					htmlspecialchars(
+						$PAGEDATA->vars['online_stores_bank_transfer_account_number']
+					),
+					$msg
+				);
+				$msg=str_replace(
+					'{{$sort_code}}',
+					htmlspecialchars(
+						$PAGEDATA->vars['online_stores_bank_transfer_sort_code']
+					),
+					$msg
+				);
 				$c.=$msg;
-				break;
-			// }
+			break; // }
 			case 'PayPal': // {
 				$c.='<p>Your order has been recorded. Please click the button below '
 					.'to go to PayPal for payment. Thank you.</p>';
 				$c.=OnlineStore_generatePaypalButton($PAGEDATA, $id, $total);
-				break;
-			// }
+			break; // }
+			case 'QuickPay': // {
+				$c.='<p>Your order has been recorded. Please click the button below '
+					.'to go to QuickPay for payment. Thank you.</p>';
+				$c.=OnlineStore_generateQuickPayButton($PAGEDATA, $id, $total);
+			break; // }
 			case 'Realex': // {
 				$c.='<p>Your order has been recorded. Please click the button below '
 					.'to go to Realex Payments for payment. Thank you.</p>';
 				$c.=OnlineStore_generateRealexButton($PAGEDATA, $id, $total);
-				break;
-			// }
+			break; // }
 		}
 		// }
 		// { unset the shopping cart data
@@ -278,8 +340,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 }
 
 if (!$submitted) {
-	if (
-		isset($_SESSION['online-store'])
+	if (isset($_SESSION['online-store'])
 		&&isset($_SESSION['online-store']['items'])
 		&&count($_SESSION['online-store']['items'])>0
 	) {
@@ -343,10 +404,12 @@ if (!$submitted) {
 			// }
 			$c.='</tr>';
 			if ($item['long_desc']) {
-				$c.='<tr><td colspan="3" class="products-longdescription">'.$item['long_desc'].'</td><td></td></tr>';
+				$c.='<tr><td colspan="3" class="products-longdescription">'
+					.$item['long_desc'].'</td><td></td></tr>';
 			}
 		}
-		$c.='<tr class="os_basket_totals"><td style="text-align: right;" colspan="3">Subtotal</td>'
+		$c.='<tr class="os_basket_totals"><td style="text-align: right;" colspa'
+			.'n="3">Subtotal</td>'
 			.'<td class="totals">'.OnlineStore_numToPrice($grandTotal).'</td></tr>';
 		if (@$_REQUEST['os_voucher']) {
 			require_once dirname(__FILE__).'/voucher-libs.php';
@@ -362,7 +425,8 @@ if (!$submitted) {
 		}
 		if ($group_discount && $discountableTotal) { // group discount
 			$discount_amount=$discountableTotal*($group_discount/100);
-			$c.='<tr><td class="group-discount" style="text-align:right;" colspan="3">'
+			$c.='<tr><td class="group-discount" style="text-align:right;" colspan'
+				.'="3">'
 				.'Group Discount ('.$group_discount.'%)</td><td class="totals">-'
 				.OnlineStore_numToPrice($discount_amount).'</td></tr>';
 			$grandTotal-=$discount_amount;
@@ -377,13 +441,15 @@ if (!$submitted) {
 		}
 		// }
 		if ($vattable && $_SESSION['onlinestore_vat_percent']) {
-			$c.='<tr><td style="text-align:right" class="vat" colspan="3">VAT ('.$_SESSION['onlinestore_vat_percent'].'% on '
+			$c.='<tr><td style="text-align:right" class="vat" colspan="3">VAT ('
+				.$_SESSION['onlinestore_vat_percent'].'% on '
 				.OnlineStore_numToPrice($vattable).')</td><td class="totals">';
 			$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);
 			$c.=OnlineStore_numToPrice($vat).'</td></tr>';
 			$grandTotal+=$vat;
 		}
-		$c.='<tr class="os_basket_totals"><td style="text-align: right;" colspan="3">Total Due</td>'
+		$c.='<tr class="os_basket_totals"><td style="text-align: right;" colspa'
+			.'n="3">Total Due</td>'
 			.'<td class="totals">'.OnlineStore_numToPrice($grandTotal).'</td></tr>'
 			.'</table>';
 		if ($has_vatfree) {

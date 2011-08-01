@@ -10,24 +10,25 @@
  * @version    1.0
  */
 
-if( $version == 0 ){
+if ($version == 0) {
 
-	dbQuery( 'create table ratings (
+	dbQuery(
+		'create table ratings (
 			id int auto_increment primary key,
 			name text,
 			rating int,
 			type text,
 			date text,
 			user int
-			)
-	' );
+			)'
+	);
 
 	$version = 1;
 
 }
-if( $version == 1 ){
+if ($version == 1) {
 
-	dbQuery( 'alter table ratings change user user text' );
+	dbQuery('alter table ratings change user user text');
 
 	$version = 2;
 }

@@ -4,17 +4,17 @@
   *
   * PHP Version 5
   *
-  * @category   OnlineStorePlugin
-  * @package    WebWorksWebme
-  * @author     Kae Verens <kae.ie>
-  * @license    GPL Version 2
-  * @link       www.kvweb.me
+  * @category None
+  * @package  None
+  * @author   Kae Verens <kae@kvsites.ie>
+  * @license  GPL Version 2
+  * @link     www.kvweb.me
  */
 
 if ( isset($_REQUEST['action']) && $_REQUEST['action']=='Save') {
 	// { currencies
 	$curs=array();
-	foreach($_REQUEST['os-currencies_iso'] as $key=>$val) {
+	foreach ($_REQUEST['os-currencies_iso'] as $key=>$val) {
 		$curs[]=array(
 			'name'=>$_REQUEST['os-currencies_name'][$key],
 			'iso'=>$_REQUEST['os-currencies_iso'][$key],

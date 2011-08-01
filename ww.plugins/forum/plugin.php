@@ -119,16 +119,12 @@ function Forum_getRssLink($PAGEDATA) {
 		:false;
 }
 
-function forum_user_profile( $PAGEDATA, $user ){
-
-	$script = '
-	$(function(){
-		$(".rating").ratings();
-	});
+function forum_user_profile($PAGEDATA, $user) {
+	$script = '$(function(){$(".rating").ratings();});
 	';
 
-	WW_addScript( '/ww.plugins/ratings/ratings.js' );
-	WW_addInlineScript( $script );
+	WW_addScript('/ww.plugins/ratings/ratings.js');
+	WW_addInlineScript($script);
 
 	$threads = dbOne(
 		'select count(id) from forums_threads where creator_id=' . $user[ 'id' ],
@@ -140,7 +136,7 @@ function forum_user_profile( $PAGEDATA, $user ){
 		'count(id)'
 	);
 
-	$emailHash = md5( trim( strtolower( $user[ 'email' ] ) ) );
+	$emailHash = md5(trim(strtolower($user[ 'email' ])));
 
 	$html = '<h1>Forum</h1>
 	<table style="border:1px solid #ccc;margin:10px">
@@ -163,17 +159,19 @@ function forum_user_profile( $PAGEDATA, $user ){
 	</table>';
 
 	$recent = dbAll(
-		'select * from forums_posts where author_id=' . $user[ 'id' ] . ' order by created_date desc limit 4'
+		'select * from forums_posts where author_id=' . $user[ 'id' ]
+		. ' order by created_date desc limit 4'
 	);
 
-	$ids = array( );
-	foreach( $recent as $post ){
-		if( !in_array( $post[ 'thread_id' ], $ids ) )
-			array_push( $ids, $post[ 'thread_id' ] );
+	$ids = array();
+	foreach ($recent as $post) {
+		if (!in_array($post[ 'thread_id' ], $ids)) {
+			array_push($ids, $post[ 'thread_id' ]);
+		}
 	}
 	$threads = dbAll(
 		'select * from forums_threads where id='
-		. implode( ' or id=', $ids )
+		. implode(' or id=', $ids)
 	);
 
 	$html .= '<h1>Forum - You Recent Posts</h1>
@@ -184,9 +182,9 @@ function forum_user_profile( $PAGEDATA, $user ){
 			<th>Post</th>
 		</tr>';
 
-	foreach( $recent as $post ){
-		foreach( $threads as $thread ){
-			if( $thread[ 'id' ] == $post[ 'thread_id' ] ){
+	foreach ($recent as $post) {
+		foreach ($threads as $thread) {
+			if ($thread[ 'id' ] == $post[ 'thread_id' ]) {
 				$thread_id = $thread[ 'id' ];
 				$name = $thread[ 'name' ];
 				$forum = $thread[ 'forum_id' ];
@@ -200,8 +198,8 @@ function forum_user_profile( $PAGEDATA, $user ){
 		$link = '/_r?type=forum&forum-f=' . $forum . '&forum-t=' . $thread_id;
 		$html .= '<tr>
 			<td><a href="' . $link . '">' . $name . '</a></td>
-			<td>' . date_m2h( $post[ 'created_date' ] ) . '</td>
-			<td>' . substr( $post[ 'body' ], 0, 40 ) . ' [...]</td>
+			<td>' . date_m2h($post[ 'created_date' ]) . '</td>
+			<td>' . substr($post[ 'body' ], 0, 40) . ' [...]</td>
 		</tr>';
 	}
 

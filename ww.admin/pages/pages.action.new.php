@@ -1,17 +1,31 @@
 <?php
-include dirname(__FILE__).'/pages.action.common.php';
+require_once dirname(__FILE__).'/pages.action.common.php';
 $name = $_REQUEST['name'];
-if(isset($_REQUEST['prefill_body_with_title_as_header']))$body='<h1>'.htmlspecialchars($name).'</h1><p>&nbsp;</p>';
-else if(isset($_REQUEST['body']))$body=$_REQUEST['body'];
-else $body='';
-$name = addslashes( $name );
+if (isset($_REQUEST['prefill_body_with_title_as_header'])) {
+	$body='<h1>'.htmlspecialchars($name).'</h1><p>&nbsp;</p>';
+}
+elseif (isset($_REQUEST['body'])) {
+	$body=$_REQUEST['body'];
+}
+else {
+	$body='';
+}
+$name = addslashes($name);
 $alias = $name;
-$name = transcribe( $name );
+$name = transcribe($name);
 $pid=(int)$_REQUEST['parent'];
-if(dbQuery("select id from pages where name='$name' and parent=$pid")->rowCount()){
+$sql="select id from pages where name='$name' and parent=$pid";
+if (dbQuery($sql)->rowCount()
+) {
 	$i=2;
-	while(dbQuery("select id from pages where name='$name$i' and parent=$pid")->rowCount())$i++;
-	$msgs.='<em>A page named "' . $name . '" already exists. Page name amended to "' . $name . $i . '"</em>';
+	while (dbQuery(
+		"select id from pages where name='$name$i' and parent=$pid"
+	)->rowCount()
+	) {
+		$i++;
+	}
+	$msgs.='<em>A page named "' . $name . '" already exists. Page name amende'
+		.'d to "' . $name . $i . '"</em>';
 	$name.=$i;
 }
 // { variables
@@ -25,10 +39,17 @@ $keywords=isset($_REQUEST['keywords'])?$_REQUEST['keywords']:'';
 $associated_date=$_REQUEST['associated_date'];
 $description=isset($_REQUEST['description'])?$_REQUEST['description']:'';
 $importance=isset($_REQUEST['importance'])?(float)$_REQUEST['importance']:.5;
-if($importance<0.1)$importance=0.5;
-if($importance>1)$importance=1;
+if ($importance<0.1) {
+	$importance=0.5;
+}
+if ($importance>1) {
+	$importance=1;
+}
 // }
-$ord=dbOne('select ord from pages where parent='.$pid.' order by ord desc limit 1','ord')+1;
+$ord=dbOne(
+	'select ord from pages where parent='.$pid.' order by ord desc limit 1',
+	'ord'
+)+1;
 $original_body=(isset($_REQUEST['body']))?$_REQUEST['body']:'';
 $body=$original_body;
 $body=Core_sanitiseHtml($body);
@@ -38,11 +59,9 @@ $q='insert into pages set ord="'.$ord.'",importance="'.$importance.'",'
 	.'original_body="'.addslashes($original_body).'",'
 	.'body="'.addslashes($body).'",type="'.$type.'",'
 	.'associated_date="'.addslashes($associated_date).'",'
-	.'alias="'.$alias.'"';
-$q.=',parent='.$pid;
-$q.=',special='.$special;else $q.=',special=0';
+	.'alias="'.$alias.'",parent='.$pid.',special='.$special;
 dbQuery($q);
-$id=dbOne('select last_insert_id() as id','id');
+$id=dbOne('select last_insert_id() as id', 'id');
 $msgs.='<em>New page created.</em>';
 dbQuery('update page_summaries set rss=""');
 Core_cacheClear('menus');

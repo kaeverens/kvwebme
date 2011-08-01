@@ -19,48 +19,60 @@
  * make sure api rules are being followed
  */
 $recent = @$_GET[ 'download' ];
-if( $recent != 'true' )
-        exit;
+if ($recent != 'true') {
+	exit;
+}
 
 /**
  * make sure id is present
  */
 $id = ( int ) @$_GET[ 'id' ];
-if( $id == 0 )
-        exit;
+if ($id == 0) {
+	exit;
+}
 
 /**
  * get theme info from db
  */
-$theme = dbRow( 'select name,version,moderated from themes_api where id=' . $id );
+$theme = dbRow(
+	'select name,version,moderated from themes_api where id=' . $id
+);
 
 /**
  * make sure theme exists
  */
-if( $theme == false )
+if ($theme == false) {
 	exit;
+}
 
 /**
  * make sure theme has been moderated, if not
  * still let moderators download
  */
-if( $theme[ 'moderated' ] == 'no' && ( !isset( $_SESSION[ 'userdata' ] ) && !isset( $_SESSION[ 'userdate' ][ 'groups' ][ 'moderators' ] ) ) )
-	die( 'This theme is awaiting moderation and has not been deemed as safe yet.' );
+if ($theme[ 'moderated' ] == 'no'
+	&& ( !isset( $_SESSION[ 'userdata' ] )
+		&& !isset( $_SESSION[ 'userdate' ][ 'groups' ][ 'moderators' ] )
+	)
+) {
+	die(
+		'This theme is awaiting moderation and has not been deemed as safe yet.'
+	);
+}
 
 // save in database
 $referrer = @$_SERVER[ 'HTTP_REFERER' ];
 $ip = @$_SERVER[ 'REMOTE_ADDR' ];
-dbQuery( 'insert into themes_downloads values("",' . $id . ',"'
-	. $referrer . '","' . $ip . '",now())');
+dbQuery(
+	'insert into themes_downloads values("",' . $id . ',"'
+	. $referrer . '","' . $ip . '",now())'
+);
 
 /**
  * download file
  */
 $file = USERBASE . 'f/themes_api/themes/' . $id . '/' . $id . '.zip';
-header( 'Content-type: application/force-download' );
-header( 'Content-Transfer-Encoding: Binary' );
-header( 'Content-length: ' . filesize( $file ) );
-header( 'Content-disposition: attachment; filename="' . $theme[ 'name' ] . '.zip"' );
-readfile( $file );
-
-?>
+header('Content-type: application/force-download');
+header('Content-Transfer-Encoding: Binary');
+header('Content-length: '.filesize($file));
+header('Content-disposition: attachment; filename="'.$theme['name'].'.zip"');
+readfile($file);

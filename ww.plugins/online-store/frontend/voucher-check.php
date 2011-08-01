@@ -1,4 +1,16 @@
 <?php
+/**
+	* check a voucher to see if it's valid
+	*
+	* PHP version 5
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     None
+	*/
+
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 require_once dirname(__FILE__).'/voucher-libs.php';
 

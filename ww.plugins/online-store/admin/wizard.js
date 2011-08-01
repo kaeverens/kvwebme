@@ -108,8 +108,9 @@ var Wizard={
 					.each(function(){
 					if($(this).attr('type')=='checkbox'){
 						var val=0;
-						if($(this).is(':checked'))
+						if ($(this).is(':checked')) {
 							val=1;
+						}
 						Wizard.queryString[$(this).attr('name')]=val;
 						return;
 					}

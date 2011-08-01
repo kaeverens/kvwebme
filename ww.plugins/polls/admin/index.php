@@ -1,35 +1,32 @@
 <?php
 ww_addScript('/ww.plugins/polls/admin/polls.js');
-echo admin_menu(array(
-	'New'=>$_url.'&action=newPoll',
-	'View All'=>$_url
-));
+echo admin_menu(
+	array('New'=>$_url.'&action=newPoll', 'View All'=>$_url)
+);
 
 echo '<div class="has-left-menu">';
 $edit=($action=='editPoll')?1:0;
 $dir=dirname(__FILE__);
 switch($action){
 	case 'deletePoll': // {
-		if($id)include($dir.'/actions.delete.php');
-		include($dir.'/showitems.php');
-		break;
-	// }
+		if ($id) {
+			require_once $dir.'/actions.delete.php';
+		}
+		require_once $dir.'/showitems.php';
+	break; // }
 	case 'Edit Poll': // {
-		include($dir.'/actions.edit.php');
-		include($dir.'/forms.php');
-		break;
-	// }
+		require_once $dir.'/actions.edit.php';
+		require_once $dir.'/forms.php';
+	break; // }
 	case 'Create Poll': // {
-		include($dir.'/actions.new.php');
-		include($dir.'/forms.php');
-		break;
-	// }
+		require_once $dir.'/actions.new.php';
+		require_once $dir.'/forms.php';
+	break; // }
 	case 'newPoll':case 'editPoll': // {
-		include($dir.'/forms.php');
-		break;
-	// }
+		require_once $dir.'/forms.php';
+	break; // }
 	default: // {
-		include($dir.'/showitems.php');
-	// }
+		require_once $dir.'/showitems.php';
+		// }
 }
 echo '</div>';

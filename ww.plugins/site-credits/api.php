@@ -27,30 +27,30 @@ function SiteCredits_apiVerify($vars, $sha1) {
 
 switch ($_REQUEST['action']) {
 	case 'add-credits': // {
-		if (SiteCredits_apiVerify(array(
+		$params=array(
 			'action'=>'add-credits',
 			'credits'=>(float)$_REQUEST['credits'],
-			'time'=>$_REQUEST['time']),
-			$_REQUEST['sha1']
-		)) {
+			'time'=>$_REQUEST['time']
+		);
+		if (SiteCredits_apiVerify($params, $_REQUEST['sha1'])) {
 			$credits=(float)@$GLOBALS['DBVARS']['sitecredits-credits'];
-			$GLOBALS['DBVARS']['sitecredits-credits']=
-				$credits + (float)$_REQUEST['credits'];
+			$GLOBALS['DBVARS']['sitecredits-credits']
+				=$credits + (float)$_REQUEST['credits'];
 			Core_configRewrite();
 			echo '{"credits":'.(float)$GLOBALS['DBVARS']['sitecredits-credits'].'}';
 			exit;
 		}
-		break; // }
+	break; // }
 	case 'check-credits': // {
-		if (SiteCredits_apiVerify(array(
+		$params=array(
 			'action'=>'check-credits',
-			'time'=>$_REQUEST['time']),
-			$_REQUEST['sha1']
-		)) {
+			'time'=>$_REQUEST['time']
+		);
+		if (SiteCredits_apiVerify($params, $_REQUEST['sha1'])) {
 			echo '{"credits":'.(float)@$GLOBALS['DBVARS']['sitecredits-credits'].'}';
 			exit;
 		}
-		break; // }
+	break; // }
 	case 'set-option': // {
 		dbQuery(
 			'delete from sitecredits_options where name="'
@@ -66,7 +66,7 @@ switch ($_REQUEST['action']) {
 	default: // {
 		echo '{"error":"unknown action"}';
 		exit;
-	// }
+		// }
 }
 
 echo '{"error":"checksum failed"}';

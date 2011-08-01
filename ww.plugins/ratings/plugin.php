@@ -11,7 +11,7 @@
  */
 
 // { plugin array
-$plugin = array( 
+$plugin = array(
 	'name'		=>	'Ratings',
 	'version'	=>	2,
 	'description'	=>	'Rate anything',
@@ -30,24 +30,19 @@ $plugin = array(
  *
  * replaces {{RATINGS}} with a rating interface
  */
-function ratings_template_function( $vars ){
+function ratings_template_function($vars) {
 	$name = @$vars[ 'name' ];
 	$type = @$vars[ 'type' ];
 
-	if( $name == '' )
+	if ($name == '') {
 		return '';
+	}
 
-	$script = '
-		$(function( ){
-			$( ".ratings" ).ratings( );
-		});
-	';
+	$script = '$(function(){$(".ratings").ratings();});';
 
-	WW_addScript( '/ww.plugins/ratings/ratings.js' );
-	WW_addInlineScript( $script );
+	WW_addScript('/ww.plugins/ratings/ratings.js');
+	WW_addInlineScript($script);
 
 	return '<div class="ratings" id="' . $name . '" type="' . $type . '">'
-	. 'ratings</div>';
+		. 'ratings</div>';
 }
-
-?>

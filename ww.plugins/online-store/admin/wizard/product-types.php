@@ -1,14 +1,16 @@
 <?php
-
 /**
- * admin/wizard/product-types.php, KV-Webme Online Store Plugin
- *
- * lists different product types
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* lists different product types
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 // { product types
 $types=array(
@@ -19,7 +21,6 @@ $types=array(
 	'Software'		=>			'software',
 );
 // }
-
 // { default type
 $default_single='
 <table>
@@ -78,7 +79,6 @@ $default=array(
 	'multi'=>$default_multi,
 );
 // }
-
 // { clothes type
 $clothes=array(
 	'fields'=>array(
@@ -119,14 +119,10 @@ $clothes=array(
 				</tr>
 			</tbody>
 		</table>
-		<h2>
-			Related</h2>
-		<p>{{PRODUCTS_RELATED}}</p>
 	',
 	'multi'=>$default_multi,
 );
 // }
-
 // { books type
 $books=array(
 	'fields'=>array(
@@ -164,15 +160,11 @@ $books=array(
 				</tr>
 			</tbody>
 		</table>
-		<h2>
-			Related</h2>
-		<p>{{PRODUCTS_RELATED}}</p>
 	',
 	'multi'=>$default_multi,
 
 );
 // }
-
 // { software type
 $software=array(
 	'fields'=>array(
@@ -207,12 +199,7 @@ $software=array(
 				</tr>
 			</tbody>
 		</table>
-		<h2>
-			Related</h2>
-		<p>{{PRODUCTS_RELATED}}</p>
 	',
 	'multi'=>$default_multi,
 );
 // }
-
-?>

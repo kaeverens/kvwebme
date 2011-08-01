@@ -13,15 +13,14 @@
 require '../../ww.incs/basics.php';
 
 // { validate input
-$name = addslashes( @$_GET[ 'name' ] );
-if( $name == '' )
+$name = addslashes(@$_GET[ 'name' ]);
+if ($name == '') {
 	exit;
+}
 // }
 
-$votes = dbAll( 'select * from ratings where name="' . $name . '"' );
-$votes = count( $votes );
+$votes = dbAll('select * from ratings where name="' . $name . '"');
+$votes = count($votes);
 
 echo $votes . ' people have rated this.';
 exit;
-
-?>

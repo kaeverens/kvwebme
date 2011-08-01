@@ -23,7 +23,7 @@ $plugin=array(
 			'Products>Relation Types'=> 'relation-types',
 			'Products>Export Data' => 'exports'
 		),
-		'page_type' => 'products_admin_page_form',
+		'page_type' => 'Products_adminPage',
 		'widget' => array(
 			'form_url'   => '/ww.plugins/products/admin/widget.php',
 			'js_include' => array(
@@ -34,7 +34,7 @@ $plugin=array(
 	'description' => 'Product catalogue.',
 	'frontend' => array(
 		'admin-script' => '/ww.plugins/products/j/frontend-admin.js',
-		'page_type' => 'products_frontend',
+		'page_type' => 'Products_frontend',
 		'widget' => 'Products_widget',
 		'template_functions' => array(
 			'PRODUCTS_BUTTON_ADD_TO_CART' => array(
@@ -47,16 +47,16 @@ $plugin=array(
 				'function' => 'products_categories'
 			),
 			'PRODUCTS_DATATABLE' => array (
-				'function' => 'products_datatable'
+				'function' => 'Products_datatable'
 			),
 			'PRODUCTS_IMAGE' => array(
-				'function' => 'products_image'
+				'function' => 'Products_image'
 			),
 			'PRODUCTS_IMAGES' => array(
-				'function' => 'products_images'
+				'function' => 'Products_images'
 			),
 			'PRODUCTS_LINK' => array (
-				'function' => 'products_link'
+				'function' => 'Products_link'
 			),
 			'PRODUCTS_LIST_CATEGORIES' => array(
 				'function' => 'Products_listCategories'
@@ -71,17 +71,27 @@ $plugin=array(
 				'function' => 'Products_showRelatedProducts'
 			),
 			'PRODUCTS_REVIEWS' => array (
-				'function' => 'products_reviews'
+				'function' => 'Products_reviews'
 			)
 		)
 	),
 	'triggers' => array(
-		'initialisation-completed' => 'products_add_to_cart'
+		'initialisation-completed' => 'Products_addToCart'
 	),
 	'version' => '19'
 );
 // }
 
+/**
+  * figure out how much a product costs
+  *
+  * @param object  $product        the product data
+	* @param int     $amount         how many are wanted
+	* @param string  $md5            unique identifier
+	* @param boolean $removefromcart remove any copies of this from the cart first
+  *
+  * @return object the product instance
+  */
 function Products_getProductPrice(
 	$product,
 	$amount,
@@ -99,8 +109,16 @@ function Products_getProductPrice(
 	if (isset($product->vals['online-store'])) {
 		$p=$product->vals['online-store'];
 		$price=(float)$p['_price'];
-		if(isset($p['_sale_price']) && $p['_sale_price']>0)$price=$p['_sale_price'];
-	  if(isset($p['_bulk_price']) && $p['_bulk_price']>0 && $p['_bulk_price']<$price && $amount>=$p['_bulk_amount'])$price=$p['_bulk_price'];
+		if (isset($p['_sale_price']) && $p['_sale_price']>0) {
+			$price=$p['_sale_price'];
+		}
+		if (isset($p['_bulk_price'])
+			&& $p['_bulk_price']>0
+			&& $p['_bulk_price']<$price
+			&& $amount>=$p['_bulk_amount']
+		) {
+			$price=$p['_bulk_price'];
+		}
 		$vat=(isset($p['_vatfree']) && $p['_vatfree']=='1')?false:true;
 	}
 	else {
@@ -110,13 +128,30 @@ function Products_getProductPrice(
 	// }
 	return array($price, $amount, $vat);
 }
-function products_admin_page_form($page,$vars){
+
+/**
+  * form for a products admin page
+  *
+  * @param array $page the page database table
+  * @param array $vars the page's vars data
+  *
+  * @return HTML of the form
+  */
+function Products_adminPage($page, $vars) {
 	$id=$page['id'];
 	$c='';
 	require_once dirname(__FILE__).'/admin/page-form.php';
 	return $c;
 }
-function products_frontend($PAGEDATA){
+
+/**
+  * render a product page
+  *
+  * @param object $PAGEDATA the page instance
+  *
+  * @return string HTML of the page
+  */
+function Products_frontend($PAGEDATA) {
 	require_once dirname(__FILE__).'/frontend/show.php';
 	if (isset($_REQUEST['product_id'])) {
 		$PAGEDATA->vars['products_what_to_show']=3;
@@ -126,14 +161,22 @@ function products_frontend($PAGEDATA){
 		$PAGEDATA->vars['products_what_to_show']=2;
 		$PAGEDATA->vars['products_category_to_show']=(int)$_REQUEST['product_cid'];
 	}
-	if(!isset($PAGEDATA->vars['footer']))$PAGEDATA->vars['footer']='';
+	if (!isset($PAGEDATA->vars['footer'])) {
+		$PAGEDATA->vars['footer']='';
+	}
 	// first render the products, in case the page needs to know what template was used
 	$producthtml=products_show($PAGEDATA);
 	return $PAGEDATA->render()
 		.$producthtml
 		.$PAGEDATA->vars['footer'];
 }
-function products_add_to_cart(){
+
+/**
+  * check the $_REQUEST array for products to add to the cart
+  *
+  * @return null
+  */
+function Products_addToCart() {
 	if (!isset($_REQUEST['products_action'])) {
 		return;
 	}
@@ -153,7 +196,7 @@ function products_add_to_cart(){
 	$md5='';
 	$pt=ProductType::getInstance($product->vals['product_type_id']);
 	$long_desc='';
-	foreach ($_REQUEST as $k=>$v){
+	foreach ($_REQUEST as $k=>$v) {
 		if (strpos($k, 'products_values_')===0) {
 			$n=str_replace('products_values_', '', $k);
 			$df=$pt->getField($n);
@@ -176,11 +219,11 @@ function products_add_to_cart(){
 					if (!$ok) {
 						continue;
 					}
-					break; // }
+				break; // }
 				case 'selected-image': // {
 					$v='http://'.$_SERVER['HTTP_HOST'].'/kfmget/'.$v;
 					$long_desc='<img style="float:left" src="'.$v.',width=60,height=60"/>';
-					break; // }
+				break; // }
 			}
 			$vals[]='<span>'.$n.'</span>: '.$v;
 		}
@@ -206,15 +249,41 @@ function products_add_to_cart(){
 		(int)(@$product->vals['online-store']['_not_discountable'])
 	);
 }
-function Products_listCategories($params, &$smarty){
+
+/**
+  * list product categories contained in a parent
+  *
+  * @param array  $params parameters to pass to the function
+  * @param object $smarty the current Smarty instance
+  *
+  * @return HTML the list of categories
+  */
+function Products_listCategories($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/show.php';
 	return _Products_listCategories($params, $smarty);
 }
-function Products_listCategoryContents($params, &$smarty){
+
+/**
+  * build up a list of the contents of a product category
+  *
+  * @param array  $params parameters to pass to the function
+  * @param object $smarty the current Smarty instance
+  *
+  * @return HTML the list of contents
+  */
+function Products_listCategoryContents($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/show.php';
 	return _Products_listCategoryContents($params, $smarty);
 }
-function Products_widget($vars=null){
+
+/**
+  * get HTML for the Products widget
+  *
+  * @param array $vars any parameters to pass to the widget
+  *
+  * @return string HTML of the widget
+  */
+function Products_widget($vars=null) {
 	require_once dirname(__FILE__).'/frontend/show.php';
 	require dirname(__FILE__).'/frontend/widget.php';
 	return $html;
@@ -222,12 +291,28 @@ function Products_widget($vars=null){
 
 class Product{
 	static $instances=array();
-	function __construct($v,$r=false,$enabled=true) {
+
+	/**
+	  * constructor for product instances
+	  *
+	  * @param int $v       the ID of the product that's wanted
+	  * @param int $r       pre-built data to use
+	  * @param int $enabled only retrieve enabled products?
+	  *
+	  * @return object the product instance
+	  */
+	function __construct($v, $r=false, $enabled=true) {
 		$v=(int)$v;
-		if ($v<1)return false;
+		if ($v<1) {
+			return false;
+		}
 		$filter=$enabled?' and enabled ':'';
-		if (!$r)$r=dbRow("select * from products where id=$v $filter limit 1");
-		if (!count($r) || !is_array($r))return false;
+		if (!$r) {
+			$r=dbRow("select * from products where id=$v $filter limit 1");
+		}
+		if (!count($r) || !is_array($r)) {
+			return false;
+		}
 		$vals=json_decode($r['data_fields']);
 		unset($r['data_fields']);
 		if (isset($r['online_store_fields'])) {
@@ -238,12 +323,12 @@ class Product{
 		foreach ($r as $k=>$v) {
 			$this->vals[$k]=$v;
 		}
-		foreach($vals as $k=>$val) {
+		foreach ($vals as $k=>$val) {
 			if (!is_object($val)) {
-				$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/','_',$k)]=$val;
+				$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/', '_', $k)]=$val;
 			}
 			else {
-				$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/','_',$val->n)]=$val->v;
+				$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/', '_', $val->n)]=$val->v;
 			}
 		}
 		if (isset($online_store_data)) {
@@ -253,15 +338,35 @@ class Product{
 		}
 		$this->id=$r['id'];
 		$this->name=$r['name'];
-		self::$instances[$this->id] =& $this;
+		self::$instances[$this->id]=&$this;
 		return $this;
 	}
-	static function getInstance($id=0,$r=false,$enabled=true) {
-		if (!is_numeric($id)) return false;
-		if (!array_key_exists($id,self::$instances))return new Product($id,$r,$enabled);
+
+	/**
+	  * retrieves a product instance
+	  *
+	  * @param int     $id      the ID of the product type that's wanted
+	  * @param array   $r       pre-built data to use
+	  * @param boolean $enabled only retrieve enabled products?
+	  *
+	  * @return object the product instance
+	  */
+	static function getInstance($id=0, $r=false, $enabled=true) {
+		if (!is_numeric($id)) {
+			return false;
+		}
+		if (!array_key_exists($id, self::$instances)) {
+			return new Product($id, $r, $enabled);
+		}
 		return self::$instances[$id];
 	}
-	function getRelativeURL () {
+
+	/**
+	  * get teh relative URL of a page for showing this product
+	  *
+	  * @return string URL of the product's page
+	  */
+	function getRelativeURL() {
 		global $PAGEDATA;
 		if ($this->relativeUrl) {
 			return $this->relativeUrl;
@@ -294,7 +399,7 @@ class Product{
 			$rs=dbAll(
 				'select page_id '
 				.'from page_vars where name="products_category_to_show" '
-				.'and value in ('.join(',',$pcats).')'
+				.'and value in ('.join(',', $pcats).')'
 			);
 			$pid=0;
 			foreach ($rs as $r) {
@@ -318,12 +423,28 @@ class Product{
 		$this->relativeUrl='/_r?type=products&amp;product_id='.$this->id;
 		return $this->relativeUrl;
 	}
+
+	/**
+	  * retrieve one of the product's values
+	  *
+	  * @param string $name the name of the field
+	  *
+	  * @return string the value
+	  */
 	function get($name) {
 		if (isset($this->vals[$name])) {
 			return $this->vals[$name];
 		}
 		return false;
 	}
+
+	/**
+	  * retrieve one of the product's values in human-readable form
+	  *
+	  * @param string $name the name of the field
+	  *
+	  * @return string the value
+	  */
 	function getString($name) {
 		$type= ProductType::getInstance($this->vals['product_type_id']);
 		$datafields= $type->data_fields;
@@ -345,12 +466,21 @@ class Product{
 						if (isset($this->vals[$data->n])) {
 							return $this->vals[$data->n];
 						}
-					// }
+						// }
 				}
 			}
 		}
 		return '';
 	}
+
+	/**
+	  * search the product to see if it matches a filter
+	  *
+	  * @param string $search the keyword to search for
+	  * @param string $field  the fieldname to search (leave blank to search all)
+	  *
+	  * @return boolean true if found, false if not
+	  */
 	function search($search, $field='') {
 		$search=strtolower($search);
 		if ($field) {
@@ -371,6 +501,14 @@ class Product{
 }
 class ProductType{
 	static $instances=array();
+
+	/**
+	  * constructor for product type instances
+	  *
+	  * @param int $v the ID of the product type that's wanted
+	  *
+	  * @return object the product type instance
+	  */
 	function __construct($v) {
 		$v=(int)$v;
 		if ($v<1) {
@@ -405,6 +543,14 @@ class ProductType{
 		self::$instances[$this->id] =& $this;
 		return $this;
 	}
+
+	/**
+	  * returns an instance of a product type
+	  *
+	  * @param int $id the ID of the product type that's wanted
+	  *
+	  * @return object the product type instance
+	  */
 	static function getInstance($id=0) {
 		$id=(int)$id;
 		if ($id<1) {
@@ -415,6 +561,14 @@ class ProductType{
 		}
 		return self::$instances[$id];
 	}
+
+	/**
+	  * returns a data field's contents
+	  *
+	  * @param string $name name of the field to return
+	  *
+	  * @return string the value
+	  */
 	function getField($name) {
 		foreach ($this->data_fields as $k=>$v) {
 			if ($v->n==$name) {
@@ -423,17 +577,34 @@ class ProductType{
 		}
 		return false;
 	}
+
+	/**
+	  * if the product has no associated images, show a "missing image" image
+	  *
+	  * @param string $maxsize the size of the image it replaces
+	  *
+	  * @return string html of the image 
+	  */
 	function getMissingImage($maxsize) {
 		return '<img src="/kfmgetfull/products/types/'.$this->id
 			.'/image-not-found.png,width='.$maxsize.',height='.$maxsize.'" />';
 	}
+
+	/**
+	  * produce a HTML version of the product
+	  *
+	  * @param string $product  the product to render
+	  * @param string $template is this to be a multi-view product or single-view?
+	  *
+	  * @return string html of the product
+	  */
 	function render($product, $template='singleview') {
 		global $DBVARS;
 		$GLOBALS['products_template_used']=$template;
 		if (isset($DBVARS['online_store_currency'])) {
 			$csym=$DBVARS['online_store_currency'];
 		}
-		$smarty=products_setup_smarty();
+		$smarty=Products_setupSmarty();
 		$smarty->assign('product', $product);
 		$smarty->assign('product_id', $product->get('id'));
 		$corrections=isset($this->meta->allow_visitor_corrections)
@@ -506,7 +677,8 @@ class ProductType{
 								$p=(float)$bits[1];
 								if ($p) {
 									$e=$bits[0]
-										.($bits[1]>0?' - add '.($_SESSION['currency']['symbol']).$bits[1]:$bits[1]);
+										.($bits[1]>0?' - add '
+										.($_SESSION['currency']['symbol']).$bits[1]:$bits[1]);
 								}
 							}
 							$h.='<option value="'.htmlspecialchars($o).'">'
@@ -521,14 +693,14 @@ class ProductType{
 						$f->n,
 						$prefix.$h.$suffix
 					);
-					break; // }
+				break; // }
 				case 'selected-image': // {
 					$smarty->assign(
 						$f->n,
 						'<input type="hidden" name="products_values_'.$f->n.'" '
 						.'class="product-field '.$f->n.$required.'"/>'
 					);
-					break; // }
+				break; // }
 				case 'textarea': // { everything else
 					if (@$f->u) {
 						$smarty->assign(
@@ -543,7 +715,7 @@ class ProductType{
 							$prefix.$val.$suffix
 						);
 					}
-					break; // }
+				break; // }
 				default: // { everything else
 					if (@$f->u) {
 						$smarty->assign(
@@ -561,7 +733,7 @@ class ProductType{
 					// }
 			}
 		}
-		$smarty->assign('_name',$product->name);
+		$smarty->assign('_name', $product->name);
 		return '<div class="products-product" id="products-'.$product->get('id')
 			.'">'.$smarty->fetch(
 				USERBASE.'/ww.cache/products/templates/types_'.$template.'_'.$this->id

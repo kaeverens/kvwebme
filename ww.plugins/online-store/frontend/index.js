@@ -1,57 +1,62 @@
-function compare(obj1, obj2)
-{
-    function size(obj)
-    {
-        var size = 0;
-        for (var keyName in obj)
-        {
-            if (keyName != null)
-                size++;
-        }
-        return size;
-    }
+function compare(obj1, obj2) {
+	function size(obj) {
+		var size = 0;
+		for (var keyName in obj) {
+			if (keyName != null) {
+				size++;
+			}
+		}
+		return size;
+	}
 
-    if (size(obj1) != size(obj2))
-        return false;
+	if (size(obj1) != size(obj2)) {
+		return false;
+	}
 
-    for(var keyName in obj1)
-    {
-        var value1 = obj1[keyName];
-        var value2 = obj2[keyName];
+	for(var keyName in obj1) {
+		var value1 = obj1[keyName];
+		var value2 = obj2[keyName];
 
-        if (typeof value1 != typeof value2)
-            return false;
+		if (typeof value1 != typeof value2) {
+			return false;
+		}
 
-        // For jQuery objects:
-        if (value1 && value1.length && (value1[0] !== undefined && value1[0].tagName))
-        {
-            if(!value2 || value2.length != value1.length || !value2[0].tagName || value2[0].tagName != value1[0].tagName)
-                return false;
-        }
-        else if (typeof value1 == 'function' || typeof value1 == 'object') {
-            var equal = compare(value1, value2);
-            if (!equal)
-                return equal;
-        }
-        else if (value1 != value2)
-            return false;
-    }
-    return true;
+		// For jQuery objects:
+		if (value1 && value1.length && (value1[0] !== undefined && value1[0].tagName)) {
+			if(!value2 || value2.length != value1.length || !value2[0].tagName || value2[0].tagName != value1[0].tagName) {
+				return false;
+			}
+		}
+		else if (typeof value1 == 'function' || typeof value1 == 'object') {
+			var equal = compare(value1, value2);
+			if (!equal) {
+				return equal;
+			}
+		}
+		else if (value1 != value2) {
+			return false;
+		}
+	}
+	return true;
 }
 function findMatchingAddress(address){
-	if(userdata.id==null)
+	if (userdata.id==null) {
 		return true;
+	}
 	for(var i in userdata.address){
-		if(userdata.address[i].default)
+		if (userdata.address[i].default) {
 			address.default=userdata.address[i].default;
-		if(compare(userdata.address[i],address))
+		}
+		if (compare(userdata.address[i],address)) {
 			return true;
+		}
 	}
 	return false;
 }
 function populate_delivery(address,bill){
-	if(userdata.id==null)
+	if (userdata.id==null) {
 		return;
+	}
 	for(var i in userdata.address){
 		if(userdata.address[i].default=="yes"&&address==null){
 			var current=userdata.address[i];

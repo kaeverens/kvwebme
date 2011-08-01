@@ -1,7 +1,9 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if(!Core_isAdmin())die('access denied');
-if(isset($_REQUEST['get_banner'])){
+if (!Core_isAdmin()) {
+	die('access denied');
+}
+if (isset($_REQUEST['get_banner'])) {
 	require '../frontend/index.php';
 	$o=new stdClass();
 	$o->id=(int)$_REQUEST['get_banner'];
@@ -9,19 +11,19 @@ if(isset($_REQUEST['get_banner'])){
 	echo json_encode($ret);
 	exit;
 }
-if(isset($_REQUEST['action']) && $_REQUEST['action']=='save'){
+if (@$_REQUEST['action']=='save') {
 	$id=(int)$_REQUEST['id'];
 	$id_was=$id;
 	$html=addslashes($_REQUEST['html']);
 	$sql="banners set html='$html'";
-	if($id){
+	if ($id) {
 		$sql="update $sql where id=$id";
 		dbQuery($sql);
 	}
-	else{
+	else {
 		$sql="insert into $sql";
 		dbQuery($sql);
-		$id=dbOne('select last_insert_id() as id','id');
+		$id=dbOne('select last_insert_id() as id', 'id');
 	}
 	$ret=array('id'=>$id,'id_was'=>$id_was);
 	echo json_encode($ret);
@@ -29,10 +31,15 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='save'){
 	exit;
 }
 
-if(isset($_REQUEST['id']))$id=(int)$_REQUEST['id'];
-else $id=0;
-echo '<a href="javascript:;" id="banner_editlink_'.$id.'" class="banner_editlink">view or edit snippet</a>';
-if($id){
+if (isset($_REQUEST['id'])) {
+	$id=(int)$_REQUEST['id'];
+}
+else {
+	$id=0;
+}
+echo '<a href="javascript:;" id="banner_editlink_'.$id.'" class="banner_edi'
+	.'tlink">view or edit snippet</a>';
+if ($id) {
 	echo '<div id="banner_preview_'.$id.'"></div>';
 }
 ?>
@@ -40,12 +47,18 @@ if($id){
 if(!ww.banner)ww.banner={
 	editor_instances:0
 };
-function banner_edit(ev){
+function banner_edit(ev) {
 	var el=ev.target;
 	var id=el.id.replace(/banner_editlink_/,'');
 	ww.banner.editor_instances++;
-	var d=$('<div><textarea style="width:600px;height:300px;" id="banner_html'+ww.banner.editor_instances+'" name="banner_html'+ww.banner.editor_instances+'"></textarea></div>');
-	$.getJSON('/ww.plugins/banner-image/admin/widget-form.php',{'get_banner':id},function(res){
+	var d=$(
+		'<div><textarea style="width:600px;height:300px;" id="banner_html'
+		+ww.banner.editor_instances+'" name="banner_html'
+		+ww.banner.editor_instances+'"></textarea></div>'
+	);
+	$.getJSON('/ww.plugins/banner-image/admin/widget-form.php',{
+		'get_banner':id
+	}, function(res){
 		d.dialog({
 			minWidth:630,
 			minHeight:400,
@@ -59,7 +72,10 @@ function banner_edit(ev){
 			buttons:{
 				'Save':function(){
 					var html=ww.banner.rte.getData();
-					$.post('/ww.plugins/banner-image/admin/widget-form.php',{'id':id,'action':'save','html':html},function(ret){
+					$.post(
+						'/ww.plugins/banner-image/admin/widget-form.php', {
+						'id':id,'action':'save','html':html
+					}, function(ret){
 						if(ret.id!=ret.was_id){
 							el.id='banner_editlink_'+ret.id;
 						}
@@ -77,7 +93,10 @@ function banner_edit(ev){
 				}
 			}
 		});
-		ww.banner.rte=CKEDITOR.replace( 'banner_html'+ww.banner.editor_instances,{filebrowserBrowseUrl:"/j/kfm/",menu:"WebME"} );
+		ww.banner.rte=CKEDITOR.replace(
+			'banner_html'+ww.banner.editor_instances,
+			{filebrowserBrowseUrl:"/j/kfm/",menu:"WebME"}
+		);
 		ww.banner.rte.setData(res.content);
 	});
 }
@@ -87,8 +106,9 @@ $('.banner_editlink').each(function(){
 	this.content_click_added=true;
 })
 <?php
-if($id){
-	echo '$("#banner_preview_'.$id.'").load("/ww.plugins/banner-image/admin/get_text_preview.php?id='.$id.'")';
+if ($id) {
+	echo '$("#banner_preview_'.$id.'").load("/ww.plugins/banner-image/admin/g'
+		.'et_text_preview.php?id='.$id.'")';
 }
 ?>
 </script>

@@ -32,7 +32,7 @@ $plugin=array(
 		'page_type' => 'OnlineStore_frontend',
 		'template_functions' => array(
 			'ONLINESTORE_PAYMENT_TYPES' => array(
-				'function' => 'OnlineStore_payment_types'
+				'function' => 'OnlineStore_paymentTypes'
 			),
 			'ONLINESTORE_VOUCHER' => array(
 				'function' => 'OnlineStore_showVoucherInput'
@@ -47,7 +47,7 @@ $plugin=array(
 		'initialisation-completed' => 'OnlineStore_startup',
 		'privacy_user_profile'     => 'OnlineStore_userProfile'
 	),
-	'version' => '10'
+	'version' => '11'
 );
 // }
 // { currency symbols
@@ -58,10 +58,13 @@ $online_store_currencies=array(
 // }
 
 /**
- * OnlineStore_userProfile
- *
- * lists past orders made by the user
- */
+  * lists past orders made by the user
+  *
+  * @param object $PAGEDATA the current page instance
+  * @param int    $user     the user ID
+  *
+  * @return string HTML list of orders
+  */
 function OnlineStore_userProfile( $PAGEDATA, $user ) {
 	require dirname(__FILE__).'/frontend/user-profile.php';
 	return $html;
@@ -70,18 +73,22 @@ function OnlineStore_userProfile( $PAGEDATA, $user ) {
 /**
 	* adds a product to the cart
 	*
-	* @param float  $cost       cost of the product
-	* @param int    $amt        how many to add
-	* @param string $short_desc short description of the product
-	* @param string $long_desc  long description of the product
-	* @param string $md5        a unique key for storing this product in the session
-	* @param string $url        URL where the product can be viewed
+	* @param float   $cost          cost of the product
+	* @param int     $amt           how many to add
+	* @param string  $short_desc    short description of the product
+	* @param string  $long_desc     long description of the product
+	* @param string  $md5           a unique key for this product in the session
+	* @param string  $url           URL where the product can be viewed
+	* @param boolean $vat           does VAT apply to this product
+	* @param int     $id            the product's ID, if there is one
+	* @param boolean $delivery_free is this product's delivery free
+	* @param boolean $no_discount   does this product ignore discounts
 	*
 	* @return null
 	*/
 function OnlineStore_addToCart(
 	$cost=0, $amt=0, $short_desc='', $long_desc='', $md5='', $url='',
-	$vat=true, $id=0, $delivery_free=0, $not_discountable=0
+	$vat=true, $id=0, $delivery_free=false, $no_discount=false
 ) {
 	// { add item to session
 	if (!isset($_SESSION['online-store'])) {
@@ -98,7 +105,7 @@ function OnlineStore_addToCart(
 	$item['vat']=$vat;
 	$item['id']=$id;
 	$item['delivery_free']=$delivery_free;
-	$item['not_discountable']=$not_discountable;
+	$item['not_discountable']=$no_discount;
 	$_SESSION['online-store']['items'][$md5]=$item;
 	// }
 	require dirname(__FILE__).'/libs.php';
@@ -136,12 +143,29 @@ function OnlineStore_frontend($PAGEDATA) {
 	* @param object $PAGEDATA the checkout page
 	* @param int    $id       the order ID
 	* @param float  $total    the order total
-	* @param string $return   URL that the buyer should be returned to after a purchase
+	* @param string $return   URL the buyer should be returned to after a purchase
 	*
 	* @return string
 	*/
 function OnlineStore_generatePaypalButton($PAGEDATA, $id, $total, $return='') {
 	require_once dirname(__FILE__).'/frontend/generate-button-paypal.php';
+	return $html;
+}
+
+/**
+	* return HTML for a QuickPay button to pay for the current Online-Store order
+	*
+	* @param object $PAGEDATA the checkout page
+	* @param int    $id       the order ID
+	* @param float  $total    the order total
+	* @param string $return   URL the buyer should be returned to after a purchase
+	*
+	* @return string
+	*/
+function OnlineStore_generateQuickPayButton(
+	$PAGEDATA, $id, $total, $return=''
+) {
+	require_once dirname(__FILE__).'/frontend/generate-button-quickpay.php';
 	return $html;
 }
 
@@ -174,7 +198,7 @@ function OnlineStore_pagedata() {
 	*
 	* @return string
 	*/
-function OnlineStore_payment_types() {
+function OnlineStore_paymentTypes() {
 	require_once dirname(__FILE__).'/frontend/payment-types.php';
 	return $c;
 }
@@ -182,16 +206,23 @@ function OnlineStore_payment_types() {
 /**
 	* Smarty function for returning a product's price, including currency symbol
 	*
+	* @param array  $params parameters passed via Smarty
+	* @param object $smarty the current Smarty object
+	*
 	* @return string
 	*/
-function OnlineStore_productPriceFull($params, &$smarty) {
+function OnlineStore_productPriceFull($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
-	return OnlineStore_productPriceFull_full($params, $smarty);
+	return OnlineStore_productPriceFull2($params, $smarty);
 }
 
 
 /**
 	* when given a number, it returns that number formatted to a currency
+	*
+	* @param float   $val     the number to convert
+	* @param boolean $sym     whether to return a symbol as well
+	* @param boomean $rounded should the returned value be rounded?
 	*
 	* @return string
 	*/
@@ -204,6 +235,8 @@ function OnlineStore_numToPrice($val, $sym=true, $rounded=false) {
 /**
 	* returns a HTML string to show the Online-Store basket
 	*
+	* @param array $vars parameters passed via Smarty
+	*
 	* @return string
 	*/
 function OnlineStore_showBasketWidget($vars=null) {
@@ -215,8 +248,16 @@ function OnlineStore_showBasketWidget($vars=null) {
 	if (isset($vars->template) && $vars->template) {
 		$t=$vars->template;
 		$t=str_replace('{{ONLINESTORE_NUM_ITEMS}}', OnlineStore_getNumItems(), $t);
-		$t=str_replace('{{ONLINESTORE_FINAL_TOTAL}}', OnlineStore_numToPrice(OnlineStore_getFinalTotal()), $t);
-		$t=str_replace('{{ONLINESTORE_CHECKOUTURL}}', '/?pageid='.$_SESSION['onlinestore_checkout_page'], $t);
+		$t=str_replace(
+			'{{ONLINESTORE_FINAL_TOTAL}}',
+			OnlineStore_numToPrice(OnlineStore_getFinalTotal()),
+			$t
+		);
+		$t=str_replace(
+			'{{ONLINESTORE_CHECKOUTURL}}',
+			'/?pageid='.$_SESSION['onlinestore_checkout_page'],
+			$t
+		);
 		$html.=$t;
 	}
 	else {
@@ -250,9 +291,11 @@ function OnlineStore_showBasketWidget($vars=null) {
 			}
 			$html.='<tr class="os_basket_totals"><th colspan="2">Total</th>'
 				.'<td class="total">'
-				.OnlineStore_numToPrice($_SESSION['online-store']['total']).'</td></tr>';
-			$html.='</table>';
-			$html.='<a class="online-store-checkout-link" href="/?pageid='.$_SESSION['onlinestore_checkout_page'].'">'
+				.OnlineStore_numToPrice($_SESSION['online-store']['total'])
+				.'</td></tr>'
+				.'</table>'
+				.'<a class="online-store-checkout-link" href="/?pageid='
+				.$_SESSION['onlinestore_checkout_page'].'">'
 				.'Proceed to Checkout</a>';
 		}
 		else {
@@ -294,47 +337,98 @@ function OnlineStore_getPostageAndPackaging($total, $country, $weight) {
 		$pid=0;
 	}
 	$pandp=$pandps[$pid];
-	return array('name'=>$pandp->name,'total'=>OnlineStore_getPostageAndPackagingSubtotal($pandp->constraints,$total,$country,$weight));
+	return array(
+		'name'=>$pandp->name,
+		'total'=>OnlineStore_getPostageAndPackagingSubtotal(
+			$pandp->constraints, $total, $country, $weight
+		)
+	);
 }
-function OnlineStore_getPostageAndPackagingData(){
+
+/**
+	* get postage and packaging constraints for current checkout
+	*
+	* @return object the constraints
+	*/
+function OnlineStore_getPostageAndPackagingData() {
 	$p=Page::getInstance($_SESSION['onlinestore_checkout_page']);
 	$p->initValues();
 	$r=@$p->vars['online_stores_postage'];
 	if ($r=='' || $r=='[]') {
-		$r='[{"name":"no postage and packaging set","constraints":[{"type":"set_value","value":"0"}]}]';
+		$r='[{"name":"no postage and packaging set","constraints":[{"type":"set'
+			.'_value","value":"0"}]}]';
 	}
 	return json_decode($r);
 }   
-function OnlineStore_getPostageAndPackagingSubtotal($cstrs,$total,$country,$weight){
-	foreach($cstrs as $cstr){
-		if ($cstr->type=='total_weight_less_than_or_equal_to' && $weight<=$cstr->value) {
-			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
+
+/**
+	* figure out the p&p cost
+	*
+	* @param object $cstrs   constraints - rules for figuring out p&p
+	* @param float  $total   total value of the checkout
+	* @param string $country the country being delivered to
+	* @param float  $weight  the weight of the basket
+	*
+	* @return float the p&p cost
+	*/
+function OnlineStore_getPostageAndPackagingSubtotal(
+	$cstrs, $total, $country, $weight
+) {
+	foreach ($cstrs as $cstr) {
+		if ($cstr->type=='total_weight_less_than_or_equal_to'
+			&& $weight<=$cstr->value
+		) {
+			return OnlineStore_getPostageAndPackagingSubtotal(
+				$cstr->constraints, $total, $country, $weight
+			);
 		}
-		if ($cstr->type=='total_weight_more_than_or_equal_to' && $weight>=$cstr->value) {
-			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
+		if ($cstr->type=='total_weight_more_than_or_equal_to'
+			&& $weight>=$cstr->value
+		) {
+			return OnlineStore_getPostageAndPackagingSubtotal(
+				$cstr->constraints, $total, $country, $weight
+			);
 		}
 		if ($cstr->type=='total_less_than_or_equal_to' && $total<=$cstr->value) {
-			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
+			return OnlineStore_getPostageAndPackagingSubtotal(
+				$cstr->constraints, $total, $country, $weight
+			);
 		}
 		if ($cstr->type=='total_more_than_or_equal_to' && $total>=$cstr->value) {
-			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
+			return OnlineStore_getPostageAndPackagingSubtotal(
+				$cstr->constraints, $total, $country, $weight
+			);
 		}
-		if ($cstr->type=='numitems_less_than_or_equal_to' && OnlineStore_getNumItems()<=$cstr->value) {
-			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
+		if ($cstr->type=='numitems_less_than_or_equal_to'
+			&& OnlineStore_getNumItems()<=$cstr->value
+		) {
+			return OnlineStore_getPostageAndPackagingSubtotal(
+				$cstr->constraints, $total, $country, $weight
+			);
 		}
-		if ($cstr->type=='numitems_more_than_or_equal_to' && OnlineStore_getNumItems()>=$cstr->value) {
-			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
+		if ($cstr->type=='numitems_more_than_or_equal_to'
+			&& OnlineStore_getNumItems()>=$cstr->value
+		) {
+			return OnlineStore_getPostageAndPackagingSubtotal(
+				$cstr->constraints, $total, $country, $weight
+			);
 		}
 	}
-	$val=str_replace('weight',$weight,$cstr->value);
-	$val=str_replace('total',$total,$val);
-	$val=str_replace('num_items',OnlineStore_getNumItems(),$val);
-	$val=preg_replace('#[^a-z0-9*/\-+.\(\)]#','',$val);
-	if (preg_match('/[^0-9.]/',str_replace('ceil','',$val))) {
+	$val=str_replace('weight', $weight, $cstr->value);
+	$val=str_replace('total', $total, $val);
+	$val=str_replace('num_items', OnlineStore_getNumItems(), $val);
+	$val=preg_replace('#[^a-z0-9*/\-+.\(\)]#', '', $val);
+	if (preg_match('/[^0-9.]/', str_replace('ceil', '', $val))) {
 		eval('$val=('.$val.');');
 	}
 	return (float)$val;
 }
+
+/**
+	* return the grand total in the checkout
+	*
+	* @return float
+	*/
 function OnlineStore_getFinalTotal() {
 	$grandTotal = 0;
 	$deliveryTotal=0;
@@ -392,7 +486,7 @@ function OnlineStore_getFinalTotal() {
 	*
 	* @return int
 	*/
-function OnlineStore_getNumItems(){
+function OnlineStore_getNumItems() {
 	$num=0;
 	if (!isset($_SESSION['online-store']['items'])) {
 		return 0;
@@ -403,9 +497,15 @@ function OnlineStore_getNumItems(){
 	}
 	return $num;
 }
-function OnlineStore_startup(){
+
+/**
+  * initialise the online store
+  *
+  * @return null
+  */
+function OnlineStore_startup() {
 	if (!isset($_SESSION['onlinestore_checkout_page'])) {
-		$p=dbOne('select id from pages where type="online-store"','id');
+		$p=dbOne('select id from pages where type="online-store"', 'id');
 		if ($p) {
 			$_SESSION['onlinestore_checkout_page']=$p;
 			$page=Page::getInstance($p);

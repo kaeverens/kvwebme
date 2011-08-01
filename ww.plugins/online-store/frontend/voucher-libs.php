@@ -1,4 +1,25 @@
 <?php
+/**
+	* functions to handle vouchers
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+/**
+  * how much is this voucher worth
+  *
+  * @param string $code       the voucher code
+	* @param string $email      the email address of the user
+	* @param float  $grandTotal the value of the basket
+  *
+  * @return float the value of the voucher
+  */
 function OnlineStore_voucherAmount($code, $email, $grandTotal) {
 	$voucher=OnlineStore_voucherCheckValidity($code, $email);
 	if (@$voucher['error']) {
@@ -18,6 +39,15 @@ function OnlineStore_voucherAmount($code, $email, $grandTotal) {
 		?$grandTotal
 		:$value;
 }
+
+/**
+  * check if a voucher is valid
+  *
+  * @param string $code  the voucher to check
+	* @param string $email the user's email address
+  *
+  * @return boolean
+  */
 function OnlineStore_voucherCheckValidity($code, $email) {
 	if (isset($GLOBALS['OnlineStore_voucherInstance'])) {
 		return $GLOBALS['OnlineStore_voucherInstance'];
@@ -47,14 +77,15 @@ function OnlineStore_voucherCheckValidity($code, $email) {
 			// }
 			if ($voucher['usages_per_user']) {
 				// { has this email address's quota been used up?
-				if (@$voucher['users_list']['uses_by_email'][$email]>=$voucher['usages_per_user']) {
+				$usesbyemail=(int)@$voucher['users_list']['uses_by_email'][$email];
+				if ($usesbyemail>=$voucher['usages_per_user']) {
 					continue;
 				}
 				// }
 				// { has the user account's quota been used up?
-				if (@$_SESSION['userdata']['id']
-					&& @$voucher['users_list']['uses_by_user'][$_SESSION['userdata']['id']]>=$voucher['usages_per_user']
-				) {
+				$uid=(int)@$_SESSION['userdata']['id'];
+				$usesbyuser=(int)@$voucher['users_list']['uses_by_user'][$uid];
+				if ($uid && $usesbyuser>=$voucher['usages_per_user']) {
 					continue;
 				}
 				// }
@@ -71,6 +102,15 @@ function OnlineStore_voucherCheckValidity($code, $email) {
 	$GLOBALS['OnlineStore_voucherInstance']=$valid;
 	return $valid;
 }
+
+/**
+  * record that a voucher was used
+  *
+  * @param int   $order_id the order ID
+	* @param float $amount   how much was used
+  *
+  * @return null
+  */
 function OnlineStore_voucherRecordUsage($order_id, $amount) {
 	global $OnlineStore_voucherInstance;
 	// { record total number of uses

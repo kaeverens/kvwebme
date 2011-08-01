@@ -20,28 +20,29 @@ $plugin=array(
 	'version'=>0
 );
 
-function privacy_front($PAGEDATA){
+function privacy_front($PAGEDATA) {
 	require SCRIPTBASE.'ww.plugins/privacy/frontend/page_type.php';
 	return $html;
 }
-function privacy_admin($page,$page_vars){
+function privacy_admin($page, $page_vars) {
 	require SCRIPTBASE.'ww.plugins/privacy/admin/page_type.php';
 	return $html;
 }
-function privacy_show_page_panel($page,$page_vars){
+function privacy_show_page_panel($page,$page_vars) {
 	require SCRIPTBASE.'ww.plugins/privacy/admin/privacy_show_page_panel.php';
 }
-function privacy_page_test($pagedata){
+function privacy_page_test($pagedata) {
 	require SCRIPTBASE.'ww.plugins/privacy/frontend/privacy_page_test.php';
 	return $allowed;
 }
-function UserAuthentication_showWidget($vars=null, $widget_id) {
+function UserAuthentication_showWidget($vars=null, $widget_id=0) {
 	if (!isset($_SESSION['userdata']) || !$_SESSION['userdata']['id']) {
 		require_once SCRIPTBASE.'ww.plugins/privacy/frontend/widget-login.php';
 		WW_addScript('/ww.plugins/privacy/frontend/widget-login.js');
 		return $c;
 	}
-	return '<div id="userauthentication-widget" style="margin:3px">Logged in as <strong>'
+	return '<div id="userauthentication-widget" style="margin:3px">Logged in '
+		.'as <strong>'
 		.$_SESSION['userdata']['name'].'</strong>'
 		.' [<a href="/?logout">log out</a>]'
 		.'[<a href="/_r?type=loginpage">edit profile</a>]</div>';

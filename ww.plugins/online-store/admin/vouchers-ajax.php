@@ -1,4 +1,16 @@
 <?php
+/**
+	* get a list of vouchers
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 
 if (!Core_isAdmin()) {
@@ -18,7 +30,7 @@ $sql='select id,name,value,value_type,start_date,end_date '
 $rs=dbAll($sql);
 // }
 $results=array();
-foreach($rs as $r){
+foreach ($rs as $r) {
 	$results[]=array(
 		'<a href="/ww.admin/plugin.php?_plugin=online-store&_page=vouchers&'
 			.'voucher_id='.$r['id'].'">'.htmlspecialchars($r['name']).'</a>',

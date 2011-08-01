@@ -29,12 +29,13 @@ function get_template_names( ) {
 	return $themes;
 }
 
-echo '
-<script type="text/javascript" src="/ww.admin/siteoptions/themes/download.js"></script>
-<link rel="stylesheet" type="text/css" href="http://kvweb.me/ww.plugins/themes-api/api.css"/>
-';
+echo '<script src="/ww.admin/siteoptions/themes/download.js"></script>'
+	.'<link rel="stylesheet" href="http://kvweb.me/ww.plugins/themes-api/api.'
+	.'css"/>';
 
-echo '<div id="public-repository"><p>Choosing a theme here will download it into your private repository. If you already have a copy of the chosen theme there, then your copy will be over-written.</p>';
+echo '<div id="public-repository"><p>Choosing a theme here will download it'
+	.' into your private repository. If you already have a copy of the chosen'
+	.' theme there, then your copy will be over-written.</p>';
 
 echo '<div id="themes-carousel">
 </div>';
@@ -42,9 +43,8 @@ echo '<div id="themes-carousel">
 /**
  * build an array of installed themes
  */
-$installed = get_template_names( );
+$installed = get_template_names();
 echo '<script type="text/javascript">window.installed_themes=' . 
-	json_encode( $installed ) . ';</script>';
+	json_encode($installed) . ';</script>';
 
 echo '<br style="clear:both"/>';
-?>

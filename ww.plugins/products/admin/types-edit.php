@@ -1,22 +1,28 @@
 <?php
-if(!Core_isAdmin())exit;
+if (!Core_isAdmin()) {
+	exit;
+}
 // { set up initial variables
-if(isset($_REQUEST['id']) && is_numeric($_REQUEST['id']))$id=(int)$_REQUEST['id'];
-else $id=0;
+if (isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
+	$id=(int)$_REQUEST['id'];
+}
+else {
+	$id=0;
+}
 // }
 
-if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
+if (@$_REQUEST['action']='save') {
 	Core_cacheClear('products');
 	$errors=array();
-	if(!isset($_REQUEST['name']) || $_REQUEST['name']=='') {
+	if (!isset($_REQUEST['name']) || $_REQUEST['name']=='') {
 		$errors[]='You must fill in the <strong>Name</strong>.';
 	}
-	if(count($errors)){
-		echo '<em>'.join('<br />',$errors).'</em>';
+	if (count($errors)) {
+		echo '<em>'.join('<br />', $errors).'</em>';
 	}
-	else{
+	else {
 		$data_fields = $_REQUEST['data_fields'];
-		$data_fields=str_replace(array("\n","\r"),array('\n',''),$data_fields);
+		$data_fields=str_replace(array("\n", "\r"), array('\n', ''), $data_fields);
 		$singleview = Core_sanitiseHtml($_REQUEST['singleview_template']);
 		if (strlen($singleview)<20) {
 			$singleview = '{{PRODUCTS_DATATABLE}}'.$singleview;
@@ -43,16 +49,16 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		if (isset($_POST['is_for_sale'])) {
 			$sql.=',is_for_sale=1';
 		}
-		if($id){
+		if ($id) {
 			dbQuery("update products_types $sql where id=$id");
 		}
-		else{
+		else {
 			dbQuery("insert into products_types $sql");
-			$id=dbOne('select last_insert_id() as id','id');
+			$id=dbOne('select last_insert_id() as id', 'id');
 		}
-		if(isset($_FILES['image_not_found'])){
+		if (isset($_FILES['image_not_found'])) {
 			if (!file_exists(USERBASE.'f/products/types/'.$id)) {
-				mkdir(USERBASE.'f/products/types/'.$id,0777,true);
+				mkdir(USERBASE.'f/products/types/'.$id, 0777, true);
 			}
 			$imgs=new DirectoryIterator(USERBASE.'f/products/types/'.$id);
 			foreach ($imgs as $img) {
@@ -69,13 +75,17 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 	}
 }
 
-if($id){
+if ($id) {
 	$tdata=dbRow("select * from products_types where id=$id");
-	if(!$tdata)die('<em>No product type with that ID exists.</em>');
+	if (!$tdata) {
+		die('<em>No product type with that ID exists.</em>');
+	}
 }
-else{
+else {
 	if (isset($_REQUEST['from'])) {
-		$tdata=dbRow("select * from products_types where id=".(int)$_REQUEST['from']);
+		$tdata=dbRow(
+			"select * from products_types where id=".(int)$_REQUEST['from']
+		);
 		$tdata['id']=0;
 		$tdata['name']='';
 		if ($tdata['meta']=='') {
@@ -131,9 +141,7 @@ if (isset($PLUGINS['online-store'])) {
 // { allow visitors to suggest corrections
 echo '<tr><th>Allow visitors to suggest corrections?</th>'
 	.'<td><input name="meta[allow_visitor_corrections]" type="checkbox"';
-if (isset($tdata['meta']['allow_visitor_corrections'])
-	&& $tdata['meta']['allow_visitor_corrections']
-) {
+if (@$tdata['meta']['allow_visitor_corrections']) {
 	echo ' checked="checked"';
 }
 echo ' /></td></tr>';
@@ -150,8 +158,8 @@ echo '</table></td></tr>';
 echo '<tr>';
 // { image not found
 echo '<th>image-not-found</th><td><input type="file" name="image_not_found" />';
-if($id){
-	if(!file_exists(USERBASE.'f/products/types/'.$id.'/image-not-found.png')){
+if ($id) {
+	if (!file_exists(USERBASE.'f/products/types/'.$id.'/image-not-found.png')) {
 		if (!file_exists(USERBASE.'f/products/types/'.$id)) {
 			mkdir(USERBASE.'f/products/types/'.$id,0777,true);
 		}
@@ -175,7 +183,9 @@ echo '<div id="data-fields">'
 	.'Examples: colour, size, weight, description.</p>';
 $dataFields = $tdata['data_fields'];
 echo '<textarea name="data_fields" id="data_fields">'
-	.htmlspecialchars(str_replace(array("\n","\r"),array('\n','\r'),$dataFields))
+	.htmlspecialchars(
+		str_replace(array("\n", "\r"), array('\n', '\r'), $dataFields)
+	)
 	.'</textarea>';
 echo '</div>';
 // }
@@ -184,7 +194,8 @@ echo '<div id="multiview-template">'
 	.'<p>This template is for how the product looks when it is in a list '
 	.'of products. Leave this blank to have one auto-generated when needed.</p>'
 	.'<div class="tabs"><ul>'
-	.'<li><a href="#mv-body">Body</a></li><li><a href="#mv-header">Header</a></li>'
+	.'<li><a href="#mv-body">Body</a></li>'
+	.'<li><a href="#mv-header">Header</a></li>'
 	.'<li><a href="#mv-footer">Footer</a></li></ul>'
 	.'<div id="mv-body">'
 	.ckeditor('multiview_template', $tdata['multiview_template'])
@@ -198,7 +209,7 @@ echo '<div id="multiview-template">'
 echo '<div id="singleview-template">'
 	.'<p>This template is for how the product looks when shown on its own. '
 	.'Leave this blank to have one auto-generated when needed.</p>';
-echo ckeditor('singleview_template',$tdata['singleview_template']);
+echo ckeditor('singleview_template', $tdata['singleview_template']);
 echo '</div>';
 // }
 echo '</div><input type="submit" value="Save" /></form>';

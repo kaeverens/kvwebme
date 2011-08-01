@@ -125,8 +125,8 @@ if (isset($_REQUEST['voucher_id'])) {
 		.'for no limit)</td></tr>';
 	// }
 	// { date range
-	echo '<tr><th>Valid Dates</th><td>Valid from the morning of <input class="date-human" '
-		.'name="start_date" value="'.$r['start_date'].'"/>'
+	echo '<tr><th>Valid Dates</th><td>Valid from the morning of <input class='
+		.'"date-human" name="start_date" value="'.$r['start_date'].'"/>'
 		.'Expiring the morning of <input class="date-human" '
 		.'name="end_date" value="'.$r['end_date'].'"/></td></tr>';
 	// }

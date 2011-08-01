@@ -7,7 +7,7 @@
   * @category   Whatever
   * @package    WebworksWebme
   * @subpackage Forum
-  * @author     Kae Verens <kae.ie>
+  * @author     Kae Verens <kae@kvsites.ie>
   * @license    GPL Version 2
   * @link       www.kvweb.me
  */

@@ -14,25 +14,28 @@
 /**
  * make sure post is set
  */
-if( !isset( $_POST[ 'install-theme' ] ) && !isset( $_POST[ 'download-theme' ] ) )
+if (!isset($_POST[ 'install-theme' ]) && !isset($_POST[ 'download-theme' ])) {
 	exit;
+}
 
 /**
  * get id
  */
-$id = ( int ) @$_POST[ 'theme_id' ];
-if( $id == 0 )
+$id = (int) @$_POST[ 'theme_id' ];
+if ($id == 0) {
 	exit;
+}
 
 /**
  * get theme from api
  */
-$theme = Core_getExternalFile( 'http://kvweb.me/ww.plugins/themes-api/api.php?theme=' . $id );
+$theme = Core_getExternalFile('http://kvweb.me/ww.plugins/themes-api/api.php?theme=' . $id);
 
-if( $theme == false )
-        die( 'theme does not exist' );
+if ($theme == false) {
+	die('theme does not exist');
+}
 
-$theme = json_decode( $theme, true );
+$theme = json_decode($theme, true);
 
 echo '<h2>Downloading Theme</h2>';
 
@@ -40,42 +43,42 @@ echo '<h2>Downloading Theme</h2>';
  * downloading
  */
 echo 'Downloading...<br/>';
-$zipfile = Core_getExternalFile( $theme[ 'download' ] );
+$zipfile = Core_getExternalFile($theme[ 'download' ]);
 $theme_dir = USERBASE . 'themes-personal/';
-file_put_contents( $theme_dir . $theme[ 'name' ] . '.zip', $zipfile );
+file_put_contents($theme_dir . $theme[ 'name' ] . '.zip', $zipfile);
 
 /**
  * extracting
  */
 echo 'Extracting...<br/>';
-shell_exec( 'cd ' . $theme_dir . ' && unzip -o ' .  $theme[ 'name' ] . '.zip' );
+shell_exec('cd ' . $theme_dir . ' && unzip -o ' .  $theme[ 'name' ] . '.zip');
 
 /**
  * cleaning
  */
 echo 'Removing Zip File..<br/>';
-shell_exec( 'rm -rf ' . $theme_dir . $theme[ 'name' ] . '.zip' );
+shell_exec('rm -rf ' . $theme_dir . $theme[ 'name' ] . '.zip');
 
 echo 'Theme Download Successful<br/>';
 
 /**
  * install theme if selected
  */
-if( isset( $_POST[ 'install-theme' ] ) ){
+if (isset($_POST[ 'install-theme' ])) {
 
 	$DBVARS['theme'] = $theme[ 'name' ];
 
 	$variant = @$_POST[ 'theme_variant' ];
-	if( $variant != '' )
+	if ($variant != '') {
 		$DBVARS['theme_variant'] = $variant;
+	}
 
-	Core_configRewrite( );
-	Core_cacheClear( 'pages' );
+	Core_configRewrite();
+	Core_cacheClear('pages');
 
 }
 
 /**
  * redirect to themes personal
  */
-header( 'location: /ww.admin/siteoptions.php?page=themes' );
-?>
+header('location: /ww.admin/siteoptions.php?page=themes');

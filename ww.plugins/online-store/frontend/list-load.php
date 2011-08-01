@@ -1,4 +1,16 @@
 <?php
+/**
+	* load a user's shopping list
+	*
+	* PHP version 5
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     None
+	*/
+
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 
 header('Content-type: text/json');

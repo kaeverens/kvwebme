@@ -12,11 +12,11 @@ if (!file_exists(USERBASE.'/ww.cache/products/templates')) {
 function products_categories ($params, &$smarty) {
 	$product = $smarty->_tpl_vars['product'];
 	$productID = $product->id;
-	$categoryIDs 
-		= dbAll(
-			'select category_id '.
-			'from products_categories_products '
-			.'where product_id='.$productID);
+	$categoryIDs = dbAll(
+		'select category_id '.
+		'from products_categories_products '
+		.'where product_id='.$productID
+	);
 	if ($categoryIDs) {
 		$query
 			= 'select count(id) 
@@ -115,7 +115,7 @@ function products_categories ($params, &$smarty) {
 	$c.= '</ul>';
 	return $c;
 }
-function products_datatable ($params, &$smarty) {
+function Products_datatable ($params, &$smarty) {
 	$product= $smarty->_tpl_vars['product'];
 	$type= ProductType::getInstance($product->get('product_type_id'));
 	if (!$type) {
@@ -156,7 +156,7 @@ function products_datatable ($params, &$smarty) {
 					else {
 						$c.= '&nbsp;';
 					}
-				// }
+					// }
 			}
 			$c.='</td></tr>';
 		}
@@ -198,7 +198,7 @@ function products_datatable ($params, &$smarty) {
 					else {
 						$c.='&nbsp;';
 					}
-				// }
+					// }
 			}
 			$c.='</td>';
 		}
@@ -224,10 +224,12 @@ function Product_datatableMultiple (&$products, $direction) {
 		if (!is_array($type->data_fields)) {
 			return 'product type "'.$type->name.'" has no data fields.';
 		}
-		foreach($type->data_fields as $df){
+		foreach ($type->data_fields as $df) {
 			switch ($df->t) {
 				case 'checkbox': // {
-					$row[$df->n] = (isset($product->vals[$df->n])&&$product->vals[$df->n])?'Yes':'No';
+					$row[$df->n]=isset($product->vals[$df->n])&&$product->vals[$df->n]
+						?'Yes'
+						:'No';
 				break; // }
 				case 'date': // {
 					$row[$df->n] = date_m2h($product->vals[$df->n]);
@@ -239,7 +241,7 @@ function Product_datatableMultiple (&$products, $direction) {
 					$row[$df->n] = htmlspecialchars($product->vals[$df->n]);
 				break; // }
 			}
-			if(!in_array($df->n,$headers)){
+			if (!in_array($df->n, $headers)) {
 				if ($df->ti) {
 					$headers[$df->n]=$df->ti;
 				}
@@ -251,7 +253,7 @@ function Product_datatableMultiple (&$products, $direction) {
 		}
 		$data[] = $row;
 	}
-	switch ($direction){
+	switch ($direction) {
 		case 'horizontal': // {
 			WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
 			WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
@@ -259,7 +261,7 @@ function Product_datatableMultiple (&$products, $direction) {
 			WW_addCSS('/ww.plugins/products/frontend/show-horizontal.css');
 			$html='<table class="product-horizontal">';
 			$html.='<thead><tr>';
-			foreach($headers as $n=>$v) {
+			foreach ($headers as $n=>$v) {
 				$html.='<th o="'.htmlspecialchars($n).'">'.htmlspecialchars($v).'</th>';
 			}
 			$html.='</tr></thead><tbody>';
@@ -284,7 +286,7 @@ function Product_datatableMultiple (&$products, $direction) {
 			}
 			$html.='</tr></tfoot></table>';
 			return $html;
-		// }
+			// }
 		case 'vertical': // {
 			$html='<table class="product-vertical">';
 			foreach ($headers as $n=>$d) {
@@ -296,7 +298,7 @@ function Product_datatableMultiple (&$products, $direction) {
 			}
 			$html.='</table>';
 			return $html;
-		// }
+			// }
 	}
 }
 function products_get_add_to_cart_button($params, &$smarty) {
@@ -315,26 +317,33 @@ function Products_getAddManyToCartButton($params, &$smarty) {
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'"/></form>';
 }
-function products_image($params, &$smarty) {
-	$params=array_merge(array(
-		'width'=>128,
-		'height'=>128,
-	),$params);
+function Products_image($params, &$smarty) {
+	$params=array_merge(
+		array(
+			'width'=>128,
+			'height'=>128,
+		),
+		$params
+	);
 	$product=$smarty->_tpl_vars['product'];
 	$vals=$product->vals;
 	if (!$vals['images_directory']) {
-		return products_image_not_found($params,$smarty);
+		return Products_imageNotFound($params, $smarty);
 	}
 	$iid=0;
 	if ($vals['image_default']) {
 		$iid=$vals['image_default'];
 		$image=kfmImage::getInstance($iid);
-		if (!$image->exists())$iid=0;
+		if (!$image->exists()) {
+			$iid=0;
+		}
 	}
 	if (!$iid) {
 		$directory = $vals['images_directory'];
-		$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$directory));
-		if (!$dir_id)return products_image_not_found($params,$smarty);
+		$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//', '', $directory));
+		if (!$dir_id) {
+			return Products_imageNotFound($params, $smarty);
+		}
 		$images=kfm_loadFiles($dir_id);
 		if (count($images['files'])) {
 			$image=$images['files'][0];
@@ -342,7 +351,7 @@ function products_image($params, &$smarty) {
 		}
 	}
 	if (!$iid) {
-		return products_image_not_found($params,$smarty);
+		return Products_imageNotFound($params, $smarty);
 	}
 	$img='<img src="/kfmget/'.$iid
 		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" />';	
@@ -355,36 +364,43 @@ function products_image($params, &$smarty) {
 		. '</div>'
 		. '</div>';
 }
-function products_image_not_found($params, &$smarty) {
+function Products_imageNotFound($params, &$smarty) {
 	$s=$params['width']<$params['height']?$params['width']:$params['height'];
 	$product=$smarty->_tpl_vars['product'];
 	$pt=ProductType::getInstance($product->vals['product_type_id']);
 	return $pt->getMissingImage($s);
 }
-function products_images($params, &$smarty) {
-	$params=array_merge(array(
-		'thumbsize'=>60,
-		'display'=>'list',
-		'hover'=>'opacity',
-		'columns'=>3,
-		'rows'=>1,
-	),$params);
+function Products_images($params, &$smarty) {
+	$params=array_merge(
+		array(
+			'thumbsize'=>60,
+			'display'=>'list',
+			'hover'=>'opacity',
+			'columns'=>3,
+			'rows'=>1,
+		),
+		$params
+	);
 	// { make sure there is at least one image
 	$product=$smarty->_tpl_vars['product'];
 	$vals=$product->vals;
 	if (!$vals['images_directory']) {
-		return products_image_not_found($params,$smarty);
+		return Products_imageNotFound($params, $smarty);
 	}
 	$iid=0;
 	if ($vals['image_default']) {
 		$iid=$vals['image_default'];
 		$image=kfmImage::getInstance($iid);
-		if (!$image->exists())$iid=0;
+		if (!$image->exists()) {
+			$iid=0;
+		}
 	}
 	if (!$iid) {
 		$directory = $vals['images_directory'];
-		$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$directory));
-		if (!$dir_id)return products_image_not_found($params,$smarty);
+		$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//', '', $directory));
+		if (!$dir_id) {
+			return Products_imageNotFound($params, $smarty);
+		}
 		$images=kfm_loadFiles($dir_id);
 		if (count($images['files'])) {
 			$image=$images['files'][0];
@@ -392,7 +408,7 @@ function products_images($params, &$smarty) {
 		}
 	}
 	if (!$iid) {
-		return products_image_not_found($params,$smarty);
+		return Products_imageNotFound($params, $smarty);
 	}
 	// }
 	WW_addScript('/ww.plugins/image-gallery/frontend/gallery.js');
@@ -422,7 +438,7 @@ function products_images($params, &$smarty) {
 	$html.='</div>';
 	return $html;
 }
-function products_link ($params, &$smarty) {
+function Products_link ($params, &$smarty) {
 	$product= $smarty->_tpl_vars['product'];
 	$id= $product->id;
 	return $product->getRelativeURL();
@@ -468,7 +484,7 @@ function Products_plusVat($params, &$smarty) {
 		return '+ VAT';
 	}
 }
-function products_reviews ($params, &$smarty) {
+function Products_reviews ($params, &$smarty) {
 	WW_addScript('/ww.plugins/products/frontend/delete.js');
 	WW_addScript('/ww.plugins/products/frontend/products-edit-review.js');
 	$userid = (int)$_SESSION['userdata']['id'];
@@ -574,19 +590,19 @@ function products_reviews ($params, &$smarty) {
 				'id'
 			);
 		if (isset($_SESSION['userdata']) && $userHasNotReviewedThisProduct) {
-			$c.= products_submit_review_form($productid, $userid);
+			$c.= Products_submitReviewForm($productid, $userid);
 		}
 	}
 	else {
 		$c.= '<em>Nobody has reviewed this product yet</em>';
 		$c.= '<br/>';
 		if (isset($_SESSION['userdata'])) {
-			$c.= products_submit_review_form($productid, $userid);
+			$c.= Products_submitReviewForm($productid, $userid);
 		}
 	}
 	return $c;
 }
-function products_setup_smarty() {
+function Products_setupSmarty() {
 	$smarty=smarty_setup(USERBASE.'/ww.cache/products/templates_c');
 	$smarty->template_dir='/ww.cache/products/templates';
 	$smarty->assign('PAGEDATA', $GLOBALS['PAGEDATA']);
@@ -652,7 +668,7 @@ function products_show($PAGEDATA) {
 	switch($PAGEDATA->vars['products_what_to_show']) {
 		case '1':
 			return $c
-				.products_show_by_type(
+				.Products_showByType(
 					$PAGEDATA,
 					0,
 					$start,
@@ -664,7 +680,7 @@ function products_show($PAGEDATA) {
 				.$export;
 		case '2':
 			return $c
-				.products_show_by_category(
+				.Products_showByCategory(
 					$PAGEDATA,
 					0,
 					$start,
@@ -675,10 +691,10 @@ function products_show($PAGEDATA) {
 				)
 				.$export;
 		case '3':
-			return $c.products_show_by_id($PAGEDATA).$export;
+			return $c.Products_showById($PAGEDATA).$export;
 	}
 	return $c
-		.products_show_all(
+		.Products_showAll(
 			$PAGEDATA,
 			$start,
 			$limit,
@@ -688,7 +704,7 @@ function products_show($PAGEDATA) {
 		)
 		.$export;
 }
-function products_show_by_id($PAGEDATA,$id=0) {
+function Products_showById($PAGEDATA,$id=0) {
 	if ($id==0) {
 		$id=(int)$PAGEDATA->vars['products_product_to_show'];
 	}
@@ -703,7 +719,7 @@ function products_show_by_id($PAGEDATA,$id=0) {
 	}
 	return $type->render($product);
 }
-function products_show_by_category(
+function Products_showByCategory(
 	$PAGEDATA, $id=0, $start=0, $limit=0, $order_by='', $order_dir=0, $search=''
 ) {
 	if ($id==0) {
@@ -712,7 +728,7 @@ function products_show_by_category(
 	$products=Products::getByCategory($id, $search);
 	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
-function products_show_by_type(
+function Products_showByType(
 	$PAGEDATA, $id=0, $start=0, $limit=0, $order_by='', $order_dir=0, $search=''
 ) {
 	if ($id==0) {
@@ -721,7 +737,7 @@ function products_show_by_type(
 	$products=Products::getByType($id, $search);
 	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
-function products_show_all(
+function Products_showAll(
 	$PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0, $search=''
 ) {
 	if (isset($_REQUEST['product_id'])) {
@@ -794,7 +810,7 @@ function Products_showRelatedProducts($params, &$smarty) {
 	}
 	return 'none yet';
 }
-function products_submit_review_form ($productid, $userid) {
+function Products_submitReviewForm ($productid, $userid) {
 	$formAction = '"http://webworks-webme';
 	$formAction.= '/ww.plugins/products';
 	$formAction.= '/frontend/submit_review.php"';
@@ -1074,7 +1090,7 @@ class Products{
 				if (count($prods)) { // display the first item's header
 					$product=Product::getInstance($prods[0]);
 					$type=ProductType::getInstance($product->get('product_type_id'));
-					$smarty=products_setup_smarty();
+					$smarty=Products_setupSmarty();
 					$c.=$smarty->fetch(
 						USERBASE.'/ww.cache/products/templates/types_multiview_'.$type->id.'_header'
 					);
@@ -1096,7 +1112,7 @@ class Products{
 					}
 				}
 				if (count($prods)) { // display the first item's header
-					$smarty=products_setup_smarty();
+					$smarty=Products_setupSmarty();
 					$c.=$smarty->fetch(
 						USERBASE.'/ww.cache/products/templates/types_multiview_'.$type->id.'_footer'
 					);

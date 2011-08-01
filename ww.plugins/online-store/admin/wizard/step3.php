@@ -1,21 +1,27 @@
 <?php
-
 /**
- * admin/wizard/step3.php, KV-Webme Online Store Plugin
- *
- * invoice
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* invoice
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 session_start();
 
-if(isset($_POST['wizard-login'])){ // validate post data
+if (isset($_POST['wizard-login'])) { // validate post data
 	$email=$_POST['wizard-email'];
-	if($email=='')
-		die('the email is a required field. <input type="submit" value="Back" class="back-link"/>');
+	if ($email=='') {
+		die(
+			'the email is a required field. <input type="submit" value="Back" cla'
+			.'ss="back-link"/>'
+		);
+	}
 	$login=$_POST['wizard-login'];
 	$_SESSION['wizard']['payment']['email']=$email;
 	$_SESSION['wizard']['payment']['login']=$login;	
@@ -24,12 +30,12 @@ if(isset($_POST['wizard-login'])){ // validate post data
 		=@$_POST['wizard-payment-Bank_Transfer'];
 	$_SESSION['wizard']['payment']['realex']=@$_POST['wizard-payment-Realex'];
 
-	if($_SESSION['wizard']['payment']['paypal']==1){ // paypal details
+	if ($_SESSION['wizard']['payment']['paypal']==1) { // paypal details
 		$_SESSION['wizard']['payment']['paypal-email']
 			=$_POST['wizard-paypal-email'];
 	}
 
-	if($_SESSION['wizard']['payment']['transfer']==1){ //bank transfer details
+	if ($_SESSION['wizard']['payment']['transfer']==1) { //bank transfer details
 		$_SESSION['wizard']['payment']['transfer-bankname']
 			=$_POST['wizard-transfer-bank-name'];
 		$_SESSION['wizard']['payment']['transfer-sortcode']
@@ -42,7 +48,7 @@ if(isset($_POST['wizard-login'])){ // validate post data
 			=$_POST['wizard-transfer-message-to-buyer'];
 	}
 
-	if($_SESSION['wizard']['payment']['realex']==1){ // realex details
+	if ($_SESSION['wizard']['payment']['realex']==1) { // realex details
 		$_SESSION['wizard']['payment']['realex-merchantid']
 			=$_POST['wizard-realex-merchant-id'];
 		$_SESSION['wizard']['payment']['realex-secret']

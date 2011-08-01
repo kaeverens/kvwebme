@@ -28,42 +28,42 @@
 require '../../ww.incs/basics.php';
 require SCRIPTBASE . 'ww.plugins/themes-api/api/funcs.php';
 
-if( !empty( $_GET[ 'theme' ] ) ){
+if (!empty ($_GET['theme'])) {
 	require SCRIPTBASE . 'ww.plugins/themes-api/api/theme.php';
 	exit;
 }
 
-if( !empty( $_GET[ 'screenshot' ] ) ){
+if (!empty ($_GET['screenshot'])) {
 	require SCRIPTBASE . 'ww.plugins/themes-api/api/screenshot.php';
 	exit;
 }
 
-if( !empty( $_GET[ 'tags' ] ) ){
+if (!empty ($_GET['tags'])) {
         require SCRIPTBASE . 'ww.plugins/themes-api/api/tags.php';
 	exit;
 }
 
-if( !empty( $_GET[ 'recent' ] ) ){
+if (!empty ($_GET['recent'])) {
         require SCRIPTBASE . 'ww.plugins/themes-api/api/recent.php';
         exit;
 }
 
-if( !empty( $_GET[ 'rating' ] ) ){
+if (!empty ($_GET['rating'])) {
         require SCRIPTBASE . 'ww.plugins/themes-api/api/rating.php';
         exit;
 }
 
-if( !empty( $_GET[ 'downloads' ] ) ){
+if (!empty ($_GET['downloads'])) {
         require SCRIPTBASE . 'ww.plugins/themes-api/api/downloads.php';
         exit;
 }
 
-if( !empty( $_GET[ 'name' ] ) ){
+if (!empty ($_GET['name'])) {
         require SCRIPTBASE . 'ww.plugins/themes-api/api/name.php';
         exit;
 }
 
-if( !empty( $_GET[ 'download' ] ) ){
+if (!empty($_GET['download'])) {
 	require SCRIPTBASE . 'ww.plugins/themes-api/api/download.php';
 	exit;
 }

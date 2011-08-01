@@ -1,10 +1,17 @@
 <?php
-/*
-	Webme Mailing List Plugin v0.2
-	File: plugin.php
-	Developer: Conor Mac Aoidh <http://macaoidh.name>
-	Report Bugs: <conor@macaoidh.name>
-*/
+/**
+	* definition file for the WebME mailing list plugin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conor@macaoidh.name>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 $plugin=array(
 	'name' => 'Mailing List',
 	'admin' => array(

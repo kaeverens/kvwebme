@@ -6,7 +6,7 @@
 	*
 	* @category None
 	* @package  None
-	* @author   Kae Verens <kae.ie>
+	* @author   Kae Verens <kae@kvsites.ie>
 	* @license  GPL 2.0
 	* @link     None
 	*/
@@ -21,7 +21,8 @@ if (!isset($_SESSION['online-store']['items']['products_'.$id.$md5])) {
 
 $product=Product::getInstance($id);
 require_once '../libs.php';
-$amount=(int)$_REQUEST['amt']-$_SESSION['online-store']['items']['products_'.$id.$md5]['amt'];
+$amount=(int)$_REQUEST['amt']
+	-$_SESSION['online-store']['items']['products_'.$id.$md5]['amt'];
 list($price, $amount, $vat)=Products_getProductPrice(
 	$product, $amount, $md5, false
 );
@@ -34,7 +35,9 @@ else {
 }
 
 $total=OnlineStore_calculateTotal();
-$item_total=$amount?$_SESSION['online-store']['items']['products_'.$id.$md5]['cost']*$amount:0;
+$item_total=$amount
+	?$_SESSION['online-store']['items']['products_'.$id.$md5]['cost']*$amount
+	:0;
 
 echo '{'.
 	'"md5": "'.'products_'.$id.$md5.'",'.

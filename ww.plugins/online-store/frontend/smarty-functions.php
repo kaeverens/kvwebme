@@ -11,7 +11,16 @@
 	* @link     None
 	*/
 
-function OnlineStore_productPriceFull_full($params, &$smarty) {
+
+/**
+  * generates a formatted price, including currency symbol
+  *
+  * @param array  $params parameters for the function
+	* @param object $smarty the current Smarty object
+  *
+  * @return string HTML of the price
+  */
+function OnlineStore_productPriceFull2($params, $smarty) {
 	$pid=$smarty->_tpl_vars['product']->id;
 	$product=Product::getInstance($pid);
 	if (!isset($product->vals['online-store'])) {

@@ -1,17 +1,19 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if(!Core_isAdmin())die('access denied');
+if (!Core_isAdmin()) {
+	die('access denied');
+}
 require $_SERVER['DOCUMENT_ROOT'].'/ww.admin/admin_libs.php';
-if(isset($_REQUEST['get_content_snippet'])){
+if (isset($_REQUEST['get_content_snippet'])) {
 	$id=(int)$_REQUEST['get_content_snippet'];
 	$r=dbRow('select * from content_snippets where id='.$id);
-	if($r==false || !$r['content'] || $r['content']=='null'){
+	if ($r==false || !$r['content'] || $r['content']=='null') {
 		echo '{"id":0,"content":[{"html":""}]}';
 	}
-	else{
+	else {
 		$json=json_decode($r['content']);
 		if (!$json) { // sometimes apostrophes break json_decode?
-			$json=json_decode(str_replace('\\\'','\\\\\'',$r['content']));
+			$json=json_decode(str_replace('\\\'', '\\\\\'', $r['content']));
 		}
 		for ($i=0; $i<count($json); ++$i) {
 			$json[$i]->html=html_unfixImageResizes($json[$i]->html);
@@ -28,11 +30,11 @@ if(isset($_REQUEST['get_content_snippet'])){
 	}
 	exit;
 }
-if(isset($_REQUEST['action']) && $_REQUEST['action']=='save'){
+if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	$id=(int)$_REQUEST['id'];
 	$id_was=$id;
 	$content=json_decode(utf8_decode($_REQUEST['html']));
-	foreach($content as $k=>$v){
+	foreach ($content as $k=>$v) {
 		$content[$k]->html=Core_sanitiseHtml($v->html);
 	}
 	$html=json_encode($content);
@@ -40,23 +42,26 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='save'){
 	$sql.=',accordion="'.(int)$_REQUEST['accordion'].'"';
 	$sql.=',accordion_direction="'.(int)$_REQUEST['accordion_dir'].'"';
 	$sql.=',images_directory="'.addslashes($_REQUEST['accordion_images']).'"';
-	if($id){
+	if ($id) {
 		$sql="update $sql where id=$id";
 		dbQuery($sql);
 	}
-	else{
+	else {
 		$sql="insert into $sql";
 		dbQuery($sql);
-		$id=dbOne('select last_insert_id() as id','id');
+		$id=dbOne('select last_insert_id() as id', 'id');
 	}
 	Core_cacheClear('content_snippets');
-	$ret=array('id'=>$id,'id_was'=>$id_was);
+	$ret=array('id'=>$id, 'id_was'=>$id_was);
 	echo json_encode($ret);
 	exit;
 }
 
-if(isset($_REQUEST['id']))$id=(int)$_REQUEST['id'];
-else $id=0;
+if (isset($_REQUEST['id'])) {
+	$id=(int)$_REQUEST['id'];
+}
+else {
+	$id=0;
+}
 echo '<a href="javascript:;" id="content_snippet_editlink_'
 	.$id.'" class="content_snippet_editlink">view or edit snippet</a>';
-?>

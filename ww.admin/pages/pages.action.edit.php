@@ -4,12 +4,15 @@ function recursively_update_page_templates ($id, $template) {
 	$ids=array();
 	foreach ($pages->pages as $page) {
 		$ids[]=$page->id;
-		recursively_update_page_templates($page->id,$template);
+		recursively_update_page_templates($page->id, $template);
 	}
 	if (!count($ids)) {
 		return;
 	}
-	dbQuery('update pages set template="'.addslashes($template).'" where id in ('.join(',',$ids).')');
+	dbQuery(
+		'update pages set template="'.addslashes($template).'" where id in ('
+		.join(',', $ids).')'
+	);
 }
 require_once dirname(__FILE__).'/pages.action.common.php';
 $pid=(int)@$_REQUEST['parent'];
@@ -20,8 +23,12 @@ $description=$_REQUEST['description'];
 $associated_date=$_REQUEST['associated_date'];
 $title=$_REQUEST['title'];
 $importance=(float)$_REQUEST['importance'];
-if($importance<0.1)$importance=0.5;
-if($importance>1)$importance=1;
+if ($importance<0.1) {
+	$importance=0.5;
+}
+if ($importance>1) {
+	$importance=1;
+}
 $template=$_REQUEST['template'];
 $original_body=(isset($_REQUEST['body']))?$_REQUEST['body']:'';
 foreach ($GLOBALS['PLUGINS'] as $plugin) {
@@ -31,13 +38,21 @@ foreach ($GLOBALS['PLUGINS'] as $plugin) {
 }
 $body=$original_body;
 $body=Core_sanitiseHtml($body);
-$name = transcribe( $_REQUEST['name'] );
-$alias = addslashes( $_REQUEST[ 'name' ] );
+$name = transcribe($_REQUEST['name']);
+$alias = addslashes($_REQUEST['name']);
 // { check that name is not duplicate of existing page
-if (dbOne('select id from pages where name="'.addslashes($name).'" and parent='.$pid.' and id!="'.$id.'"','id')) {
+$sql='select id from pages where name="'.addslashes($name).'" and parent='
+	.$pid.' and id!="'.$id.'"';
+if (dbOne($sql, 'id')) {
 	$i=2;
-	while(dbOne('select id from pages where name="'.addslashes($name.$i).'" and parent='.$pid.' and id!="'.$id.'"','id'))$i++;
-	$msgs.='<em>A page named "' . $name . '" already exists. Page name amended to "' . $name . $i . '"</em>';
+	while (dbOne(
+		'select id from pages where name="'.addslashes($name.$i).'" and parent='
+		.$pid.' and id!="'.$id.'"', 'id'
+	)) {
+		$i++;
+	}
+	$msgs.='<em>A page named "'.$name.'" already exists. Page name amended to "'
+		.$name.$i.'"</em>';
 	$name=$name.$i;
 }
 // }
@@ -59,7 +74,10 @@ dbQuery($q);
 dbQuery('delete from page_vars where page_id="'.$id.'"');
 $pagevars=isset($_REQUEST['page_vars'])?$_REQUEST['page_vars']:array();
 if (@$_REQUEST['short_url']) {
-	dbQuery('insert into short_urls set cdate=now(),page_id='.$id.',short_url="'.addslashes($_REQUEST['short_url']).'"');
+	dbQuery(
+		'insert into short_urls set cdate=now(),page_id='.$id.',short_url="'
+		.addslashes($_REQUEST['short_url']).'"'
+	);
 	$pagevars['_short_url']=1;
 }
 else {
@@ -74,35 +92,47 @@ if (is_array($pagevars)) {
 			$pagevars['google-site-verification']
 		);
 	}
-	foreach($pagevars as $k=>$v){
+	foreach ($pagevars as $k=>$v) {
 		if (is_array($v)) {
 			$v=json_encode($v);
 		}
-		dbQuery('insert into page_vars (name,value,page_id) values("'.addslashes($k).'","'.addslashes($v).'",'.$id.')');
+		dbQuery(
+			'insert into page_vars (name,value,page_id) values("'.addslashes($k)
+			.'","'.addslashes($v).'",'.$id.')'
+		);
 	}
 }
 // }
-if(isset($_REQUEST['recursively_update_page_templates']))recursively_update_page_templates($id,$template);
-if($_POST['type']==4){
+if (isset($_REQUEST['recursively_update_page_templates'])) {
+	recursively_update_page_templates($id, $template);
+}
+if ($_POST['type']==4) {
 	$r2=dbRow('select * from page_summaries where page_id="'.$id.'"');
 	$do=1;
-	if($r2){
-		if(isset($_POST['page_summary_parent']) && $r2['parent_id']!=$_POST['page_summary_parent']){
+	if ($r2) {
+		if (isset($_POST['page_summary_parent'])
+			&& $r2['parent_id']!=$_POST['page_summary_parent']
+		) {
 			dbQuery('delete from page_summaries where page_id="'.$_POST['id'].'"');
 		}
-		else $do=0;
+		else {
+			$do=0;
+		}
 	}
 	if ($do) {
-		dbQuery('insert into page_summaries set page_id="'.$id.'",parent_id="'.$_POST['page_summary_parent'].'",rss=""');
+		dbQuery(
+			'insert into page_summaries set page_id="'.$id.'",parent_id="'
+			.$_POST['page_summary_parent'].'",rss=""'
+		);
 	}
-	include_once(SCRIPTBASE.'/ww.incs/page.summaries.php');
+	require_once SCRIPTBASE.'/ww.incs/page.summaries.php';
 	PageSummaries_getHtml($_POST['id']);
 }
 $msgs.='<em>The page has been updated.</em>';
 dbQuery('update page_summaries set rss=""');
 Core_cacheClear('menus');
 Core_cacheClear('pages');
-if(isset($_REQUEST['frontend-admin'])){
+if (isset($_REQUEST['frontend-admin'])) {
 	echo '<script type="text/javascript">parent.location=parent.location;</script>';
 }
 else{

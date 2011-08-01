@@ -71,7 +71,8 @@ if ($version==6) { // change _apply_vat to _vatfree
 	$version=7;
 }
 if ($version==7) { // add online_store_vouchers
-	dbQuery('create table online_store_vouchers(
+	dbQuery(
+		'create table online_store_vouchers(
 		id int auto_increment not null primary key,
 		name text,
 		code text,
@@ -83,7 +84,8 @@ if ($version==7) { // add online_store_vouchers
 		usages_in_total int,
 		start_date date,
 		end_date date
-		) default charset=utf8');
+		) default charset=utf8'
+	);
 	$version=8;
 }
 if ($version==8) { // add user_id column to online_store_orders
@@ -99,4 +101,14 @@ if ($version==9) { // add online_store_lists table
 		.')default charset=utf8'
 	);
 	$version=10;
+}
+if ($version==10) { // add session table, for quickpay method
+	dbQuery(
+		'create table if not exists online_store_session('
+		.'reference varchar(255) DEFAULT \'0\' NOT NULL,'
+		.'data TEXT NOT NULL,'
+		.'PRIMARY KEY (reference)'
+		.')default charset=utf8'
+	);
+	$version=11;
 }

@@ -14,23 +14,25 @@
 
 $html = '<h2>Online Store - Order History</h2>';
 
-$history = array( );
+$history = array();
 $orders = dbAll(
 	'select id,status,total,user_id,date_created from online_store_orders'
 	.' order by date_created desc'
 );
-foreach( $orders as $order ){
-	if( $order[ 'user_id' ] != 0 && $order[ 'user_id' ] == $user[ 'id' ] ) {
-		array_push( $history, $order );
+foreach ($orders as $order) {
+	if ($order[ 'user_id' ] != 0 && $order[ 'user_id' ] == $user[ 'id' ]) {
+		array_push($history, $order);
 	}
 }
 
-if( count( $history ) == 0 )
+if (count($history) == 0) {
 	return $html .= '<p><i>No recent orders</i></p>';
+}
 
-WW_addScript( '/ww.plugins/online-store/frontend/user-profile.js' );
+WW_addScript('/ww.plugins/online-store/frontend/user-profile.js');
 
-$html .= '<table id="online_store_orders" style="border:1px solid #ccc;margin:10px">
+$html .= '<table id="online_store_orders" style="border:1px solid #ccc;'
+	.'margin:10px">
 	<tr>
 		<th>Date</th>
 		<th>Amount</th>
@@ -38,10 +40,10 @@ $html .= '<table id="online_store_orders" style="border:1px solid #ccc;margin:10
 		<th>Invoice</th>
 	</tr>';
 
-foreach( $history as $order ){
+foreach ($history as $order) {
 	$status = ( $order[ 'status' ] == 1 ) ? 'Paid' : 'Unpaid';
 	$html .= '<tr>
-		<td>' . date_m2h( $order[ 'date_created' ] ) . '</td>
+		<td>' . date_m2h($order[ 'date_created' ]) . '</td>
 		<td>' . $order[ 'total' ] . '</td>
 		<td>' . $status . '</td>
 		<td>

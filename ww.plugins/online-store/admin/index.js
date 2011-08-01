@@ -148,6 +148,12 @@ $(function(){
 	$("#online_store_redirect_to").remoteselectoptions({
 		url:"/ww.admin/pages/get_parents.php"
 	});
+	$("#online_store_quickpay_redirect_to").remoteselectoptions({
+		url:"/ww.admin/pages/get_parents.php"
+	});
+	$("#online_store_quickpay_redirect_failed").remoteselectoptions({
+		url:"/ww.admin/pages/get_parents.php"
+	});
 });
 $('#online_stores_fields_table input').live('click',os_update_fields_value);
 
@@ -183,11 +189,15 @@ function pandp_showhide(i,v){
 		.replaceWith('<a id="pandp_opener_'+i+'" href="javascript:pandp_showhide('+i+','+(pandp_open[i]?0:1)+')">'+(pandp_open[i]?'hide':'show')+'</a>');
 }
 function pand_countries_select(i){
-	if(!window.pandp_countries)$.getJSON('/ww.admin/products/postage_countries.php',function(ret){
-		window.pandp_countries=ret;
-		pandp_countries_select_show(i); 
-	});
-	else pandp_countries_select_show(i);
+	if (!window.pandp_countries) {
+		$.getJSON('/ww.admin/products/postage_countries.php',function(ret){
+			window.pandp_countries=ret;
+			pandp_countries_select_show(i); 
+		});
+	}
+	else {
+		pandp_countries_select_show(i);
+	}
 }
 function pandp_countries_select_show(i){
 	if(!window.pandp_countries_dialog){
@@ -223,7 +233,9 @@ function pandp_rebuild_constraints(prefix){
 				break;
 			// }
 		}
-		if(cstr.type!='set_value')cstr.constraints=pandp_rebuild_constraints(prefix+i+'_');
+		if (cstr.type!='set_value') {
+			cstr.constraints=pandp_rebuild_constraints(prefix+i+'_');
+		}
 		cstrs.push(cstr);
 	}
 	return cstrs;
@@ -233,7 +245,9 @@ function pandp_rebuild_value_from_top(){
 	for(var i=0;el=document.getElementById('pandp_constraint_wrapper_'+i);++i){
 		var cstr={};
 		cstr.name=document.getElementById('pandp_name_'+i).value;
-		if(!cstr.name)continue;
+		if (!cstr.name) {
+			continue;
+		}
 		cstr.constraints=pandp_rebuild_constraints(i+'_');
 		cstr.users_only=$('#pandp_users_only_'+i).is(':checked');
 		pandp.push(cstr);
@@ -246,21 +260,27 @@ function pandp_rebuild_widget(){
 	var has_blank=0;
 	for(var i=0;i<pandp.length;++i){
 		pandp_add_top(i,pandp[i]);
-		if(pandp[i].name=='')has_blank=1;
+		if (pandp[i].name=='') {
+			has_blank=1;
+		}
 	
 	}
 	if(!has_blank)pandp_add_top(i,{});
 	pandp_showhide(i,'show');
 }
 function pandp_show_constraints(i, cstrs_old){
-	if(cstrs_old.length==0 || cstrs_old[cstrs_old.length-1].type!='set_value')cstrs_old.push({
-		type:'set_value',
-		value:'0'
-	});
+	if (cstrs_old.length==0 || cstrs_old[cstrs_old.length-1].type!='set_value') {
+		cstrs_old.push({
+			type:'set_value',
+			value:'0'
+		});
+	}
 	var cstrs=[];
-	for(var j=0;j<cstrs_old.length;j++){
+	for (var j=0;j<cstrs_old.length;j++) {
 		cstrs.push(cstrs_old[j]);
-		if(cstrs_old[j].type=='set_value')j=cstrs_old.length;
+		if (cstrs_old[j].type=='set_value') {
+			j=cstrs_old.length;
+		}
 	}
 	var options=[
 		['set_value','set postage to'],
@@ -278,7 +298,9 @@ function pandp_show_constraints(i, cstrs_old){
 		var opts=[],tmp;
 		for(k=0;k<options.length;++k){
 			tmp='<option value="'+options[k][0]+'"';
-			if(options[k][0]==cstr.type)tmp+=' selected="selected"';
+			if (options[k][0]==cstr.type) {
+				tmp+=' selected="selected"';
+			}
 			tmp+='>'+prefix+options[k][1]+'</option>';
 			opts.push(tmp);
 		}
@@ -287,7 +309,9 @@ function pandp_show_constraints(i, cstrs_old){
 		wrapper.append(selectbox);
 		switch(cstr.type){
 			case 'set_value': // {
-				if(!cstr.value)cstr.value=0;
+				if (!cstr.value) {
+					cstr.value=0;
+				}
 				$('<input id="pandp_constraint_value_'+i+'_'+j+'">')
 					.val(cstr.value)
 					.appendTo(wrapper);
@@ -296,7 +320,9 @@ function pandp_show_constraints(i, cstrs_old){
 			case 'total_less_than_or_equal_to': case 'total_more_than_or_equal_to':
 			case 'numitems_less_than_or_equal_to': case 'numitems_more_than_or_equal_to':
 			case 'total_weight_less_than_or_equal_to': case 'total_weight_more_than_or_equal_to': // {
-				if(!cstr.value)cstr.value=0;
+				if (!cstr.value) {
+					cstr.value=0;
+				}
 				$('<input id="pandp_constraint_value_'+i+'_'+j+'" class="small">')
 					.val(cstr.value)
 					.appendTo(wrapper);
@@ -304,13 +330,19 @@ function pandp_show_constraints(i, cstrs_old){
 			// }
 		}
 		wrapper.append('<div class="pand-constraint" id="pandp_constraint_wrapper_'+i+'_'+j+'"></div>');
-		if(cstr.type!='set_value')pandp_show_constraints(i+'_'+j, cstr.constraints || []);
+		if (cstr.type!='set_value') {
+			pandp_show_constraints(i+'_'+j, cstr.constraints || []);
+		}
 	}
 }
 $(function(){
 	var p=document.getElementById('postage').value;
-	if(p)pandp=eval('{'+p+'}');
-	else $('#postage').val('[]');
+	if (p) {
+		pandp=eval('{'+p+'}');
+	}
+	else {
+		$('#postage').val('[]');
+	}
 	pandp_rebuild_widget();
 	$('#postage_wrapper').live('change',pandp_rebuild_value_from_top);
 	$('#action').mousedown(pandp_rebuild_value_from_top);

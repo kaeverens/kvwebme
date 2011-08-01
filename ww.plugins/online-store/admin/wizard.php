@@ -1,14 +1,16 @@
 <?php
-
 /**
- * admin/wizard.php, KV-Webme Online Store Plugin
- *
- * wizard for creating online store
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* wizard for creating online store
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 $p=Pages::getInstancesByType('online-store');
 if (@count($p->pages)) {

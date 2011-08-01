@@ -6,7 +6,7 @@
 	*
 	* @category None
 	* @package  None
-	* @author   Kae Verens <kae.ie>
+	* @author   Kae Verens <kae@kvsites.ie>
 	* @license  GPL 2.0
 	* @link     None
 	*/
@@ -20,6 +20,7 @@ if (isset($_REQUEST['online_store_currency'])
 }
 $csym=$online_store_currencies[$DBVARS['online_store_currency']][0];
 $c='<div class="tabs">';
+// { list of tabs
 $c.= '<ul>';
 $c.='<li><a href="#online-store-orders">Orders</a></li>';
 $c.='<li><a href="#online-store-delivery">Postage and Packaging</a></li>';
@@ -29,6 +30,7 @@ $c.='<li><a href="#online-store-invoice">Invoice</a></li>';
 $c.='<li><a href="#online-store-payment">Payment Details</a></li>';
 $c.='<li><a href="#online-store-countries">Countries</a></li>';
 $c.='</ul>';
+// }
 // { orders
 $c.='<div id="online-store-orders">';
 if (!isset($_SESSION['online-store'])) {
@@ -71,7 +73,8 @@ if (is_array($rs) && count($rs)) {
 		$c.='<tr>'
 			.'<td>'.$r['id'].'</td>'
 			.'<td><span style="display:none">'.$r['date_created'].'</span>'
-			.date_m2h($r['date_created']).'</td><td>'.$csym.sprintf('%.2f',$r['total'])
+			.date_m2h($r['date_created']).'</td><td>'
+			.$csym.sprintf('%.2f', $r['total'])
 			.'</td>'
 			.'<td><a href="javascript:os_listItems('.$r['id'].')">items</a></td>'
 			.'<td><a href="javascript:os_invoice('.$r['id'].')">Invoice</a>'
@@ -181,6 +184,7 @@ $c.='<ul>';
 $c.='<li><a href="#online-store-payments-paypal">PayPal</a></li>';
 $c.='<li><a href="#online-store-payments-bank-transfer">Bank Transfer</a></li>';
 $c.='<li><a href="#online-store-payments-realex">Realex</a></li>';
+$c.='<li><a href="#online-store-payments-quickpay">QuickPay</a></li>';
 $c.='</ul>';
 // { paypal
 $c.='<div id="online-store-payments-paypal">';
@@ -215,7 +219,8 @@ $c.=' /></td></tr>';
 $c.='<tr><th>Account Name</th>';
 $c.='<td><input name="page_vars[online_stores_bank_transfer_account_name]"';
 if (isset($vars['online_stores_bank_transfer_account_name'])) {
-	$c.=' value="'.htmlspecialchars($vars['online_stores_bank_transfer_account_name']).'"';
+	$c.=' value="'
+		.htmlspecialchars($vars['online_stores_bank_transfer_account_name']).'"';
 }
 $c.=' /></td></tr>';
 // }
@@ -223,36 +228,27 @@ $c.=' /></td></tr>';
 $c.='<tr><th>Account Number</th>';
 $c.='<td><input name="page_vars[online_stores_bank_transfer_account_number]"';
 if (isset($vars['online_stores_bank_transfer_account_number'])) {
-	$c.=' value="'.htmlspecialchars($vars['online_stores_bank_transfer_account_number']).'"';
+	$c.=' value="'
+		.htmlspecialchars($vars['online_stores_bank_transfer_account_number']).'"';
 }
 $c.=' /></td></tr>';
 // }
 // { message
 // add ckeditor
-$script='
-        var bbcode_editor=CKEDITOR.replace( "bank_transfer_message", {
-                extraPlugins : "bbcode",
-                removePlugins : "bidi,button,dialogadvtab,div,filebrowser,flash,format,forms,horizontalrule,iframe,indent,justify,liststyle,pagebreak,showborders,stylescombo,table,tabletools,templates",
-                toolbar : [
-                                ["Source", "-", "Save","NewPage","-","Undo","Redo"],
-                                ["Find","Replace","-","SelectAll","RemoveFormat"],
-                                ["Link", "Unlink", "Image"],
-                                "/",
-                                ["FontSize", "Bold", "Italic","Underline"],
-                                ["NumberedList","BulletedList","-","Blockquote"],
-                                ["TextColor", "-", "Smiley","SpecialChar", "-", "Maximize"]
-                        ],
-                smiley_images : [
-                                "regular_smile.gif","sad_smile.gif","wink_smile.gif","teeth_smile.gif","tounge_smile.gif",
-                                "embaressed_smile.gif","omg_smile.gif","whatchutalkingabout_smile.gif","angel_smile.gif","shades_smile.gif",
-                                "cry_smile.gif","kiss.gif"
-                        ],
-                smiley_descriptions : [
-                                "smiley", "sad", "wink", "laugh", "cheeky", "blush", "surprise",
-                                "indecision", "angel", "cool", "crying", "kiss"
-                        ]
-        });
-';
+$script='var bbcode_editor=CKEDITOR.replace("bank_transfer_message", { extr'
+	.'aPlugins : "bbcode", removePlugins : "bidi,button,dialogadvtab,div,file'
+	.'browser,flash,format,forms,horizontalrule,iframe,indent,justify,liststy'
+	.'le,pagebreak,showborders,stylescombo,table,tabletools,templates", toolb'
+	.'ar : [ ["Source", "-", "Save","NewPage","-","Undo","Redo"], ["Find","Re'
+	.'place","-","SelectAll","RemoveFormat"], ["Link", "Unlink", "Image"], "/'
+	.'", ["FontSize", "Bold", "Italic","Underline"], ["NumberedList","Bullete'
+	.'dList","-","Blockquote"], ["TextColor", "-", "Smiley","SpecialChar", "-'
+	.'", "Maximize"] ], smiley_images : [ "regular_smile.gif","sad_smile.gif"'
+	.',"wink_smile.gif","teeth_smile.gif","tounge_smile.gif", "embaressed_smi'
+	.'le.gif","omg_smile.gif","whatchutalkingabout_smile.gif","angel_smile.gi'
+	.'f","shades_smile.gif", "cry_smile.gif","kiss.gif" ], smiley_description'
+	.'s : [ "smiley", "sad", "wink", "laugh", "cheeky", "blush", "surprise", '
+	.'"indecision", "angel", "cool", "crying", "kiss" ] });';
 WW_addScript('/j/ckeditor-3.6/ckeditor.js');
 WW_addScript('/j/ckeditor-3.6/adapters/jquery.js');
 WW_addInlineScript($script);
@@ -266,7 +262,8 @@ if (!@$vars['online_stores_bank_transfer_message']) {
 		.'{{$sort_code}}</td></tr>'."\n<tr><th>Account Number</th><td>"
 		.'{{$account_number}}</td></tr>'."\n</table>";
 }
-$c.='<td><textarea name="page_vars[online_stores_bank_transfer_message]" id="bank_transfer_message">'
+$c.='<td><textarea name="page_vars[online_stores_bank_transfer_message]" id'
+	.'="bank_transfer_message">'
 	.htmlspecialchars($vars['online_stores_bank_transfer_message'])
 	.'</textarea></td></tr>';
 // }
@@ -295,7 +292,8 @@ $c.=' /></td></tr>';
 // }
 // { redirect page
 $c.='<tr><th>Redirect after payment</th><td>';
-$c.='<select id="online_store_redirect_to" name="page_vars[online_store_redirect_to]">';
+$c.='<select id="online_store_redirect_to" name="page_vars[online_store_red'
+	.'irect_to]">';
 if (isset($vars['online_store_redirect_to'])
 	&& $vars['online_store_redirect_to']
 ) {
@@ -313,10 +311,9 @@ $c.='<tr><th>Mode</th><td>'
 	.'<select name="page_vars[online_stores_realex_testmode]">'
 	.'<option value="test">Test Mode</option>'
 	.'<option value="live"';
-if(
-	isset($vars['online_stores_realex_testmode'])
+if (isset($vars['online_stores_realex_testmode'])
 	&& $vars['online_stores_realex_testmode']=='live'
-){
+) {
 	$c.=' selected="selected"';
 }
 $c.='>Live</option></select>'
@@ -330,6 +327,71 @@ $c.='<tr><td colspan="2">Note that some manual configuration is necessary. '
 	.'URL: <br />'
 	.'http://'.$_SERVER['HTTP_HOST'].'/ww.plugins/online-store/verify/realex.php'
 	.'</td></tr>';
+// }
+$c.=' </table></div>';
+// }
+// { quickpay
+$c.='<div id="online-store-payments-quickpay">'
+	.'<table>';
+// { Merchant ID
+$c.='<tr><th>Merchant ID</th><td>'
+	.'<input name="page_vars[online_stores_quickpay_merchantid]"';
+if (isset($vars['online_stores_quickpay_merchantid'])) {
+	$c.=' value="'.htmlspecialchars($vars['online_stores_quickpay_merchantid'])
+		.'"';
+}
+$c.=' /></td></tr>';
+// }
+// { Shared Secret
+$c.='<tr><th>Secret</th><td>'
+	.'<input name="page_vars[online_stores_quickpay_secret]"';
+if (isset($vars['online_stores_quickpay_secret'])) {
+	$c.=' value="'.htmlspecialchars($vars['online_stores_quickpay_secret'])
+		.'"';
+}
+$c.=' /></td></tr>';
+// }
+// { redirect page (success)
+$c.='<tr><th>Redirect after successful payment</th><td>';
+$c.='<select id="online_store_quickpay_redirect_to" name="page_vars[online_'
+	.'store_quickpay_redirect_to]">';
+if (isset($vars['online_store_quickpay_redirect_to'])
+	&& $vars['online_store_quickpay_redirect_to']
+) {
+	$parent=Page::getInstance($vars['online_store_quickpay_redirect_to']);
+	$c.='<option value="'.$parent->id.'">'.htmlspecialchars($parent->name).'</option>';
+}
+else{
+	$vars['online_store_quickpay_redirect_to']=0;
+	$c.='<option value="0"> -- none -- </option>';
+}
+$c.='</select></td></tr>';
+// }
+// { redirect page (failed)
+$c.='<tr><th>Redirect after cancelled/failed payment</th><td>';
+$c.='<select id="online_store_quickpay_redirect_failed" name="page_vars[onl'
+	.'ine_store_quickpay_redirect_failed]">';
+if (isset($vars['online_store_quickpay_redirect_failed'])
+	&& $vars['online_store_quickpay_redirect_failed']
+) {
+	$parent=Page::getInstance($vars['online_store_quickpay_redirect_failed']);
+	$c.='<option value="'.$parent->id.'">'.htmlspecialchars($parent->name).'</option>';
+}
+else{
+	$vars['online_store_quickpay_redirect_failed']=0;
+	$c.='<option value="0"> -- none -- </option>';
+}
+$c.='</select></td></tr>';
+// }
+// { autocapture
+$c.='<tr><th>Autocapture</th><td>'
+	.'<select name="page_vars[online_stores_quickpay_autocapture]">'
+	.'<option value="0">No</option>'
+	.'<option value="1"';
+if (@$vars['online_stores_quickpay_autocapture']=='1') {
+	$c.=' selected="selected"';
+}
+$c.='>Yes</option></select></td></tr>';
 // }
 $c.=' </table></div>';
 // }

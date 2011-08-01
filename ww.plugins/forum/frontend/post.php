@@ -7,7 +7,7 @@
   * @category   Whatever
   * @package    WebworksWebme
   * @subpackage Forum
-  * @author     Kae Verens <kae.ie>
+  * @author     Kae Verens <kae@kvsites.ie>
   * @license    GPL Version 2
   * @link       www.kvweb.me
  */
@@ -74,14 +74,15 @@ if (!$thread_id) {
 }
 else { // add user to the subscribers list
 	$subscribers=dbOne(
-		'select subscribers from forums_threads where id='.$thread_id
-		,'subscribers'
+		'select subscribers from forums_threads where id='.$thread_id,
+		'subscribers'
 	);
-	$subscribers=explode(',',$subscribers);
-	if (!in_array($_SESSION['userdata']['id'],$subscribers)) {
+	$subscribers=explode(',', $subscribers);
+	if (!in_array($_SESSION['userdata']['id'], $subscribers)) {
 		$subscribers[]=$_SESSION['userdata']['id'];
 		dbQuery(
-			'update forums_threads set subscribers="'.join(',',$subscribers).'" where id='.$thread_id
+			'update forums_threads set subscribers="'.join(',', $subscribers)
+			.'" where id='.$thread_id
 		);
 	}
 }
@@ -106,18 +107,22 @@ $post_author=User::getInstance($_SESSION['userdata']['id']);
 $row=dbRow(
 	'select subscribers,name from forums_threads where id='.$thread_id
 );
-$subscribers=explode(',',$row['subscribers']);
-$url=Page::getInstance($forum['page_id'])->getRelativeUrl().'?forum-f='.$forum_id
+$subscribers=explode(',', $row['subscribers']);
+$url=Page::getInstance($forum['page_id'])->getRelativeUrl()
+	.'?forum-f='.$forum_id
 	.'&forum-t='.$thread_id.'&'.$post_id.'#forum-c-'.$post_id;
 foreach ($subscribers as $subscriber) {
 	$user=User::getInstance($subscriber);
 	mail(
 		$user->get('email'),
 		'['.$_SERVER['HTTP_HOST'].'] '.$row['name'],
-		"A new post has been added to this forum thread which you are subscribed to.\n\n"
+		"A new post has been added to this forum thread which you are subscribed"
+		" to.\n\n"
 		.'http://www.'.$_SERVER['HTTP_HOST'].$url."\n\n"
-		.$post_author->get('name')." said:\n".str_repeat('=',80)."\n".$body."\n".str_repeat('=',80),
-		'From: no-reply@'.$_SERVER['HTTP_HOST']."\nReply-to: no-reply@".$_SERVER['HTTP_HOST']
+		.$post_author->get('name')." said:\n".str_repeat('=', 80)."\n".$body."\n"
+		.str_repeat('=', 80),
+		'From: no-reply@'.$_SERVER['HTTP_HOST']."\nReply-to: no-reply@"
+		.$_SERVER['HTTP_HOST']
 	);
 }
 // }

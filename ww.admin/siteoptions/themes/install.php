@@ -13,29 +13,32 @@
 /**
  * make sure post is set
  */
-if( !isset( $_POST[ 'install-theme' ] ) && !isset( $_POST[ 'delete-theme' ] ) )
-        exit;
+if (!isset($_POST[ 'install-theme' ]) && !isset($_POST[ 'delete-theme' ])) {
+	exit;
+}
 
 /**
  * get name
  */
 $name = @$_POST[ 'theme_name' ];
-if( $name == '' )
+if ($name == '') {
 	exit;
+}
 
 /**
  * install theme if selected
  */
-if( isset( $_POST[ 'install-theme' ] ) ){
+if (isset($_POST[ 'install-theme' ])) {
 
-        $DBVARS['theme'] = $name;
+	$DBVARS['theme'] = $name;
 
-        $variant = @$_POST[ 'theme_variant' ];
-        if( $variant != '' )
-                $DBVARS['theme_variant'] = $variant;
+	$variant = @$_POST[ 'theme_variant' ];
+	if ($variant != '') {
+		$DBVARS['theme_variant'] = $variant;
+	}
 
-        Core_configRewrite( );
-        Core_cacheClear( 'pages' );
+	Core_configRewrite();
+	Core_cacheClear('pages');
 
 }
 
@@ -43,18 +46,17 @@ if( isset( $_POST[ 'install-theme' ] ) ){
 /**
  * delete theme if selected
  */
-if( isset( $_POST[ 'delete-theme' ] ) ){
+if (isset($_POST[ 'delete-theme' ])) {
 
-	if( $DBVARS[ 'theme' ] == $name )
-		header( 'location: /ww.admin/siteoptions.php?page=themes' );	
-	else{
-		if( is_dir( USERBASE . 'themes-personal/' . $name ) )
-			shell_exec( 'rm -rf ' . USERBASE . 'themes-personal/' . $name );
+	if ($DBVARS[ 'theme' ] == $name) {
+		header('location: /ww.admin/siteoptions.php?page=themes');
+	}
+	elseif (is_dir(USERBASE . 'themes-personal/' . $name)) {
+		shell_exec('rm -rf ' . USERBASE . 'themes-personal/' . $name);
 	}
 }
 
 /**
  * redirect to themes personal
  */
-header( 'location: /ww.admin/siteoptions.php?page=themes' );
-?>
+header('location: /ww.admin/siteoptions.php?page=themes');

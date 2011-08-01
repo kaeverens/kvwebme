@@ -7,7 +7,7 @@ $PAGEDATA->initValues();
 
 $columns=explode(
 	',',
-	preg_replace('/[^a-z0-9\-_,]/','_',strtolower($_REQUEST['sColumns']))
+	preg_replace('/[^a-z0-9\-_,]/', '_', strtolower($_REQUEST['sColumns']))
 );
 $sort_col=isset($_REQUEST['iSortCol_0'])
 	?(int)$columns[(int)$_REQUEST['iSortCol_0']]
@@ -26,7 +26,7 @@ for ($i=0; $i<count($columns); ++$i) {
 	$search_arr[$columns[$i]]=$_REQUEST['sSearch_'.$i];
 }
 
-switch($PAGEDATA->vars['products_what_to_show']) {
+switch ($PAGEDATA->vars['products_what_to_show']) {
 	case '1': // { by type
 		$id=(int)$PAGEDATA->vars['products_type_to_show'];
 		$products=Products::getByType(
@@ -45,20 +45,3 @@ switch($PAGEDATA->vars['products_what_to_show']) {
 
 $total_records=count($products->product_ids);
 $returned_products=array();
-#$i=$_REQUEST['iDisplayStart'];
-#$finish=$_REQUEST['iDisplayStart']+$_REQUEST['iDisplayLength'];
-#
-#for (; $i<$finish && $i<$total_records; ++$i) {
-#	$arr=array();
-#	$p=Product::getInstance($products->product_ids[$i]);
-#	foreach ($columns as $name) {
-#		$arr[]=$p->getString($name);
-#	}
-#	$returned_products[]=$arr;
-#}
-#
-#echo json_encode(array(
-#	'iTotalRecords'=>$total_records,
-#	'iTotalDisplayRecords'=>$total_records,
-#	'aaData'=>$returned_products
-#));
