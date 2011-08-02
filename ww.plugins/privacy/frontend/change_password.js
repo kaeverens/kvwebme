@@ -41,7 +41,7 @@ function change_password_dialog( id ){
 		$( '#password-dialog' ).html( html );
 }
 
-$( 'input[name="password-current"]' ).live( 'keyup', function( ){
+$('input[name="password-current"]').live('keyup', function(){
 	var pass = $( this ).val( );
 	$.post(
 		'/ww.plugins/privacy/frontend/check_password.php',
@@ -75,7 +75,7 @@ function validate_passwords( ){
 
 $(function(){
 	$.get(
-		'/ww.incs/get-user-data.php?id='+userdata.id,
+		'/a/f=getUserData',
 		function(user){
 			$.extend(userdata,user);
 		},

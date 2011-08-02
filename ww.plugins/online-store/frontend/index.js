@@ -79,7 +79,7 @@ $(function(){
 	// { populate delivery details
 	if(userdata.id!=null){
 		$.get(
-			'/ww.incs/get-user-data.php?id='+userdata.id,
+			'/a/f=getUserData',
 			function(user){
 				$.extend(userdata,user);		
 				var components=userdata.name.split(' ');

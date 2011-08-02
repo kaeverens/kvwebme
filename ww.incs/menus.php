@@ -1,4 +1,16 @@
 <?php
+/**
+	* menu functions
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 function Menu_containsPage($needle, $haystack) {
 	$r=Page::getInstance($needle);
 	if (!isset($r->parent) || $r->parent==0) {
@@ -192,14 +204,15 @@ function Menu_show($b) {
 				$r['classes'].=' first';
 			}
 			$c.='<a id="ajaxmenu_link'.$r['id'].'" class="'.$r['classes'].'" href="'
-				.$page->getRelativeURL().'">'.$spanl.htmlspecialchars($page->alias?$page->alias:$page->name)
+				.$page->getRelativeURL().'">'.$spanl
+				.htmlspecialchars($page->alias?$page->alias:$page->name)
 				.$spanr.'</a>';
 			$links++;
 		}
 	}
 	if (!@$GLOBALS['DBVARS']['disable-hidden-sitemap']) {
-		$c.='<a class="menuItemTop" style="display:none" href="'.$PAGEDATA->getRelativeURL()
-			.'?webmespecial=sitemap">Site Map</a>';
+		$c.='<a class="menuItemTop" style="display:none" href="'
+			.$PAGEDATA->getRelativeURL().'?webmespecial=sitemap">Site Map</a>';
 	}
 	$c.='</div>';
 	if ($vals['mode']=='two-tier') {
