@@ -1,7 +1,4 @@
 $j=jQuery;
-jQuery.fn.outerHTML = function() {
-	return $('<div>').append( this.eq(0).clone() ).html();
-};
 function date_m2h(d,type){
 	if(d=='' || d=='0000-00-00')return '-';
 	if(!type)type='date';
@@ -68,7 +65,7 @@ window.ww={
 	CKEDITOR:'ckeditor'
 };
 // { variables
-var function_urls=[],loadedScripts=[],kaejax_is_loaded=0,months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var function_urls=[],kaejax_is_loaded=0,months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var kaejax_timeouts=[];
 var CKEDITOR_BASEPATH='/j/ckeditor-3.6/';
 // }

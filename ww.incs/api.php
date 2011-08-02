@@ -1,4 +1,15 @@
 <?php
+/**
+	* API front controller
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 require_once 'basics.php';
 
@@ -22,7 +33,8 @@ if (isset($_REQUEST['p'])) {
 		die('{"error":"plugin not installed"}');
 	}
 	require_once SCRIPTBASE.'ww.plugins/'.$_REQUEST['p'].'/api.php';
-	$plugin=preg_replace('/[^a-zA-Z]/',
+	$plugin=preg_replace(
+		'/[^a-zA-Z]/',
 		'',
 		ucwords(str_replace('-', ' ', $_REQUEST['p']))
 	);
@@ -30,12 +42,14 @@ if (isset($_REQUEST['p'])) {
 else {
 	$plugin='Core';
 	require_once 'api-funcs.php';
+	if (strpos($_REQUEST['f'], 'admin')===0) {
+		require_once 'api-admin.php';
+	}
 }
 // }
 
 $func=$plugin.'_'.$_REQUEST['f'];
 if (!function_exists($func)) {
-echo $func;
 	die('{"error":"function does not exist"}');
 }
 

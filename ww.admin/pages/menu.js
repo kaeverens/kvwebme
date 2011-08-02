@@ -30,7 +30,7 @@ function pages_new(p){
 	return false;
 }
 function pages_copy(node, tree) {
-	$.post('/ww.admin/pages/page-copy.php',{
+	$.post('/a/f=adminPageCopy', {
 		'id':node[0].id.replace(/.*_/,'')
 	}, function(ret){
 		pages_add_node(ret.name, ret.id, ret.pid);
@@ -42,7 +42,7 @@ function pages_delete(node,tree){
 	if (!confirm("Are you sure you want to delete this page?")) {
 		return;
 	}
-	$.getJSON('/ww.admin/pages/delete.php?id='+node[0].id.replace(/.*_/,''),function(){
+	$.post('/a/f=adminPageDelete/id='+node[0].id.replace(/.*_/, ''), function(){
 		if (node.find('li').length) {
 			document.location=document.location.toString();
 		}
@@ -129,7 +129,11 @@ $(function(){
 				for (var i=0;i<nodes.length;++i) {
 					new_order.push(nodes[i].id.replace(/.*_/,''));
 				}
-				$.getJSON('/ww.admin/pages/move_page.php?id='+node.id.replace(/.*_/,'')+'&parent_id='+(p==-1?0:p.id.replace(/.*_/,''))+'&order='+new_order);
+				$.post('/a/f=adminPageMove', {
+					'id':node.id.replace(/.*_/,''),
+					'parent_id':(p==-1?0:p.id.replace(/.*_/,'')),
+					'order':new_order
+				});
 			},1);
 		});
 	var div=$('<div><i>right-click for options</i><br /><br /></div>');

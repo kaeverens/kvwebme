@@ -54,6 +54,7 @@ if (dbOne($sql, 'id')) {
 	$msgs.='<em>A page named "'.$name.'" already exists. Page name amended to "'
 		.$name.$i.'"</em>';
 	$name=$name.$i;
+	$alias=$alias.$i;
 }
 // }
 // }
