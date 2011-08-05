@@ -45,7 +45,7 @@ $start = (int)@$_GET[ 'start' ];
 $themes=dbAll(
 	'select id, name, author, description, version, last_updated, author_url,'
 	.'tags, rating from themes_api where moderated="yes" order by last_updated'
-	.'desc limit ' . $start . ', ' . $count
+	.' desc limit ' . $start . ', ' . $count
 );
 
 /**

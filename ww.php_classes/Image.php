@@ -92,6 +92,7 @@ class Image{
 				return imagecreatefromgif($file);
 			break;
 		}
+		return false;
 	}
 	public function display($file=false) {
 		if ($this->image=='') {
