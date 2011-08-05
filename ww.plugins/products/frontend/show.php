@@ -301,14 +301,30 @@ function Product_datatableMultiple (&$products, $direction) {
 			// }
 	}
 }
-function products_get_add_to_cart_button($params, &$smarty) {
+/**
+	* get a button for adding single items to a cart
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the HTML
+	*/
+function products_get_add_to_cart_button($params, $smarty) {
 	return '<form method="POST" class="products-addtocart">'
 		.'<input type="hidden" name="products_action" value="add_to_cart" />'
 		.'<input type="submit" value="Add to Cart" />'
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'" /></form>';
 }
-function Products_getAddManyToCartButton($params, &$smarty) {
+/**
+	* get a button for adding multiple items to a cart
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the HTML
+	*/
+function Products_getAddManyToCartButton($params, $smarty) {
 	return '<form method="POST" class="products-addmanytocart">'
 		.'<input type="hidden" name="products_action" value="add_to_cart"/>'
 		.'<input name="products-howmany" value="1" '
@@ -317,7 +333,15 @@ function Products_getAddManyToCartButton($params, &$smarty) {
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'"/></form>';
 }
-function Products_image($params, &$smarty) {
+/**
+	* display the default product image
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the HTML
+	*/
+function Products_image($params, $smarty) {
 	$params=array_merge(
 		array(
 			'width'=>128,
@@ -364,13 +388,29 @@ function Products_image($params, &$smarty) {
 		. '</div>'
 		. '</div>';
 }
-function Products_imageNotFound($params, &$smarty) {
+/**
+	* display an "image not found" message
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the HTML
+	*/
+function Products_imageNotFound($params, $smarty) {
 	$s=$params['width']<$params['height']?$params['width']:$params['height'];
 	$product=$smarty->_tpl_vars['product'];
 	$pt=ProductType::getInstance($product->vals['product_type_id']);
 	return $pt->getMissingImage($s);
 }
-function Products_images($params, &$smarty) {
+/**
+	* get a list of images for a product
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the images HTML
+	*/
+function Products_images($params, $smarty) {
 	$params=array_merge(
 		array(
 			'thumbsize'=>60,
@@ -438,12 +478,28 @@ function Products_images($params, &$smarty) {
 	$html.='</div>';
 	return $html;
 }
-function Products_link ($params, &$smarty) {
+/**
+	* get a URL for a product page
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the URL
+	*/
+function Products_link($params, $smarty) {
 	$product= $smarty->_tpl_vars['product'];
 	$id= $product->id;
 	return $product->getRelativeURL();
 }
-function _Products_listCategories($params, &$smarty) {
+/**
+	* list all categories contained within a parent category
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the categories
+	*/
+function _Products_listCategories($params, $smarty) {
 	if (!isset($params['parent'])) {
 		$parent=0;
 	}
@@ -460,7 +516,15 @@ function _Products_listCategories($params, &$smarty) {
 	$html.='</ul>';
 	return $html;
 }
-function _Products_listCategoryContents ($params, &$smarty) {
+/**
+	* display the contents of a product category
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the contents
+	*/
+function _Products_listCategoryContents ($params, $smarty) {
 	if (!isset($params['category'])) {
 		$products=Products::getAll();
 	}
@@ -476,7 +540,15 @@ function _Products_listCategoryContents ($params, &$smarty) {
 	$html.='</ul>';
 	return $html;
 }
-function Products_plusVat($params, &$smarty) {
+/**
+	* if VAT applies to the product, return '+ VAT'
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string VAT string
+	*/
+function Products_plusVat($params, $smarty) {
 	$product= $smarty->_tpl_vars['product'];
 	if (!isset($product->vals['online-store']['_vatfree'])
 		|| $product->vals['online-store']['_vatfree'] == '0'
@@ -484,7 +556,15 @@ function Products_plusVat($params, &$smarty) {
 		return '+ VAT';
 	}
 }
-function Products_reviews ($params, &$smarty) {
+/**
+	* display a list of reviews for the product
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the list of reviews
+	*/
+function Products_reviews($params, $smarty) {
 	WW_addScript('/ww.plugins/products/frontend/delete.js');
 	WW_addScript('/ww.plugins/products/frontend/products-edit-review.js');
 	$userid = (int)$_SESSION['userdata']['id'];
@@ -752,7 +832,15 @@ function Products_showAll(
 	}
 	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
-function Products_showRelatedProducts($params, &$smarty) {
+/**
+	* get a list of products that are related and show them
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the list of products
+	*/
+function Products_showRelatedProducts($params, $smarty) {
 	$product = $smarty->_tpl_vars['product'];
 	$productID = $product->id;
 	$type='';
@@ -810,6 +898,14 @@ function Products_showRelatedProducts($params, &$smarty) {
 	}
 	return 'none yet';
 }
+/**
+	* submit the form for submitting a review
+	*
+	* @param int $productid the product being reviewed
+	* @param int $userid    the user doing the review
+	*
+	* @return string the form
+	*/
 function Products_submitReviewForm ($productid, $userid) {
 	$formAction = '"http://webworks-webme';
 	$formAction.= '/ww.plugins/products';
@@ -841,6 +937,19 @@ function Products_submitReviewForm ($productid, $userid) {
 
 class Products{
 	static $instances=array();
+
+	/**
+		* constructor for the class
+		*
+		* @param array  $vs         variable identifiers for the products
+		* @param string $md5        unique identifier for the collection
+		* @param string $search     search string to filter by
+		* @param array  $search_arr array of search strings to filter by
+		* @param string $sort_col   field to sort by
+		* @param string $sort_dir   sort direction
+		*
+		* @return object the category instance
+		*/
 	function __construct(
 		$vs, $md5, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc'
 	) {
@@ -895,6 +1004,13 @@ class Products{
 		self::$instances[$md5]=& $this;
 		return $this;
 	}
+	/**
+		* get all products
+		*
+		* @param string $search search string to filter by
+		*
+		* @return object instance of Products object
+		*/
 	static function getAll($search='') {
 		$id=md5('all|'.$search);
 		if (!array_key_exists($id, self::$instances)) {
@@ -907,6 +1023,17 @@ class Products{
 		}
 		return self::$instances[$id];
 	}
+	/**
+		* retrieve products within a specified category
+		*
+		* @param int    $id         the product type's ID
+		* @param string $search     search string to filter by
+		* @param array  $search_arr array of search strings to filter by
+		* @param string $sort_col   field to sort by
+		* @param string $sort_dir   sort direction
+		*
+		* @return object instance of Products object
+		*/
 	static function getByCategory(
 		$id, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc'
 	) {
@@ -949,6 +1076,13 @@ class Products{
 		}
 		return self::$instances[$md5];
 	}
+	/**
+		* retrieve products by their category name
+		*
+		* @param string $name name of the category
+		*
+		* @return object instance of Products object
+		*/
 	static function getByCategoryName($name) {
 		$arr=explode('/', $name);
 		if ($arr[0]=='') {
@@ -970,6 +1104,17 @@ class Products{
 		}
 		return Products::getByCategory($cid);
 	}
+	/**
+		* retrieve products that have a specific type
+		*
+		* @param int    $id         the product type's ID
+		* @param string $search     search string to filter by
+		* @param array  $search_arr array of search strings to filter by
+		* @param string $sort_col   field to sort by
+		* @param string $sort_dir   sort direction
+		*
+		* @return object instance of Products object
+		*/
 	static function getByType(
 		$id, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc'
 	) {
@@ -989,6 +1134,17 @@ class Products{
 		}
 		return self::$instances[$md5];
 	}
+	/**
+		* render a list of products to HTML
+		*
+		* @param object $PAGEDATA  the page object
+		* @param int    $start     offset
+		* @param int    $limit     how many products to show
+		* @param string $order_by  what field to order the search by
+		* @param int    $order_dir order ascending or descending
+		*
+		* @return string the HTML of the products list
+		*/
 	function render($PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0) {
 		$c='';
 		// { sort based on $order_by
@@ -1137,6 +1293,14 @@ class Products{
 class ProductCategory{
 	static $instances=array();
 	public $vals;
+
+	/**
+		* constructor for the class
+		*
+		* @param int $id ID of the category
+		*
+		* @return object the category instance
+		*/
 	function __construct($id) {
 		$id=(int)$id;
 		$r=dbRow('select * from products_categories where id='.$id);
@@ -1147,6 +1311,14 @@ class ProductCategory{
 		self::$instances[$this->vals['id']] =& $this;
 		return $this;
 	}
+
+	/**
+		* get a category instance
+		*
+		* @param int $id ID of the category
+		*
+		* @return object the instance
+		*/
 	static function getInstance($id=0) {
 		if (!is_numeric($id)) {
 			return false;
@@ -1156,6 +1328,12 @@ class ProductCategory{
 		}
 		return self::$instances[$id];
 	}
+
+	/**
+		* get a URL for showing this category
+		*
+		* @return string the URL
+		*/
 	function getRelativeUrl() {
 		// { see if there are any pages that use this category
 		// }

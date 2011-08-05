@@ -34,6 +34,7 @@ if (!$_SESSION['userbase_created']) { // user shouldn't be here
   exit;
 }
 
+$ignore_webme_plugins=1;
 require '../ww.incs/basics.php';
 
 if (isset($_POST[ 'install-theme' ])) { // install theme if selected
@@ -57,7 +58,8 @@ if (isset($_POST[ 'install-theme' ])) { // install theme if selected
 	// downloading
 	echo 'Downloading...<br/>';
 	$zipfile = curl($theme[ 'download' ]);
-	$theme_dir = USERBASE . 'themes-personal/';
+	$theme_dir = USERBASE . '/themes-personal/';
+	@mkdir($theme_dir);
 	file_put_contents($theme_dir . $theme[ 'name' ] . '.zip', $zipfile);
 
 	// extracting
@@ -79,7 +81,8 @@ if (isset($_POST[ 'install-theme' ])) { // install theme if selected
 	Core_configRewrite();
 	Core_cacheClear('pages');
 	$_SESSION[ 'theme_selected' ] = true;
-	header('location: step7.php');
+	echo '<script>document.location="/install/step7.php";</script>';
+	exit;
 }
 
 

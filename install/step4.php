@@ -35,7 +35,8 @@ if (isset($_REQUEST['userbase']) && $_REQUEST['userbase']) {
 		}
 		else {
 			$_SESSION['userbase_created']=true;
-			header('Location: /install/step5.php');
+			echo '<script>document.location="/install/step5.php";</script>';
+			exit;
 		}
 	}
 }

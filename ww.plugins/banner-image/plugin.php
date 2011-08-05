@@ -34,7 +34,7 @@ $plugin=array(
 // }
 $banner_image_types=array('jpg','gif','png');
 
-function banner_image_getImgHTML($id, $hide_message=false){
+function banner_image_getImgHTML($id, $hide_message=false) {
 	global $banner_image_types;
 	$type='';
 	foreach ($banner_image_types as $t) {

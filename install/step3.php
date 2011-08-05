@@ -33,8 +33,12 @@ if (isset($_REQUEST['action'])) {
 		echo '<p>Passwords do not match or are empty.</p>';
 		$ok=0;
 	}
+	if (@$_REQUEST['name']=='') {
+		echo '<p>Name is empty.</p>';
+		$ok=0;
+	}
 	if (!filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL)) {
-		echo '<p>Email not valid. Please try again.</p>';
+		echo '<p>Email not valid.</p>';
 		$ok=0;
 	}
 	if ($ok) {
@@ -54,7 +58,8 @@ if (isset($_REQUEST['action'])) {
 		mysql_query("insert into groups (id,name) values(1,'administrators')");
 		mysql_query("insert into users_groups values(1,1)");
 		$_SESSION['admin_created']=1;
-		header('location: step4.php');
+		echo '<script>document.location="/install/step4.php";</script>';
+		exit;
 	}
 }
 if (!isset($_SESSION['user'])) {

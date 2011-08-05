@@ -109,7 +109,7 @@ echo '
 				<li><a href="index.php">Requirements</a></li>
 				<li><a href="step1.php">Add Database</a></li>
 				<li><a href="step3.php">Create User</a></li>
-				<li><a href="step4.php">User FIles</a></li>
+				<li><a href="step4.php">User Files</a></li>
 				<li><a href="step6.php">Select Theme</a></li>
 				<li><a href="step7.php">Finish</a></li>
 			</ul>

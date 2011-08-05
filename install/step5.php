@@ -41,13 +41,7 @@ $config='<'."?php
 	'userbase' => '".addslashes($_SESSION['userbase'])."',
 	'plugins'  => 'panels',
 	'theme_variant' => '',
-	'version'  => 1,
-	'maintenance-mode'=>'yes',
-	'maintenance-mode-message'=>'<h1>Temporarily Unavailable</h1>
-	<p>This website is undergoing maintenance and is temporarily unavailable.
-	</p>
-	<p>If you are an admin of this site, you can <a href=\"/ww.admin/\">log in
-	here</a>.</p>',
+	'version'  => 1
 );";
 
 file_put_contents('../.private/config.php', $config);
@@ -60,4 +54,4 @@ if (!file_exists('../.private/config.php')) {
 
 $_SESSION[ 'config_written' ] = true;
 
-header('location: step6.php');
+echo '<script>document.location="/install/step6.php";</script>';

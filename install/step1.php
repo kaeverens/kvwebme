@@ -54,7 +54,8 @@ if (isset($_REQUEST['action'])) {
 		}
 		else {
 			$_SESSION['db_vars']['passed']=1;
-			header('location: step2.php');
+			echo '<script>document.location="/install/step2.php";</script>';
+			exit;
 		}
 	}
 }
