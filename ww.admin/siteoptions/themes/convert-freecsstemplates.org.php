@@ -1,13 +1,24 @@
 <?php
-$failure_message='';
-if (!isset($theme_folder)) { // called directly. don't do this.
-	exit;
-}
+/**
+	* convert a freecsstempaltes.org theme to a kvwebme one
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
-// { build template
-$dom=new DOMDocument();
-$dom->loadHTMLFile($theme_folder.'/index.html');
-
+/**
+	* function for removing all content from an element
+	*
+	* @param object $dom the DOM object
+	* @param string $id  the ID of the object to clear
+	*
+	* @return object the amended DOM object
+	*/
 function Theme_emptyElement($dom, $id) {
 	$el=$dom->getElementById($id);
 	if ($el) {
@@ -17,6 +28,16 @@ function Theme_emptyElement($dom, $id) {
 	}
 	return $dom;
 }
+
+$failure_message='';
+if (!isset($theme_folder)) { // called directly. don't do this.
+	exit;
+}
+
+// { build template
+$dom=new DOMDocument();
+$dom->loadHTMLFile($theme_folder.'/index.html');
+
 
 // { figure out header element
 $header='';

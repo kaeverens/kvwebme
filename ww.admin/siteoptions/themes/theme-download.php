@@ -1,15 +1,17 @@
 <?php
-
 /**
- * ww.admin/siteoptions/themes/theme-download.php, KV-Webme
- *
- * downloads a theme from the server and can
- * install themes as well
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* downloads a theme from the server and can
+	* install themes as well
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 /**
  * make sure post is set

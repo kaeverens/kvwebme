@@ -1,4 +1,26 @@
 <?php
+/**
+	* common page admin functions
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+/**
+	* build up a selectbox of pages and their child nodes
+	*
+	* @param int $i  parent of the child nodes to show
+	* @param int $n  level of indentation to show
+	* @param int $s  currently selected page's ID (if any)
+	* @param int $id page NOT to show in the list
+	*
+	* @return null
+	*/
 function selectkiddies($i=0, $n=1, $s=0, $id=0) {
 	$q=dbAll(
 		'select name,id,alias from pages where parent="'.$i.'" and id!="'.$id
@@ -22,33 +44,7 @@ function selectkiddies($i=0, $n=1, $s=0, $id=0) {
 		}
 	}
 }
-function showshortcuts($id, $parent) {
-	$q=dbAll(
-		'select id,name from pages where parent="'.$parent
-		.'" order by ord desc,name'
-	);
-	if (count($q)) {
-		echo '<ul>';
-		foreach ($q as $r) {
-			echo '<li>';
-			echo '<input name="shortcuts['.$r['id'].']" type="checkbox"/>';
-			$r2=dbRow(
-				'select id,name from pagelinks where fromid="'.$id.'" and toid="'
-				.$r['id'].'"'
-			);
-			if (count($r2)) {
-				echo ' checked="checked"';
-				$r['name']=$r2['name'];
-			}
-			echo ' />';
-			echo '<input name="shortcutsName['.$r['id'].']" value="'
-				.htmlspecialchars($r['name']).'"/>';
-			showshortcuts($id, $r['id']);
-			echo '</li>';
-		}
-		echo '</ul>';
-	}
-}
+
 /**
  * transcribe
  *

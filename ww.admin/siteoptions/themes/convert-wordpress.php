@@ -1,4 +1,38 @@
 <?php
+/**
+	* convert a wordpress theme to a kvwebme one
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+/**
+	* function for removing all PHP files from a directory
+	*
+	* @param string $dir the directory to clean
+	*
+	* @return null
+	*/
+function Theme_removeAllPHPFiles($dir) {
+	$files=new DirectoryIterator($dir);
+	foreach ($files as $file) {
+		if ($file->isDot()) {
+			continue;
+		}
+		if ($file->isDir()) {
+			Theme_removeAllPHPFiles($dir.'/'.$file->getFilename());
+		}
+		elseif (preg_match('/\.php/', $file->getFilename())) {
+			unlink($file->getPathname());
+		}
+	}
+}
+
 $failure_message='';
 if (!isset($theme_folder)) { // called directly. don't do this.
 	exit;
@@ -226,20 +260,6 @@ mkdir($theme_folder.'/h');
 file_put_contents($theme_folder.'/h/_default.html', $h);
 // }
 // { delete all .php files
-function Theme_removeAllPHPFiles($dir) {
-	$files=new DirectoryIterator($dir);
-	foreach ($files as $file) {
-		if ($file->isDot()) {
-			continue;
-		}
-		if ($file->isDir()) {
-			Theme_removeAllPHPFiles($dir.'/'.$file->getFilename());
-		}
-		elseif (preg_match('/\.php/', $file->getFilename())) {
-			unlink($file->getPathname());
-		}
-	}
-}
 $failure_message=Theme_removeAllPHPFiles($theme_folder);
 // }
 // { convert the CSS

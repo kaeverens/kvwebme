@@ -1,4 +1,16 @@
 <?php
+/**
+	* actions common to page creation an editing
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 $special=0;
 if (isset($_REQUEST['special'])) {
 	$specials=$_REQUEST['special'];

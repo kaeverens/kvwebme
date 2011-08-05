@@ -1,19 +1,26 @@
 <?php
+/**
+	* displays themes from the theme server
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+require_once '../../../ww.incs/basics.php';
+require_once SCRIPTBASE . 'ww.admin/admin_libs.php';
 
 /**
- * ww.admin/siteoptions/themes/download.php, KV-Webme
- *
- * displays themes from the theme server
- *
- * @author  Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @author  Kae Verens <kae@kvsites.ie>
- * @license	GPL 2.0
- * @version	1.0
- */
-
-require '../../../ww.incs/basics.php';
-require SCRIPTBASE . 'ww.admin/admin_libs.php';
-function get_template_names( ) {
+	* get a list of the available themes
+	*
+	* @return array names
+	*/
+function Theme_getTemplateNames() {
 	$themes = array();
 	$dir = USERBASE . 'themes-personal/';
 	$handler = opendir($dir);
@@ -43,7 +50,7 @@ echo '<div id="themes-carousel">
 /**
  * build an array of installed themes
  */
-$installed = get_template_names();
+$installed = Theme_getTemplateNames();
 echo '<script type="text/javascript">window.installed_themes=' . 
 	json_encode($installed) . ';</script>';
 

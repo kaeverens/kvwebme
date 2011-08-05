@@ -12,6 +12,30 @@
 	* @link     http://kvsites.ie/
 	*/
 
+function getFileInfo() {
+	if (!isset($_REQUEST['src'])) {
+		return array('error'=>'missing src');
+	}
+	$file=USERBASE.$_REQUEST['src'];
+	if (strpos($file, '..')!==false
+		|| (strpos($file, '/.')!==false
+		&& strpos(preg_replace('#/\.files/#', '/', $file), '/.')!==false)
+	) {
+		exit;
+	}
+	if (!file_exists($file) || !is_file($file)) {
+		header('HTTP/1.0 404 Not Found');
+		echo 'file does not exist';
+		exit;
+	}
+	
+	$finfo=finfo_open(FILEINFO_MIME_TYPE);
+	$mime=finfo_file($finfo, $file);
+	
+	return array(
+		'mime'=>$mime
+	);
+}
 function getUserData() {
 	if (!isset($_SESSION['userdata'])) { // not logged in
 		return array('error'=>'you are not logged in');

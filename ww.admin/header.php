@@ -1,4 +1,16 @@
 <?php
+/**
+	* show the header of the admin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 $webme_start_time=microtime();
 header('Content-type: text/html; Charset=utf-8');
 date_default_timezone_set('Eire');
@@ -40,9 +52,6 @@ foreach ($PLUGINS as $pname=>$p) {
 	}
 }
 echo '</head><body';
-if (isset($_REQUEST['frontend-admin'])) {
-	echo ' class="frontend-admin"';
-}
 echo '><div id="header">';
 // { setup standard menu items
 $menus=array(

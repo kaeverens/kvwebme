@@ -1,4 +1,16 @@
 <?php
+/**
+	* show the admin form for editing a page
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 require_once '../../ww.incs/common.php';
 require_once '../admin_libs.php';
 if (!Core_isAdmin()) {
@@ -13,7 +25,15 @@ if ((!isset($_REQUEST['id']) || $_REQUEST['id']==0)
 	exit;
 }
 
-function Page_showBody(&$page, &$page_vars) {
+/**
+	* function for showing a page's body, overriding using a plugin if necessary
+	*
+	* @param array $page      the page's db row
+	* @param array $page_vars any meta data for the page
+	*
+	* @return the page form
+	*/
+function Page_showBody($page, $page_vars) {
 	foreach ($GLOBALS['PLUGINS'] as $plugin) {
 		if (isset($plugin['admin']['body_override'])) {
 			return $plugin['admin']['body_override']($page, $page_vars);
@@ -428,9 +448,6 @@ echo '</div>';
 echo '<input type="submit" name="action" value="'
 	.($edit?'Update Page Details':'Insert Page Details')
 	.'"/>';
-if (isset($_REQUEST['frontend-admin'])) {
-	echo '<input type="hidden" name="frontend-admin" value="1" />';
-}
 echo '</form>';
 echo WW_getScripts();
 echo WW_getCss();

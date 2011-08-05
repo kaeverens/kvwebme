@@ -1,14 +1,16 @@
 <?php
-
 /**
- * ww.admin/siteoptions/themes.php, KV-Webme
- *
- * switches between theme operations
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @author     Kae Verens <kae@kvsites.ie>
- * @license    GPL 2.0
- */
+	* switches between theme operations
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 $action = @$_GET['action'];
 switch ($action) {

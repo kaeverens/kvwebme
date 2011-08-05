@@ -468,23 +468,6 @@ table.datatable{
 span.ui-button-text{
 	color:#000;
 }
-body.frontend-admin{
-	background:#eee;
-}
-body.frontend-admin .left-menu,
-body.frontend-admin #header,
-body.frontend-admin h1{
-	display:none;
-}
-body.frontend-admin .has-left-menu{
-	position:fixed;
-	left:0;
-	top:0;
-	right:0;
-	bottom:0;
-	overflow:auto;
-}
-
 div#header #help-opener{
 	position:absolute;
 	right:2px;

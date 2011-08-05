@@ -1,20 +1,26 @@
 <?php
 /**
- * ww.admin/siteoptions/themes/theme-upload.php, KV-Webme
- *
- * facilitates the uploading of themes
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @author     Kae Verens <kae@kvsites.ie>
- * @license    GPL 2.0
- * @version    1.0
- */
+  * facilitates the uploading of themes
+  *
+  * PHP version 5.2
+  *
+  * @category None
+  * @package  None
+  * @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+  * @author   Kae Verens <kae@kvsites.ie>
+  * @license  GPL 2.0
+  * @link     http://kvsites.ie/
+  */
+
+require_once '../../../ww.incs/basics.php';
 
 /**
- * check_theme
- *
- * checks themes for php files
- */
+  * checks themes for php files
+  *
+  * @param string $dir the directory to check
+  *
+  * @return mixed errors, or false if no errors
+  */
 function Theme_findErrors($dir) {
 	$files = scandir($dir);
 	foreach ($files as $file) {
@@ -35,11 +41,12 @@ function Theme_findErrors($dir) {
 }
 
 /**
- * Theme_getFirstVariant
- *
- * returns the first variant it finds
- * false if no variants
- */
+  * find a variant
+  *
+  * @param string $dir the directory to search
+  *
+  * @return mixed the first variant it finds or false if no variants
+  */
 function Theme_getFirstVariant($dir) {
 	$files = scandir($dir);
 	foreach ($files as $file) {
@@ -52,8 +59,6 @@ function Theme_getFirstVariant($dir) {
 	}
 	return false;
 }
-
-require '../../../ww.incs/basics.php';
 
 // { make sure post is set and files are uploaded
 if (!isset($_POST[ 'install-theme' ]) && !isset($_POST[ 'upload-theme' ])

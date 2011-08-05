@@ -1,4 +1,16 @@
 <?php
+/**
+	* build a list of page types in <option> form
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 require_once '../../ww.incs/basics.php';
 require_once '../admin_libs.php';
 if (!Core_isAdmin()) {

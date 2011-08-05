@@ -1,4 +1,24 @@
 <?php
+/**
+	* edit a page
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+/**
+	* function for recursively updating a page (and its children) template
+	*
+	* @param int    $id       the page id
+	* @param string $template the template name
+	*
+	* @return null
+	*/
 function Core_recursivelyUpdatePageTemplates($id, $template) {
 	$pages=Pages::getInstancesByParent($id, false);
 	$ids=array();
@@ -133,11 +153,6 @@ $msgs.='<em>The page has been updated.</em>';
 dbQuery('update page_summaries set rss=""');
 Core_cacheClear('menus');
 Core_cacheClear('pages');
-if (isset($_REQUEST['frontend-admin'])) {
-	echo '<script type="text/javascript">parent.location=parent.location;</script>';
-}
-else{
-	echo '<script>window.parent.document.getElementById("page_'.$id.'")'
-		.'.childNodes[1].innerHTML=\'<ins class="jstree-icon">&nbsp;</ins>'
-		.htmlspecialchars($alias).'\';</script>';
-}
+echo '<script>window.parent.document.getElementById("page_'.$id.'")'
+	.'.childNodes[1].innerHTML=\'<ins class="jstree-icon">&nbsp;</ins>'
+	.htmlspecialchars($alias).'\';</script>';

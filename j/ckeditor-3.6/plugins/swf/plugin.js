@@ -176,7 +176,9 @@
         }
       }
       var url = getAbsoluteUrl(dialog, src);
-      $.getJSON('/ww.incs/get-file-info.php', {src: url.replace(/https?:\/\/[^\/]*/, '')}, function(data) {
+      $.getJSON('/a/f=getFileInfo', {
+				src: url.replace(/https?:\/\/[^\/]*/, '')
+			}, function(data) {
         if (data) {
           dialog.player = null;
           delete dialog.realSrc;

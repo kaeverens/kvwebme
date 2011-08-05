@@ -1,4 +1,16 @@
 <?php
+/**
+	* localisation options
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 echo '<h2>Localisation</h2>';
 // { handle actions
 if ($action=='Save') {

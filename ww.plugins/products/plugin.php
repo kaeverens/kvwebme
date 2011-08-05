@@ -33,7 +33,6 @@ $plugin=array(
 	),
 	'description' => 'Product catalogue.',
 	'frontend' => array(
-		'admin-script' => '/ww.plugins/products/j/frontend-admin.js',
 		'page_type' => 'Products_frontend',
 		'widget' => 'Products_widget',
 		'template_functions' => array(

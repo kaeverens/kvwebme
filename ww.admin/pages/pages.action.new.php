@@ -1,4 +1,16 @@
 <?php
+/**
+	* insert a new page
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 require_once dirname(__FILE__).'/pages.action.common.php';
 $name = $_REQUEST['name'];
 if (isset($_REQUEST['prefill_body_with_title_as_header'])) {

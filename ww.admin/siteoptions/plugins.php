@@ -1,17 +1,25 @@
 <?php
+/**
+	* shows the plugins available on the cms and allows
+	* them to be installed
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 /**
- * ww.admin/siteoptions/plugins.php, KV-Webme
- *
- * shows the plugins available on the cms and allows
- * them to be installed
- *
- * @authors	Conor Mac Aoidh <conormacaoidh@gmail.com>,
- *						 Kae Verens <kae@vernes.com>
- * @license	GPL 2.0
- * @version	1.0
- */
-
+	* check plugins to find their dependencies
+	*
+	* @param array $plugins array of plugin names
+	*
+	* @return array array of needed plugins
+	*/
 function SiteOptions_dependenciesRecursiveCheck($plugins) {
 	$new_plugs=array();
 	foreach ($plugins as $plug) {

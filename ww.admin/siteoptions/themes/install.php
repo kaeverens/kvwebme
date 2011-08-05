@@ -1,14 +1,16 @@
 <?php
-
 /**
- * ww.admin/siteoptions/themes/install.php, KV-Webme
- *
- * installs or deletes a local theme
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* installs or deletes a local theme
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 /**
  * make sure post is set

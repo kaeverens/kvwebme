@@ -203,11 +203,6 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 		}
 		// }
 		echo '<em>Product saved</em>';
-		if (isset($_REQUEST['frontend-admin'])) {
-			echo '<script type="text/javascript">'
-				.'parent.location=parent.location;'
-			.'</script>';
-		}
 	}
 }
 
@@ -599,9 +594,6 @@ if (count($relations)) {
 	echo '</td></tr></table></div>';
 }
 // }
-if (isset($_REQUEST['frontend-admin'])) {
-	echo '<input type="hidden" name="frontend-admin" value="1" />';
-}
 echo '</div><input type="submit" value="Save" /></form>';
 WW_addScript('/ww.plugins/products/admin/products-edit.js');
 WW_addScript('/ww.plugins/products/admin/create-page.js');
