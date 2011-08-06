@@ -84,7 +84,7 @@ function Core_sendLoginToken() {
 	if ($u && count($u)) {
 		$token=md5(time().'|'.rand());
 		dbQuery(
-			"UPDATE user_accounts SET verification_hash=md5('$token') "
+			"UPDATE user_accounts SET verification_hash='$token' "
 			."WHERE email='$email'"
 		);
 		mail(
