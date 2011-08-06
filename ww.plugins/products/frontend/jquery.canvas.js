@@ -9,7 +9,9 @@
 			var w = $this.width();
 			var h = $this.height();
 			
-			if ( ! where) where = 'under';
+			if ( ! where) {
+				where = 'under';
+			}
 			
 			// first, remove all former canvas objects in this div
 			$this.find( '.cnvsWrapper').remove();
@@ -61,7 +63,9 @@
 	// call back with cnvs object, thus, allowing raw access
 	$.fn.canvasraw = function( callback) {
 		$( this).each( function() {
-			if ( callback) eval( callback)( this.cnvs);
+			if ( callback) {
+				eval( callback)( this.cnvs);
+			}
 		});
 	}
 	// fills in the array with settings for each canvas
@@ -209,8 +213,12 @@
 			return 2 * 3.14159265 * ( deg / 360);
 		}
 		cnvs.style = function( style) {
-			if ( style) this.laststyle = style;
-			for ( var name in this.laststyle) this.c[ name] = this.laststyle[ name];
+			if ( style) {
+				this.laststyle = style;
+			}
+			for ( var name in this.laststyle) {
+				this.c[ name] = this.laststyle[ name];
+			}
 		}
 		
 		// raw canvas functions (see Apple reference)
@@ -230,7 +238,9 @@
 				},
 				settings
 			);
-			if ( style) this.style( style);
+			if ( style) {
+				this.style( style);
+			}
 			this.c.arc( 
 				coord[ 0], coord[ 1], settings.radius,
 				this.deg2rad( settings.startAngle),
@@ -246,7 +256,9 @@
 				},
 				settings
 			);
-			if ( style) this.style( style);
+			if ( style) {
+				this.style( style);
+			}
 			this.c.arcTo(
 				coord1[ 0], coord1[ 1], 
 				coord2[ 0], coord2[ 1],
@@ -255,7 +267,9 @@
 		}
 		cnvs.bezierCurveTo = function( ref1, ref2, end, style) { 
 			// provide default settings
-			if ( style) this.style( style);
+			if ( style) {
+				this.style( style);
+			}
 			this.c.bezierCurveTo(
 				ref1[ 0], ref1[ 1],
 				ref2[ 0], ref2[ 1],
@@ -264,7 +278,9 @@
 		}
 		cnvs.quadraticCurveTo = function( ref1, end, style) { 
 			// provide default settings
-			if ( style) this.style( style);
+			if ( style) {
+				this.style( style);
+			}
 			this.c.quadraticCurveTo(
 				ref1[ 0], ref1[ 1],
 				end[ 0], end[ 1]
@@ -293,7 +309,9 @@
 				},
 				settings
 			);
-			if ( style) this.style( style);
+			if ( style) {
+				this.style( style);
+			}
 			this.c.fillRect(
 				coord[ 0], coord[ 1], settings.width, settings.height
 			);
@@ -307,7 +325,9 @@
 				},
 				settings
 			);
-			if ( style) this.style( style);
+			if ( style) {
+				this.style( style);
+			}
 			this.c.strokeRect(
 				coord[ 0], coord[ 1], settings.width, settings.height
 			);
@@ -321,13 +341,17 @@
 				},
 				settings
 			);
-			if ( style) this.style( style);
+			if ( style) {
+				this.style( style);
+			}
 			this.c.rect(
 				coord[ 0], coord[ 1], settings.width, settings.height
 			);
 		}
 		cnvs.lineTo = function( end, style) { 
-			if ( style) this.style( style);
+			if ( style) {
+				this.style( style);
+			}
 			this.c.lineTo( end[ 0], end[ 1]);
 		}
 		
@@ -338,16 +362,36 @@
 				var arg2 = null;
 				var arg3 = null;
 				var arg4 = null;
-				if ( blocks[ i].length >= 2) arg1 = blocks[ i][ 1];
-				if ( blocks[ i].length >= 3) arg2 = blocks[ i][ 2];
-				if ( blocks[ i].length >= 4) arg3 = blocks[ i][ 3];
-				if ( blocks[ i].length >= 5) arg4 = blocks[ i][ 4];
-				if ( blocks[ i][ 0] == 'moveTo') this.moveTo( arg1);
-				if ( blocks[ i][ 0] == 'arc') this.arc( arg1, arg2, arg3);
-				if ( blocks[ i][ 0] == 'arcTo') this.arcTo( arg1, arg2, arg3, arg4);
-				if ( blocks[ i][ 0] == 'bezierCurveTo') this.bezierCurveTo( arg1, arg2, arg3, arg4);
-				if ( blocks[ i][ 0] == 'quadraticCurveTo') this.quadraticCurveTo( arg1, arg2, arg3);
-				if ( blocks[ i][ 0] == 'lineTo') this.lineTo( arg1, arg2);
+				if ( blocks[ i].length >= 2) {
+					arg1 = blocks[ i][ 1];
+				}
+				if ( blocks[ i].length >= 3) {
+					arg2 = blocks[ i][ 2];
+				}
+				if ( blocks[ i].length >= 4) {
+					arg3 = blocks[ i][ 3];
+				}
+				if ( blocks[ i].length >= 5) {
+					arg4 = blocks[ i][ 4];
+				}
+				if ( blocks[ i][ 0] == 'moveTo') {
+					this.moveTo( arg1);
+				}
+				if ( blocks[ i][ 0] == 'arc') {
+					this.arc( arg1, arg2, arg3);
+				}
+				if ( blocks[ i][ 0] == 'arcTo') {
+					this.arcTo( arg1, arg2, arg3, arg4);
+				}
+				if ( blocks[ i][ 0] == 'bezierCurveTo') {
+					this.bezierCurveTo( arg1, arg2, arg3, arg4);
+				}
+				if ( blocks[ i][ 0] == 'quadraticCurveTo') {
+					this.quadraticCurveTo( arg1, arg2, arg3);
+				}
+				if ( blocks[ i][ 0] == 'lineTo') {
+					this.lineTo( arg1, arg2);
+				}
 			}
 		}
 		cnvs.atomPolygon = function( start, blocks, settings, style) {

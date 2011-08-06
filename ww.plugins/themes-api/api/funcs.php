@@ -13,34 +13,25 @@
 	*/
 
 /**
- * api/funcs.php, KV-Webme Themes API
- *
- * function library for the api
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
-
-/**
- * ThemesApi_getScreenshot
- *
- * @param $id - id of theme
- *
- * returns the url of the theme screenshot
- */
-function ThemesApi_getScreenshot($id){
+	* ThemesApi_getScreenshot
+	*
+	* @param int $id - id of theme
+	*
+	* @return the url of the theme screenshot
+	*/
+function ThemesApi_getScreenshot($id) {
 	return ThemesApi_calculateUrl()
 		.'/ww.plugins/themes-api/api.php?screenshot=true&id='.$id;
 }
-
 /**
- * ThemesApi_getVariants
- * 
- * returns an array of css files associated
- * with the theme
- */
-function ThemesApi_getVariants($id){
+	* returns an array of css files associated
+	* with the theme
+	*
+	* @param int $id ID of the theme
+	*
+	* @return array variants
+	*/
+function ThemesApi_getVariants($id) {
 
 	$variant_dir = USERBASE.'f/themes_api/themes/'.$id.'/'.$id.'/cs/';
 	$variants = array();
@@ -81,13 +72,10 @@ function ThemesApi_getVariants($id){
 }
 
 /**
- * ThemesApi_calculateUrl
- *
- * Accurately calculates the server URL
- * 
- * @access public
- * @return string
- */
+	* Accurately calculates the server URL
+	*
+	* @return string
+	*/
 function ThemesApi_calculateUrl() {
 	$url = 'http';
 
@@ -103,16 +91,18 @@ function ThemesApi_calculateUrl() {
 
 	return $url;
 }
-
 /**
- * ThemesApi_error
- * 
- * dies with an error message, before doing so
- * it cleans the contents of the themes-api/extract
- * directory and removes the theme from the server
- * and the database 
- */
-function ThemesApi_error($msg, $id = null){
+	* dies with an error message, before doing so
+	* it cleans the contents of the themes-api/extract
+	* directory and removes the theme from the server
+	* and the database
+	*
+	* @param string $msg the error message
+	* @param int    $id  ID of a theme
+	*
+	* @return null
+	*/
+function ThemesApi_error($msg, $id = null) {
 	/**
 	 * remove temporary extract stuff
 	 */
@@ -134,25 +124,25 @@ function ThemesApi_error($msg, $id = null){
 
 	die($msg);
 }
-
 /**
- * ThemesApi_downloadLink
- *
- * given the id and name of the theme this function
- * will return the download URL
- */
-function ThemesApi_downloadLink($id){
+	* return the download URL of a theme
+	*
+	* @param int $id ID of the theme
+	*
+	* @return string URL of the theme
+	*/
+function ThemesApi_downloadLink($id) {
 	return ThemesApi_calculateUrl()
 		.'/ww.plugins/themes-api/api.php?download=true&id='.$id;
 }
-
 /**
- * ThemesApi_displayImage
- *
- * display an image to the screen
- */
-function ThemesApi_displayImage($file){
-
+	* display an theme's screenshot
+	*
+	* @param string $file the screenshot
+	*
+	* @return null
+	*/
+function ThemesApi_displayImage($file) {
 	if (!file_exists($file) || !filesize($file)) {
 		die('file '.$file.' does not exist');
 	}
@@ -175,7 +165,14 @@ function ThemesApi_displayImage($file){
 	header('Content-length: '.filesize($file));
 	readfile($file);
 }
-
+/**
+	* get a theme using its ID for identification
+	*
+	* @param array $themes array of themes
+	* @param int   $id     the ID to search for
+	*
+	* @return array the theme to return
+	*/
 function ThemesApi_getThemeFromId($themes, $id) {
 	foreach ($themes as $theme) {
 		if ($theme[ 'id' ] == $id) {
@@ -183,7 +180,13 @@ function ThemesApi_getThemeFromId($themes, $id) {
 		}
 	}
 }
-
+/**
+	* add download counts to an array of themes
+	*
+	* @param array $themes the array of themes
+	*
+	* @return array array of themes with download counts added
+	*/
 function ThemesApi_addDownloadCount($themes) {
 	$ids = array();
 	foreach ($themes as $theme) {

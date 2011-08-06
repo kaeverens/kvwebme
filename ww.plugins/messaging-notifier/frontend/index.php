@@ -1,5 +1,5 @@
 <?php
-function show_messaging_notifier($vars) {
+function Aggregator_show($vars) {
 	if (!is_array($vars) && isset($vars->id) && $vars->id) {
 		$data=Core_cacheLoad('messaging_notifier', 'id'.$vars->id);
 		if ($data===false) {
@@ -10,11 +10,11 @@ function show_messaging_notifier($vars) {
 			Core_cacheSave('messaging_notifier', 'id'.$vars->id, $data);
 		}
 		if ($data) {
-			return parse_messaging_notifier(json_decode($data), $vars);
+			return Aggregator_parse(json_decode($data), $vars);
 		}
 	}
 }
-function parse_messaging_notifier($data, $vars) {
+function Aggregator_parse($data, $vars) {
 	if (!isset($vars->hide_story_title)) {
 		$vars->hide_story_title=0;
 	}
@@ -36,19 +36,19 @@ function parse_messaging_notifier($data, $vars) {
 		$f=Core_cacheLoad('messaging-notifier', $md5);
 		switch ($r->type) {
 			case 'WebME News Page': // {
-				$f=messaging_notifier_get_webmeNews($r);
+				$f=Aggregator_getWebmeNews($r);
 			break; // }
 			case 'email': // {
-				$f=messaging_notifier_get_email($r);
+				$f=Aggregator_getEmail($r);
 			break; // }
 			case 'phpBB3': // {
-				$f=messaging_notifier_get_phpbb3($r);
+				$f=Aggregator_getPhpbb3($r);
 			break; // }
 			case 'RSS': // {
-				$f=messaging_notifier_get_rss($r);
+				$f=Aggregator_getRss($r);
 			break; // }
 			case 'Twitter': // {
-				$f=messaging_notifier_get_twitter($r);
+				$f=Aggregator_getTwitter($r);
 			break; // }
 		}
 		$altogether=array_merge($altogether, $f);
@@ -105,7 +105,7 @@ function parse_messaging_notifier($data, $vars) {
 		:'';
 	return $html;
 }
-function messaging_notifier_get_rss($r) {
+function Aggregator_getRss($r) {
 	$f=@file_get_contents($r->url);
 	if (!$f) {
 		return array();
@@ -129,7 +129,7 @@ function messaging_notifier_get_rss($r) {
 	Core_cacheSave('messaging-notifier', md5($r->url), $arr);
 	return $arr;
 }
-function messaging_notifier_get_webmeNews($r) {
+function Aggregator_getWebmeNews($r) {
 	if (!is_numeric($r->url)) {
 		return array();
 	}
@@ -151,7 +151,7 @@ function messaging_notifier_get_webmeNews($r) {
 	Core_cacheSave('messaging-notifier', md5($r->url), $arr);
 	return $arr;
 }
-function messaging_notifier_get_twitter($r) {
+function Aggregator_getTwitter($r) {
 	$f=@file_get_contents($r->url);
 	if (!$f) {
 		return array();
@@ -173,7 +173,7 @@ function messaging_notifier_get_twitter($r) {
 	Core_cacheSave('messaging-notifier', md5($r->url), $arr);
 	return $arr;
 }
-function messaging_notifier_get_phpbb3($r) {
+function Aggregator_getPhpbb3($r) {
 	$f=@file_get_contents($r->url);
 	if (!$f) {
 		return array();
@@ -220,7 +220,7 @@ function messaging_notifier_get_phpbb3($r) {
 	Core_cacheSave('messaging-notifier', md5($r->url), $arr);
 	return $arr;
 }
-function messaging_notifier_get_email($r) {
+function Aggregator_getEmail($r) {
 	$bs=explode('|', $r->url);
 	$username=$bs[0];
 	$password=$bs[1];

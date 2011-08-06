@@ -50,7 +50,7 @@ function ImageTransition_show($vars) {
 				$html.='</div>';
 				WW_addScript(
 					'/ww.plugins/image-transition/frontend/k3dCarousel/'
-					.'jquery.k3dCarousel.min.js'
+					.'jquery.k3dCarousel.js'
 				);
 				WW_addInlineScript('$(window).load(function(){
 					$("#k3dCarousel'.$vars->id.'").k3dCarousel();

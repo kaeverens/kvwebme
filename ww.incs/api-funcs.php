@@ -12,7 +12,7 @@
 	* @link     http://kvsites.ie/
 	*/
 
-function getFileInfo() {
+function Core_getFileInfo() {
 	if (!isset($_REQUEST['src'])) {
 		return array('error'=>'missing src');
 	}
@@ -36,7 +36,7 @@ function getFileInfo() {
 		'mime'=>$mime
 	);
 }
-function getUserData() {
+function Core_getUserData() {
 	if (!isset($_SESSION['userdata'])) { // not logged in
 		return array('error'=>'you are not logged in');
 	}
@@ -57,4 +57,69 @@ function getUserData() {
 	}
 	$user['groups']=$g;
 	return $user;
+}
+function Core_login() {
+	// { variables
+	$email=$_REQUEST['email'];
+	$password=$_REQUEST['password'];
+	// }
+	$r=dbRow(
+		'select * from user_accounts where email="'.addslashes($email)
+		.'" and password=md5("'.$password.'")'
+	);
+	if ($r && count($r)) {
+		$r['password']=$password;
+		$_SESSION['userdata'] = $r;
+		dbQuery('update user_accounts set last_login=now() where id='.$r['id']);
+		exit('{"ok":1}');
+	}
+	exit('{"error":"either the email address or the password are incorrect"}');
+}
+function Core_sendLoginToken() {
+	$email=$_REQUEST['email'];
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		exit('{"error":"please enter a properly formatted email address"}');
+	}
+	$u=dbRow("SELECT * FROM user_accounts WHERE email='$email'");
+	if ($u && count($u)) {
+		$token=md5(time().'|'.rand());
+		dbQuery(
+			"UPDATE user_accounts SET verification_hash=md5('$token') "
+			."WHERE email='$email'"
+		);
+		mail(
+			$email, '['.$_SERVER['HTTP_HOST'].'] user password token',
+			'Your token is: '.$token,
+			"Reply-to: $email\nFrom: $email"
+		);
+		exit('{"ok":1}');
+	}
+	exit('{"error":"that email address not found in the users table"}');
+}
+function Core_updateUserPasswordUsingToken() {
+	$email=$_REQUEST['email'];
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		exit('{"error":"please enter a properly formatted email address"}');
+	}
+	$token=addslashes($_REQUEST['token']);
+	if ($token=='') {
+		exit('{"error":"no token entered"}');
+	}
+	$password=$_REQUEST['password'];
+	if ($password=='') {
+		exit('{"error":"no new password entered"}');
+	}
+	$u=dbRow(
+		"SELECT * FROM user_accounts WHERE email='$email' "
+		."and verification_hash='$token'"
+	);
+	if ($u && count($u)) {
+		$password=md5($password);
+		dbQuery(
+			"UPDATE user_accounts SET password='$password',"
+			."verification_hash='' WHERE email='$email'"
+		);
+		exit('{"ok":1}');
+	}
+	exit('{"error":"user not found, or verification token is out of date"}');
 }

@@ -784,7 +784,7 @@ function products_show($PAGEDATA) {
 		)
 		.$export;
 }
-function Products_showById($PAGEDATA,$id=0) {
+function Products_showById($PAGEDATA, $id=0) {
 	if ($id==0) {
 		$id=(int)$PAGEDATA->vars['products_product_to_show'];
 	}
@@ -799,6 +799,19 @@ function Products_showById($PAGEDATA,$id=0) {
 	}
 	return $type->render($product);
 }
+/**
+	* display all products in a specified category
+	*
+	* @param object $PAGEDATA  the page object
+	* @param int    $id        the category's ID
+	* @param int    $start     offset
+	* @param int    $limit     how many products to show
+	* @param string $order_by  what field to order the search by
+	* @param int    $order_dir order ascending or descending
+	* @param string $search    search string to filter by
+	*
+	* @return string HTML of the list of products
+	*/
 function Products_showByCategory(
 	$PAGEDATA, $id=0, $start=0, $limit=0, $order_by='', $order_dir=0, $search=''
 ) {
@@ -808,6 +821,19 @@ function Products_showByCategory(
 	$products=Products::getByCategory($id, $search);
 	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
+/**
+	* display all products of a certain type
+	*
+	* @param object $PAGEDATA  the page object
+	* @param int    $id        the page type's ID
+	* @param int    $start     offset
+	* @param int    $limit     how many products to show
+	* @param string $order_by  what field to order the search by
+	* @param int    $order_dir order ascending or descending
+	* @param string $search    search string to filter by
+	*
+	* @return string HTML of the list of products
+	*/
 function Products_showByType(
 	$PAGEDATA, $id=0, $start=0, $limit=0, $order_by='', $order_dir=0, $search=''
 ) {
@@ -817,6 +843,18 @@ function Products_showByType(
 	$products=Products::getByType($id, $search);
 	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
+/**
+	* display all products
+	*
+	* @param object $PAGEDATA  the page object
+	* @param int    $start     offset
+	* @param int    $limit     how many products to show
+	* @param string $order_by  what field to order the search by
+	* @param int    $order_dir order ascending or descending
+	* @param string $search    search string to filter by
+	*
+	* @return string HTML of the list of products
+	*/
 function Products_showAll(
 	$PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0, $search=''
 ) {

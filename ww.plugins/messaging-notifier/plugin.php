@@ -15,5 +15,5 @@ $plugin=array(
 );
 function messaging_notifier_show_widget($vars){
 	include_once SCRIPTBASE.'ww.plugins/messaging-notifier/frontend/index.php';
-	return show_messaging_notifier($vars);
+	return Aggregator_show($vars);
 }
