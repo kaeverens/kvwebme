@@ -22,7 +22,7 @@ $plugin=array(
 
 function privacy_front($PAGEDATA) {
 	require SCRIPTBASE.'ww.plugins/privacy/frontend/page_type.php';
-	return $html;
+	return $PAGEDATA->render().$html;
 }
 function privacy_admin($page, $page_vars) {
 	require SCRIPTBASE.'ww.plugins/privacy/admin/page_type.php';

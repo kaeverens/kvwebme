@@ -45,7 +45,8 @@ $ratings = dbAll(
 
 $ids = array();
 for ($i = 0; $i < count($ratings); ++$i) {
-	$id = end(explode('_', $ratings[ $i ][ 'name' ]));
+	$arr=explode('_', $ratings[ $i ][ 'name' ]);
+	$id = end($arr);
 	array_push($ids, $id);
 }
 
