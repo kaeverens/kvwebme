@@ -231,13 +231,13 @@ foreach ($rs as $r) {
 	.'</td><td>';
 	switch($r->type){
 		case 'selectbox':case 'hidden':{
-			$html='<textarea name="page_vars[privacy_extra_fields]['
+			$html.='<textarea name="page_vars[privacy_extra_fields]['
 				.($i++).'][extra]" class="small">'.htmlspecialchars($r->extra)
 				.'</textarea>';
 			break;
 		}
 		default:{
-			$html='<input type="hidden" name="page_vars[privacy_extra_fields]['
+			$html.='<input type="hidden" name="page_vars[privacy_extra_fields]['
 				.($i++).'][extra]" value="'.htmlspecialchars($r->extra)
 				.'"/>';
 		}
