@@ -121,15 +121,18 @@ foreach ($PLUGINS as $name => $plugin) {
 // { build array of available plugins that aren't instaled
 $available = array( );
 $dir = new DirectoryIterator(SCRIPTBASE . 'ww.plugins');
-foreach ($dir as $plugin) {
-	if (strpos($plugin, '.')===0) {
+foreach ($dir as $p) {
+	if ($p->isDot()) {
 		continue;
 	}
-	$name = $plugin->getFilename();
+	$name = $p->getFilename();
 	if (!is_dir(SCRIPTBASE.'ww.plugins/'.$name)||isset($PLUGINS[$name])) {
 	  continue;
 	}
-	require_once SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php';
+	if (!file_exists(SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php')) {
+		continue;
+	}
+	require SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php';
 	if (isset( $plugin[ 'hide_from_admin' ] ) && $plugin[ 'hide_from_admin' ]) {
 	  continue;
 	}
