@@ -154,8 +154,6 @@ $(function( ){
 	});
 });
 ';
-WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
-WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
 WW_addInlineScript($script);
 
 echo '
