@@ -322,7 +322,7 @@ else if (file_exists(THEME_DIR.'/'.THEME.'/h/_default.html')) {
 	$template=THEME_DIR.'/'.THEME.'/h/_default.html';
 }
 else {
-	require_once dirname(__FILE__).'ww.incs/template-find.php';
+	require_once dirname(__FILE__).'/ww.incs/template-find.php';
 }
 // }
 // { set up smarty
