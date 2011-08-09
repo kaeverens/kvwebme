@@ -148,8 +148,7 @@ if (@$_REQUEST['action']=='login'
 }
 // }
 function menu_build_fg($parentid, $depth, $options) {
-	$PARENTDATA=Page::getInstance($parentid);
-	$PARENTDATA->initValues();
+	$PARENTDATA=Page::getInstance($parentid)->initValues();
 	// { menu order
 	$order='ord,name';
 	if (isset($PARENTDATA->vars['order_of_sub_pages'])) {
@@ -188,7 +187,7 @@ function menu_build_fg($parentid, $depth, $options) {
 	$items=array();
 	foreach ($rs as $r) {
 		$item='<li>';
-		$page=Page::getInstance($r['id']);
+		$page=Page::getInstance($r['id'])->initValues();
 		$item.='<a class="menu-fg menu-pid-'.$r['id'].'" href="'
 			.$page->getRelativeUrl().'">'.htmlspecialchars($page->alias).'</a>';
 		$item.=menu_build_fg($r['id'], $depth+1, $options);

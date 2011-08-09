@@ -20,7 +20,7 @@ $rs=dbAll(
 	.'&& !(special&2) order by importance desc'
 );
 foreach ($rs as $r) {
-	$page=Page::getInstance($r['id']);
+	$page=Page::getInstance($r['id'])->initValues();
 	$https=isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on'?'https':'http';
 	echo '<url><loc>'.$https.'://'.$_SERVER['HTTP_HOST'].$page->getRelativeUrl()
 		.'</loc>'
