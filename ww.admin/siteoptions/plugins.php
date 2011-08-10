@@ -89,10 +89,10 @@ if ($action=='Save') { // handle actions
 	if (is_array($plugins)) {
 	  $DBVARS['plugins']=$plugins;
 	  Core_configRewrite();
-		header('location: siteoptions.php?page=plugins&message=updated');
+		redirect('/ww.admin/siteoptions.php?page=plugins&message=updated');
 	}
 	// dependency doesn't exist
-	header('location: siteoptions.php?page=plugins&message=failed');
+	redirect('/ww.admin/siteoptions.php?page=plugins&message=failed');
 }
 
 $message=@$_GET['message'];

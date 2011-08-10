@@ -68,7 +68,7 @@ foreach ($type['fields'] as $name=>$input) {
 		$tmp['t']='selectbox';
 		$tmp['e']='';
 		foreach ($input as $option) {
-			$tmp['e'].=$option.'\n';
+			$tmp['e'].=$option."\n";
 		}
 	}
 	else {

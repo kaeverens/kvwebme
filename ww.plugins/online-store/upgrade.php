@@ -112,3 +112,15 @@ if ($version==10) { // add session table, for quickpay method
 	);
 	$version=11;
 }
+if ($version==11) { // add meta, for tracking details from gateways
+	dbQuery(
+		'alter table online_store_orders add meta text'
+	);
+	$version=12;
+}
+if ($version==12) { // add authorised, for delayed credit card payments
+	dbQuery(
+		'alter table online_store_orders add authorised smallint default 0'
+	);
+	$version=13;
+}

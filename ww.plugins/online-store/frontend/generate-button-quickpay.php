@@ -18,19 +18,24 @@ $http=((empty($_SERVER['HTTPS'])||$_SERVER['HTTPS']=='off')
 $callbackurl=$http.$_SERVER['HTTP_HOST'].'/ww.plugins/online-store/verify/'
 	.'quickpay.php';
 
+$cont=Page::getInstance($PAGEDATA->vars['online_store_quickpay_redirect_to']);
+$canc=Page::getInstance($PAGEDATA->vars['online_store_quickpay_redirect_failed']);
+
 $fields = array(
-	'protocol'    => 3,
+	'protocol'    => 4,
 	'msgtype'     => 'authorize',
 	'merchant'    => $PAGEDATA->vars['online_stores_quickpay_merchantid'],
 	'language'    => 'en',
-	'ordernumber' => $id,
+	'ordernumber' => str_pad($id, 8, '0', STR_PAD_LEFT),
 	'amount'      => $total * 100,
 	'currency'    => $DBVARS['online_store_currency'],
-	'continueurl' => $PAGEDATA->vars['online_store_quickpay_redirect_to'],
-	'cancelurl'   => $PAGEDATA->vars['online_store_quickpay_redirect_failed'],
-	'callbackurl' => $callback_url,
+	'continueurl' => $cont->getAbsoluteURL(),
+	'cancelurl'   => $canc->getAbsoluteURL(),
+	'callbackurl' => $callbackurl,
 	'autocapture' => $PAGEDATA->vars['online_stores_quickpay_autocapture'],
-	'ipaddress'   => $_SERVER['REMOTE_ADDR']
+	'cardtypelock'=> '',
+	'group'       => 0,
+	'splitpayment'=> 0
 );
 
 // calculate required MD5 checksum

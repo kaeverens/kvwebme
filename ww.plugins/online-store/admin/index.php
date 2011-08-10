@@ -393,6 +393,20 @@ if (@$vars['online_stores_quickpay_autocapture']=='1') {
 }
 $c.='>Yes</option></select></td></tr>';
 // }
+// { test mode
+$c.='<tr><th>Mode</th><td>'
+	.'<select name="page_vars[online_stores_quickpay_testmode]">'
+	.'<option value="test">Test Mode</option>'
+	.'<option value="live"';
+if (isset($vars['online_stores_quickpay_testmode'])
+	&& $vars['online_stores_quickpay_testmode']=='live'
+) {
+	$c.=' selected="selected"';
+}
+$c.='>Live</option></select>'
+	.'In test mode, you can use the quickpay payment method by adding "?testmode=2"'
+	.' to the URL.</td></tr>';
+// }
 $c.=' </table></div>';
 // }
 $c.='</div></td></tr>';

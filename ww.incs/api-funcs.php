@@ -46,7 +46,9 @@ function Core_getUserData() {
 		.' limit 1'
 	);
 	$user['address']=json_decode($user['address'], true);
-	$user['extras']=json_decode($user['extras'], true);
+	$user['extras']=@$user['extras']
+		?json_decode($user['extras'], true)
+		:array();
 	$groups=dbAll(
 		'select groups_id from users_groups where user_accounts_id='
 		.$_SESSION['userdata']['id']

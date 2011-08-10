@@ -26,7 +26,8 @@ $plugin=array(
 			'form_url' => '/ww.plugins/online-store/admin/widget-form.php'
 		)
 	),
-	'description' => 'Add online-shopping capabilities to a number of other plugins.',
+	'description'=>'Add online-shopping capabilities to some plugins. '
+		.'REQUIRES products plugin.',
 	'frontend' => array(
 		'widget' => 'OnlineStore_showBasketWidget',
 		'page_type' => 'OnlineStore_frontend',
@@ -47,7 +48,7 @@ $plugin=array(
 		'initialisation-completed' => 'OnlineStore_startup',
 		'privacy_user_profile'     => 'OnlineStore_userProfile'
 	),
-	'version' => '11'
+	'version' => '13'
 );
 // }
 // { currency symbols

@@ -188,6 +188,11 @@ class Page{
 		}
 		return self::$instancesByNAndP[$name.'/'.$parent];
 	}
+	function getAbsoluteURL() {
+		$url=@$_SERVER['HTTPS']?'https':'http';
+		$url.='://'.$_SERVER['HTTP_HOST'];
+		return $url.$this->getRelativeURL();
+	}
 	function getRelativeURL() {
 		if (isset($this->relativeURL)) {
 			return $this->relativeURL;

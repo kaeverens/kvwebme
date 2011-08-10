@@ -18,7 +18,7 @@ $types=array(
 	'Default'			=>			'default',
 	'Books'				=>			'books',
 	'Clothes'			=>			'clothes',
-	'Software'		=>			'software',
+	'Software'		=>			'software'
 );
 // }
 // { default type
@@ -76,7 +76,7 @@ $default=array(
 		'Description' => 'textarea',
 	),
 	'single'=>$default_single,
-	'multi'=>$default_multi,
+	'multi'=>$default_multi
 );
 // }
 // { clothes type
@@ -87,8 +87,8 @@ $clothes=array(
 		'Sizes' => 'inputbox',
 		'For'	=> array(
 			'Men',
-			'Women',
-		),
+			'Women'
+		)
 	),
 	'single'=>'
 		<table>
@@ -120,7 +120,7 @@ $clothes=array(
 			</tbody>
 		</table>
 	',
-	'multi'=>$default_multi,
+	'multi'=>$default_multi
 );
 // }
 // { books type
@@ -129,7 +129,7 @@ $books=array(
 		'ISBN' => 'inputbox',
 		'Ebook ISBN'=>'inputbox',
 		'Author'=>'inputbox',
-		'Description' => 'textarea',
+		'Description' => 'textarea'
 	),
 	'single'=>'
 		<table>
@@ -161,7 +161,7 @@ $books=array(
 			</tbody>
 		</table>
 	',
-	'multi'=>$default_multi,
+	'multi'=>$default_multi
 
 );
 // }
@@ -200,6 +200,6 @@ $software=array(
 			</tbody>
 		</table>
 	',
-	'multi'=>$default_multi,
+	'multi'=>$default_multi
 );
 // }
