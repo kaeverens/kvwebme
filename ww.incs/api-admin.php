@@ -11,10 +11,6 @@
 	* @link     http://kvsites.ie/
 	*/
 
-if (!Core_isAdmin()) {
-	die('{"error":"you are not logged in as an admin"}');
-}
-
 /**
   * create a copy of a page
   *

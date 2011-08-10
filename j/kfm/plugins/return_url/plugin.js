@@ -21,7 +21,7 @@ function plugin_return_url(){
 				if(files.length==1)url=urls[0];
 				else url='"'+urls.join('","')+'"';
 			}
-			window.SetUrl(url,0,0,caption);
+			window.SetUrl(url.replace(/\\/g,'/'),0,0,caption);
 			setTimeout('window.close()',1);
 		});
 	}

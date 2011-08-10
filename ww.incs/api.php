@@ -13,7 +13,6 @@
 
 require_once 'basics.php';
 
-header('Content-type: text/json');
 // { extract parameters from URL
 if ($_REQUEST['extra']!='') {
 	$tmp=substr($_REQUEST['extra'], 1, strlen($_REQUEST['extra'])-1);
@@ -33,6 +32,12 @@ if (isset($_REQUEST['p'])) {
 		die('{"error":"plugin not installed"}');
 	}
 	require_once SCRIPTBASE.'ww.plugins/'.$_REQUEST['p'].'/api.php';
+	if (strpos($_REQUEST['f'], 'admin')===0) {
+		if (!Core_isAdmin()) {
+			die('{"error":"you are not logged in as an admin"}');
+		}
+		require_once SCRIPTBASE.'ww.plugins/'.$_REQUEST['p'].'/api-admin.php';
+	}
 	$plugin=preg_replace(
 		'/[^a-zA-Z]/',
 		'',
@@ -43,14 +48,19 @@ else {
 	$plugin='Core';
 	require_once 'api-funcs.php';
 	if (strpos($_REQUEST['f'], 'admin')===0) {
+		if (!Core_isAdmin()) {
+			die('{"error":"you are not logged in as an admin"}');
+		}
 		require_once 'api-admin.php';
 	}
 }
 // }
 
-$func=$plugin.'_'.$_REQUEST['f'];
+$func=ucfirst($plugin).'_'.$_REQUEST['f'];
 if (!function_exists($func)) {
 	die('{"error":"function does not exist"}');
 }
 
-echo json_encode($func($_REQUEST));
+$res=$func($_REQUEST);
+header('Content-type: text/json');
+echo json_encode($res);

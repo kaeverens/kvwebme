@@ -11,6 +11,9 @@
 	* @link     http://kvsites.ie/
 	*/
 
+if (isset($_REQUEST['PHPSESSID'])) {
+	@session_id($_REQUEST['PHPSESSID']);
+}
 @session_start();
 if (!defined('START_TIME')) {
 	define('START_TIME', microtime(true));

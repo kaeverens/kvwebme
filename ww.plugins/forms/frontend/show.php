@@ -51,7 +51,6 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 	}
 	$c='<form action="'.$_SERVER['REQUEST_URI'].'" method="post" '
 		.'class="ww_form" enctype="multipart/form-data">';
-	$c.='<fieldset>';
 	if (count($errors)) {
 		$c.='<div class="errorbox">'.join('<br />', $errors).'</div>';
 	}
@@ -350,7 +349,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 		$c.='<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/'
 			.'jquery.validate.min.js"></script>';
 	}
-	$c.='</fieldset></form>';
+	$c.='</form>';
 	if ($has_ccdate) {
 		WW_addInlineScript('$("input.ccdate").datepicker({"dateFormat":"yy-mm"});');
 	}

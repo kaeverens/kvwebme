@@ -33,7 +33,6 @@
 .dataTables_wrapper {
 	position: relative;
 	min-height: 302px;
-	clear: both;
 	_height: 302px;
 	zoom: 1; /* Feeling sorry for IE */
 }
@@ -61,7 +60,7 @@
 
 .dataTables_filter {
 	width: 50%;
-	float: right;
+	margin-left:49%;
 	text-align: right;
 }
 

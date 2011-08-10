@@ -83,14 +83,17 @@ WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
 WW_addScript('/j/jquery.remoteselectoptions.js');
 WW_addScript('/j/fg.menu/fg.menu.js');
 WW_addScript('/j/ckeditor-3.6/ckeditor.js');
+WW_addScript('/j/ckeditor-3.6/adapters/jquery.js');
 WW_addScript('/j/cluetip/jquery.cluetip.js');
+WW_addScript('/j/jquery.uploadify/jquery.uploadify.js');
 WW_addScript('/ww.admin/j/admin.js');
 echo '<!doctype html>
 <html><head><title>WebME admin area</title>';
 echo Core_getJQueryScripts();
 echo '<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'
 	.'<link rel="stylesheet" href="/j/cluetip/jquery.cluetip.css"/>'
-	.'<link rel="stylesheet" href="/ww.admin/theme/admin.css"/>';
+	.'<link rel="stylesheet" href="/ww.admin/theme/admin.css"/>'
+	.'<script>var sessid="'.session_id().'";</script>';
 foreach ($PLUGINS as $pname=>$p) {
 	if (file_exists(SCRIPTBASE.'/ww.plugins/'.$pname.'/admin/admin.css')) {
 		echo '<link rel="stylesheet" href="/ww.plugins/'.$pname
@@ -121,8 +124,10 @@ foreach ($PLUGINS as $pname=>$p) {
 		if (preg_match('/[^a-zA-Z0-9 >]/', $name)) {
 			continue; // illegal characters in name
 		}
-		$json='{"'.str_replace('>', '":{"', $name).'":{"_link":"plugin.php?_plugi'
-			.'n='.$pname.'&amp;_page='.$page.'"}}'
+		$link=strpos($page, 'js:')===false
+			?'plugin.php?_plugin='.$pname.'&amp;_page='.$page
+			:'javascript:Core_screen(\''.$pname.'\', \''.$page.'\');';
+		$json='{"'.str_replace('>', '":{"', $name).'":{"_link":"'.$link.'"}}'
 			.str_repeat('}', substr_count($name, '>'));
 		$menus=array_merge_recursive($menus, json_decode($json, true));
 	}

@@ -1,4 +1,4 @@
-var id='0',pagesContentsChildren=[],pagesContentsParents=[],pagesContentsRowById=[], CMSextra='',inAdmin=1;
+var id='0',CMSextra='',inAdmin=1;
 $(function(){
 	var classes=[];
 	els=$('*');

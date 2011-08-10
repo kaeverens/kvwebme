@@ -52,7 +52,7 @@ function showWidgetForm(w){
 function buildRightWidget(p){
 	var widget=$('<div class="widget-wrapper '+(p.disabled?'disabled':'enabled')+'"></div>')
 		.data('widget',p);
-	var h4=$('<h4></h4>')
+	var h4=$('<h4/>')
 		.appendTo(widget);
 	var name=p.name||p.type;
 	$('<input type="checkbox" class="widget_header_visibility" title="tick this to show the widget title on the front-end" />')

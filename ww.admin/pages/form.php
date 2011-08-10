@@ -322,7 +322,7 @@ echo '<div id="pages-advanced">';
 echo '<table>';
 echo '<td>';
 // { metadata 
-echo '<h4>MetaData</h4><table>';
+echo '<h3>MetaData</h3><table>';
 echo '<tr><th>keywords</th><td><input name="keywords" value="'
 	.htmlspecialchars($page['keywords']).'"/></td></tr>';
 echo '<tr><th>description</th><td><textarea class="large" name="description"'
@@ -387,7 +387,7 @@ echo '</table>';
 // }
 echo '</td><td>';
 // { special
-echo '<h4>Special</h4>';
+echo '<h3>Special</h3>';
 $specials=array(
 	'Is Home Page',
 	'Does not appear in navigation',
@@ -404,7 +404,7 @@ for ($i=0;$i<count($specials);++$i) {
 }
 // }
 // { other
-echo '<h4>Other</h4>';
+echo '<h3>Other</h3>';
 echo '<table>';
 // { order of sub-pages
 echo '<tr><th>Order of sub-pages</th><td><select name="page_vars[order_of_s'

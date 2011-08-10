@@ -3,7 +3,7 @@ $(function(){
 		var $this=$(this);
 		$this.attr('current-page', 0);
 		function change_page($this, from, to) {
-			var $divs=$this.find('>fieldset>div');
+			var $divs=$this.find('>div');
 			$($divs[from])
 				.animate({
 					'opacity':0
@@ -21,7 +21,7 @@ $(function(){
 				});
 		}
 		function are_all_visible_elements_valid($this) {
-			var $divs=$this.find('>fieldset>div:visible');
+			var $divs=$this.find('>div:visible');
 			var allvalid=true;
 			$divs.find('input,select').each(function(){
 				if (!$this.validate().element(this)) {

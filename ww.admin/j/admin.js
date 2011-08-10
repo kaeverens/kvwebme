@@ -26,6 +26,35 @@ function convert_date_to_human_readable(){
 			'setDate', new Date(dparts[0],dparts[1]-1,dparts[2])
 		);
 }
+function Core_sidemenu(links, plugin, currentpage) {
+	var html='<ul>';
+	for (var i=0;i<links.length;++i) {
+		html+='<li><a href="javascript:Core_screen(\''
+			+plugin+'\', \''+(links[i].replace(/[^a-zA-Z]/g, ''))+'\')"';
+		if (links[i]==currentpage) {
+			html+=' class="current-page"';
+		}
+		html+='>'+links[i]+'</a></li>';
+	}
+	$('#sidebar1').html(html+'</ul>');
+}
+function Core_screen(plugin, page) {
+	var fname=plugin.charAt(0).toUpperCase()+plugin.slice(1)+'_screen';
+	if (window[fname]) {
+		if (!$('#sidebar1').length) {
+			$('#wrapper').html('<div id="sidebar1"/><div id="content"/>');
+		}
+		return window[fname](page.replace(/^js:/, ''));
+	}
+	$('head')
+		.append('<link rel="stylesheet" href="/ww.plugins/'+plugin+'/admin.css"/>');
+	$.getScript('/ww.plugins/'+plugin+'/admin.js', function(){
+		if (!window[fname]) {
+			return;
+		}
+		Core_screen(plugin, page);
+	});
+}
 $(function(){
 	function keepAlive(){
 		setTimeout(keepAlive,1700000);

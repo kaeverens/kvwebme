@@ -52,7 +52,7 @@
 		</div>
 		<script>
 			$(function(){
-				$('#tabs').tabs();
+				$('#tabs').tabs().find('#email').focus();
 				$('#login').click(function(){
 					var email=$('#email').val(), pass=$('#password').val();
 					if (email=='' || pass=='') {
