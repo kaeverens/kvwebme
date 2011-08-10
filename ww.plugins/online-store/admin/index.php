@@ -19,17 +19,26 @@ if (isset($_REQUEST['online_store_currency'])
 	Core_configRewrite();
 }
 $csym=$online_store_currencies[$DBVARS['online_store_currency']][0];
+// { are there any authorised payments?
+$authrs=dbAll(
+	'select id,date_created,total,status from online_store_orders where authorised'
+);
+$has_authrs=count($authrs)?1:0;
+// }
 $c='<div class="tabs">';
 // { list of tabs
-$c.= '<ul>';
-$c.='<li><a href="#online-store-orders">Orders</a></li>';
-$c.='<li><a href="#online-store-delivery">Postage and Packaging</a></li>';
-$c.='<li><a href="#online-store-form">Form</a></li>';
-$c.='<li><a href="#online-stores-fields">Fields</a></li>';
-$c.='<li><a href="#online-store-invoice">Invoice</a></li>';
-$c.='<li><a href="#online-store-payment">Payment Details</a></li>';
-$c.='<li><a href="#online-store-countries">Countries</a></li>';
-$c.='</ul>';
+$c.= '<ul>'
+	.'<li><a href="#online-store-orders">Orders</a></li>';
+if ($has_authrs) { // show authorised payments (for retrieval)
+	$c.='<li><a href="#online-store-authorised">Authorised Payments</a></li>';
+}
+$c.='<li><a href="#online-store-delivery">Postage and Packaging</a></li>'
+	.'<li><a href="#online-store-form">Form</a></li>'
+	.'<li><a href="#online-stores-fields">Fields</a></li>'
+	.'<li><a href="#online-store-invoice">Invoice</a></li>'
+	.'<li><a href="#online-store-payment">Payment Details</a></li>'
+	.'<li><a href="#online-store-countries">Countries</a></li>'
+	.'</ul>';
 // }
 // { orders
 $c.='<div id="online-store-orders">';
@@ -45,8 +54,8 @@ if (isset($_REQUEST['online-store-status'])) {
 $c.='<p>'
 	.'This list shows orders with the status: '
 	.'<select id="online-store-status">';
-$arr=array('Unpaid','Paid','Paid and Delivered');
-foreach ($arr as $k=>$v) {
+$statii=array('Unpaid','Paid or Authorised','Delivered');
+foreach ($statii as $k=>$v) {
 	$c.='<option value="'.$k.'"';
 	if ($k==$_SESSION['online-store']['status']) {
 		$c.=' selected="selected"';
@@ -54,9 +63,17 @@ foreach ($arr as $k=>$v) {
 	$c.='">'.htmlspecialchars($v).'</option>';
 }
 $c.='</select>.</p>';
+// { filter for SQL
+if ($_SESSION['online-store']['status']==1) {
+	$filter='status=1 or authorised=1';
+}
+else {
+	$filter='status='.(int)$_SESSION['online-store']['status'];
+}
+// }
 $rs=dbAll(
-	'select status,id,total,date_created from online_store_orders where status='
-	.((int)$_SESSION['online-store']['status']).' order by date_created desc'
+	'select status,id,total,date_created,authorised from online_store_orders where '
+	.$filter.' order by date_created desc'
 );
 if (is_array($rs) && count($rs)) {
 	$c.='<div style="margin:0 20%">'
@@ -85,8 +102,11 @@ if (is_array($rs) && count($rs)) {
 			.'<td><a href="javascript:os_status('.$r['id'].','
 			.(int)$r['status'].')" '
 			.'id="os_status_'.$r['id'].'">'
-			.htmlspecialchars($arr[(int)$r['status']]).'</a>'
-			.'</td></tr>';
+			.htmlspecialchars($arr[(int)$r['status']]).'</a>';
+		if ($r['authorised']) {
+			$c.=' <strong>authorised</strong>';
+		}
+		$c.='</td></tr>';
 	}
 	$c.='</tbody></table></div>';
 }
@@ -95,6 +115,18 @@ else {
 }
 $c.='</div>';
 // }
+if ($has_authrs) { // authorised payments
+	$c.='<div id="online-store-authorised"><table class="wide"><tr><th>'
+		.'<input type="checkbox"/></th><th>ID</th><th>Date</th><th>Total</th>'
+		.'<th>Status</th></tr>';
+	foreach ($authrs as $r) {
+		$c.='<tr><td><input type="checkbox" id="auth'.$r['id'].'"/></td>'
+			.'<td>'.$r['id'].'</td><td>'.date_m2h($r['date_created']).'</td>'
+			.'<td>'.$r['total'].'</td><td>'.$statii[(int)$r['status']].'</td></tr>';
+	}
+	$c.='</table><input type="button" value="capture selected transactions"/>';
+	$c.='</div>';
+}
 // { postage and packaging
 if (!isset($vars['online_stores_postage'])) {
 	$vars['online_stores_postage']='[]';

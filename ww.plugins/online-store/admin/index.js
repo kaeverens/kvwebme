@@ -346,4 +346,23 @@ $(function(){
 	pandp_rebuild_widget();
 	$('#postage_wrapper').live('change',pandp_rebuild_value_from_top);
 	$('#action').mousedown(pandp_rebuild_value_from_top);
+	$('#online-store-authorised th input').change(function(){
+		$('#online-store-authorised td input')
+			.attr('checked', $(this).is(':checked'));
+	});
+	$('#online-store-authorised input[type="button"]').click(function() {
+		var txns=[];
+		$('#online-store-authorised td input:checked').each(function() {
+			txns.push($(this).attr('id').replace(/auth/, ''));
+		});
+		if (!txns.length) {
+			return alert('no transactions selected');
+		}
+		$.post('/a/p=online-store/f=adminCapture/ids='+txns, function(ret) {
+			console.log(ret);
+			if (ret.errors) {
+				alert(ret.errors);
+			}
+		});
+	});
 });
