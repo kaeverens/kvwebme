@@ -102,7 +102,7 @@ if (is_array($rs) && count($rs)) {
 			.'<td><a href="javascript:os_status('.$r['id'].','
 			.(int)$r['status'].')" '
 			.'id="os_status_'.$r['id'].'">'
-			.htmlspecialchars($arr[(int)$r['status']]).'</a>';
+			.htmlspecialchars($statii[(int)$r['status']]).'</a>';
 		if ($r['authorised']) {
 			$c.=' <strong>authorised</strong>';
 		}
