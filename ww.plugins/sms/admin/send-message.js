@@ -21,7 +21,7 @@ function sms_check_to(){
 	if(to!=newto)$('#sms_to').val(newto);
 }
 function sms_choose_from_subscribers(id){
-	if(id){
+	if(id) {
 		$('/a/p=sms/f=adminSubscribersGet/id='+id, function(res){
 			if(res){
 				$('#sms_to').val(res.phone);
@@ -30,18 +30,20 @@ function sms_choose_from_subscribers(id){
 			$('#sms-choose-from-addressbook').remove();
 		},'json');
 	}
-	else $.post('/ww.plugins/sms/admin/subscribers-get-all.php',function(res){
-		var links=[];
-		for(var i=0;i<res.length;++i){
-			links.push('<a href="javascript:sms_choose_from_subscribers('+res[i].id+');">'
-				+htmlspecialchars(res[i].name)
-				+'</a>');
-		}
-		$('<div id="sms-choose-from-addressbook"><p>Click a name.</p>'+links.join(', ')+'</div>')
-			.dialog({
-				"modal":true
-			});
-	},'json');
+	else {
+		$.post('/a/p=sms/f=adminSubscribersGet', function(res){
+			var links=[];
+			for(var i=0;i<res.length;++i){
+				links.push('<a href="javascript:sms_choose_from_subscribers('+res[i].id+');">'
+					+htmlspecialchars(res[i].name)
+					+'</a>');
+			}
+			$('<div id="sms-choose-from-addressbook"><p>Click a name.</p>'+links.join(', ')+'</div>')
+				.dialog({
+					"modal":true
+				});
+		},'json');
+	}
 }
 function sms_send(){
 	sms_check_msg();
@@ -54,19 +56,19 @@ function sms_send(){
 		if(!/^44|^353/.test(to))return alert('only UK (44) and Irish (353) numbers are accepted at present.');
 		var name=$('#sms_to_name').val();
 		if(name=="name (optional)")name=to;
-		$.post('/ww.plugins/sms/admin/send.php',{
+		$.post('/a/p=sms/f=adminSend', {
 			"to":to,
 			"to_name":$('#sms_to_name').val(),
 			"msg":msg
-		},sms_sent,'json');
+		}, sms_sent, 'json');
 	}
 	else{
 		var aid=$('#sms_addressbook_id').val();
 		if(aid==0)return alert('please choose an addressbook');
-		$.post('/ww.plugins/sms/admin/send-bulk.php',{
+		$.post('/a/p=sms/f=adminSendBulk', {
 			"to":aid,
 			"msg":msg
-		},sms_sent_bulk,'json');
+		}, sms_sent_bulk, 'json');
 	}
 }
 function sms_sent(ret){

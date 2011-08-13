@@ -69,7 +69,7 @@ $(function(){
 		$this.find('input[type=email].verify').change(function(){
 			var $this=$(this);
 			var name=$this.attr('name');
-			$.post('/ww.plugins/forms/frontend/send-verification.php',{
+			$.post('/a/p=forms/f=verificationSend', {
 				'name':name,
 				'email':$this.val()
 			}, function(ret) {

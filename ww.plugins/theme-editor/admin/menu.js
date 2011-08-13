@@ -20,9 +20,10 @@ $(function(){
 						msg="invalid name. please use only alphanumeric characters.\n\n";
 					}
 				}while(!valid);
-				$.post('/ww.plugins/theme-editor/admin/copy-template.php?from='
-					+name+'&to='+newname,
-					function(ret) {
+				$.post('/a/p=theme-editor/f=adminTemplateCopy', {
+					'from':name,
+					'to':newname
+				}, function(ret) {
 						if (ret.error) {
 							return alert(ret.error);
 						}

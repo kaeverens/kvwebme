@@ -72,8 +72,7 @@ function validate_passwords( ){
 }
 
 $(function(){
-	$.get(
-		'/a/f=getUserData',
+	$.get('/a/f=getUserData',
 		function(user){
 			$.extend(userdata,user);
 		},
@@ -82,8 +81,7 @@ $(function(){
 	$('input[name="default-address"]').live('click',function(){
 		var name=$(this).val();
 		userdata.address[name].default='yes';
-		$.get(
-			'/ww.plugins/privacy/frontend/save_user_info.php?action=default&name='
+		$.get('/ww.plugins/privacy/frontend/save_user_info.php?action=default&name='
 			+ name
 		);
 	});

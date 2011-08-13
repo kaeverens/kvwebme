@@ -78,8 +78,7 @@ function populate_delivery(address,bill){
 $(function(){
 	// { populate delivery details
 	if(userdata.id!=null){
-		$.get(
-			'/a/f=getUserData',
+		$.get('/a/f=getUserData',
 			function(user){
 				$.extend(userdata,user);		
 				var components=userdata.name.split(' ');

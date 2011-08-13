@@ -22,8 +22,7 @@ $(function(){
 			CKEDITOR.instances['page_vars[gallery-template]'].setData(content);
 		}
 		else{
-			$.get(
-				'/ww.plugins/image-gallery/admin/types/'+tpl+'.tpl',
+			$.get('/ww.plugins/image-gallery/admin/types/'+tpl+'.tpl',
 				function(html){
 					CKEDITOR.instances['page_vars[gallery-template]'].setData(html);
 				}
@@ -53,7 +52,7 @@ $(function(){
 			buttons:{
 				'Save':function(){
 					var caption=$('#caption-text').val();
-					$.post('/ww.plugins/image-gallery/admin/edit-caption.php', {
+					$.post('/a/p=image-gallery/f=adminCaptionEdit', {
 						'id':id,
 						'caption':caption
 					});

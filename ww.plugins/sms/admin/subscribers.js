@@ -46,9 +46,7 @@ function sms_save(){
 }
 function sms_delete(id){
 	if(!confirm('are you sure you want to delete this subscriber?'))return;
-	$.post('/ww.plugins/sms/admin/subscribers-delete.php',{
-		"id":id
-	},function(){
+	$.post('/a/p=sms/f=adminSubscribersDelete/id='+id, function(){
 		document.location='/ww.admin/plugin.php?_plugin=sms&_page=subscribers';
 	});
 }

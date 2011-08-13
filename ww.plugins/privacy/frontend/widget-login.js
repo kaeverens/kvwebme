@@ -21,7 +21,7 @@ $(function(){
 							var $table=$('#userauthentication-email-and-password');
 							var email=$table.find('input[type=email]').val(),
 								password=$table.find('input[type=password]').val();
-							$.post('/ww.plugins/privacy/frontend/widget-login-email-and-password.php', {
+							$.post('/a/p=privacy/f=login', {
 									email:email,
 									password:password
 								}, function(ret) {

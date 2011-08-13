@@ -44,6 +44,10 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	exit;
 }
 
-if(isset($_REQUEST['id']))$id=(int)$_REQUEST['id'];
-else $id=0;
+if (isset($_REQUEST['id'])) {
+	$id=(int)$_REQUEST['id'];
+}
+else {
+	$id=0;
+}
 echo '<a href="javascript:;" id="menu_editlink_'.$id.'" class="menu_editlink">view or edit menu</a>';

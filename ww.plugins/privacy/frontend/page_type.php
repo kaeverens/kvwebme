@@ -641,8 +641,7 @@ function userregistration_showProfile() {
 					}
 				}
 			});
-			$.get(
-				"/ww.plugins/privacy/frontend/edit_user_info.php",
+			$.get("/ww.plugins/privacy/frontend/edit_user_info.php",
 				function( html ){
 					$( "#users-dialog" ).html( html );
 				}
@@ -725,8 +724,7 @@ function userregistration_showProfile() {
 		$(".delete-addr").live("click",function(){
 			var name=$(this).attr("name");
 			$(this).parent().parent().fadeOut("slow").remove();
-			$.get(
-				"/ww.plugins/privacy/frontend/save_user_info.php?action=delete"
+			$.get("/ww.plugins/privacy/frontend/save_user_info.php?action=delete"
 				+"&address="+name
 			);
 		});

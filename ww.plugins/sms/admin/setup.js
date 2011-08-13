@@ -7,11 +7,11 @@ function sms_verify_setup(){
 	if(!pass)return sms_show_error('please enter a password');
 	if(pass!=pass2)return sms_show_error('the entered passwords must be the same');
 	$('#sms_messages').html('submitting form... please wait');
-	$.post('/ww.plugins/sms/admin/subscribe.php',{
+	$.post('/a/p=sms/f=adminSubscribe', {
 		'email':email,
 		'pass':pass,
 		'phone':phone
-	},sms_subscription_sent,'json');
+	}, sms_subscription_sent, 'json');
 }
 function sms_show_error(err){
 	$('#sms_messages').html('<em>'+err+'</em>');

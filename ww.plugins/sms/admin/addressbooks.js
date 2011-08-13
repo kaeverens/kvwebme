@@ -1,10 +1,10 @@
 function sms_edit(id){
 	if(id){
-		$.post('/ww.plugins/sms/admin/addressbooks-get.php',{
-			"id":id
-		},sms_edit_showform,'json');
+		$.post('/a/p=sms/f=adminAddressbooksGet/id='+id, sms_edit_showform);
 	}
-	else sms_edit_showform();
+	else {
+		sms_edit_showform();
+	}
 }
 function sms_edit_showform(res){
 	if(!res){
@@ -28,9 +28,8 @@ function sms_edit_showform(res){
 }
 function sms_edit_subscribers(){
 	var res=window.sms_currently_editing;
-	$.post('/ww.plugins/sms/admin/addressbooks-get-subscribers.php',{
-		"id":res.id
-	},sms_show_subscribers,'json');
+	$.post('/a/p=sms/f/adminAddressbooksSubscribersGet/id='+res.id,
+		sms_show_subscribers);
 }
 function sms_show_subscribers(res){
 	var html='<div id="sms-show-subscribers">';
@@ -52,8 +51,8 @@ function sms_show_subscribers(res){
 				$('#sms-show-subscribers input:checked').each(function(){
 					ids.push(this.id.replace(/subscriber-/,''));
 				});
-				$.post('/a/p=sms/f=adminAddressbookSave',{
-					"aid":window.sms_currently_editing.id,
+				$.post('/a/p=sms/f=adminAddressbooksSave',{
+					"id":window.sms_currently_editing.id,
 					"subscribers":ids.join(',')
 				},function(){
 					sms_edit(window.sms_currently_editing.id);
@@ -67,7 +66,7 @@ function sms_save(){
 	var res=window.sms_currently_editing;
 	res.name=$('#sms_name').val();
 	res.subscribers=$('#sms_subscribers input').val();
-	$.post('/ww.plugins/sms/admin/addressbooks-save.php',{
+	$.post('/a/p=sms/f=adminAddressbooksSave', {
 		"id":res.id,
 		"name":res.name,
 		"subscribers":res.subscribers
@@ -77,12 +76,12 @@ function sms_save(){
 	},'json');
 }
 function sms_delete(id){
-	if(!confirm('are you sure you want to delete this addressbook?'))return;
-	$.post('/ww.plugins/sms/admin/addressbooks-delete.php',{
-		"id":id
-	},function(res){
+	if (!confirm('are you sure you want to delete this addressbook?')) {
+		return;
+	}
+	$.post('/a/p=sms/f=adminAddressbookDelete/id='+id, function(res){
 		$('#sms_row_'+res.id).fadeOut(400,function(){
 			$(this).remove();
 		});
-	},'json');
+	});
 }
