@@ -77,6 +77,9 @@ function Core_login() {
 	}
 	exit('{"error":"either the email address or the password are incorrect"}');
 }
+function Core_logout() {
+	unset($_SESSION['userdata']);
+}
 function Core_sendLoginToken() {
 	$email=$_REQUEST['email'];
 	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
