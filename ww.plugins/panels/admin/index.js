@@ -7,7 +7,7 @@ function updateWidgets(panel){
 	}
 	panel.data('widgets',widgets);
 	var json=Json.toString({'widgets':widgets});
-	$.post('/ww.plugins/panels/admin/save.php',{'id':id,'data':json});
+	$.post('/a/p=panels/f=adminSave/id='+id, {'data':json});
 }
 function showWidgetForm(w){
 	if(!w.length)w=$(this).closest('.widget-wrapper');
@@ -94,7 +94,7 @@ function widget_visibility(ev){
 	if (wd.hidden) {
 		hid=wd.hidden;
 	}
-	$.get('/ww.plugins/panels/admin/get-visibility.php?visibility='+vis+'&hidden='+hid, function(res){
+	$.get('/a/p=panels/f=adminVisibilityGet/visibility='+vis+'/hidden='+hid, function(res){
 		var d=$('<form><p>If nothing is selected here then the widget is visible on all pages that support it.</p><p>Visible in <select name="panel_visibility_pages[]" multiple="multiple">'+res.visible+'</select></p><p>Hidden in <select name="panel_hidden_pages[]" multiple="multiple">'+res.hidden+'</select></p></form>');
 		d.dialog({
 			width:300,
@@ -145,7 +145,7 @@ function panel_remove(i){
 	});
 }
 function panel_visibility(id){
-	$.post('/ww.plugins/panels/admin/get-visibility.php',{'id':id},function(res){
+	$.post('/a/p=panels/f=adminVisibilityGet/id='+id, function(res){
 		var d=$('<form><p>If nothing is selected here then the page is visible on all pages that support it.</p><p>Visible in <select name="panel_visibility_pages[]" multiple="multiple">'+res.visible+'</select></p><p>Hidden in <select name="panel_hidden_pages[]" multiple="multiple">'+res.hidden+'</select></form>');
 		d.dialog({
 			modal:true,

@@ -16,9 +16,7 @@ function os_listItems(id){
 	var $d=$('<p>Getting list of ordered items - please wait...</p>').dialog({
 		"modal":true
 	});
-	$.post('/ww.plugins/online-store/admin/get-list-of-items-ordered.php',{
-		'id':id
-	}, function(ret){
+	$.post('/a/p=online-store/f=adminOrderItemsList/id='+id, function(ret){
 		$d.remove();
 		if (ret.error) {
 			return alert(ret.error);

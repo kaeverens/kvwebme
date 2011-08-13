@@ -631,8 +631,7 @@ function userregistration_showProfile() {
 							return false;
 						}
 						var phone = $( "input[name=\'user-phone\']" ).val( );
-						$.post(
-							"/ww.plugins/privacy/frontend/save_user_info.php",
+						$.post("/ww.plugins/privacy/frontend/save_user_info.php",
 							{ "name" : name, "phone" : phone }	
 						);
 						location.reload( true );
@@ -662,8 +661,7 @@ function userregistration_showProfile() {
 			  var town=$(\'input[name="add-town"]\').val();
 			  var county=$(\'input[name="add-county"]\').val();
 			  var country=$(\'input[name="add-country"]\').val();
-						$.post(
-							"/ww.plugins/privacy/frontend/save_user_info.php?action=update",
+						$.post("/ww.plugins/privacy/frontend/save_user_info.php?action=update",
 							{
 								"name" : name,
 								"street" : street,

@@ -4,11 +4,7 @@ $(function() {
 });
 $('.approve').click(function() {
 	var id = $(this).attr('id').replace('approve_', '');
-	$.post(
-		'/ww.plugins/forum/admin/approve-post.php',
-		{
-			'id':id
-		},
+	$.post('/a/p=forum/f=adminPostApprove/id='+id,
 		forums_admin_remove_post,
 		'json'
 	);
@@ -26,11 +22,7 @@ function forums_admin_remove_post(data) {
 $('.delete').click(function() {
 	var id = $(this).attr('id').replace('delete_', '');
 	if (confirm('Are you sure you want to delete this post')) {
-		$.post(
-			'/ww.plugins/forum/admin/delete-post.php',
-			{
-				"id":id
-			},
+		$.post('/a/p=forum/f=adminPostDelete/id='+id,
 			forums_admin_remove_post,
 			'json'
 		);
@@ -57,9 +49,7 @@ $('.moderators').live('change', function() {
 		}
 	}
 	var group = $this.val();
-	$.post(
-		'/ww.plugins/forum/admin/set-moderators.php',
-			{
+	$.post('/a/p=forum/f=adminGroupModeratorSet', {
 				"action": checked,
 				"forum":forum,
 				"group":group,
@@ -97,12 +87,7 @@ $('.add-group').live('click', function() {
 		}
 		var forumID = $this.attr('id')
 			.replace('new-moderator-group-for-forum-', '');
-		$.post(
-			'/ww.plugins/forum/admin/new-group.php',
-			{
-				name: groupName,
-				forum: forumID
-			},
+		$.post('/a/p=forum/f=adminGroupNew/name='+groupName+'/forum='+forumID,
 			forums_admin_update_groups,
 			'json'
 		);
@@ -127,11 +112,7 @@ function forums_admin_update_groups(data) {
 $('.delete-forum-link').live('click', function() {
 	if (confirm('Are you sure you want to delete this forum')) {
 		var id = $(this).attr('id').replace('delete-forum-', '');
-		$.post(
-			'/ww.plugins/forum/admin/delete-forum.php',
-			{
-				'id':id
-			},
+		$.post('/a/p=forum/f=adminForumDelete/id='+id,
 			forums_admin_update_page,
 			'json'
 		);
@@ -163,9 +144,7 @@ $('.add-forum').click(function() {
 			return alert('No name entered');
 		}
 		$this.remove();
-		$.post(
-			'/ww.plugins/forum/admin/add-forum.php',
-			{
+		$.post('/a/p=forum/f=adminForumAdd', {
 				'name':name,
 				'page':page
 			},

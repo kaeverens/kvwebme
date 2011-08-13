@@ -28,7 +28,7 @@ $(function(){
 			if (!vals.body.length) {
 				return alert('no post entered');
 			}
-			$.post('/ww.plugins/forum/frontend/post.php',vals,function(ret){
+			$.post('/a/p=forum/p=post',vals,function(ret){
 				if (ret.errors) {
 					return alert(ret.errors.join("\n"));
 				}
@@ -52,9 +52,7 @@ $(function(){
 				})
 				.click(function(){
 					if (confirm('are you sure you want to delete this post?')) {
-						$.post('/ww.plugins/forum/frontend/delete.php', {
-							id:pdata.id
-						}, function(ret){
+						$.post('/a/p=forum/f=delete/id='+pdata.id, function(ret){
 							if (ret.error) {
 								return alert(ret.error);
 							}

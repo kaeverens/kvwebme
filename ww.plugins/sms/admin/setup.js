@@ -26,9 +26,8 @@ function sms_subscription_activation(){
 	var val=$('#sms_text_activation').val();
 	if(val=='')return;
 	if(val.length!=32)return alert('the activation key must be 32 characters long');
-	$.post('/ww.plugins/sms/admin/activate.php',{
-		'key':val
-	},sms_subscription_activation2,'json');
+	$.post('/a/p=sms/f=adminActivate/key='+val, sms_subscription_activation2,
+		'json');
 }
 function sms_subscription_activation2(res){
 	if(res.status==0)return alert(res.error);

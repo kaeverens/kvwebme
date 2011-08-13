@@ -5,7 +5,7 @@ $(function(){
 	function onchange(year, month, inst) {
 		clearTimeout(timer);
 		timer=setTimeout(function(){
-			$.post('/ww.plugins/news/frontend/get-headlines-month.php',{
+			$.post('/a/p=news/f=getHeadlinesMonth',{
 				y:year,
 				m:month,
 				p:pagedata.id

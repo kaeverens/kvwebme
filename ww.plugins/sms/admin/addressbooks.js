@@ -52,7 +52,7 @@ function sms_show_subscribers(res){
 				$('#sms-show-subscribers input:checked').each(function(){
 					ids.push(this.id.replace(/subscriber-/,''));
 				});
-				$.post('/ww.plugins/sms/admin/addressbooks-save-subscribers.php',{
+				$.post('/a/p=sms/f=adminAddressbookSave',{
 					"aid":window.sms_currently_editing.id,
 					"subscribers":ids.join(',')
 				},function(){

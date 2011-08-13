@@ -14,10 +14,7 @@ function start_edit(id, comment) {
 			modal:true,
 			buttons: {
 				'Save' : function() {
-					$.post(
-						'/ww.plugins/comments/admin/edit.php',
-						{
-							"id":id,
+					$.post('/a/p=comments/f=adminEdit/id='+id, {
 							"comment":$('#comment-edit').val()
 						},
 						update_comment,
@@ -33,14 +30,7 @@ function start_edit(id, comment) {
 }
 function start_delete(id, my_table) {
 	if (confirm('Are you sure you want to delete this comment')) {
-		$.post(
-			'/ww.plugins/comments/admin/delete.php',
-			{
-				"id":id
-			},
-			remove_row,
-			"json"
-		);
+		$.post('/a/p=comments/f=adminDelete/id='+id, remove_row, "json");
 	}
 }
 function remove_row(data) {
@@ -67,8 +57,7 @@ function update_comment(data) {
 }
 function set_moderation() {
 	var val = $('#no_moderation').attr('checked');
-	$.post(
-		'/ww.plugins/comments/admin/set_moderation.php',
+	$.post('/ww.plugins/comments/admin/set_moderation.php',
 		{
 			"value":val
 		},
@@ -78,8 +67,7 @@ function set_moderation() {
 }
 function set_moderatorEmail() {
 	var val = $('#comments_moderatorEmail').val();
-	$.post(
-		'/ww.plugins/comments/admin/set_moderatorEmail.php',
+	$.post('/ww.plugins/comments/admin/set_moderatorEmail.php',
 		{
 			"email":val
 		},
@@ -89,8 +77,7 @@ function set_moderatorEmail() {
 }
 function set_captchas() {
 	var val = $('#no_captchas').attr('checked');
-	$.post(
-		'/ww.plugins/comments/admin/set_captchas.php',
+	$.post('/a/p=comments/f=adminCaptchasSet',
 		{
 			"value":val
 		}
@@ -107,12 +94,7 @@ function update_table_columns(data) {
 	}
 }
 function start_moderation(id, val) {
-	$.post(
-		'/ww.plugins/comments/admin/moderate.php',
-		{
-			"id":id,
-			"value":val
-		},
+	$.post('/a/p=comments/f=adminModerate', {"id":id, "value":val},
 		update_moderation,
 		"json"
 	);

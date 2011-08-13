@@ -23,5 +23,3 @@ if( $pass != $match )
 
 $pass = md5 ($pass);
 dbQuery( 'update user_accounts set password="' . $pass . '" where id=' . $id );
-
-?>

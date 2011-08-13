@@ -104,10 +104,9 @@ var Gallery={
 		}
 		$.extend(this.options,opts);
 		// }
-		$.post(
-			'/ww.plugins/image-gallery/frontend/get-images.php?id='+pagedata.id,
-			{'image_gallery_directory':Gallery.options.directory },
-			function(items){
+		$.post('/a/p=image-gallery/f=imagesGet/id='+pagedata.id, {
+				'image_gallery_directory':Gallery.options.directory
+			}, function(items){
 				Gallery.images=items;
 				var length=Gallery.images.length;
 				if (length==0) {

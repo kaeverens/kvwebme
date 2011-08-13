@@ -130,8 +130,7 @@ var Wizard={
 		$.extend( this.vars, this.queryString );
 		var rand=Math.floor(Math.random()*111111);
 		$('#step_'+(this.stage-1)).find('input,button,textarea').attr('disabled', true);
-		$.post(
-			'/ww.plugins/online-store/admin/wizard/step'+this.stage
+		$.post('/ww.plugins/online-store/admin/wizard/step'+this.stage
 			+'.php?rand='+rand,
 			Wizard.queryString,
 			function(result){

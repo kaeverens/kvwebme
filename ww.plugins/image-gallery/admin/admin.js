@@ -3,10 +3,7 @@ $(function(){
 	$('#image-gallery-wrapper').sortable({
 		stop:function(event,ui){
 			var querystring=$('#image-gallery-wrapper').sortable('serialize');
-			$.post(
-				'/ww.plugins/image-gallery/admin/reorder.php',
-				querystring
-			);
+			$.post('/ww.plugins/image-gallery/admin/reorder.php', querystring);
 		},
 		placeholder:'image-gallery-highlight'
 	});
@@ -38,10 +35,7 @@ $(function(){
 		var result=confirm('Are you sure you wish to delete this image?');
 		if(result){
 			$(this).parent().fadeOut('slow').remove();
-			$.post(
-				'/ww.plugins/image-gallery/admin/delete-image.php',
-				{'id':id}
-			);
+			$.post('/ww.plugins/image-gallery/admin/delete-image.php', {'id':id});
 		}
 	});
 	$('.edit-img').live('click',function(){	
@@ -59,13 +53,10 @@ $(function(){
 			buttons:{
 				'Save':function(){
 					var caption=$('#caption-text').val();
-					$.post(
-						'/ww.plugins/image-gallery/admin/edit-caption.php',
-						{
-							'id':id,
-							'caption':caption
-						}
-					);
+					$.post('/ww.plugins/image-gallery/admin/edit-caption.php', {
+						'id':id,
+						'caption':caption
+					});
 					$('#image-gallery-image'+id).attr('title',caption);
 					$(this).dialog('close').remove();
 				},
@@ -90,8 +81,7 @@ $(function(){
 					var link=$('#link').val();
 					var image=$('#image').val();
 					var id=$('#id').val();
-					$.post(
-						'/ww.plugins/image-gallery/admin/new-video.php',
+					$.post('/ww.plugins/image-gallery/admin/new-video.php',
 						{ 'link':link,"id":id,"image":image }
 					);
 					if(image==''||image=='http://') {

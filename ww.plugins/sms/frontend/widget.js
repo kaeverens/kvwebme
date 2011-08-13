@@ -29,7 +29,7 @@ $('.sms-subscribe button').live('click',function(){
 	if (sms_get_phone_error(phone)) {
 		return alert('please check the Phone field.');
 	}
-	$.post('/ww.plugins/sms/frontend/subscribe.php',{
+	$.post('/a/p=sms/f=subscribe', {
 		"ids":ids.join(','),
 		"name":name,
 		"phone":phone

@@ -155,3 +155,5 @@ div.fg-menu-container ul li a:hover,#sidebar1 a:hover,#menu-top ul li a:hover{
 .uploadifyQueueItem{
 	display:none;
 }
+.tight,.tight *{padding:0}
+.number{width:30px;text-align:right}

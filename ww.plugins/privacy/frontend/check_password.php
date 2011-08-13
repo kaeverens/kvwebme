@@ -20,7 +20,6 @@ if($id == '' || $pass == '' )
 $pass = md5 ($pass);
 $verify = dbRow( 'select password from user_accounts where id=' . $id );
 
-if ($pass == $verify[ 'password' ])
+if ($pass == $verify[ 'password' ]) {
 	die( 'correct' );
-
-?>
+}

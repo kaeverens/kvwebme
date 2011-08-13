@@ -43,8 +43,7 @@ function change_password_dialog( id ){
 
 $('input[name="password-current"]').live('keyup', function(){
 	var pass = $( this ).val( );
-	$.post(
-		'/ww.plugins/privacy/frontend/check_password.php',
+	$.post('/ww.plugins/privacy/frontend/check_password.php',
 		{ 'pass' : pass },
 		function( html ){
 			if( html == 'correct' ){
@@ -66,8 +65,7 @@ function validate_passwords( ){
 		$( '#password-error' ).html( 'Passwords do not match' );
 		return false;
 	}
-	$.post(
-		'/ww.plugins/privacy/frontend/save_password.php',
+	$.post('/ww.plugins/privacy/frontend/save_password.php',
 		{ "pass" : pass, "match" : match }
 	);
 	$( '#password-dialog' ).dialog( 'close' ).remove( );
@@ -103,8 +101,7 @@ function add_address(){
           var town=$('input[name="add-town"]').val();
           var county=$('input[name="add-county"]').val();
           var country=$('input[name="add-country"]').val();
-            $.post(
-              "/ww.plugins/privacy/frontend/save_user_info.php?action=update",
+            $.post("/ww.plugins/privacy/frontend/save_user_info.php?action=update",
               {
                 "name" : safe,
                 "street" : street,

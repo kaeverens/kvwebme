@@ -55,3 +55,24 @@ function OnlineStore_adminCapture() {
 		?array('errors'=>$errors)
 		:array('ok'=>1);
 }
+/**
+	* retrieve a list of ordered items
+	*
+	* @return array
+	*/
+function OnlineStore_adminOrderItemsList() {
+	$id=(int)$_REQUEST['id'];
+	$r=dbRow('select * from online_store_orders where id='.$id);
+	if (!$r || !$r['items']) {
+		return array('error'=>'no such order');
+	}
+	$items=array();
+	foreach (json_decode($r['items'], true) as $item) {
+		$items[]=array(
+			'id'=>$item['id'],
+			'name'=>(@$item['name']?$item['name']:$item['short_desc']),
+			'amt'=>$item['amt']
+		);
+	}
+	return $items;
+}

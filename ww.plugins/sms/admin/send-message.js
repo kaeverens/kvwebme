@@ -22,9 +22,7 @@ function sms_check_to(){
 }
 function sms_choose_from_subscribers(id){
 	if(id){
-		$.post('/ww.plugins/sms/admin/subscribers-get.php',{
-			"id":id
-		},function(res){
+		$('/a/p=sms/f=adminSubscribersGet/id='+id, function(res){
 			if(res){
 				$('#sms_to').val(res.phone);
 				$('#sms_to_name').val(res.name);

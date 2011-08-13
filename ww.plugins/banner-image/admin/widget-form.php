@@ -72,8 +72,7 @@ function banner_edit(ev) {
 			buttons:{
 				'Save':function(){
 					var html=ww.banner.rte.getData();
-					$.post(
-						'/ww.plugins/banner-image/admin/widget-form.php', {
+					$.post('/ww.plugins/banner-image/admin/widget-form.php', {
 						'id':id,'action':'save','html':html
 					}, function(ret){
 						if(ret.id!=ret.was_id){

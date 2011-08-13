@@ -163,11 +163,9 @@ function Menu(caller, options){
 	};
 	
 	this.chooseItem = function(item){
-		location.href = $(item).attr('href');return;
+		location.href = $(item).attr('href');
 		menu.kill();
-		// edit this for your own custom function/callback:
-		$('#menuSelection').text($(item).text());	
-	};
+	}
 };
 
 Menu.prototype.flyout = function(container, options) {

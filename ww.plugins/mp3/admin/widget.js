@@ -21,8 +21,7 @@ function mp3_edit(ev){
 	ww.mp3.editor_instances++;
 	var el=ev.target;
 	var id=el.id.replace(/mp3_editlink_/,'');
-	$.post(
-		'/ww.plugins/mp3/admin/widget-form.php',
+	$.post('/ww.plugins/mp3/admin/widget-form.php',
 		{'get_mp3_files':id},
 		function(res){ // content generated here
 			var html='<div class="mp3_content">'
@@ -85,8 +84,7 @@ function mp3_edit(ev){
 							data.mp3_template=
 								CKEDITOR.instances['mp3_template'+ww.mp3.editor_instances]
 								.getData();
-							$.post(
-								'/ww.plugins/mp3/admin/widget-form.php',
+							$.post('/ww.plugins/mp3/admin/widget-form.php',
 								data,
 								function(ret){
 									if(ret.id!=ret.id_was)

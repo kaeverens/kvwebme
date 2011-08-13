@@ -154,8 +154,7 @@ $script = '
 		$( "#accordion" ).accordion( "activate", 2 );
 		var id = $( "#return-id" ).attr( "value" );
 		var hash = Math.floor( Math.random( ) * 1001 ); 
-		$.post(
-			"/ww.plugins/themes-api/frontend/verify.php?hash=" + hash, "id=" + id,
+		$.post("/ww.plugins/themes-api/frontend/verify.php?hash=" + hash, "id=" + id,
 			function( data ){
 				$( "#loading" ).html(
 					"<img src=\'/ww.plugins/themes-api/files/loading.gif\'/>"
@@ -234,8 +233,7 @@ $script = '
 
 		if( id != "" ){
 			var hash = Math.floor( Math.random( ) * 1001 );
-			$.post(
-				"/ww.plugins/themes-api/frontend/clean.php?hash="+hash,
+			$.post("/ww.plugins/themes-api/frontend/clean.php?hash="+hash,
 				"id=" + id
 			);
 		}
