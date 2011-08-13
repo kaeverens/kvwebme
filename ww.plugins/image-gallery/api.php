@@ -20,11 +20,11 @@ require_once KFM_BASE_PATH.'/initialise.php';
   * script for retrieving a JSON array of images/videos in a gallery
 	*/
 function ImageGallery_imagesGet() {
-	$page_id=(int)@$_GET['id'];
+	$page_id=(int)@$_REQUEST['id'];
 	if ($page_id==0) {
 		exit;
 	}
-	$image_dir=@$_POST['image_gallery_directory'];
+	$image_dir=@$_REQUEST['image_gallery_directory'];
 	if ($image_dir!=''&&is_dir(USERBASE.'f'.$image_dir)) { // read from KFM
 		$dir=preg_replace('/^\//', '', $image_dir);
 		$dir_id=kfm_api_getDirectoryID($dir);

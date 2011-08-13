@@ -20,7 +20,7 @@
 	* @return null
 	*/
 function Forms_fileDelete() {
-	$id=@$_POST['id'];
+	$id=@$_REQUEST['id'];
 	if ($id==''||strpos('..', $id)!==false) {
 		exit;
 	}
