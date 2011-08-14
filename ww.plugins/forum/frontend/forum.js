@@ -28,7 +28,7 @@ $(function(){
 			if (!vals.body.length) {
 				return alert('no post entered');
 			}
-			$.post('/a/p=forum/p=post',vals,function(ret){
+			$.post('/a/p=forum/f=post',vals,function(ret){
 				if (ret.errors) {
 					return alert(ret.errors.join("\n"));
 				}

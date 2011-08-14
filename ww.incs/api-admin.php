@@ -11,6 +11,8 @@
 	* @link     http://kvsites.ie/
 	*/
 
+require_once '../ww.admin/admin_libs.php';
+
 /**
   * create a copy of a page
   *
