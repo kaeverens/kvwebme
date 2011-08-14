@@ -30,7 +30,7 @@ function Panels_adminVisibilityGet() {
 	return array(
 		'visible'=>panel_selectkiddies(0, 1, $visible, 0),
 		'hidden'=>panel_selectkiddies(0, 1, $hidden, 0)
-	)
+	);
 }
 function panel_selectkiddies($i=0, $n=1, $s=array(), $id=0, $prefix='') {
 	$q=dbAll(
