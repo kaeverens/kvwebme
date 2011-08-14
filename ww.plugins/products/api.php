@@ -1,5 +1,31 @@
 <?php
 /**
+	* show a list of categories
+	*
+	* @return null
+	*/
+function Products_categoriesOptionsGet() {
+	$selected=$_REQUEST['selected'];
+	function getAll($selected, $parent=0, $depth=0) {
+		$rs=dbAll(
+			'select id,name from products_categories where parent_id='.$parent
+			.' order by name'
+		);
+		foreach ($rs as $r) {
+			echo '<option value="'.$r['id'].'"';
+			if ($r['id']==$selected) {
+				echo ' selected="selected"';
+			}
+			echo '>'.str_repeat('&raquo; ', $depth)
+			.htmlspecialchars($r['name']).'</option>';
+			getAll($selected, $r['id'], $depth+1);
+		}
+	}
+	echo '<option value="0"> -- top -- </option>';
+	getAll($selected);
+	exit;
+}
+/**
 	* remove a review
 	*
 	* @return null

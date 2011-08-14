@@ -11,6 +11,151 @@
 	* @link     http://kvsites.ie/
 	*/
 
+function Products_adminCategoryGetFromID($id){
+	$ps=dbAll(
+		'select product_id from products_categories_products where category_id='
+		.$id
+	);
+	$products=array();
+	$pageid= dbOne(
+		'select page_id from page_vars where name="products_category_to_show" a'
+		.'nd value='.$id, 'page_id'
+	);
+	foreach ($ps as $p) {
+		$products[]=$p['product_id'];
+	}
+	$data=array(
+		'attrs'=>dbRow(
+			'select id,associated_colour,name,enabled,parent_id from products_cat'
+			.'egories where id='.$id
+		),
+		'products'=>$products,
+	);
+	if (isset($pageid)) {
+		$page= Page::getInstance($pageid);
+		if ($page) {
+			$url= $page->getRelativeUrl();
+			$data['page']= $url;
+		}
+	}
+	return $data;
+}
+/**
+	* get details about a category
+	*
+	* @return array the details
+	*/
+function Products_adminCategoryGet() {
+	if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id'])) {
+		exit;
+	}
+	return Products_adminCategoryGetFromID($_REQUEST['id']);
+}
+/**
+	* edit a category
+	*
+	* @return array the category data
+	*/
+function Products_adminCategoryEdit() {
+	if (!is_numeric(@$_REQUEST['id']) || @$_REQUEST['name']==''
+		|| strlen(@$_REQUEST['associated_colour'])!=6
+	) {
+		exit;
+	}
+	dbQuery(
+		'update products_categories set name="'.addslashes($_REQUEST['name']).'"'
+		.',enabled="'.((int)$_REQUEST['enabled']).'"'
+		.',associated_colour="'.addslashes($_REQUEST['associated_colour']).'"'
+		.' where id='.$_REQUEST['id']);
+	Core_cacheClear('products');
+	$pageid=dbOne(
+		'select page_id from page_vars where name="products_category_to_show" '
+		.'and value='.$_REQUEST['id'],
+		'page_id'
+	);
+	if ($pageid) {
+		dbQuery('update pages set special = special|2 where id='.$pageid);
+	}
+	$data=Products_adminCategoryGetFromID($_REQUEST['id']);
+	return $data;
+}
+/**
+	* edit a category's contained products
+	*
+	* @return null
+	*/
+function Products_adminCategoryProductsEdit() {
+	if (!is_numeric(@$_REQUEST['id'])) {
+		exit;
+	}
+	dbQuery(
+		'delete from products_categories_products where category_id='
+		.$_REQUEST['id']
+	);
+	foreach ($_REQUEST['s'] as $p) {
+		dbQuery(
+			'insert into products_categories_products set product_id='
+			.((int)$p).',category_id='.$_REQUEST['id']
+		);
+	}
+	Core_cacheClear('products');
+	return Products_adminCategoryGetFromID($_REQUEST['id']);
+}
+/**
+	* add a new category
+	*
+	* @return array category data
+	*/
+function Products_adminCategoryNew() {
+	if (!is_numeric(@$_REQUEST['parent_id']) || @$_REQUEST['name']=='') {
+		exit;
+	}
+	dbQuery(
+		'insert into products_categories set name="'.addslashes($_REQUEST['name'])
+		.'",enabled=1,parent_id='.$_REQUEST['parent_id']
+	);
+	$id=dbOne('select last_insert_id() as id', 'id');
+	$data=Products_adminCategoryGetFromID($id);
+	return $data;
+}
+/**
+	* delete a category
+	*
+	* @return null
+	*/
+function Products_adminCategoryDelete() {
+	if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id'])) {
+		exit;
+	}
+	$parent=dbOne(
+		'select parent_id from products_categories where id='.$_REQUEST['id'],
+		'parent_id'
+	);
+	dbQuery(
+		'update products_categories set parent_id='.$parent.' where parent='
+		.$_REQUEST['id']
+	);
+	dbQuery('delete from products_categories where id='.$_REQUEST['id']);
+	return array('status'=>1);
+}
+/**
+	* move a category
+	*
+	* @return array status of the move
+	*/
+function Products_adminCategoryMove() {
+	$id=(int)$_REQUEST['id'];
+	$p_id=(int)$_REQUEST['parent_id'];
+	dbQuery('update products_categories set parent_id='.$p_id.' where id='.$id);
+	if (isset($_REQUEST['order'])) {
+		$order=explode(',', $_REQUEST['order']);
+		for ($i=0;$i<count($order);++$i) {
+			$id=(int)$order[$i];
+			dbQuery('update products_categories set sortNum='.$i.' where id='.$id);
+		}
+	}
+	return Products_adminCategoryGetFromID($id);
+}
 /**
   * Gets the data for all the products and prompts the user to save it
 	*
@@ -76,6 +221,66 @@ function Products_adminExport() {
 	// }
 }
 /**
+	* get details about the data fields a product has
+	*
+	* @return array data fields
+	*/
+function Products_adminProductDatafieldsGet() {
+	$typeID = $_REQUEST['type'];
+	$productID = $_REQUEST['product'];
+	if (!is_numeric($typeID)||!is_numeric($productID)) {
+		exit('Invalid arguments');
+	}
+	if (!dbOne('select id from products_types where id = '.$typeID, 'id')) {
+		return array('status'=>0, 'message'=>'Could not find this type');
+	}
+	$data = array();
+	$typeData = dbRow(
+			'select data_fields, is_for_sale '
+			.'from products_types '
+			.'where id = '.$typeID
+		);
+	$typeFields = json_decode($typeData['data_fields']);
+	$data['type'] = $typeFields;
+	$data['isForSale'] = $typeData['is_for_sale'];
+	if ($productID != 0) {
+		$product 
+			= dbRow(
+				'select data_fields, product_type_id 
+				from products where id = '.$productID
+			);
+		$productFields = json_decode($product['data_fields']);
+		$oldType 
+			= dbOne(
+				'select data_fields 
+				from products_types 
+				where id = '.$product['product_type_id'],
+				'data_fields'
+			);
+		$oldType = json_decode($oldType);
+		$data['product'] = $productFields;
+		$data['oldType'] = $oldType;
+	}
+	return $data;
+}
+/**
+	* get products in <option> format
+	*
+	* @return null
+	*/
+function Products_adminProductsList() {
+	$ps=dbAll('select id,name from products order by name');
+	$end=count($ps);
+	echo "product_names=[\n";
+	for($i=0;$i<$end;++$i){
+		echo '	["'.addslashes($ps[$i]['name']).'",'.$ps[$i]['id'].']';
+		if($i<$end-1)echo ',';
+		echo "\n";
+	}
+	echo "];";
+	exit;
+}
+/**
 	* delete a product type
 	*
 	* @return null
@@ -111,6 +316,68 @@ function Products_adminTypeEdit() {
 	);
 	Core_cacheClear();
 	return array('ok'=>1);
+}
+/**
+	* get data fields in <option> format
+	*
+	* @return null
+	*/
+function Products_adminDatafieldsList() {
+	$fields=array();
+	$filter='';
+	if ($_REQUEST['other_GET_params']) {
+		if (is_numeric($_REQUEST['other_GET_params'])) { // product type
+			$filter=' where id='.(int)$_REQUEST['other_GET_params'];
+		}
+		elseif (strpos($_REQUEST['other_GET_params'], 'c')===0) {
+			$cat=(int)str_replace('c', '', $_REQUEST['other_GET_params']);
+			if ($cat==0) {
+				$rs=dbAll('select distinct product_type_id from products');
+			}
+			else {
+				$rs=dbAll(
+					'select product_id from products_categories_products where category_id='
+					.$cat
+				);
+				$arr=array();
+				foreach ($rs as $r) {
+					$arr[]=$r['product_id'];
+				}
+				if (!count($arr)) {
+					exit;
+				}
+				$rs=dbAll(
+					'select distinct product_type_id from products where id in ('
+					.join(',', $arr).')'
+				);
+			}
+			$arr=array();
+			foreach ($rs as $r) {
+				$arr[]=$r['product_type_id'];
+			}
+			if (!count($arr)) {
+				exit;
+			}
+			$filter=' where id in ('.join(',', $arr).')';
+		}
+	}
+	$rs=dbAll('select data_fields from products_types'.$filter);
+	foreach ($rs as $r) {
+		$fs=json_decode($r['data_fields']);
+		foreach ($fs as $f) {
+			$fields[]=$f->n;
+		}
+	}
+	$fields=array_unique($fields);
+	asort($fields);
+	foreach ($fields as $field) {
+		echo '<option';
+		if (isset($vars['products_order_by']) && $field==$vars['products_order_by']) {
+			echo ' selected="selected"';
+		}
+		echo '>', htmlspecialchars($field), '</option>';
+	}
+	exit;
 }
 /**
 	* upload a new image to mark products that have no uploaded image

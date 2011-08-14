@@ -113,14 +113,10 @@ return;
 	$('#data-fields-table').remove();
 	var newType = $(this).val();
 	var product = $(this).attr('product');
-	$.post('/ww.plugins/products/admin/get-data-fields.php',
-		{
+	$.post('/a/p=products/f=adminProductDatafieldsGet', {
 			"type":newType,
 			"product":product
-		},
-		update_data_fields,
-		"json"
-	);
+		}, update_data_fields);
 });
 function update_data_fields(data) {
 	if (data.message) {

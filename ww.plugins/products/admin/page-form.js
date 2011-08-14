@@ -16,7 +16,7 @@ $(function(){
 	$('#products_what_to_show').change(products_what_to_show_change);
 	products_what_to_show_change();
 	$('#products_order_by_select').remoteselectoptions({
-		url:'/ww.plugins/products/admin/get-order-fields.php',
+		url:'/a/p=products/f=adminDatafieldsList',
 		other_GET_params:function(){
 			var val=$('#products_what_to_show').val();
 			switch(val){

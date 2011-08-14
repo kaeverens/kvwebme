@@ -1,10 +1,10 @@
 $(function(){
 	function save(){
-		$.post('/ww.plugins/products/admin/save-category-attrs.php?id='+window.selected_cat,{
+		$.post('/a/p=products/f=adminCategoryEdit/id='+window.selected_cat, `{
 			"name"   :$('#pc_edit_name').val(),
 			"enabled":$('#pc_edit_enabled').val(),
 			"associated_colour" :$('#pc_colour').val().replace(/#/,'')
-		},'json');
+		});
 	}
 	function show_attributes(ret){
 		window.selected_cat=ret.attrs.id;
@@ -49,9 +49,9 @@ $(function(){
 					$('#pc_edit_products input:checked').each(function(i, opt){
 				    selected.push($(opt).val());
 					});
-					$.post('/ww.plugins/products/admin/save-category-products.php?id='+window.selected_cat,{
-						"s[]":selected
-					},show_attributes,'json');
+					$.post('/a/p=products/f=adminCategoryProductsEdit/id='
+						+window.selected_cat, { "s[]":selected },show_attributes
+					);
 				}
 			});
 		}
@@ -110,7 +110,7 @@ $(function(){
 							if (!name) {
 								return;
 							}
-							$.getJSON('/ww.plugins/products/admin/add-new-category.php',{
+							$.post('/a/p=products/f=adminCategoryNew', {
 								"parent_id":id,
 								"name":name
 							},function(){
@@ -130,10 +130,11 @@ $(function(){
 								return;
 							}
 							var id=node[0].id.replace(/.*_/,'');
-							$.getJSON(
-								'/ww.plugins/products/admin/delete-category.php?id='+id,
+							$.post(
+								'/a/p=products/f=adminCategoryDelete/id='+id,
 								function(){
-									document.location="/ww.admin/plugin.php?_plugin=products&_page=categories";
+									document.location="/ww.admin/plugin.php?_plugin=products&"
+										+"_page=categories";
 								}
 							);
 						},
@@ -152,7 +153,15 @@ $(function(){
 			'callback':{
 				"onmove":function(node){
 					var p=$.jstree._focused().parent(node);
-					$.getJSON('/ww.plugins/products/admin/move-category.php?id='+node.id.replace(/.*_/,'')+'&parent_id='+(p==-1?0:p[0].id.replace(/.*_/,'')),show_attributes);
+					$.post(
+						'/a/p=products/f=adminCategoryMove/id='+node.id.replace(/.*_/,'')
+						+'&parent_id='+(p==-1?0:p[0].id.replace(/.*_/,'')),
+						show_attributes
+					);
+					$.post('/a/p=products/f=adminCategoryMove/id='
+						+node.id.replace(/.*_/,'')+'&parent_id='
+						+(p==-1?0:p[0].id.replace(/.*_/,'')), show_attributes
+					);
 				}
 			},
 			'dnd': {
@@ -168,11 +177,12 @@ $(function(){
 				var nodes=$(p).find('>ul>li');
 				if(p.tagName=='DIV')p=-1;
 				var new_order=[];
-				for(var i=0;i<nodes.length;++i)new_order.push(nodes[i].id.replace(/.*_/,''));
-				var url='/ww.plugins/products/admin/categories-move.php?id='
-					+node.id.replace(/.*_/,'')+'&parent_id='
-					+(p==-1?0:p.id.replace(/.*_/,''))+'&order='+new_order;
-				$.getJSON(url);
+				for (var i=0;i<nodes.length;++i) {
+					new_order.push(nodes[i].id.replace(/.*_/, ''));
+				}
+				$.post('/a/p=products/f=adminCategoryMove/id='
+					+node.id.replace(/.*_/,'')+'/parent_id='
+					+(p==-1?0:p.id.replace(/.*_/,''))+'/order='+new_order);
 			},1);
 		});
 	var div=$('<div style="clear:both;padding-top:20px;" />');
@@ -180,7 +190,7 @@ $(function(){
 		.click(function(){
 			var name=prompt('what do you want to name this category?');
 			if(!name)return;
-			$.getJSON('/ww.plugins/products/admin/add-new-category.php',{
+			$.post('/a/p=products/f=adminCategoryNew', {
 				"parent_id":0,
 				"name":name
 			},function(){
@@ -189,9 +199,13 @@ $(function(){
 		})
 		.appendTo(div);
 	div.insertAfter('#categories-wrapper');
-	$.getJSON('/ww.plugins/products/admin/get-category-attrs.php?id='+window.selected_cat,show_attributes);
+	$.post('/a/p=products/f=adminCategoryGet/id='+window.selected_cat,
+		show_attributes
+	);
 	$('#pc_edit_name, #pc_edit_enabled, #pc_colour').live('change', save);
 	$('#categories-wrapper li>a').live('click', function(){
-		$.getJSON('/ww.plugins/products/admin/get-category-attrs.php?id='+$(this).closest('li')[0].id.replace(/.*_/,''),show_attributes);
+		$.post('/a/p=products/f=adminCategoryGet/id='
+			+$(this).closest('li')[0].id.replace(/.*_/,''), show_attributes
+		);
 	});
 });

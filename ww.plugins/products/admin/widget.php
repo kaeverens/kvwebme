@@ -46,5 +46,5 @@ $diameter=(isset($_REQUEST['diameter']) && $_REQUEST['diameter'])
 echo '<input name="diameter" value="'.htmlspecialchars($diameter).'" /></div>';
 // }
 echo '<script>$("#parent_cat_'.$id.'").remoteselectoptions({url:'
-	.'"/ww.plugins/products/admin/get-all-categories.php"});'
+	.'"/a/p=products/f=categoriesOptionsGet"});'
 	.'Products_widgetTypeChanged();</script>';

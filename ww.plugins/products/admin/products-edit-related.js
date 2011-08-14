@@ -17,14 +17,14 @@ $(function(){
 		$('<select name="products-relations-product[]"><option value="">'
 			+' -- please choose -- </option>')
 			.remoteselectoptions({
-				url:'/ww.plugins/products/admin/get-products.php'
+				url:'/p=products/f=adminProductsList'
 			})
 			.appendTo($tr.find('td')[1]);
 		$tr.appendTo('#product-relations');
 	}
 	$('#product-relations select.products-relations-product')
 		.remoteselectoptions({
-			url:'/ww.plugins/products/admin/get-products.php'
+			url:'/p=products/f=adminProductsList'
 		});
 	$('#product-relations select').live('change', function(){
 		$('#product-relations tr').each(function(){
