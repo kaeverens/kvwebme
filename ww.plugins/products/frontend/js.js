@@ -80,7 +80,7 @@ $(function(){
 			alert('please enter all required fields');
 			return false;
 		}
-		$.post('/ww.plugins/products/frontend/add-to-cart.php',
+		$.post('/a/p=products',
 			$this.serializeArray(),
 			function(){
 				document.location=document.location.toString();

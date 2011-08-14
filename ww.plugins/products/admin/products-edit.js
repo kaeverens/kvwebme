@@ -8,21 +8,6 @@ function products_form_validate(){
 	alert(errors.join("\n"));
 	return false;
 }
-function change_href(id) {
-	var href = $('#delete_link_'+id)
-		.attr('href');
-	var boxIsChecked = $('#delete_checkbox_'+id).attr('checked');
-	if (boxIsChecked) {
-			href += '&delete-images=1';
-			$('#delete_link_'+id)
-				.attr ('href', href);
-	}
-	else {
-		href = href.replace('&delete-images=1', '');
-		$('#delete_link_'+id)
-			.attr ('href', href);
-	}
-}
 function toggle_remove_associated_files() {
 	$('#new_line').remove();
 	var addString = '<div id="remove_wrapper">';
@@ -97,8 +82,7 @@ $(function(){
 			buttons:{
 				'Edit': function () {
 					var newCaption = $('#product-caption').val();
-					$.post(
-						'/j/kfm/rpc.php',
+					$.post('/j/kfm/rpc.php',
 						{
 							"action":'change_caption',
 							"id":id,
@@ -129,8 +113,7 @@ return;
 	$('#data-fields-table').remove();
 	var newType = $(this).val();
 	var product = $(this).attr('product');
-	$.post(
-		'/ww.plugins/products/admin/get-data-fields.php',
+	$.post('/ww.plugins/products/admin/get-data-fields.php',
 		{
 			"type":newType,
 			"product":product

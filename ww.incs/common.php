@@ -1,6 +1,12 @@
 <?php
 require_once dirname(__FILE__).'/basics.php';
 require_once SCRIPTBASE . 'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
+
+/**
+	* link to current jQuery/jQuery-UI scripts
+	*
+	* @return string HTML of the links
+	*/
 function Core_getJQueryScripts() {
 	global $DBVARS;
 	$jquery_versions=array('1.6', '1.8');
@@ -20,6 +26,14 @@ function Core_getJQueryScripts() {
 		.'<script src="'.$jurls[1].'"></script>'
 		.'<link href="'.$jurls[2].'" rel="stylesheet" />';
 }
+/**
+	* convert a MySQL date to a human-readable one
+	*
+	* @param string $d    the date to convert
+	* @param string $type the type of date to return
+	*
+	* @return string the transformed date
+	*/
 function date_m2h($d, $type = 'date') {
 	$date = preg_replace('/[- :]/', ' ', $d);
 	$date = explode(' ', $date);
@@ -37,116 +51,15 @@ function date_m2h($d, $type = 'date') {
 	}
 	return date(DATE_RFC822, $utime);
 }
-function redirect($addr) {
-	header('HTTP/1.1 301 Moved Permanently');
-	header('Location: '.$addr);
-	echo '<html><head><script type="text/javascript">setTimeout(function(){do'
-		.'cument.location="'.$addr.'";},10);</script></head><body></body></html>';
-	exit;
-}
-function webmeMail($from, $to, $subject, $message, $files = false) {
-	require_once dirname(__FILE__).'/mail.php';
-	send_mail($from, $to, $subject, $message, $files);
-}
-$Core_isAdmin = 0;
-$sitedomain=str_replace('www.', '', $_SERVER['HTTP_HOST']);
-if (strpos($_SERVER['REQUEST_URI'],'ww.admin/')!==false) {
-	$kfm_do_not_save_session=true;
-	require_once SCRIPTBASE . 'j/kfm/api/api.php';
-	require_once SCRIPTBASE . 'j/kfm/initialise.php';
-}
-function menuDisplay($a=0) {
-	require_once SCRIPTBASE . 'ww.incs/menus.php';
-	return Menu_show($a);
-}
-function smarty_setup($compile_dir) {
-	global $DBVARS, $PLUGINS;
-	$smarty = new Smarty;
-	$smarty->left_delimiter = '{{';
-	$smarty->right_delimiter = '}}';
-	$smarty->assign(
-		'WEBSITE_TITLE',
-		htmlspecialchars($DBVARS['site_title'])
-	);
-	$smarty->assign(
-		'WEBSITE_SUBTITLE',
-		htmlspecialchars($DBVARS['site_subtitle'])
-	);
-	$smarty->assign('GLOBALS', $GLOBALS);
-	$smarty->register_function('BREADCRUMBS', 'Template_breadcrumbs');
-	$smarty->register_function('LOGO', 'Template_logoDisplay');
-	$smarty->register_function('MENU', 'menuDisplay');
-	$smarty->register_function('nuMENU', 'menu_show_fg');
-	foreach ($PLUGINS as $pname=>$plugin) {
-		if (isset($plugin['frontend']['template_functions'])) {
-			foreach ($plugin['frontend']['template_functions'] as $fname=>$vals) {
-				$smarty->register_function($fname, $vals['function']);
-			}
-		}
-	}
-	$smarty->compile_dir=$compile_dir;
-	return $smarty;
-}
-
 /**
-	*  return a HTML string with "breadcrumb" links to the current page
+	* get recursive details of pages to build a menu
 	*
-	* @param int $id  ID of the root page to draw breadcrumbs from
-	* @param int $top should this breadcrumb be wrapped?
+	* @param int   $parentid the parent's ID
+	* @param int   $depth    current menu depth
+	* @param array $options  any further options
 	*
-	* @return string
+	* @return string HTML of the sub-menu
 	*/
-function Template_breadcrumbs($id=0, $top=1) {
-	if ($id) {
-		$page=Page::getInstance($id);
-	}
-	else {
-		$page=$GLOBALS['PAGEDATA'];
-	}
-	$c=$page->parent
-		? Template_breadcrumbs($page->parent, 0) . ' &raquo; '
-		: '';
-	$pre=$top?'<div class="breadcrumbs">':'';
-	$suf=$top?'</div>':'';
-	return $pre.$c.'<a href="' . $page->getRelativeURL() . '" title="' 
-		. htmlspecialchars($page->title) . '">' 
-		. htmlspecialchars($page->name) . '</a>'.$suf;
-}
-
-/**
-	* return a logo HTML string if the admin uploaded one
-	*
-	* @param array $vars array of logo parameters (width, height)
-	*
-	* @return string
-	*/
-function Template_logoDisplay($vars) {
-	$vars=array_merge(array('width'=>64, 'height'=>64), $vars);
-	if (!file_exists(USERBASE.'/f/skin_files/logo.png')) {
-		return '';
-	}
-	$x=(int)$vars['width'];
-	$y=(int)$vars['height'];
-	$geometry=$x.'x'.$y;
-	$image_file=USERBASE.'/f/skin_files/logo-'.$geometry.'.png';
-	if (!file_exists($image_file)) {
-		$from=addslashes(USERBASE.'/f/skin_files/logo.png');
-		$to=addslashes($image_file);
-		`convert $from -geometry $geometry $to`;
-	}
-	$size=getimagesize($image_file);
-	return '<img class="logo" src="/i/blank.gif" style="'
-		.'background:url(/f/skin_files/logo-'.$geometry.'.png) no-repeat;'
-		.'width:'.$size[0].'px;height:'.$size[1].'px;" />';
-}
-// { user authentication
-if (@$_REQUEST['action']=='login'
-	|| isset($_SESSION['userdata']['id'])
-	|| isset($_REQUEST['logout'])
-) {
-	require_once dirname(__FILE__).'/user-authentication.php';
-}
-// }
 function menu_build_fg($parentid, $depth, $options) {
 	$PARENTDATA=Page::getInstance($parentid)->initValues();
 	// { menu order
@@ -232,6 +145,13 @@ function menu_build_fg($parentid, $depth, $options) {
 	$c.='</ul></td></tr></table>';
 	return $c;
 }
+/**
+	* get HTML for building a hierarchical menu
+	*
+	* @param array $opts options
+	*
+	* @return string the html
+	*/
 function menu_show_fg ($opts) {
 	$md5=md5('menu_fg|'.print_r($opts, true));
 	$cache=Core_cacheLoad('menus', $md5);
@@ -307,4 +227,144 @@ function menu_show_fg ($opts) {
 	}
 	return $c;
 }
+/**
+	* smarty function for setting up a menu
+	*
+	* @param int $a parent ID
+	*
+	* @return string HTML of the menu
+	*/
+function menuDisplay($a=0) {
+	require_once SCRIPTBASE . 'ww.incs/menus.php';
+	return Menu_show($a);
+}
+/**
+	* redirect the browser to a different URL using a 301 redirect
+	*
+	* @param string $addr the address to redirect to
+	*
+	* @return null
+	*/
+function redirect($addr) {
+	header('HTTP/1.1 301 Moved Permanently');
+	header('Location: '.$addr);
+	echo '<html><head><script type="text/javascript">setTimeout(function(){do'
+		.'cument.location="'.$addr.'";},10);</script></head><body></body></html>';
+	exit;
+}
+/**
+	* set up Smarty with common functions
+	*
+	* @param string $compile_dir the caching directory to use
+	*
+	* @return object the Smarty object
+	*/
+function smarty_setup($compile_dir) {
+	global $DBVARS, $PLUGINS;
+	$smarty = new Smarty;
+	$smarty->left_delimiter = '{{';
+	$smarty->right_delimiter = '}}';
+	$smarty->assign(
+		'WEBSITE_TITLE',
+		htmlspecialchars($DBVARS['site_title'])
+	);
+	$smarty->assign(
+		'WEBSITE_SUBTITLE',
+		htmlspecialchars($DBVARS['site_subtitle'])
+	);
+	$smarty->assign('GLOBALS', $GLOBALS);
+	$smarty->register_function('BREADCRUMBS', 'Template_breadcrumbs');
+	$smarty->register_function('LOGO', 'Template_logoDisplay');
+	$smarty->register_function('MENU', 'menuDisplay');
+	$smarty->register_function('nuMENU', 'menu_show_fg');
+	foreach ($PLUGINS as $pname=>$plugin) {
+		if (isset($plugin['frontend']['template_functions'])) {
+			foreach ($plugin['frontend']['template_functions'] as $fname=>$vals) {
+				$smarty->register_function($fname, $vals['function']);
+			}
+		}
+	}
+	$smarty->compile_dir=$compile_dir;
+	return $smarty;
+}
+/**
+	*  return a HTML string with "breadcrumb" links to the current page
+	*
+	* @param int $id  ID of the root page to draw breadcrumbs from
+	* @param int $top should this breadcrumb be wrapped?
+	*
+	* @return string
+	*/
+function Template_breadcrumbs($id=0, $top=1) {
+	if ($id) {
+		$page=Page::getInstance($id);
+	}
+	else {
+		$page=$GLOBALS['PAGEDATA'];
+	}
+	$c=$page->parent
+		? Template_breadcrumbs($page->parent, 0) . ' &raquo; '
+		: '';
+	$pre=$top?'<div class="breadcrumbs">':'';
+	$suf=$top?'</div>':'';
+	return $pre.$c.'<a href="' . $page->getRelativeURL() . '" title="' 
+		. htmlspecialchars($page->title) . '">' 
+		. htmlspecialchars($page->name) . '</a>'.$suf;
+}
+/**
+	* return a logo HTML string if the admin uploaded one
+	*
+	* @param array $vars array of logo parameters (width, height)
+	*
+	* @return string
+	*/
+function Template_logoDisplay($vars) {
+	$vars=array_merge(array('width'=>64, 'height'=>64), $vars);
+	if (!file_exists(USERBASE.'/f/skin_files/logo.png')) {
+		return '';
+	}
+	$x=(int)$vars['width'];
+	$y=(int)$vars['height'];
+	$geometry=$x.'x'.$y;
+	$image_file=USERBASE.'/f/skin_files/logo-'.$geometry.'.png';
+	if (!file_exists($image_file)) {
+		$from=addslashes(USERBASE.'/f/skin_files/logo.png');
+		$to=addslashes($image_file);
+		`convert $from -geometry $geometry $to`;
+	}
+	$size=getimagesize($image_file);
+	return '<img class="logo" src="/i/blank.gif" style="'
+		.'background:url(/f/skin_files/logo-'.$geometry.'.png) no-repeat;'
+		.'width:'.$size[0].'px;height:'.$size[1].'px;" />';
+}
+/**
+	* send an email in HTML and text format. optionally with attached files
+	*
+	* @param string $from    email address of the sender
+	* @param string $to      the recipient
+	* @param string $subject subject line of the email
+	* @param string $message the body of the email
+	* @param array  $files   list of files to attach
+	*
+	* @return null
+	*/
+function webmeMail($from, $to, $subject, $message, $files = false) {
+	require_once dirname(__FILE__).'/mail.php';
+	send_mail($from, $to, $subject, $message, $files);
+}
+$Core_isAdmin = 0;
+$sitedomain=str_replace('www.', '', $_SERVER['HTTP_HOST']);
+if (strpos($_SERVER['REQUEST_URI'], 'ww.admin/')!==false) {
+	$kfm_do_not_save_session=true;
+	require_once SCRIPTBASE . 'j/kfm/api/api.php';
+	require_once SCRIPTBASE . 'j/kfm/initialise.php';
+}
+// { user authentication
+if (@$_REQUEST['action']=='login'
+	|| isset($_SESSION['userdata']['id'])
+	|| isset($_REQUEST['logout'])
+) {
+	require_once dirname(__FILE__).'/user-authentication.php';
+}
+// }
 $fg_menus=0;

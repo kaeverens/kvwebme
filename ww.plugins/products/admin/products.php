@@ -37,7 +37,8 @@ if (isset($_REQUEST['delete']) && is_numeric($_REQUEST['delete'])) {
 $rs=dbAll('select id,name,enabled from products order by name');
 if (!dbOne('select id from products_types limit 1','id')) {
 	echo '<em>You can\'t create a product until you have created a type. '
-		.'<a href="plugin.php?_plugin=products&amp;_page=types-edit">Click here to create one</a></em>';
+		.'<a href="javascript:Core_screen(\'products\',\'js:Types\');">Click '
+		.'here to create one</a></em>';
 	return;
 }
 if(!count($rs)){

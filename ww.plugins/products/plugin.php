@@ -19,9 +19,9 @@ $plugin=array(
 		'menu' => array(
 			'Products>Products'   => 'products',
 			'Products>Categories' => 'categories',
-			'Products>Types'=> 'types',
+			'Products>Types'=>'js:Types',
 			'Products>Relation Types'=> 'relation-types',
-			'Products>Export Data' => 'exports'
+			'Products>Export Data' => 'js:ExportData'
 		),
 		'page_type' => 'Products_adminPage',
 		'widget' => array(
@@ -77,10 +77,9 @@ $plugin=array(
 	'triggers' => array(
 		'initialisation-completed' => 'Products_addToCart'
 	),
-	'version' => '19'
+	'version' => '20'
 );
 // }
-
 /**
   * figure out how much a product costs
   *
@@ -500,7 +499,6 @@ class Product{
 }
 class ProductType{
 	static $instances=array();
-
 	/**
 	  * constructor for product type instances
 	  *
@@ -519,11 +517,13 @@ class ProductType{
 		}
 		$this->data_fields=json_decode($r['data_fields']);
 		$this->meta=json_decode(isset($r['meta'])?$r['meta']:'{}');
-		$tpl_cache=USERBASE.'/ww.cache/products/templates/types_multiview_'.$v.'_header';
+		$tpl_cache=USERBASE.'/ww.cache/products/templates/types_multiview_'.$v
+			.'_header';
 		if (!file_exists($tpl_cache)) {
 			file_put_contents($tpl_cache, $r['multiview_template_header']);
 		}
-		$tpl_cache=USERBASE.'/ww.cache/products/templates/types_multiview_'.$v.'_footer';
+		$tpl_cache=USERBASE.'/ww.cache/products/templates/types_multiview_'.$v
+			.'_footer';
 		if (!file_exists($tpl_cache)) {
 			file_put_contents($tpl_cache, $r['multiview_template_footer']);
 		}
@@ -542,7 +542,6 @@ class ProductType{
 		self::$instances[$this->id] =& $this;
 		return $this;
 	}
-
 	/**
 	  * returns an instance of a product type
 	  *
@@ -560,7 +559,6 @@ class ProductType{
 		}
 		return self::$instances[$id];
 	}
-
 	/**
 	  * returns a data field's contents
 	  *
@@ -576,7 +574,6 @@ class ProductType{
 		}
 		return false;
 	}
-
 	/**
 	  * if the product has no associated images, show a "missing image" image
 	  *
@@ -588,7 +585,6 @@ class ProductType{
 		return '<img src="/kfmgetfull/products/types/'.$this->id
 			.'/image-not-found.png,width='.$maxsize.',height='.$maxsize.'" />';
 	}
-
 	/**
 	  * produce a HTML version of the product
 	  *
@@ -606,31 +602,18 @@ class ProductType{
 		$smarty=Products_setupSmarty();
 		$smarty->assign('product', $product);
 		$smarty->assign('product_id', $product->get('id'));
-		$corrections=isset($this->meta->allow_visitor_corrections)
-			&& $template=='singleview';
-		if ($corrections) {
-			WW_addScript('/ww.plugins/products/frontend/visitor-corrections.js');
-		}
 		if (!is_array(@$this->data_fields)) {
 			$this->data_fields=array();
 		}
 		foreach ($this->data_fields as $f) {
 			$f->n=preg_replace('/[^a-zA-Z0-9\-_]/', '_', $f->n);
-			if ($corrections) {
-				$prefix='<span class="product-field '.$f->n.'">';
-				$suffix='</span>';
-			}
-			else {
-				$prefix='';
-				$suffix='';
-			}
 			$val=$product->get($f->n);
 			$required=@$f->r?' required':'';
 			switch($f->t) {
 				case 'checkbox': // {
 					$smarty->assign(
 						$f->n,
-						$prefix.($val?'Yes':'No').$suffix
+						($val?'Yes':'No')
 					);
 				break; // }
 				case 'date': // {
@@ -650,7 +633,7 @@ class ProductType{
 					else {
 						$smarty->assign(
 							$f->n,
-							$prefix.date_m2h($val).$suffix
+							date_m2h($val)
 						);
 					}
 				break; // }
@@ -690,7 +673,7 @@ class ProductType{
 					}
 					$smarty->assign(
 						$f->n,
-						$prefix.$h.$suffix
+						$h
 					);
 				break; // }
 				case 'selected-image': // {
@@ -711,7 +694,7 @@ class ProductType{
 					else {
 						$smarty->assign(
 							$f->n,
-							$prefix.$val.$suffix
+							$val
 						);
 					}
 				break; // }
@@ -726,7 +709,7 @@ class ProductType{
 					else {
 						$smarty->assign(
 							$f->n,
-							$prefix.$val.$suffix
+							$val
 						);
 					}
 					// }

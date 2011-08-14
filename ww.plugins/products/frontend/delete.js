@@ -1,15 +1,10 @@
 function delete_review(id, userid, productid) {
 	if (confirm ('Are you sure you want to delete this review')) {
-		$.post(
-			'/ww.plugins/products/frontend/delete_review.php',
-			{
-				"id":id,
-				"userid":userid,
-				"productid":productid
-			},
-			remove_review,
-			"json"
-		)
+		$.post('/a/p=products/f=reviewDelete', {
+			"id":id,
+			"userid":userid,
+			"productid":productid
+		}, remove_review, "json");
 	}
 }
 function remove_review (data) {

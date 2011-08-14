@@ -975,7 +975,6 @@ function Products_submitReviewForm ($productid, $userid) {
 
 class Products{
 	static $instances=array();
-
 	/**
 		* constructor for the class
 		*

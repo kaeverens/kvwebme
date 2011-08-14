@@ -1,10 +1,32 @@
 <?php
+/**
+	* SMS API file
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 require_once SCRIPTBASE.'ww.plugins/sms/admin/libs.php';
+/**
+	* delete an addressbook
+	*
+	* @return array result
+	*/
 function Sms_adminAddressbookDelete() {
 	$id=(int)$_REQUEST['id'];
 	dbQuery('delete from sms_addressbooks where id='.$id);
 	return ('err'=>0, 'id'=>$id);
 }
+/**
+	* update addressbook
+	*
+	* @return array result
+	*/
 function Sms_adminAddressbooksSave() {
 	$name=$_REQUEST['name'];
 	$id=(int)$_REQUEST['id'];
@@ -29,22 +51,39 @@ function Sms_adminAddressbooksSave() {
 	}
 	return array('err'=>0);
 }
+/**
+	* get details about an addressbook
+	*
+	* @return array result
+	*/
 function Sms_adminAddressbooksGet() {
 	$id=(int)$_REQUEST['id'];
 	$r=dbRow('select id,name,subscribers from sms_addressbooks where id='.$id);
 	$r['subscribers']=json_decode($r['subscribers']);
 	return $r;
 }
+/**
+	* get details of all subscribers in an addressbook
+	*
+	* @return array result
+	*/
 function Sms_adminAddressbooksSubscribersGet() {
 	$id=(int)$_REQUEST['id'];
 	$r=dbRow('select subscribers from sms_addressbooks where id='.$id);
-	$subs=explode(',',str_replace(array('[',']','"'),'',$r['subscribers']));
+	$subs=explode(',', str_replace(array('[', ']', '"'), '', $r['subscribers']));
 	$rs=dbAll('select id,name,phone from sms_subscribers order by name');
-	foreach($rs as $k=>$r){
-		if(in_array($r['id'],$subs))$rs[$k]['c']=1;
+	foreach ($rs as $k=>$r) {
+		if (in_array($r['id'], $subs)) {
+			$rs[$k]['c']=1;
+		}
 	}
 	return $rs;
 }
+/**
+	* get a paypal button for paying for credits
+	*
+	* @return array result
+	*/
 function Sms_adminButtonPaypalGet() {
 	$amt=(int)$_REQUEST['amt'];
 	if ($amt<200) {
@@ -57,10 +96,15 @@ function Sms_adminButtonPaypalGet() {
 	$ret=SMS_callApi('order-credits', '&credits='.$amt.'&return='.$return);
 	return $ret;
 }
+/**
+	* send a single sms
+	*
+	* @return array result
+	*/
 function Sms_adminSend() {
 	// { to
 	$to=$_REQUEST['to'];
-	if (!$to || preg_replace('/[^0-9]/','',$to)!=$to) {
+	if (!$to || preg_replace('/[^0-9]/', '', $to)!=$to) {
 		exit;
 	}
 	// }
@@ -82,6 +126,11 @@ function Sms_adminSend() {
 	);
 	return $ret;
 }
+/**
+	* send a load of SMSes
+	*
+	* @return array result
+	*/
 function Sms_adminSendBulk() {
 	$aid=(int)$_REQUEST['to'];
 	$msg=$_REQUEST['msg'];
@@ -109,12 +158,17 @@ function Sms_adminSendBulk() {
 	);
 	return $ret;
 }
+/**
+	* add a subscriber to an addressbook
+	*
+	* @return array result
+	*/
 function Sms_adminSubscribe() {
-	if(!isset($_REQUEST['email'])
+	if (!isset($_REQUEST['email'])
 		|| !filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL)
 		|| !isset($_REQUEST['pass'])
 		|| !$_REQUEST['pass']
-	){
+	) {
 		return array(
 			'status'=>0,
 			'error'=>'email and password must be provided'
@@ -124,7 +178,7 @@ function Sms_adminSubscribe() {
 		.'&email='.urlencode($_REQUEST['email'])
 		.'&password='.urlencode($_REQUEST['pass']);
 	$res=file_get_contents($url);
-	if($res===false){
+	if ($res===false) {
 		return array(
 			'status'=>0,
 			'error'=>'failed to contact textr.mobi. please wait a short while '
@@ -132,13 +186,18 @@ function Sms_adminSubscribe() {
 		);
 	}
 	$json=json_decode($res);
-	if($json->status){ // successful subscription. record details
+	if ($json->status) { // successful subscription. record details
 		$DBVARS['sms_email']=$_REQUEST['email'];
 		$DBVARS['sms_password']=$_REQUEST['pass'];
 		Core_configRewrite();
 	}
 	return $json;
 }
+/**
+	* delete a subscriber from an addressbook
+	*
+	* @return array result
+	*/
 function Sms_adminSubscribersDelete() {
 	$id=(int)$_REQUEST['id'];
 	$addressBooks = dbAll('select id, subscribers from sms_addressbooks');
@@ -162,20 +221,30 @@ function Sms_adminSubscribersDelete() {
 	dbQuery('delete from sms_subscribers where id='.$id);
 	echo '{"err":0,"id":'.$id.'}';
 }
+/**
+	* get details of a subscriber
+	*
+	* @return array result
+	*/
 function Sms_adminSubscribersGet() {
 	return isset($_REQUEST['id'])
 		?dbRow('select * from sms_subscribers where id='.$_REQUEST['id'])
 		:dbAll('select id,name from sms_subscribers order by name');
 }
+/**
+	* edit details of a subscriber
+	*
+	* @return array result
+	*/
 function Sms_adminSubscribersSave() {
 	$name=$_REQUEST['name'];
 	$id=(int)$_REQUEST['id'];
 	$phone=$_REQUEST['phone'];
-	if(!$name || $name=='[insert subscriber name]'){
+	if (!$name || $name=='[insert subscriber name]') {
 		return array('err'=>1);
 	}
-	if(preg_replace('/[^0-9]/','',$phone)!=$phone
-		|| !preg_match('/^44|^353/',$phone)
+	if (preg_replace('/[^0-9]/', '', $phone)!=$phone
+		|| !preg_match('/^44|^353/', $phone)
 	) {
 		return array('err'=>2);
 	}
@@ -193,12 +262,17 @@ function Sms_adminSubscribersSave() {
 	}
 	return array('err'=>0);
 }
+/**
+	* activate the SMS account
+	*
+	* @return array result
+	*/
 function Sms_adminActivate() {
 	$url='http://textr.mobi/api.php?a=activate'
 		.'&email='.urlencode($DBVARS['sms_email'])
 		.'&activation='.urlencode($_REQUEST['key']);
 	$res=file_get_contents($url);
-	if($res===false){
+	if ($res===false) {
 		return array(
 			'status'=>0,
 			'error'=>'failed to contact textr.mobi. please wait a short while '

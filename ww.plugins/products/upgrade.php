@@ -153,3 +153,10 @@ if ($version==18) { // add "sortNum" to products_categories
 	dbQuery('alter table products_categories add sortNum int default 0');
 	$version=19;
 }
+if ($version==19) { // remove unused fields from product types
+	dbQuery('alter table products_types drop show_product_variants');
+	dbQuery('alter table products_types drop show_related_products');
+	dbQuery('alter table products_types drop show_contained_products');
+	dbQuery('alter table products_types drop show_countries');
+	$version=20;
+}

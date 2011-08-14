@@ -7,6 +7,16 @@ class Page{
 	static $instancesBySpecial	 = array();
 	static $instancesByType		= array();
 	public $vals;
+	/**
+		* instantiate a Page object
+		*
+		* @param mixed $v       ID of the page, or other method of identification
+		* @param int   $byField which method of identification to use
+		* @param array $fromRow pre-filled array of page data to load
+		* @param array $pvq     pre-filled array of meta-data to load
+		*
+		* @return object the page instance
+		*/
 	function __construct($v, $byField=0, $fromRow=0, $pvq=0) {
 		// byField: 0=ID; 1=Name
 		if (!$byField && is_numeric($v)) {
@@ -111,6 +121,15 @@ class Page{
 		}
 		// }
 	}
+	/**
+		* get an instance of a page by its ID
+		*
+		* @param int   $id      ID of the page
+		* @param array $fromRow pre-filled array of page data to load
+		* @param array $pvq     pre-filled array of meta-data to load
+		*
+		* @return object the page instance
+		*/
 	static function getInstance($id=0, $fromRow=false, $pvq=false) {
 		if (!is_numeric($id)) {
 			return false;
@@ -120,6 +139,13 @@ class Page{
 		}
 		return self::$instances[$id];
 	}
+	/**
+		* get an instance of a page by name
+		*
+		* @param string $name the name of the page to find
+		*
+		* @return object the page instance
+		*/
 	static function getInstanceByName($name='') {
 		if (preg_match('/[^!,a-zA-Z0-9 \-_\/]/', $name)) {
 			return false;
@@ -146,6 +172,13 @@ class Page{
 		}
 		return self::$instancesByName[$nameIndex];
 	}
+	/**
+		* get an instance of a page by its special attribute
+		*
+		* @param int $sp special attribute value to search by
+		*
+		* @return object the page instance
+		*/
 	static function getInstanceBySpecial($sp=0) {
 		if (!is_numeric($sp)) {
 			return false;
@@ -155,6 +188,13 @@ class Page{
 		}
 		return self::$instancesBySpecial[$sp];
 	}
+	/**
+		* get an instance of a page by its type
+		*
+		* @param mixed $type integer code or string name of page type
+		*
+		* @return object the page instance
+		*/
 	static function getInstanceByType($type=0) {
 		if (!array_key_exists($type, self::$instancesByType)) {
 			new Page($type, 2);
@@ -164,6 +204,14 @@ class Page{
 		}
 		return self::$instancesByType[$type];
 	}
+	/**
+		* get an instance of a page by name and parent
+		*
+		* @param string $name   the name of the page
+		* @param int    $parent the ID of the parent page
+		*
+		* @return object the page instance
+		*/
 	static function getInstanceByNameAndParent($name, $parent) {
 		if (preg_match('/[^,a-zA-Z0-9 \-_]/', $name)) {
 			return false;
@@ -188,11 +236,21 @@ class Page{
 		}
 		return self::$instancesByNAndP[$name.'/'.$parent];
 	}
+	/**
+		* get an absolute URL for the page, starting from http/https
+		*
+		* @return string the URL
+		*/
 	function getAbsoluteURL() {
 		$url=@$_SERVER['HTTPS']?'https':'http';
 		$url.='://'.$_SERVER['HTTP_HOST'];
 		return $url.$this->getRelativeURL();
 	}
+	/**
+		* get a relative URL for this page, starting from /
+		*
+		* @return string the URL
+		*/
 	function getRelativeURL() {
 		if (isset($this->relativeURL)) {
 			return $this->relativeURL;
@@ -215,6 +273,11 @@ class Page{
 		}
 		return $this->relativeURL;
 	}
+	/**
+		* get the ID of the top-level parent of this page
+		*
+		* @return int ID of the top page
+		*/
 	function getTopParentId() {
 		if (!isset($this->parent) || !$this->parent) {
 			return $this->id;
@@ -222,6 +285,11 @@ class Page{
 		$p=Page::getInstance($this->parent);
 		return $p->getTopParentId();
 	}
+	/**
+		* get a version of the page's name which is safe for use in URLs
+		*
+		* @return string the name
+		*/
 	function getURLSafeName() {
 		if (isset($this->getURLSafeName)) {
 			return $this->getURLSafeName;
@@ -231,6 +299,13 @@ class Page{
 		$this->getURLSafeName=$r;
 		return $r;
 	}
+	/**
+		* load up a page's meta values
+		*
+		* @param array $pvq pre-filled values array (optional)
+		*
+		* @return object the Page instance
+		*/
 	function initValues($pvq=false) {
 		$this->vars=array();
 		if (!$pvq) {
@@ -246,6 +321,11 @@ class Page{
 		}
 		return $this;
 	}
+	/**
+		* render a page template
+		*
+		* @return string rendered page
+		*/
 	function render() {
 		foreach ($GLOBALS['PLUGINS'] as $plugin) {
 			if (isset($plugin['frontend']['body_override'])) {

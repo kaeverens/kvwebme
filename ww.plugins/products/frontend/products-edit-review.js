@@ -22,8 +22,7 @@ function edit_review (id, text, rating, cdate) {
 	$('#'+id).remove();
 }
 function submit_vals(id, cdate) {
-	$.post(
-		'/ww.plugins/products/frontend/update-review.php',
+	$.post('/a/p=products/f=reviewUpdate',
 		{
 			"id":id,
 			"text":$('#text').val(),
