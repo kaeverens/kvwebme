@@ -80,7 +80,7 @@ $(function(){
 			alert('please enter all required fields');
 			return false;
 		}
-		$.post('/a/p=products',
+		$.post('/a/f=nothing',
 			$this.serializeArray(),
 			function(){
 				document.location=document.location.toString();

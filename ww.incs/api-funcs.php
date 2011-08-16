@@ -12,6 +12,9 @@
 	* @link     http://kvsites.ie/
 	*/
 
+function Core_nothing() {
+	return array();
+}
 function Core_getFileInfo() {
 	if (!isset($_REQUEST['src'])) {
 		return array('error'=>'missing src');
