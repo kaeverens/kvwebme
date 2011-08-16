@@ -9,65 +9,59 @@ if (!file_exists(USERBASE.'/ww.cache/products/templates')) {
 	mkdir(USERBASE.'/ww.cache/products/templates');
 	mkdir(USERBASE.'/ww.cache/products/templates_c');
 }
-function products_categories ($params, &$smarty) {
+/**
+	* get a list of product categories
+	*
+	* @param array  $params Smarty parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string the list
+	*/
+function products_categories ($params, $smarty) {
 	$product = $smarty->_tpl_vars['product'];
 	$productID = $product->id;
-	$categoryIDs = dbAll(
-		'select category_id '.
-		'from products_categories_products '
-		.'where product_id='.$productID
+	$categoryIDs=dbAll(
+		'select category_id from products_categories_products where product_id='
+		.$productID
 	);
 	if ($categoryIDs) {
-		$query
-			= 'select count(id) 
-				from products_categories 
-				where enabled = 1 and id in (';
+		$query='select count(id) from products_categories where enabled = 1 and'
+			.' id in (';
 		foreach ($categoryIDs as $catID) {
 			$query.= (int)$catID['category_id'].', ';
 		}
-    	$query= substr_replace($query, '', -2);
+		$query= substr_replace($query, '', -2);
 		$query.=')';
 		$numEnabledCats = dbOne($query, 'count(id)'); 	
 	}
 	if ($numEnabledCats==0) {
 		return '<div class="products-categories">'
-		.'No Categories exist for this product</div>';
+			.'No Categories exist for this product</div>';
 	}
 	$c= '<ul>';
-	$directCategoryPages
-		= dbAll(
-			'select page_id '
-			.'from page_vars '
-			.'where name= "products_what_to_show" and value=2'
-		); 
+	$directCategoryPages=dbAll(
+		'select page_id from page_vars where name= "products_what_to_show" and '
+		.'value=2'
+	); 
 	foreach ($categoryIDs as $catID) {
 		$pageFound = false;
 		$cid = $catID['category_id'];
-		$catDetails 
-			= dbRow(
-				'select name, enabled, parent_id '
-				.'from products_categories '
-				.'where id='.$cid
-			);
+		$catDetails=dbRow(
+			'select name, enabled, parent_id from products_categories where id='.$cid
+		);
 		$catIsEnabled = $catDetails['enabled'];
 		$catName = $catDetails['name'];
 		if ($catIsEnabled==1) {
 			foreach ($directCategoryPages as $catPage) {
 				$pageID = $catPage['page_id'];
-				$shownCat 
-					= dbOne(
-						'select value '
-						.'from page_vars '
-						.'where name = "products_category_to_show" '
-						.'and page_id='.$pageID, 
-						'value'
-					);
+				$shownCat=dbOne(
+					'select value from page_vars where name = "products_category_to_s'
+					.'how" and page_id='.$pageID, 'value'
+				);
 				if ($shownCat==$cid) {
 					$page=  Page::getInstance($pageID);
-					$c.='<li>'
-						.'<a href="'.$page->getRelativeUrl().'">'
-						.htmlspecialchars($catName)
-						.'</a></li>';
+					$c.='<li><a href="'.$page->getRelativeUrl().'">'
+						.htmlspecialchars($catName).'</a></li>';
 					$pageFound= true;
 					break;
 				}
@@ -77,45 +71,42 @@ function products_categories ($params, &$smarty) {
 				while ($parent>0) {
 					foreach ($directCategoryPages as $catPage) {
 						$pageID= $catPage['page_id'];
-						$shownCat
-							= dbOne(
-								'select value '
-								.'from page_vars '
-								.'where name = "products_category_to_show" '
-								.'and page_id= '.$pageID, 
-								'value'
-							);
+						$shownCat=dbOne(
+							'select value from page_vars where name = "prod'
+							.'ucts_category_to_show" and page_id= '.$pageID, 'value'
+						);
 						if ($parent==$shownCat) {
 							$page = Page::getInstance($pageID);
-							$c.= '<li><a href="'.$page->getRelativeUrl()
-								.'?product_cid='.$cid.'">';
-							$c.= htmlspecialchars($catName);
-							$c.='</a></li>';
+							$c.= '<li><a href="'.$page->getRelativeUrl().'?product_cid='
+								.$cid.'">'.htmlspecialchars($catName).'</a></li>';
 							$pageFound= true;
 							break;
 						}
 					}	
-					$parent 
-						= dbOne(
-							'select parent_id '
-							.'from products_categories '
-							.'where id = '.$parent,
-							'parent_id'
-						);
-
+					$parent=dbOne(
+						'select parent_id from products_categories where id = '.$parent,
+						'parent_id'
+					);
 				}
 			}
 			if (!$pageFound) {
-				$c.='<li><a href="/_r?type=products&amp;product_cid='.$cid.'">';
-				$c.=htmlspecialchars($catName);
-				$c.='</a></li>';
+				$c.='<li><a href="/_r?type=products&amp;product_cid='.$cid.'">'
+					.htmlspecialchars($catName).'</a></li>';
 			}
 		}
 	}
 	$c.= '</ul>';
 	return $c;
 }
-function Products_datatable ($params, &$smarty) {
+/**
+	* display a table in simple table format
+	*
+	* @param array  $params Smarty parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string the table
+	*/
+function Products_datatable ($params, $smarty) {
 	$product= $smarty->_tpl_vars['product'];
 	$type= ProductType::getInstance($product->get('product_type_id'));
 	if (!$type) {
@@ -208,7 +199,15 @@ function Products_datatable ($params, &$smarty) {
 	$c.= '</table>';
 	return $c;
 }
-function Product_datatableMultiple (&$products, $direction) {
+/**
+	* display products in a datatable format
+	*
+	* @param array  $products  array of product IDS to show
+	* @param string $direction the orientation of the table
+	*
+	* @return string HTML of the table
+	*/
+function Product_datatableMultiple ($products, $direction) {
 	$headers=array();
 	$header_types=array();
 	$data=array();
@@ -377,16 +376,9 @@ function Products_image($params, $smarty) {
 	if (!$iid) {
 		return Products_imageNotFound($params, $smarty);
 	}
-	$img='<img src="/kfmget/'.$iid
-		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" />';	
-	return '<div id="gallery-image" width="'.$params['width'].'" height="'
-		.$params['height'].'" effect="fade">'
-		. '<div class="ad-image">'
-		. '<span class="dark-background ad-image-description" style="display:no'
-		.'ne"></span>'
-		. $img
-		. '</div>'
-		. '</div>';
+	return '<div style="width:'.$params['width'].'px;height:'.$params['height']
+		.'px"><img src="/kfmget/'.$iid.'&amp;width='.$params['width']
+		.'&amp;height='.$params['height'].'"/></div>';
 }
 /**
 	* display an "image not found" message
@@ -682,6 +674,11 @@ function Products_reviews($params, $smarty) {
 	}
 	return $c;
 }
+/**
+	* setup Smarty with Products-specific stuff
+	*
+	* @return object the Smarty object
+	*/
 function Products_setupSmarty() {
 	$smarty=smarty_setup(USERBASE.'/ww.cache/products/templates_c');
 	$smarty->template_dir='/ww.cache/products/templates';
@@ -691,6 +688,13 @@ function Products_setupSmarty() {
 	}
 	return $smarty;
 }
+/**
+	* show the products in a page
+	*
+	* @param object $PAGEDATA the page to show
+	*
+	* @return string the products
+	*/
 function products_show($PAGEDATA) {
 	if (!isset($PAGEDATA->vars['products_what_to_show'])) {
 		$PAGEDATA->vars['products_what_to_show']='0';
@@ -784,6 +788,14 @@ function products_show($PAGEDATA) {
 		)
 		.$export;
 }
+/**
+	* show a specific product in a page
+	*
+	* @param object $PAGEDATA the page object
+	* @param int    $id       the product to show
+	*
+	* @return string the products
+	*/
 function Products_showById($PAGEDATA, $id=0) {
 	if ($id==0) {
 		$id=(int)$PAGEDATA->vars['products_product_to_show'];
