@@ -26,7 +26,7 @@ if ($version == 0) {
 		.'auto_increment primary key, name text not null, author int( 11 ), '
 		.'description text, version int( 11 ) not null, last_updated date, '
 		.'author_url text, tags text, moderated text, rating int( 11 ) ) '
-		'default charset=utf8'
+		.'default charset=utf8'
 	);
 	/** 
 		* install themes-api-stats database
