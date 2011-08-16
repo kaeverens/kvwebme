@@ -101,6 +101,9 @@ function Forum_post() {
 		.'?forum-f='.$forum_id
 		.'&forum-t='.$thread_id.'&'.$post_id.'#forum-c-'.$post_id;
 	foreach ($subscribers as $subscriber) {
+		if ($subscriber==$_SESSION['userdata']['id']) {
+			continue;
+		}
 		$user=User::getInstance($subscriber);
 		mail(
 			$user->get('email'),
