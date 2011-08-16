@@ -16,10 +16,10 @@ require 'header.php';
 // get db variables
 if (!isset($_SESSION['db_vars'])) { // set up dummy values
 	$_SESSION['db_vars']=array(
-		'username' => '',
+		'username' => 'root',
 		'password' => '',
 		'hostname' => 'localhost',
-		'db_name'  => '',
+		'db_name'  => 'kvwebme',
 		'passed'   => 0
 	);
 }
