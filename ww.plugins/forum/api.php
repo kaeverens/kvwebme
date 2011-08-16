@@ -155,6 +155,7 @@ function Forum_delete() {
 		.'(select count(id) as ids from forums_posts '
 		.'where thread_id=forums_threads.id)'
 	);
+	dbQuery('select from forums_threads where num_posts=0');
 	return array(
 		'ok'=>1
 	);
