@@ -1,6 +1,6 @@
 $(function(){
 	function save(){
-		$.post('/a/p=products/f=adminCategoryEdit/id='+window.selected_cat, `{
+		$.post('/a/p=products/f=adminCategoryEdit/id='+window.selected_cat, {
 			"name"   :$('#pc_edit_name').val(),
 			"enabled":$('#pc_edit_enabled').val(),
 			"associated_colour" :$('#pc_colour').val().replace(/#/,'')
