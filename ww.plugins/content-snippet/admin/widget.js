@@ -89,10 +89,7 @@ function content_snippet_edit(ev){
 					.val(res.accordion_direction);
 				$('#content_snippet_image_directory')
 					.html('<option>'+htmlspecialchars(res.images_directory)+'</option>')
-					.remoteselectoptions({
-						url:'/ww.plugins/content-snippet/admin/get-directories.php',
-						always_retrieve:true
-					});
+					.remoteselectoptions({url:'/a/f=adminDirectoriesGet'});
 			},1);
 			ww.content_snippet.rte=CKEDITOR.replace(
 				'content_snippet_html'+ww.content_snippet.editor_instances,

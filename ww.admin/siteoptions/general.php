@@ -39,7 +39,10 @@ if ($action=='Save') {
 		if (!file_exists(USERBASE.'/f/skin_files')) {
 			mkdir(USERBASE.'/f/skin_files');
 		}
-		`rm -fr "$newdir"/favicon-*`;
+		$files=glob($newdir.'/favicon-*');
+		foreach ($files as $f) {
+			unlink($f);
+		}
 		$from=addslashes($_FILES['site_favicon']['tmp_name']);
 		$to=addslashes($newdir.'/favicon.ico');
 		`convert "$from" -resize 32x32 "$to"`;
@@ -52,7 +55,10 @@ if ($action=='Save') {
 		if (!file_exists($newdir)) {
 			mkdir($newdir);
 		}
-		`rm -fr "$newdir"/logo-*`;
+		$files=glob($newdir.'/logo-*');
+		foreach ($files as $f) {
+			unlink($f);
+		}
 		move_uploaded_file($_FILES['site_logo']['tmp_name'], $newdir.'/logo.png');
 	}
 	$pageLengthLimit = $_REQUEST['site_page_length_limit'];

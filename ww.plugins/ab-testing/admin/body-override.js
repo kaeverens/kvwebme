@@ -1,5 +1,3 @@
 $(function(){
-	$('select[name="page_vars[abtesting-target]"]').remoteselectoptions({
-		url:'/ww.admin/pages/get_parents.php',
-	});
+	$('select[name="page_vars[abtesting-target]"]').remoteselectoptions({url:'/a/f=adminPageParentsList'});
 });

@@ -1,3 +1,29 @@
+function Page_form(plugin, pageType) {
+	alert(plugin+"\n"+pageType);
+	var plugin_safe=plugin.charAt(0).toUpperCase()
+		+plugin.slice(1).replace(/[^a-zA-Z0-9]/g, '');
+	var pageType_safe=pageType.charAt(0).toLowerCase()
+		+pageType.slice(1).replace(/[^a-zA-Z0-9]/g, '');
+	var fname=plugin_safe+'_Pagetype_'+pageType_safe;
+	alert(fname);
+	if (window[fname]) {
+		return window[fname]();
+	}
+	alert('/ww.plugins/'+plugin+'/pagetype-'+pageType_safe+'.js');
+	$.ajax({
+		'url':'/ww.plugins/'+plugin+'/pagetype-'+pageType_safe+'.js',
+		'dataType':'script',
+		'success':function(){
+			if (!window[fname]) {
+				return;
+			}
+			Page_form(plugin, pageType);
+		},
+		'error':function() { // failed to load script. submit form instead
+			return $('input[name=action]').click();
+		}
+	});
+}
 function pages_validate(){
 	var ok=pages_validate_name();
 	if (ok) {
@@ -35,16 +61,27 @@ function pages_validate_name(){
 }
 $(function(){
 	$('.tabs').tabs();
-	$('#pages_form select[name=type]').remoteselectoptions({url:'/ww.admin/pages/get_types.php'});
-	$('#pages_form select[name=parent]').remoteselectoptions({
-		url:'/ww.admin/pages/get_parents.php',
-		other_GET_params:page_menu_currentpage
-	});
+	$('#pages_form select[name=type]').remoteselectoptions({url:'/a/f=adminPageTypesList'});
+	$('#pages_form select[name=parent]')
+		.remoteselectoptions({url:'/a/f=adminPageParentsList',
+			other_GET_params:page_menu_currentpage
+		});
 	$('#pages_form').submit(pages_validate);
 	$('#name').keyup(pages_validate_name);
 	$('form#pages_form').submit(function() {
 		return pages_check_page_length($(this).attr('maxLength'))
 	});
+	$('select[name=type]')
+		.change(function(){
+			if (!$('#body-wrapper').length) {
+				return $('input[name=action]').click();
+			}
+			var val=$(this).val();
+			Page_form(val.replace(/\|.*/, ''), val.replace(/.*\|/, ''));
+		});
+	if ($('#body-wrapper').length) {
+		$('select[name=type]').change();
+	}
 });
 function pages_check_page_length(maxLength) {
 	if (!+maxLength) {

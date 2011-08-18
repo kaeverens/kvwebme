@@ -12,24 +12,24 @@
 		return this.each(function(){
 			var $this=$(this);
 			var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
-			$this.mousedown(function(){
+			$this.hover(function(){
 				if(!o.always_retrieve){
-					if($this.remoteselectoptions_applied)return;
+					if ($this.remoteselectoptions_applied) {
+						return;
+					}
 					$this.remoteselectoptions_applied=true;
 				}
 				var v=$this.val();
 				var other=$.isFunction(o.other_GET_params)?o.other_GET_params():o.other_GET_params;
 				$.get(o.url,{'selected':v,'other_GET_params':other},function(res){
-					$this.html(res);
-					setTimeout(function(){
-						var options=$('option',$this);
-						for(var i=0,found=0;i<options.length && !found;++i){
-							if(options[i].value==v){
-								$this.attr('selectedIndex',i);
-								found=1;
-							}
-						}
-					},1);
+					$.each(res, function(key, value) {   
+						$this
+							.append($('<option/>', {"value":key})
+							.text(value));
+					});
+					$this.val(v);
+					$this.click();
+					$this.click();
 				});
 			});
 		});

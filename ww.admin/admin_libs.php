@@ -1,4 +1,15 @@
 <?php
+function rmrf($dir) {
+	foreach (glob($dir) as $file) {
+		if (is_dir($file)) {
+			rmrf("$file/*");
+			rmdir($file);
+		}
+		else {
+			unlink($file);
+		}
+	}
+}
 $scripts=array();
 $scripts_inline=array();
 // { built-in page types

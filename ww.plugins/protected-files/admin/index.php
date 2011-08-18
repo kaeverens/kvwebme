@@ -152,9 +152,6 @@ switch ($_REQUEST['view']) {
 ?>
 <script>
 	$(function(){
-		$('#directory').remoteselectoptions({
-			url:'/ww.plugins/protected-files/admin/get-directories.php',
-			always_retrieve:true
-		});
+		$('#directory').remoteselectoptions({url:'/a/f=adminDirectoriesGet'});
 	});
 </script>

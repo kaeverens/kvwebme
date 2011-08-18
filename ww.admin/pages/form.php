@@ -70,14 +70,14 @@ echo '<html><head>'
 	.'<script src="/j/ckeditor-3.6/ckeditor.js"></script>'
 	.'<script src="/ww.admin/j/admin.js"></script>'
 	.'<script src="/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js"></script>'
-	.'<link rel="stylesheet" type="text/css" href="/j/jquery.dataTables-1.7.5'
+	.'<link rel="stylesheet" href="/j/jquery.dataTables-1.7.5'
 	.'/jquery.dataTables.css" />'
 	.'<script src="/j/jquery.remoteselectoptions.js"></script>'
 	.'<script src="/j/cluetip/jquery.cluetip.js"></script>'
-	.'<script src="form-20100924.js"></script>'
-	.'<link rel="stylesheet" type="text/css" href="/j/cluetip/jquery.cluetip.'
+	.'<script src="form.js"></script>'
+	.'<link rel="stylesheet" href="/j/cluetip/jquery.cluetip.'
 	.'css" />'
-	.'<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />'
+	.'<link rel="stylesheet" href="/ww.admin/theme/admin.css" />'
 	.'</head>'
 	.'<body class="noheader">';
 // }
@@ -194,18 +194,18 @@ $plugin=false;
 if (!preg_match('/^[0-9]*$/', $page['type'])) {
 	foreach ($PLUGINS as $n=>$p) {
 		if (isset($p['admin']['page_type'])) {
-			if (is_array($p[ 'admin' ][ 'page_type' ])) {
-				foreach ($p[ 'admin' ][ 'page_type' ] as $name => $function) {
-					if ($name == $page[ 'type' ]) {
-						echo '<option value="'.htmlspecialchars($name)
+			if (is_array($p['admin']['page_type'])) {
+				foreach ($p['admin']['page_type'] as $name => $function) {
+					if ($name==$page['type'] || $n.'|'.$name==$page['type']) {
+						echo '<option value="'.htmlspecialchars($page['type'])
 							.'" selected="selected">'.htmlspecialchars($name).'</option>';
 						$plugin = $p;
 						$found=1;
 					}
 				}
 			}
-			else if ($page['type']==$n) {
-				echo '<option value="'.htmlspecialchars($n).'" selected="selected">'
+			else if ($page['type']==$n || $n.'|'.$n==$page['type']) {
+				echo '<option value="'.htmlspecialchars($page['type']).'" selected="selected">'
 					.htmlspecialchars($n).'</option>';
 				$plugin = $p;
 				$found=1;
@@ -271,7 +271,14 @@ switch ($page['type']) {
 		else {
 			$page_summary_pageid=$id;
 		}
-		selectkiddies(0, 0, $page_summary_pageid, -1);
+		$opts=selectkiddies(0, 0, $page_summary_pageid, -1);
+		foreach ($opts as $k=>$v) {
+			echo '<option value="'.$k.'"';
+			if ($k==$page_summary_pageid) {
+				echo ' selected="selected"';
+			}
+			echo '>'.htmlspecialchars($v).'</option>';
+		}
 		echo '</select></td>'
 			.'<td colspan="4">Where do you want to start summarising your pages from'
 			.'? If you want this summary to list excerpts from all '
@@ -297,19 +304,37 @@ switch ($page['type']) {
 			.'</div></td></tr>';
 	break; // }
 	default: // { plugin
-		if ($plugin && isset($plugin['admin']['page_type']) ) {
-			if (is_array($plugin[ 'admin' ][ 'page_type' ])) {
-				foreach ($plugin[ 'admin' ][ 'page_type' ] as $name => $function) {
-					if ($name == $page[ 'type' ] && function_exists($function)) {
-						echo '<tr><td colspan="6">'.$function($page,$page_vars)
-							.'</td></tr>';
-						break;
-					}	
+		if ($plugin) {
+			if (isset($plugin['admin']['page_type']) ) {
+				if (isset($plugin['admin']['page_types'])
+					&& in_array($page['type'], $plugin['admin']['page_types'])
+				) {
+					echo '<tr><td colspan="6" id="body-wrapper">';
+					$ignore=array(
+						'footer', 'google-site-verification', 'order_of_sub_pages',
+						'order_of_sub_pages_dir'
+					);
+					foreach ($page_vars as $key=>$val) {
+						if (in_array($key, $ignore)) {
+							continue;
+						}
+						echo '<input type="hidden" name="page_vars['.htmlspecialchars($key)
+							.']" value="'.htmlspecialchars($val, ENT_QUOTE).'"/>';
+					}
+					echo '</td></tr>';
 				}
-			}
-			else if ( function_exists($plugin['admin']['page_type'])) {
-				echo '<tr><td colspan="6">'
-					.$plugin['admin']['page_type']($page,$page_vars).'</td></tr>';
+				elseif (isset($plugin['admin']['page_type'][$page['type']])
+					&& function_exists($plugin['admin']['page_type'][$page['type']])
+				) {
+					echo '<tr><td colspan="6">'
+						.$plugin['admin']['page_type'][$page['type']]($page, $page_vars)
+						.'</td></tr>';
+					break;
+				}
+				elseif ( function_exists($plugin['admin']['page_type'])) {
+					echo '<tr><td colspan="6">'
+						.$plugin['admin']['page_type']($page,$page_vars).'</td></tr>';
+				}
 			}
 		}
 		// }

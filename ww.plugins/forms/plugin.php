@@ -15,6 +15,7 @@
 $plugin=array(
 	'name' => 'Form',
 	'admin' => array(
+		'page_types' => array('forms'),
 		'page_type' => 'Form_adminPageForm'
 	),
 	'description' => 'Allows forms to be created so visitors can contact you',

@@ -135,9 +135,7 @@ function menu_edit(ev){
 			.val(+res.style_from)
 			.change(update_styles_table);
 		setTimeout(function(){
-			$('#menu_parent').remoteselectoptions({
-				url:'/ww.admin/pages/get_parents.php'
-			});
+			$('#menu_parent').remoteselectoptions({url:'/a/f=adminPageParentsList'});
 			update_styles_table();
 		},1);
 		// }

@@ -28,7 +28,7 @@ if (!is_dir($tmpdir)) {
 }
 
 $dir=$tmpdir.'/site';
-`rm -rf $dir`;
+rmrf($dir);
 mkdir($dir);
 
 $ubase=USERBASE;
@@ -65,4 +65,4 @@ $sname=$_SERVER['HTTP_HOST'].date('-Y-m-d').'.zip';
 header('Content-type: force/download');
 header('Content-Disposition: attachment; filename="'.$sname.'"');
 readfile($tmpdir.'/'.$sname);
-`rm -rf $tmpdir`;
+rmrf($tmpdir);

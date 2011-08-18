@@ -60,9 +60,7 @@ function image_transition_edit(ev){
 		$('#image_transition_pause').val(res.data.pause);
 		$('#image_transition_url').html('<option value="'+res.data.url+'">'+htmlspecialchars(res.data.pagename)+'</option>');
 		setTimeout(function(){
-			$('#image_transition_url').remoteselectoptions({
-				url:'/ww.admin/pages/get_parents.php'
-			});
+			$('#image_transition_url').remoteselectoptions({url:'/a/f=adminPageParentsList'});
 		},1);
 	});
 }

@@ -30,22 +30,31 @@ if (isset($_POST['action']) && $_POST['action']=='convert') {
 			'image_default'  => 0,
 			'enabled'        => $row['active'],
 			'date_created'   => $row['date_added'],
-			'data_fields'    => json_encode(array(
-				array('n'=>'description',            'v'=>$row['description']),
-				array('n'=>'additional_description', 'v'=>$row['additional_description'])
-			)),
+			'data_fields'    => json_encode(
+				array(
+					array('n'=>'description', 'v'=>$row['description']),
+					array(
+						'n'=>'additional_description',
+						'v'=>$row['additional_description']
+					)
+				)
+			),
 			'images_directory'   =>'/products/product-images/'.$row['id'],
-			'online_store_fields'=>json_encode(array(
-				'_price'     =>$row['price'],
-				'_weight(kg)'=>$row['weight'],
-				'_vatfree'   =>$row['notax']
-			))
+			'online_store_fields'=>json_encode(
+				array(
+					'_price'     =>$row['price'],
+					'_weight(kg)'=>$row['weight'],
+					'_vatfree'   =>$row['notax']
+				)
+			)
 		);
 	}
 	// }
 	// { images
 	$images=array();
-	$query2=$mysqli->real_query('select * from wp_wpsc_product_images order by product_id,image_order');
+	$query2=$mysqli->real_query(
+		'select * from wp_wpsc_product_images order by product_id,image_order'
+	);
 	if (!($result=$mysqli->use_result())) {
 		die ('error retrieving products list');
 	}
@@ -88,23 +97,24 @@ if (isset($_POST['action']) && $_POST['action']=='convert') {
 	}
 	// }
 	header('Content-type: text/plain');
-	echo json_encode(array(
-		'products'=>$products,
-		'products_images'=>$images,
-		'products_categories'=>$products_categories,
-		'products_categories_products'=>$products_categories_products
-	));
+	echo json_encode(
+		array(
+			'products'=>$products,
+			'products_images'=>$images,
+			'products_categories'=>$products_categories,
+			'products_categories_products'=>$products_categories_products
+		)
+	);
 	exit;
 }
 
-echo '<form method="post"><table>'
-	.'<tr><th>hostname</th><td><input name="hostname" /></td></tr>'
-	.'<tr><th>username</th><td><input name="username" /></td></tr>'
-	.'<tr><th>password</th><td><input name="password" /></td></tr>'
-	.'<tr><th>database</th><td><input name="database" /></td></tr>'
-	.'<tr><th>original website</th><td><input name="url" placeholder="http://www.whatever.com/" /></td></tr>'
-	.'<tr><th colspan="2"><input type="submit" name="action" value="convert" /></th></tr>'
-	.'</table></form>';
+echo '<form method="post"><table><tr><th>hostname</th><td><input name="host'
+	.'name" /></td></tr><tr><th>username</th><td><input name="username" /></t'
+	.'d></tr><tr><th>password</th><td><input name="password" /></td></tr><tr>'
+	.'<th>database</th><td><input name="database" /></td></tr><tr><th>origina'
+	.'l website</th><td><input name="url" placeholder="http://www.whatever.co'
+	.'m/" /></td></tr><tr><th colspan="2"><input type="submit" name="action" '
+	.'value="convert" /></th></tr></table></form>';
 
 /*
 tables which are not converted

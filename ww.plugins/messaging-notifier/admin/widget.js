@@ -94,13 +94,9 @@ function messaging_notifier_table_row(rdata){
 		var opt=this.getElementsByTagName('option')[this.selectedIndex];
 		$('span',$url.closest('td')).html(opt.title);
 		if(opt.title)$tr.closest('table').append(messaging_notifier_table_row());
-		$tr.find('select.url').remoteselectoptions({
-			url:"/ww.admin/pages/get_parents.php"
-		});
+		$tr.find('select.url').remoteselectoptions({url:"/a/f=adminPageParentsList"});
 	});
-	$tr.find('select.url').remoteselectoptions({
-		url:"/ww.admin/pages/get_parents.php"
-	});
+	$tr.find('select.url').remoteselectoptions({url:"/a/f=adminPageParentsList"});
 	return $tr;
 }
 $('.messaging_notifier_editlink').live('click', messaging_notifier_edit);

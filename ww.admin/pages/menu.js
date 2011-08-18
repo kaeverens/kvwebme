@@ -25,7 +25,7 @@ function pages_new(p){
 			}
 		}
 	});
-	$('#newpage_dialog select[name=type]').remoteselectoptions({url:'/ww.admin/pages/get_types.php'});
+	$('#newpage_dialog select[name=type]').remoteselectoptions({url:'/a/f=adminPageTypesList'});
 	$('#newpage_date').each(convert_date_to_human_readable);
 	return false;
 }

@@ -16,16 +16,12 @@ $(function(){
 			.appendTo($tr.find('td')[0]);
 		$('<select name="products-relations-product[]"><option value="">'
 			+' -- please choose -- </option>')
-			.remoteselectoptions({
-				url:'/p=products/f=adminProductsList'
-			})
+			.remoteselectoptions({url:'/a/p=products/f=adminProductsList'})
 			.appendTo($tr.find('td')[1]);
 		$tr.appendTo('#product-relations');
 	}
 	$('#product-relations select.products-relations-product')
-		.remoteselectoptions({
-			url:'/p=products/f=adminProductsList'
-		});
+		.remoteselectoptions({url:'/a/p=products/f=adminProductsList'});
 	$('#product-relations select').live('change', function(){
 		$('#product-relations tr').each(function(){
 			var $selects=$(this).find('select');

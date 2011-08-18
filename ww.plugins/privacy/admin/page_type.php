@@ -253,8 +253,6 @@ $html.='</div><script>var page_vars_userlogin_redirect_to='
 	.$page_vars['userlogin_redirect_to']
 	.';
 $(function(){
-	$("#page_vars_userlogin_redirect_to").remoteselectoptions({
-		url:"/ww.admin/pages/get_parents.php"
-	});
+	$("#page_vars_userlogin_redirect_to").remoteselectoptions({url:"/a/f=adminPageParentsList"});
 });</script>';
 $html.='</td></tr>';

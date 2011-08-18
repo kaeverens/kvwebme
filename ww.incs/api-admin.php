@@ -13,6 +13,71 @@
 
 require_once '../ww.admin/admin_libs.php';
 
+function Core_adminDirectoriesGet() {
+	function get_subdirs($base, $dir) {
+		$arr=array();
+		$D=new DirectoryIterator($base.$dir);
+		$ds=array();
+		foreach ($D as $dname) {
+			if ($dname->isDot() || !$dname->isDir()) {
+				continue;
+			}
+			$ds[]=$dname->getFilename();
+		}
+		asort($ds);
+		foreach ($ds as $d) {
+			$arr[$dir.'/'.$d]=$dir.'/'.$d;
+			$arr=array_merge($arr, get_subdirs($base, $dir.'/'.$d));
+		}
+		return $arr;
+	}
+	$arr=array_merge(array('/'=>'/'), get_subdirs(USERBASE.'f', ''));
+	return $arr;
+}
+function Core_adminPageParentsList() {
+	$id=isset($_REQUEST['other_GET_params'])?(int)$_REQUEST['other_GET_params']:-1;
+	function selectkiddies($i=0, $n=1, $id=0) {
+		$arr=array();
+		$q=dbAll(
+			'select name,id,alias from pages where parent="'.$i.'" and id!="'.$id
+			.'" order by ord,name'
+		);
+		if (count($q)<1) {
+			return $arr;
+		}
+		foreach ($q as $r) {
+			if ($r['id']!='') {
+				$arr[$r['id']]=str_repeat('» ', $n).$r['name'];
+				$arr=array_merge($arr, selectkiddies($r['id'], $n+1, $id));
+			}
+		}
+		return $arr;
+	}
+	return array_merge(
+		array('0'=>' -- none -- '),
+		selectkiddies(0, 0, $id)
+	);
+}
+function Core_adminPageTypesList() {
+	$arr=array();
+	global $pagetypes,$PLUGINS;
+	foreach ($pagetypes as $a) {
+		$arr[$a[0]]=$a[1];
+	}
+	foreach ($PLUGINS as $n=>$p) {
+		if (isset($p['admin']['page_type'])) {
+			if (is_array($p['admin']['page_type'])) {
+				foreach ($p['admin']['page_type'] as $name=>$type) {
+					$arr[$n.'|'.$name]=$name;
+				}
+			}
+			else {
+				$arr[$n.'|'.$n]=$n;
+			}
+		}
+	}
+	return $arr;
+}
 /**
   * create a copy of a page
   *

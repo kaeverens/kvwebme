@@ -143,15 +143,8 @@ $(function(){
 	os_update_fields();
 	$('.ui-tabs-nav').live('mousedown',os_update_fields);
 	$('form').bind('submit',os_update_fields);
-	$("#online_store_redirect_to").remoteselectoptions({
-		url:"/ww.admin/pages/get_parents.php"
-	});
-	$("#online_store_quickpay_redirect_to").remoteselectoptions({
-		url:"/ww.admin/pages/get_parents.php"
-	});
-	$("#online_store_quickpay_redirect_failed").remoteselectoptions({
-		url:"/ww.admin/pages/get_parents.php"
-	});
+	$("#online_store_redirect_to,#online_store_quickpay_redirect_to,#online_store_quickpay_redirect_failed")
+		.remoteselectoptions({url:"/a/f=adminPageParentsList"});
 });
 $('#online_stores_fields_table input').live('click',os_update_fields_value);
 

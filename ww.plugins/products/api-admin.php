@@ -370,14 +370,11 @@ function Products_adminDatafieldsList() {
 	}
 	$fields=array_unique($fields);
 	asort($fields);
+	$arr=array();
 	foreach ($fields as $field) {
-		echo '<option';
-		if (isset($vars['products_order_by']) && $field==$vars['products_order_by']) {
-			echo ' selected="selected"';
-		}
-		echo '>', htmlspecialchars($field), '</option>';
+		$arr[$field]=$field;
 	}
-	exit;
+	return $arr;
 }
 /**
 	* upload a new image to mark products that have no uploaded image

@@ -58,7 +58,7 @@ else {
 
 $func=ucfirst($plugin).'_'.$_REQUEST['f'];
 if (!function_exists($func)) {
-	die('{"error":"function does not exist"}');
+	die('{"error":"function '.$func.' does not exist"}');
 }
 
 $res=$func($_REQUEST);

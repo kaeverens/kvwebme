@@ -45,11 +45,7 @@ function createPopup (defaultName, id, what) {
 			}
 		}
 	);
-	$('#products_page_parent').remoteselectoptions(
-		{
-			url:'pages/get_parents.php'
-		}
-	);
+	$('#products_page_parent').remoteselectoptions({url:'/a/f=adminPageParentsList'});
 }
 function confirm_create (data) {
 	if (data) {

@@ -179,9 +179,7 @@ var Wizard={
 	nextScript:function(){
 		switch(this.stage){
 			case 2:
-				$('#redirect-after-payment').remoteselectoptions({
-					url:"/ww.admin/pages/get_parents.php"
-				});
+				$('#redirect-after-payment').remoteselectoptions({url:"/a/f=adminPageParentsList"});
 			break;
 		}
 		$('#register-progress').slideBackground('#register-progress li:eq('+(this.stage-1)+')');

@@ -267,7 +267,9 @@ $(function(){
 		'stop':function(ev,ui){
 			var item=ui.item;
 			var panel=item.closest('.panel-wrapper');
-			if(!panel.length)return $(this).sortable('cancel');
+			if (!panel.length) {
+				return $(this).sortable('cancel');
+			}
 			var h4=$(ui.item).find('h4');
 			var p=ww.widgetsByName[h4.attr('widget-type')];
 			var clone=buildRightWidget({'type':p.type,'name':p.name});
