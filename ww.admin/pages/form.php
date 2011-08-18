@@ -247,7 +247,8 @@ echo '</tr>';
 if (isset($page['original_body'])) {
 	$page['body']=$page['original_body'];
 }
-switch ($page['type']) {
+$form_type=preg_replace('/.*\|/', '', $page['type']);
+switch ($form_type) {
 	case '0': case '5': // { normal
 		echo '<tr><th><div class="help body"></div>body</th><td colspan="5">'
 			.Page_showBody($page, $page_vars)
@@ -307,33 +308,27 @@ switch ($page['type']) {
 		if ($plugin) {
 			if (isset($plugin['admin']['page_type']) ) {
 				if (isset($plugin['admin']['page_types'])
-					&& in_array($page['type'], $plugin['admin']['page_types'])
+					&& in_array($form_type, $plugin['admin']['page_types'])
 				) {
 					echo '<tr><td colspan="6" id="body-wrapper">';
 					$ignore=array(
 						'footer', 'google-site-verification', 'order_of_sub_pages',
 						'order_of_sub_pages_dir'
 					);
-					foreach ($page_vars as $key=>$val) {
-						if (in_array($key, $ignore)) {
-							continue;
-						}
-						echo '<input type="hidden" name="page_vars['.htmlspecialchars($key)
-							.']" value="'.htmlspecialchars($val, ENT_QUOTE).'"/>';
-					}
+					echo '<script>window.page_vars='.json_encode($page_vars).';</script>';
 					echo '</td></tr>';
 				}
-				elseif (isset($plugin['admin']['page_type'][$page['type']])
-					&& function_exists($plugin['admin']['page_type'][$page['type']])
+				elseif (isset($plugin['admin']['page_type'][$form_type])
+					&& function_exists($plugin['admin']['page_type'][$form_type])
 				) {
 					echo '<tr><td colspan="6">'
-						.$plugin['admin']['page_type'][$page['type']]($page, $page_vars)
+						.$plugin['admin']['page_type'][$form_type]($page, $page_vars)
 						.'</td></tr>';
 					break;
 				}
 				elseif ( function_exists($plugin['admin']['page_type'])) {
 					echo '<tr><td colspan="6">'
-						.$plugin['admin']['page_type']($page,$page_vars).'</td></tr>';
+						.$plugin['admin']['page_type']($page, $page_vars).'</td></tr>';
 				}
 			}
 		}
