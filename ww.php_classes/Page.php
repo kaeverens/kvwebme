@@ -113,6 +113,12 @@ class Page{
 			strtolower($this->urlname)
 		)] =& $this;
 		self::$instancesBySpecial[$this->special] =& $this;
+		// {page type
+		if (strpos($this->type, '|')) {
+			$this->plugin=preg_replace('/\|.*/', '', $this->type);
+			$this->type=preg_replace('/.*\|/', '', $this->type);
+		}
+		// }
 		self::$instancesByType[$this->type] =& $this;
 		// { set up values if supplied. otherwise, delay it 'til required
 		$this->__valuesLoaded=false;
