@@ -11,8 +11,6 @@
 	* @link     http://kvsites.ie/
 	*/
 
-require_once '../ww.admin/admin_libs.php';
-
 function Core_adminDirectoriesGet() {
 	function get_subdirs($base, $dir) {
 		$arr=array();

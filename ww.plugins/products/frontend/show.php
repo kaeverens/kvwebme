@@ -377,8 +377,9 @@ function Products_image($params, $smarty) {
 		return Products_imageNotFound($params, $smarty);
 	}
 	return '<div style="width:'.$params['width'].'px;height:'.$params['height']
-		.'px"><img src="/kfmget/'.$iid.'&amp;width='.$params['width']
-		.'&amp;height='.$params['height'].'"/></div>';
+		.'px"><a href="/kfmget/'.$iid.'" target="popup"><img src="/kfmget/'.$iid
+		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'"/></a>'
+		.'</div>';
 }
 /**
 	* display an "image not found" message

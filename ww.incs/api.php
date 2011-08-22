@@ -36,6 +36,7 @@ if (isset($_REQUEST['p'])) {
 		if (!Core_isAdmin()) {
 			die('{"error":"you are not logged in as an admin"}');
 		}
+		require_once SCRIPTBASE.'ww.admin/admin_libs.php';
 		require_once SCRIPTBASE.'ww.plugins/'.$_REQUEST['p'].'/api-admin.php';
 	}
 	$plugin=preg_replace(
@@ -51,6 +52,7 @@ else {
 		if (!Core_isAdmin()) {
 			die('{"error":"you are not logged in as an admin"}');
 		}
+		require_once SCRIPTBASE.'ww.admin/admin_libs.php';
 		require_once 'api-admin.php';
 	}
 }
