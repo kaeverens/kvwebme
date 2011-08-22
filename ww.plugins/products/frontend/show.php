@@ -376,10 +376,13 @@ function Products_image($params, $smarty) {
 	if (!$iid) {
 		return Products_imageNotFound($params, $smarty);
 	}
+	list($link1, $link2)=@$params['nolink']
+		?array('', '')
+		:array('<a href="/kfmget/'.$iid.'" target="popup">', '</a>');
 	return '<div style="width:'.$params['width'].'px;height:'.$params['height']
-		.'px"><a href="/kfmget/'.$iid.'" target="popup"><img src="/kfmget/'.$iid
-		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'"/></a>'
-		.'</div>';
+		.'px">'.$link1.'<img src="/kfmget/'.$iid
+		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'"/>'
+		.$link2.'</div>';
 }
 /**
 	* display an "image not found" message
