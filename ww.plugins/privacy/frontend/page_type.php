@@ -196,6 +196,7 @@ function userregistration_form($error='', $alert='') {
 	if (isset($PAGEDATA->vars['userlogin_message_registration'])) {
 		$c.=$PAGEDATA->vars['userlogin_message_registration'];
 	}
+	require_once SCRIPTBASE.'ww.incs/recaptcha.php';
 	$c.=$error.'<form id="reg-form" class="userRegistrationBox" action="'
 		.$GLOBALS['PAGEDATA']->getRelativeUrl()
 		.'#userregistration" method="post"><table>'
@@ -206,7 +207,7 @@ function userregistration_form($error='', $alert='') {
 		.'<tr><th>Preferred Password</th><td><input name="pass1" type="password"'
 		.'/></td>'
 		.'<th>Repeat Password</th><td><input name="pass2" type="password" /></td'
-		.'></tr></table>';
+		.'></tr><tr><td colspan="2">'.Recaptcha_getHTML().'</td></tr></table>';
 	if (strlen(@$PAGEDATA->vars['privacy_extra_fields'])>2) {
 		$c.='<table>';
 		$required=array();
@@ -446,6 +447,27 @@ function userregistration_register() {
 		);
 	}
 	// }
+	// { check captcha
+	require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/recaptcha.php';
+	if (!isset($_REQUEST['recaptcha_challenge_field'])) {
+		return userregistration_form(
+			'<p><em>You must fill in the Captcha</em></p>'
+		);
+	}
+	else {
+		$result 
+			= recaptcha_check_answer(
+				RECAPTCHA_PRIVATE,
+				$_SERVER['REMOTE_ADDR'],
+				$_REQUEST['recaptcha_challenge_field'],
+				$_REQUEST['recaptcha_response_field']
+			);
+		if (!$result->is_valid) {
+			return userregistration_form(
+				'<p><em>Invalid captcha. Please try again.</em></p>'
+			);
+		}
+	}
 	// { register the account
 	$password=$pass1;
 	$r=dbRow("SELECT * FROM site_vars WHERE name='user_discount'");
