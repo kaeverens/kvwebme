@@ -13,35 +13,21 @@ function userloginandregistrationDisplay() {
 		if (!count($r)) {
 			die('that hash and email combination does not exist');
 		}
-		if (!isset($_REQUEST['np'])) {
-			$password=Password::getNew();
-			$password='password=md5(\''.$password.'\'),';
-		}
 		dbQuery(
-			"update user_accounts set $np verification_hash='',active=1 where ema"
+			"update user_accounts set verification_hash='',active=1 where ema"
 			."il='".addslashes($_GET['email'])."' and verification_hash='"
 			.addslashes($_GET['hash'])."'"
 		);
-		if (isset($_REQUEST['np'])) {
-			mail(
-				$_GET['email'],
-				'['.$sitedomain.'] user verified',
-				"Thank you,\n\nyour user account with us has now been verified. You"
-				." can login now using your email address and password.",
-				"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain"
-			);
-			return '<p>Thank you for registering.</p><p>Your account has now been'
-				.' verified.</p><p>Please <a href="/_r?type=privacy">click here</a>'
-				.' to login.</p>';
-		}
-		else {
-			mail(
-				$_GET['email'],
-				'['.$sitedomain.'] user password created',
-				"Your new password:\n\n".$password,
-				"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain"
-			);
-		}
+		mail(
+			$_GET['email'],
+			'['.$sitedomain.'] user verified',
+			"Thank you,\n\nyour user account with us has now been verified. You"
+			." can login now using your email address and password.",
+			"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain"
+		);
+		return '<p>Thank you for registering.</p><p>Your account has now been'
+			.' verified.</p><p>Please <a href="/_r?type=privacy">click here</a>'
+			.' to login.</p>';
 		$action='Login';
 		$_REQUEST['email']=$_GET['email'];
 		$_REQUEST['password']=$password;
@@ -487,7 +473,7 @@ function userregistration_register() {
 	$short_url=md5($long_url);
 	$lesc=addslashes($long_url);
 	$sesc=urlencode($short_url);
-	dbQuery("insert into short_urls values(0,now(),'$lesc','$short_url')");
+	dbQuery("insert into short_urls set cdate=now(),long_url='$lesc',short_url='$short_url'");
 	if (@$page->vars['userlogin_registration_type']=='Email-verified') {
 		mail(
 			$email,
@@ -523,7 +509,7 @@ function userregistration_register() {
 			false,
 			'<p><strong>Thank you for registering</strong>. Please check your e'
 			.'mail for a verification URL. Once that\'s been followed, your acc'
-			.'ount will be activated and a password supplied to you.</p>'
+			.'ount will be activated.</p>'
 		);
 	}
 	else {
