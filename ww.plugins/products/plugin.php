@@ -620,14 +620,22 @@ class ProductType{
 					if (@$f->u) {
 						$smarty->assign(
 							$f->n,
-							'<input class="product-field date '.$f->n.$required
-							.'" name="products_values_'.$f->n.'"/>'
+							'<input class="product-field date '.$f->n.$required.'" name="'
+							.'products_values_'.$f->n.'"/>'
 						);
 						$format=@$f->e?$f->e:'yy-mm-dd';
 						$y=date('Y');
 						WW_addInlineScript(
-							'$("input.date").datepicker({"dateFormat":"'.$format.'",'
-							.'changeYear:true,changeMonth:true,yearRange:"1900:'.$y.'"});'
+							'$("input[name=products_values_'.$f->n.']").datepicker({'
+							.'"dateFormat":"'.$format.'",'
+							.'changeYear:true,changeMonth:true,yearRange:"1900:'.$y.'"'
+							.'});'
+						);
+						WW_addInlineScript(
+							'$("input.hasDatepicker").each(function() {'
+							.'if (this.value!="") return;'
+							.'$(this).datepicker("setDate", "+0");'
+							.'});'
 						);
 					}
 					else {
@@ -657,10 +665,11 @@ class ProductType{
 							if (strpos($e, '|')!==false) {
 								$bits=explode('|', $e);
 								$p=(float)$bits[1];
+								$e=$bits[0];
 								if ($p) {
-									$e=$bits[0]
-										.($bits[1]>0?' - add '
-										.($_SESSION['currency']['symbol']).$bits[1]:$bits[1]);
+									$e.=$bits[1]>0
+										?' - add '.($_SESSION['currency']['symbol']).$bits[1]
+										:$bits[1];
 								}
 							}
 							$h.='<option value="'.htmlspecialchars($o).'">'
