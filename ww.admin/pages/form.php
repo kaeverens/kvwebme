@@ -68,6 +68,7 @@ echo '<html><head>'
 	.Core_getJQueryScripts()
 	.'<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'
 	.'<script src="/j/ckeditor-3.6/ckeditor.js"></script>'
+	.'<script src="/j/ckeditor-3.6/adapters/jquery.js"></script>'
 	.'<script src="/ww.admin/j/admin.js"></script>'
 	.'<script src="/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js"></script>'
 	.'<link rel="stylesheet" href="/j/jquery.dataTables-1.7.5'

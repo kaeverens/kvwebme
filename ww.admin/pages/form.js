@@ -1,15 +1,12 @@
 function Page_form(plugin, pageType) {
-	alert(plugin+"\n"+pageType);
 	var plugin_safe=plugin.charAt(0).toUpperCase()
 		+plugin.slice(1).replace(/[^a-zA-Z0-9]/g, '');
 	var pageType_safe=pageType.charAt(0).toLowerCase()
 		+pageType.slice(1).replace(/[^a-zA-Z0-9]/g, '');
 	var fname=plugin_safe+'_Pagetype_'+pageType_safe;
-	alert(fname);
 	if (window[fname]) {
 		return window[fname]();
 	}
-	alert('/ww.plugins/'+plugin+'/pagetype-'+pageType_safe+'.js');
 	$.ajax({
 		'url':'/ww.plugins/'+plugin+'/pagetype-'+pageType_safe+'.js',
 		'dataType':'script',
@@ -66,7 +63,8 @@ $(function(){
 		.remoteselectoptions({url:'/a/f=adminPageParentsList',
 			other_GET_params:page_menu_currentpage
 		});
-	$('#pages_form').submit(pages_validate);
+	var $form=$('#pages_form')
+		.submit(pages_validate);
 	$('#name').keyup(pages_validate_name);
 	$('form#pages_form').submit(function() {
 		return pages_check_page_length($(this).attr('maxLength'))
@@ -80,6 +78,14 @@ $(function(){
 			Page_form(val.replace(/\|.*/, ''), val.replace(/.*\|/, ''));
 		});
 	if ($('#body-wrapper').length) {
+		$.each(page_vars, function(k, v) {
+			if ($('input[name="page_vars['+k+']"],select[name="page_vars['+k+']"]').length) {
+				return;
+			}
+			$('<input type="hidden" name="page_vars['+k+']"/>')
+				.val(v)
+				.appendTo($form);
+		});
 		$('select[name=type]').change();
 	}
 });
