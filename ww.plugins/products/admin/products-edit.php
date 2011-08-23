@@ -21,15 +21,20 @@ function Products_showDataField($df, $def) {
 			echo ' />';
 		break; // }
 		case 'date': // {
-			echo '<input class="date-human';
-			if ($def['r']) {
-				echo ' required';
+			if (@$def['u']) {
+				echo 'this will be entered by the user';
 			}
-			echo '" name="data_fields['.htmlspecialchars($def['n']).']" value="'
-				.htmlspecialchars($df['v']).'" />';
+			else {
+				echo '<input class="date-human';
+				if ($def['r']) {
+					echo ' required';
+				}
+				echo '" name="data_fields['.htmlspecialchars($def['n']).']" value="'
+					.htmlspecialchars($df['v']).'" />';
+			}
 		break; // }
 		case 'selectbox': // {
-			if (isset($def['u']) && $def['u']) {
+			if (@$def['u']) {
 				if ($df['v']=='') {
 					$df['v']=$def['e'];
 				}

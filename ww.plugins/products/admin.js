@@ -104,7 +104,6 @@ function Products_typeDelete(id) {
 function Products_typeEdit(id) {
 	var activeTab=-1, tdata=false;
 	function updateValues() {
-		console.log(tdata);
 		switch(activeTab) {
 			case 0: // { main
 				return updateMain();
@@ -119,7 +118,6 @@ function Products_typeEdit(id) {
 				return updateSingleView();
 				// }
 		}
-		console.log(tdata);
 	}
 	$.post('/a/p=products/f=typeGet/id='+id, function(res) {
 		tdata=res;
@@ -214,6 +212,7 @@ function Products_typeEdit(id) {
 					$('<select><option>inputbox</option><option>textarea</option>'
 						+'<option>date</option><option>checkbox</option>'
 						+'<option>selectbox</option><option>selected-image</option>'
+						+'<option>hidden</option>'
 						+'</select>'
 					)
 						.val(field.t).appendTo('.pfp-type', $wrapper);
