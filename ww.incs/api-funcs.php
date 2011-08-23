@@ -15,11 +15,20 @@
 function Core_nothing() {
 	return array();
 }
-function Core_getFileInfo() {
-	if (!isset($_REQUEST['src'])) {
-		return array('error'=>'missing src');
+function Core_directoryCheckName($file) {
+	if (strpos($file, '..')!==false
+		|| (strpos($file, '/.')!==false
+		&& strpos(preg_replace('#/\.files/#', '/', $file), '/.')!==false)
+	) {
+		exit;
 	}
-	$file=USERBASE.$_REQUEST['src'];
+	if (!file_exists($file) || !is_dir($file)) {
+		header('HTTP/1.0 404 Not Found');
+		echo 'directory does not exist';
+		exit;
+	}
+}
+function Core_fileCheckName($file) {
 	if (strpos($file, '..')!==false
 		|| (strpos($file, '/.')!==false
 		&& strpos(preg_replace('#/\.files/#', '/', $file), '/.')!==false)
@@ -31,7 +40,33 @@ function Core_getFileInfo() {
 		echo 'file does not exist';
 		exit;
 	}
-	
+}
+function Core_getFileList() {
+	if (!isset($_REQUEST['src'])) {
+		return array('error'=>'missing src');
+	}
+	$dir=USERBASE.$_REQUEST['src'];
+	Core_directoryCheckName($dir);
+	$files=array();
+	$dir=new DirectoryIterator($dir);
+	foreach ($dir as $file) {
+		if ($file->isDot()) {
+			continue;
+		}
+		$files[]=array(
+			'n'=>$file->getFilename(),
+			't'=>$file->isDir()?'d':'f'
+		);
+	}
+	return $files;
+}
+function Core_getFileInfo() {
+	if (!isset($_REQUEST['src'])) {
+		return array('error'=>'missing src');
+	}
+	$file=USERBASE.$_REQUEST['src'];
+	Core_fileCheckName($file);
+
 	$finfo=finfo_open(FILEINFO_MIME_TYPE);
 	$mime=finfo_file($finfo, $file);
 	
