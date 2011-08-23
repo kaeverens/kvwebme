@@ -103,7 +103,7 @@ else {
 		.'<option value="0"> -- choose -- </option>';
 	foreach ($rs as $r) {
 		$c.='<option value="'.$r['id'].'"';
-		if (@$vars['products_product_to_show']) {
+		if (@$vars['products_product_to_show']==$r['id']) {
 			$c.=' selected="selected"';
 		}
 		$c.='>'.htmlspecialchars($r['name']).'</option>';
