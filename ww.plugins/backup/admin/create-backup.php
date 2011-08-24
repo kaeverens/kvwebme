@@ -15,6 +15,7 @@ require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!Core_isAdmin()) {
 	die('access denied');
 }
+require_once $_SERVER['DOCUMENT_ROOT'].'/ww.admin/admin_libs.php';
 
 $password=addslashes($_REQUEST['password']);
 if (!$password) {
