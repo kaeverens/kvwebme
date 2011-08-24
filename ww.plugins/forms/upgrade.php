@@ -63,3 +63,18 @@ if ($version==3) { // replace FIELD{blah} with blah
 	}
 	$version=4;
 }
+if ($version==4) { // copy forms fields to page_vars
+	$rs=dbAll('select distinct formsId from forms_fields');
+	foreach ($rs as $r) {
+		dbQuery(
+			'insert into page_vars set name="forms_fields", page_id='.$r['formsId']
+			.', value="'.addslashes(json_encode(dbAll(
+				'select name, type, isrequired, extra from forms_fields where '
+				.'formsId='.$r['formsId'].' order by id'
+			))).'"'
+		);
+	}
+	Core_cacheClear();
+	$version=5;
+}
+// note: remove forms_fields table after 2012-08-22

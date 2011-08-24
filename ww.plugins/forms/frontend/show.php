@@ -22,9 +22,7 @@
   */
 function Form_show($page, $vars) {
 	$errors=array();
-	$form_fields=dbAll(
-		'select * from forms_fields where formsId="'.$page['id'].'" order by id'
-	);
+	$form_fields=json_decode($vars['forms_fields'], true);
 	if (@$_REQUEST['funcFormInput']=='submit') {
 		require_once dirname(__FILE__).'/validate-and-send.php';
 		$errors=Form_validate($vars, $form_fields);
@@ -89,6 +87,10 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 			continue;
 		}
 		$name=preg_replace('/[^a-zA-Z0-9_]/', '', $r2['name']);
+		$help=$r2['help'];
+		if ($help!='') {
+			$help=' title="'.htmlspecialchars($help, ENT_QUOTES).'"';
+		}
 		$class='';
 		if ($r2['isrequired']) {
 			$required[]=$name.','.$r2['type'];
@@ -134,7 +136,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 		$table_break=0;
 		switch ($r2['type']) {
 			case 'checkbox': // {
-				$d='<input type="checkbox" id="'.$name.'" name="'.$name.'"';
+				$d='<input type="checkbox" id="'.$name.'" name="'.$name.'"'.$help;
 				if ($_REQUEST[$name]) {
 					$d.=' checked="'.$_REQUEST[$name].'"';
 				}
@@ -145,15 +147,15 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 					$_REQUEST[$name]=date('Y-m');
 				}
 				$d='<input name="'.$name.'" value="'
-					.$_REQUEST[$name].'" class="ccdate" />';
+					.$_REQUEST[$name].'" class="ccdate"'.$help.'/>';
 				$has_ccdate=true;
 			break; // }
 			case 'date': // {
 				if ($_REQUEST[$name]=='') {
 					$_REQUEST[$name]=date('Y-m-d');
 				}
-				$d='<input name="'.$name.'" value="'.$_REQUEST[$name].'" '
-					.'class="date" placeholder="yyyy-mm-dd" '
+				$d='<input name="'.$name.'" value="'.$_REQUEST[$name].'"'.$help
+					.' class="date" placeholder="yyyy-mm-dd" '
 					.'metadata="'.addslashes($r2['extra']).'"/>';
 				$has_date=true;
 			break; // }
@@ -161,14 +163,14 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 				if ($r2['extra']) {
 					$class.=' verify';
 					$verify='<input style="display:none" name="'.$name
-						.'_verify" value="" placeholder="verification code"/>';
+						.'_verify" value="" placeholder="verification code"'.$help.'/>';
 					$_SESSION['form_input_email_verify_'.$name]=rand(10000, 99999);
 				}
 				else {
 					$verify='';
 				}
 				$d='<input type="email" id="'.$name.'" name="'.$name.'" value="'.$val
-					.'" class="email'.$class.' text" />'.$verify;
+					.'" class="email'.$class.' text"'.$help.'/>'.$verify;
 			break; // }
 			case 'file': // {
 				WW_addScript('forms/j/swfobject.js');
@@ -215,7 +217,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 				});';
 				WW_addInlineScript($script);
 				$d='<div id="upload">';
-				$d.='<input type="file" id="'.$name.'" name="file-upload"/>';
+				$d.='<input type="file" id="'.$name.'" name="file-upload"'.$help.'/>';
 				$d.='</div>';
 				// { add existing files
 				$dir=USERBASE.'f/.files/forms/'.session_id();
@@ -243,7 +245,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 			break; // }
 			case 'hidden': // {
 				$d='<textarea id="'.$name.'" name="'.$name.'" class="'.$class
-						.' hidden">'.htmlspecialchars($r2['extra']).'</textarea>';
+						.' hidden"'.$help.'>'.htmlspecialchars($r2['extra']).'</textarea>';
 			break; // }
 			case 'html-block': // {
 				$d=$r2['extra'];
@@ -262,7 +264,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 				$table_break=true;
 			break; // }
 			case 'selectbox': // {
-				$d='<select id="'.$name.'" name="'.$name.'">';
+				$d='<select id="'.$name.'" name="'.$name.'"'.$help.'>';
 				$arr=explode("\n", htmlspecialchars($r2['extra']));
 				foreach ($arr as $li) {
 					if ($_REQUEST[$name]==$li) {
@@ -280,13 +282,13 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 				}
 				list($max, $softmax)=explode(',', $r2['extra']);
 				$maxlength=$max?'maxlength="'.$max.'" ':'';
-				$d='<textarea '.$maxlength.' softmaxlength="'.$softmax.'" '
-						.'id="'.$name.'" name="'.$name.'" class="'.$class.'">'
+				$d='<textarea '.$maxlength.' softmaxlength="'.$softmax.'"'.$help
+						.' id="'.$name.'" name="'.$name.'" class="'.$class.'">'
 						.$_REQUEST[$name].'</textarea>';
 			break; // }
 			default: // { # input boxes, and anything which was not handled already
 				$d='<input id="'.$name.'" name="'.$name.'" value="'.$val
-						.'" class="'.$class.' text" />';
+						.'" class="'.$class.' text"'.$help.'/>';
 				// }
 		}
 		if ($vars['forms_template']&&$vars['forms_template']!='&nbsp;') {
@@ -349,6 +351,8 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 		$c.='<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/'
 			.'jquery.validate.min.js"></script>';
 	}
+	$c.='<script>var forms_helpType='.(int)$vars['forms_helpType'].',forms_he'
+		.'lpSelector="'.$vars['forms_helpSelector'].'";</script>';
 	$c.='</form>';
 	if ($has_ccdate) {
 		WW_addInlineScript('$("input.ccdate").datepicker({"dateFormat":"yy-mm"});');

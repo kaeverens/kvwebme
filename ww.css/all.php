@@ -16,7 +16,8 @@ $files=array(
 	'menus.css',
 	'ui.datepicker.css',
 	'forms.css',
-	'contextmenu.css'
+	'contextmenu.css',
+	'misc.css'
 );
 $name='';
 if (isset($_REQUEST['extra'])) {

@@ -106,4 +106,12 @@ $(function(){
 			"yearRange":range[0]+':'+range[1]
 		});
 	});
+	if (forms_helpType) {
+		$('.ww_form').find('input,select,textarea').hover(function() {
+			$(forms_helpSelector).html(this.title);
+		});
+	}
+	else {
+		$('.ww_form').find('input,select,textarea').tooltip();
+	}
 });

@@ -21,6 +21,22 @@ function Page_form(plugin, pageType) {
 		}
 	});
 }
+function Page_updatePageVars() {
+	if (!page_vars) {
+		return;
+	}
+	$.each(page_vars, function(k, v) {
+		var $inp=$('page_vars[name='+k+']');
+		if (!$inp.length) {
+			$inp=$('<input type="hidden" name="page_vars['+k+']"/>')
+				.appendTo('#pages_form');
+		}
+		if ($.type(v)=='array' || $.type(v)=='object') {
+			v=$.toJSON(v);
+		}
+		$inp.val(v);
+	});
+}
 function pages_validate(){
 	var ok=pages_validate_name();
 	if (ok) {
@@ -67,6 +83,7 @@ $(function(){
 		.submit(pages_validate);
 	$('#name').keyup(pages_validate_name);
 	$('form#pages_form').submit(function() {
+		Page_updatePageVars();
 		return pages_check_page_length($(this).attr('maxLength'))
 	});
 	$('select[name=type]')

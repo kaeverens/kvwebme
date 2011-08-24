@@ -12,6 +12,7 @@
   * @link       www.kvweb.me
  */
 
+// { plugin definition
 $plugin=array(
 	'name' => 'Form',
 	'admin' => array(
@@ -22,8 +23,9 @@ $plugin=array(
 	'frontend' => array(
 		'page_type' => 'Form_frontend'
 	),
-	'version' => 4
+	'version' => 5
 );
+// }
 
 /**
   * display the form-creation tool
