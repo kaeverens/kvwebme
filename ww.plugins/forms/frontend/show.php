@@ -351,9 +351,10 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 		$c.='<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/'
 			.'jquery.validate.min.js"></script>';
 	}
-	$c.='<script>var forms_helpType='.(int)$vars['forms_helpType'].',forms_he'
-		.'lpSelector="'.$vars['forms_helpSelector'].'";</script>';
-	$c.='</form>';
+	$helpType=(int)@$vars['forms_helpType'];
+	$helpSelector=@$vars['forms_helpSelector'];
+	$c.='<script>var forms_helpType='.$helpType.',forms_helpSelector="'
+		.$forms_helpSelector.'";</script></form>';
 	if ($has_ccdate) {
 		WW_addInlineScript('$("input.ccdate").datepicker({"dateFormat":"yy-mm"});');
 	}
