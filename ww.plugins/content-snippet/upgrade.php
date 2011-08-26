@@ -11,7 +11,7 @@ if ($version<1) { // add table
 if ($version=='1') { // convert to accordion
 	dbQuery('alter table content_snippets add accordion smallint default 0');
 	dbQuery(
-		'alter table content_snippets '
+		'alter table content_snippets '.
 		'add accordion_direction smallint default 0'
 	); // 0 is horizontal
 	$rs=dbAll('select * from content_snippets');
