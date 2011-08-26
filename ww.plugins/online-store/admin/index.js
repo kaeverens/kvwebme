@@ -148,7 +148,6 @@ $(function(){
 });
 $('#online_stores_fields_table input').live('click',os_update_fields_value);
 
-
 pandp=[];
 pandp_open=[];
 function pandp_add_top(i,data){
@@ -350,9 +349,14 @@ $(function(){
 			return alert('no transactions selected');
 		}
 		$.post('/a/p=online-store/f=adminCapture/ids='+txns, function(ret) {
-			console.log(ret);
-			if (ret.errors) {
-				alert(ret.errors);
+			if (ret.ok.length) {
+				for (var i=0;i<ret.ok.length;++i) {
+					$('#capture'+ret.ok[i]).remove();
+				}
+				alert(ret.ok.length+' transactions successfully captured');
+			}
+			if (ret.errors.length) {
+				alert(ret.errors.join("\n\n"));
 			}
 		});
 	});

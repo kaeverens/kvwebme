@@ -120,7 +120,8 @@ if ($has_authrs) { // authorised payments
 		.'<input type="checkbox"/></th><th>ID</th><th>Date</th><th>Total</th>'
 		.'<th>Status</th></tr>';
 	foreach ($authrs as $r) {
-		$c.='<tr><td><input type="checkbox" id="auth'.$r['id'].'"/></td>'
+		$c.='<tr id="capture'.$r['id'].'"><td><input type="checkbox" id="auth'
+			.$r['id'].'"/></td>'
 			.'<td>'.$r['id'].'</td><td>'.date_m2h($r['date_created']).'</td>'
 			.'<td>'.$r['total'].'</td><td>'.$statii[(int)$r['status']].'</td></tr>';
 	}
