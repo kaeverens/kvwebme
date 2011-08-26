@@ -11,7 +11,7 @@ $(function(){
 			$.post('/a/p=news/f=getHeadlinesMonth',{
 				y:year,
 				m:month,
-				p:pagedata.id
+				pid:pagedata.id
 			},function(ret){
 				highlights['d'+year+'|'+month]=[];
 				for (var i=0;i<ret.length;++i) {
@@ -29,11 +29,11 @@ $(function(){
 	function onchange2(year, month, day) {
 		clearTimeout(timer2);
 		timer2=setTimeout(function(){
-			$.post('/ww.plugins/news/frontend/get-headlines-day.php',{
+			$.post('/a/p=news/f=getHeadlinesDay',{
 				y:year,
 				m:month,
 				d:day,
-				p:pagedata.id
+				pid:pagedata.id
 			},function(ret){
 				var $list=$('#events_list').empty();
 				var html='';
