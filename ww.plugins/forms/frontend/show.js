@@ -68,15 +68,24 @@ $(function(){
 		});
 		$this.find('input[type=email].verify').change(function(){
 			var $this=$(this);
-			var name=$this.attr('name');
+			var name=$this.attr('name'),email=$this.val();
+			if (forms_verifiedEmails[email]) {
+				return $('input[name='+name+'_verify]')
+					.addClass('verified')
+					.css('display','none');
+			}
+			else {
+				$('input[name='+name+'_verify]')
+					.removeClass('verified')
+					.css('display','block');
+			}
 			$.post('/a/p=forms/f=verificationSend', {
 				'name':name,
-				'email':$this.val()
+				'email':email
 			}, function(ret) {
 				if (ret.error) {
 					return alert(ret.error);
 				}
-				$this.siblings('input').css('display', 'block');
 				alert('please check your email for a verification code, and fill it in');
 			});
 		});
@@ -114,4 +123,15 @@ $(function(){
 	else {
 		$('.ww_form').find('input,select,textarea').tooltip();
 	}
+	$('.email-verification').change(function() {
+		var $this=$(this);
+		var $email=$this.siblings();
+		$.post('/a/p=forms/f=emailVerify', {
+			"name":$email.attr('name'),
+			"email":$email.val(),
+			"code":$this.val()
+		}, function(ret) {
+			console.log(ret);
+		});
+	});
 });

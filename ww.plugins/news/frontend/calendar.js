@@ -64,7 +64,7 @@ $(function(){
 				if (!highlights['d'+year+'|'+month] || !highlights['d'+year+'|'+month][day]) {
 					return [true, '', ''];
 				}
-				return [true, 'highlighted date'+year+'-'+month+'-'+day, highlights['d'+year+'|'+month][day].join(', ')];
+				return [true, 'ui-state-active highlighted date'+year+'-'+month+'-'+day, highlights['d'+year+'|'+month][day].join(', ')];
 			}
 		});
 	$cal.datepicker('setDate','01/01/2001');

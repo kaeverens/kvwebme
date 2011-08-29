@@ -13,7 +13,7 @@ $plugin=array(
 	),
 	'version' => '3'
 );
-function messaging_notifier_show_widget($vars){
+function messaging_notifier_show_widget($vars, $pid){
 	include_once SCRIPTBASE.'ww.plugins/messaging-notifier/frontend/index.php';
 	return Aggregator_show($vars);
 }

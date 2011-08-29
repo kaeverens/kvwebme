@@ -87,7 +87,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 			continue;
 		}
 		$name=preg_replace('/[^a-zA-Z0-9_]/', '', $r2['name']);
-		$help=$r2['help'];
+		$help=@$r2['help'];
 		if ($help!='') {
 			$help=' title="'.htmlspecialchars($help, ENT_QUOTES).'"';
 		}
@@ -162,8 +162,9 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 			case 'email': // {
 				if ($r2['extra']) {
 					$class.=' verify';
-					$verify='<input style="display:none" name="'.$name
-						.'_verify" value="" placeholder="verification code"'.$help.'/>';
+					$verify='<input style="display:none" class="email-verification" '
+						.'name="'.$name.'_verify" value="" placeholder="verification code"'
+						.$help.'/>';
 					$_SESSION['form_input_email_verify_'.$name]=rand(10000, 99999);
 				}
 				else {
@@ -353,8 +354,12 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 	}
 	$helpType=(int)@$vars['forms_helpType'];
 	$helpSelector=@$vars['forms_helpSelector'];
+	$verifiedEmails=isset($_SESSION['forms_verified_emails'])
+		?json_encode($_SESSION['forms_verified_emails']):
+		'[]';
 	$c.='<script>var forms_helpType='.$helpType.',forms_helpSelector="'
-		.$forms_helpSelector.'";</script></form>';
+		.$helpSelector.'",forms_verifiedEmails='.$verifiedEmails
+		.';</script></form>';
 	if ($has_ccdate) {
 		WW_addInlineScript('$("input.ccdate").datepicker({"dateFormat":"yy-mm"});');
 	}

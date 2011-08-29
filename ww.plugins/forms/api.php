@@ -52,3 +52,6 @@ function Forms_verificationSend() {
 	);
 	return array('ok'=>1);
 }
+function Forms_emailVerify() {
+//	$code=
+}
