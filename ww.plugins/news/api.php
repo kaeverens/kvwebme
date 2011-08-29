@@ -22,7 +22,9 @@ function News_getHeadlinesDay() {
 	}
 	$m=sprintf('%02d', $m);
 	
-	$sql='select id from pages where parent='.$p.' and associated_date="'.$y.'-'.$m.'-'.$d.'" order by associated_date';
+	$sql='select id from pages where parent='.$p.' and associated_date>"'
+		.$y.'-'.$m.'-'.$d.'" and associated_date<date_add("'.$y.'-'.$m.'-'.$d
+		.'", interval 1 day) order by associated_date';
 	$ps=dbAll($sql);
 	$headlines=array();
 	foreach ($ps as $p) {
