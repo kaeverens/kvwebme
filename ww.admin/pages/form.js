@@ -79,6 +79,14 @@ $(function(){
 		.remoteselectoptions({url:'/a/f=adminPageParentsList',
 			other_GET_params:page_menu_currentpage
 		});
+	$('#pages_form input[name="associated_date"]')
+		.datetimepicker({
+			dateFormat: 'yy-mm-dd',
+			timeFormat: 'hh:mm',
+			modal:      true,
+			changeMonth:true,
+			changeYear: true
+		});
 	var $form=$('#pages_form')
 		.submit(pages_validate);
 	$('#name').keyup(pages_validate_name);

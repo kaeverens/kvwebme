@@ -14,13 +14,19 @@ $(function(){
 				pid:pagedata.id
 			},function(ret){
 				highlights['d'+year+'|'+month]=[];
+				var html='';
 				for (var i=0;i<ret.length;++i) {
 					var h=ret[i];
-					var day=+h.adate.replace(/.*-/, '');
+					var day=+h.adate.replace(/.*-([0-9]*) .*/, '$1');
 					if (!highlights['d'+year+'|'+month][day]) {
 						highlights['d'+year+'|'+month][day]=[];
 					}
 					highlights['d'+year+'|'+month][day].push(h.headline);
+					html+='<strong>'+date_m2h(h.adate, 'datetime')+'</strong>'
+						+'<p><a href="'+h.url+'">'+h.headline+'</a></p>';
+				}
+				if (inst!==false) {
+					$list=$('#events_list').html(html);
 				}
 				$('#events_calendar').datepicker('refresh');
 			},'json');
@@ -39,8 +45,8 @@ $(function(){
 				var html='';
 				for (var i=0;i<ret.length;++i) {
 					var h=ret[i];
-					var day=+h.adate.replace(/.*-/, '');
-					html+='<strong>'+date_m2h(h.adate)+'</strong>'
+					var day=+h.adate.replace(/.*-([0-9]*) .*/, '$1');
+					html+='<strong>'+date_m2h(h.adate, 'datetime')+'</strong>'
 						+'<p><a href="'+h.url+'">'+h.headline+'</a></p>';
 				}
 				$list.html(html);

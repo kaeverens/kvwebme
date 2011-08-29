@@ -157,3 +157,10 @@ div.fg-menu-container ul li a:hover,#sidebar1 a:hover,#menu-top ul li a:hover{
 }
 .tight,.tight *{padding:0}
 .number{width:30px;text-align:right}
+
+/* timepicker for datepicker */
+.ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; }
+.ui-timepicker-div dl{ text-align: left; }
+.ui-timepicker-div dl dt{ height: 25px; }
+.ui-timepicker-div dl dd{ margin: -25px 0 10px 65px; }
+.ui-timepicker-div td { font-size: 90%; }

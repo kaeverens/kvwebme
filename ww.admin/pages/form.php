@@ -75,6 +75,7 @@ echo '<html><head>'
 	.'/jquery.dataTables.css" />'
 	.'<script src="/j/jquery.remoteselectoptions.js"></script>'
 	.'<script src="/j/cluetip/jquery.cluetip.js"></script>'
+	.'<script src="/j/jquery-ui-timepicker-addon.js"></script>'
 	.'<script src="form.js"></script>'
 	.'<link rel="stylesheet" href="/j/cluetip/jquery.cluetip.'
 	.'css" />'
@@ -233,14 +234,17 @@ echo '</select></td>';
 // }
 // { associated date
 if (!isset($page['associated_date'])
-	|| !preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $page['associated_date'])
-	|| $page['associated_date']=='0000-00-00'
+	|| !preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}/', $page['associated_date'])
+	|| $page['associated_date']=='0000-00-00 00:00:00'
 ) {
-	$page['associated_date']=date('Y-m-d');
+	$page['associated_date']=date('Y-m-d 00:00');
+}
+else {
+	$page['associated_date']=preg_replace('/:..$/', '', $page['associated_date']);
 }
 echo '<th><div class="help associated-date"></div>Associated Date</th><td><'
-	.'input name="associated_date" class="date-human" value="'
-	.$page['associated_date'].'" /></td>';
+	.'input name="associated_date" value="'.$page['associated_date'].'" '
+	.'title="year-month-day hour:minute"/></td>';
 echo '</tr>';
 // }
 // }

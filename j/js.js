@@ -6,9 +6,9 @@ function date_m2h(d,type){
 	var m=months[date.replace(/.*-([0-9]+)-.*/,'$1')];
 	date=date.replace(/-[0-9]+-/,'-'+m+'-');
 	if(type=='date')return date;
-	var time=d.replace(/.* /,'');
+	var time=d.replace(/.* (.*):[0-9]*$/,'$1');
 	if(type=='time')return time;
-	return time+', '+date;
+	return time=='00:00'?date:time+', '+date;
 }
 function htmlspecialchars(str) {
 	if (!str) {

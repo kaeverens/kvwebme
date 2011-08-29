@@ -385,6 +385,11 @@ if ($version==35) { // convert user address to new format
 	dbQuery($query);
 	$version=36;
 }
+if ($version==36) {
+	dbQuery('alter table pages change associated_date associated_date datetime');
+	$version=37;
+}
+
 $DBVARS['version']=$version;
 Core_cacheClear();
 Core_configRewrite();

@@ -86,6 +86,7 @@ WW_addScript('/j/ckeditor-3.6/ckeditor.js');
 WW_addScript('/j/ckeditor-3.6/adapters/jquery.js');
 WW_addScript('/j/cluetip/jquery.cluetip.js');
 WW_addScript('/j/jquery.uploadify/jquery.uploadify.js');
+WW_addScript('/j/jquery-ui-timepicker-addon.js');
 WW_addScript('/ww.admin/j/admin.js');
 echo '<!doctype html>
 <html><head><title>WebME admin area</title>';

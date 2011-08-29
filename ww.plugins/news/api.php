@@ -30,7 +30,7 @@ function News_getHeadlinesDay() {
 		$headlines[]=array(
 			'url'=>$page->getRelativeURL(),
 			'adate'=>$page->associated_date,
-			'headline'=>htmlspecialchars($page->name)
+			'headline'=>htmlspecialchars($page->alias)
 		);
 	}
 	return $headlines;
@@ -54,7 +54,7 @@ function News_getHeadlinesMonth() {
 		$headlines[]=array(
 			'url'=>$page->getRelativeURL(),
 			'adate'=>$page->associated_date,
-			'headline'=>htmlspecialchars($page->name)
+			'headline'=>htmlspecialchars($page->alias)
 		);
 	}
 	return $headlines;
