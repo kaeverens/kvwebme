@@ -24,7 +24,8 @@ $plugin=array(
 	'frontend' => array(
 	),
 	'triggers'      => array(
-		'page-object-loaded'=>'SiteCredits_isActive'
+		'page-object-loaded'=>'SiteCredits_isActive',
+		'admin-scripts'=>'SiteCredits_adminShowStatus'
 	),
 	'version'=>3
 );
@@ -37,4 +38,7 @@ function SiteCredits_isActive() {
 			.' Please log into your control panel.</p>';
 		exit;
 	}
+}
+function SiteCredits_adminShowStatus() {
+	return '<script src="/ww.plugins/site-credits/admin-status.js"></script>';
 }
