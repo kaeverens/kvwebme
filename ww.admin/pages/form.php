@@ -127,6 +127,7 @@ else {
 	);
 	$id=0;
 }
+$page_vars['_body']=$page['body'];
 $maxLength = (isset($DBVARS['site_page_length_limit'])
 	&& $DBVARS['site_page_length_limit']
 )

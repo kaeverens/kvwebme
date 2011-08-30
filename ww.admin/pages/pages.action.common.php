@@ -12,6 +12,10 @@
 	*/
 
 $special=0;
+if (@$_REQUEST['page_vars']['_body']) {
+	$_REQUEST['body']=$_REQUEST['page_vars']['_body'];
+	unset($_REQUEST['page_vars']['_body']);
+}
 if (isset($_REQUEST['special'])) {
 	$specials=$_REQUEST['special'];
 	if (is_array($specials)) {
