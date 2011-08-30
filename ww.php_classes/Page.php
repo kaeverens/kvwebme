@@ -269,7 +269,7 @@ class Page{
 		}
 		else {
 			$this->relativeURL='';
-			if ($this->parent) {
+			if (@$this->parent) {
 				$p=Page::getInstance($this->parent);
 				if ($p) {
 					$this->relativeURL.=$p->getRelativeURL();
