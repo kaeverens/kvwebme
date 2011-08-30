@@ -25,7 +25,7 @@ $rs=dbAll('select * from panels order by name');
 foreach ($rs as $r) {
 	$ps[]=array(
 		'id'=>$r['id'],
-		'disabled'=>$r['disabled'],
+		'disabled'=>(int)$r['disabled'],
 		'name'=>$r['name'],
 		'widgets'=>json_decode($r['body'])
 	);
