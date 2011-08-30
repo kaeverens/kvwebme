@@ -21,17 +21,17 @@ require_once '../ww.incs/basics.php';
 	<body>
 		<ul id="left-nav">
 			<li><strong>administrators</strong><ul>
-				<li><a href="admin/page-authentication.php"
-					target="main-frame">page authentication</a></li>
+				<li><a href="admin/upload-images.php" target="main-frame">upload images</a></li>
+				<li><a href="admin/page-authentication.php" target="main-frame">page authentication</a></li>
 				<li><strong>plugins</strong><ul>
 <?php
 foreach ($DBVARS['plugins'] as $n=>$p) {
 	if (file_exists('../ww.plugins/'.$p.'/docs/admin.html')) {
-		echo '<li><a href="plugin.php?t=admin&amp;p='
+		echo '\n<li><a href="plugin.php?t=admin&amp;p='
 			.$p.'" target="main-frame">'.$p.'</a></li>';
 	}
 	else {
-		echo '<!-- $p -->';
+		echo "\n<!-- $p -->";
 	}
 }
 ?>
@@ -46,11 +46,11 @@ foreach ($DBVARS['plugins'] as $n=>$p) {
 <?php
 foreach ($DBVARS['plugins'] as $n=>$p) {
 	if (file_exists('../ww.plugins/'.$p.'/docs/design.html')) {
-		echo '<li><a href="plugin.php?t=design&amp;p='
+		echo '\n<li><a href="plugin.php?t=design&amp;p='
 			.$p.'" target="main-frame">'.$p.'</a></li>';
 	}
 	else {
-		echo '<!-- $p -->';
+		echo "\n<!-- $p -->";
 	}
 }
 ?>

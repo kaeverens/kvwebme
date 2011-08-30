@@ -9,7 +9,7 @@ CKEDITOR.editorConfig = function( config )
 	// config.language = 'fr';
 	// config.uiColor = '#AADC6E';
 	config.skin="v2";
-	config.extraPlugins='swf';
+	config.extraPlugins='swf,onchange';
 	config.toolbar="WebME";
 	config.toolbar_WebME=[
 		['Maximize','Source','Cut','Copy','Paste','PasteText'],

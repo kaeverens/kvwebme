@@ -8,7 +8,7 @@ function Forms_Pagetype_forms() {
 				return updateFormFields();
 				// }
 			case 2: // { header/footer
-				return updateHeaderFooter();
+				return updateHeaderFooter(true);
 				// }
 			case 3: // { template
 				return updateTemplate();
@@ -309,15 +309,19 @@ function Forms_Pagetype_forms() {
 	}
 	function showHeaderFooter(panel) {
 		$('<h3>Header</h3>').appendTo(panel);
-		$('<textarea id="tc1"/>')
+		var header=$('<textarea id="tc1"/>')
 			.appendTo(panel)
 			.val(page_vars._body||'')
-			.ckeditor();
+			.ckeditor(function(){
+				this.on('change', updateHeaderFooter);
+			});
 		$('<h3>Footer</h3>').appendTo(panel);
-		$('<textarea id="tc2"/>')
+		var footer=$('<textarea id="tc2"/>')
 			.appendTo(panel)
 			.val(page_vars.footer||'')
-			.ckeditor();
+			.ckeditor(function(){
+				this.on('change', updateHeaderFooter);
+			});
 	}
 	function showTemplate(panel) {
 		var select='<select id="tc1">'
@@ -387,8 +391,10 @@ function Forms_Pagetype_forms() {
 	function updateHeaderFooter() {
 		page_vars._body=CKEDITOR.instances['tc1'].getData();
 		page_vars.footer=CKEDITOR.instances['tc2'].getData();
-		CKEDITOR.remove(CKEDITOR.instances['tc1']);
-		CKEDITOR.remove(CKEDITOR.instances['tc2']);
+		if (del===true) {
+			CKEDITOR.remove(CKEDITOR.instances['tc1']);
+			CKEDITOR.remove(CKEDITOR.instances['tc2']);
+		}
 	}
 	function updateTemplate() {
 		page_vars.forms_htmltype=$('#tc1').val();
