@@ -25,6 +25,12 @@ $(function(){
 			var allvalid=true;
 			$divs.find('input,select').each(function(){
 				if (!$this.validate().element(this)) {
+					return allvalid=false;
+				}
+				if ($(this).is('input[type=email]')
+					&& $(this).hasClass('verify')
+					&& !$(this).hasClass('verified')
+				) {
 					allvalid=false;
 				}
 			});
@@ -69,24 +75,27 @@ $(function(){
 		$this.find('input[type=email].verify').change(function(){
 			var $this=$(this);
 			var name=$this.attr('name'),email=$this.val();
-			if (forms_verifiedEmails[email]) {
-				return $('input[name='+name+'_verify]')
-					.addClass('verified')
-					.css('display','none');
-			}
-			else {
-				$('input[name='+name+'_verify]')
-					.removeClass('verified')
-					.css('display','block');
-			}
-			$.post('/a/p=forms/f=verificationSend', {
-				'name':name,
-				'email':email
+			$.post('/a/p=forms/f=emailVerify', {
+				"email":$this.val()
 			}, function(ret) {
-				if (ret.error) {
-					return alert(ret.error);
+				if (ret.ok) {
+					$this.addClass('verified');
+					$('input[name='+name+'_verify]')
+						.css('display','none');
 				}
-				alert('please check your email for a verification code, and fill it in');
+				else {
+					$this.removeClass('verified');
+					$('input[name='+name+'_verify]')
+						.css('display','block');
+					$.post('/a/p=forms/f=verificationSend', {
+						'email':email
+					}, function(ret) {
+						if (ret.error) {
+							return alert(ret.error);
+						}
+						alert('please check your email for a verification code, and fill it in');
+					});
+				}
 			});
 		});
 		$this.find('input[type=email].verify').each(function() {
@@ -125,13 +134,15 @@ $(function(){
 	}
 	$('.email-verification').change(function() {
 		var $this=$(this);
-		var $email=$this.siblings();
+		var $email=$this.siblings('input');
 		$.post('/a/p=forms/f=emailVerify', {
-			"name":$email.attr('name'),
 			"email":$email.val(),
 			"code":$this.val()
 		}, function(ret) {
-			console.log(ret);
+			if (ret.error) {
+				return alert(error);
+			}
+			$email.change();
 		});
 	});
 });
