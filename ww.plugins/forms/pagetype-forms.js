@@ -24,13 +24,14 @@ function Forms_Pagetype_forms() {
 			+'<tr><th>Record in DB</th><td id="tc6"><select id="tc5">'
 			+'<option value="0">No</option><option value="1">Yes</option>'
 			+'</select></td></tr>'
-			+'<tr><th>Use Captcha</th><td id="tc9"><select id="tc10">'
-			+'<option value="0">No</option><option value="1">Yes</option>'
-			+'</select></td></tr>'
+			+'<tr><td colspan="2"><hr/></td></tr>'
 			+'<tr><th>Show Help</th><td id="tc11"><select id="tc13">'
 			+'<option value="0">using tooltips</option>'
 			+'<option value="1">using a CSS selector</option>'
 			+'</select><span id="tc14"/></td></tr>'
+			+'<tr><th>Use Captcha</th><td id="tc9"><select id="tc10">'
+			+'<option value="0">No</option><option value="1">Yes</option>'
+			+'</select></td></tr>'
 			+'</table>')
 			.appendTo($('#t0').empty());
 		// }

@@ -32,6 +32,32 @@ function Core_adminDirectoriesGet() {
 	$arr=array_merge(array('/'=>'/'), get_subdirs(USERBASE.'f', ''));
 	return $arr;
 }
+function Core_adminPageChildnodes() {
+	$pid=(int)preg_replace('/[^0-9]/', '', $_REQUEST['id']);
+	$c=Core_cacheLoad('pages', 'adminmenu'.$pid);
+	if ($c) {
+		return $c;
+	}
+	$rs=dbAll(
+		'select id,id as pid,special&2 as disabled,type,alias,'
+		.'(select count(id) from pages where parent=pid) as children '
+		.'from pages where parent='.$pid.' order by ord,name'
+	);
+	$data=array();
+	foreach ($rs as $r) {
+		$data[]=array(
+			'data' => $r['alias'],
+			'attr' => array(
+				'id'       => 'page_'.$r['id'],
+				'disabled' => (int)$r['disabled'],
+				'type'     => $r['type']
+			),
+			'children'=>$r['children']?array():false
+		);
+	}
+	Core_cacheSave('pages', 'adminmenu'.$pid, $data);
+	return $data;
+}
 function Core_adminPageParentsList() {
 	$id=isset($_REQUEST['other_GET_params'])?(int)$_REQUEST['other_GET_params']:-1;
 	function selectkiddies($i=0, $n=1, $id=0) {
