@@ -44,7 +44,7 @@ echo '
         function error_handler( msg ){
                 $( "#errors" ).html( msg );
         }
-	$( document ).ready( function( ){
+	$( function( ){
 		// set the current page in install-menu
 	        var link= window.location.href.split( "?" );
 		link = link[ 0 ].split( "/" );
@@ -90,7 +90,8 @@ echo '
 		}
 		.error{
 			border:1px solid #600;
-			background:#D36042
+			color:#fff;
+			background:red;
 		}
 	</style>
 
