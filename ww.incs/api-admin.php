@@ -39,21 +39,26 @@ function Core_adminPageChildnodes() {
 		return $c;
 	}
 	$rs=dbAll(
-		'select id,id as pid,special&2 as disabled,type,alias,'
+		'select id,id as pid,special&2 as hide,type,alias,'
 		.'(select count(id) from pages where parent=pid) as children '
 		.'from pages where parent='.$pid.' order by ord,name'
 	);
 	$data=array();
 	foreach ($rs as $r) {
-		$data[]=array(
+		$item=array(
 			'data' => $r['alias'],
 			'attr' => array(
-				'id'       => 'page_'.$r['id'],
-				'disabled' => (int)$r['disabled'],
-				'type'     => $r['type']
+				'id'   => 'page_'.$r['id']
 			),
 			'children'=>$r['children']?array():false
 		);
+		if ($r['type']!=='0') {
+			$item['attr']['type']=$r['type'];
+		}
+		if ($r['hide']=='2') {
+			$item['attr']['hide']='yes';
+		}
+		$data[]=$item;
 	}
 	Core_cacheSave('pages', 'adminmenu'.$pid, $data);
 	return $data;
