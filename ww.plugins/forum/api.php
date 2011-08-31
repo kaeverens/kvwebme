@@ -105,6 +105,9 @@ function Forum_post() {
 			continue;
 		}
 		$user=User::getInstance($subscriber);
+		if (!$user) {
+			continue;
+		}
 		mail(
 			$user->get('email'),
 			'['.$_SERVER['HTTP_HOST'].'] '.$row['name'],
