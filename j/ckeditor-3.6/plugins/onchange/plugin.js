@@ -69,7 +69,7 @@ CKEDITOR.plugins.add( 'onchange',
 
 		editor.on( 'afterCommandExec', function( event )
 		{
-			if ( event.data.command.canUndo !== false )
+//			if ( event.data.command.canUndo !== false )
 				somethingChanged();
 		} );
 

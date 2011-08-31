@@ -22,3 +22,13 @@ CKEDITOR.editorConfig = function( config )
 		['Styles','Format','Font','FontSize']
 	];
 };
+
+$('textarea.cke_source').live('keyup', function() {
+	$(this)
+		.closest('.cke_wrapper')
+		.parent()
+		.parent()
+		.prev()
+		.ckeditorGet()
+		.fire('change');
+});
