@@ -137,3 +137,17 @@ if ($version==1) { // move from kfm to database orientated
 	}
 	$version=2;
 }
+if ($version==2) { // add support for image gallery widget
+	dbQuery(
+		'create table image_gallery_widget (
+			id int primary key auto_increment,
+			directory text,
+			gallery_type text,
+			thumbsize int,
+			image_size int,
+			rows int,
+			columns int
+		)default charset=utf8;'
+	);
+	$version=3;
+}

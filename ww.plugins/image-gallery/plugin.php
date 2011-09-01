@@ -14,14 +14,20 @@
 
 $plugin=array(
 	'name' => 'Image Gallery',
-	'version'=>2,
+	'version'=>3,
 	'admin' => array(
-		'page_type' => 'ImageGallery_adminPageForm'
+		'page_type' => 'ImageGallery_adminPageForm',
+		'widget' => array(
+			'form_url'   => '/ww.plugins/image-gallery/admin/widget-form.php',
+			'js_include' => '/ww.plugins/image-gallery/admin/widget.js'
+		)
 	),
 	'description' => 'Allows a directory of images to be shown as a gallery.',
 	'frontend' => array(
-		'page_type' => 'ImageGallery_frontend'
-	)
+		'page_type' => 'ImageGallery_frontend',
+		'widget' => 'ImageGallery_widget'
+	),
+
 );
 
 /**
@@ -47,4 +53,9 @@ function ImageGallery_adminPageForm($page, $vars) {
 function ImageGallery_frontend($PAGEDATA) {
 	require_once dirname(__FILE__).'/frontend/show.php';
 	return ImageGallery_show($PAGEDATA);
+}
+
+function ImageGallery_widget($vars=null) {
+	require_once SCRIPTBASE.'ww.plugins/image-gallery/frontend/show.php';
+	return GalleryWidget_show($vars);
 }
