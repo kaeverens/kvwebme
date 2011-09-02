@@ -76,7 +76,8 @@ $(function(){
 			var $this=$(this);
 			var name=$this.attr('name'),email=$this.val();
 			$.post('/a/p=forms/f=emailVerify', {
-				"email":$this.val()
+				"email": $this.val(),
+				"page" : pagedata.id
 			}, function(ret) {
 				if (ret.ok) {
 					$this.addClass('verified');
@@ -88,7 +89,8 @@ $(function(){
 					$('input[name='+name+'_verify]')
 						.css('display','block');
 					$.post('/a/p=forms/f=verificationSend', {
-						'email':email
+						"email": email,
+						"page" : pagedata.id
 					}, function(ret) {
 						if (ret.error) {
 							return alert(ret.error);
@@ -137,6 +139,7 @@ $(function(){
 		var $email=$this.siblings('input');
 		$.post('/a/p=forms/f=emailVerify', {
 			"email":$email.val(),
+			"page":pagedata.id,
 			"code":$this.val()
 		}, function(ret) {
 			if (ret.error) {

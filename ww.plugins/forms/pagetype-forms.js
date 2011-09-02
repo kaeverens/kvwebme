@@ -15,21 +15,141 @@ function Forms_Pagetype_forms() {
 				// }
 		}
 	}
+	function showAdvanced(panel) {
+		// { draw the table
+		$('<table class="wide">'
+			+'<tr><th>Show Help</th><td id="tc11"><select id="tc13">'
+			+'<option value="0">using tooltips</option>'
+			+'<option value="1">using a CSS selector</option>'
+			+'</select><span id="tc14"/></td></tr>'
+			+'<tr><th>Use Captcha</th><td id="tc9"><select id="tc10">'
+			+'<option value="0">No</option><option value="1">Yes</option>'
+			+'</select></td></tr>'
+			+'<tr><th>Create user from form data</th><td id="tc16">'
+			+'<select id="tc17"><option value="0">No</option>'
+			+'<option value="1">Yes</option></select></td></tr>'
+			+'<tr><th>Prevent registered users from submitting a form</th>'
+			+'<td>'
+			+'<select id="tc20"><option value="0">No</option>'
+			+'<option value="1">Yes</option><option value="2">Unless</option>'
+			+'<option value="3">If</option>'
+			+'</select><span id="tc25"/><span id="tc22"/></td></tr>'
+			+'</table>')
+			.appendTo($('#t4').empty());
+		// }
+		// { captcha
+		function tc10Change() {
+			var f=$('#tc10').val();
+			page_vars.forms_captcha_required=f;
+			if (f==='0') {
+				$('<span id="tc12">If you disable the captcha, you risk receiving '
+					+'spam</span>').appendTo('#tc9');
+			}
+			else {
+				$('#tc12').remove();
+			}
+		}
+		$('#tc10')
+			.val(page_vars.forms_captcha_required==='0'?0:1)
+			.change(tc10Change);
+		tc10Change();
+		// }
+		// { help
+		function tc13Change() {
+			function record() {
+				page_vars.forms_helpType=$('#tc13').val();
+				if (page_vars.forms_helpType=='1' && $('#tc15').length) {
+					page_vars.forms_helpSelector=$('#tc15').val();
+				}
+			}
+			var f=+$('#tc13').val();
+			record();
+			if (!f) {
+				$('#tc14').html('if help text is supplied, it will appear when the '
+					+'mouse is over the inputs');
+			}
+			else {
+				$('<input id="tc15"/>')
+					.val(page_vars.forms_helpSelector||'')
+					.appendTo($('#tc14').empty())
+					.change(record);
+			}
+		}
+		$('#tc13')
+			.val(+page_vars.forms_helpType?1:0)
+			.change(tc13Change);
+		tc13Change();
+		// }
+		// { create user
+		function tc17Change() {
+			var f=$('#tc17').val();
+			page_vars.forms_create_user=f;
+			if (f==='1') {
+				$('<span id="tc18">When a reader submits a form, a user account wil'
+					+'l be created with their email address. It will be initially mar'
+					+'ked as Disabled.</span>')
+					.appendTo('#tc16');
+			}
+			else {
+				$('#tc18').remove();
+			}
+		}
+		$('#tc17')
+			.val(page_vars.forms_create_user==='0'?0:1)
+			.change(tc17Change);
+		tc17Change();
+		// }
+		// { prevent user from submitting forms
+		function tc20Change() {
+			function record() {
+				var t=$('#tc20').val();
+				page_vars.forms_preventUserFromSubmitting=t;
+				t=+t;
+				if (t && $('#tc21').length) {
+					page_vars.forms_preventUserFromSubmittingMessage=$('#tc21').val();
+				}
+				if ((t==2 || t==3) && $('#tc23').length) {
+					page_vars.forms_preventUserFromSubmittingCondKey=$('#tc23').val();
+					page_vars.forms_preventUserFromSubmittingCondVal=$('#tc24').val();
+				}
+			}
+			var f=+$('#tc20').val();
+			record();
+			$('#tc22,#tc25').empty();
+			if (f) {
+				if (f==2 || f==3) {
+					$('#tc25').append(
+						$('<input id="tc23"/>')
+							.val(page_vars.forms_preventUserFromSubmittingCondKey||'user meta data key')
+							.change(record),
+						'<span>is</span>',
+						$('<input id="tc24"/>')
+							.val(page_vars.forms_preventUserFromSubmittingCondVal||'value')
+							.change(record)
+					);
+				}
+				else {
+					$('#tc25').empty();
+				}
+				$('<input id="tc21" class="wide"/>')
+					.val(page_vars.forms_preventUserFromSubmittingMessage||'Registered users cannot submit using this form')
+					.change(record)
+					.appendTo($('#tc22').html('<p>What message should be shown to users that try to send forms. Please make sure the Email field is set to be verified.</p>'));
+			}
+		}
+		$('#tc20')
+			.val(''+page_vars.forms_preventUserFromSubmitting)
+			.change(tc20Change);
+		tc20Change();
+		// }
+	}
 	function showMain(panel) {
 		// { draw the table
 		$('<table class="wide">'
 			+'<tr><th>Send as Email</th><td id="tc1"><select id="tc2">'
 			+'<option value="0">No</option><option value="1">Yes</option>'
 			+'</select></td></tr>'
-			+'<tr><th>Record in DB</th><td id="tc6"><select id="tc5">'
-			+'<option value="0">No</option><option value="1">Yes</option>'
-			+'</select></td></tr>'
-			+'<tr><td colspan="2"><hr/></td></tr>'
-			+'<tr><th>Show Help</th><td id="tc11"><select id="tc13">'
-			+'<option value="0">using tooltips</option>'
-			+'<option value="1">using a CSS selector</option>'
-			+'</select><span id="tc14"/></td></tr>'
-			+'<tr><th>Use Captcha</th><td id="tc9"><select id="tc10">'
+			+'<tr><th>Record in Database</th><td id="tc6"><select id="tc5">'
 			+'<option value="0">No</option><option value="1">Yes</option>'
 			+'</select></td></tr>'
 			+'</table>')
@@ -38,7 +158,7 @@ function Forms_Pagetype_forms() {
 		// { send as email
 		function tc2Change(e) {
 			if (e!=='noupdate') {
-				updateMain();
+				page_vars.forms_send_as_email=''+$('#tc2').val();
 			}
 			var f=+$('#tc2').val();
 			page_vars.forms_send_as_email=f;
@@ -89,43 +209,6 @@ function Forms_Pagetype_forms() {
 			.change(tc5Change);
 		tc5Change();
 		// }
-		// { captcha
-		function tc10Change() {
-			var f=$('#tc10').val();
-			page_vars.forms_captcha_required=f;
-			if (f==='0') {
-				$('<span id="tc12">If you disable the captcha, you risk receiving '
-					+'spam</span>').appendTo('#tc9');
-			}
-			else {
-				$('#tc12').remove();
-			}
-		}
-		$('#tc10')
-			.val(page_vars.forms_captcha_required==='0'?0:1)
-			.change(tc10Change);
-		tc10Change();
-		// }
-		// { help
-		function tc13Change() {
-			var f=+$('#tc13').val();
-			updateMain();
-			if (!f) {
-				$('#tc14').html('if help text is supplied, it will appear when the '
-					+'mouse is over the inputs');
-			}
-			else {
-				$('<input id="tc15"/>')
-					.val(page_vars.forms_helpSelector||'')
-					.appendTo($('#tc14').empty())
-					.change(updateMain);
-			}
-		}
-		$('#tc13')
-			.val(+page_vars.forms_helpType?1:0)
-			.change(tc13Change);
-		tc13Change();
-		// }
 	}
 	function showFormFields(panel, index) {
 		function showExtrasSelectbox(e) {
@@ -175,7 +258,6 @@ function Forms_Pagetype_forms() {
 						.change(function() {
 							var $t=$(this);
 							if ($t.is(':checked')) {
-								console.log($t, $t.closest('.ui-accordion-content'), $t.closest('.ui-accordion-content').prev(), $t.closest('.ui-accordion-content').prev().find('a'), $t.closest('.ui-accordion-content').prev().find('a').text());
 								page_vars.forms_replyto=$t
 									.closest('.ui-accordion-content').prev().find('a').text();
 							}
@@ -382,13 +464,6 @@ function Forms_Pagetype_forms() {
 		}
 		page_vars.forms_fields[index].help=$('.pfp-help textarea').val();
 	}
-	function updateMain() {
-		page_vars.forms_helpType=$('#tc13').val();
-		if (page_vars.forms_helpType=='1' && $('#tc15').length) {
-			page_vars.forms_helpSelector=$('#tc15').val();
-		}
-		page_vars.forms_send_as_email=''+$('#tc2').val();
-	}
 	function updateHeaderFooter() {
 		page_vars._body=CKEDITOR.instances['tc1'].getData();
 		page_vars.footer=CKEDITOR.instances['tc2'].getData();
@@ -416,7 +491,10 @@ function Forms_Pagetype_forms() {
 		+'<li><a href="#t1">Form Fields</a></li>'
 		+'<li><a href="#t2">Header/Footer</a></li>'
 		+'<li><a href="#t3">Template</a></li>'
-		+'</ul><div id="t0"/><div id="t1"/><div id="t2"/><div id="t3"/></div>'
+		+'<li><a href="#t4">Advanced</a></li>'
+		+'</ul>'
+		+'<div id="t0"/><div id="t1"/><div id="t2"/><div id="t3"/><div id="t4"/>'
+		+'</div>'
 	)
 		.appendTo($content)
 		.tabs({
@@ -436,6 +514,9 @@ function Forms_Pagetype_forms() {
 						// }
 					case 3: // { template
 						return showTemplate(ui.panel);
+						// }
+					case 4: // { advanced
+						return showAdvanced(ui.panel);
 						// }
 				}
 			}

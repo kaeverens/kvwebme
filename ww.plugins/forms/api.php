@@ -31,6 +31,12 @@ function Forms_fileDelete() {
 	$dir.=$id;
 	@unlink($dir);
 }
+
+/**
+	* send a random code to an email address to verify it
+	*
+	* @ return array saying it happened
+	*/
 function Forms_verificationSend() {
 	if (!isset($_REQUEST['email'])) {
 		return array('error'=>'no email parameter');
@@ -43,6 +49,40 @@ function Forms_verificationSend() {
 		$_SESSION['emails']=array();
 	}
 	if (!isset($_SESSION['emails'][$email])) {
+		$pid=(int)$_REQUEST['page'];
+		if ($pid) {
+			$page=Page::getInstance($pid);
+			if (!$page) {
+				return array('error'=>'page not found');
+			}
+			$page->initValues();
+			$prevent=(int)@$page->vars['forms_preventUserFromSubmitting'];
+			if ($prevent) {
+				$id=(int)dbOne(
+					'select id from user_accounts where email="'.addslashes($email).'"',
+					'id'
+				);
+				if ($id) {
+					if ($prevent==1) { // don't allow any users to submit
+						return array(
+							'error'=>$page->vars['forms_preventUserFromSubmittingMessage']
+						);
+					}
+					if ($prevent<4) { // parse conditions
+						$user=User::getInstance($id);
+						$cond_val=$page->vars['forms_preventUserFromSubmittingCondVal'];
+						$cond_key=$page->vars['forms_preventUserFromSubmittingCondKey'];
+						if (($prevent==3 && $user->get($cond_key) == $cond_val)
+							|| ($prevent==2 && $user->get($cond_key) != $cond_val)
+						) {
+							return array(
+								'error'=>$page->vars['forms_preventUserFromSubmittingMessage']
+							);
+						}
+					}
+				}
+			}
+		}
 		$_SESSION['emails'][$email]=rand(10000,99999);
 	}
 	mail(
@@ -53,6 +93,12 @@ function Forms_verificationSend() {
 	);
 	return array('ok'=>1);
 }
+
+/**
+	* check that an email address was verified, or provide a code to verify it
+	*
+	* @return array the status of the email
+	*/
 function Forms_emailVerify() {
 	if (!isset($_REQUEST['email'])) {
 		return array('error'=>'no email parameter');
