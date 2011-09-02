@@ -172,6 +172,10 @@ function Forms_Pagetype_forms() {
 				page_vars.forms_recipient=v;
 			}
 			if (f) {
+				if (!page_vars.forms_recipient) {
+					page_vars.forms_recipient='info@'+document.location.toString()
+						.replace(/https?:\/\/(www\.)?([^\/]*).*/, '$2');
+				}
 				$('<span id="tc4"> to <input type="email" id="tc3"/></span>')
 					.appendTo('#tc1');
 				$('#tc3')
@@ -464,7 +468,7 @@ function Forms_Pagetype_forms() {
 		}
 		page_vars.forms_fields[index].help=$('.pfp-help textarea').val();
 	}
-	function updateHeaderFooter() {
+	function updateHeaderFooter(del) {
 		page_vars._body=CKEDITOR.instances['tc1'].getData();
 		page_vars.footer=CKEDITOR.instances['tc2'].getData();
 		if (del===true) {
