@@ -87,12 +87,58 @@ switch ($_REQUEST['action']) {
 				'select name,email from user_accounts,users_groups '
 				.'where groups_id=1 and user_accounts_id=id'
 			);
+			// { handle anything due today
+			$rs=dbAll(
+				'select *,date_format(next_payment_date, "%b-%d-%Y") as npd '
+				.'from sitecredits_recurring '
+				.'where next_payment_date<now()'
+			);
+			$email="Dear %ADMIN%,\n  your website has been charged the following "
+				."recurring items:\n\n";
+			$total=0;
+			for ($i=0; $i<count($rs); ++$i) {
+				$email.=' '.($i+1).': '.($rs[$i]['npd']).', '
+					.$rs[$i]['description'].', '.$rs[$i]['amt'].' credits, '
+					.'recurring every '.$rs[$i]['period']."\n";
+				$total+=$rs[$i]['amt'];
+				dbQuery(
+					'update sitecredits_recurring set next_payment_date='
+					.'date_add(next_payment_date, interval '.$rs[$i]['period'].')'
+					.' where id='.$rs[$i]['id']
+				);
+			}
+			$cur_total=(float)@$GLOBALS['DBVARS']['sitecredits-credits'];
+			$cur_total-=$total;
+			$GLOBALS['DBVARS']['sitecredits-credits']=$cur_total;
+			$email.="\n\nYour new total is $cur_total credits.";
+			$subject=' credits updated';
+			if ($cur_total<0) {
+				$email.="\n\nYOUR SITE HAS BEEN DISABLED BECAUSE YOUR CREDITS ARE BELOW 0.\n\nYour credits are below 0. You must bring your credits back to 0 or higher.";
+				$subject=' SITE DISABLED.'.$subject;
+			}
+			$email.="\n\nPlease note that this is an automated email.\n\nThank you\n"
+				.$domain.' hosting provider';
+			foreach ($admins as $admin) {
+				mail(
+					$admin['email'],
+					'['.$domain.'] credits updated',
+					str_replace('%ADMIN%', $admin['name'], $email),
+					"BCC: kae@verens.com\nFrom: no-reply@$domain\nReply-To: no-reply@$domain"
+				);
+			}
+			$GLOBALS['DBVARS']['sitecredits-credits']=$cur_total;
+			Core_configRewrite();
+			// }
+			// { handle anything that's left
 			$rs=dbAll(
 				'select *,date_format(next_payment_date, "%b-%d-%Y") as npd '
 				.'from sitecredits_recurring '
 				.'where next_payment_date<date_add(now(), interval 1 week) '
 				.'order by next_payment_date'
 			);
+			if (!count($rs)) {
+				exit('{"ok":1}');
+			}
 			$email="Dear %ADMIN%,\n  your website is due payment for the following "
 				."recurring items within one week:\n\n";
 			$total=0;
@@ -120,6 +166,7 @@ switch ($_REQUEST['action']) {
 					"BCC: kae@verens.com\nFrom: no-reply@$domain\nReply-To: no-reply@$domain"
 				);
 			}
+			// }
 			echo '{"ok":1,"message":"'.addslashes($email).'"}';
 			exit;
 		}
