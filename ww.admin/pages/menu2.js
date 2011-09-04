@@ -33,6 +33,12 @@ $(function(){
 							return true;
 						}, 
 						'action':pages_copy
+					},
+					'view' : {
+						'label' : "View Page",
+						'action':function(node) {
+							document.location='/?pageid='+node[0].id.replace(/.*_/,'')
+						}
 					}
 				}
 			},
