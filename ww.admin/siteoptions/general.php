@@ -173,15 +173,18 @@ if (@$DBVARS['maintenance-mode']=='yes') {
 	echo ' selected="selected"';
 	$display='';
 }
+if (!isset($DBVARS['maintenance-mode-ips'])
+	|| $DBVARS['maintenance-mode-ips']==''
+) {
+	$DBVARS['maintenance-mode-ips']=$_SERVER['REMOTE_ADDR'];
+}
 echo '>Yes</option>
 </select></td></tr>
-<input type="hidden" name="maintenance-mode-ips" value="'.
-@$DBVARS['maintenance-mode-ips'].'"/>
 <tr class="maintenance-message" '.$display.'>
 	<th>IP Addresses</th>
-	<td><span id="ips">'.@$DBVARS['maintenance-mode-ips'].'</span>
-	<a href="javascript:;" id="add-ip">[+]</a></td>
-</tr>';
+	<td><textarea name="maintenance-mode-ips" style="width:200px;height:50px">'
+		.htmlspecialchars(@$DBVARS['maintenance-mode-ips'])
+		.'</textarea></td></tr>';
 $message=(@$DBVARS['maintenance-mode-message']=='')?
 	'<h1>Temporarily Unavailable</h1>
 	<p>This website is undergoing maintenance and is temporarily unavailable.</p>':
