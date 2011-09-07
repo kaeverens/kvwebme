@@ -389,6 +389,20 @@ if ($version==36) {
 	dbQuery('alter table pages change associated_date associated_date datetime');
 	$version=37;
 }
+if ($version==37) { // languages
+	dbQuery(
+		'create table languages(str text,lang char(5),context varchar(32),'
+		.'trstr text) default charset=utf8'
+	);
+	$version=38;
+}
+if ($version==38) { // languages_notfound
+	dbQuery(
+		'create table languages_notfound(str text,lang char(5),context varchar(32),'
+		.'requests int default 0) default charset=utf8'
+	);
+	$version=39;
+}
 
 $DBVARS['version']=$version;
 Core_cacheClear();

@@ -63,7 +63,7 @@ date_default_timezone_set('Eire');
 require_once dirname(__FILE__).'/../ww.incs/common.php';
 // { if not logged in, show login page
 if (!Core_isAdmin()) {
-	require_once SCRIPTBASE.'ww.incs/login-admin.html';
+	require_once SCRIPTBASE.'ww.incs/login-admin.php';
 	exit;
 }
 // }

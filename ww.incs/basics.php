@@ -21,6 +21,66 @@ if (!defined('START_TIME')) {
 spl_autoload_register('WebME_autoload');
 
 /**
+	* translate a string
+	*
+	* @param string $str     string to translate
+	* @param string $context the translation context
+	* @param array  $params  array of parameters to insert into the string
+	*
+	* @return string the translated string
+	*/
+function __($str, $context='core', $params=array()) {
+	global $_language_cache, $_languages, $_language_notfound;
+	if ($context=='') {
+		$context='core';
+	}
+
+	// webme is written in en-GB
+	if ($_languages[0]=='en' || $_languages[0]=='en-GB') {
+		return $str;
+	}
+
+	// return already-translated strings
+	if (isset($_language_cache[$context][$str])) {
+		return $_language_cache[$context][$str];
+	}
+
+	if (!isset($_language_cache[$context])) {
+		$_language_cache[$context]=array();
+	}
+
+	// load from cache or database
+	$rs=Core_cacheLoad('core-translation', md5($str.'|'.$context));
+	if (!$rs) {
+		$rs=dbAll(
+			'select trstr from languages where lang in ("'.join('","', $_languages)
+			.'") and context="'.$context.'" and str="'.addslashes($str).'"', 'lang'
+		);
+		if ($rs) {
+			Core_cacheSave('core-translation', md5($str.'|'.$context), $rs);
+		}
+	}
+
+	// find the best-fit translation
+	if ($rs && count($rs)) {
+		foreach ($_languages as $l) {
+			if ($l=='en' || $l=='en-GB') {
+				return $str;
+			}
+			if (isset($rs[$l])) {
+				$_language_cache[$context][$str]=$rs[$l];
+				return $rs[$l];
+			}
+		}
+	}
+
+	// otherwise, log the failure and return the string
+	$_language_notfound[]=array($str, $context, $_languages[0]);
+	$_language_cache[$context][$str]=$str;
+	return $str;
+}
+
+/**
   * clear a cache or all caches
   *
   * @param string $type the cache to clear
@@ -154,6 +214,38 @@ function Core_flushBuffer($type, $header='') {
 function Core_isAdmin() {
 	return isset($_SESSION['userdata'])
 		&& isset($_SESSION['userdata']['groups']['administrators']);
+}
+
+/**
+	* shutdown script
+	*
+	* @return null
+	*/
+function Core_shutdown() {
+	global $_language_notfound;
+	if (!count($_language_notfound)) {
+		return;
+	}
+	foreach ($_language_notfound as $l) {
+		$where=' where lang="'.addslashes($l[2]).'" and context="'
+			.addslashes($l[1]).'" and str="'.addslashes($l[0]).'"';
+		$requests=(int)dbOne(
+			'select requests from languages_notfound'.$where,
+			'requests'
+		);
+		if ($requests) {
+			dbQuery(
+				'update languages_notfound set requests='.($requests+1).$where
+			);
+		}
+		else {
+			dbQuery(
+				'insert into languages_notfound set requests=1,lang="'
+				.addslashes($l[2]).'",context="'.addslashes($l[1]).'",str="'
+				.addslashes($l[0]).'"'
+			);
+		}
+	}
 }
 
 /**
@@ -305,6 +397,15 @@ function WebME_autoload($name) {
 	require $name . '.php';
 }
 
+// { set up language
+$_languages=array();
+foreach (explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $l) {
+	$lang=preg_replace('/;.*/', '', $l);
+	$_languages[]=$lang;
+}
+$_language_cache=array();
+$_language_notfound=array(); // for recording missing language strings
+// }
 // { set up constants
 define('SCRIPTBASE', $_SERVER['DOCUMENT_ROOT'] . '/');
 if (!file_exists(SCRIPTBASE . '.private/config.php')) {
@@ -432,4 +533,5 @@ if (!isset($ignore_webme_plugins)) {
 	}
 }
 // }
+register_shutdown_function('Core_shutdown');
 Core_trigger('initialisation-completed');
