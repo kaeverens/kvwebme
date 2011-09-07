@@ -358,6 +358,7 @@ $(function(){
 			if (ret.errors.length) {
 				alert(ret.errors.join("\n\n"));
 			}
+			document.location="/ww.admin/pages/form.php?id="+$('input[name=id]').val();
 		});
 	});
 });
