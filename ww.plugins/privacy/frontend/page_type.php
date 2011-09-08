@@ -1,5 +1,22 @@
 <?php
-function userloginandregistrationDisplay() {
+/**
+	* page type for Privacy, for handling user logins and registrations
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+/**
+	* function for displaying the registration/reminder/login forms
+	*
+	* @return string HTML of the forms
+	*/
+function Privacy_controller() {
 	// { variables
 	$action=@$_REQUEST['action'];
 	$c='';
@@ -72,7 +89,7 @@ function userloginandregistrationDisplay() {
 					redirect($redirect_url);
 				}
 			}
-			return userregistration_showProfile();
+			return Privacy_profileGet();
 		}
 		else {
 			unset($_SESSION['userdata']);
@@ -117,7 +134,7 @@ function userloginandregistrationDisplay() {
 		$c.='<div class="tabs"><ul>';
 		// { menu
 		if ($PAGEDATA->vars['userlogin_visibility']&1) {
-			$c.='<li><a href="#userLoginBoxDisplay">Login</a></li>';
+			$c.='<li><a href="#Privacy_controllerLoginBox">Login</a></li>';
 			$c.='<li><a href="#userPasswordReminder">Password reminder</a></li>';
 		}
 		if ($PAGEDATA->vars['userlogin_visibility']&2) {
@@ -127,20 +144,26 @@ function userloginandregistrationDisplay() {
 		$c.='</ul>';
 		// { tabs
 		if ($PAGEDATA->vars['userlogin_visibility']&1) {
-			$c.= userLoginBoxDisplay();
-			$c.=userPasswordReminder();
+			$c.= Privacy_loginForm();
+			$c.=Privacy_passwordReminderForm()();
 		}
 		if ($PAGEDATA->vars['userlogin_visibility']&2) {
-			$c.=userregistration();
+			$c.=Privacy_registrationController();
 		}
 		// }
 		$c.='</div>';
 	}
 	return $c;
 }
-function userLoginBoxDisplay() {
+
+/**
+	* function for displaying a login form
+	*
+	* @return string HTML of the form
+	*/
+function Privacy_loginForm() {
 	global $PAGEDATA;
-	$c='<div id="userLoginBoxDisplay">';
+	$c='<div id="Privacy_controllerLoginBox">';
 	if (@$_REQUEST['action']=='Login') {
 		$c.='<em>incorrect email or password given.</em>';
 	}
@@ -163,7 +186,13 @@ function userLoginBoxDisplay() {
 	$c.='</div>';
 	return $c;
 }
-function userPasswordReminder() {
+
+/**
+	* form for a user to get a password reminder (a token)
+	*
+	* @return string HTML of the form
+	*/
+function Privacy_passwordReminderForm() {
 	global $PAGEDATA;
 	$c='<div id="userPasswordReminder">';
 	if (isset($PAGEDATA->vars['userlogin_message_reminder'])) {
@@ -178,13 +207,28 @@ function userPasswordReminder() {
 	$c.='</div>';
 	return $c;
 }
-function userregistration() {
+
+/**
+	* either display the user registration form, or handle the registration
+	*
+	* @return string one or d'other
+	*/
+function Privacy_registrationController() {
 	if (@$_REQUEST['a']=='Register') {
-		return userregistration_register();
+		return Privacy_registrationRegister();
 	}
-	return userregistration_form();
+	return Privacy_registrationShowForm();
 }
-function userregistration_form($error='', $alert='') {
+
+/**
+	* show a registration form for creating a user
+	*
+	* @param string $error any error messages that need to be displayed
+	* @param string $alert any messages that need to be displayed in popups
+	*
+	* @return string HTML of the form
+	*/
+function Privacy_registrationShowForm($error='', $alert='') {
 	global $PAGEDATA;
 
 	/**
@@ -378,7 +422,13 @@ function userregistration_form($error='', $alert='') {
 		.'background:#f99 }</style>'; 
 	return $c;
 }
-function userregistration_register() {
+
+/**
+	* check a registration submission, and register the user if valid
+	*
+	* @return string either the registration form again, or a success message
+	*/
+function Privacy_registrationRegister() {
 	global $DBVARS, $PAGEDATA;
 	// { variables
 	$name=@$_REQUEST['name'];
@@ -427,7 +477,7 @@ function userregistration_register() {
 		$missing[]='your email address';
 	};
 	if (count($missing)) {
-		return userregistration_form(
+		return Privacy_registrationShowForm(
 			'<em>You must fill in the following fields: '.join(', ', $missing).'</em>'
 		);
 	}
@@ -435,14 +485,14 @@ function userregistration_register() {
 	// { check if the email address is already registered
 	$r=dbRow('select id from user_accounts where email="'.$email.'"');
 	if ($r && count($r)) {
-		return userregistration_form(
+		return Privacy_registrationShowForm(
 			'<p><em>That email is already registered.</em></p>'
 		);
 	}
 	// }
 	// { check that passwords match
 	if (!$pass1 || $pass1!=$pass2) {
-		return userregistration_form(
+		return Privacy_registrationShowForm(
 			'<p><em>Please enter your preferred password twice</em></p>'
 		);
 	}
@@ -450,7 +500,7 @@ function userregistration_register() {
 	// { check captcha
 	require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/recaptcha.php';
 	if (!isset($_REQUEST['recaptcha_challenge_field'])) {
-		return userregistration_form(
+		return Privacy_registrationShowForm(
 			'<p><em>You must fill in the Captcha</em></p>'
 		);
 	}
@@ -463,11 +513,12 @@ function userregistration_register() {
 				$_REQUEST['recaptcha_response_field']
 			);
 		if (!$result->is_valid) {
-			return userregistration_form(
+			return Privacy_registrationShowForm(
 				'<p><em>Invalid captcha. Please try again.</em></p>'
 			);
 		}
 	}
+	// }
 	// { register the account
 	$password=$pass1;
 	$r=dbRow("SELECT * FROM site_vars WHERE name='user_discount'");
@@ -495,7 +546,10 @@ function userregistration_register() {
 	$short_url=md5($long_url);
 	$lesc=addslashes($long_url);
 	$sesc=urlencode($short_url);
-	dbQuery("insert into short_urls set cdate=now(),long_url='$lesc',short_url='$short_url'");
+	dbQuery(
+		'insert into short_urls set cdate=now(),long_url="'
+		.addslashes($long_url).'",short_url="'.$short_url.'"'
+	);
 	if (@$page->vars['userlogin_registration_type']=='Email-verified') {
 		mail(
 			$email,
@@ -527,7 +581,7 @@ function userregistration_register() {
 				);
 			}
 		}
-		return userregistration_form(
+		return Privacy_registrationShowForm(
 			false,
 			'<p><strong>Thank you for registering</strong>. Please check your e'
 			.'mail for a verification URL. Once that\'s been followed, your acc'
@@ -551,7 +605,7 @@ function userregistration_register() {
 				"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain"
 			);
 		}
-		return userregistration_form(
+		return Privacy_registrationShowForm(
 			false,
 			'<p><strong>Thank you for registering</strong>. Our admins will mod'
 			.'erate your registration, and you will receive an email when it is'
@@ -560,7 +614,13 @@ function userregistration_register() {
 	}
 	// }
 }
-function userregistration_showProfile() {
+
+/**
+	* display a user's profile
+	*
+	* @return string HTML of the profile
+	*/
+function Privacy_profileGet() {
 	$uid = addslashes($_SESSION['userdata'][ 'id' ]);
 	$user = dbRow('select * from user_accounts where id=' . $uid);
 
@@ -742,34 +802,13 @@ function userregistration_showProfile() {
 	$html .= Core_trigger('privacy_user_profile', array($user));
 	return $html;
 }
-function loginBox() {
-	$page=Page::getInstanceByType(3);
-	if (!$page) {
-		return '<em>missing User Registration page</em>';
-	}
-	if (isset($_SESSION['userdata'])) {
-		$c='<span class="login_info">Logged in as '
-			.htmlspecialchars($_SESSION['userdata']['name'])
-			.'. [<a href="?logout=1">logout</a>]</span>';
-	}
-	else{
-		global $PAGEDATA;
-		$c='<form class="login_box" action="'.$page->getRelativeUrl()
-			.'" method="post"><table><tr><td><input name="email" value="Email" on'
-			.'click="if(this.value==\'Email\')this.value=\'\'" /></td><td><input '
-			.'name="password" type="password" /></td><td><input type="submit" nam'
-			.'e="action" value="Login" /> or <a href="'.$page->getRelativeUrl()
-			.'">register</a></td></tr></table><input type="hidden" name="login_re'
-			.'ferer" value="'.$PAGEDATA->getRelativeUrl().'" /></form>';
-	}
-	return $c;
-}
 
 // if not logged in display login box
-if (!isset($_SESSION[ 'userdata' ][ 'id' ])) {
-	$html=userloginandregistrationDisplay();
+if (!isset($_SESSION['userdata']['id'])) {
+	$html=Privacy_controller();
 	WW_addInlineScript('$(function(){$(".tabs").tabs()});');
 }
+// else show profile
 else {
-	$html = userregistration_showProfile();	
+	$html=Privacy_profileGet();	
 }

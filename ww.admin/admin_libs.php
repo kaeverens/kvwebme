@@ -34,10 +34,10 @@ function admin_menu($list, $this='') {
 	$arr=array();
 	foreach ($list as $key=>$val) {
 		if ($val==$this) {
-			$arr[]='<a href="'.$val.'" class="thispage">'.$key.'</a>';
+			$arr[]='<a href="'.$val.'" class="thispage">'.__($key, 'menu').'</a>';
 		}
 		else {
-			$arr[]='<a href="'.$val.'">'.$key.'</a>';
+			$arr[]='<a href="'.$val.'">'.__($key, 'menu').'</a>';
 		}
 	}
 	return '<div class="left-menu">'.join('', $arr).'</div>';
@@ -147,43 +147,6 @@ function Core_unfixImageResizes($src) {
 		);
 	}
 	return $src;
-}
-
-/**
-  * generate HTML of an input element
-  *
-  * @param string $name  the element's name
-  * @param string $type  the type of input element
-  * @param string $value the current value of the element
-  * @param string $class any classes to add
-  *
-  * @return null
-  */
-function wInput($name, $type='text', $value='', $class='') {
-	switch($type){
-		case 'checkbox': // {
-			$tmp=($value)?' checked="checked"':'';
-			return '<input name="'.$name.'" type="checkbox"'.$tmp.' />';
-			// }
-		case 'select': // {
-			$ret='';
-			foreach ($value as $key=>$val) {
-				$selected=($key==$class)?' selected="selected"':'';
-				$ret.='<option value="'.$key.'"'.$selected.'>'
-					.htmlspecialchars($val).'</option>';
-			}
-			return '<select name="'.$name.'">'.$ret.'</select>';
-			// }
-		case 'textarea': // {
-			$tmp=($class!='')?' class="'.$class.'"':'';
-			return '<textarea name="'.$name.'"'.$tmp.'>'.$value.'</textarea>';
-			// }
-		default: // {
-			$tmp=($value!='')?' value="'.$value.'"':'';
-			return '<input name="'.$name.'" id="'.$name.'" type="'.$type.'"'.$tmp
-				.' class="'.$class.'" />';
-			// }
-	}
 }
 
 /**

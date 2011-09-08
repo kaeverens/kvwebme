@@ -10,7 +10,6 @@
 	* @license  GPL 2.0
 	* @link     http://kvsites.ie/
 	*/
-echo '</div></div>'.WW_getScripts().WW_getCSS()
-	.Core_trigger('admin-scripts')
-	.'<!-- page generated in '.(microtime()-$webme_start_time).' seconds -->'
+
+echo '</div></div>'.WW_getScripts().WW_getCSS().Core_trigger('admin-scripts')
 	.'</body></html>';

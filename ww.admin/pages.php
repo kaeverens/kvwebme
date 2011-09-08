@@ -19,7 +19,7 @@ if (isset($_REQUEST['id'])) {
 else {
 	$id=0;
 }
-echo '<h1>Pages</h1>';
+echo '<h1>'.__('Pages').'</h1>';
 echo '<div class="left-menu">';
 require_once 'pages/menu.php';
 echo '</div>';

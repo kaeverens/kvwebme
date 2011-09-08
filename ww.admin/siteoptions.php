@@ -12,7 +12,7 @@
 	*/
 
 require_once 'header.php';
-echo '<h1>Site Options</h1>';
+echo '<h1>'.__('Site Options').'</h1>';
 
 /**
 	* verify that the requested page is an allowed one

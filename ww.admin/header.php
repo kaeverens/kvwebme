@@ -22,10 +22,11 @@
 function Core_adminMenuShow($items, $name=false, $prefix='', $depth=0) {
 	$target=(isset($items['_target']))?' target="'.$items['_target'].'"':'';
 	if (isset($items['_link'])) {
-		echo '<a href="'.$items['_link'].'"'.$target.'>'.$name.'</a>';
+		echo '<a href="'.$items['_link'].'"'.$target.'>'.__($name, 'menu').'</a>';
 	}
 	elseif ($name!='top') {
-		echo '<a href="#'.$prefix.'-'.urlencode($name).'">'.$name.'</a>';
+		echo '<a href="#'.$prefix.'-'.urlencode($name).'">'.__($name, 'menu')
+			.'</a>';
 	}
 	if (count($items)==1 && isset($items['_link'])) {
 		return;
@@ -57,7 +58,6 @@ function Core_adminMenuShow($items, $name=false, $prefix='', $depth=0) {
 	}
 }
 
-$webme_start_time=microtime();
 header('Content-type: text/html; Charset=utf-8');
 date_default_timezone_set('Eire');
 require_once dirname(__FILE__).'/../ww.incs/common.php';
@@ -89,9 +89,9 @@ WW_addScript('/j/jquery.uploadify/jquery.uploadify.js');
 WW_addScript('/j/jquery-ui-timepicker-addon.js');
 WW_addScript('/ww.admin/j/admin.js');
 echo '<!doctype html>
-<html><head><title>WebME admin area</title>';
-echo Core_getJQueryScripts();
-echo '<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'
+<html><head><title>'.__('WebME admin area').'</title>';
+echo Core_getJQueryScripts()
+	.'<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'
 	.'<link rel="stylesheet" href="/j/cluetip/jquery.cluetip.css"/>'
 	.'<link rel="stylesheet" href="/ww.admin/theme/admin.css"/>'
 	.'<script>var sessid="'.session_id().'";</script>';
@@ -146,12 +146,13 @@ Core_adminMenuShow($menus, 'top', 'menu');
 echo '</div>';
 // { if maintenance mode is enabled show warning
 if (@$DBVARS['maintenance-mode']=='yes') {
-	echo '<div id="maintenance"><em>Maintenance Mode is currently enabled w'
-		.'hich means that only administrators can view the frontend of this w'
-		.'ebsite. Click <a href="siteoptions.php">here</a> to disable it.</em'
-		.'></div>';
-	echo '<style type="text/css">.has-left-menu{ top:130px!important; }</st'
-		.'yle>';
+	echo '<div id="maintenance"><em>'.__(
+		'Maintenance Mode is currently enabled which means that only administra'
+		.'tors can view the frontend of this website. Click <a href="siteoption'
+		.'s.php">here</a> to disable it.'
+	)
+	.'</em></div><style type="text/css">.has-left-menu{ top:130px!important;}'
+	.'</style>';
 }
 // }
 echo '<div id="wrapper"><div id="main">';

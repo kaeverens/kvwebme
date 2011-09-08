@@ -15,7 +15,7 @@ require_once 'header.php';
 $pname=isset($_REQUEST['_plugin'])?$_REQUEST['_plugin']:'';
 $pagename=isset($_REQUEST['_page'])?$_REQUEST['_page']:'';
 if (preg_match('/[^\-a-zA-Z0-9]/', $pagename) || $pagename=='') {
-	die('illegal character in page name');
+	die(__('illegal character in page name'));
 }
 if (!isset($PLUGINS[$pname])) {
 	die('no plugin of that name ('.htmlspecialchars($pname).') exists');
@@ -35,13 +35,13 @@ if (count($help)) {
 	echo '<div id="nav-help" style="width:150px;">';
 	foreach ($help as $h) {
 		echo '<a href="javascript:show_help(\''.$pname.'\',\''.$h[0].'\')">'
-			.$h[1].'</a>';
+			.__($h[1], 'plugins').'</a>';
 	}
 	echo '</div>';
 }
 // }
 // { display the plugin
-echo '<h1>'.htmlspecialchars($pname).'</h1>';
+echo '<h1>'.htmlspecialchars(__($pname, 'plugins')).'</h1>';
 if (!file_exists(SCRIPTBASE.'/ww.plugins/'.$pname.'/admin/'.$pagename.'.php')) {
 	echo '<em>The <strong>'.htmlspecialchars($pname)
 		.'</strong> plugin does not have an admin page named <strong>'

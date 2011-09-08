@@ -13,7 +13,7 @@
 
 require_once 'header.php';
 require_once 'stats/lib.php';
-echo '<h1>Website Statistics</h1>';
+echo '<h1>'.__('Website Statistics').'</h1>';
 
 echo admin_menu(
 	array(

@@ -35,18 +35,21 @@ $html.='<div id="privacy-options"><table style="width:100%">';
 if (!isset($page_vars['userlogin_visibility'])) {
 	$page_vars['userlogin_visibility']=3;
 }
-$html.='<tr><th>Visibility</th><td>';
-$html.= wInput(
-	'page_vars[userlogin_visibility]',
-	'select',
-	array(
-		'3'=>'Login and Register forms',
-		'1'=>'Login form',
-		'2'=>'Register form'
-	),
-	$page_vars['userlogin_visibility']
+$html.='<tr><th>Visibility</th><td>'
+	.'<select name="page_vars[userlogin_visibility]">';
+$arr=array(
+	'3'=>'Login and Register forms',
+	'1'=>'Login form',
+	'2'=>'Register form'
 );
-$html.='</td>';
+foreach ($arr as $k=>$v) {
+	$html.='<option value="'.$k.'"';
+	if ($k==$page_vars['userlogin_visibility']) {
+		$html.=' selected="selected"';
+	}
+	$html.='>'.htmlspecialchars($v).'</option>';
+}
+$html.='</select></td>';
 $html.='<th rowspan="3">Add New Users To</th><td rowspan="3">';
 $groups=array();
 $grs=dbAll('select id,name from groups');
@@ -209,26 +212,23 @@ foreach ($rs as $r) {
 	if (!isset($r->extra)) {
 		$r->extra='';
 	}
-	$html.= '<li><table width="100%"><tr><td width="30%">'
-		.wInput(
-			'page_vars[privacy_extra_fields]['.$i.'][name]',
-			'',
-			htmlspecialchars($r->name)
-		)
-	.'</td><td width="30%">'
-	.wInput(
-		'page_vars[privacy_extra_fields]['.$i.'][type]',
-		'select',
-		$arr,
-		$r->type
-	)
-	.'</td><td width="10%">'
-	.wInput(
-		'page_vars[privacy_extra_fields]['.($i).'][is_required]',
-		'checkbox',
-		$r->is_required
-	)
-	.'</td><td>';
+	$html.= '<li><table width="100%"><tr><td width="30%"><input name="'
+		.'page_vars[privacy_extra_fields]['.$i.'][name]" value="'
+		.htmlspecialchars($r->name).'"/></td><td width="30%"><select name="'
+		.'page_vars[privacy_extra_fields]['.$i.'][type]">';
+	foreach ($arr as $k=>$v) {
+		$html.='<option value="'.htmlspecialchars($k).'"';
+		if ($k==$r->type) {
+			$html.=' selected="selected"';
+		}
+		$html.='>'.htmlspecialchars($v).'</option>';
+	}
+	$html.='</select></td><td width="10%"><input type="checkbox" name="'
+		.'page_vars[privacy_extra_fields]['.$i.'][is_required]"';
+	if ($r->is_required) {
+		$html.=' checked="checked"';
+	}
+	$html.='</td><td>';
 	switch($r->type){
 		case 'selectbox':case 'hidden':{
 			$html.='<textarea name="page_vars[privacy_extra_fields]['
