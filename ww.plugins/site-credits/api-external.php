@@ -1,5 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
+require_once dirname(__FILE__).'/libs.php';
 
 if (!isset($PLUGINS['site-credits'])) {
 	echo '{"error":"the site-credits plugin is not installed"}';
@@ -41,6 +42,7 @@ switch ($_REQUEST['action']) {
 			}
 			$GLOBALS['DBVARS']['sitecredits-credits']=$credits+$add;
 			Core_configRewrite();
+			SiteCredits_recordTransaction('credits added by hosting provider', $add);
 			echo '{"credits":'.(float)$GLOBALS['DBVARS']['sitecredits-credits'].'}';
 			exit;
 		}
@@ -93,41 +95,44 @@ switch ($_REQUEST['action']) {
 				.'from sitecredits_recurring '
 				.'where next_payment_date<now()'
 			);
-			$email="Dear %ADMIN%,\n  your website has been charged the following "
-				."recurring items:\n\n";
-			$total=0;
-			for ($i=0; $i<count($rs); ++$i) {
-				$email.=' '.($i+1).': '.($rs[$i]['npd']).', '
-					.$rs[$i]['description'].', '.$rs[$i]['amt'].' credits, '
-					.'recurring every '.$rs[$i]['period']."\n";
-				$total+=$rs[$i]['amt'];
-				dbQuery(
-					'update sitecredits_recurring set next_payment_date='
-					.'date_add(next_payment_date, interval '.$rs[$i]['period'].')'
-					.' where id='.$rs[$i]['id']
-				);
+			if ($rs && count($rs)) {
+				$email="Dear %ADMIN%,\n  your website has been charged the following "
+					."recurring items:\n\n";
+				$total=0;
+				for ($i=0; $i<count($rs); ++$i) {
+					$email.=' '.($i+1).': '.($rs[$i]['npd']).', '
+						.$rs[$i]['description'].', '.$rs[$i]['amt'].' credits, '
+						.'recurring every '.$rs[$i]['period']."\n";
+					$total+=$rs[$i]['amt'];
+					dbQuery(
+						'update sitecredits_recurring set next_payment_date='
+						.'date_add(next_payment_date, interval '.$rs[$i]['period'].')'
+						.' where id='.$rs[$i]['id']
+					);
+				}
+				$cur_total=(float)@$GLOBALS['DBVARS']['sitecredits-credits'];
+				$cur_total-=$total;
+				$GLOBALS['DBVARS']['sitecredits-credits']=$cur_total;
+				SiteCredits_recordTransaction('recurring costs (hosting, etc)', -$total);
+				$email.="\n\nYour new total is $cur_total credits.";
+				$subject=' credits updated';
+				if ($cur_total<0) {
+					$email.="\n\nYOUR SITE HAS BEEN DISABLED BECAUSE YOUR CREDITS ARE BELOW 0.\n\nYour credits are below 0. You must bring your credits back to 0 or higher.";
+					$subject=' SITE DISABLED.'.$subject;
+				}
+				$email.="\n\nPlease note that this is an automated email.\n\nThank you\n"
+					.$domain.$subject;
+				foreach ($admins as $admin) {
+					mail(
+						$admin['email'],
+						'['.$domain.'] credits updated',
+						str_replace('%ADMIN%', $admin['name'], $email),
+						"Bcc: kae@verens.com\r\nFrom: no-reply@$domain\r\nReply-To: no-reply@$domain"
+					);
+				}
+				$GLOBALS['DBVARS']['sitecredits-credits']=$cur_total;
+				Core_configRewrite();
 			}
-			$cur_total=(float)@$GLOBALS['DBVARS']['sitecredits-credits'];
-			$cur_total-=$total;
-			$GLOBALS['DBVARS']['sitecredits-credits']=$cur_total;
-			$email.="\n\nYour new total is $cur_total credits.";
-			$subject=' credits updated';
-			if ($cur_total<0) {
-				$email.="\n\nYOUR SITE HAS BEEN DISABLED BECAUSE YOUR CREDITS ARE BELOW 0.\n\nYour credits are below 0. You must bring your credits back to 0 or higher.";
-				$subject=' SITE DISABLED.'.$subject;
-			}
-			$email.="\n\nPlease note that this is an automated email.\n\nThank you\n"
-				.$domain.' hosting provider';
-			foreach ($admins as $admin) {
-				mail(
-					$admin['email'],
-					'['.$domain.'] credits updated',
-					str_replace('%ADMIN%', $admin['name'], $email),
-					"BCC: kae@verens.com\nFrom: no-reply@$domain\nReply-To: no-reply@$domain"
-				);
-			}
-			$GLOBALS['DBVARS']['sitecredits-credits']=$cur_total;
-			Core_configRewrite();
 			// }
 			// { handle anything that's left
 			$rs=dbAll(
@@ -211,17 +216,3 @@ switch ($_REQUEST['action']) {
 }
 
 echo '{"error":"checksum failed"}';
-/*
-mysql> describe sitecredits_recurring;
-+-------------------+---------+------+-----+---------+----------------+
-| Field             | Type    | Null | Key | Default | Extra          |
-+-------------------+---------+------+-----+---------+----------------+
-| id                | int(11) | NO   | PRI | NULL    | auto_increment |
-| description       | text    | YES  |     | NULL    |                |
-| amt               | float   | YES  |     | 0       |                |
-| start_date        | date    | YES  |     | NULL    |                |
-| period            | text    | YES  |     | NULL    |                |
-| next_payment_date | date    | YES  |     | NULL    |                |
-+-------------------+---------+------+-----+---------+----------------+
-
-*/

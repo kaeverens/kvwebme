@@ -399,9 +399,14 @@ function WebME_autoload($name) {
 
 // { set up language
 $_languages=array();
-foreach (explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $l) {
-	$lang=preg_replace('/;.*/', '', $l);
-	$_languages[]=$lang;
+if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+	$_languages[]='en';
+}
+else {
+	foreach (explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $l) {
+		$lang=preg_replace('/;.*/', '', $l);
+		$_languages[]=$lang;
+	}
 }
 $_language_cache=array();
 $_language_notfound=array(); // for recording missing language strings

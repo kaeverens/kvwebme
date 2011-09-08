@@ -18,7 +18,7 @@ $plugin=array(
 	'description' => 'admins can pay for credits, which are used to manage site subscriptions',
 	'admin' => array(
 		'menu' => array(
-			'Credits>Buy Credits' => 'buy'
+			'Credits' => 'overview'
 		)
 	),
 	'frontend' => array(
