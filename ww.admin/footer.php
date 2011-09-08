@@ -12,4 +12,4 @@
 	*/
 
 echo '</div></div>'.WW_getScripts().WW_getCSS().Core_trigger('admin-scripts')
-	.'</body></html>';
+	.'<!-- end of WebME admin --></body></html>';

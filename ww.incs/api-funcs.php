@@ -100,6 +100,13 @@ function Core_getUserData() {
 }
 function Core_login() {
 	// { variables
+	if (!isset($_REQUEST['email']) || !isset($_REQUEST['password'])) {
+		exit(
+			'{"error":"'.addslashes(__(
+					'missing email address or password'
+				)).'"}'
+		);
+	}
 	$email=$_REQUEST['email'];
 	$password=$_REQUEST['password'];
 	// }
