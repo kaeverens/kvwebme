@@ -262,7 +262,7 @@ function Forms_Pagetype_forms() {
 							+'allowed to submit the form<br /><input type="checkbox" '
 							+'id="fftt"/> use this as the reply-to on the form'
 						);
-					$('#ffts').attr('checked', field.extra=='1');
+					$('#ffts').attr('checked', field.extra=='1' || field.extra=='on');
 					$('#fftt')
 						.attr(
 							'checked',
