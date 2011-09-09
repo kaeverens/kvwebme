@@ -7,7 +7,8 @@ function htmlspecialchars(str) {
 function Forms_Pagetype_forms() {
 	function updateValues() {
 		switch(activeTab) {
-			case 0: // { main - not needed
+			case 0: // { main
+				page_vars.forms_successmsg=CKEDITOR.instances['tc20'].getData();
 				return;
 				// }
 			case 1: // { form fields
@@ -158,6 +159,8 @@ function Forms_Pagetype_forms() {
 			+'<tr><th>Record in Database</th><td id="tc6"><select id="tc5">'
 			+'<option value="0">No</option><option value="1">Yes</option>'
 			+'</select></td></tr>'
+			+'<tr><th>Thank you message<br />(shown after submission)</th><td>'
+			+'<textarea id="tc20"></textarea></td></tr>'
 			+'</table>')
 			.appendTo($('#t0').empty());
 		// }
@@ -218,6 +221,16 @@ function Forms_Pagetype_forms() {
 			.val(+page_vars.forms_record_in_db)
 			.change(tc5Change);
 		tc5Change();
+		// }
+		// { thank you message
+		if (CKEDITOR.instances['tc20']) {
+			CKEDITOR.remove(CKEDITOR.instances['tc20']);
+		}
+		$('#tc20')
+			.val(page_vars.forms_successmsg
+				||'<p>Thank you! We will be in contact soon</p>'
+			)
+			.ckeditor();
 		// }
 	}
 	function showFormFields(panel, index) {
