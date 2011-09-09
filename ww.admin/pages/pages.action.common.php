@@ -28,7 +28,7 @@ if (isset($_REQUEST['name'])) {
 	$_REQUEST['name']=trim($_REQUEST['name']);
 }
 if ($_REQUEST['name']=='') {
-	$_REQUEST['name']='no name provided';
+	$_REQUEST['name']=__('no name provided');
 }
 $homes=dbOne(
 	"SELECT COUNT(id) AS ids FROM pages WHERE (special&1)"
@@ -43,7 +43,9 @@ if ($special&1) { // there can be only one homepage
 else {
 	if ($homes==0) {
 		$special+=1;
-		$msgs.='<em>This page has been marked as the site\'s Home Page, because'
-			.' there must always be one.</em>';
+		$msgs.='<em>'.__(
+			'This page has been marked as the site\'s Home Page, because there mu'
+			.'st always be one.'
+		).'</em>';
 	}
 }

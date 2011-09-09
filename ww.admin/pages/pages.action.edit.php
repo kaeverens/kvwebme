@@ -149,7 +149,7 @@ if ($_POST['type']==4) {
 	require_once SCRIPTBASE.'/ww.incs/page.summaries.php';
 	PageSummaries_getHtml($_POST['id']);
 }
-$msgs.='<em>The page has been updated.</em>';
+$msgs.='<em>'.__('The page has been updated.').'</em>';
 dbQuery('update page_summaries set rss=""');
 Core_cacheClear('menus');
 Core_cacheClear('pages');

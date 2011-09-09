@@ -74,7 +74,7 @@ $q='insert into pages set ord="'.$ord.'",importance="'.$importance.'",'
 	.'alias="'.$alias.'",parent='.$pid.',special='.$special;
 dbQuery($q);
 $id=dbOne('select last_insert_id() as id', 'id');
-$msgs.='<em>New page created.</em>';
+$msgs.='<em>'.__('New page created.').'</em>';
 dbQuery('update page_summaries set rss=""');
 Core_cacheClear('menus');
 Core_cacheClear('pages');

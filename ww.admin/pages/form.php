@@ -20,8 +20,10 @@ if (!Core_isAdmin()) {
 if ((!isset($_REQUEST['id']) || $_REQUEST['id']==0)
 	&& (!isset($_REQUEST['action']) || $_REQUEST['action']!='Insert Page Details')
 ) {
-	echo '<p>Please use the navigation menu on the left to choose a page or '
-		.'to create a new one.</p>';
+	echo '<p>'.__(
+		'Please use the navigation menu on the left to choose a page or to crea'
+		.'te a new one.'
+	).'</p>';
 	exit;
 }
 
@@ -60,7 +62,7 @@ if ($action=='Insert Page Details' || $action=='Update Page Details') {
 		break;
 	}
 }
-$is_an_update=($action=='Insert Page Details' || $action=='Update Page Details');
+$is_an_update=$action=='Insert Page Details'||$action=='Update Page Details';
 $edit=($is_an_update || $action=='edit' || $id)?1:0;
 // }
 // { display header and link in scripts
@@ -138,18 +140,20 @@ echo '<form enctype="multipart/form-data" id="pages_form" class="pageForm"'
 	.' maxLength="'.$maxLength.'">'
 	.'<input type="hidden" name="MAX_FILE_SIZE" value="9999999" />';
 if ($page['special']&2 && !isset($_REQUEST['newpage_dialog'])) {
-	echo '<em>NOTE: this page is currently hidden from the front-end navigati'
-		.'on. Use the "Advanced Options" to un-hide it.</em>';
+	echo '<em>'.__(
+		'NOTE: this page is currently hidden from the front-end navigation. Use'
+		.' the "Advanced Options" to un-hide it.'
+	).'</em>';
 }
 echo '<input type="hidden" name="id" value="'.$page['id'].'"/>';
 echo '<div id="pages-tabs" class="tabs">'
 	.'<ul>'
-	.'<li><a href="#pages-common">Common Details</a></li>'
-	.'<li><a href="#pages-advanced">Advanced Options</a></li>';
+	.'<li><a href="#pages-common">'.__('Common Details').'</a></li>'
+	.'<li><a href="#pages-advanced">'.__('Advanced Options').'</a></li>';
 foreach ($PLUGINS as $n=>$p) {
 	if (isset($p['admin']['page_panel'])) {
 		$name = $p['admin']['page_panel']['name'];
-		echo '<li><a href="#'.$name.'">'.$name.'</a></li>';
+		echo '<li><a href="#'.$name.'">'.htmlspecialchars(__($name)).'</a></li>';
 	}
 }
 echo '</ul>';
@@ -159,19 +163,21 @@ echo '<div id="pages-common">';
 echo '<table>';
 echo '<tr>';
 // { name
-echo '<th width="6%"><div class="help name"></div>name</th><td width="23%">'
+echo '<th width="6%"><div class="help name"></div>'.__('name')
+	.'</th><td width="23%">'
 	.'<input id="name" name="name" value="'.htmlspecialchars($page['alias'])
 	.'" /></td>';
 // }
 // { title
-echo '<th width="10%"><div class="help title"></div>title</th><td width="23%">'
+echo '<th width="10%"><div class="help title"></div>'.__('title')
+	.'</th><td width="23%">'
 	.'<input name="title" value="'.htmlspecialchars($page['title']).'"/></td>';
 // }
 // { url 
 echo '<th colspan="2">';
 if ($edit) {
 	echo '<a style="font-weight:bold;color:red" href="'
-		.$PAGEDATA->getRelativeUrl().'" target="_blank">VIEW PAGE</a>';
+		.$PAGEDATA->getRelativeUrl().'" target="_blank">'.__('VIEW PAGE').'</a>';
 }
 else {
 	echo '&nbsp;';
@@ -188,7 +194,7 @@ if (preg_match('/^[0-9]*$/', $page['type'])) {
 	foreach ($pagetypes as $a) {
 		if ($a[0]==$page['type']) {
 			echo '<option value="'.$a[0].'" selected="selected">'
-				.htmlspecialchars($a[1]).'</option>';
+				.htmlspecialchars(__($a[1])).'</option>';
 			$found=1;
 		}
 	}
@@ -201,15 +207,16 @@ if (!preg_match('/^[0-9]*$/', $page['type'])) {
 				foreach ($p['admin']['page_type'] as $name => $function) {
 					if ($name==$page['type'] || $n.'|'.$name==$page['type']) {
 						echo '<option value="'.htmlspecialchars($page['type'])
-							.'" selected="selected">'.htmlspecialchars($name).'</option>';
+							.'" selected="selected">'.htmlspecialchars(__($name)).'</option>';
 						$plugin = $p;
 						$found=1;
 					}
 				}
 			}
 			else if ($page['type']==$n || $n.'|'.$n==$page['type']) {
-				echo '<option value="'.htmlspecialchars($page['type']).'" selected="selected">'
-					.htmlspecialchars($n).'</option>';
+				echo '<option value="'.htmlspecialchars($page['type'])
+					.'" selected="selected">'
+					.htmlspecialchars(__($n)).'</option>';
 				$plugin = $p;
 				$found=1;
 			}
@@ -222,7 +229,8 @@ if (!$found) {
 echo '</select></td>';
 // }
 // { parent
-echo '<th><div class="help parent"></div>parent</th><td><select name="parent">';
+echo '<th><div class="help parent"></div>'.__('parent')
+	.'</th><td><select name="parent">';
 if ($page['parent']) {
 	$parent=Page::getInstance($page['parent']);
 	echo '<option value="',$parent->id,'">'
@@ -243,9 +251,9 @@ if (!isset($page['associated_date'])
 else {
 	$page['associated_date']=preg_replace('/:..$/', '', $page['associated_date']);
 }
-echo '<th><div class="help associated-date"></div>Associated Date</th><td><'
-	.'input name="associated_date" value="'.$page['associated_date'].'" '
-	.'title="year-month-day hour:minute"/></td>';
+echo '<th><div class="help associated-date"></div>'.__('Associated Date')
+	.'</th><td><input name="associated_date" value="'.$page['associated_date']
+	.'" title="'.__('year-month-day hour:minute').'"/></td>';
 echo '</tr>';
 // }
 // }
@@ -261,14 +269,16 @@ switch ($form_type) {
 			.'</td></tr>';
 	break; // }
 	case '1': // { redirect
-		echo '<tr><th colspan="2">What URL would you like to redirect to</th>'
+		echo '<tr><th colspan="2">'.__('What URL would you like to redirect to')
+			.'</th>'
 			.'<td colspan="4"><input name="page_vars[redirect_to]" value="'
 			.htmlspecialchars($page_vars['redirect_to'])
 			.'" class="large"/></td></tr>';
 	break; // }
 	case '4': // { page summaries
-		echo '<tr><th>pages summarised from</th><td><select name="page_summary_'
-			.'parent"><option value="0">--  none  --</option>';
+		echo '<tr><th>'.__('pages summarised from')
+			.'</th><td><select name="page_summary_parent">'
+			.'<option value="0">'.__(' --  none  -- ').'</option>';
 		$r2=dbRow(
 			'select parent_id from page_summaries where page_id="'.$id.'" limit 1'
 		);
@@ -287,23 +297,24 @@ switch ($form_type) {
 			echo '>'.htmlspecialchars($v).'</option>';
 		}
 		echo '</select></td>'
-			.'<td colspan="4">Where do you want to start summarising your pages from'
-			.'? If you want this summary to list excerpts from all '
-			.'the pages on your site, then choose "<strong>none</strong>". Otherwise'
-			.', choose the page which <strong>contains</strong> '
-			.'the pages you want summarised.</td></tr>';
+			.'<td colspan="4">'.__('Where do you want to start summarising your p'
+				.'ages from? If you want this summary to list excerpts from all the p'
+				.'ages on your site, then choose "<strong>none</strong>". Otherwise, '
+				.'choose the page which <strong>contains</strong> the pages you want '
+				.'summarised.'
+			).'</td></tr>';
 	break; // }
 	case '9': // { table of contents
 		echo '<tr><td colspan="6"><div class="tabs">'
 			.'<ul>'
-			.'<li><a href="#table-of-contents-header">Header</a></li>'
-			.'<li><a href="#table-of-contents-footer">Footer</a></li>'
+			.'<li><a href="#table-of-contents-header">'.__('Header').'</a></li>'
+			.'<li><a href="#table-of-contents-footer">'.__('Footer').'</a></li>'
 			.'</ul>'
 			.'<div id="table-of-contents-header">'
-			.'<p>This will appear above the table of contents.</p>'
+			.'<p>'.__('This will appear above the table of contents.').'</p>'
 			.Page_showBody($page, $page_vars).'</div>'
 			.'<div id="table-of-contents-footer">'
-			.'<p>This will appear below the table of contents.</p>';
+			.'<p>'.__('This will appear below the table of contents.').'</p>';
 		if (!isset($page_vars['footer'])) {
 			$page_vars['footer']='';
 		}
@@ -348,12 +359,13 @@ echo '<div id="pages-advanced">';
 echo '<table>';
 echo '<td>';
 // { metadata 
-echo '<h3>MetaData</h3><table>';
-echo '<tr><th>keywords</th><td><input name="keywords" value="'
+echo '<h3>'.__('MetaData').'</h3><table>';
+echo '<tr><th>'.__('keywords').'</th><td><input name="keywords" value="'
 	.htmlspecialchars($page['keywords']).'"/></td></tr>';
-echo '<tr><th>description</th><td><textarea class="large" name="description"'
-	.'>'.htmlspecialchars($page['description']).'</textarea></td></tr>';
-echo '<tr><th>Short URL</th><td><input name="short_url" value="'
+echo '<tr><th>'.__('description').'</th><td><textarea class="large" name="d'
+	.'escription">'.htmlspecialchars($page['description']).'</textarea></td><'
+	.'/tr>';
+echo '<tr><th>'.__('Short URL').'</th><td><input name="short_url" value="'
 	.htmlspecialchars(
 		dbOne('select short_url from short_urls where page_id='.$id, 'short_url')
 	).'" /></td></tr>';
@@ -361,22 +373,27 @@ $importance=(float)$page['importance'];
 if ($importance<.1) {
 	$importance=.5;
 }
-echo '<tr title="used by Google. importance of page relative to other pages'
-	.' on site. values 0.1 to 1.0"><th>importance</th><td><input name="import'
-	.'ance" value="'.$importance.'" /></td></tr>';
+echo '<tr title="'.__(
+	'used by Google. importance of page relative to other pages on site. valu'
+	.'es 0.1 to 1.0'
+	)
+	.'"><th>'.__('importance')
+	.'</th><td><input name="importance" value="'.$importance.'" /></td></tr>';
 if (!isset($page_vars['google-site-verification'])) {
 	$page_vars['google-site-verification']='';
 }
-echo '<tr><th>Google Site Verification</th><td><input name="page_vars[googl'
-	.'e-site-verification]" value="'
+echo '<tr><th>'.__('Google Site Verification').'</th><td><input name="page_'
+	.'vars[google-site-verification]" value="'
 	.htmlspecialchars($page_vars['google-site-verification']).'" /></td></tr>';
 echo '<tr>';
 // { template
-echo '<th>template</th><td>';
+echo '<th>'.__('template').'</th><td>';
 $d=array();
 if (!file_exists(THEME_DIR.'/'.THEME.'/h/')) {
-	echo 'SELECTED THEME DOES NOT EXIST<br />Please <a href="/ww.admin/siteop'
-		.'tions.php?page=themes">select a theme</a>';
+	echo __(
+		'SELECTED THEME DOES NOT EXIST<br />Please <a href="/ww.admin/siteop'
+		.'tions.php?page=themes">select a theme</a>'
+	);
 }
 else {
 	$dir=new DirectoryIterator(THEME_DIR.'/'.THEME.'/h/');
@@ -402,7 +419,8 @@ else {
 		echo '</select>';
 	}
 	else {
-		echo 'no options available<input type="hidden" name="template" value="'
+		echo __('no options available')
+			.'<input type="hidden" name="template" value="'
 			.htmlspecialchars($d[0]).'" />';
 	}
 }
@@ -413,7 +431,7 @@ echo '</table>';
 // }
 echo '</td><td>';
 // { special
-echo '<h3>Special</h3>';
+echo '<h3>'.__('Special').'</h3>';
 $specials=array(
 	'Is Home Page',
 	'Does not appear in navigation',
@@ -425,16 +443,16 @@ for ($i=0;$i<count($specials);++$i) {
 		if ($page['special']&pow(2, $i)) {
 			echo ' checked="checked"';
 		}
-		echo '/>'.$specials[$i].'<br />';
+		echo '/>'.__($specials[$i]).'<br />';
 	}
 }
 // }
 // { other
-echo '<h3>Other</h3>';
+echo '<h3>'.__('Other').'</h3>';
 echo '<table>';
 // { order of sub-pages
-echo '<tr><th>Order of sub-pages</th><td><select name="page_vars[order_of_s'
-	.'ub_pages]">';
+echo '<tr><th>'.__('Order of sub-pages').'</th><td>'
+	.'<select name="page_vars[order_of_sub_pages]">';
 $arr=array('as shown in admin menu', 'alphabetically', 'by associated date');
 foreach ($arr as $k=>$v) {
 	echo '<option value="'.$k.'"';
@@ -443,20 +461,21 @@ foreach ($arr as $k=>$v) {
 	) {
 		echo ' selected="selected"';
 	}
-	echo '>'.$v.'</option>';
+	echo '>'.__($v).'</option>';
 }
 echo '</select><select name="page_vars[order_of_sub_pages_dir]"><option val'
-	.'ue="0">ascending (a-z, 0-9)</option>';
+	.'ue="0">'.__('ascending (a-z, 0-9)').'</option>';
 echo '<option value="1"';
 if (isset($page_vars['order_of_sub_pages_dir'])
 	&& $page_vars['order_of_sub_pages_dir']=='1'
 ) {
 	echo ' selected="selected"';
 }
-echo '>descending (z-a, 9-0)</option></select></td></tr>';
+echo '>'.__('descending (z-a, 9-0)').'</option></select></td></tr>';
 // }
-echo '<tr><th>Recursively update page templates</th><td><input type="checkb'
-	.'ox" name="recursively_update_page_templates" /></td></tr>';
+echo '<tr><th>'.__('Recursively update page templates')
+	.'</th><td><input type="checkbox" name="recursively_update_page_templates'
+	.'" /></td></tr>';
 echo '</table>';
 // }
 echo '</td></tr></table></div>';
@@ -471,9 +490,8 @@ foreach ($PLUGINS as $n=>$p) {
 }
 // }
 echo '</div>';
-echo '<input type="submit" name="action" value="'
-	.($edit?'Update Page Details':'Insert Page Details')
-	.'"/>';
+echo '<input type="hidden" name="action" value="Update Page Details"/>';
+echo '<input type="submit" value="'.__('Update Page Details').'"/>';
 echo '</form>';
 echo WW_getScripts();
 echo WW_getCss();
