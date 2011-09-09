@@ -1,3 +1,9 @@
+function htmlspecialchars(str) {
+	if (!str) {
+		return '';
+	}
+	return $('<i>').text(str).html();
+}
 function Forms_Pagetype_forms() {
 	function updateValues() {
 		switch(activeTab) {

@@ -25,7 +25,7 @@ function Form_validate(&$vars, &$form_fields) {
 	foreach ($form_fields as $r2) {
 		$name=preg_replace('/[^a-zA-Z0-9_]/', '', $r2['name']);
 		if ($r2['type']=='email' && $r2['extra']) {
-			if (@$_REQUEST[$name.'_verify']!=$_SESSION['form_input_email_verify_'.$name]) {
+			if ($_SESSION['emails'][@$_REQUEST[$name]]!==true) {
 				$errors[]='Email validation code was not correct.';
 			}
 		}
