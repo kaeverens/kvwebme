@@ -245,6 +245,15 @@ function Forms_Pagetype_forms() {
 			var type=$('.pfp-type select').val();
 			$('#pfp-type-specific').empty();
 			switch (type) {
+				case 'date': // {
+					$('<p>What format should the date be in? '
+						+'<a href="http://docs.jquery.com/UI/Datepicker/formatDate" '
+						+'target="_blank">examples</a></p>')
+						.appendTo('#pfp-type-specific');
+					return $('<input/>')
+						.val(field.extra||'yy-mm-dd')
+						.appendTo('#pfp-type-specific');
+					// }
 				case 'email': // {
 					$('#pfp-type-specific')
 						.append(
@@ -269,24 +278,23 @@ function Forms_Pagetype_forms() {
 					$('#fftt').change();
 					return;
 					// }
-				case 'date': // {
-					$('<p>What format should the date be in? '
-						+'<a href="http://docs.jquery.com/UI/Datepicker/formatDate" '
-						+'target="_blank">examples</a></p>')
-						.appendTo('#pfp-type-specific');
-					return $('<input/>')
-						.val(field.extra||'yy-mm-dd')
-						.appendTo('#pfp-type-specific');
-					// }
-				case 'selectbox': // {
-					return showExtrasSelectbox(field.extra||'');
-					// }
 				case 'html-block': // {
 					return $('<textarea>')
 						.val(field.extra||'')
 						.appendTo('#pfp-type-specific')
 						.ckeditor();
 					// }
+				case 'selectbox': // {
+					return showExtrasSelectbox(field.extra||'');
+					// }
+				case 'textarea': // {
+					var bits=(field.extra||'0,0').split(',');
+					return $('<table>'
+						+'<tr><th>Maximum length</th><td><input value="'+bits[0]+'"/></td></tr>'
+						+'<tr><th>Length to warn after</th><td><input value="'+bits[1]+'"/></td></tr>'
+						+'</table>')
+						.appendTo('#pfp-type-specific');
+				// }
 			}
 		}
 		$(panel).empty();
@@ -464,7 +472,12 @@ function Forms_Pagetype_forms() {
 					}
 				});
 				page_vars.forms_fields[index].extra=e.join("\n");
-				break; // }
+			break; // }
+			case 'textarea': // {
+				var $inps=$('#pfp-type-specific input');
+				page_vars.forms_fields[index].extra
+					=$($inps[0]).val()+','+$($inps[1]).val();
+			break; //}
 		}
 		page_vars.forms_fields[index].help=$('.pfp-help textarea').val();
 	}
