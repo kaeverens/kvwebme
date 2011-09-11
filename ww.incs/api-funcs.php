@@ -173,3 +173,32 @@ function Core_updateUserPasswordUsingToken() {
 	}
 	exit('{"error":"user not found, or verification token is out of date"}');
 }
+
+/**
+	* get all available translations for a particular context
+	*
+	* return array of tanslations
+	*/
+function Core_translationsGet() {
+	global $_languages;
+	$context=$_REQUEST['context'];
+	$md5=md5(join('|', $_languages).'|'.$context);
+	$strings=Core_cacheLoad('core-translation', $md5);
+	if ($strings==false) {
+		$strings=array();
+		for ($i=count($_languages)-1;$i>=0;--$i) {
+			$rs=dbAll(
+				'select * from languages where lang="'.$_languages[$i]
+				.'" and context="'.addslashes($context).'"'
+			);
+			foreach ($rs as $r) {
+				$strings[$r['str']]=$r['trstr'];
+			}
+		}
+		Core_cacheSave('core-translation', $md5, $strings);
+	}
+	return array(
+		'context'=>$context,
+		'strings'=>$strings
+	);
+}

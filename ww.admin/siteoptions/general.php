@@ -11,7 +11,7 @@
 	* @link     http://kvsites.ie/
 	*/
 
-echo '<h2>General</h2>';
+echo '<h2>'.__('General').'</h2>';
 // { handle actions
 if ($action=='Save') {
 	$DBVARS['f_cache']=$_REQUEST['f_cache'];
@@ -70,7 +70,7 @@ if ($action=='Save') {
 	}
 	Core_configRewrite();
 	Core_cacheClear();
-	echo '<em>options updated</em>';
+	echo '<em>'.__('options updated').'</em>';
 }
 if ($action=='remove_logo') {
 	unlink(USERBASE.'/f/skin_files/logo.png');
@@ -81,42 +81,46 @@ echo '<form method="post" action="siteoptions.php?page=general" enctype="mu'
 	.'ltipart/form-data"><input type="hidden" name="MAX_FILE_SIZE" value="999'
 	.'9999" /><table>';
 // { website title and subtitle
-echo '<tr><th>Website Title</th><td><input name="site_title" value="'
+echo '<tr><th>'.__('Website Title').'</th><td><input name="site_title" value="'
 	.htmlspecialchars($DBVARS['site_title']).'" /></td></tr>'
-	.'<tr><th>Website Subtitle</th><td><input name="site_subtitle" value="'
+	.'<tr><th>'.__('Website Subtitle')
+	.'</th><td><input name="site_subtitle" value="'
 	.htmlspecialchars($DBVARS['site_subtitle']).'" /></td></tr>';
 // }
 // { canonical domain name
 $canonical_name=@$DBVARS['canonical_name']
 	?' value="'.htmlspecialchars($DBVARS['canonical_name']).'"'
 	:'';
-echo '<tr><th>Canonical Domain Name</th><td><input name="canonical_name" '
-	.'placeholder="leave blank to accept multiple domain names"'
+echo '<tr><th>'.__('Canonical Domain Name')
+	.'</th><td><input name="canonical_name" '
+	.'placeholder="'.__('leave blank to accept multiple domain names').'"'
 	.$canonical_name.' /></td></tr>';
 // }
 // { logo
-echo '<tr><th>Logo</th><td><input type="file" name="site_logo" /><br />';
+echo '<tr><th>'.__('Logo').'</th><td><input type="file" name="site_logo" />'
+	.'<br />';
 if (file_exists(USERBASE.'f/skin_files/logo.png')) {
 	echo '<img src="/f/skin_files/logo.png?rand='.mt_rand(0, 9999).'" /><a hre'
 		.'f="/ww.admin/siteoptions.php?action=remove_logo" onclick="return conf'
-		.'irm(\'are you sure you want to remove the logo?\')" title="remove log'
-		.'o">[x]</a>';
+		.'irm(\''.__('are you sure you want to remove the logo?').'\')" title="'
+		.__('remove logo').'">[x]</a>';
 }
 echo '</td></tr>';
 // }
 // { favicon
-echo '<tr><th>Favicon</th><td><input type="file" name="site_favicon" />'
-	.'<br />';
+echo '<tr><th>'.__('Favicon').'</th><td>'
+	.'<input type="file" name="site_favicon" /><br />';
 if (file_exists(USERBASE.'f/skin_files/favicon.ico')) {
 	echo '<img src="/f/skin_files/favicon.ico?rand='.mt_rand(0, 9999)
 		.'" /><a href="/ww.admin/siteoptions.php?action=remove_favicon" '
-		.'onclick="return confirm(\'are you sure you want to remove the '
-		.'favicon?\')" title="remove favicon">[x]</a>';
+		.'onclick="return confirm(\''
+		.__('are you sure you want to remove the favicon?')
+		.'\')" title="'.__('remove favicon').'">[x]</a>';
 }
 echo '</td></tr>';
 // }
 // { page length limit
-echo '<tr><th>Page Length Limit</th>';
+echo '<tr><th>'.__('Page Length Limit').'</th>';
 echo '<td><input type="text" name="site_page_length_limit"';
 if (isset($DBVARS['site_page_length_limit'])) {
 	echo ' value="'.$DBVARS['site_page_length_limit'].'"';
@@ -124,8 +128,8 @@ if (isset($DBVARS['site_page_length_limit'])) {
 echo ' /></td></tr>';
 // }
 // { uploaded files cache
-echo '<tr><th>How long browsers should cache uploaded files for</th><td>'
-	.'<select name="f_cache"><option value="0">forever</option>';
+echo '<tr><th>'.__('How long browsers should cache uploaded files for')
+	.'</th><td><select name="f_cache"><option value="0">forever</option>';
 $arr=array(
 	'1 hour'=>1,
 	'1 day'=>24,
@@ -137,28 +141,29 @@ foreach ($arr as $k=>$v) {
 	if (isset($DBVARS['f_cache']) && $v==$DBVARS['f_cache']) {
 		echo ' selected="selected"';
 	}
-	echo ">$k</option>";
+	echo '>'.__($k).'</option>';
 }
 echo '</select></td></tr>';
 // }
 // { disable hidden menu sitemap
-echo '<tr><th>Disable the hidden sitemap (<a href="/Home?webmespecial=sitem'
-	.'ap">this</a>)</th><td>'
-	.'<select name="disable-hidden-sitemap"><option value="0">No</option>';
+echo '<tr><th>'.__('Disable the hidden sitemap').' (<a href="/Home?webmespe'
+	.'cial=sitemap">'.__('this').'</a>)</th><td>'
+	.'<select name="disable-hidden-sitemap"><option value="0">'.__('No')
+	.'</option>';
 echo '<option value="1"';
 if (@$DBVARS['disable-hidden-sitemap']) {
 	echo ' selected="selected"';
 }
-echo ">Yes</option>";
+echo '>'.__('Yes').'</option>';
 echo '</select></td></tr>';
 // }
-// { mantinence mode
+// { maintenance mode
 $script='$(function(){
 	$("select[name=\'maintenance-mode\']").change(function(){
 		$(".maintenance-message").toggle();
 	});
   $( "#add-ip" ).click( function( ){
-		var test=prompt("Please enter the IP Address");
+		var test=prompt("'.__('Please enter the IP Address').'");
 		alert(test);
 	});
 
@@ -167,7 +172,7 @@ WW_addInlineScript($script);
 $display=' style="display:none"';
 echo '<tr><th>Enable maintenance mode</th><td>
 	<select name="maintenance-mode">
-		<option value="No">No</option>
+		<option value="No">'.__('No').'</option>
 		<option value="yes"';
 if (@$DBVARS['maintenance-mode']=='yes') {
 	echo ' selected="selected"';
@@ -178,21 +183,23 @@ if (!isset($DBVARS['maintenance-mode-ips'])
 ) {
 	$DBVARS['maintenance-mode-ips']=$_SERVER['REMOTE_ADDR'];
 }
-echo '>Yes</option>
+echo '>'.__('Yes').'</option>
 </select></td></tr>
 <tr class="maintenance-message" '.$display.'>
-	<th>IP Addresses</th>
+	<th>'.__('IP Addresses').'</th>
 	<td><textarea name="maintenance-mode-ips" style="width:200px;height:50px">'
 		.htmlspecialchars(@$DBVARS['maintenance-mode-ips'])
 		.'</textarea></td></tr>';
-$message=(@$DBVARS['maintenance-mode-message']=='')?
-	'<h1>Temporarily Unavailable</h1>
-	<p>This website is undergoing maintenance and is temporarily unavailable.</p>':
-	$DBVARS['maintenance-mode-message'];
+$message=(@$DBVARS['maintenance-mode-message']=='')
+	?'<h1>'.__('Temporarily Unavailable').'</h1><p>'.__(
+		'This website is undergoing maintenance and is temporarily unavailable')
+	.'.</p>'
+	:$DBVARS['maintenance-mode-message'];
 echo '<tr '.$display.' class="maintenance-message">
-	<th>Maintenance mode message:</th>
+	<th>'.__('Maintenance mode message').':</th>
 	<td>'.ckeditor('maintenance-mode-message', $message).'</td>
 </tr>';
 // }
-echo '</table><input type="submit" name="action" value="Save" /></form>';
+echo '</table><input type="hidden" name="action" value="Save"/>'
+	.'<input type="submit" value="'.__('Save').'" /></form>';
 // }

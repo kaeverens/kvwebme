@@ -3,6 +3,7 @@
 	<head>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+		<script src="/j/lang.js"></script>
 		<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet"/>
 		<link href="/ww.admin/theme/admin.css" rel="stylesheet"/>
 	</head>
@@ -15,16 +16,16 @@
 			<div id="admin-login">
 				<table>
 					<tr>
-						<th><?php echo __('Email'); ?></th>
+						<th class="__">Email</th>
 						<td><input id="email" type="email" /></td>
 					</tr>
 					<tr>
-						<th><?php echo __('Password'); ?></th>
+						<th class="__">Password</th>
 						<td><input type="password" id="password" /></td>
 					</tr>
 					<tr>
 						<th colspan="2" style="text-align:right;">
-							<button id="login"><?php echo __('Log In'); ?></button>
+							<button id="login" class="__">Log In</button>
 						</th>
 					</tr>
 				</table>
@@ -32,21 +33,21 @@
 			<div id="admin-forgotten-password">
 				<table>
 					<tr>
-						<th><?php echo __('Email'); ?></th>
+						<th class="__">Email</th>
 						<td><input id="email-r" type="email" /></td>
 					</tr>
 					<tr>
 						<th colspan="2" style="text-align:right;">
-							<button id="send-token"><?php echo __('Send Token'); ?></button>
+							<button id="send-token" class="__">Send Token</button>
 						</th>
 					</tr>
 				</table>
-				<p><?php echo __('If you\'ve forgotten your password, use the form above to send a token for creating a new password, then use the token below to change your password.'); ?></p>
+				<p class="__">If you've forgotten your password, use the form above to send a token for creating a new password, then use the token below to change your password</p>
 				<table>
-					<tr><th><?php echo __('Token'); ?></th><td><input id="token"/></td></tr>
-					<tr><th><?php echo __('New Password'); ?></th><td><input id="password2" type="password"/></td></tr>
-					<tr><th><?php echo __('(repeat)'); ?></th><td><input id="password3" type="password"/></td></tr>
-					<tr><th colspan="2" style="text-align:right;"><button id="change-password"><?php echo __('Change Password'); ?></button></th></tr>
+					<tr><th class="__">Token</th><td><input id="token"/></td></tr>
+					<tr><th class="__">New Password</th><td><input id="password2" type="password"/></td></tr>
+					<tr><th class="__">(repeat)</th><td><input id="password3" type="password"/></td></tr>
+					<tr><th colspan="2" style="text-align:right;"><button id="change-password" class="__">Change Password</button></th></tr>
 				</table>
 			</div>
 		</div>

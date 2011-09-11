@@ -223,6 +223,7 @@ function Core_isAdmin() {
 	*/
 function Core_shutdown() {
 	global $_language_notfound;
+	return;
 	if (!count($_language_notfound)) {
 		return;
 	}

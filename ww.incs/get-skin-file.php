@@ -85,6 +85,9 @@ header('Cache-Control: max-age = 3600');
 header('Expires: '. date('r', time()+3600));
 header('Pragma:');
 header('Content-Length: ' . filesize($file));
+if (ob_get_length()===false) {
+	ob_start();
+}
 ob_clean();
 flush();
 ob_start();
