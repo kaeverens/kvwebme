@@ -144,8 +144,7 @@ function Privacy_controller() {
 		$c.='</ul>';
 		// { tabs
 		if ($PAGEDATA->vars['userlogin_visibility']&1) {
-			$c.= Privacy_loginForm();
-			$c.=Privacy_passwordReminderForm()();
+			$c.=Privacy_loginForm().Privacy_passwordReminderForm();
 		}
 		if ($PAGEDATA->vars['userlogin_visibility']&2) {
 			$c.=Privacy_registrationController();

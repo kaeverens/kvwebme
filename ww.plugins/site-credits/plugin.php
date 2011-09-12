@@ -35,7 +35,7 @@ function SiteCredits_isActive() {
 	global $DBVARS;
 	if (@$DBVARS['sitecredits-credits']<0) {
 		echo '<p>Website Administrator attention needed.'
-			.' Please log into your control panel.</p>';
+			.' Please log into your administration area (and check your email).</p>';
 		exit;
 	}
 }
