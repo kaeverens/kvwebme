@@ -32,3 +32,7 @@ WW_addScript('/j/jquery.inlinemultiselect.js');
 WW_addScript('/ww.plugins/products/admin/get-product-names-js.php');
 WW_addScript('/ww.plugins/products/admin/categories.js');
 WW_addScript('/ww.plugins/products/admin/create-page.js');
+// { uploader
+WW_addScript('/ww.plugins/image-gallery/files/swfobject.js');
+WW_addScript('/ww.plugins/image-gallery/files/uploadify.jquery.min.js');
+WW_addCSS('/ww.plugins/image-gallery/files/uploadify.css');

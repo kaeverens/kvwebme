@@ -181,7 +181,7 @@ function Products_typesTemplatesGet() {
 	$dir=new DirectoryIterator(dirname(__FILE__).'/templates');
 	$templates=array();
 	foreach ($dir as $file) {
-		if ($file->isDot()) {
+		if ($file->isDot() || $file->getFilename()=='.svn') {
 			continue;
 		}
 		$templates[]=str_replace('.json', '', $file->getFilename());

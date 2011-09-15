@@ -30,6 +30,7 @@ function Products_adminCategoryGetFromID($id){
 			.'egories where id='.$id
 		),
 		'products'=>$products,
+		'hasIcon'=>file_exists(USERBASE.'f/products/categories/'.$id.'/icon.png')
 	);
 	if (isset($pageid)) {
 		$page= Page::getInstance($pageid);
@@ -156,6 +157,21 @@ function Products_adminCategoryMove() {
 	}
 	return Products_adminCategoryGetFromID($id);
 }
+
+/**
+	* set the icon of a category
+	*
+	* return result of upload
+	*/
+function Products_adminCategorySetIcon() {
+	$cat_id=(int)$_REQUEST['cat_id'];
+	$dir=USERBASE.'f/products/categories/'.$cat_id;
+	@mkdir($dir, 0777, true);
+	$tmpname=$_FILES['file_upload']['tmp_name'];
+	`convert $tmpname -resize 128x128 $dir/icon.png`;
+	return array('ok'=>1);
+}
+
 /**
   * Gets the data for all the products and prompts the user to save it
 	*

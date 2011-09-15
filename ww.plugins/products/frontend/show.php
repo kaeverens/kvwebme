@@ -1332,9 +1332,14 @@ class Products{
 		if (!isset($_REQUEST['products-search'])) {
 			if (isset($this->subCategories) && count($this->subCategories)) {
 				$categories='<ul class="categories">';
-				foreach ($this->subCategories as $cat) {
-					$categories.='<li><a href="'.$PAGEDATA->getRelativeUrl()
-						.'?product_cid='.$cat['id'].'">'.htmlspecialchars($cat['name'])
+				foreach ($this->subCategories as $c) {
+					$cat=ProductCategory::getInstance($c['id']);
+					$categories.='<li><a href="'.$cat->getRelativeUrl().'">';
+					$icon='/f/products/categories/'.$c['id'].'/icon.png';
+					if (file_exists(USERBASE.$icon)) {
+						$categories.='<img src="'.$icon.'"/>';
+					}
+					$categories.='<span>'.htmlspecialchars($c['name']).'</span>'
 						.'</a></li>';
 				}
 				$categories.='</ul>';
@@ -1389,9 +1394,24 @@ class ProductCategory{
 		*/
 	function getRelativeUrl() {
 		// { see if there are any pages that use this category
+		$ps1=dbAll(
+			'select page_id from page_vars where name="products_category_to_show" '
+			.'and value='.$this->vals['id'],
+			'page_id'
+		);
+		if ($ps1 && count($ps1)) {
+			$sql='select id from pages,page_vars where page_id=pages.id '
+				.'and page_vars.name="products_what_to_show" and page_vars.value=2 '
+				.'and id in ('.join(', ', array_keys($ps1)).')';
+			$pid=dbOne($sql, 'id');
+			if ($pid) {
+				$page=Page::getInstance($pid);
+				return $page->getRelativeUrl();
+			}
+		}
 		// }
 		// { or get at least any product page
-		$pid=dbOne('select id from pages where type="products" limit 1', 'id');
+		$pid=dbOne('select id from pages where type like "products%" limit 1', 'id');
 		if ($pid) {
 			$page=Page::getInstance($pid);
 			return $page->getRelativeUrl().'?product_category='.$this->vals['id'];

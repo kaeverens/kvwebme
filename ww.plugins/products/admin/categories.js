@@ -28,6 +28,11 @@ $(function(){
 			}
 			table+='</select></form></td></tr>';
 			// }
+			// { icon
+			table+='<tr id="icon"><th>Icon</th>'
+				+'<td><div id="icon-image"/><input type="file" id="uploader"/></td>'
+				+'</tr>';
+			// }
 			// { colour
 			table+='<tr id="colour"><th>Colour</th>'
 				+'<td><input id="pc_colour" />'
@@ -53,6 +58,31 @@ $(function(){
 						+window.selected_cat, { "s[]":selected },show_attributes
 					);
 				}
+			});
+			$("#uploader").uploadify({
+				"uploader":"/ww.plugins/image-gallery/files/uploadify.swf",
+				"script":"/a/p=products/f=adminCategorySetIcon",
+				"cancelImg":"/ww.plugins/image-gallery/files/cancel.png",
+				"multi":false,
+				"buttonText":"Upload Files",
+				"removeCompleted":true,
+				"fileDataName":"file_upload",
+				"onComplete":function(event,ID,fileObj,response,data){
+					$('#icon-image').html(
+						'<img src="/f/products/categories/'+ret.attrs.id+'/icon.png?'
+						+Math.random()+'"/>'
+					);
+				},
+				"onSelect": function() {
+					$("#uploader").uploadifySettings('scriptData', {
+							"PHPSESSID":window.sessid,
+							"cat_id":   window.selected_cat
+						}
+					);
+				},
+				"fileExt":"*.jpg;*.jpeg;*.png;*.gif",
+				"fileDesc":"Images Only",
+				"auto":true
 			});
 		}
 		$('#cat_'+ret.attrs.id+'>a').text(ret.attrs.name);
@@ -89,6 +119,11 @@ $(function(){
 			}
 		});
 		$('#pc_edit_productschoices').text(selected_names.join(', '));
+		$('#icon-image').html(ret.hasIcon
+			?'<img src="/f/products/categories/'+ret.attrs.id+'/icon.png?'
+				+Math.random()+'"/>'
+			:''
+		);
 	}
 	$('#categories-wrapper')
 		.jstree({
