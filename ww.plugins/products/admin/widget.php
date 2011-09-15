@@ -30,16 +30,20 @@ echo '</select>';
 // }
 // { type
 echo '<br /><strong>Type</strong>';
-echo '<select name="widget_type"><option>Pie-Chart</option>';
-echo '<option';
-if (isset($_REQUEST['widget_type']) && $_REQUEST['widget_type']=='List Categories') {
-	echo ' selected="selected"';
+$type=@$_REQUEST['widget_type'];
+$types=array('List Categories', 'Tree View', 'Pie-Chart');
+echo '<select name="widget_type">';
+foreach ($types as $t) {
+	echo '<option';
+	if ($type==$t) {
+		echo ' selected="selected"';
+	}
+	echo '>'.$t.'</option>';
 }
-echo '>List Categories</option>';
 echo '</select>';
 // }
 // { diameter
-echo '<div class="diameter"><strong>Diameter</strong>';
+echo '<div class="diameter"><strong>Diameter (for Pie Chart)</strong>';
 $diameter=(isset($_REQUEST['diameter']) && $_REQUEST['diameter'])
 	?((int)$_REQUEST['diameter'])
 	:280;

@@ -6,24 +6,12 @@
 	*/
 function Products_categoriesOptionsGet() {
 	$selected=$_REQUEST['selected'];
-	function getAll($selected, $parent=0, $depth=0) {
-		$rs=dbAll(
-			'select id,name from products_categories where parent_id='.$parent
-			.' order by name'
-		);
-		foreach ($rs as $r) {
-			echo '<option value="'.$r['id'].'"';
-			if ($r['id']==$selected) {
-				echo ' selected="selected"';
-			}
-			echo '>'.str_repeat('&raquo; ', $depth)
-			.htmlspecialchars($r['name']).'</option>';
-			getAll($selected, $r['id'], $depth+1);
-		}
+	$rs=dbAll('select id,name from products_categories order by name');
+	$arr=array();
+	foreach ($rs as $r) {
+		$arr[$r['id']]=$r['name'];
 	}
-	echo '<option value="0"> -- top -- </option>';
-	getAll($selected);
-	exit;
+	return $arr;
 }
 /**
 	* remove a review
