@@ -23,6 +23,12 @@ if ($action=='Save') {
 	else {
 		unset($DBVARS['disable-hidden-sitemap']);
 	}
+	if (@$_REQUEST['disable-jqueryui-css']) {
+		$DBVARS['disable-jqueryui-css']=1;
+	}
+	else {
+		unset($DBVARS['disable-jqueryui-css']);
+	}
 	$DBVARS['site_title']=$_REQUEST['site_title'];
 	if (@$_REQUEST['canonical_name']) {
 		$DBVARS['canonical_name']=$_REQUEST['canonical_name'];
@@ -199,6 +205,17 @@ echo '<tr '.$display.' class="maintenance-message">
 	<th>'.__('Maintenance mode message').':</th>
 	<td>'.ckeditor('maintenance-mode-message', $message).'</td>
 </tr>';
+// }
+// { disable jquery-ui css
+echo '<tr><th>'.__('Don\'t load the jQuery-UI CSS').'</th><td>'
+	.'<select name="disable-jqueryui-css"><option value="0">'.__('No')
+	.'</option>';
+echo '<option value="1"';
+if (@$DBVARS['disable-jqueryui-css']) {
+	echo ' selected="selected"';
+}
+echo '>'.__('Yes').'</option>';
+echo '</select></td></tr>';
 // }
 echo '</table><input type="hidden" name="action" value="Save"/>'
 	.'<input type="submit" value="'.__('Save').'" /></form>';

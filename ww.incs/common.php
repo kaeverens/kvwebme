@@ -25,7 +25,10 @@ function Core_getJQueryScripts() {
 	return '<script src="'.$jurls[0].'"></script>'
 		.'<script src="'.$jurls[1].'"></script>'
 		.'<script src="/j/jquery.tooltip.min.js"></script>' // REMOVE @ jQuery-UI 1.9
-		.'<link href="'.$jurls[2].'" rel="stylesheet" />';
+		.(isset($DBVARS['disable-jqueryui-css'])
+			?''
+			:'<link href="'.$jurls[2].'" rel="stylesheet" />'
+		);
 }
 /**
 	* convert a MySQL date to a human-readable one
