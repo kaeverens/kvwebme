@@ -25,6 +25,9 @@ if ($_REQUEST['extra']!='') {
 else {
 	unset($_REQUEST['extra']);
 }
+if (!isset($_REQUEST['f'])) {
+	die('{"error":"no function name supplied"}');
+}
 // }
 // { check plugin to use
 if (isset($_REQUEST['p'])) {
