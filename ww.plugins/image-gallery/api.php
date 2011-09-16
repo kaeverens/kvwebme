@@ -59,6 +59,9 @@ function ImageGallery_imagesGet() {
 			.'and page_id='.$page_id,
 			'value'
 		);
+		if ($dir===false) {
+			$dir='/image-galleries/imagegallery-'.$page_id;
+		}
 		$f=array();
 		foreach ($files as $file) {
 			$meta=json_decode($file['meta'], true);
