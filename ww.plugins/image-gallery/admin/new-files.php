@@ -29,9 +29,9 @@ $dir=dbOne(
 	.'and page_id='.$image['gallery_id'],
 	'value'
 );
-echo '<li id="image_'.$id.'" class="gallery-image-container">';
-echo '<img id="image-gallery-image'.$id.'" src="/ww.plugins/image-gallery/'
-	.'get-image.php?uri='.$dir.'/'.$meta['name'].',width=64,height=64""/>';
+echo '<li id="image_'.$id.'">';
+echo '<img id="image-gallery-image'.$id.'" src="/a/f=getImg/w=64/h=64/'
+	.$dir.'/'.$meta['name'].'"/>';
 echo '<a href="javascript:;" class="delete-img" id="'.$id.'">';
 echo 'Delete</a><br/>';
 echo '<a href="javascript:;" class="edit-img" id="'.$id.'">';

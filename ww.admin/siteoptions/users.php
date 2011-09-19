@@ -24,6 +24,9 @@ if (isset($_REQUEST['action'])) {
 	if ($action=='Save') {
 		$addresses=array();
 		// { address
+		if (!isset($_POST['address'])) {
+			$_POST['address']=array();
+		}
 		foreach ($_POST['address'] as $name=>$address) {
 			$addresses[$name]=array(
 				'street'=>@$_POST['street-'.$name],

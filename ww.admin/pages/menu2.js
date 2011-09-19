@@ -37,7 +37,10 @@ $(function(){
 					'view' : {
 						'label' : "View Page",
 						'action':function(node) {
-							document.location='/?pageid='+node[0].id.replace(/.*_/,'')
+							window.open(
+								'/?pageid='+node[0].id.replace(/.*_/,''),
+								'_blank'
+							);
 						}
 					}
 				}

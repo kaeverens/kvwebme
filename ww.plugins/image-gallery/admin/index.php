@@ -88,40 +88,36 @@ $images=dbAll(
 );
 $n=count($images);
 if ($n) {
-	$c.='<p>Note: Drag the images to reorder them</p>';
 	$c.='<ul id="image-gallery-wrapper">';
 	for ($i=0;$i<$n;$i++) {
 		$id=$images[$i]['id'];
 		$meta=json_decode($images[$i]['meta'], true);
 		switch ($images[$i]['media']) {
-			case 'image':
-				$caption=(isset($meta['caption'])&&$meta['caption']!='')?
+			case 'image': // {
+				$caption=isset($meta['caption'])&&$meta['caption']!=''?
 					' title="'.$meta['caption'].'"':
 					'';
-				$c.='<li class="gallery-image-container" id="image_'.$id.'">'
-					.'<img src="/ww.plugins/image-gallery/get-image.php?uri='
-					.$vars['image_gallery_directory'].'/'.$meta['name']
-					.',width=64,height=64"'
+				$c.='<li id="image_'.$id.'">'
+					.'<img src="/a/f=getImg/w=64/h=64/'
+					.$vars['image_gallery_directory'].'/'.$meta['name'].'"'
 					.$caption.' id="image-gallery-image'.$id.'"/><br/>'
+					.'<a href="javascript:;" class="edit-img" id="'.$id.'">'
+					.__('edit').'</a> or '
 					.'<a href="javascript:;" class="delete-img" id="'.$id.'">'
-					.'Delete</a><br/>'
-					.'<a href="javascript:;" class="edit-img" id="'.$id.'">';
-				$c.=(isset($meta['caption'])&&$meta['caption']!='')?
-					'Edit':'Add';
-				$c.=' Caption</a>'
+					.'[x]</a>'
 					.'</li>';
-			break;
-			case 'video':
+			break; // }
+			case 'video': // {
 				$image=($meta['image']=='')?
 					'/ww.plugins/image-gallery/files/video.png':
 					'/ww.plugins/image-gallery/get-image.php?uri='.$meta['image']
 					.',width=64,height=64';
-				$c.='<li class="gallery-image-container" id="image_'.$id.'">'
+				$c.='<li id="image_'.$id.'">'
 					.'<img src="'.$image.'"'
 					.' id="image-gallery-image'.$id.'"/><br/>'
 					.'<a href="javascript:;" class="delete-img" id="'.$id.'">'
-					.'Delete</a></li>';
-			break;
+					.'[x]</a></li>';
+			break; // }
 		}
 	}
 	$c.='</ul><br style="clear:both"/>';
@@ -224,8 +220,13 @@ foreach ($effects as $effect) {
 $c.='</select></td></tr>';
 // }
 // { hover
-$options=array('opacity'=>'Opacity','zoom'=>'Zoom','popup'=>'Popup');
-$c.='<tr><th>Images on hover:</th>';
+$options=array(
+	'none'=>__(' -- none -- '),
+	'opacity'=>__('Opacity'),
+	'zoom'=>__('Zoom'),
+	'popup'=>__('Popup')
+);
+$c.='<tr><th>Effect when image is hovered:</th>';
 $c.='<td><select name="page_vars[image_gallery_hover]">';
 foreach ($options as $value=>$option) {
 	$c.='<option value="'.$value.'"';

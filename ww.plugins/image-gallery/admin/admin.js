@@ -39,30 +39,40 @@ $(function(){
 	});
 	$('.edit-img').live('click',function(){	
 		var id=$(this).attr('id');
-		var capt=$('#image-gallery-image'+id).attr('title');
-		if(!capt) {
-			capt='';
-		}
-		$('<div title="Caption">'
-				+ 'Caption Text:'
-				+ '<input type="text" id="caption-text" value="'+capt+'"/>'
-			+ '</div>'
+		$('<div id="p-dialog" title="Image Properties"><table>'
+			+'<tr><th>Caption</th><td style="width:60%"><input id="p-caption"/></td>'
+			+'<th>Author</th><td><input id="p-author"/></td></tr>'
+			+'<tr><th>Description</th><td colspan="3"><textarea id="p-description"/></td></tr>'
+			+'</table></div>'
 		).dialog({
-			'modal':true,
-			buttons:{
+			'modal'  : true,
+			'width'  : 700,
+			'height' : 450,
+			'buttons': {
 				'Save':function(){
-					var caption=$('#caption-text').val();
-					$.post('/a/p=image-gallery/f=adminCaptionEdit', {
+					var caption=$('#p-caption').val();
+					$.post('/a/p=image-gallery/f=adminDetailsEdit', {
 						'id':id,
-						'caption':caption
+						'caption':caption,
+						'description':$('#p-description').val(),
+						'author':$('#p-author').val()
 					});
 					$('#image-gallery-image'+id).attr('title',caption);
 					$(this).dialog('close').remove();
-				},
-				'Cancel':function(){
-					$(this).dialog('close').remove();
 				}
+			},
+			'close':function(){
+				$('#p-dialog').remove();
 			}
+		});
+		var $img=$('#image-gallery-image'+id);
+		$.post('/a/p=image-gallery/f=adminDetailsGet/id='+id, function(ret) {
+			$('#p-caption').val(ret.caption);
+			if (CKEDITOR.instances['p-description']) {
+				CKEDITOR.remove(CKEDITOR.instances['p-description']);
+			}
+			$('#p-description').val(ret.description).ckeditor();
+			$('#p-author').val(ret.author);
 		});
 	});
 	$('#video').click(function(){
@@ -86,8 +96,8 @@ $(function(){
 					if(image==''||image=='http://') {
 						image='/ww.plugins/image-gallery/files/video.png';
 					}
-					var c='<li class="gallery-image-container" id="image_'+id+'">'
-					+'<img src="/ww.plugins/image-gallery/get-image.php?uri='+image+',width=64,height=64"'
+					var c='<li id="image_'+id+'">'
+					+'<img src="/a/f=getImg/w=64/h=64/'+image+'"'
 					+' id="image-gallery-image'+id+'"/><br/>'
 					+'<a href="javascript:;" class="delete-img" id="'+id+'">'
 					+'Delete</a><br/></li>';

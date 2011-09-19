@@ -74,6 +74,64 @@ function Core_getFileInfo() {
 		'mime'=>$mime
 	);
 }
+function Core_getImg() {
+	$w=(int)$_REQUEST['w'];
+	$h=(int)$_REQUEST['h'];
+	$f=USERBASE.'f/'.$_REQUEST['_remainder'];
+	$ext=strtolower(preg_replace('/.*\./', '', $f));
+	switch ($ext) {
+		case 'jpg': case 'jpe': // {
+			$ext='jpeg';
+		break; // }
+		case 'png': case 'gif': case 'jpeg': // {
+		break; // }
+		default: // {
+			echo 'unhandled image extension '.$ext;
+			exit;
+		// }
+	}
+	if (strpos($f, '/.')!=false) {
+		return false; // hack attempt
+	}
+	if (!file_exists($f)) {
+		return false; // file does not exist
+	}
+	if ($w || $h) {
+		list($width, $height)=getimagesize($f);
+		$resize=0;
+		if ($width>$w) {
+			$height*=$w/$width;
+			$width=$w;
+			$resize=1;
+		}
+		if ($height>$h) {
+			$width*=$h/$height;
+			$height=$h;
+			$resize=1;
+		}
+		if ($resize) {
+			$width=(int)$width;
+			$height=(int)$height;
+			@mkdir(USERBASE.'ww.cache/resized.images');
+			$resize=$width.'x'.$height;
+			$c=USERBASE.'ww.cache/resized.images/'.md5($f).','.$resize.'.png';
+			if (!file_exists($c)) {
+				$f=addslashes($f);
+				`convert "$f" -resize $resize "$c"`;
+			}
+			$f=$c;
+			$ext='png';
+		}
+	}
+	header('Content-type: image/'.$ext);
+	header('Expires-Active: On');
+	header('Cache-Control: max-age = 3600');
+	header('Expires: '. date('r', time()+3600));
+	header('Pragma:');
+	header('Content-Length: ' . filesize($f));
+	readfile($f);
+	exit;
+}
 function Core_getUserData() {
 	if (!isset($_SESSION['userdata'])) { // not logged in
 		return array('error'=>'you are not logged in');

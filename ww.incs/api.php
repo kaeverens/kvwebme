@@ -14,12 +14,18 @@
 require_once 'basics.php';
 
 // { extract parameters from URL
+$remainder='';
 if ($_REQUEST['extra']!='') {
 	$tmp=substr($_REQUEST['extra'], 1, strlen($_REQUEST['extra'])-1);
 	unset($_REQUEST['extra']);
 	foreach (explode('/', $tmp) as $var) {
-		list($k, $v)=explode('=', $var);
-		$_REQUEST[$k]=$v;
+		$parts=explode('=', $var);
+		if (count($parts)==1) {
+			$remainder.='/'.$parts[0];
+		}
+		else {
+			$_REQUEST[$parts[0]]=$parts[1];
+		}
 	}
 }
 else {
@@ -28,6 +34,7 @@ else {
 if (!isset($_REQUEST['f'])) {
 	die('{"error":"no function name supplied"}');
 }
+$_REQUEST['_remainder']=$remainder;
 // }
 // { check plugin to use
 if (isset($_REQUEST['p'])) {

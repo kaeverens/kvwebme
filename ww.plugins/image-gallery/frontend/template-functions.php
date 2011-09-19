@@ -17,6 +17,22 @@ require_once KFM_BASE_PATH.'/api/api.php';
 require_once KFM_BASE_PATH.'/initialise.php';
 
 /**
+	* function for showing a list of gallery pages, as well as left/right arrows
+	*
+  * @param array $params  any parameters passed through the function
+	* @param array &$smarty the active Smarty instance
+  *
+  * @return string HTML of the nav menu
+  */
+function ImageGallery_nav($params, $smarty) {
+	return '<div id="image-gallery-nav"><table style="width:100%">'
+		.'<tr><td style="text-align:left;"><div id="prev-link"/></td>'
+		.'<td class="pagelinks" style="width:90%;text-align:center"></td>'
+		.'<td style="text-align:right"><div id="next-link"/></td></tr>'
+		.'</table></div>';
+}
+
+/**
   * function for returning a gallery wrapper with embedded HTML parameters
   *
   * @param array $params  any parameters passed through the function
@@ -24,7 +40,7 @@ require_once KFM_BASE_PATH.'/initialise.php';
   *
   * @return string HTML of the gallery wrapper
   */
-function ImageGallery_templateImages($params, &$smarty) {
+function ImageGallery_templateImages($params, $smarty) {
 	$pagedata=$smarty->_tpl_vars['pagedata'];
 	$args=array(
 		'image_gallery_x'=>'cols',
@@ -44,11 +60,8 @@ function ImageGallery_templateImages($params, &$smarty) {
 			$new_args[$value]=$pagedata->vars[$name];
 		}
 	}
-	if (!empty($params['hover'])) {
-		$new_args['hover']=$params['hover'];
-	}
-	if (!empty($params['display'])) {
-		$new_args['display']=$params['display'];
+	foreach ($params as $k=>$v) {
+		$new_args[$k]=$v;
 	}
 	$html='<div class="ad-gallery"';
 	foreach ($new_args as $arg=>$value) {
@@ -66,7 +79,7 @@ function ImageGallery_templateImages($params, &$smarty) {
   *
   * @return string HTML of the image and its wrapper
   */
-function ImageGallery_templateImage($params, &$smarty) {
+function ImageGallery_templateImage($params, $smarty) {
 	$pagedata=$smarty->_tpl_vars['pagedata'];
 	$width=(empty($pagedata->vars['image_gallery_image_x']))
 		?''
@@ -78,10 +91,11 @@ function ImageGallery_templateImage($params, &$smarty) {
 		?''
 		:' effect="'.$pagedata->vars['image_gallery_effect'].'"';	
 	$html='<div id="gallery-image"'.$width.$height.$effect.'>'
-		. '<div class="ad-image">'
-		. '<span class="dark-background ad-image-description" style="display:none"></span>'
-		. '<img src="">'
-		. '</div>'
-		. '</div>';
+		.'<div class="ad-image">'
+		.'<span class="dark-background ad-image-description caption" style="display:none">'
+		.'</span>'
+		.'<img src="">'
+		.'</div>'
+		.'</div>';
 	return $html;
 }

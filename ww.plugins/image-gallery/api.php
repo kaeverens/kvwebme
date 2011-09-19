@@ -67,18 +67,24 @@ function ImageGallery_imagesGet() {
 			$meta=json_decode($file['meta'], true);
 			switch ($file['media']) {
 				case 'image': // {
-					array_push(
-						$f,
-						array(
-							'id'=>$file['id'],
-							'name'=>$meta['name'],
-							'media'=>'image',
-							'width'=>$meta['width'],
-							'height'=>$meta['height'],
-							'caption'=>$meta['caption'],
-							'url'=>'/ww.plugins/image-gallery/get-image.php?uri='.$dir.'/'.$meta['name']
-						)
+					$arr=array(
+						'id'=>$file['id'],
+						'name'=>$meta['name'],
+						'media'=>'image',
+						'width'=>$meta['width'],
+						'height'=>$meta['height'],
+						'url'=>'/a/f=getImg/'.$dir.'/'.$meta['name']
 					);
+					if (@$meta['author']) {
+						$arr['author']=$meta['author'];
+					}
+					if (@$meta['caption']) {
+						$arr['caption']=$meta['caption'];
+					}
+					if (@$meta['description']) {
+						$arr['description']=$meta['description'];
+					}
+					$f[]=$arr;
 				break; // }
 				case 'video': // {
 					$image=($meta['image']=='')?
@@ -89,7 +95,7 @@ function ImageGallery_imagesGet() {
 						array(
 							'id'=>$file['id'],
 							'media'=>'video',
-							'image'=>'/ww.plugins/image-gallery/get-image.php?uri='.$image,
+							'image'=>'/a/f=getImg/'.$image,
 							'href'=>$meta['href']
 						)
 					);
@@ -98,4 +104,17 @@ function ImageGallery_imagesGet() {
 		}
 	}
 	return $f;
+}
+
+function ImageGallery_img() {
+	$id    =(int)$_REQUEST['id'];
+	$width =(int)$_REQUEST['w'];
+	$height=(int)$_REQUEST['h'];
+	$sql='select * from image_gallery where id='.$id;
+	$r=dbRow($sql);
+	$meta=json_decode($r['meta']);
+	$url='/a/f=getImg/w='.$width.'/h='.$height.'/image-galleries/'
+		.'imagegallery-'.$r['gallery_id'].'/'.$meta->name;
+	header('Location: '.$url);
+	exit;
 }

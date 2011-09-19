@@ -58,8 +58,9 @@ function ImageGallery_show($PAGEDATA) {
 		@mkdir(USERBASE.'/ww.cache/templates_c'); 
 		@mkdir(USERBASE.'/ww.cache/templates_c/image-gallery');
 		$smarty->assign('pagedata', $PAGEDATA);
-		$smarty->register_function('GALLERY_IMAGE', 'ImageGallery_templateImage');
+		$smarty->register_function('GALLERY_IMAGE',  'ImageGallery_templateImage');
 		$smarty->register_function('GALLERY_IMAGES', 'ImageGallery_templateImages');
+		$smarty->register_function('GALLERY_NAV',    'ImageGallery_nav');
 		$smarty->left_delimiter='{{';
 		$smarty->right_delimiter='}}';
 		$c.=$smarty->fetch(
@@ -126,8 +127,9 @@ function GalleryWidget_show($vars){
 		Gallery.options.thumbsize='.$vars['thumbsize'].';
 		Gallery.options.imageWidth='.$vars['image_size'].';
 		Gallery.options.imageHeight='.$vars['image_size'].';
-		Gallery.gallery().attr("cols","'.$vars['columns'].'");
-		Gallery.gallery().attr("rows","'.$vars['rows'].'");
+		Gallery.gallery()
+			.attr("cols","'.$vars['columns'].'")
+			.attr("rows","'.$vars['rows'].'");
 		';
 		// }
 		WW_addScript('/ww.plugins/image-gallery/frontend/gallery.js');

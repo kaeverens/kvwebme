@@ -12,16 +12,26 @@
   * @link       www.kvweb.me
  */
 
-function ImageGallery_adminCaptionEdit() {
-	$id=(int)@$_POST['id'];
-	if ($id==0) {
+function ImageGallery_adminDetailsEdit() {
+	$id=(int)@$_REQUEST['id'];
+	if (!$id) {
 		exit;
 	}
-	$caption=addslashes(@$_POST['caption']);
 	$meta=dbOne('select meta from image_gallery where id='.$id, 'meta');
 	$meta=json_decode($meta, true);
-	$meta['caption']=$caption;
-	$meta=addslashes(json_encode($meta));
-	dbQuery('update image_gallery set meta="'.$meta.'" where id='.$id);
+	$meta['caption']    = @$_POST['caption'];
+	$meta['description']= @$_POST['description'];
+	$meta['author']     = @$_POST['author'];
+	$meta=json_encode($meta);
+	dbQuery('update image_gallery set meta="'.addslashes($meta).'" where id='.$id);
 	return array('ok'=>1);
+}
+function ImageGallery_adminDetailsGet() {
+	$id=(int)@$_REQUEST['id'];
+	if (!$id) {
+		exit;
+	}
+	$meta=dbOne('select meta from image_gallery where id='.$id, 'meta');
+	$meta=json_decode($meta, true);
+	return $meta;
 }
