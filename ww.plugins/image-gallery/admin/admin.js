@@ -67,6 +67,15 @@ $(function(){
 		});
 		var $img=$('#image-gallery-image'+id);
 		$.post('/a/p=image-gallery/f=adminDetailsGet/id='+id, function(ret) {
+			if (ret.author==undefined) {
+				ret.author='';
+			}
+			if (ret.caption==undefined) {
+				ret.caption='';
+			}
+			if (ret.description==undefined) {
+				ret.description='';
+			}
 			$('#p-caption').val(ret.caption);
 			if (CKEDITOR.instances['p-description']) {
 				CKEDITOR.remove(CKEDITOR.instances['p-description']);
