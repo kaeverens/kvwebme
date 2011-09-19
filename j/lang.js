@@ -13,7 +13,6 @@ function __(el) {
 		__lang[context]={
 			"loading":1
 		};
-		console.log('loading '+context);
 		$.post('/a/f=translationsGet', {
 			"context":context
 		}, function(ret) {

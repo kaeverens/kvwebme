@@ -26,7 +26,6 @@ CKEDITOR.plugins.add( 'onchange',
 	init : function( editor )
 	{
 		// Test:
-//		editor.on( 'change', function(e) { console.log(e) });
 
 		var timer;
 		// Avoid firing the event too often
