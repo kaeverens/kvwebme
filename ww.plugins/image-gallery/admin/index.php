@@ -65,7 +65,7 @@ if ($n) {
 					' title="'.$meta['caption'].'"':
 					'';
 				$c.='<li id="image_'.$id.'">'
-					.'<img src="/a/f=getImg/w=64/h=64/'
+					.'<img alt="" src="/a/f=getImg/w=64/h=64/'
 					.$vars['image_gallery_directory'].'/'.urlencode($meta['name']).'"'
 					.$caption.' id="image-gallery-image'.$id.'"/><br/>'
 					.'<a href="javascript:;" class="edit-img" id="'.$id.'">'
@@ -80,7 +80,7 @@ if ($n) {
 					'/ww.plugins/image-gallery/get-image.php?uri='.$meta['image']
 					.',width=64,height=64';
 				$c.='<li id="image_'.$id.'">'
-					.'<img src="'.$image.'"'
+					.'<img alt="" src="'.$image.'"'
 					.' id="image-gallery-image'.$id.'"/><br/>'
 					.'<a href="javascript:;" class="delete-img" id="'.$id.'">'
 					.'[x]</a></li>';
@@ -198,10 +198,10 @@ $c.='<input name="page_vars[image_gallery_frame_custom_padding]" value="'
 // }
 $c.='</td><td><b>350x350 example</b><br /><img src="/i/blank.gif" '
 	.'id="fd1" style="width:350px;height:350px;background:url('
-	.'/ww.plugins/image-gallery/i/frame-demo.jpg) no-repeat;"/>'
+	.'/ww.plugins/image-gallery/i/frame-demo.jpg) no-repeat;" alt=""/>'
 	.'</td><td><b>150x150 example</b><br /><img src="/i/blank.gif" '
 	.'id="fd2" style="width:150px;height:150px;background:url('
-	.'/ww.plugins/image-gallery/i/frame-demo-small.jpg) no-repeat;"/>'
+	.'/ww.plugins/image-gallery/i/frame-demo-small.jpg) no-repeat;" alt=""/>'
 	;
 $c.='</td></tr></table></div>';
 // }
@@ -320,11 +320,11 @@ foreach ($options as $value=>$option) {
 	}
 	$c.='>'.$option.'</option>';
 }
-$c.='</select></td></tr>';
+$c.='</select></td><td colspan="2"></td></tr>';
 $c.='<tr><th>Gallery Container Width:</th>';
 $c.='<td><input type="text" name="page_vars[image_gallery_width]" ';
 $c.=' value="'.@$vars['image_gallery_width'].'"/></td>';
-$c.='<td><i>If left blank this value will be calculated manually, this is '
+$c.='<td colspan="2"><i>If left blank this value will be calculated manually, this is '
 	.'the recommended method.</i></td>';
 $c.='</tr>';
 // }

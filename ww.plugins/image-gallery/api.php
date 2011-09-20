@@ -103,8 +103,20 @@ function ImageGallery_galleryGet() {
 			}
 		}
 	}
+	// { get frame data
+	$rs=dbAll(
+		'select * from page_vars where page_id='.$page_id
+		.' and name like "image_gallery_frame%"',
+		'name'
+	);
+	// }
 	return array(
-		'items'=>$f
+		'items'=>$f,
+		'frame'=>array(
+			'type'=>@$rs['image_gallery_frame']['value'],
+			'padding'=>@$rs['image_gallery_frame_custom_padding']['value'],
+			'border'=>@$rs['image_gallery_frame_custom_border']['value']
+		)
 	);
 }
 function ImageGallery_img() {

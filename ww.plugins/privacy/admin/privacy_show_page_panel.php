@@ -34,7 +34,7 @@ echo '</td></tr>';
 if (!isset($page_vars['privacy_password'])) {
 	$page_vars['privacy_password']='';
 }
-echo '<tr><th>Allow non-logged-in readers to view the page if they enter this password:</td>'
+echo '<tr><th>Allow non-logged-in readers to view the page if they enter this password:</th>'
 	.'<td><input name="page_vars[privacy_password]" value="'
 	.htmlspecialchars($page_vars['privacy_password'])
 	.'" /></td></tr>';

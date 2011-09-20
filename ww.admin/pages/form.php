@@ -82,6 +82,7 @@ echo '<html><head>'
 	.'<link rel="stylesheet" href="/j/cluetip/jquery.cluetip.'
 	.'css" />'
 	.'<link rel="stylesheet" href="/ww.admin/theme/admin.css" />'
+	.'<title>page form</title>'
 	.'</head>'
 	.'<body class="noheader">';
 // }
@@ -136,8 +137,7 @@ $maxLength = (isset($DBVARS['site_page_length_limit'])
 	?$DBVARS['site_page_length_limit']
 	:0;
 echo '<form enctype="multipart/form-data" id="pages_form" class="pageForm"'
-	.' method="post" action="'.$_SERVER['PHP_SELF'].'"'
-	.' maxLength="'.$maxLength.'">'
+	.' method="post" action="'.$_SERVER['PHP_SELF'].'">'
 	.'<input type="hidden" name="MAX_FILE_SIZE" value="9999999" />';
 if ($page['special']&2 && !isset($_REQUEST['newpage_dialog'])) {
 	echo '<em>'.__(
@@ -163,14 +163,14 @@ echo '<div id="pages-common">';
 echo '<table>';
 echo '<tr>';
 // { name
-echo '<th width="6%"><div class="help name"></div>'.__('name')
-	.'</th><td width="23%">'
+echo '<th style="width:6%"><span class="help name"></span>'.__('name')
+	.'</th><td style="width:23%">'
 	.'<input id="name" name="name" value="'.htmlspecialchars($page['alias'])
 	.'" /></td>';
 // }
 // { title
-echo '<th width="10%"><div class="help title"></div>'.__('title')
-	.'</th><td width="23%">'
+echo '<th style="width:10%"><span class="help title"></span>'.__('title')
+	.'</th><td style="width:23%">'
 	.'<input name="title" value="'.htmlspecialchars($page['title']).'"/></td>';
 // }
 // { url 
@@ -188,7 +188,7 @@ echo '</tr>';
 // }
 // { page type, parent, associated date
 // { type
-echo '<tr><th><div class="help type"></div>type</th><td><select name="type">';
+echo '<tr><th><span class="help type"></span>type</th><td><select name="type">';
 $found=0;
 if (preg_match('/^[0-9]*$/', $page['type'])) {
 	foreach ($pagetypes as $a) {
@@ -229,7 +229,7 @@ if (!$found) {
 echo '</select></td>';
 // }
 // { parent
-echo '<th><div class="help parent"></div>'.__('parent')
+echo '<th><span class="help parent"></span>'.__('parent')
 	.'</th><td><select name="parent">';
 if ($page['parent']) {
 	$parent=Page::getInstance($page['parent']);
@@ -251,7 +251,7 @@ if (!isset($page['associated_date'])
 else {
 	$page['associated_date']=preg_replace('/:..$/', '', $page['associated_date']);
 }
-echo '<th><div class="help associated-date"></div>'.__('Associated Date')
+echo '<th><span class="help associated-date"></span>'.__('Associated Date')
 	.'</th><td><input name="associated_date" value="'.$page['associated_date']
 	.'" title="'.__('year-month-day hour:minute').'"/></td>';
 echo '</tr>';
@@ -264,7 +264,7 @@ if (isset($page['original_body'])) {
 $form_type=preg_replace('/.*\|/', '', $page['type']);
 switch ($form_type) {
 	case '0': case '5': // { normal
-		echo '<tr><th><div class="help body"></div>body</th><td colspan="5">'
+		echo '<tr><th><span class="help body"></span>body</th><td colspan="5">'
 			.Page_showBody($page, $page_vars)
 			.'</td></tr>';
 	break; // }
@@ -357,7 +357,7 @@ echo '</table></div>';
 // { Advanced Options
 echo '<div id="pages-advanced">';
 echo '<table>';
-echo '<td>';
+echo '<tr><td>';
 // { metadata 
 echo '<h3>'.__('MetaData').'</h3><table>';
 echo '<tr><th>'.__('keywords').'</th><td><input name="keywords" value="'

@@ -172,28 +172,41 @@ var Gallery={
 		}
 		switch(files[e].media) {
 			case 'image': // {
+				var src=files[e].url+'/w='+this.options.imageWidth+'/h='+this.options.imageHeight;
 				$img
 					.hide()
-					.attr(
-						'src',files[e].url+'/w='
-						+ this.options.imageWidth+'/h='
-						+ this.options.imageHeight
-					)
+					.attr('src', src)
 					.attr('title',files[e].caption)
 					.attr('num',e)
 					.attr('sequence', sequence)
 					.one('load',function() {
-						$imgwrap.css({'width':$img.width()+'px','height':Gallery.options.imageHeight+'px'});
+						var newsrc='/i/blank.gif', bgoffset='0 0', newwidth=$img.width(),
+							newheight=$img.height();
+						if (Gallery.frame.type) {
+							var furl=Gallery.frame.type=='--custom--'
+								?'/image-galleries/frame-'+window.pagedata.id+'.png'
+								:'TODO';
+							var padding=Gallery.frame.padding, border=Gallery.frame.border;
+							newsrc='/a/p=image-gallery/f=frameGet/w='+newwidth+'/h='
+								+newheight+'/pa='+padding+'/bo='+border+furl;
+						}
+						$img
+							.css({
+								'background':'url("'+src+'") no-repeat '+bgoffset,
+								'width'     :newwidth+'px',
+								'height'    :newheight+'px'
+							})
+							.attr('src', newsrc);
+						$imgwrap.css({'width':newwidth+'px','height':Gallery.options.imageHeight+'px'});
 						switch(Gallery.options.effect) {
     		      case 'fade': 
-        		    $(this).fadeIn('slow',Gallery.displayImageCallback); 
+        		    $img.fadeIn('slow',Gallery.displayImageCallback); 
           		break; 
           		case 'slideVertical': 
-								$(this).show('slide',{'direction':(current<e?'up':'down')},500,Gallery.displayImageCallback);
-          		
+								$img.show('slide',{'direction':(current<e?'up':'down')},500,Gallery.displayImageCallback);
 							break; 
           		case 'slideHorizontal': 
-								$(this).show('slide',{'direction':(current<e?'right':'left')},500,Gallery.displayImageCallback);
+								$img.show('slide',{'direction':(current<e?'right':'left')},500,Gallery.displayImageCallback);
           		break; 
 						}
 					});
@@ -421,6 +434,7 @@ var Gallery={
 				'image_gallery_directory':Gallery.options.directory
 			}, function(ret) {
 				Gallery.images=ret.items;
+				Gallery.frame=ret.frame;
 				var length=Gallery.images.length;
 				if (length==0) {
 					return this.gallery().html('<p><i>No Images were found</i></p>');
