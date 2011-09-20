@@ -172,7 +172,7 @@ function menu_show_fg ($opts) {
 		'style_from'=> 1,   // inherit sub-menu style from CSS (0) or options (1)
 		'state'	    => 0,  // 2=expand current page,1=expand all,0=contract all
 	);
-	foreach ($options as $k=>$v) {
+	foreach ($opts as $k=>$v) {
 		if (isset($options[$k])) {
 			$options[$k]=$v;
 		}
