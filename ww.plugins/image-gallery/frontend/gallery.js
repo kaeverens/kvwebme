@@ -164,6 +164,9 @@ var Gallery={
 		$('#image-gallery-video_wrapper').remove();
 		var $imgwrap=$('.ad-image');
 		if (!$imgwrap.length && this.displayed) {
+			$('<a href="javascript:Gallery.closeWholepageImage()" '
+				+'class="image-gallery-close-wholepage">back</a>')
+				.appendTo('#image-gallery-wrapper');
 			$imgwrap=$('<div id="gallery-image">'
 				+'<div class="ad-image wholepage">'
 				+'<h1 class="caption"/>'
@@ -260,6 +263,10 @@ var Gallery={
 			break; // }
 		}
 		this.displayed++; // mark that at least one image has been displayed
+	},
+	closeWholepageImage:function() {
+		$('.ad-image,.image-gallery-close-wholepage,#gallery-image').remove();
+		$('div.ad-gallery,#image-gallery-nav').css('display', 'block');
 	},
 	displayImageCallback:function() { // executed when display image animation complete
 		if(typeof(Gallery.options.customDisplayCaption)=='function') {
