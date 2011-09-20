@@ -311,7 +311,7 @@ $c.=' value="'.$time.'"/> ms</td></tr>';
 // }
 // { show links
 $options=array('true'=>'Yes','false'=>'No');
-$c.='<tr><th>Show prev/next links:</th>';
+$c.='<tr><th>Show Prev/Next links:</th>';
 $c.='<td><select name="page_vars[image_gallery_links]">';
 foreach ($options as $value=>$option) {
 	$c.='<option value="'.$value.'"';
@@ -320,7 +320,17 @@ foreach ($options as $value=>$option) {
 	}
 	$c.='>'.$option.'</option>';
 }
-$c.='</select></td><td colspan="2"></td></tr>';
+$c.='</select></td>';
+// }
+// { show captions in slider
+$c.='<th>Show Captions in Slider</th><td>'
+	.'<select name="page_vars[image_gallery_captions_in_slider]">'
+	.'<option>No</option><option value="1"';
+if ('1'==@$vars['image_gallery_captions_in_slider']) {
+	$c.=' selected="selected"';
+}
+$c.='">Yes</option></select></td></tr>';
+// }
 $c.='<tr><th>Gallery Container Width:</th>';
 $c.='<td><input type="text" name="page_vars[image_gallery_width]" ';
 $c.=' value="'.@$vars['image_gallery_width'].'"/></td>';

@@ -68,7 +68,7 @@ var Gallery={
   },
 	display:function() { // initial display function - gets called once
 		this.displayImage(0);
-		this.gallery().html('<div id="gallery-container"><div id="slider"/></div>');
+		this.gallery().html('<div id="gallery-container"><div id="slider" style="width:100%"/></div>');
 		if (this.options.display=='custom' && typeof(this.options.customDisplayInit)=='function') {
 			return this.options.customDisplayInit();
 		}
@@ -116,7 +116,7 @@ var Gallery={
 	},
 	displayGrid:function() { // shows the grid display using a carousel
 		var file, size=this.options.thumbsize, row=0, j;
-		var html='<table class="images-container"><tr>';
+		var html='<table class="images-container" style="width:100%"><tr>';
 		this.current=0;
 		$.each(this.images,function(i) {
 			if(i%Gallery.options.items==0) {
@@ -459,6 +459,7 @@ var Gallery={
 			}, function(ret) {
 				Gallery.images=ret.items;
 				Gallery.frame=ret.frame;
+				Gallery.caption_in_slider=ret['caption-in-slider'];
 				var length=Gallery.images.length;
 				if (length==0) {
 					return this.gallery().html('<p><i>No Images were found</i></p>');
@@ -612,9 +613,12 @@ var Gallery={
 			:file.height>file.width
 				?[this.options.thumbsize, (file.height*(this.options.thumbsize/file.width))]
 				:[(file.width*(this.options.thumbsize/file.height)), this.options.thumbsize];
+		var caption=Gallery.caption_in_slider
+			?'<br />'+file.caption
+			:'';
 		return '<a href="'+(file.media=='image'?file.url:file.href)+'" id="'
 			+Gallery.position+'"'+popup+style+'><img src="'+file.url+'/w='
-			+xy[0]+'/h='+xy[1]+'"/></a>';
+			+xy[0]+'/h='+xy[1]+'"/>'+caption+'</a>';
 	},
 	resetTimeout:function() { // resets the slideshow timeout
 		clearTimeout(Gallery.t);

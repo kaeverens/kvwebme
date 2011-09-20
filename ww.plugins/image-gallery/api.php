@@ -103,15 +103,16 @@ function ImageGallery_galleryGet() {
 			}
 		}
 	}
-	// { get frame data
+	// { get gallery data
 	$rs=dbAll(
 		'select * from page_vars where page_id='.$page_id
-		.' and name like "image_gallery_frame%"',
+		.' and name like "image_gallery_%"',
 		'name'
 	);
 	// }
 	return array(
 		'items'=>$f,
+		'caption-in-slider'=>(int)@$rs['image_gallery_captions_in_slider'],
 		'frame'=>array(
 			'type'=>@$rs['image_gallery_frame']['value'],
 			'padding'=>@$rs['image_gallery_frame_custom_padding']['value'],
