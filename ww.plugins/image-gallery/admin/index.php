@@ -13,14 +13,17 @@
  */
 
 $cssurl=false;
-$c = '<div id="image-gallery-tabs">';
-$c.= '<ul>';
-$c.= '<li><a href="#image-gallery-images">Images</a></li>';
-$c.= '<li><a href="#image-gallery-template">Gallery Template</a></li>';
-$c.= '<li><a href="#image-gallery-header">Header</a></li>';
-$c.= '<li><a href="#image-gallery-footer">Footer</a></li>';
-$c.= '<li><a href="#image-gallery-advanced">Advanced Settings</a></li>';
-$c.= '</ul>';
+// { form header
+$c = '<div id="image-gallery-tabs">'
+	.'<ul>'
+	.'<li><a href="#image-gallery-images">Images</a></li>'
+	.'<li><a href="#image-gallery-template">Gallery Template</a></li>'
+	.'<li><a href="#image-gallery-header">Header</a></li>'
+	.'<li><a href="#image-gallery-footer">Footer</a></li>'
+	.'<li><a href="#image-gallery-frames">Frames</a></li>'
+	.'<li><a href="#image-gallery-advanced">Advanced Settings</a></li>'
+	.'</ul>';
+// }
 // { images
 $c.='<div id="image-gallery-images">';
 // { image gallery directory - if not exists create it
@@ -42,45 +45,9 @@ $c.=$vars['image_gallery_directory'].'"/>';
 WW_addScript('/ww.plugins/image-gallery/files/swfobject.js');
 WW_addScript('/ww.plugins/image-gallery/files/uploadify.jquery.min.js');
 WW_addCSS('/ww.plugins/image-gallery/files/uploadify.css');
-$script='
-$(function(){
-	$("#uploader").uploadify({
-		"uploader":"/ww.plugins/image-gallery/files/uploadify.swf",
-		"script":"/ww.plugins/image-gallery/admin/upload.php",
-		"cancelImg":"/ww.plugins/image-gallery/files/cancel.png",
-		"multi":true,
-		"buttonText":"Upload Files",
-		"removeCompleted":true,
-		"fileDataName":"file_upload",
-		"scriptData":{
-			"PHPSESSID":"'.session_id().'",
-			"gallery_id":"'.$page['id'].'"
-		},
-		"onComplete":function(event,ID,fileObj,response,data){
-			$.post("/ww.plugins/image-gallery/admin/new-files.php",
-				{
-					"gallery_id":"'.$page['id'].'",
-					"id":response
-				},
-				function(html){
-					if($("#image-gallery-wrapper"))
-						$("#image-gallery-wrapper").append(html);
-					else
-						$("#image-gallery-images").append("<ul id=\'image-gallery-wrapp'
-							.'er\'>"+html+"</ul>");
-				}
-			);
-		},
-		"fileExt":"*.jpg;*.jpeg;*.png;*.gif",
-		"fileDesc":"Images Only",
-		"auto":true
-	});
-});
-';
-WW_addInlineScript($script);
-$c.='<div id="upload">';
-$c.='<input type="file" name="file_upload" id="uploader"/>';
-$c.='</div>';
+$c.='<div id="upload">'
+	.'<input type="file" name="file_upload" id="uploader"/>'
+	.'</div>';
 // }
 $images=dbAll(
 	'select * from image_gallery where gallery_id='.$page['id']
@@ -157,14 +124,87 @@ $c.='</div>';
 // }
 // { footer
 $c.='<div id="image-gallery-footer">'
-	.'<p>This text will appear below the gallery.</p>';
-$c
-	.=ckeditor(
+	.'<p>This text will appear below the gallery.</p>'
+	.ckeditor(
 		'page_vars[footer]',
 		(isset($vars['footer'])?$vars['footer']:''),
 		0,
 		$cssurl
 	);
+$c.='</div>';
+// }
+// { frames
+$c.='<div id="image-gallery-frames">'
+	.'<p>Picture frames for your images.</p>'
+	.'<select id="val-image_gallery_frame" name="page_vars[image_gallery_frame]">'
+	.'<option value=""> -- none -- </option>';
+$frames=new DirectoryIterator(dirname(__FILE__).'/../frames');
+foreach ($frames as $frame) {
+	if ($frame->isDot() || $frame->getFilename()=='.svn') {
+		continue;
+	}
+	$fname=$frame->getFilename();
+	$c.='<option';
+	if ($fname==@$vars['image_gallery_frame']) {
+		$c.=' selected="selected"';
+	}
+	$c.='>'.$fname.'</option>';
+}
+$c.='<option';
+if ('--custom--'==@$vars['image_gallery_frame']) {
+	$c.=' selected="selected"';
+}
+$c.='>--custom--</option>';
+$c.='</select>';
+// { custom
+$c.='<div id="image-gallery-frame-custom">'
+	.'<input type="file" id="frame-uploader"/><table><tr><td>';
+// { borders
+if (!isset($vars['image_gallery_frame_custom_border'])) {
+	$vars['image_gallery_frame_custom_border']='10 10 10 10';
+}
+$borders=explode(' ', $vars['image_gallery_frame_custom_border']);
+$c.='<input name="page_vars[image_gallery_frame_custom_border]" value="'
+	.$vars['image_gallery_frame_custom_border'].'" type="hidden"/>'
+	.'<table>'
+	.'<tr><th>Border width top</th><td><input class="border" value="'
+	.$borders[0].'"/></td></tr>'
+	.'<tr><th>Border width right</th><td><input class="border" value="'
+	.$borders[1].'"/></td></tr>'
+	.'<tr><th>Border width bottom</th><td><input class="border" value="'
+	.$borders[2].'"/></td></tr>'
+	.'<tr><th>Border width left</th><td><input class="border" value="'
+	.$borders[3].'"/></td></tr>'
+	.'</table>';
+// }
+$c.='</td><td>';
+// { paddings
+if (!isset($vars['image_gallery_frame_custom_padding'])) {
+	$vars['image_gallery_frame_custom_padding']='10 10 10 10';
+}
+$paddings=explode(' ', $vars['image_gallery_frame_custom_padding']);
+$c.='<input name="page_vars[image_gallery_frame_custom_padding]" value="'
+	.$vars['image_gallery_frame_custom_padding'].'" type="hidden"/>'
+	.'<table>'
+	.'<tr><th>Padding width top</th><td><input class="padding" value="'
+	.$paddings[0].'"/></td></tr>'
+	.'<tr><th>Padding width right</th><td><input class="padding" value="'
+	.$paddings[1].'"/></td></tr>'
+	.'<tr><th>Padding width bottom</th><td><input class="padding" value="'
+	.$paddings[2].'"/></td></tr>'
+	.'<tr><th>Padding width left</th><td><input class="padding" value="'
+	.$paddings[3].'"/></td></tr>'
+	.'</table>';
+// }
+$c.='</td><td><b>350x350 example</b><br /><img src="/i/blank.gif" '
+	.'id="fd1" style="width:350px;height:350px;background:url('
+	.'/ww.plugins/image-gallery/i/frame-demo.jpg) no-repeat;"/>'
+	.'</td><td><b>150x150 example</b><br /><img src="/i/blank.gif" '
+	.'id="fd2" style="width:150px;height:150px;background:url('
+	.'/ww.plugins/image-gallery/i/frame-demo-small.jpg) no-repeat;"/>'
+	;
+$c.='</td></tr></table><div>';
+// }
 $c.='</div>';
 // }
 // { advanced settings
@@ -289,6 +329,7 @@ $c.='<td><i>If left blank this value will be calculated manually, this is '
 $c.='</tr>';
 // }
 // }
+// { form footer
 $c.='</table>';
 $c.='</div>';
 $c.='</div>';
@@ -304,3 +345,4 @@ file_put_contents(
 );
 ww_addScript('/ww.plugins/image-gallery/admin/admin.js');
 $c.='<link rel="stylesheet" href="/ww.plugins/image-gallery/admin/admin.css" />';
+// }

@@ -35,3 +35,15 @@ function ImageGallery_adminDetailsGet() {
 	$meta=json_decode($meta, true);
 	return $meta;
 }
+function ImageGallery_adminFrameUpload() {
+	$gallery_id=(int)@$_POST['id'];
+	if (!$gallery_id) {
+		exit;
+	}
+	$dir=USERBASE.'f/image-galleries';
+	@mkdir($dir);
+	$from=$_FILES['file_upload']['tmp_name'];
+	$to  =$dir.'/frame-'.$gallery_id.'.png';
+	`convert $from $to`;
+	return array('done'=>1);
+}
