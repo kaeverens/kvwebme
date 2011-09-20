@@ -112,7 +112,9 @@ function ImageGallery_galleryGet() {
 	// }
 	return array(
 		'items'=>$f,
-		'caption-in-slider'=>(int)@$rs['image_gallery_captions_in_slider'],
+		'caption-in-slider'=>(int)@$rs['image_gallery_captions_in_slider']['value'],
+		'image-width'=>(int)@$rs['image_gallery_image_x']['value'],
+		'image-height'=>(int)@$rs['image_gallery_image_y']['value'],
 		'frame'=>array(
 			'type'=>@$rs['image_gallery_frame']['value'],
 			'padding'=>@$rs['image_gallery_frame_custom_padding']['value'],
