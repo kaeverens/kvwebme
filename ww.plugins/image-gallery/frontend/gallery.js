@@ -417,10 +417,10 @@ var Gallery={
 		}
 		$.extend(this.options,opts);
 		// }
-		$.post('/a/p=image-gallery/f=imagesGet/id='+pagedata.id, {
+		$.post('/a/p=image-gallery/f=galleryGet/id='+pagedata.id, {
 				'image_gallery_directory':Gallery.options.directory
-			}, function(items) {
-				Gallery.images=items;
+			}, function(ret) {
+				Gallery.images=ret.items;
 				var length=Gallery.images.length;
 				if (length==0) {
 					return this.gallery().html('<p><i>No Images were found</i></p>');

@@ -19,7 +19,7 @@ require_once KFM_BASE_PATH.'/initialise.php';
 /**
   * script for retrieving a JSON array of images/videos in a gallery
 	*/
-function ImageGallery_imagesGet() {
+function ImageGallery_galleryGet() {
 	$page_id=(int)@$_REQUEST['id'];
 	if ($page_id==0) {
 		exit;
@@ -103,7 +103,9 @@ function ImageGallery_imagesGet() {
 			}
 		}
 	}
-	return $f;
+	return array(
+		'items'=>$f
+	);
 }
 function ImageGallery_img() {
 	$id    =(int)$_REQUEST['id'];
@@ -146,21 +148,53 @@ function ImageGallery_frameGet() {
 		$black = imagecolorallocate($imgN, 0, 0, 0);
 		imagecolortransparent($imgN, $black);
 		// top left 
-		imagecopyresampled($imgN, $imgO, 0, 0, 0, 0, ceil($border[3]/$ratio), ceil($border[0]/$ratio), $border[3], $border[0]);
+		imagecopyresampled(
+			$imgN, $imgO,
+			0, 0, 0, 0,
+			ceil($border[3]/$ratio), ceil($border[0]/$ratio), $border[3], $border[0]
+		);
 		// top right 
-		imagecopyresampled($imgN, $imgO, $width-ceil($border[1]/$ratio), 0, $imgOsize[0]-$border[1], 0, ceil($border[1]/$ratio), ceil($border[0]/$ratio), $border[1], $border[0]);
+		imagecopyresampled(
+			$imgN, $imgO,
+			$width-floor($border[1]/$ratio)-1, 0, $imgOsize[0]-$border[1]-1, 0,
+			ceil($border[1]/$ratio), ceil($border[0]/$ratio), $border[1], $border[0]
+		);
 		// bottom left 
-		imagecopyresampled($imgN, $imgO, 0, $height-ceil($border[2]/$ratio), 0, $imgOsize[1]-$border[2], ceil($border[3]/$ratio), ceil($border[2]/$ratio), $border[3], $border[2]);
+		imagecopyresampled(
+			$imgN, $imgO,
+			0, $height-floor($border[2]/$ratio)-1, 0, $imgOsize[1]-$border[2]-1,
+			ceil($border[3]/$ratio), ceil($border[2]/$ratio), $border[3], $border[2]
+		);
 		// bottom right 
-		imagecopyresampled($imgN, $imgO, $width-ceil($border[1]/$ratio), $height-ceil($border[2]/$ratio), $imgOsize[0]-$border[1], $imgOsize[1]-$border[2], ceil($border[1]/$ratio), ceil($border[2]/$ratio), $border[1], $border[2]);
+		imagecopyresampled(
+			$imgN, $imgO,
+			$width-floor($border[1]/$ratio)-1, $height-floor($border[2]/$ratio)-1, $imgOsize[0]-$border[1]-1, $imgOsize[1]-$border[2]-1,
+			ceil($border[1]/$ratio), ceil($border[2]/$ratio), $border[1], $border[2]
+		);
 		// left
-		imagecopyresampled($imgN, $imgO, 0, ceil($border[0]/$ratio), 0, $border[0], $border[3]/$ratio, $height-floor(($border[2]+$border[0])/$ratio), $border[3], $imgOsize[1]-$border[2]-$border[0]);
+		imagecopyresampled(
+			$imgN, $imgO,
+			0, floor($border[0]/$ratio), 0, $border[0],
+			ceil($border[3]/$ratio), $height-floor(($border[2]+$border[0])/$ratio), $border[3], $imgOsize[1]-$border[2]-$border[0]
+		);
 		// right
-		imagecopyresampled($imgN, $imgO, $width-ceil($border[1]/$ratio), ceil($border[0]/$ratio), $imgOsize[0]-$border[1], $border[0], ceil($border[1]/$ratio), $height-floor(($border[2]+$border[0])/$ratio), $border[3], $imgOsize[1]-$border[2]-$border[0]);
+		imagecopyresampled(
+			$imgN, $imgO,
+			$width-floor($border[1]/$ratio)-1, floor($border[0]/$ratio), $imgOsize[0]-$border[1]-1, $border[0],
+			ceil($border[1]/$ratio), $height-floor(($border[2]+$border[0])/$ratio), $border[3], $imgOsize[1]-$border[2]-$border[0]
+		);
 		// top
-		imagecopyresampled($imgN, $imgO, floor($border[3]/$ratio), 0, $border[3], 0, $width-floor(($border[3]+$border[1])/$ratio), ceil($border[0]/$ratio), $imgOsize[0]-$border[3]-$border[1], $border[0]);
+		imagecopyresampled(
+			$imgN, $imgO,
+			floor($border[3]/$ratio), 0, $border[3], 0,
+			$width-floor(($border[3]+$border[1])/$ratio), ceil($border[0]/$ratio), $imgOsize[0]-$border[3]-$border[1], $border[0]
+		);
 		// bottom
-		imagecopyresampled($imgN, $imgO, ceil($border[3]/$ratio), $height-ceil($border[2]/$ratio), $border[3], $imgOsize[1]-$border[2], $width-floor(($border[3]+$border[1])/$ratio), ceil($border[2]/$ratio), $imgOsize[0]-$border[3]-$border[1], $border[2]);
+		imagecopyresampled(
+			$imgN, $imgO,
+			floor($border[3]/$ratio), $height-floor($border[2]/$ratio)-1, $border[3], $imgOsize[1]-$border[2]-1,
+			$width-floor(($border[3]+$border[1])/$ratio), ceil($border[2]/$ratio), $imgOsize[0]-$border[3]-$border[1], $border[2]
+		);
 	}
 	header('Content-type: image/png');
 	imagepng($imgN);

@@ -66,7 +66,7 @@ if ($n) {
 					'';
 				$c.='<li id="image_'.$id.'">'
 					.'<img src="/a/f=getImg/w=64/h=64/'
-					.$vars['image_gallery_directory'].'/'.$meta['name'].'"'
+					.$vars['image_gallery_directory'].'/'.urlencode($meta['name']).'"'
 					.$caption.' id="image-gallery-image'.$id.'"/><br/>'
 					.'<a href="javascript:;" class="edit-img" id="'.$id.'">'
 					.__('edit').'</a> or '
@@ -203,7 +203,7 @@ $c.='</td><td><b>350x350 example</b><br /><img src="/i/blank.gif" '
 	.'id="fd2" style="width:150px;height:150px;background:url('
 	.'/ww.plugins/image-gallery/i/frame-demo-small.jpg) no-repeat;"/>'
 	;
-$c.='</td></tr></table><div>';
+$c.='</td></tr></table></div>';
 // }
 $c.='</div>';
 // }
