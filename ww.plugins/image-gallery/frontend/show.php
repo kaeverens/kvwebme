@@ -66,7 +66,7 @@ function ImageGallery_show($PAGEDATA) {
 		$c.=$smarty->fetch(
 			USERBASE.'ww.cache/image-gallery/'.$PAGEDATA->id
 		);
-		WW_addScript('/ww.plugins/image-gallery/frontend/gallery2.js');
+		WW_addScript('/ww.plugins/image-gallery/frontend/gallery3.js');
 		WW_addCSS('/ww.plugins/image-gallery/frontend/gallery.css');
 		// }
 		return $c.$vars['footer'];
