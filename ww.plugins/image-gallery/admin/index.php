@@ -100,7 +100,8 @@ $types=array(
 	'---',
 	'List',
 	'Grid',
-	'Simple'
+	'Simple',
+	'grid-with-wholepage-image'
 );
 $c.='<div id="image-gallery-template">'
 	.'<p>This controls how the gallery is displayed, choose from some of the '
