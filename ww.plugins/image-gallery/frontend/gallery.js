@@ -134,7 +134,31 @@ var Gallery={
 			++Gallery.current;
 		});
 		html+='</tr></table>';
-		$('#slider').append(html);
+		$('#slider')
+			.append(html)
+			.find('img')
+			.one('load', Gallery.applyFrame);
+	},
+	applyFrame:function() {
+		var src=this.src,$img=$(this);
+		var newsrc='/i/blank.gif', bgoffset='0 0', newwidth=$img.width(),
+			newheight=$img.height(),
+			ratio=Gallery.options.imageWidth/Gallery.options.thumbsize;
+		if (Gallery.frame.type) {
+			var furl=Gallery.frame.type=='--custom--'
+				?'/image-galleries/frame-'+window.pagedata.id+'.png'
+				:'TODO';
+			var padding=Gallery.frame.padding, border=Gallery.frame.border;
+			newsrc='/a/p=image-gallery/f=frameGet/w='+newwidth+'/h='
+				+newheight+'/pa='+padding+'/bo='+border+furl+'/ratio='+ratio;
+		}
+		$img
+			.css({
+				'background':'url("'+src+'") no-repeat '+bgoffset,
+				'width'     :newwidth+'px',
+				'height'    :newheight+'px'
+			})
+			.attr('src', newsrc);
 	},
 	displayImage:function(e) { // displays the main "big" image if present
 		$('#image-gallery-video_wrapper').remove();
