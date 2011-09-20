@@ -109,7 +109,7 @@ $(function(){
 					+'<img src="/a/f=getImg/w=64/h=64/'+image+'"'
 					+' id="image-gallery-image'+id+'"/><br/>'
 					+'<a href="javascript:;" class="delete-img" id="'+id+'">'
-					+'Delete</a><br/></li>';
+					+'[x]</a></li>';
 					$('#image-gallery-wrapper').append(c);
 					$(this).dialog('close').remove();
 				},

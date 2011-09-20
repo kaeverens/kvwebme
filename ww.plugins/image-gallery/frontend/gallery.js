@@ -202,6 +202,7 @@ var Gallery={
 				var src=files[e].url+'/w='+this.options.imageWidth+'/h='+this.options.imageHeight;
 				$img
 					.hide()
+					.css({'width':'auto','height':'auto'})
 					.attr('src', src)
 					.attr('title',files[e].caption)
 					.attr('num',e)
@@ -225,6 +226,7 @@ var Gallery={
 							})
 							.attr('src', newsrc);
 						$imgwrap.css({'width':newwidth+'px','height':Gallery.options.imageHeight+'px'});
+						$imgwrap.closest('#gallery-image').css({'width':newwidth+'px','height':Gallery.options.imageHeight+'px'});
 						switch(Gallery.options.effect) {
     		      case 'fade': 
         		    $img.fadeIn('slow',Gallery.displayImageCallback); 
