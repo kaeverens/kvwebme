@@ -33,7 +33,11 @@ $plugin=array(
 
 function SiteCredits_isActive() {
 	global $DBVARS;
-	if (@$DBVARS['sitecredits-credits']<0) {
+	if (!isset($DBVARS['sitecredits-credits'])) {
+		$DBVARS['sitecredits-credits']=0;
+		Core_configRewrite();
+	}
+	if ($DBVARS['sitecredits-credits']<-1) {
 		echo '<p>Website Administrator attention needed.'
 			.' Please log into your administration area (and check your email).</p>';
 		exit;

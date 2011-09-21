@@ -26,7 +26,7 @@ $(function(){
 					}
 				}
 				var cost=num_credits*ppc;
-				var pp_fee=Math.ceil((cost*.039+.30)*100)/100;
+				var pp_fee=Math.ceil((cost*.039+.35)*100)/100;
 				$('#paypal-fee').text(pp_fee);
 				cost+=pp_fee;
 				$('#total-cost').text(cost);

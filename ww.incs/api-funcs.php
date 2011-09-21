@@ -114,8 +114,8 @@ function Core_getFileInfo() {
 	* @return null
 	*/
 function Core_getImg() {
-	$w=(int)$_REQUEST['w'];
-	$h=(int)$_REQUEST['h'];
+	$w=isset($_REQUEST['w'])?(int)$_REQUEST['w']:0;
+	$h=isset($_REQUEST['h'])?(int)$_REQUEST['h']:0;
 	$f=USERBASE.'f/'.$_REQUEST['_remainder'];
 	$ext=strtolower(preg_replace('/.*\./', '', $f));
 	switch ($ext) {
@@ -138,12 +138,12 @@ function Core_getImg() {
 	if ($w || $h) {
 		list($width, $height)=getimagesize($f);
 		$resize=0;
-		if ($width>$w) {
+		if ($w && $width>$w) {
 			$height*=$w/$width;
 			$width=$w;
 			$resize=1;
 		}
-		if ($height>$h) {
+		if ($h && $height>$h) {
 			$width*=$h/$height;
 			$height=$h;
 			$resize=1;
