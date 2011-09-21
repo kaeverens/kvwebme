@@ -198,7 +198,8 @@ echo '>'.__('Yes').'</option>
 		.'</textarea></td></tr>';
 $message=(@$DBVARS['maintenance-mode-message']=='')
 	?'<h1>'.__('Temporarily Unavailable').'</h1><p>'.__(
-		'This website is undergoing maintenance and is temporarily unavailable')
+		'This website is undergoing maintenance and is temporarily unavailable'
+	)
 	.'.</p>'
 	:$DBVARS['maintenance-mode-message'];
 echo '<tr '.$display.' class="maintenance-message">

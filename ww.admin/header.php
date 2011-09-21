@@ -18,6 +18,8 @@
 	* @param string $name   the name of the menu parent
 	* @param string $prefix id prefix for elements
 	* @param int    $depth  depth in the tree that these links are
+	*
+	* @return null
 	*/
 function Core_adminMenuShow($items, $name=false, $prefix='', $depth=0) {
 	$target=(isset($items['_target']))?' target="'.$items['_target'].'"':'';

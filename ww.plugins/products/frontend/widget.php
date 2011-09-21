@@ -1,4 +1,16 @@
 <?php
+/**
+	* widget for displaying a list of products or categories
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 $html='';
 $widget_type=isset($vars->widget_type) && $vars->widget_type
 	?$vars->widget_type
@@ -10,6 +22,13 @@ $cats=dbAll(
 	.'where parent_id='.$parent_cat.' and enabled order by sortNum,name'
 );
 
+/**
+	* get a list of sub-categories in UL format
+	*
+	* @param int $pid product category ID
+	*
+	* @return string $html the UL
+	*/
 function Products_categoriesListSubCats($pid) {
 	$cats=dbAll(
 		'select id,name from products_categories '
@@ -54,7 +73,8 @@ switch ($widget_type) {
 	default: // { List Categories
 		$html='<ul>';
 		foreach ($cats as $c) {
-			$html.='<li><a href="/_r?type=products&product_cid='.$c['id'].'">'.$c['name'].'</a></li>';
+			$html.='<li><a href="/_r?type=products&product_cid='.$c['id'].'">'
+				.$c['name'].'</a></li>';
 		}
 		$html.='</ul>';
 	break; // }

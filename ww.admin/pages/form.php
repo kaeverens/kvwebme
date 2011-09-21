@@ -297,12 +297,14 @@ switch ($form_type) {
 			echo '>'.htmlspecialchars($v).'</option>';
 		}
 		echo '</select></td>'
-			.'<td colspan="4">'.__('Where do you want to start summarising your p'
+			.'<td colspan="4">'.__(
+				'Where do you want to start summarising your p'
 				.'ages from? If you want this summary to list excerpts from all the p'
 				.'ages on your site, then choose "<strong>none</strong>". Otherwise, '
 				.'choose the page which <strong>contains</strong> the pages you want '
 				.'summarised.'
-			).'</td></tr>';
+			)
+			.'</td></tr>';
 	break; // }
 	case '9': // { table of contents
 		echo '<tr><td colspan="6"><div class="tabs">'
@@ -373,9 +375,10 @@ $importance=(float)$page['importance'];
 if ($importance<.1) {
 	$importance=.5;
 }
-echo '<tr title="'.__(
-	'used by Google. importance of page relative to other pages on site. valu'
-	.'es 0.1 to 1.0'
+echo '<tr title="'
+	.__(
+		'used by Google. importance of page relative to other pages on site. valu'
+		.'es 0.1 to 1.0'
 	)
 	.'"><th>'.__('importance')
 	.'</th><td><input name="importance" value="'.$importance.'" /></td></tr>';

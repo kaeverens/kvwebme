@@ -1,10 +1,16 @@
 <!doctype html>
 <html>
 	<head>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+		<script
+			src="https://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js">
+		</script>
+		<script
+			src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js">
+		</script>
 		<script src="/j/lang.js"></script>
-		<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet"/>
+		<link
+			href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css"
+			rel="stylesheet"/>
 		<link href="/ww.admin/theme/admin.css" rel="stylesheet"/>
 	</head>
 	<body>
@@ -42,12 +48,22 @@
 						</th>
 					</tr>
 				</table>
-				<p class="__">If you've forgotten your password, use the form above to send a token for creating a new password, then use the token below to change your password</p>
+				<p class="__">If you've forgotten your password, use the form above
+					to send a token for creating a new password, then use the token
+					below to change your password</p>
 				<table>
 					<tr><th class="__">Token</th><td><input id="token"/></td></tr>
-					<tr><th class="__">New Password</th><td><input id="password2" type="password"/></td></tr>
-					<tr><th class="__">(repeat)</th><td><input id="password3" type="password"/></td></tr>
-					<tr><th colspan="2" style="text-align:right;"><button id="change-password" class="__">Change Password</button></th></tr>
+					<tr>
+						<th class="__">New Password</th>
+						<td><input id="password2" type="password"/></td>
+					</tr>
+					<tr>
+						<th class="__">(repeat)</th>
+						<td><input id="password3" type="password"/></td>
+					</tr>
+					<tr><th colspan="2" style="text-align:right;">
+						<button id="change-password" class="__">Change Password</button>
+					</th></tr>
 				</table>
 			</div>
 		</div>
@@ -87,7 +103,9 @@
 					var email=$('#email-r').val(), token=$('#token').val(),
 						pass2=$('#password2').val(), pass3=$('#password3').val();
 					if (email=='' || token=='' || pass2=='' || pass3=='') {
-						return alert('<?php echo __('email, token and passwords must be filled in'); ?>');
+						return alert('<?php
+							echo __('email, token and passwords must be filled in');
+							?>');
 					}
 					if (pass2!=pass3) {
 						return alert('<?php echo __('passwords do not match'); ?>');

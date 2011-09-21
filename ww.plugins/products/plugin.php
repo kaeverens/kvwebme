@@ -651,7 +651,7 @@ class ProductType{
 						'<input type="hidden" name="products_values_'.$f->n
 						.'" value="'.htmlspecialchars($val).'"/>'
 					);
-					break; // }
+				break; // }
 				case 'selectbox': // {
 					if (@$f->u) {
 						$valid_entries=explode("\n", $val);

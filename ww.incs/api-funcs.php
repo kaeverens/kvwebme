@@ -12,9 +12,22 @@
 	* @link     http://kvsites.ie/
 	*/
 
+/**
+	* does nothing... :-)
+	*
+	* @return null
+	*/
 function Core_nothing() {
 	return array();
 }
+
+/**
+	* check that a directory exists
+	*
+	* @param string $file directory to check
+	*
+	* @return null
+	*/
 function Core_directoryCheckName($file) {
 	if (strpos($file, '..')!==false
 		|| (strpos($file, '/.')!==false
@@ -28,6 +41,14 @@ function Core_directoryCheckName($file) {
 		exit;
 	}
 }
+
+/**
+	* check that a file exists
+	*
+	* @param string $file file to check
+	*
+	* @return null
+	*/
 function Core_fileCheckName($file) {
 	if (strpos($file, '..')!==false
 		|| (strpos($file, '/.')!==false
@@ -41,6 +62,12 @@ function Core_fileCheckName($file) {
 		exit;
 	}
 }
+
+/**
+	* get list of files in a directory
+	*
+	* @return array of files
+	*/
 function Core_getFileList() {
 	if (!isset($_REQUEST['src'])) {
 		return array('error'=>'missing src');
@@ -60,6 +87,12 @@ function Core_getFileList() {
 	}
 	return $files;
 }
+
+/**
+	* get mime data about a file
+	*
+	* @return data about the file
+	*/
 function Core_getFileInfo() {
 	if (!isset($_REQUEST['src'])) {
 		return array('error'=>'missing src');
@@ -74,6 +107,12 @@ function Core_getFileInfo() {
 		'mime'=>$mime
 	);
 }
+
+/**
+	* retrieve an image
+	*
+	* @return null
+	*/
 function Core_getImg() {
 	$w=(int)$_REQUEST['w'];
 	$h=(int)$_REQUEST['h'];
@@ -88,7 +127,7 @@ function Core_getImg() {
 		default: // {
 			echo 'unhandled image extension '.$ext;
 			exit;
-		// }
+			// }
 	}
 	if (strpos($f, '/.')!=false) {
 		return false; // hack attempt
@@ -132,6 +171,12 @@ function Core_getImg() {
 	readfile($f);
 	exit;
 }
+
+/**
+	* get details of the logged-in user
+	*
+	* @return array of details
+	*/
 function Core_getUserData() {
 	if (!isset($_SESSION['userdata'])) { // not logged in
 		return array('error'=>'you are not logged in');
@@ -156,13 +201,19 @@ function Core_getUserData() {
 	$user['groups']=$g;
 	return $user;
 }
+
+/**
+	* log in
+	*
+	* @return null
+	*/
 function Core_login() {
 	// { variables
 	if (!isset($_REQUEST['email']) || !isset($_REQUEST['password'])) {
 		exit(
-			'{"error":"'.addslashes(__(
-					'missing email address or password'
-				)).'"}'
+			'{"error":"'.addslashes(
+				__('missing email address or password')
+			).'"}'
 		);
 	}
 	$email=$_REQUEST['email'];
@@ -180,9 +231,21 @@ function Core_login() {
 	}
 	exit('{"error":"either the email address or the password are incorrect"}');
 }
+
+/**
+	* log out
+	*
+	* @return null
+	*/
 function Core_logout() {
 	unset($_SESSION['userdata']);
 }
+
+/**
+	* request a login token to be sent out to your email address
+	*
+	* @return null
+	*/
 function Core_sendLoginToken() {
 	$email=$_REQUEST['email'];
 	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -204,6 +267,12 @@ function Core_sendLoginToken() {
 	}
 	exit('{"error":"that email address not found in the users table"}');
 }
+
+/**
+	* update a password, using a verification code
+	*
+	* @return null
+	*/
 function Core_updateUserPasswordUsingToken() {
 	$email=$_REQUEST['email'];
 	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -235,7 +304,7 @@ function Core_updateUserPasswordUsingToken() {
 /**
 	* get all available translations for a particular context
 	*
-	* return array of tanslations
+	* @return array of tanslations
 	*/
 function Core_translationsGet() {
 	global $_languages;
