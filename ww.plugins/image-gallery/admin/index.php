@@ -28,8 +28,9 @@ $c = '<div id="image-gallery-tabs">'
 $c.='<div id="image-gallery-images">';
 // { image gallery directory - if not exists create it
 $c.='<a href="javascript:;" style="float:right" id="video">Add Video File</a>';
-if (!$vars['image_gallery_directory']
-	||!is_dir(USERBASE.'f/'.$vars['image_gallery_directory'])
+if (!isset($vars['image_gallery_directory'])
+	|| !$vars['image_gallery_directory']
+	|| !is_dir(USERBASE.'f/'.$vars['image_gallery_directory'])
 ) {
 	if (!is_dir(USERBASE.'f/image-galleries')) {
 		mkdir(USERBASE.'f/image-galleries');
@@ -113,7 +114,7 @@ foreach ($types as $type) {
 	$c.='<option value="'.strtolower($type).'">'.$type.'</option>';
 }
 $c.='</select>';
-$content=$vars['gallery-template'];
+$content=@$vars['gallery-template'];
 $c.=ckeditor('page_vars[gallery-template]', $content, 0);
 $c.='</div>';
 // }

@@ -212,8 +212,7 @@ function ImageGallery_frameGet() {
 		);
 	}
 	header('Content-type: image/png');
-	imagepng($imgN);
-	exit;
+	imagepng($imgN, $frame);
 	header('Expires-Active: On');
 	header('Cache-Control: max-age = 3600');
 	header('Expires: '. date('r', time()+3600));
