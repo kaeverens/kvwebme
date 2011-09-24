@@ -70,7 +70,7 @@ window.ww={
 // { variables
 var function_urls=[],kaejax_is_loaded=0,months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var kaejax_timeouts=[];
-var CKEDITOR_BASEPATH='/j/ckeditor-3.6/';
+var CKEDITOR_BASEPATH='/j/ckeditor-3.6.2/';
 // }
 var Json = {
 	toString: function(arr) {

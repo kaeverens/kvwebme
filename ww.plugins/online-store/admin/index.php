@@ -282,8 +282,8 @@ $script='var bbcode_editor=CKEDITOR.replace("bank_transfer_message", { extr'
 	.'f","shades_smile.gif", "cry_smile.gif","kiss.gif" ], smiley_description'
 	.'s : [ "smiley", "sad", "wink", "laugh", "cheeky", "blush", "surprise", '
 	.'"indecision", "angel", "cool", "crying", "kiss" ] });';
-WW_addScript('/j/ckeditor-3.6/ckeditor.js');
-WW_addScript('/j/ckeditor-3.6/adapters/jquery.js');
+WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
+WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
 WW_addInlineScript($script);
 $c.='<tr><th>Message to buyer</th>';
 if (!@$vars['online_stores_bank_transfer_message']) {

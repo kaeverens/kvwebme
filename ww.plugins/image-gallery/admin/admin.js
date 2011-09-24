@@ -163,15 +163,10 @@ $(function(){
 			$.post("/ww.plugins/image-gallery/admin/new-files.php", {
 				"gallery_id":window.page_menu_currentpage,
 				"id":response
-			},
-			function(html) {
-				if ($("#image-gallery-wrapper")) {
-					$("#image-gallery-wrapper").append(html);
-				}
-				else {
-					$("#image-gallery-images")
-						.append('<ul id="image-gallery-wrapper">'+html+"</ul>");
-				}
+			}, function(html) {
+				$("#image-gallery-wrapper")
+					.append(html)
+					.find('.error').remove();
 			});
 		},
 		"fileExt":"*.jpg;*.jpeg;*.png;*.gif",

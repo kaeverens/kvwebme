@@ -73,8 +73,8 @@ var Gallery={
 		var pos=parseInt($('#slider').css('left'));
 		$('#slider').animate(
 			{'left':(offset=='left')?(pos-20)+'px':(pos+20)+'px'}
-			,200,function() {
-			$(this).animate({'left':0},200);
+			,100,function() {
+			$(this).animate({'left':0},100);
 		});
 		return false;
 	},
@@ -355,7 +355,7 @@ var Gallery={
 				$('.ad-thumb-list').append(item);
 				$('#slider').animate({
 					'left':(left-width)+'px'
-				},2000,function() {
+				},100,function() {
 					for(var i=0;i<count;++i) {
 						$('.ad-thumb-list li:eq(0)').remove();
 					}
@@ -414,7 +414,7 @@ var Gallery={
 					.css('left', -width+'px')
 					.animate({
 						'left':left+'px'
-					},2000,function() {
+					},100,function() {
 						for(var i=0;i<count;++i) {
 							$('.ad-thumb-list li:last').remove();
 						}

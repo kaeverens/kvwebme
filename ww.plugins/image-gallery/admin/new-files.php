@@ -29,6 +29,13 @@ $dir=dbOne(
 	.'and page_id='.$image['gallery_id'],
 	'value'
 );
+if (!$dir) {
+	$dir='/image-galleries/imagegallery-'.$image['gallery_id'];
+	dbQuery(
+		'insert into page_vars set name="image_gallery_directory",value="'
+		.addslashes($dir).'",page_id='.$image['gallery_id']
+	);
+}
 echo '<li id="image_'.$id.'">';
 echo '<img id="image-gallery-image'.$id.'" src="/a/f=getImg/w=64/h=64/'
 	.$dir.'/'.$meta['name'].'"/>';

@@ -55,8 +55,8 @@ $images=dbAll(
 	.' order by position asc'
 );
 $n=count($images);
+$c.='<ul id="image-gallery-wrapper">';
 if ($n) {
-	$c.='<ul id="image-gallery-wrapper">';
 	for ($i=0;$i<$n;$i++) {
 		$id=$images[$i]['id'];
 		$meta=json_decode($images[$i]['meta'], true);
@@ -88,11 +88,11 @@ if ($n) {
 			break; // }
 		}
 	}
-	$c.='</ul><br style="clear:both"/>';
 }
 else {
-	$c.='<em>no images yet. please upload some.</em>';
+	$c.='<em class="error">no images yet. please upload some.</em>';
 }
+$c.='</ul><br style="clear:both"/>';
 $c.='</div>';
 $c.='<br style="clear:both"/>';
 // }

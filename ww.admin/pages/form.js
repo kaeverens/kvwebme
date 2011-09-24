@@ -22,7 +22,7 @@ function Page_form(plugin, pageType) {
 	});
 }
 function Page_updatePageVars() {
-	if (!page_vars) {
+	if (!window.page_vars) {
 		return;
 	}
 	$.each(page_vars, function(k, v) {
