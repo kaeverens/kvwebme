@@ -155,6 +155,9 @@ function Products_frontend($PAGEDATA) {
 		$PAGEDATA->vars['products_what_to_show']=3;
 		$PAGEDATA->vars['products_product_to_show']=(int)$_REQUEST['product_id'];
 	}
+	if (isset($_REQUEST['product_category'])) {
+		$_REQUEST['product_cid']=$_REQUEST['product_category'];
+	}
 	if (isset($_REQUEST['product_cid'])) {
 		$PAGEDATA->vars['products_what_to_show']=2;
 		$PAGEDATA->vars['products_category_to_show']=(int)$_REQUEST['product_cid'];

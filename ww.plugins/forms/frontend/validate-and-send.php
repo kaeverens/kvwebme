@@ -169,7 +169,7 @@ function Form_send($page, $vars, &$form_fields) {
 	}
 	$from_field=preg_replace('/[^a-zA-Z]/', '', $vars['forms_replyto']);
 	$from=isset($_REQUEST[$from_field])?$_REQUEST[$from_field]:'';
-	if ($vars['forms_create_user']) {
+	if (@$vars['forms_create_user']) {
 		$id=dbOne(
 			'select id from user_accounts where email="'.addslashes($email).'"',
 			'id'

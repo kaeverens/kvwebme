@@ -1344,14 +1344,14 @@ class Products{
 		if (!isset($_REQUEST['products-search'])) {
 			if (isset($this->subCategories) && count($this->subCategories)) {
 				$categories='<ul class="categories">';
-				foreach ($this->subCategories as $c) {
-					$cat=ProductCategory::getInstance($c['id']);
+				foreach ($this->subCategories as $cr) {
+					$cat=ProductCategory::getInstance($cr['id']);
 					$categories.='<li><a href="'.$cat->getRelativeUrl().'">';
-					$icon='/f/products/categories/'.$c['id'].'/icon.png';
+					$icon='/f/products/categories/'.$cr['id'].'/icon.png';
 					if (file_exists(USERBASE.$icon)) {
 						$categories.='<img src="'.$icon.'"/>';
 					}
-					$categories.='<span>'.htmlspecialchars($c['name']).'</span>'
+					$categories.='<span>'.htmlspecialchars($cr['name']).'</span>'
 						.'</a></li>';
 				}
 				$categories.='</ul>';
