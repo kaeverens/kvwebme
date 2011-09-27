@@ -105,7 +105,12 @@ function Form_send($page, $vars, &$form_fields) {
 				$plaintext.=htmlspecialchars($r2['name'])."\n"
 					.htmlspecialchars($val).$separator;
 			break; // }
-			case 'html-block': // { not inputs - don't add them
+			case 'email': // {
+				$val=@$_REQUEST[$name];
+				$values[$r2['name']]=$val;
+				$plaintext.=htmlspecialchars($r2['name'])."\n"
+					.htmlspecialchars($val).$separator;
+				$email=$val;
 			break; // }
 			case 'file': // { build $files array which emulates the $_FILES array
 				// { first remove old uploads
@@ -150,12 +155,8 @@ function Form_send($page, $vars, &$form_fields) {
 					);
 				}
 			break; // }
-			case 'email': // {
-				$val=@$_REQUEST[$name];
-				$values[$r2['name']]=$val;
-				$plaintext.=htmlspecialchars($r2['name'])."\n"
-					.htmlspecialchars($val).$separator;
-				$email=$val;
+			case 'html-block': case 'next-page-link': case 'previous-page-link':
+			case 'page-break': // { not inputs - don't add them
 			break; // }
 			default: // {
 				$val=@$_REQUEST[$name];
