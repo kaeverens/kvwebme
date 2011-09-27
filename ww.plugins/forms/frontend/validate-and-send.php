@@ -82,6 +82,7 @@ function Form_send($page, $vars, &$form_fields) {
 	$c='';
 	$plaintext='';
 	$values=array();
+	$email='';
 	foreach ($form_fields as $r2) {
 		$name=preg_replace('/[^a-zA-Z0-9_]/', '', $r2['name']);
 		$separator="\n".str_repeat('-', 80)."\n";
@@ -149,6 +150,13 @@ function Form_send($page, $vars, &$form_fields) {
 					);
 				}
 			break; // }
+			case 'email': // {
+				$val=@$_REQUEST[$name];
+				$values[$r2['name']]=$val;
+				$plaintext.=htmlspecialchars($r2['name'])."\n"
+					.htmlspecialchars($val).$separator;
+				$email=$val;
+			break; // }
 			default: // {
 				$val=@$_REQUEST[$name];
 				$values[$r2['name']]=$val;
@@ -160,6 +168,29 @@ function Form_send($page, $vars, &$form_fields) {
 	}
 	$from_field=preg_replace('/[^a-zA-Z]/', '', $vars['forms_replyto']);
 	$from=isset($_REQUEST[$from_field])?$_REQUEST[$from_field]:'';
+	if ($vars['forms_create_user']) {
+		$id=dbOne(
+			'select id from user_accounts where email="'.addslashes($email).'"',
+			'id'
+		);
+		if (!$id) {
+			dbQuery(
+				'insert into user_accounts set email="'.addslashes($email).'",'
+				.'extras="'.addslashes(json_encode($values)).'"'
+			);
+			$id=dbLastInsertId();
+			if (isset($_FILES) && count($_FILES)) {
+				@mkdir(USERBASE.'f/user-files');
+				@mkdir(USERBASE.'f/user-files/'.$id);
+				foreach ($_FILES as $file) {
+					copy(
+						$file['tmp_name'],
+						USERBASE.'f/user-files/'.$id.'/'.$file['name']
+					);
+				}
+			}
+		}
+	}
 	if ($vars['forms_send_as_email']) {
 		$form=Form_readonly($page['id'], $vars, $form_fields);
 		$to=$vars['forms_recipient'];
