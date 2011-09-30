@@ -159,7 +159,7 @@ foreach ($PLUGINS as $n=>$p) {
 echo '</ul>';
 // { Common Details
 echo '<div id="pages-common">';
-// { name, title, url
+// { name, url
 echo '<table>';
 echo '<tr>';
 // { name
@@ -168,27 +168,8 @@ echo '<th style="width:6%"><span class="help name"></span>'.__('name')
 	.'<input id="name" name="name" value="'.htmlspecialchars($page['alias'])
 	.'" /></td>';
 // }
-// { title
-echo '<th style="width:10%"><span class="help title"></span>'.__('title')
-	.'</th><td style="width:23%">'
-	.'<input name="title" value="'.htmlspecialchars($page['title']).'"/></td>';
-// }
-// { url 
-echo '<th colspan="2">';
-if ($edit) {
-	echo '<a style="font-weight:bold;color:red" href="'
-		.$PAGEDATA->getRelativeUrl().'" target="_blank">'.__('VIEW PAGE').'</a>';
-}
-else {
-	echo '&nbsp;';
-}
-echo '</th>';
-// }
-echo '</tr>';
-// }
-// { page type, parent, associated date
 // { type
-echo '<tr><th><span class="help type"></span>type</th><td><select name="type">';
+echo '<th><span class="help type"></span>type</th><td><select name="type">';
 $found=0;
 if (preg_match('/^[0-9]*$/', $page['type'])) {
 	foreach ($pagetypes as $a) {
@@ -228,34 +209,18 @@ if (!$found) {
 }
 echo '</select></td>';
 // }
-// { parent
-echo '<th><span class="help parent"></span>'.__('parent')
-	.'</th><td><select name="parent">';
-if ($page['parent']) {
-	$parent=Page::getInstance($page['parent']);
-	echo '<option value="',$parent->id,'">'
-		.htmlspecialchars($parent->alias).'</option>';
+// { url 
+echo '<th colspan="2">';
+if ($edit) {
+	echo '<a style="font-weight:bold;color:red" href="'
+		.$PAGEDATA->getRelativeUrl().'" target="_blank">'.__('VIEW PAGE').'</a>';
 }
 else {
-	echo '<option value="0"> -- none -- </option>';
+	echo '&nbsp;';
 }
-echo '</select></td>';
+echo '</th>';
 // }
-// { associated date
-if (!isset($page['associated_date'])
-	|| !preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}/', $page['associated_date'])
-	|| $page['associated_date']=='0000-00-00 00:00:00'
-) {
-	$page['associated_date']=date('Y-m-d 00:00');
-}
-else {
-	$page['associated_date']=preg_replace('/:..$/', '', $page['associated_date']);
-}
-echo '<th><span class="help associated-date"></span>'.__('Associated Date')
-	.'</th><td><input name="associated_date" value="'.$page['associated_date']
-	.'" title="'.__('year-month-day hour:minute').'"/></td>';
 echo '</tr>';
-// }
 // }
 // { page-type-specific data
 if (isset($page['original_body'])) {
@@ -362,11 +327,30 @@ echo '<table>';
 echo '<tr><td>';
 // { metadata 
 echo '<h3>'.__('MetaData').'</h3><table>';
+// { title
+echo '<tr><th><span class="help title"></span>'.__('title').'</th>'
+	.'<td><input name="title" value="'.htmlspecialchars($page['title']).'"/></td>'
+	.'</tr>';
+// }
 echo '<tr><th>'.__('keywords').'</th><td><input name="keywords" value="'
 	.htmlspecialchars($page['keywords']).'"/></td></tr>';
 echo '<tr><th>'.__('description').'</th><td><textarea class="large" name="d'
 	.'escription">'.htmlspecialchars($page['description']).'</textarea></td><'
 	.'/tr>';
+// { associated date
+if (!isset($page['associated_date'])
+	|| !preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}/', $page['associated_date'])
+	|| $page['associated_date']=='0000-00-00 00:00:00'
+) {
+	$page['associated_date']=date('Y-m-d 00:00');
+}
+else {
+	$page['associated_date']=preg_replace('/:..$/', '', $page['associated_date']);
+}
+echo '<tr><th><span class="help associated-date"></span>'.__('Associated Date')
+	.'</th><td><input name="associated_date" value="'.$page['associated_date']
+	.'" title="'.__('year-month-day hour:minute').'"/></td></tr>';
+// }
 echo '<tr><th>'.__('Short URL').'</th><td><input name="short_url" value="'
 	.htmlspecialchars(
 		dbOne('select short_url from short_urls where page_id='.$id, 'short_url')

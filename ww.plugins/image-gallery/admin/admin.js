@@ -175,7 +175,6 @@ $(function(){
 	});
 	$("#frame-uploader").uploadify({
 		"uploader":"/ww.plugins/image-gallery/files/uploadify.swf",
-		"script":"/ww.plugins/image-gallery/admin/upload.php",
 		"script":"/a/p=image-gallery/f=adminFrameUpload",
 		"cancelImg":"/ww.plugins/image-gallery/files/cancel.png",
 		"multi":false,
