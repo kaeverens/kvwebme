@@ -124,8 +124,8 @@ function ImageGallery_galleryGet() {
 }
 function ImageGallery_img() {
 	$id    =(int)$_REQUEST['id'];
-	$width =(int)$_REQUEST['w'];
-	$height=(int)$_REQUEST['h'];
+	$width =@(int)$_REQUEST['w'];
+	$height=@(int)$_REQUEST['h'];
 	$sql='select * from image_gallery where id='.$id;
 	$r=dbRow($sql);
 	$meta=json_decode($r['meta']);

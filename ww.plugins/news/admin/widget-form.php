@@ -26,7 +26,10 @@ else {
 }
 // { news page
 echo '<strong>News Page</strong><br />';
-$news_pages=dbAll('select id,name from pages where type="news" order by name');
+$news_pages=dbAll(
+	'select id,name from pages where type="news" or type="news|news" '
+	.'order by name'
+);
 if (!count($news_pages)) {
 	echo 'no News pages created. please <a href="/ww.admin/pages.php">create '
 		.'one</a> first.';

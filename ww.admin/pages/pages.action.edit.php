@@ -35,7 +35,7 @@ function Core_recursivelyUpdatePageTemplates($id, $template) {
 	);
 }
 require_once dirname(__FILE__).'/pages.action.common.php';
-$pid=(int)@$_REQUEST['parent'];
+$pid=dbOne('select parent from pages where id='.$id, 'parent');
 $l=dbRow("SELECT * FROM site_vars WHERE name='languages'");
 // {
 $keywords=$_REQUEST['keywords'];
@@ -86,7 +86,7 @@ $q='update pages set importance="'.$importance.'"'
 	.',description="'.addslashes($description).'"'
 	.',name="'.addslashes($name).'",title="'.addslashes($_POST['title']).'"'
 	.',original_body="'.addslashes(Core_sanitiseHtmlEssential($original_body)).'"'
-	.',body="'.addslashes($body).'",parent='.$pid
+	.',body="'.addslashes($body).'"'
 	.',special='.$special
 	.',alias="'.$alias.'"';
 $q.=' where id='.$id;
