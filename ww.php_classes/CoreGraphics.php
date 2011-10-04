@@ -1,6 +1,6 @@
 <?php
 class CoreGraphics{
-	public static resize($from, $to, $width, $height) {
+	static function resize($from, $to, $width, $height) {
 		switch (@$GLOBALS['DBVARS']['graphics-method']) {
 			case 'imagick': // {
 				$thumb=new Imagick();
@@ -11,8 +11,8 @@ class CoreGraphics{
 				$thumb->destroy();
 			break; // }
 			default: // { fallback to GD
-				$extFrom=pathinfo($from, PATHINFO_EXTENSION);
-				$extTo  =pathinfo($to, PATHINFO_EXTENSION);
+				$extFrom=strtolower(pathinfo($from, PATHINFO_EXTENSION));
+				$extTo  =strtolower(pathinfo($to, PATHINFO_EXTENSION));
 				if ($extFrom=='jpg') {
 					$extFrom='jpeg';
 				}
