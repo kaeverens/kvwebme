@@ -37,7 +37,7 @@ class CoreGraphics{
 					$width, $height, $arr[0], $arr[1]
 				);
 				imagesavealpha($imresized, true);
-				$save($imresized, $to, $fromExt=='jpeg'?100:9);
+				$save($imresized, $to, $extFrom=='jpeg'?100:9);
 				imagedestroy($imresized);
 				imagedestroy($im);
 			// }
