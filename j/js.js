@@ -166,3 +166,8 @@ $(function(){
  * http://benalman.com/about/license/
  */
 (function($){var a=$("<b/>");$.subscribe=function(b,c){function d(){return c.apply(this,Array.prototype.slice.call(arguments,1))}d.guid=c.guid=c.guid||($.guid?$.guid++:$.event.guid++);a.bind(b,d)};$.unsubscribe=function(){a.unbind.apply(a,arguments)};$.publish=function(){a.trigger.apply(a,arguments)}})(jQuery);
+var CKEditor_config={
+	filebrowserBrowseUrl:"/j/kfm/",
+	menu:"WebME",
+	scayt_autoStartup:false
+};
