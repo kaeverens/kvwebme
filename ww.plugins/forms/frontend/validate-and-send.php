@@ -127,7 +127,7 @@ function Form_send($page, $vars, &$form_fields) {
 					if ($f->isDir()) {
 						$diff=$time-$f->getMTime();
 						if ($diff>600) { // file is older than 10 minutes
-							WW_Directory::delete($f->getPathname());
+							CoreDirectory::delete($f->getPathname());
 						}
 					}
 				}
@@ -213,7 +213,7 @@ function Form_send($page, $vars, &$form_fields) {
 			$_FILES
 		);
 		if (is_dir(USERBASE.'f/.files/forms/'.session_id())) { // remove uploaded files
-			WW_Directory::delete(USERBASE.'f/.files/forms/'.session_id());
+			CoreDirectory::delete(USERBASE.'f/.files/forms/'.session_id());
 		}
 	}
 	if ($vars['forms_record_in_db']) {

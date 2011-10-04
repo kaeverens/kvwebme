@@ -14,7 +14,7 @@ if (isset($_GET['delete_banner']) && (int)$_GET['delete_banner']) {
 	dbQuery("delete from banners_pages where bannerid=$id");
 	unlink(USERBASE.'f/skin_files/banner-image/'.$id.'.png');
 	$n=USERBASE.'f/skin_files/banner-image/'.$id.'_*';
-	rmrf($n);
+	CoreDirectory::delete($n);
 	$updated='Banner Deleted';
 	Core_cacheClear('banner-images');
 }

@@ -26,9 +26,9 @@ if (!is_dir($dir)) { // make dir named after $session_id
 	mkdir($dir);
 }
 // { make sure too many files aren't being uploaded
-$size=WW_Directory::getSize($dir);
+$size=CoreDirectory::getSize($dir);
 if ($size>52428800) { // greater than 50mb
-	WW_Directory::delete($dir);
+	CoreDirectory::delete($dir);
 	echo 'deleted';
 	exit;
 }

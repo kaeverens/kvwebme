@@ -1,5 +1,5 @@
 <?php
-class WW_Directory{
+class CoreDirectory{
 	public static function getSize($directory) {
 		$size=0;
 		$dirs=new RecursiveIteratorIterator(
@@ -16,7 +16,7 @@ class WW_Directory{
 			foreach ($objects as $object) {
 				if ($object!='.'&&$object!='..') {
 					if (is_dir($directory.'/'.$object)) {
-						WW_Directory::delete($directory.'/'.$object);
+						CoreDirectory::delete($directory.'/'.$object);
 					}
 					else {
 						unlink($directory.'/'.$object);

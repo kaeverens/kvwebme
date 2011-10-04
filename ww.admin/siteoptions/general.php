@@ -51,7 +51,7 @@ if ($action=='Save') {
 		}
 		$from=addslashes($_FILES['site_favicon']['tmp_name']);
 		$to=addslashes($newdir.'/favicon.ico');
-		`convert "$from" -resize 32x32 "$to"`;
+		CoreGraphics::resize($from, $to, 32, 32);
 	}
 	if (isset($_FILES['site_logo'])
 		&& file_exists($_FILES['site_logo']['tmp_name'])

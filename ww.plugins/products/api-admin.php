@@ -168,7 +168,7 @@ function Products_adminCategorySetIcon() {
 	$dir=USERBASE.'f/products/categories/'.$cat_id;
 	@mkdir($dir, 0777, true);
 	$tmpname=$_FILES['file_upload']['tmp_name'];
-	`convert $tmpname -resize 128x128 $dir/icon.png`;
+	CoreGraphics::resize($tmpname, $dir.'/icon.png', 128, 128);
 	return array('ok'=>1);
 }
 

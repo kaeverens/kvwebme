@@ -208,11 +208,7 @@ function update_data_fields(data) {
 			var editor 
 				= CKEDITOR.replace(
 					editors[i], 
-					{
-						filebrowserBrowseUrl:"/j/kfm",
-						menu:"WebMe",
-						scayt_autoStartup:false
-					}
+					CKEditor_config
 				);
 			editor.name = editors[i].getAttribute('name');
 			CKEDITOR.add(editor);

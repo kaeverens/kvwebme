@@ -1,15 +1,4 @@
 <?php
-function rmrf($dir) {
-	foreach (glob($dir) as $file) {
-		if (is_dir($file)) {
-			rmrf("$file/*");
-			rmdir($file);
-		}
-		else {
-			unlink($file);
-		}
-	}
-}
 $scripts=array();
 $scripts_inline=array();
 // { built-in page types
@@ -30,7 +19,7 @@ $pagetypes=array(
   *
   * @return null
   */
-function admin_menu($list, $this='') {
+function Core_adminSideMenu($list, $this='') {
 	$arr=array();
 	foreach ($list as $key=>$val) {
 		if ($val==$this) {
@@ -252,8 +241,7 @@ function ckeditor($name, $value='', $height=250) {
 		.'$(function(){window.ckeditor_'.preg_replace('/[^a-zA-Z_]/', '', $name)
 		.'=CKEDITOR.replace("'
 		.str_replace(array('[',']'), array('\[','\]'), addslashes($name))
-		.'",{filebrowserBrowseUrl:"/j/kfm/",menu:"WebME",scayt_autoStartup:'
-		.'false});});'
+		.'",CKEditor_config);});'
 		."//]]></script>";
 }
 

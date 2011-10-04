@@ -94,7 +94,7 @@ function banner_edit(ev) {
 		});
 		ww.banner.rte=CKEDITOR.replace(
 			'banner_html'+ww.banner.editor_instances,
-			{filebrowserBrowseUrl:"/j/kfm/",menu:"WebME"}
+			CKEditor_config
 		);
 		ww.banner.rte.setData(res.content);
 	});

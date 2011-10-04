@@ -7,4 +7,4 @@ $arr=array(
 foreach($protected_files as $p){
 	$arr[$p['directory']]='/ww.admin/plugin.php?_plugin=protected-files&amp;_page=index&amp;id='.$p['id'];
 }
-echo admin_menu($arr,isset($_REQUEST['id'])?$_url.'&amp;id='.$_REQUEST['id']:$_url);
+echo Core_adminSideMenu($arr,isset($_REQUEST['id'])?$_url.'&amp;id='.$_REQUEST['id']:$_url);

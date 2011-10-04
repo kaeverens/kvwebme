@@ -152,7 +152,7 @@ function ThemesApi_displayImage($file) {
 		$md5=USERBASE.'/ww.cache/screenshots/'.md5($file).'.png';
 		if (!file_exists($md5)) {
 			@mkdir(USERBASE.'/ww.cache/screenshots');
-			`convert $file -resize 240x172 $md5`;
+			CoreGraphics::resize($file, $md5, 240, 172);
 		}
 		$file=$md5;
 	}

@@ -15,7 +15,7 @@ require_once 'header.php';
 require_once 'stats/lib.php';
 echo '<h1>'.__('Website Statistics').'</h1>';
 
-echo admin_menu(
+echo Core_adminSideMenu(
 	array(
 		'Summary'=>'stats.php?page=summary',
 		'Popular Pages'=>'stats.php?page=popular_pages'

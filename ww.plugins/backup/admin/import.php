@@ -77,10 +77,10 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 		}
 
 		echo 'cleaning up.<br />';
-		rmrf($tmpdir);
+		CoreDirectory::delete(($tmpdir);
 
 		echo 'clearing local cache...<br />';
-		rmrf($udir.'/ww.cache/*');
+		CoreDirectory::delete($udir.'/ww.cache/*');
 
 		echo 'done<img style="width:1px;height:1px" src="./" /><p>Import completed.</p>';
 		dbQuery('update pages set alias=name where alias is null');

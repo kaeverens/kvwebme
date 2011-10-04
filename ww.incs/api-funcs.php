@@ -152,11 +152,11 @@ function Core_getImg() {
 			$width=(int)$width;
 			$height=(int)$height;
 			@mkdir(USERBASE.'ww.cache/resized.images');
-			$resize=$width.'x'.$height;
-			$c=USERBASE.'ww.cache/resized.images/'.md5($f).','.$resize.'.png';
+			$c=USERBASE.'ww.cache/resized.images/'.md5($f).','.$width.'x'.$height
+				.'.png';
 			if (!file_exists($c)) {
 				$f=addslashes($f);
-				`convert "$f" -resize $resize "$c"`;
+				CoreGraphics::resize($f, $c, $width, $height);
 			}
 			$f=$c;
 			$ext='png';

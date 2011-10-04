@@ -1,3 +1,8 @@
+var CKEditor_config={
+	filebrowserBrowseUrl:"/j/kfm/",
+	menu:"WebME",
+	scayt_autoStartup:false
+};
 function convert_date_to_human_readable(){
 	var $this=$(this);
 	var	id='date-input-'+Math.random().toString().replace(/\./,'');

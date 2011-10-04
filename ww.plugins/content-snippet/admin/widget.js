@@ -93,11 +93,7 @@ function content_snippet_edit(ev){
 			},1);
 			ww.content_snippet.rte=CKEDITOR.replace(
 				'content_snippet_html'+ww.content_snippet.editor_instances,
-				{
-					filebrowserBrowseUrl:"/j/kfm/",
-					menu:"WebME",
-					scayt_autoStartup:false
-				}
+				CKEditor_config
 			);
 			var html='';
 			for(var i=0;i<res.content.length;++i){

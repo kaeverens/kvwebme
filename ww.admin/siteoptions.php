@@ -31,7 +31,7 @@ function Core_verifyAdminPage($validlist, $default, $val) {
 	}
 	return $default;
 }
-echo admin_menu(
+echo Core_adminSideMenu(
 	array(
 		'General'=>'siteoptions.php?page=general',
 		'Users'=>'siteoptions.php?page=users',

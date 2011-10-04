@@ -29,7 +29,7 @@ if (!is_dir($tmpdir)) {
 }
 
 $dir=$tmpdir.'/site';
-rmrf($dir);
+CoreDirectory::delete($dir);
 mkdir($dir);
 
 $ubase=USERBASE;
@@ -66,4 +66,4 @@ $sname=$_SERVER['HTTP_HOST'].date('-Y-m-d').'.zip';
 header('Content-type: force/download');
 header('Content-Disposition: attachment; filename="'.$sname.'"');
 readfile($tmpdir.'/'.$sname);
-rmrf($tmpdir);
+CoreDirectory::delete($tmpdir);

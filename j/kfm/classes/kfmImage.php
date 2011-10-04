@@ -59,7 +59,11 @@ class kfmImage extends kfmFile{
 			$hslparam=',h'.$hue.',s'.$saturation.',l'.$lightness;
 		}
 		$file=WORKPATH.'thumbs/'.$id.$hslparam.$GLOBALS['kfm_thumb_format'];
-		if(!$GLOBALS['kfm']->setting('use_imagemagick') || $this->useImageMagick($this->path,'resize '.$thumb_width.'x'.$thumb_height.$hsl,$file))$this->createResizedCopy($file,$thumb_width,$thumb_height);
+		if (!$GLOBALS['kfm']->setting('use_imagemagick')
+			|| $this->useImageMagick($this->path,'resize '.$thumb_width.'x'.$thumb_height.$hsl,$file)
+		) {
+			$this->createResizedCopy($file,$thumb_width,$thumb_height);
+		}
 		return $id;
 	}
 	function delete(){

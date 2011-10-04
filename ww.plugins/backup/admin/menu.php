@@ -11,7 +11,7 @@
 	* @link     http://kvsites.ie/
 	*/
 
-echo admin_menu(
+echo Core_adminSideMenu(
 	array(
 		'Backup'=>'/ww.admin/plugin.php?_plugin=backup&amp;_page=backup',
 		'Import'=>'/ww.admin/plugin.php?_plugin=backup&amp;_page=import'

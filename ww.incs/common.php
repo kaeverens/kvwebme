@@ -334,7 +334,7 @@ function Template_logoDisplay($vars) {
 	if (!file_exists($image_file)) {
 		$from=addslashes(USERBASE.'/f/skin_files/logo.png');
 		$to=addslashes($image_file);
-		`convert $from -geometry $geometry $to`;
+		CoreGraphics::resize($from, $to, $x, $y);
 	}
 	$size=getimagesize($image_file);
 	return '<img class="logo" src="/i/blank.gif" style="'

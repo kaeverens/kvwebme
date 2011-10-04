@@ -72,7 +72,7 @@ $menuItems['New Quiz']= $_url.'&amp;action=newQuiz';
 if (count($quizzes)>count($pageQuizzes)) {
 		$menuItems['More Quizzes']= $_url;
 }
-echo admin_menu(
+echo Core_adminSideMenu(
 	$menuItems
 );
 echo '<div class="has-left-menu">';

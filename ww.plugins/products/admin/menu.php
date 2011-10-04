@@ -1,5 +1,5 @@
 <?php
-echo admin_menu(array(
+echo Core_adminSideMenu(array(
 	'Products'=>'/ww.admin/plugin.php?_plugin=products&amp;_page=products',
 	'Categories'=>'/ww.admin/plugin.php?_plugin=products&amp;_page=categories',
 	'Types'=>   'javascript:Core_screen(\'products\',\'Types\')',

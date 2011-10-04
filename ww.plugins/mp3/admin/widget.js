@@ -109,11 +109,7 @@ function mp3_edit(ev){
 			$('#mp3_dialog .mp3_content').tabs();
 			ww.mp3.rte=CKEDITOR.replace(
 				'mp3_template'+ww.mp3.editor_instances,
-				{
-					filebrowserBrowseUrl:"/j/kfm/",
-					menu:"WebME",
-					scayt_autoStartup:false
-				}
+				CKEditor_config
 			);
 		},
 		'json'
