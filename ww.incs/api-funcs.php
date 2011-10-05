@@ -154,7 +154,7 @@ function Core_getImg() {
 			@mkdir(USERBASE.'ww.cache/resized.images');
 			$c=USERBASE.'ww.cache/resized.images/'.md5($f).','.$width.'x'.$height
 				.'.png';
-			if (!file_exists($c)) {
+			if (!file_exists($c) || filesize($c)==0) {
 				CoreGraphics::resize($f, $c, $width, $height);
 			}
 			$f=$c;

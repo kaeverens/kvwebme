@@ -711,7 +711,11 @@ $('.ad-image img').live('click', function() {
 		sequence[i]='/a/p=image-gallery/f=img/id='+sequence[i];
 	}
 	lightbox_show(
-		$this.attr('src').replace(/,.*/, ''), sequence, $this.attr('num')
+		$this.css('background-image')
+			.replace(/^url\(|\)$/, '')
+			.replace(/,.*/, ''),
+		sequence,
+		$this.attr('num')
 	);
 })
 $('#big-next-link').live('click',function() {
