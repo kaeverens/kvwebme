@@ -1,5 +1,32 @@
 <?php
 class CoreGraphics{
+	static function convert($from, $to) {
+		switch (@$GLOBALS['DBVARS']['graphics-method']) {
+			case 'imagick': // {
+				$thumb=new Imagick();
+				$thumb->read($from);
+				$thumb->writeImage($to);
+				$thumb->clear();
+				$thumb->destroy();
+			break; // }
+			default: // { fallback to GD
+				$extFrom=CoreGraphics::getType($from);
+				$extTo  =CoreGraphics::getType($to);
+				$arr=getimagesize($from);
+				if ($arr===false) {
+					return false;
+				}
+				$load='imagecreatefrom'.$extFrom;
+				$save='image'.$extTo;
+				if (!function_exists($load) || !function_exists($save)) {
+					return false;
+				}
+				$im=$load($from);
+				$save($im, $to, $extTo=='jpeg'?100:9);
+				imagedestroy($im);
+			// }
+		}
+	}
 	static function resize($from, $to, $width, $height) {
 		switch (@$GLOBALS['DBVARS']['graphics-method']) {
 			case 'imagick': // {
@@ -11,14 +38,8 @@ class CoreGraphics{
 				$thumb->destroy();
 			break; // }
 			default: // { fallback to GD
-				$extFrom=strtolower(pathinfo($from, PATHINFO_EXTENSION));
-				$extTo  =strtolower(pathinfo($to, PATHINFO_EXTENSION));
-				if ($extFrom=='jpg') {
-					$extFrom='jpeg';
-				}
-				if ($extTo=='jpg') {
-					$extTo='jpeg';
-				}
+				$extFrom=CoreGraphics::getType($from);
+				$extTo  =CoreGraphics::getType($to);
 				$arr=getimagesize($from);
 				if ($arr===false) {
 					return false;
@@ -37,11 +58,15 @@ class CoreGraphics{
 					$width, $height, $arr[0], $arr[1]
 				);
 				imagesavealpha($imresized, true);
-				$save($imresized, $to, $extFrom=='jpeg'?100:9);
+				$save($imresized, $to, $extTo=='jpeg'?100:9);
 				imagedestroy($imresized);
 				imagedestroy($im);
 			// }
 		}
 		return true;
+	}
+	static function getType($fname) {
+		$ext=strtolower(pathinfo($fname, PATHINFO_EXTENSION));
+		return $ext=='jpg'?'jpeg':$ext;
 	}
 }
