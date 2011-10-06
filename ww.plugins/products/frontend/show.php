@@ -495,9 +495,7 @@ function Products_images($params, $smarty) {
 	* @return string the URL
 	*/
 function Products_link($params, $smarty) {
-	$product= $smarty->_tpl_vars['product'];
-	$id= $product->id;
-	return $product->getRelativeURL();
+	return $smarty->_tpl_vars['product']->getRelativeURL();
 }
 /**
 	* list all categories contained within a parent category
@@ -711,7 +709,7 @@ function Products_setupSmarty() {
 	*
 	* @return string the products
 	*/
-function products_show($PAGEDATA) {
+function Products_show($PAGEDATA) {
 	if (!isset($PAGEDATA->vars['products_what_to_show'])) {
 		$PAGEDATA->vars['products_what_to_show']='0';
 	}
@@ -766,7 +764,7 @@ function products_show($PAGEDATA) {
 	}
 	// }
 	switch($PAGEDATA->vars['products_what_to_show']) {
-		case '1':
+		case '1': // {
 			return $c
 				.Products_showByType(
 					$PAGEDATA,
@@ -778,7 +776,8 @@ function products_show($PAGEDATA) {
 					$search
 				)
 				.$export;
-		case '2':
+			// }
+		case '2': // {
 			return $c
 				.Products_showByCategory(
 					$PAGEDATA,
@@ -790,8 +789,10 @@ function products_show($PAGEDATA) {
 					$search
 				)
 				.$export;
-		case '3':
+			// }
+		case '3': // {
 			return $c.Products_showById($PAGEDATA).$export;
+			// }
 	}
 	return $c
 		.Products_showAll(
@@ -1422,11 +1423,17 @@ class ProductCategory{
 			}
 		}
 		// }
+		// { or if there's a category parent, return its URL plus the name appended
+		if ($this->vals['parent_id']!=0) {
+			$cat=ProductCategory::getInstance($this->vals['parent_id']);
+			return $cat->getRelativeUrl().'/'.urlencode($this->vals['name']);
+		}
+		// }
 		// { or get at least any product page
 		$pid=dbOne('select id from pages where type like "products%" limit 1', 'id');
 		if ($pid) {
 			$page=Page::getInstance($pid);
-			return $page->getRelativeUrl().'?product_category='.$this->vals['id'];
+			return $page->getRelativeUrl().'/'.urlencode($this->vals['name']);
 		}
 		// }
 		return '/#no-url-available';

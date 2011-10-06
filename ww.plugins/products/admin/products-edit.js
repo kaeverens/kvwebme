@@ -235,3 +235,12 @@ function products_getData () {
 		}
 	}
 }
+$('a.delete-product-page').click(function(){
+	if (!confirm('are you sure you want to delete the product page?')) {
+		return;
+	}
+	var pid=$(this).attr('pid');
+	$.post('/a/p=products/f=adminPageDelete/pid='+pid, function() {
+		$('#product_table_link_holder').empty();
+	});
+});

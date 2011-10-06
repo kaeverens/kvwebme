@@ -34,13 +34,13 @@ if (isset($_REQUEST['delete']) && is_numeric($_REQUEST['delete'])) {
 	echo '<em>Product deleted.</em>';
 }
 
-$rs=dbAll('select id,name,enabled from products order by name');
 if (!dbOne('select id from products_types limit 1','id')) {
 	echo '<em>You can\'t create a product until you have created a type. '
 		.'<a href="javascript:Core_screen(\'products\',\'js:Types\');">Click '
 		.'here to create one</a></em>';
 	return;
 }
+$rs=dbAll('select id,name,stock_number,enabled from products order by name');
 if(!count($rs)){
 	echo '<em>No existing products. <a href="plugin.php?_plugin=products&amp;'
 		.'_page=products-edit">Click here to create one</a>.'
@@ -51,8 +51,8 @@ if(!count($rs)){
 }
 
 // { products list
-echo '<div><table class="datatable"><thead><tr><th>Name</th><th>ID</th>'
-	.'<th>Enabled</th><th>&nbsp;</th></tr></thead><tbody>';
+echo '<div><table class="datatable"><thead><tr><th>Name</th><th>Stock Number'
+	.'</th><th>ID</th><th>Enabled</th><th>&nbsp;</th></tr></thead><tbody>';
 foreach($rs as $r){
 	/* do not delete the HTML comment in the next line - it's there
 	 * for datatables magic. without it, sorting will not work. */
@@ -60,6 +60,8 @@ foreach($rs as $r){
 	echo '<tr id="product-row-'.$r['id'].'">'
 		.'<td class="edit-link"><!-- '.htmlspecialchars($r['name']).' -->'
 		.'<a href="'.$link.'">'.htmlspecialchars($r['name']).'</td>'
+		.'<td class="edit-link"><!-- '.htmlspecialchars($r['stock_number']).' -->'
+		.'<a href="'.$link.'">'.htmlspecialchars($r['stock_number']).'</td>'
 		.'<td>'.$r['id'].'</td>'
 		.'<td>'.($r['enabled']=='1'?'Yes':'No').'</td>'
 		.'<td><a class="delete-product" href="javascript:;" title="delete">[x]</a>'

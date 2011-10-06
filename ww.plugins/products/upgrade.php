@@ -160,3 +160,7 @@ if ($version==19) { // remove unused fields from product types
 	dbQuery('alter table products_types drop show_countries');
 	$version=20;
 }
+if ($version==20) { // add stock number
+	dbQuery('alter table products add stock_number text');
+	$version=21;
+}

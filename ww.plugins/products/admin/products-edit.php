@@ -126,6 +126,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 		// }
 		// { save main data and data fields
 		$sql='set name="'.addslashes($_REQUEST['name']).'"'
+			.',stock_number="'.addslashes($_REQUEST['stock_number']).'"'
 			.',product_type_id='.((int)$_REQUEST['product_type_id'])
 			.',enabled='.(int)$_REQUEST['enabled']
 			.',images_directory="'.addslashes($_REQUEST['images_directory']).'"';
@@ -262,6 +263,7 @@ if (count($relations)) {
 echo '</ul>';
 // { main details
 echo '<div id="main-details"><table>';
+// { name, type, manage images
 echo '<tr>';
 // { name
 echo '<th><div class="help products/name"></div>Name</th><td>';
@@ -292,16 +294,6 @@ else {
 	echo '</select>';
 }
 echo '</td>';
-// }
-// { enabled
-echo '<th><div class="help products/enabled"></div>Enabled</th>'
-	.'<td><select name="enabled">'
-	.'<option value="1">Yes</option>'
-	.'<option value="0"';
-if (!$pdata['enabled']) {
-	echo ' selected="selected"';
-}
-echo '>No</option></select></td>';
 // }
 // { images directory
 if (!isset($pdata['images_directory']) 
@@ -337,9 +329,27 @@ echo '<td colspan="2">'
 	.'?startup_folder='.addslashes($pdata['images_directory']).'\'+'
 	.'\'kfm\',\'modal,width=800,height=600\');">Manage Images</a></td>';
 // }
+echo '</tr>';
+// }
+echo '<tr>';
+// { stock_number
+echo '<th><div class="help products/stock-number"></div>Stock Number</th><td>';
+echo '<input class="not-empty" name="stock_number" value="'
+	.htmlspecialchars($pdata['stock_number']).'" /></td>';
+// }
+// { enabled
+echo '<th><div class="help products/enabled"></div>Enabled</th>'
+	.'<td><select name="enabled">'
+	.'<option value="1">Yes</option>'
+	.'<option value="0"';
+if (!$pdata['enabled']) {
+	echo ' selected="selected"';
+}
+echo '>No</option></select></td>';
+// }
 // { page link
 if ($id) {
-	echo '<th>Product Page</th><td id="product_table_link_holder">';
+	echo '<td><strong>Page:</strong> <span id="product_table_link_holder">';
 	$pageid = dbOne(
 		'select page_id 
 		from page_vars 
@@ -363,19 +373,21 @@ if ($id) {
 		$page= Page::getInstance($pageid);
 		$url= $page->getRelativeUrl();
 		echo '<a href="'.$url.'" target="_blank" id="view_this_product">'
-			.htmlspecialchars($url).'</a>';
+			.htmlspecialchars($url).'</a> '
+			.'[<a title="delete the product\'s page" href="javascript:;" pid="'
+			.$id.'" class="delete-product-page">x</a>]';
 	}
-	echo '</td>';
+	echo '</span></td>';
 }
 else {
-	echo '<th>&nbsp;</th><td>&nbsp;</td>';
+	echo '<td>&nbsp;</td>';
 }
 // }
-echo '</tr><tr>';
+echo '</tr>';
 // { images
-echo '<input type="hidden" 
-	name="images_directory" value="'.$pdata['images_directory'].'" />';
-echo '<th><div class="help products/images"></div>Images</th><td colspan="5">';
+echo '<tr><th><input type="hidden" name="images_directory" value="'
+	.$pdata['images_directory'].'" /><div class="help products/images"></div>'
+	.'Images</th><td colspan="4">';
 $dir_id=kfm_api_getDirectoryId(
 	preg_replace('/^\//', '', $pdata['images_directory'])
 );
@@ -416,8 +428,8 @@ else {
 	echo '<em>no images yet. please upload some.</em>';
 }
 echo '</td></tr>';
-echo '</tr></table></div>';
 // }
+echo '</table></div>';
 // }
 // { data fields
 echo '<div id="data-fields"><table id="data-fields-table">';

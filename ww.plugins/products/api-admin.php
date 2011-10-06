@@ -452,3 +452,20 @@ function Products_adminTypeCopy() {
 		'id'=>dbLastInsertId()
 	);
 }
+/**
+	* delete a product's page
+	*
+	* @return array status
+	*/
+function Products_adminPageDelete() {
+	$pid=(int)$_REQUEST['pid'];
+	$pageID=dbOne(
+		'select page_id from page_vars where name= "products_product_to_show" '
+		.'and value='.$pid.' limit 1', 
+		'page_id'
+	);
+	dbQuery('delete from pages where id='.$pageID);
+	dbQuery('delete from page_vars where page_id='.$pageID);
+	Core_cacheClear();
+	return array('ok'=>1);
+}

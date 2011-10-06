@@ -77,7 +77,7 @@ $plugin=array(
 	'triggers' => array(
 		'initialisation-completed' => 'Products_addToCart'
 	),
-	'version' => '20'
+	'version' => '21'
 );
 // }
 /**
@@ -151,9 +151,42 @@ function Products_adminPage($page, $vars) {
   */
 function Products_frontend($PAGEDATA) {
 	require_once dirname(__FILE__).'/frontend/show.php';
-	if (isset($_REQUEST['product_id'])) {
-		$PAGEDATA->vars['products_what_to_show']=3;
-		$PAGEDATA->vars['products_product_to_show']=(int)$_REQUEST['product_id'];
+	global $PAGE_UNUSED_URI;
+	if ($PAGE_UNUSED_URI) {
+		$bits=explode('/', $PAGE_UNUSED_URI);
+		$cat_id=0;
+		$product_id=0;
+		foreach ($bits as $bit) {
+			$id=dbOne(
+				'select id from products_categories where parent_id='.$cat_id
+				.' and name="'.addslashes($bit).'"',
+				'id'
+			);
+			if ($id) {
+				$cat_id=$id;
+				$_REQUEST['product_cid']=$cat_id;
+			}
+			else {
+				if ($cat_id) {
+					$id=dbOne(
+						'select product_id,name from products_categories_products,products'
+						.' where category_id='.$cat_id.' and name="'.addslashes($bit).'"'
+						.' and id=product_id',
+						'product_id'
+					);
+				}
+				if (!$id) {
+					$id=dbOne(
+						'select id from products where name="'.addslashes($bit).'"',
+						'id'
+					);
+				}
+				if ($id) {
+					$_REQUEST['product_id']=$id;
+				}
+			}
+		}
+		echo $PAGE_UNUSED_URI;
 	}
 	if (isset($_REQUEST['product_category'])) {
 		$_REQUEST['product_cid']=$_REQUEST['product_category'];
@@ -162,11 +195,15 @@ function Products_frontend($PAGEDATA) {
 		$PAGEDATA->vars['products_what_to_show']=2;
 		$PAGEDATA->vars['products_category_to_show']=(int)$_REQUEST['product_cid'];
 	}
+	if (isset($_REQUEST['product_id'])) {
+		$PAGEDATA->vars['products_what_to_show']=3;
+		$PAGEDATA->vars['products_product_to_show']=(int)$_REQUEST['product_id'];
+	}
 	if (!isset($PAGEDATA->vars['footer'])) {
 		$PAGEDATA->vars['footer']='';
 	}
 	// first render the products, in case the page needs to know what template was used
-	$producthtml=products_show($PAGEDATA);
+	$producthtml=Products_show($PAGEDATA);
 	return $PAGEDATA->render()
 		.$producthtml
 		.$PAGEDATA->vars['footer'];
@@ -339,6 +376,7 @@ class Product{
 		}
 		$this->id=$r['id'];
 		$this->name=$r['name'];
+		$this->stock_number=$r['stock_number'];
 		self::$instances[$this->id]=&$this;
 		return $this;
 	}
@@ -385,7 +423,7 @@ class Product{
 			return $this->relativeUrl; 
 		}
 		// }
-		// { Is there a page designed to display its category?
+		// { Is there a page intended to display its category?
 		$productCats 
 			= dbAll(
 				'select category_id '
@@ -421,6 +459,20 @@ class Product{
 			}
 		}
 		// }
+		$cat=0;
+		if (count($productCats)) {
+			$cat=$productCats[0]['category_id'];
+		}
+		if (@$_REQUEST['product_cid']) {
+			$cat=(int)$_REQUEST['product_cid'];
+		}
+		if ($cat) {
+			$cat=ProductCategory::getInstance($cat);
+			return $cat->getRelativeUrl().'/'.urlencode($this->name);
+		}
+		if (preg_match('/^products(\||$)/', $PAGEDATA->type)) { // TODO
+			$page=$PAGEDATA->getRelativeUrl().'/'.urlencode($this->name);
+		}
 		$this->relativeUrl='/_r?type=products&amp;product_id='.$this->id;
 		return $this->relativeUrl;
 	}
@@ -487,6 +539,9 @@ class Product{
 		if ($field) {
 			$v=strtolower($this->get($field));
 			return strpos($v, $search)!==false;
+		}
+		if (strpos(strtolower($this->stock_number), $search)!==false) {
+			return true;
 		}
 		if (strpos(strtolower($this->name), $search)!==false) {
 			return true;
@@ -735,6 +790,7 @@ class ProductType{
 			}
 		}
 		$smarty->assign('_name', $product->name);
+		$smarty->assign('_stock_number', $product->stock_number);
 		return '<div class="products-product" id="products-'.$product->get('id')
 			.'">'.$smarty->fetch(
 				USERBASE.'/ww.cache/products/templates/types_'.$template.'_'.$this->id
