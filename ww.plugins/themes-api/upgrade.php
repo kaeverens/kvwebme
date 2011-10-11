@@ -12,6 +12,9 @@
   * @link     http://kvsites.ie
   */
 
+if (!defined('SCRIPTBASE')) { // don't access directly
+	exit;
+}
 
 /**
  * if not previously installed, set up database

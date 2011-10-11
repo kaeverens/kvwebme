@@ -674,8 +674,31 @@ class ProductType{
 						($val?'Yes':'No')
 					);
 				break; // }
+				case 'colour': // {
+					if (@$f->u) { // user-definable
+						WW_addScript(
+							'/j/mColorPicker/mColorPicker.js'
+						);
+						$h='<input class="color-picker" value="#000000" '
+							.'name="'.'products_values_'.$f->n.'" '
+							.'style="height:20px;width:20px;" '
+							.'data-hex="true" data-text="hidden"/>'
+							.'<style>#mColorPickerFooter,#mColorPickerImg{display:none}</style>';
+						WW_addInlineScript(
+							'$(".color-picker")'
+							.'.mColorPicker({"imageFolder":"/j/mColorPicker/images/"});'
+						);
+					}
+					else {
+						$h='TODO';
+					}
+					$smarty->assign(
+						$f->n,
+						$h
+					);
+				break; // }
 				case 'date': // {
-					if (@$f->u) {
+					if (@$f->u) { // user-definable
 						$smarty->assign(
 							$f->n,
 							'<input class="product-field date '.$f->n.$required.'" name="'
