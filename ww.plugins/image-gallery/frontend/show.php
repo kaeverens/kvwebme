@@ -91,7 +91,7 @@ function GalleryWidget_show($vars){
 	if ($n) {
 		// { if template doesn't exist, create it
 		$template=USERBASE.'ww.cache/image-gallery-widget/';
-		@mkdir($template);
+		@mkdir($template, 0777, true);
 		$template.=$id;
 		$thtml=file_get_contents(
 			SCRIPTBASE.'ww.plugins/image-gallery/admin/types/'.
@@ -123,10 +123,10 @@ function GalleryWidget_show($vars){
 		// { quick hack to add the options rather than
 		// writing a whole new function in php
 		$script='
-		Gallery.options.directory="'.$vars['directory'].'";
-		Gallery.options.thumbsize='.$vars['thumbsize'].';
-		Gallery.options.imageWidth='.$vars['image_size'].';
-		Gallery.options.imageHeight='.$vars['image_size'].';
+		Gallery.options.directory="'.(int)$vars['directory'].'";
+		Gallery.options.thumbsize='.(int)$vars['thumbsize'].';
+		Gallery.options.imageWidth='.(int)$vars['image_size'].';
+		Gallery.options.imageHeight='.(int)$vars['image_size'].';
 		Gallery.gallery()
 			.attr("cols","'.$vars['columns'].'")
 			.attr("rows","'.$vars['rows'].'");
