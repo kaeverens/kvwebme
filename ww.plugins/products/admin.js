@@ -212,7 +212,7 @@ function Products_typeEdit(id) {
 					$('<select><option>inputbox</option><option>textarea</option>'
 						+'<option>date</option><option>checkbox</option>'
 						+'<option>selectbox</option><option>selected-image</option>'
-						+'<option>hidden</option>'
+						+'<option>hidden</option><option>colour</option>'
 						+'</select>'
 					)
 						.val(field.t).appendTo('.pfp-type', $wrapper);

@@ -48,7 +48,7 @@ function Core_screen(plugin, page) {
 	}
 	$('head')
 		.append('<link rel="stylesheet" href="/ww.plugins/'+plugin+'/admin.css"/>');
-	$.getScript('/ww.plugins/'+plugin+'/admin.js', function(){
+	$.getScript('/ww.plugins/'+plugin+'/admin.js?'+(new Date()).getTime(), function(){
 		if (!window[fname]) {
 			return;
 		}
