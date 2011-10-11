@@ -714,13 +714,18 @@ class ProductType{
 					if (@$f->u) {
 						$valid_entries=explode("\n", $val);
 						foreach ($valid_entries as $k=>$v) {
-							$valid_entries[$k]=trim($v);
+							$v=trim($v);
+							if ($v=='') {
+								unset($valid_entries[$k]);
+							}
+							else {
+								$valid_entries[$k]=$v;
+							}
+						}
+						if (!count($valid_entries)) {
+							$valid_entries=explode("\n", $f->e);
 						}
 						$h='<select name="products_values_'.$f->n.'" class="'.$required.'">';
-						if (!(@$f->e)) {
-							$f->e=$val;
-						}
-						$es=explode("\n", $f->e);
 						foreach ($valid_entries as $e) {
 							$e=trim($e);
 							if ($e=='' || !in_array($e, $valid_entries)) {
