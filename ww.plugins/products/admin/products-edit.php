@@ -59,16 +59,11 @@ function Products_showDataField($df, $def) {
 			echo ckeditor('data_fields['.htmlspecialchars($def['n']).']', $df['v']);
 		break; // }
 		default: // { inputbox
-			if (isset($def['u']) && $def['u']) { // user-defined
-				echo 'this field is entered by the front-end reader.';
+			echo '<input name="data_fields['.htmlspecialchars($def['n']).']"';
+			if ($def['r'] && !(@$def['u'])) {
+				echo ' class="required"';
 			}
-			else {
-				echo '<input name="data_fields['.htmlspecialchars($def['n']).']"';
-				if ($def['r']) {
-					echo ' class="required"';
-				}
-				echo ' value="'.htmlspecialchars($df['v']).'" />';
-			}
+			echo ' value="'.htmlspecialchars($df['v']).'" />';
 			// }
 	}
 	echo '</td></tr>';
