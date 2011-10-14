@@ -116,6 +116,9 @@ function Core_cacheClear($type='') {
   * @return mixed the variable if it was cached, or false
   */
 function Core_cacheLoad($type, $md5) {
+	if (strlen($md5)>32) {
+		$md5=md5($md5);
+	}
 	if (file_exists(USERBASE.'/ww.cache/'.$type.'/'.$md5)) {
 		return json_decode(
 			file_get_contents(USERBASE.'/ww.cache/'.$type.'/'.$md5),
@@ -135,6 +138,9 @@ function Core_cacheLoad($type, $md5) {
   * @return null
   */
 function Core_cacheSave($type, $md5, $vals) {
+	if (strlen($md5)>32) {
+		$md5=md5($md5);
+	}
 	if (!is_dir(USERBASE.'/ww.cache/'.$type)) {
 		mkdir(USERBASE.'/ww.cache/'.$type, 0777, true);
 	}
