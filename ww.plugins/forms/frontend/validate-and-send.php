@@ -1,4 +1,79 @@
 <?php
+if(!function_exists('mime_content_type')) {
+
+	function mime_content_type($filename) {
+
+		$mime_types = array(
+
+			'txt' => 'text/plain',
+			'htm' => 'text/html',
+			'html' => 'text/html',
+			'php' => 'text/html',
+			'css' => 'text/css',
+			'js' => 'application/javascript',
+			'json' => 'application/json',
+			'xml' => 'application/xml',
+			'swf' => 'application/x-shockwave-flash',
+			'flv' => 'video/x-flv',
+
+			// images
+			'png' => 'image/png',
+			'jpe' => 'image/jpeg',
+			'jpeg' => 'image/jpeg',
+			'jpg' => 'image/jpeg',
+			'gif' => 'image/gif',
+			'bmp' => 'image/bmp',
+			'ico' => 'image/vnd.microsoft.icon',
+			'tiff' => 'image/tiff',
+			'tif' => 'image/tiff',
+			'svg' => 'image/svg+xml',
+			'svgz' => 'image/svg+xml',
+
+			// archives
+			'zip' => 'application/zip',
+			'rar' => 'application/x-rar-compressed',
+			'exe' => 'application/x-msdownload',
+			'msi' => 'application/x-msdownload',
+			'cab' => 'application/vnd.ms-cab-compressed',
+
+			// audio/video
+			'mp3' => 'audio/mpeg',
+			'qt' => 'video/quicktime',
+			'mov' => 'video/quicktime',
+
+			// adobe
+			'pdf' => 'application/pdf',
+			'psd' => 'image/vnd.adobe.photoshop',
+			'ai' => 'application/postscript',
+			'eps' => 'application/postscript',
+			'ps' => 'application/postscript',
+
+			// ms office
+			'doc' => 'application/msword',
+			'rtf' => 'application/rtf',
+			'xls' => 'application/vnd.ms-excel',
+			'ppt' => 'application/vnd.ms-powerpoint',
+
+			// open office
+			'odt' => 'application/vnd.oasis.opendocument.text',
+			'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+		);
+
+		$ext = strtolower(array_pop(explode('.',$filename)));
+		if (array_key_exists($ext, $mime_types)) {
+			return $mime_types[$ext];
+		}
+		elseif (function_exists('finfo_open')) {
+			$finfo = finfo_open(FILEINFO_MIME);
+			$mimetype = finfo_file($finfo, $filename);
+			finfo_close($finfo);
+			return $mimetype;
+		}
+		else {
+			return 'application/octet-stream';
+		}
+	}
+}
 /**
   * scripts for validating and sending forms
   *
@@ -266,26 +341,15 @@ function Form_readonly($page_id, &$vars, &$form_fields) {
 		$_SESSION['forms']=array();
 	}
 	$c='';
-	switch(@$vars['forms_htmltype']) {
-		case 'div': // {
-			$vals_wrapper_start='';
-			$vals_field_start='<div><span>';
-			$vals_field_middle='</span>';
-			$vals_field_end='</div>';
-			$vals_2col_start='<div>';
-			$vals_2col_end='</div>';
-			$vals_wrapper_end='';
-		break; // }
-		default: // {
-			$vals_wrapper_start='<table>';
-			$vals_field_start='<tr><th>';
-			$vals_field_middle='</th><td>';
-			$vals_field_end='</td></tr>';
-			$vals_2col_start='<tr><td colspan="2">';
-			$vals_2col_end='</td></tr>';
-			$vals_wrapper_end='</table>';
-			// }
-	}
+	// { set up delimiters
+	$vals_wrapper_start='<table>';
+	$vals_field_start='<tr><th>';
+	$vals_field_middle='</th><td>';
+	$vals_field_end='</td></tr>';
+	$vals_2col_start='<tr><td colspan="2">';
+	$vals_2col_end='</td></tr>';
+	$vals_wrapper_end='</table>';
+	// }
 	if ($vars['forms_template'] && strpos($vars['forms_template'], '{{')===false) {
 		$vars['forms_template']='';
 	} // }}
@@ -361,14 +425,12 @@ function Form_readonly($page_id, &$vars, &$form_fields) {
 			case 'hidden': // {
 				$d=htmlspecialchars($r2['extra']);
 			break; // }
-			case 'html-block': // {
-				$d=$r2['extra'];
-			break; // }
+			case 'html-block': 
 			case 'page-next': case 'page-previous': case 'page-break': // {
 				$d='';
 			break; // }
 			default: // { # input boxes, and anything which was not handled already
-				$d=htmlspecialchars($_REQUEST[$name]);
+				$d=nl2br(htmlspecialchars($_REQUEST[$name]));
 				// }
 		}
 		if ($vars['forms_template']&&$vars['forms_template']!='&nbsp;') {
@@ -383,7 +445,7 @@ function Form_readonly($page_id, &$vars, &$form_fields) {
 				$vars['forms_template']
 			);
 		}
-		else {
+		elseif ($d!='') {
 			$c.=$vals_field_start.htmlspecialchars($r2['name']);
 			$c.=$vals_field_middle.$d.$vals_field_end;
 		}

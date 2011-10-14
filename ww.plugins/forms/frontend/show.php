@@ -309,7 +309,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 				$c.=$vals_wrapper_end.$d.$vals_wrapper_start;
 			}
 			else {
-				$c.=$vals_field_start.htmlspecialchars($r2['name']);
+				$c.=$vals_field_start.$r2['name'];
 				if ($r2['isrequired']) {
 					$c.='<sup>*</sup>';
 				}
