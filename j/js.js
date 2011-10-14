@@ -107,11 +107,21 @@ function lightbox_show(src, sequence, seq_num) {
 			+'</a></td>';
 		width_to_add+=60;
 	}
+	$('object').each(function(){
+		var $this=$(this);
+		$this.attr('lightbox-visibility', $this.css('visibility'));
+		$this.css('visibility', 'hidden');
+	});
 	$('<table><tr>'+left_arrow+'<td><img id="lightbox-image" src="'+src+'"/></td>'+right_arrow+'</tr></table>')
 		.dialog({
 			"modal":true,
 			"close":function(){
 				$(this).remove();
+				$('object').each(function(){
+					var $this=$(this);
+					$this.css('visibility', $this.attr('lightbox-visibility'));
+					$this.removeAttr('lightbox-visibility');
+				});
 			}
 		});
 	$('#lightbox-image').load(function(){
