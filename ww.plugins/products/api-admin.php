@@ -11,7 +11,14 @@
 	* @link     http://kvsites.ie/
 	*/
 
-function Products_adminCategoryGetFromID($id){
+/**
+	* get a category row from its id
+	*
+	* @param int $id the category ID
+	*
+	* @return array the data
+	*/
+function Products_adminCategoryGetFromID($id) {
 	$ps=dbAll(
 		'select product_id from products_categories_products where category_id='
 		.$id
@@ -67,7 +74,8 @@ function Products_adminCategoryEdit() {
 		'update products_categories set name="'.addslashes($_REQUEST['name']).'"'
 		.',enabled="'.((int)$_REQUEST['enabled']).'"'
 		.',associated_colour="'.addslashes($_REQUEST['associated_colour']).'"'
-		.' where id='.$_REQUEST['id']);
+		.' where id='.$_REQUEST['id']
+	);
 	Core_cacheClear('products');
 	$pageid=dbOne(
 		'select page_id from page_vars where name="products_category_to_show" '
@@ -161,7 +169,7 @@ function Products_adminCategoryMove() {
 /**
 	* set the icon of a category
 	*
-	* return result of upload
+	* @return array result of upload
 	*/
 function Products_adminCategorySetIcon() {
 	$cat_id=(int)$_REQUEST['cat_id'];
@@ -197,41 +205,36 @@ function Products_adminExport() {
 		foreach ($fields as $field) {
 			$row.= '"'.str_replace('"', '""', $product[$field['Field']]).'",';
 		}
-		$cats 
-			= dbAll(
-				'select category_id 
-				from products_categories_products 
-				where product_id = '.$product['id']
-			);
-			$stringCats = '';
-			foreach($cats as $cat) {
-				$info
-					= dbRow(
-						'select name, parent_id 
-						from products_categories
-						where id ='.$cat['category_id']
-					);
-				$thisCat = '';
-				$catName = $info['name'];
-				$thisCat.=$catName.',';
+		$cats = dbAll(
+			'select category_id from products_categories_products '
+			.'where product_id = '.$product['id']
+		);
+		$stringCats = '';
+		foreach ($cats as $cat) {
+			$info
+				= dbRow(
+					'select name, parent_id 
+					from products_categories
+					where id ='.$cat['category_id']
+				);
+			$thisCat = '';
+			$catName = $info['name'];
+			$thisCat.=$catName.',';
+			$parent = $info['parent_id'];
+			while ($parent>0) {
+				$info = dbRow(
+					'select name,parent_id from products_categories where id='.$parent
+				);
+				$parentName = $info['name'];
+				$thisCat = $parentName.'>'.$thisCat;
 				$parent = $info['parent_id'];
-				while ($parent>0) {
-					$info 
-						= dbRow(
-							'select name, parent_id 
-							from products_categories
-							where id ='.$parent
-						);
-					$parentName = $info['name'];
-					$thisCat = $parentName.'>'.$thisCat;
-					$parent = $info['parent_id'];
-				}
-				$stringCats.= $thisCat;
 			}
-			$stringCats = substr($stringCats, 0, (strrpos(',', $stringCats)-1));
-			$stringCats= '"'.$stringCats.'"';
-			$row.= $stringCats;
-			$contents.=$row."\n";
+			$stringCats.= $thisCat;
+		}
+		$stringCats = substr($stringCats, 0, (strrpos(',', $stringCats)-1));
+		$stringCats= '"'.$stringCats.'"';
+		$row.= $stringCats;
+		$contents.=$row."\n";
 	}
 	echo $contents;
 	// }
@@ -252,10 +255,9 @@ function Products_adminProductDatafieldsGet() {
 	}
 	$data = array();
 	$typeData = dbRow(
-			'select data_fields, is_for_sale '
-			.'from products_types '
-			.'where id = '.$typeID
-		);
+		'select data_fields, is_for_sale from products_types '
+		.'where id = '.$typeID
+	);
 	$typeFields = json_decode($typeData['data_fields']);
 	$data['type'] = $typeFields;
 	$data['isForSale'] = $typeData['is_for_sale'];
@@ -288,9 +290,11 @@ function Products_adminProductsList() {
 	$ps=dbAll('select id,name from products order by name');
 	$end=count($ps);
 	echo "product_names=[\n";
-	for($i=0;$i<$end;++$i){
+	for ($i=0;$i<$end;++$i) {
 		echo '	["'.addslashes($ps[$i]['name']).'",'.$ps[$i]['id'].']';
-		if($i<$end-1)echo ',';
+		if ($i<$end-1) {
+			echo ',';
+		}
 		echo "\n";
 	}
 	echo "];";

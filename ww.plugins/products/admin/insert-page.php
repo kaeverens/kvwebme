@@ -13,8 +13,8 @@ while (dbOne('select id from pages where name=\''.$name.'\'', 'id')) {
 	$i++;
 }
 dbQuery(
-	"insert into pages(name, cdate, type, parent) 
-	values('$name', now(), 'products', '$parent')"
+	"insert into pages(name, cdate, type, parent, special, associated_date, alias) 
+	values('$name', now(), 'products', '$parent', 0, now(), '$name')"
 );
 $pageid= (int)dbOne('select last_insert_id() as id', 'id');
 $page= Page::getInstance($pageid);
@@ -35,7 +35,6 @@ switch ($what) {
 			values('$pageid','products_category_to_show', 0)"	
 		);
 	break; // }
-
 	case 2: // { Create a category page
 		dbQuery(
 			"insert into page_vars(page_id, name, value)
@@ -108,3 +107,5 @@ echo '{
 		'"what":'.$what.','.
 		'"url":"'.$url.'"'.
 	'}';
+
+Core_cacheClear();
