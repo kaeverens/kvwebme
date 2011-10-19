@@ -49,12 +49,11 @@ if (isset($_POST[ 'install-theme' ])) {
  * delete theme if selected
  */
 if (isset($_POST[ 'delete-theme' ])) {
-
 	if ($DBVARS[ 'theme' ] == $name) {
 		header('location: /ww.admin/siteoptions.php?page=themes');
 	}
 	elseif (is_dir(USERBASE . 'themes-personal/' . $name)) {
-		shell_exec('rm -rf ' . USERBASE . 'themes-personal/' . $name);
+		CoreDirectory::delete(USERBASE.'themes-personal/'.$name);
 	}
 }
 
@@ -62,3 +61,4 @@ if (isset($_POST[ 'delete-theme' ])) {
  * redirect to themes personal
  */
 header('location: /ww.admin/siteoptions.php?page=themes');
+exit;
