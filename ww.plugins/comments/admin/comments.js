@@ -1,7 +1,9 @@
 $(function() {
-	my_table = $("#comments-table").dataTable({
-		'aaSorting':[[0,'desc']]
-	});
+	var params={'aaSorting':[[0,'desc']]};
+	if (jsvars.datatables['comments-table']) {
+		params["iDisplayLength"]=jsvars.datatables['comments-table'].show;
+	}
+	my_table = $("#comments-table").dataTable(params);
 	if (noModeration) {
 		my_table.fnSetColumnVis(5, false);
 	}

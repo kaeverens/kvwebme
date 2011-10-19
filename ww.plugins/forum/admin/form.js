@@ -1,6 +1,10 @@
 $(function() {
+	var params={};
+	if (jsvars.datatables['forum-datatable-requires-moderation']) {
+		params["iDisplayLength"]=jsvars.datatables['forum-datatable-requires-moderation'].show;
+	}
 	window.postsForModeration = $('#forum-datatable-requires-moderation')
-	.dataTable();
+		.dataTable({});
 });
 $('.approve').click(function() {
 	var id = $(this).attr('id').replace('approve_', '');

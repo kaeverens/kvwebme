@@ -1,9 +1,13 @@
 $(function(){
-	$('#onlinestore-vouchers').dataTable({
+	var params={
 		"bProcessing": true,
 		"bServerSide": true,
 		"sAjaxSource": "/ww.plugins/online-store/admin/vouchers-ajax.php"
-	});
+	};
+	if (jsvars.datatables['onlinestore-vouchers']) {
+		params["iDisplayLength"]=jsvars.datatables['onlinestore-vouchers'].show;
+	}
+	$('#onlinestore-vouchers').dataTable(params);
 	// { users_list
 	var $user_constraints=$('select[name=user_constraints]');
 	$user_constraints.change(build_users_list);

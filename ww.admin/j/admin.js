@@ -56,18 +56,38 @@ function Core_screen(plugin, page) {
 	});
 }
 $(function(){
+	$.post('/a/f=adminLoadJSVars', function(ret) {
+		jsvars=ret;
+	});
 	function keepAlive(){
 		setTimeout(keepAlive,1700000);
 		$.get('/ww.admin/keepalive.php');
 	}
 	$('.datatable').each(function(){
 		var $this=$(this);
+		var id=$this.attr('id')||false;
+		var params={};
 		if ($this.hasClass('desc')) {
-			$this.dataTable({"aaSorting": [[0,'desc']]});
+			params["aaSorting"]=[[0,'desc']];
 		}
-		else {
-			$this.dataTable();
+		if (id && jsvars.datatables[id]) {
+			params["iDisplayLength"]=jsvars.datatables[id].show;
 		}
+		$this.dataTable(params);
+	});
+	$('.dataTables_length select').live('change', function() {
+		var $this=$(this);
+		var id=$this.closest('.dataTables_wrapper').attr('id').replace(/_wrapper$/, '');
+		if (!id) {
+			return;
+		}
+		if (!jsvars.datatables[id]) {
+			jsvars.datatables[id]={};
+		}
+		jsvars.datatables[id].show=$this.val();
+		$.post('/a/f=adminSaveJSVar', {
+			'datatables':jsvars.datatables
+		});
 	});
 	$('input.date-human').each(convert_date_to_human_readable);
 	$('#menu-top>ul>li>a').each(function(){
@@ -109,3 +129,6 @@ $(function(){
 	}
 	setTimeout(keepAlive,1700000);
 });
+var jsvars={
+	'datatables':{}
+};

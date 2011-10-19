@@ -133,7 +133,8 @@ function Core_getImg() {
 		return false; // hack attempt
 	}
 	if (!file_exists($f)) {
-		return false; // file does not exist
+		echo 'file "'.$f.'" does not exist';
+		exit;
 	}
 	if ($w || $h) {
 		list($width, $height)=getimagesize($f);

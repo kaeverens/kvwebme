@@ -180,3 +180,33 @@ function Core_adminPageMove() {
 	dbQuery('update page_summaries set rss=""');
 	return array('ok'=>1);
 }
+
+/**
+	* save a session variable
+	*
+	* @return array status of save
+	*/
+function Core_adminSaveJSVar() {
+	if (!isset($_SESSION['js'])) {
+		$_SESSION['js']=array();
+	}
+	foreach ($_REQUEST as $k=>$v) {
+		if (in_array($k, array('a', 'p', 'f', '_remainder'))) {
+			continue;
+		}
+		$_SESSION['js'][$k]=$v;
+	}
+	return array('ok'=>1);
+}
+
+/**
+	* save a session variable
+	*
+	* @return array status of save
+	*/
+function Core_adminLoadJSVars() {
+	if (!isset($_SESSION['js'])) {
+		$_SESSION['js']=array();
+	}
+	return $_SESSION['js'];
+}

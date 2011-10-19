@@ -66,21 +66,25 @@ function Products_screenTypes() {
 			showAddNewDialog();
 		}
 	});
+	var params={
+		"sAjaxSource": '/a/p=products/f=typesGet',
+		"bProcessing": true,
+		"bServerSide": true,
+		"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+			var id=aData[1];
+			nRow.id='product-types-list-row'+id;
+			$('td:nth-child(2)', nRow)
+				.html('<a href="javascript:Products_typeEdit('+id+');">edit</a>');
+			$('td:nth-child(3)', nRow)
+				.html('<a href="javascript:Products_typeDelete('+id+');">[x]</a>');
+			return nRow;
+		}
+	};
+	if (jsvars.datatables['product-types-list']) {
+		params["iDisplayLength"]=jsvars.datatables['product-types-list'].show;
+	}
 	window.openDataTable=$('#product-types-list')
-		.dataTable({
-			"sAjaxSource": '/a/p=products/f=typesGet',
-			"bProcessing": true,
-			"bServerSide": true,
-			"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-				var id=aData[1];
-				nRow.id='product-types-list-row'+id;
-				$('td:nth-child(2)', nRow)
-					.html('<a href="javascript:Products_typeEdit('+id+');">edit</a>');
-				$('td:nth-child(3)', nRow)
-					.html('<a href="javascript:Products_typeDelete('+id+');">[x]</a>');
-				return nRow;
-			}
-		});
+		.dataTable(params);
 }
 function Products_screenRelationTypes() {
 	document.location="/ww.admin/plugin.php?_plugin=products&_page=relation-types";
