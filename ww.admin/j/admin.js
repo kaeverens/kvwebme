@@ -58,6 +58,9 @@ function Core_screen(plugin, page) {
 $(function(){
 	$.post('/a/f=adminLoadJSVars', function(ret) {
 		jsvars=ret;
+		if (!jsvars.datatables) {
+			jsvars.datatables=[];
+		}
 	});
 	function keepAlive(){
 		setTimeout(keepAlive,1700000);

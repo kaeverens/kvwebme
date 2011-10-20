@@ -23,7 +23,7 @@ function show_cats($id){
 	echo '</ul>';
 }
 show_cats(0);
-echo '<script>selected_cat='.$cats[0][0]['id'].';</script>';
+echo '<script>selected_cat='.(int)$cats[0][0]['id'].';</script>';
 echo '</div></td><td id="products-categories-attrs"></td></tr></table>';
 WW_addScript('/j/farbtastic-1.3u/farbtastic.js');
 WW_addScript('/j/jstree/jquery.jstree.js');

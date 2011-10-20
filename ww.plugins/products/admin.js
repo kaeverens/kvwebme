@@ -311,19 +311,43 @@ function Products_typeEdit(id) {
 		$('<table class="wide">'
 			+'<tr><th>Name</th><td id="pte1"></td></tr>'
 			+'<tr><th>Are products of this type for sale?</th>'
-			+'<td id="pte2"></td></tr>'
+			+'<td id="pte2"></td></tr><tr id="pte4"/>'
 			+'<tr><th>If no image is uploaded for the product, what image should '
 			+'be shown?</th><td id="pte3"></td></tr>'
 			+'</table>'
 		).appendTo(panel);
+		// { name
 		$('<input/>')
 			.change(function(){tdata.name=$(this).val();})
 			.val(tdata.name||"default")
 			.appendTo('#pte1');
+		// }
+		// { for sale
 		$('<select><option value="0">No</option><option value="1">Yes</option></select>')
-			.change(function(){tdata.is_for_sale=$(this).val();})
+			.change(function(){
+				tdata.is_for_sale=$(this).val();
+				if (+tdata.is_for_sale) {
+					addIsVoucher();
+				}
+				else {
+					$('#pte4').empty();
+				}
+			})
 			.val(tdata.is_for_sale)
 			.appendTo('#pte2');
+		// { is a printable voucher
+		function addIsVoucher() {
+			$('<th>Is it a printable voucher?</th><td><select>'
+				+'<option value="">No</option><option value="1">Yes</option>'
+				+'</select></td></tr>')
+				.appendTo('#pte4');
+			$('#pte4 select').val(tdata.is_voucher||'');
+		}
+		if (+tdata.is_for_sale) {
+			addIsVoucher();
+		}
+		// }
+		// }
 		var src=id
 			?'/kfmgetfull/products/types/'+id
 			+'/image-not-found.png,width=64,height=64'
@@ -402,7 +426,10 @@ function Products_typeEdit(id) {
 	}
 	function updateMain() {
 		tdata.name=$('#pte1 input').val();
-		tdata.is_for_sale=$('#pte2 select').val();
+		tdata.is_for_sale=+$('#pte2 select').val();
+		if (tdata.is_for_sale) {
+			tdata.is_voucher=+$('#pte4 select').val();
+		}
 	}
 	function updateMultiView() {
 		tdata.multiview_template=$('#ts1 textarea').val();
