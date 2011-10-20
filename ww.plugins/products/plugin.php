@@ -77,7 +77,7 @@ $plugin=array(
 	'triggers' => array(
 		'initialisation-completed' => 'Products_addToCart'
 	),
-	'version' => '21'
+	'version' => '23'
 );
 // }
 /**
@@ -186,7 +186,6 @@ function Products_frontend($PAGEDATA) {
 				}
 			}
 		}
-		echo $PAGE_UNUSED_URI;
 	}
 	if (isset($_REQUEST['product_category'])) {
 		$_REQUEST['product_cid']=$_REQUEST['product_category'];
@@ -471,7 +470,7 @@ class Product{
 			return $cat->getRelativeUrl().'/'.urlencode($this->name);
 		}
 		if (preg_match('/^products(\||$)/', $PAGEDATA->type)) { // TODO
-			$page=$PAGEDATA->getRelativeUrl().'/'.urlencode($this->name);
+			return $PAGEDATA->getRelativeUrl().'/'.urlencode($this->name);
 		}
 		$this->relativeUrl='/_r?type=products&amp;product_id='.$this->id;
 		return $this->relativeUrl;

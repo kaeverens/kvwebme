@@ -164,3 +164,12 @@ if ($version==20) { // add stock number
 	dbQuery('alter table products add stock_number text');
 	$version=21;
 }
+if ($version==21) { // product-type vouchers
+	dbQuery('alter table products_types add is_voucher smallint default 0');
+	dbQuery('alter table products_types add voucher_template text');
+	$version=22;
+}
+if ($version==22) { // add voucher_value to products table
+	dbQuery('alter table products add voucher_value float default 0');
+	$version=23;
+}

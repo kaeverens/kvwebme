@@ -330,7 +330,7 @@ echo '<tr>';
 // { stock_number
 echo '<th><div class="help products/stock-number"></div>Stock Number</th><td>';
 echo '<input class="not-empty" name="stock_number" value="'
-	.htmlspecialchars($pdata['stock_number']).'" /></td>';
+	.htmlspecialchars(@$pdata['stock_number']).'" /></td>';
 // }
 // { enabled
 echo '<th><div class="help products/enabled"></div>Enabled</th>'
@@ -457,6 +457,7 @@ echo '</table></div>';
 // }
 // { Online Store
 if (isset($PLUGINS['online-store'])) {
+	// { set up fields
 	$online_store_fields 
 		= array (
 			'_price' => 'Price',
@@ -482,6 +483,13 @@ if (isset($PLUGINS['online-store'])) {
 				'Not Discountable', 'Options'=>array('No', 'Yes')
 			)
 		);
+	if (dbOne(
+		'select is_voucher from products_types where id='.$pdata['product_type_id'],
+		'is_voucher'
+	)=='1') {
+		$online_store_fields['_voucher_value']='Voucher Value';
+	}
+	// }
 	$online_store_data = json_decode($pdata['online_store_fields']);
 	echo '<div id="online-store-fields" class="products-online-store"';
 	if (!isset($addOnlineStoreFields)||!$addOnlineStoreFields) {

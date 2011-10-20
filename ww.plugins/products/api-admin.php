@@ -325,8 +325,12 @@ function Products_adminTypeEdit() {
 		.addslashes(Core_sanitiseHtmlEssential($d['multiview_template']))
 		.'",singleview_template="'
 		.addslashes(Core_sanitiseHtmlEssential($d['singleview_template']))
-		.'",data_fields="'.addslashes($data_fields).'",is_for_sale="'
-		.addslashes($d['is_for_sale']).'",prices_based_on_usergroup="'
+		.'",data_fields="'.addslashes($data_fields).'",'
+		.'is_for_sale='.(int)$d['is_for_sale'].','
+		.'is_voucher='.(int)$d['is_voucher'].','
+		.'voucher_template="'
+		.addslashes(Core_sanitiseHtmlEssential($d['voucher_template'])).'",'
+		.'prices_based_on_usergroup="'
 		.addslashes($d['prices_based_on_usergroup'])
 		.'",multiview_template_header="'
 		.addslashes(Core_sanitiseHtmlEssential($d['multiview_template_header']))
@@ -446,8 +450,11 @@ function Products_adminTypeCopy() {
 		.'",multiview_template="'.addslashes($r['multiview_template']).'",'
 		.'singleview_template="'.addslashes($r['singleview_template']).'",'
 		.'data_fields="'.addslashes($r['data_fields']).'",'
-		.'is_for_sale='.((int)$r['is_for_sale']).',multiview_template_header="'
-		.addslashes($r['multiview_template_header']).'",'
+		.'is_for_sale='.((int)$r['is_for_sale']).','
+		.'is_voucher='.((int)$r['is_voucher']).','
+		.'voucher_template="'.addslashes($r['voucher_template']).'",'
+		.'multiview_template_header="'.addslashes($r['multiview_template_header'])
+		.'",'
 		.'multiview_template_footer="'.addslashes($r['multiview_template_footer'])
 		.'",meta="'.addslashes($r['meta']).'"'
 	);
@@ -472,4 +479,17 @@ function Products_adminPageDelete() {
 	dbQuery('delete from page_vars where page_id='.$pageID);
 	Core_cacheClear();
 	return array('ok'=>1);
+}
+
+/**
+	* retrieve an example template for a product of type voucher
+	*
+	* @return the sample template
+	*/
+function Products_adminProductTypeVoucherTemplateSample() {
+	return array(
+		'html'=>file_get_contents(
+			dirname(__FILE__).'/templates/product-type-voucher.html'
+		)
+	);
 }

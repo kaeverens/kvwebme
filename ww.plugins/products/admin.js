@@ -107,66 +107,6 @@ function Products_typeDelete(id) {
 }
 function Products_typeEdit(id) {
 	var activeTab=-1, tdata=false;
-	function updateValues() {
-		switch(activeTab) {
-			case 0: // { main
-				return updateMain();
-				// }
-			case 1: // { data fields
-				return updateDataFields();
-				// }
-			case 2: // { multiview
-				return updateMultiView();
-				// }
-			case 3: // { singleview
-				return updateSingleView();
-				// }
-		}
-	}
-	$.post('/a/p=products/f=typeGet/id='+id, function(res) {
-		tdata=res;
-		var $content=$('#content')
-			.html('<a href="javascript:Products_screenTypes()">Product Types</a>');
-		$('<div id="product-types-edit-form"><ul>'
-			+'<li><a href="#t0">Main Details</a></li>'
-			+'<li><a href="#t1">Data Fields</a></li>'
-			+'<li><a href="#t2">Multi-View Template</a></li>'
-			+'<li><a href="#t3">Single-View Template</a></li>'
-			+'</ul><div id="t0"/><div id="t1"/><div id="t2"/><div id="t3"/></div>'
-		)
-			.appendTo($content)
-			.tabs({
-				'select':updateValues,
-				'show':function(e, ui) {
-					$('#product-types-edit-form>div').empty();
-					activeTab=ui.index;
-					switch (ui.index) {
-						case 0: // { main
-							return showMain(ui.panel);
-							// }
-						case 1: // { data fields
-							return showDataFields(ui.panel);
-							// }
-						case 2: // { multiview
-							return showMultiView(ui.panel);
-							// }
-						case 3: // { singleview
-							return showSingleView(ui.panel);
-							// }
-					}
-				}
-			});
-		$('<button>Save</button>')
-			.click(function() {
-				updateValues();
-				$.post('/a/p=products/f=adminTypeEdit', {
-					'data': tdata
-				}, function(ret) {
-					alert('product type saved');
-				});
-			})
-			.appendTo($content);
-	});
 	function showDataFields(panel, index) {
 		$(panel).empty();
 		var fields=tdata.data_fields;
@@ -341,7 +281,24 @@ function Products_typeEdit(id) {
 				+'<option value="">No</option><option value="1">Yes</option>'
 				+'</select></td></tr>')
 				.appendTo('#pte4');
-			$('#pte4 select').val(tdata.is_voucher||'');
+			var $select=$('#pte4 select');
+			if (+tdata.is_voucher) {
+				$select.val(1);
+			}
+			$select
+				.change(function() {
+					var $this=$(this);
+					var val=+$this.val();
+					if (val) {
+						$('<a href="#">template</a>')
+							.click(showVoucherTemplate)
+							.insertAfter($this);
+					}
+					else {
+						$this.siblings('a').remove();
+					}
+				})
+				.change();
 		}
 		if (+tdata.is_for_sale) {
 			addIsVoucher();
@@ -397,6 +354,33 @@ function Products_typeEdit(id) {
 			.appendTo(panel)
 			.ckeditor();
 	}
+	function showVoucherTemplate() {
+		var html=tdata.voucher_template||'';
+		var $template=$('<textarea/>')
+			.val(html)
+			.dialog({
+				"width":700,
+				"height":400,
+				"modal":true,
+				"close":function() {
+					$template.remove();
+				},
+				"buttons":{
+					"save":function() {
+						tdata.voucher_template=$template.val();
+						$template.remove();
+					}
+				}
+			});
+		$template.ckeditor();
+		if (html=='') {
+			$.post('/a/p=products/f=adminProductTypeVoucherTemplateSample',
+				function(ret) {
+					$template.val(ret.html);
+				});
+		}
+		return false;
+	}
 	function updateDataFields() {
 		var $panel=$('#t1>div>div.ui-accordion-content-active');
 		var index=$panel.index('#t1>div>div');
@@ -439,4 +423,64 @@ function Products_typeEdit(id) {
 	function updateSingleView() {
 		tdata.singleview_template=$('#t3 textarea').val();
 	}
+	function updateValues() {
+		switch(activeTab) {
+			case 0: // { main
+				return updateMain();
+				// }
+			case 1: // { data fields
+				return updateDataFields();
+				// }
+			case 2: // { multiview
+				return updateMultiView();
+				// }
+			case 3: // { singleview
+				return updateSingleView();
+				// }
+		}
+	}
+	$.post('/a/p=products/f=typeGet/id='+id, function(res) {
+		tdata=res;
+		var $content=$('#content')
+			.html('<a href="javascript:Products_screenTypes()">Product Types</a>');
+		$('<div id="product-types-edit-form"><ul>'
+			+'<li><a href="#t0">Main Details</a></li>'
+			+'<li><a href="#t1">Data Fields</a></li>'
+			+'<li><a href="#t2">Multi-View Template</a></li>'
+			+'<li><a href="#t3">Single-View Template</a></li>'
+			+'</ul><div id="t0"/><div id="t1"/><div id="t2"/><div id="t3"/></div>'
+		)
+			.appendTo($content)
+			.tabs({
+				'select':updateValues,
+				'show':function(e, ui) {
+					$('#product-types-edit-form>div').empty();
+					activeTab=ui.index;
+					switch (ui.index) {
+						case 0: // { main
+							return showMain(ui.panel);
+							// }
+						case 1: // { data fields
+							return showDataFields(ui.panel);
+							// }
+						case 2: // { multiview
+							return showMultiView(ui.panel);
+							// }
+						case 3: // { singleview
+							return showSingleView(ui.panel);
+							// }
+					}
+				}
+			});
+		$('<button>Save</button>')
+			.click(function() {
+				updateValues();
+				$.post('/a/p=products/f=adminTypeEdit', {
+					'data': tdata
+				}, function(ret) {
+					alert('product type saved');
+				});
+			})
+			.appendTo($content);
+	});
 }

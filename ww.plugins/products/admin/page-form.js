@@ -27,8 +27,7 @@ $(function(){
 				// }
 			}
 			return '';
-		},
-		always_retrieve:true
+		}
 	});
 	$('#products_what_to_show_1 select,#products_what_to_show_2 select').change(function(){
 		$('#products_order_by_select').trigger('mousedown');
