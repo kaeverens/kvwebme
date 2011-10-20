@@ -249,6 +249,9 @@ function OnlineStore_showBasketWidget($vars=null) {
 	if (isset($vars->template) && $vars->template) {
 		$t=$vars->template;
 		$t=str_replace('{{ONLINESTORE_NUM_ITEMS}}', OnlineStore_getNumItems(), $t);
+		if (!@$_SESSION['onlinestore_checkout_page']) {
+			OnlineStore_setCheckoutPage();
+		}
 		$t=str_replace(
 			'{{ONLINESTORE_FINAL_TOTAL}}',
 			OnlineStore_numToPrice(OnlineStore_getFinalTotal()),
@@ -506,21 +509,7 @@ function OnlineStore_getNumItems() {
   */
 function OnlineStore_startup() {
 	if (!isset($_SESSION['onlinestore_checkout_page'])) {
-		$p=dbOne('select id from pages where type="online-store"', 'id');
-		if ($p) {
-			$_SESSION['onlinestore_checkout_page']=$p;
-			$page=Page::getInstance($p);
-			if ($page) {
-				$page->initValues();
-				$vat=isset($page->vars['online_stores_vat_percent'])
-					?$page->vars['online_stores_vat_percent']
-					:0;
-				if ($vat=='') {
-					$vat=0;
-				}
-				$_SESSION['onlinestore_vat_percent']=(float)$vat;
-			}
-		}
+		OnlineStore_setCheckoutPage();
 	}
 	if (!isset($_SESSION['currency'])) {
 		$currencies=dbOne(
@@ -543,6 +532,24 @@ function OnlineStore_startup() {
 		else {
 			$currencies=json_decode($currencies, true);
 			$_SESSION['currency']=$currencies[0];
+		}
+	}
+}
+
+function OnlineStore_setCheckoutPage() {
+	$p=dbOne('select id from pages where type like "online-store%"', 'id');
+	if ($p) {
+		$_SESSION['onlinestore_checkout_page']=$p;
+		$page=Page::getInstance($p);
+		if ($page) {
+			$page->initValues();
+			$vat=isset($page->vars['online_stores_vat_percent'])
+				?$page->vars['online_stores_vat_percent']
+				:0;
+			if ($vat=='') {
+				$vat=0;
+			}
+			$_SESSION['onlinestore_vat_percent']=(float)$vat;
 		}
 	}
 }
