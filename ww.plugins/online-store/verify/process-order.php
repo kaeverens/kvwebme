@@ -20,7 +20,10 @@
 	*
 	* @return null
 	*/
-function OnlineStore_processOrder($id, $order) {
+function OnlineStore_processOrder($id, $order=false) {
+	if ($order===false) {
+		$order=dbRow("SELECT * FROM online_store_orders WHERE id=$id");
+	}
 	// { mark order as paid
 	dbQuery("UPDATE online_store_orders SET status='1' WHERE id=$id");
 	// }
@@ -30,11 +33,13 @@ function OnlineStore_processOrder($id, $order) {
 	}
 	// }
 	$form_vals=json_decode($order['form_vals']);
+	$items=json_decode($order['items']);
+	// { send emails
+	// { work out from/to
 	$page=Page::getInstanceByType('online-store');
 	$page->initValues();
 	$from='noreply@'.str_replace('www.', '', $_SERVER['HTTP_HOST']);
 	$bcc='';
-	$page=Page::getInstanceByType('online-store');
 	if ( $page
 		&& isset($page->vars['online_stores_admin_email'])
 		&& $page->vars['online_stores_admin_email']
@@ -55,10 +60,38 @@ function OnlineStore_processOrder($id, $order) {
 	if ($bcc) {
 		$headers.='BCC: '.$bcc."\r\n";
 	}
+	// }
+	// { invoice
 	mail(
 		$form_vals->Email,
 		'['.str_replace('www.', '', $_SERVER['HTTP_HOST']).'] invoice #'. $id,
 		$order['invoice'],
 		$headers
 	);
+	// }
+	// { send vouchers if there are any
+	foreach ($items as $item) {
+		if (!$item->id) {
+			continue;
+		}
+		$p=Product::getInstance($item->id);
+		$pt=ProductType::getInstance($p->vals['product_type_id']);
+		if (!$pt->is_voucher) {
+			continue;
+		}
+		$html=$pt->voucher_template;
+		$html=str_replace(
+			'{{$description}}',
+			$p->vals['description'],
+			$html
+		);
+		mail(
+			$form_vals->Email,
+			'['.str_replace('www.', '', $_SERVER['HTTP_HOST']).'] voucher',
+			$html,
+			$headers
+		);
+	}
+	// }
+	// }
 }

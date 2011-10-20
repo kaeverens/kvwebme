@@ -11,7 +11,7 @@
 	* @link     None
 	*/
 
-$ids=dbAll('select id from pages where type="online-store"');
+$ids=dbAll('select id from pages where type like "online-store%"');
 if (count($ids)>1) {
 	echo '<p>Please choose the online store you want to administrate.</p><ul>';
 	foreach ($ids as $id) {

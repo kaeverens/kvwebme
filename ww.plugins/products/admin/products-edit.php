@@ -38,7 +38,8 @@ function Products_showDataField($df, $def) {
 				if ($df['v']=='') {
 					$df['v']=$def['e'];
 				}
-				echo '<textarea name="data_fields['.htmlspecialchars($def['n']).']">'
+				echo '<textarea class="selectbox-userdefined" '
+					.'name="data_fields['.htmlspecialchars($def['n']).']">'
 					.htmlspecialchars($df['v'])
 					.'</textarea>';
 			}

@@ -76,7 +76,7 @@ $rs=dbAll(
 	.$filter.' order by date_created desc'
 );
 if (is_array($rs) && count($rs)) {
-	$c.='<div style="margin:0 20%">'
+	$c.='<div style="margin:0 10%">'
 		.'<table width="100%" class="datatable desc"><thead><tr>'
 		.'<th>ID</th>'
 		.'<th>Date</th>'
@@ -452,7 +452,7 @@ $c.='todo';
 $c.='</div>';
 // }
 $c.='</div>';
-WW_addScript('/ww.plugins/online-store/admin/index.js');
+WW_addScript('/ww.plugins/online-store/admin/index2.js');
 
 if (!file_exists(USERBASE.'ww.cache/online-store')) {
 	mkdir(USERBASE.'ww.cache/online-store');

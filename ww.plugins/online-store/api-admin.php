@@ -107,3 +107,22 @@ function OnlineStore_adminOrderItemsList() {
 	}
 	return $items;
 }
+
+/**
+	* change the payment status of an Online-Store order
+	*
+	* @return array status
+	*/
+function OnlineStore_adminChangeOrderStatus() {
+	$id=(int)$_REQUEST['id'];
+	$status=(int)$_REQUEST['status'];
+	
+	if ($status==1) {
+		require dirname(__FILE__).'/verify/process-order.php';
+		OnlineStore_processOrder($id);
+	}
+	else {
+		dbQuery('update online_store_orders set status='.$status.' where id='.$id);
+	}
+	return array('ok'=>1);
+}

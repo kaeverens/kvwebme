@@ -1,4 +1,22 @@
 $(function(){
+	function updatePrice() {
+		var $wrapper=$(this).closest('.products-product');
+		var $price=$wrapper.find('strong.os_price');
+		var orig=+$price.attr('original-price');
+		if (isNaN(orig) || !orig) {
+			orig=+$price.text().replace(/[^0-9\.]/g, '');
+			$price.attr('original-price', orig);
+			$price.attr('currency', $price.text().replace(/[0-9\.]/g, ''));
+		}
+		$wrapper.find('select').each(function() {
+			var val=$(this).val();
+			if (!/\|/.test(val)) {
+				return;
+			}
+			orig+= +(val.split('|')[1]);
+		});
+		$price.text($price.attr('currency')+orig);
+	}
 	$('a.products-lightbox').lightBox();
 	$('div.product-images img').click(function(){
 		var src=$('a.products-lightbox img').attr('src'),
@@ -87,5 +105,9 @@ $(function(){
 			}
 		);
 		return false;
+	});
+	$('.products-product select').change(updatePrice);
+	$('.products-product').each(function() {
+		$($(this).find('select')[0]).change();
 	});
 });

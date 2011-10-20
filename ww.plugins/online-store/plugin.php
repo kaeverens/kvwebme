@@ -97,8 +97,11 @@ function OnlineStore_addToCart(
 	}
 	$item=(isset($_SESSION['online-store']['items'][$md5]))
 		?$_SESSION['online-store']['items'][$md5]
-		:array('cost'=>0,'amt'=>0,'short_desc'=>$short_desc,
-			'long_desc'=>$long_desc,'url'=>$url);
+		:array(
+			'cost'=>0, 'amt'=>0, 'short_desc'=>$short_desc,
+			'long_desc'=>preg_replace('/\|.*/', '', $long_desc),
+			'url'=>$url
+		);
 	$item['cost']=$cost;
 	$item['amt']+=$amt;
 	$item['short_desc']=$short_desc;

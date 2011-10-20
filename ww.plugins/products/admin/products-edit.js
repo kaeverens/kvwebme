@@ -44,80 +44,6 @@ function show_hide_cat_options(catsToChange) {
 		break; // }
 	}
 }
-$(function(){
-	$('#product-images-wrapper a.mark-as-default').bind('click',function(){
-		var $this=$(this);
-		var id=$this[0].id.replace('products-dfbtn-','');
-		$.get('/ww.plugins/products/admin/set-default-image.php?product_id='+product_id+'&id='+id,function(ret){
-			$('div.default').removeClass('default');
-			$this.closest('div').addClass('default');
-		});
-	});
-	$('#product-images-wrapper a.delete').bind('click',function(){
-		var $this=$(this);
-		var id=$this[0].id.replace('products-dbtn-','');
-		if(!$('#products-dchk-'+id+':checked').length){
-			alert('you must tick the box before deleting');
-			return;
-		}
-		$.get('/j/kfm/rpc.php?action=delete_file&id='+id,function(ret){
-			$this.closest('div').remove();
-		});
-	});
-	$('#product-images-wrapper a.caption').click(function() {
-		var $this=$(this);
-		var id=$this[0].id.replace('products-cbtn-','');
-		var caption=$('#products-img-'+id).attr('title');
-		var title='';
-		if (caption==null || caption=='') {
-			title='Add Caption';
-		}
-		else {
-			title='Edit Caption';
-		}
-		var $html=$('<div id="product-caption-dialog" title="'+title+'">'
-			+'Enter the new caption<br />'
-			+'<textarea id="product-caption">'+htmlspecialchars(caption)+'</textarea>'
-		).dialog({
-			buttons:{
-				'Edit': function () {
-					var newCaption = $('#product-caption').val();
-					$.post('/j/kfm/rpc.php',
-						{
-							"action":'change_caption',
-							"id":id,
-							"caption":newCaption
-						},
-						function(){
-							$('#products-img-'+id).attr('title', newCaption);
-							$html.remove();
-						},
-						"json"
-					);
-				},
-				'Cancel': function () {
-					$html.remove();
-				}
-			},
-			close:function(){
-				$html.remove();
-			},
-			modal:true
-		});
-	});
-	$("#tabs").tabs();
-	$('#products-form').submit(products_form_validate);
-});
-$('#product_type_id').change(function() {
-return;
-	$('#data-fields-table').remove();
-	var newType = $(this).val();
-	var product = $(this).attr('product');
-	$.post('/a/p=products/f=adminProductDatafieldsGet', {
-			"type":newType,
-			"product":product
-		}, update_data_fields);
-});
 function update_data_fields(data) {
 	if (data.message) {
 		return alert(data.message);
@@ -235,12 +161,117 @@ function products_getData () {
 		}
 	}
 }
-$('a.delete-product-page').click(function(){
-	if (!confirm('are you sure you want to delete the product page?')) {
-		return;
-	}
-	var pid=$(this).attr('pid');
-	$.post('/a/p=products/f=adminPageDelete/pid='+pid, function() {
-		$('#product_table_link_holder').empty();
+$(function(){
+	$('#product-images-wrapper a.mark-as-default').bind('click',function(){
+		var $this=$(this);
+		var id=$this[0].id.replace('products-dfbtn-','');
+		$.get('/ww.plugins/products/admin/set-default-image.php?product_id='+product_id+'&id='+id,function(ret){
+			$('div.default').removeClass('default');
+			$this.closest('div').addClass('default');
+		});
+	});
+	$('#product-images-wrapper a.delete').bind('click',function(){
+		var $this=$(this);
+		var id=$this[0].id.replace('products-dbtn-','');
+		if(!$('#products-dchk-'+id+':checked').length){
+			alert('you must tick the box before deleting');
+			return;
+		}
+		$.get('/j/kfm/rpc.php?action=delete_file&id='+id,function(ret){
+			$this.closest('div').remove();
+		});
+	});
+	$('#product-images-wrapper a.caption').click(function() {
+		var $this=$(this);
+		var id=$this[0].id.replace('products-cbtn-','');
+		var caption=$('#products-img-'+id).attr('title');
+		var title='';
+		if (caption==null || caption=='') {
+			title='Add Caption';
+		}
+		else {
+			title='Edit Caption';
+		}
+		var $html=$('<div id="product-caption-dialog" title="'+title+'">'
+			+'Enter the new caption<br />'
+			+'<textarea id="product-caption">'+htmlspecialchars(caption)+'</textarea>'
+		).dialog({
+			buttons:{
+				'Edit': function () {
+					var newCaption = $('#product-caption').val();
+					$.post('/j/kfm/rpc.php',
+						{
+							"action":'change_caption',
+							"id":id,
+							"caption":newCaption
+						},
+						function(){
+							$('#products-img-'+id).attr('title', newCaption);
+							$html.remove();
+						},
+						"json"
+					);
+				},
+				'Cancel': function () {
+					$html.remove();
+				}
+			},
+			close:function(){
+				$html.remove();
+			},
+			modal:true
+		});
+	});
+	$("#tabs").tabs();
+	$('#products-form').submit(products_form_validate);
+	$('a.delete-product-page').click(function(){
+		if (!confirm('are you sure you want to delete the product page?')) {
+			return;
+		}
+		var pid=$(this).attr('pid');
+		$.post('/a/p=products/f=adminPageDelete/pid='+pid, function() {
+			$('#product_table_link_holder').empty();
+		});
+	});
+	$('textarea.selectbox-userdefined').each(function() {
+		var $textarea=$(this);
+		$textarea.css('display','none');
+		var $table=$(
+			'<table><thead><tr><th>Option Name</th><th>£$€</th></tr></thead>'
+			+'<tbody/></table>'
+		).insertAfter($textarea);
+		var rows=$textarea.val().split("\n");
+		function addRow(var1, var2) {
+			var $row=$('<tr><td><input/></td><td><input class="number"/></td></tr>')
+				.appendTo($table);
+			$row.find('td:first-child input').val(var1);
+			$row.find('td:last-child input').val(var2);
+			$row.find('input').change(checkRows);
+		}
+		function checkRows() {
+			var $inputs=$table.find('input');
+			var emptyrow=0;
+			var text='';
+			for (var i=0;i<$inputs.length;i+=2) {
+				var $inp1=$($inputs[i]), $inp2=$($inputs[i+1]);
+				if ($inp1.val()=='') {
+					emptyrow=1;
+					continue;
+				}
+				text+=$inp1.val()+'|'+$inp2.val()+"\n";
+			}
+			$textarea.val(text);
+			if (!emptyrow) {
+				addRow('', 0);
+			}
+		}
+		for (var i=0;i<rows.length;++i) {
+			var row=rows[i];
+			if (row=='') {
+				continue;
+			}
+			var bits=row.split('|');
+			addRow(bits[0], bits[1]||0);
+		}
 	});
 });

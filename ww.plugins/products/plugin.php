@@ -595,7 +595,9 @@ class ProductType{
 		}
 		unset($r['singleview_template']);
 		$this->id=$r['id'];
-		$this->is_for_sale=$r['is_for_sale'];
+		$this->is_for_sale=(int)$r['is_for_sale'];
+		$this->is_voucher=(int)$r['is_voucher'];
+		$this->voucher_template=$r['voucher_template'];
 		self::$instances[$this->id] =& $this;
 		return $this;
 	}
@@ -754,17 +756,13 @@ class ProductType{
 								continue;
 							}
 							$o=$e;
+							$p='';
 							if (strpos($e, '|')!==false) {
 								$bits=explode('|', $e);
-								$p=(float)$bits[1];
 								$e=$bits[0];
-								if ($p) {
-									$e.=$bits[1]>0
-										?' - add '.($_SESSION['currency']['symbol']).$bits[1]
-										:$bits[1];
-								}
+								$p='price="'.(int)$bits[1].'"';
 							}
-							$h.='<option value="'.htmlspecialchars($o).'">'
+							$h.='<option '.$p.' value="'.htmlspecialchars($o).'">'
 								.htmlspecialchars($e).'</option>';
 						}
 						$h.='</select>';

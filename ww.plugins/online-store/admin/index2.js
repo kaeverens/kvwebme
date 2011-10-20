@@ -124,7 +124,7 @@ function os_update_fields_value(){
 function os_status_change(ev){
 	var el=ev.target;
 	var id=el.id.replace(/os_status_select_/,''),val=+$(el).val();
-	$.get('/ww.plugins/online-store/admin/change-status.php?id='+id+'&status='+val,function(){
+	$.post('/a/p=online-store/f=adminChangeOrderStatus/id='+id+'/status='+val, function(){
 		$('#os_status_select_'+id).replaceWith(
 			$('<a id="os_status_'+id+'" href="javascript:;">'+window.os_statuses[val]+'</a>')
 				.click(function(){
