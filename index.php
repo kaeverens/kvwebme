@@ -351,6 +351,7 @@ if (Core_isAdmin()) {
 // { generate inline javascript
 $tmp='var pagedata={id:'.$PAGEDATA->id
 	.Core_trigger('displaying-pagedata')
+	.',sessid:"'.session_id().'"'
 	.'},';
 if (isset($_SESSION['userdata'])) {
 	$tmp.='userdata={isAdmin:'.(Core_isAdmin()?1:0)
