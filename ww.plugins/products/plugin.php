@@ -680,10 +680,11 @@ class ProductType{
 						WW_addScript(
 							'/j/mColorPicker/mColorPicker.js'
 						);
-						$h='<input class="color-picker" value="#000000" '
-							.'name="'.'products_values_'.$f->n.'" '
+						$h='<input class="color-picker" '
+							.'name="products_values_'.$f->n.'" '
 							.'style="height:20px;width:20px;" '
-							.'data-hex="true" data-text="hidden"/>'
+							.'value="'.htmlspecialchars($val).'" '
+							.'data-text="hidden"/>'
 							.'<style>#mColorPickerFooter,#mColorPickerImg{display:none}</style>';
 						WW_addInlineScript(
 							'$(".color-picker")'
@@ -782,12 +783,14 @@ class ProductType{
 						.'class="product-field '.$f->n.$required.'"/>'
 					);
 				break; // }
-				case 'textarea': // { everything else
+				case 'textarea': // { textarea
 					if (@$f->u) {
 						$smarty->assign(
 							$f->n,
 							'<textarea class="product-field '.$f->n.$required
-							.'" name="products_values_'.$f->n.'"></textarea>'
+							.'" name="products_values_'.$f->n.'">'
+							.trim(htmlspecialchars(preg_replace('/<[^>]*>/', '', $val)))
+							.'</textarea>'
 						);
 					}
 					else {
@@ -802,7 +805,7 @@ class ProductType{
 						$smarty->assign(
 							$f->n,
 							'<input class="product-field '.$f->n.$required
-							.'" name="products_values_'.$f->n.'"/>'
+							.'" value="'.htmlspecialchars($val).'" name="products_values_'.$f->n.'"/>'
 						);
 					}
 					else {
