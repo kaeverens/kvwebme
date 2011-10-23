@@ -273,5 +273,6 @@ $(function(){
 			var bits=row.split('|');
 			addRow(bits[0], bits[1]||0);
 		}
+		checkRows();
 	});
 });
