@@ -231,21 +231,29 @@ function Products_addToCart() {
 	$price_amendments=0;
 	$vals=array();
 	$md5='';
-	$pt=ProductType::getInstance($product->vals['product_type_id']);
+	$product_type=ProductType::getInstance($product->vals['product_type_id']);
 	$long_desc='';
 	foreach ($_REQUEST as $k=>$v) {
 		if (strpos($k, 'products_values_')===0) {
 			$n=str_replace('products_values_', '', $k);
-			$df=$pt->getField($n);
-			if ($df === false // not a real field
-				|| $df->u!=1    // not a user-choosable field
+			$data_field=$product_type->getField($n);
+			if ($data_field === false // not a real field
+				|| $data_field->u!=1    // not a user-choosable field
 			) {
 				continue;
 			}
-			switch ($df->t) {
+			switch ($data_field->t) {
 				case 'selectbox': // {
 					$ok=0;
-					$strs=explode("\n", $df->e);
+					if (@$product->vals[$n]) { // if product has custom values
+						$strs=explode("\n", $product->vals[$n]);
+						foreach ($strs as $a=>$b) {
+							$strs[$a]=trim($b);
+						}
+					}
+					else { // else use the product type defaults
+						$strs=explode("\n", $data_field->e);
+					}
 					if (in_array($v, $strs)) {
 						if (strpos($v, '|')!==false) {
 							$bits=explode('|', $v);
@@ -545,9 +553,9 @@ class Product{
 		if (strpos(strtolower($this->name), $search)!==false) {
 			return true;
 		}
-		$pt=ProductType::getInstance($this->vals['product_type_id']);
-		foreach ($pt->data_fields as $df) {
-			if ($df->s && strpos(strtolower($this->get($df->n)), $search)!==false) {
+		$product_type=ProductType::getInstance($this->vals['product_type_id']);
+		foreach ($product_type->data_fields as $data_field) {
+			if ($data_field->s && strpos(strtolower($this->get($data_field->n)), $search)!==false) {
 				return true;
 			}
 		}

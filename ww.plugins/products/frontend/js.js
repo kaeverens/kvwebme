@@ -64,7 +64,7 @@ $(function(){
 				$this.closest('form').submit();
 			},500);
 		});
-	$('div.products-product form input[type=submit]').live('mousedown',function(){
+	$('div.products-product form input[type=submit],div.products-product form button').live('mouseover',function(){
 		var inps=[];
 		var $form=$(this).closest('form');
 		$form.find('input').each(function(){

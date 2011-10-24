@@ -77,7 +77,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 		}
 
 		echo 'cleaning up.<br />';
-		CoreDirectory::delete(($tmpdir);
+		CoreDirectory::delete($tmpdir);
 
 		echo 'clearing local cache...<br />';
 		CoreDirectory::delete($udir.'/ww.cache/*');
