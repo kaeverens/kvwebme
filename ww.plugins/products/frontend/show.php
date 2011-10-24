@@ -321,9 +321,13 @@ function Product_datatableMultiple ($products, $direction) {
 	* @return string the HTML
 	*/
 function products_get_add_to_cart_button($params, $smarty) {
+	$text=@$params['text'];
+	if (!$text) {
+		$text='Add to Cart';
+	}
 	return '<form method="POST" class="products-addtocart">'
 		.'<input type="hidden" name="products_action" value="add_to_cart" />'
-		.'<input type="submit" value="Add to Cart" />'
+		.'<button>'.htmlspecialchars($text).'</button>'
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'" /></form>';
 }
