@@ -2,20 +2,17 @@ $(function(){
 	function updatePrice() {
 		var $wrapper=$(this).closest('.products-product');
 		var $price=$wrapper.find('strong.os_price');
-		var orig=+$price.attr('original-price');
-		if (isNaN(orig) || !orig) {
-			orig=+$price.text().replace(/[^0-9\.]/g, '');
-			$price.attr('original-price', orig);
-			$price.attr('currency', $price.text().replace(/[0-9\.]/g, ''));
-		}
+		var $submit=$wrapper.find('.submit-button');
+		var price=+$submit.attr('price').replace(/[^0-9\.]/g, '');
+		var currency=$submit.attr('price').replace(/[0-9\.]/g, '');
 		$wrapper.find('select').each(function() {
 			var val=$(this).val();
 			if (!/\|/.test(val)) {
 				return;
 			}
-			orig+= +(val.split('|')[1]);
+			price+= +(val.split('|')[1]);
 		});
-		$price.text($price.attr('currency')+orig);
+		$price.text(currency+price);
 	}
 	$('a.products-lightbox').lightBox();
 	$('div.product-images img').click(function(){
