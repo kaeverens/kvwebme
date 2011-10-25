@@ -23,7 +23,20 @@ $(function(){
 		function are_all_visible_elements_valid($this) {
 			var $divs=$this.find('>div:visible');
 			var allvalid=true;
+			$divs.find('input.date').each(function() {
+				var $this=$(this);
+				var from=+$this.attr('year-from');
+				var to=+$this.attr('year-to');
+				var val=+$this.val().replace(/.*([0-9][0-9][0-9][0-9]).*/, '$1');
+				if (from>val || to<val) {
+					$this.attr('title', 'date out of range');
+					return allvalid=false;
+				}
+			});
 			$divs.find('input,select').each(function(){
+				if ($(this).is('input.date')) {
+					return allvalid;
+				}
 				if (!$this.validate().element(this)) {
 					return allvalid=false;
 				}
@@ -105,8 +118,7 @@ $(function(){
 				$(this).change();
 			}
 		});
-	})
-		.validate(window.form_rules);
+	});
 	$('.download-delete-item').click(function(){
 		var $this=$(this);
 		var id=$this.attr('id');
@@ -119,6 +131,8 @@ $(function(){
 		if (range.length != 2) {
 			range=[1900,2100];
 		}
+		$this.attr('year-from', range[0]);
+		$this.attr('year-to', range[1]);
 		$this.datepicker({
 			"dateFormat":"yy-mm-dd",
 			"changeMonth":true,
@@ -134,7 +148,7 @@ $(function(){
 	else {
 		$('.ww_form').find('input,select,textarea').tooltip();
 	}
-	$('.email-verification').change(function() {
+	$('.email-verification').keyup(function() {
 		var $this=$(this);
 		var $email=$this.siblings('input');
 		$.post('/a/p=forms/f=emailVerify', {
@@ -142,10 +156,9 @@ $(function(){
 			"page":pagedata.id,
 			"code":$this.val()
 		}, function(ret) {
-			if (ret.error) {
-				return alert(error);
+			if (!ret.error) {
+				$email.change();
 			}
-			$email.change();
 		});
 	});
 });

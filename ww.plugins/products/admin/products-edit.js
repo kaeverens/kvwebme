@@ -275,4 +275,12 @@ $(function(){
 		}
 		checkRows();
 	});
+	$('.datetime')
+		.datetimepicker({
+			dateFormat: 'yy-mm-dd',
+			timeFormat: 'hh:mm',
+			modal:      true,
+			changeMonth:true,
+			changeYear: true
+		});
 });

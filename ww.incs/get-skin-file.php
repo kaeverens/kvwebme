@@ -81,8 +81,8 @@ header('Content-Description: File Transfer');
 header('Content-Type: '.$mimetype);
 header('Content-Transfer-Encoding: binary');
 header('Expires-Active: On');
-header('Cache-Control: max-age = 3600');
-header('Expires: '. date('r', time()+3600));
+header('Cache-Control: max-age = 99999999');
+header('Expires: '. date('r', time()+9999999));
 header('Pragma:');
 header('Content-Length: ' . filesize($file));
 if (ob_get_length()===false) {

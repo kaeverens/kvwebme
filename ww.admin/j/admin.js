@@ -44,6 +44,7 @@ function Core_screen(plugin, page) {
 		if (!$('#sidebar1').length) {
 			$('#wrapper').html('<div id="sidebar1"/><div id="content"/>');
 		}
+		window.current_screen=plugin+'|'+page;
 		return window[fname](page.replace(/^js:/, ''));
 	}
 	$('head')

@@ -34,19 +34,20 @@ function content_snippet_edit(ev){
 		function(res){
 			if(res.content==null)res.content='';
 			d.dialog({
-				minWidth:630,
-				minHeight:450,
-				height:450,
-				width:630,
-				beforeclose:function(){
+				"modal":true,
+				"minWidth":630,
+				"minHeight":450,
+				"height":450,
+				"width":630,
+				"beforeclose":function(){
 					if(!ww.content_snippet.rte)return;
 					ww.content_snippet.rte.destroy();
 					ww.content_snippet.rte=null;
 				},
-				close:function(){
+				"close":function(){
 					$(this).closest('div').remove();
 				},
-				buttons:{
+				"buttons":{
 					'Save':function(){
 						content_snippet_savePage(ww.content_snippet.current_page);
 						var html=$.toJSON(ww.content_snippet.data);

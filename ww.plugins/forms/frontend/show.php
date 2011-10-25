@@ -155,7 +155,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 					$_REQUEST[$name]=date('Y-m-d');
 				}
 				$d='<input name="'.$name.'" value="'.$_REQUEST[$name].'"'.$help
-					.' class="date" placeholder="yyyy-mm-dd" '
+					.' class="date" type="date" placeholder="yyyy-mm-dd" '
 					.'metadata="'.addslashes($r2['extra']).'"/>';
 				$has_date=true;
 			break; // }
@@ -181,8 +181,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 				if (!isset($opts[0])||!isset($opts[1])) {
 					$opts=array(
 						'off',
-						'*.jpg;*.gif;*.png;*.jpeg;*.doc;*.xls;*.txt;*.odt;*.zip;*.xlsx;'
-						.'*.docx;*.mp3;*.ogg;*.wav;*.acc'
+						'*;'
 					);
 				}
 				$multi=($opts[0]=='on')?'true':'false';
@@ -292,7 +291,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 						.'" class="'.$class.' text"'.$help.'/>';
 				// }
 		}
-		if ($vars['forms_template']&&$vars['forms_template']!='&nbsp;') {
+		if (@$vars['forms_template']&&$vars['forms_template']!='&nbsp;') {
 			$vars['forms_template']=str_replace(
 				'{{$'.$cnt.'}}',
 				$d,
@@ -318,7 +317,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 		}
 		$cnt++;
 	}
-	if ($vars['forms_captcha_required']) {
+	if (@$vars['forms_captcha_required']) {
 		require_once SCRIPTBASE.'ww.incs/recaptcha.php';
 		$row=$vals_2col_start.Recaptcha_getHTML().$vals_2col_end;
 		if ($vars['forms_template']) {
@@ -328,7 +327,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 			$c.=$row;
 		}
 	}
-	if ($vars['forms_template']&&$vars['forms_template']!='&nbsp;') {
+	if (@$vars['forms_template']&&$vars['forms_template']!='&nbsp;') {
 		$c.=$vars['forms_template'];
 	}
 	else {
@@ -341,7 +340,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 	if (count($required)) {
 		$c.='<br />* indicates required fields';
 	}
-	if (!$vars['forms_template']||$vars['forms_template']=='&nbsp;') {
+	if (!@$vars['forms_template']||@$vars['forms_template']=='&nbsp;') {
 		$c.=$vals_2col_end.$vals_wrapper_end.'</div>';
 		$c=str_replace('<table></table>', '', $c);
 		WW_addInlineScript(
@@ -349,7 +348,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 			.json_encode(Form_getValidationRules($vars, $form_fields)).';'
 		);
 		WW_addScript('forms/frontend/show.js');
-		$c.='<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/'
+		$c.='<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/'
 			.'jquery.validate.min.js"></script>';
 	}
 	$helpType=(int)@$vars['forms_helpType'];
@@ -392,7 +391,7 @@ function Form_getValidationRules($vars, $form_fields=array()) {
 		}
 	}
 	// { check the captcha
-	if ($vars['forms_captcha_required']) {
+	if (@$vars['forms_captcha_required']) {
 		$rulesCollection['recaptcha_challenge_field']=array('required'=>true);
 	}
 	// }

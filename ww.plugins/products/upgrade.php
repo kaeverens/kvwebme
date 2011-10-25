@@ -173,3 +173,14 @@ if ($version==22) { // add voucher_value to products table
 	dbQuery('alter table products add voucher_value float default 0');
 	$version=23;
 }
+if ($version==23) { // sold_amt, stock_amt, stock_management
+	dbQuery('alter table products add stock_amt int default 0');
+	dbQuery('alter table products add sold_amt int default 0');
+	dbQuery('alter table products_types add stock_management text');
+	$version=24;
+}
+if ($version==24) { // activation/expiry dates
+	dbQuery('alter table products add activates_on datetime default "0000-00-00"');
+	dbQuery('alter table products add expires_on datetime default "0000-00-00"');
+	$version=25;
+}

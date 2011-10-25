@@ -110,4 +110,63 @@ $(function(){
 	$('.products-product').each(function() {
 		$($(this).find('select')[0]).change();
 	});
+	$('.products-image-slider').each(function() {
+		var $this=$(this);
+		$.post('/a/p=products/f=getImgs/id='+$this.closest('.products-product').attr('id').replace(/products-/, ''), function(ret) {
+			if (!ret.length) {
+				return;
+			}
+			var $imgs=[];
+			var imgat=0;
+			var height=$this.height(), width=$this.width();
+			for (var i=0;i<ret.length;++i) {
+				$imgs.push($('<img src="'+ret[i]+'" style="position:absolute;left:0;top:0;width:'+width+'px;height:'+height+'px;opacity:0"/>').appendTo($this));
+			}
+			$this.css({
+				'position':'relative',
+				'overflow':'hidden'
+			});
+			function rotate() {
+				$imgs[imgat].animate({
+					'left':-width+'px'
+				}, 200);
+				imgat=(imgat+1)%$imgs.length;
+				$imgs[imgat]
+					.css({
+						'left':width+'px'
+					})
+					.animate({
+						'opacity':1,
+						'left':0
+					}, 200, function() {
+						setTimeout(rotate, 2000);
+					});
+			}
+			rotate();
+		});
+	});
+	$('.products-expiry-clock').each(function() {
+		var $this=$(this);
+		var text=$this.text();
+		if (text=='0000-00-00 00:00:00' || text=='') {
+			$this.html($this.attr('unlimited'));
+			return;
+		}
+		var bits=text.split(/[:\- ]/);
+		var d=new Date(bits[0], bits[1]-1, bits[2], bits[3], bits[4]);
+		function update() {
+			var now=new Date();
+			var diff=d-now;
+			var days=parseInt(diff/1000/3600/24);
+			diff-=days*1000*3600*24;
+			var hours=parseInt(diff/1000/3600);
+			diff-=hours*1000*3600;
+			var minutes=parseInt(diff/1000/60);
+			diff-=minutes*1000*60;
+			var seconds=parseInt(diff/1000);
+			$this.html(days+'d, '+hours+'h, '+minutes+'m, '+seconds+'s');
+			setTimeout(update, 1000);
+		}
+		update();
+	});
 });

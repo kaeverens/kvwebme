@@ -123,6 +123,8 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 		// { save main data and data fields
 		$sql='set name="'.addslashes($_REQUEST['name']).'"'
 			.',stock_number="'.addslashes($_REQUEST['stock_number']).'"'
+			.',activates_on="'.addslashes($_REQUEST['activates_on']).'"'
+			.',expires_on="'.addslashes($_REQUEST['expires_on']).'"'
 			.',product_type_id='.((int)$_REQUEST['product_type_id'])
 			.',enabled='.(int)$_REQUEST['enabled']
 			.',images_directory="'.addslashes($_REQUEST['images_directory']).'"';
@@ -318,12 +320,8 @@ if (!is_dir(USERBASE.'f'.$pdata['images_directory'])) {
 		_createDirectory($parent_id, $dname);
 	}
 }
-echo '<td colspan="2">'
-	.'<a style="background:#ff0;font-weight:bold;color:red;display:block;'
-	.'text-align:center;" href="#page_vars[images_directory]" '
-	.'onclick="javascript:window.open(\'/j/kfm/'
-	.'?startup_folder='.addslashes($pdata['images_directory']).'\'+'
-	.'\'kfm\',\'modal,width=800,height=600\');">Manage Images</a></td>';
+echo '<td>Activates on<br /><input class="datetime" name="activates_on" value="'.$pdata['activates_on'].'"/></td>'
+	.'<td>Expires on<br /><input class="datetime" name="expires_on" value="'.$pdata['expires_on'].'"/></td>';
 // }
 echo '</tr>';
 // }
@@ -423,7 +421,11 @@ if ($n) {
 else {
 	echo '<em>no images yet. please upload some.</em>';
 }
-echo '</td></tr>';
+echo '<a style="background:#ff0;font-weight:bold;color:red;display:block;'
+	.'text-align:center;" href="#page_vars[images_directory]" '
+	.'onclick="javascript:window.open(\'/j/kfm/'
+	.'?startup_folder='.addslashes($pdata['images_directory']).'\'+'
+	.'\'kfm\',\'modal,width=800,height=600\');">Manage Images</a></td></tr>';
 // }
 echo '</table></div>';
 // }

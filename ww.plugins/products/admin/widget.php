@@ -31,7 +31,7 @@ echo '</select>';
 // { type
 echo '<br /><strong>Type</strong>';
 $type=@$_REQUEST['widget_type'];
-$types=array('List Categories', 'Tree View', 'Pie-Chart');
+$types=array('List Categories', 'Tree View', 'Products', 'Pie-Chart');
 echo '<select name="widget_type">';
 foreach ($types as $t) {
 	echo '<option';

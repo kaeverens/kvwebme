@@ -176,3 +176,20 @@ function Products_typesTemplatesGet() {
 	}
 	return $templates;
 }
+
+function Products_getImgs() {
+	$pid=(int)$_REQUEST['id'];
+	$product=Product::getInstance($pid);
+	$dir=USERBASE.'/f'.$product->vals['images_directory'];
+	$imgs=array();
+	if (file_exists($dir)) {
+		$dir=new DirectoryIterator($dir);
+		foreach ($dir as $file) {
+			if ($file->isDot()) {
+				continue;
+			}
+			$imgs[]='/f'.$product->vals['images_directory'].'/'.$file->getFilename();
+		}
+	}
+	return $imgs;
+}

@@ -22,6 +22,9 @@
 				var v=$this.val();
 				var other=$.isFunction(o.other_GET_params)?o.other_GET_params():o.other_GET_params;
 				$.get(o.url,{'selected':v,'other_GET_params':other},function(res){
+					if (res.error && o.errors) {
+						return o.errors(res);
+					}
 					$.each(res, function(key, value) {   
 						$this
 							.append($('<option/>', {"value":key})

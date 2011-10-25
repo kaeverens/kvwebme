@@ -42,11 +42,14 @@ $plugin=array(
 			'PRODUCTS_BUTTON_ADD_MANY_TO_CART' => array(
 				'function' => 'Products_getAddManyToCartButton'
 			),
-			'PRODUCTS_CATEGORIES' => array (
+			'PRODUCTS_CATEGORIES' => array(
 				'function' => 'products_categories'
 			),
-			'PRODUCTS_DATATABLE' => array (
+			'PRODUCTS_DATATABLE' => array(
 				'function' => 'Products_datatable'
+			),
+			'PRODUCTS_EXPIRY_CLOCK' => array(
+				'function' => 'Products_expiryClock'
 			),
 			'PRODUCTS_IMAGE' => array(
 				'function' => 'Products_image'
@@ -66,20 +69,57 @@ $plugin=array(
 			'PRODUCTS_PLUS_VAT' => array (
 				'function' => 'Products_plusVat'
 			),
+			'PRODUCTS_PRICE_BASE' => array (
+				'function' => 'Products_priceBase'
+			),
+			'PRODUCTS_PRICE_DISCOUNT' => array (
+				'function' => 'Products_priceDiscount'
+			),
+			'PRODUCTS_PRICE_DISCOUNT_PERCENT' => array (
+				'function' => 'Products_priceDiscountPercent'
+			),
+			'PRODUCTS_PRICE_SALE' => array (
+				'function' => 'Products_priceSale'
+			),
 			'PRODUCTS_RELATED' => array (
 				'function' => 'Products_showRelatedProducts'
 			),
 			'PRODUCTS_REVIEWS' => array (
 				'function' => 'Products_reviews'
+			),
+			'PRODUCTS_IMAGES_SLIDER' => array (
+				'function' => 'Products_imageSlider'
 			)
 		)
 	),
 	'triggers' => array(
 		'initialisation-completed' => 'Products_addToCart'
 	),
-	'version' => '23'
+	'version' => '25'
 );
 // }
+
+function Products_imageSlider($params) {
+	$width=@$params['width'];
+	$height=@$params['height'];
+	if ($width=='') {
+		$width='100%';
+	}
+	if ($height=='') {
+		$height='100%';
+	}
+	return '<div class="products-image-slider" style="width:'.$width.';height:'.$height.'"></div>';
+}
+function Products_expiryClock($params, $smarty) {
+	$unlimited=@$params['none'];
+	if ($unlimited=='') {
+		$unlimited='no expiry date';
+	}
+	$pid=$smarty->_tpl_vars['product']->id;
+	$product=Product::getInstance($pid);
+	return '<div class="products-expiry-clock" unlimited="'.htmlspecialchars($unlimited).'">'.$product->vals['expires_on'].'</div>';
+}
+
 /**
   * figure out how much a product costs
   *
@@ -319,6 +359,23 @@ function Products_listCategories($params, $smarty) {
 function Products_listCategoryContents($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/show.php';
 	return _Products_listCategoryContents($params, $smarty);
+}
+
+function Products_priceBase($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_priceBase2($params, $smarty);
+}
+function Products_priceDiscount($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_priceDiscount2($params, $smarty);
+}
+function Products_priceDiscountPercent($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_priceDiscountPercent2($params, $smarty);
+}
+function Products_priceSale($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_priceSale2($params, $smarty);
 }
 
 /**

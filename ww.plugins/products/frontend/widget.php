@@ -58,6 +58,16 @@ switch ($widget_type) {
 		WW_addScript('/ww.plugins/products/frontend/jquery.canvas.js');
 		WW_addScript('/ww.plugins/products/frontend/widget.js');
 	break; // }
+	case 'Products': // { Products
+#		$html='<div class="products-widget-products">';
+#		$products=Products::getByCategory($parent_cat);
+#		foreach ($products['products_ids'] as $pid) {
+#			$product=Product::getInstance($pid);
+#			$html.='<table><tr><td class="image"><
+#			$html.=print_r($product, true);
+#		}
+#		$html.='</div>';
+	break; // }
 	case 'Tree View': // { Tree View
 		$html='<div class="product-categories-tree"><ul>';
 		foreach ($cats as $c) {
