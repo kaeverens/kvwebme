@@ -328,7 +328,7 @@ function products_get_add_to_cart_button($params, $smarty) {
 	$price=$_SESSION['currency']['symbol'].(float)$smarty->_tpl_vars['product']->vals['online-store']['_price'];
 	return '<form method="POST" class="products-addtocart">'
 		.'<input type="hidden" name="products_action" value="add_to_cart" />'
-		.'<button class="submit-button" price="'.$price.'">'.htmlspecialchars($text).'</button>'
+		.'<button class="submit-button" price="'.$price.'">'.$text.'</button>'
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'" /></form>';
 }
@@ -350,7 +350,7 @@ function Products_getAddManyToCartButton($params, $smarty) {
 		.'<input type="hidden" name="products_action" value="add_to_cart"/>'
 		.'<input name="products-howmany" value="1" '
 		.'class="add_multiple_widget_amount" style="width:50px"/>'
-		.'<button class="submit-button" price="'.$price.'">'.htmlspecialchars($text).'</button>'
+		.'<button class="submit-button" price="'.$price.'">'.$text.'</button>'
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'"/></form>';
 }
