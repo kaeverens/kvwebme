@@ -59,7 +59,7 @@ class Page{
 			$fname='page_by_type_'.$v;
 			$r=Core_cacheLoad('pages', $fname);
 			if ($r===false) {
-				$r=dbRow("select * from pages where type='$v' limit 1");
+				$r=dbRow("select * from pages where type like '$v%' limit 1");
 				if ($r===false) {
 					$r=array();
 				}

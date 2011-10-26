@@ -65,7 +65,7 @@ if ($action=='Save') {
 		foreach ($files as $f) {
 			unlink($f);
 		}
-		move_uploaded_file($_FILES['site_logo']['tmp_name'], $newdir.'/logo.png');
+		CoreGraphics::convert($_FILES['site_logo']['tmp_name'], $newdir.'/logo.png');
 	}
 	$pageLengthLimit = $_REQUEST['site_page_length_limit'];
 	if (!empty($pageLengthLimit)&&is_numeric($pageLengthLimit)) {

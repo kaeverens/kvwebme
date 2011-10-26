@@ -27,10 +27,11 @@ class CoreGraphics{
 			// }
 		}
 	}
-	static function resize($from, $to, $width, $height) {
+	static function resize($from, $to, $width, $height, $keepratio=true) {
 		switch (@$GLOBALS['DBVARS']['graphics-method']) {
 			case 'imagick': // {
 				$thumb=new Imagick();
+				var_dump(method_exists($thumb, 'read')); exit;
 				$thumb->read($from);
 				$thumb->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1, true);
 				$thumb->writeImage($to);
@@ -50,6 +51,19 @@ class CoreGraphics{
 					return false;
 				}
 				$im=$load($from);
+				if ($keepratio) {
+					$size=getimagesize($from);
+					$multx=$size[0]/$width;
+					$multy=$size[1]/$height;
+					if ($multx>$multy) {
+						$mult=$multx;
+					}
+					else {
+						$mult=$multy;
+					}
+					$width=$size[0]/$mult;
+					$height=$size[1]/$mult;
+				}
 				$imresized=imagecreatetruecolor($width, $height);
 				imagealphablending($imresized, false);
 				imagecopyresampled(
@@ -66,6 +80,10 @@ class CoreGraphics{
 		return true;
 	}
 	static function getType($fname) {
+		$data=getimagesize($fname);
+		if (@$data['mime']) {
+			return preg_replace('/.*\//', '', $data['mime']);
+		}
 		$ext=strtolower(pathinfo($fname, PATHINFO_EXTENSION));
 		return $ext=='jpg'?'jpeg':$ext;
 	}

@@ -324,17 +324,18 @@ function Template_breadcrumbs($id=0, $top=1) {
 	*/
 function Template_logoDisplay($vars) {
 	$vars=array_merge(array('width'=>64, 'height'=>64), $vars);
-	if (!file_exists(USERBASE.'/f/skin_files/logo.png')) {
+	$image_file_orig=USERBASE.'/f/skin_files/logo.png';
+	if (!file_exists($image_file_orig)) {
 		return '';
 	}
 	$x=(int)$vars['width'];
 	$y=(int)$vars['height'];
 	$geometry=$x.'x'.$y;
 	$image_file=USERBASE.'/f/skin_files/logo-'.$geometry.'.png';
-	if (!file_exists($image_file)) {
-		$from=addslashes(USERBASE.'/f/skin_files/logo.png');
-		$to=addslashes($image_file);
-		CoreGraphics::resize($from, $to, $x, $y);
+	if (!file_exists($image_file)
+		|| filectime($image_file)<filectime($image_file_orig)
+	) {
+		CoreGraphics::resize($image_file_orig, $image_file, $x, $y);
 	}
 	$size=getimagesize($image_file);
 	return '<img class="logo" src="/i/blank.gif" style="'
