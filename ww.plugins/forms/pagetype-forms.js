@@ -230,7 +230,7 @@ function Forms_Pagetype_forms() {
 			.val(page_vars.forms_successmsg
 				||'<p>Thank you! We will be in contact soon</p>'
 			)
-			.ckeditor();
+			.ckeditor(CKEditor_config);
 		// }
 	}
 	function showFormFields(panel, index) {
@@ -301,7 +301,7 @@ function Forms_Pagetype_forms() {
 					return $('<textarea>')
 						.val(field.extra||'')
 						.appendTo('#pfp-type-specific')
-						.ckeditor();
+						.ckeditor(CKEditor_config);
 					// }
 				case 'selectbox': // {
 					return showExtrasSelectbox(field.extra||'');
@@ -428,14 +428,14 @@ function Forms_Pagetype_forms() {
 			.val(page_vars._body||'')
 			.ckeditor(function(){
 				this.on('change', updateHeaderFooter);
-			});
+			}, CKEditor_config);
 		$('<h3>Footer</h3>').appendTo(panel);
 		var footer=$('<textarea id="tc2"/>')
 			.appendTo(panel)
 			.val(page_vars.footer||'')
 			.ckeditor(function(){
 				this.on('change', updateHeaderFooter);
-			});
+			}, CKEditor_config);
 	}
 	function showTemplate(panel) {
 		var select='<select id="tc1">'
@@ -456,7 +456,7 @@ function Forms_Pagetype_forms() {
 					$('<textarea id="tc3"/>')
 						.val(page_vars.forms_template||'')
 						.appendTo(tc2)
-						.ckeditor();
+						.ckeditor(CKEditor_config);
 				}
 			})
 			.change();

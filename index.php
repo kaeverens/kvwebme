@@ -408,8 +408,8 @@ if (isset($DBVARS['theme_variant']) && $DBVARS['theme_variant']) {
 }
 // }
 // { favicon
-if (file_exists(USERBASE.'/f/skin_files/favicon.ico')) {
-	$c.='<link rel="shortcut icon" href="/f/skin_files/favicon.ico" />';
+if (file_exists(USERBASE.'/f/skin_files/favicon.png')) {
+	$c.='<link rel="shortcut icon" href="/f/skin_files/favicon.png" />';
 }
 // }
 $c.=Core_trigger('building-metadata');

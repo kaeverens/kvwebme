@@ -54,12 +54,55 @@ $images=dbAll(
 	'select * from image_gallery where gallery_id='.$page['id']
 	.' order by position asc'
 );
+// { find images that are not in the database...
+$dir=USERBASE.'f/'.$vars['image_gallery_directory'];
+$notfound=array();
+$files=new DirectoryIterator($dir);
+foreach ($files as $file) {
+	if ($file->isDot()) {
+		continue;
+	}
+	$notfound[]=$file->getFilename();
+}
+$highestposition=0;
+foreach ($images as $k=>$image) {
+	$images[$k]['meta']=json_decode($images[$k]['meta'], true);
+	$name=$images[$k]['meta']['name'];
+	if (in_array($name, $notfound)) {
+		unset($notfound[array_search($name, $notfound)]);
+	}
+	if (!file_exists($dir.'/'.$name)) {
+		dbQuery('delete from image_gallery where id='.$image['id']);
+		unset($images[$k]);
+	}
+	if ((int)$image['position']>$highestposition) {
+		$highestposition=(int)$image['position'];
+	}
+}
+if (count($notfound)) {
+	foreach ($notfound as $image) {
+		$dimensions=getimagesize($dir.'/'.$image);
+		$meta=json_encode(
+			array(
+				'width'=>$dimensions[0],
+				'height'=>$dimensions[1],
+				'name'=>$image,
+				'caption'=>''
+			)
+		);
+		$query='insert into image_gallery (gallery_id,position,media,meta) values'
+			.'('.$page['id'].','.(++$highestposition).',"image","'
+			.addslashes($meta).'")';
+		dbQuery($query);
+	}
+}
+// }
 $n=count($images);
 $c.='<ul id="image-gallery-wrapper">';
 if ($n) {
 	for ($i=0;$i<$n;$i++) {
 		$id=$images[$i]['id'];
-		$meta=json_decode($images[$i]['meta'], true);
+		$meta=$images[$i]['meta'];
 		switch ($images[$i]['media']) {
 			case 'image': // {
 				$caption=isset($meta['caption'])&&$meta['caption']!=''?
