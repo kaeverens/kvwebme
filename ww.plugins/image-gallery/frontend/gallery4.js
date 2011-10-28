@@ -155,8 +155,8 @@ var Gallery={
 				return false;
 			}
 			file=Gallery.images[j];
-			html+='<td style="width:'+size+'px;height:'+size+'px">'
-				+Gallery.mediaDisplay(file,i)+'</td>';
+			html+='<td>'
+				+Gallery.mediaDisplay(file, size)+'</td>';
 			++Gallery.position;
 			++Gallery.current;
 		});
@@ -625,7 +625,7 @@ var Gallery={
 			Gallery.displayPrevious();
 		}
 	},
-	mediaDisplay:function(file) {
+	mediaDisplay:function(file, size) {
 		var size=this.options.thumbsize;
 		var style=Gallery.options.ratio=='crop'
 			?' style="width:'+size+'px;height:'+size+'px;overflow:hidden"':'';
@@ -642,7 +642,7 @@ var Gallery={
 			:'';
 		return '<a href="'+(file.media=='image'?file.url:file.href)+'" id="'
 			+Gallery.position+'"'+popup+style+'>'
-			+'<span class="image"><img src="'+file.url+'/w='+xy[0]+'/h='+xy[1]+'"/></span>'
+			+'<span class="image" style="display:block;width:'+size+'px;height:'+size+'px"><img src="'+file.url+'/w='+xy[0]+'/h='+xy[1]+'"/></span>'
 			+'<span class="caption">'+caption+'</span></a>';
 	},
 	resetTimeout:function() { // resets the slideshow timeout
