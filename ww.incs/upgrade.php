@@ -346,12 +346,12 @@ if ($version==31) { // add "date_created" to user_account
 	dbQuery('alter table user_accounts add date_created datetime');
 	$version=32;
 }
-if ($version == 32) { // add "alias" field to pages table
+if ($version==32) { // add "alias" field to pages table
 	dbQuery('alter table pages add alias text after associated_date');
 	dbQuery('update pages set alias=name');
 	$version = 33;
 }
-if ($version == 33) { // clear cache...
+if ($version==33) { // clear cache...
 	Core_cacheClear('pages');
 	$version = 34;
 }
@@ -402,6 +402,25 @@ if ($version==38) { // languages_notfound
 		.'requests int default 0) default charset=utf8'
 	);
 	$version=39;
+}
+if ($version==39) { // cron
+	dbQuery(
+		'create table cron('
+		.'id int auto_increment not null primary key,'
+		.'name text,'
+		.'notes text,'
+		.'period text,'
+		.'period_multiplier int,'
+		.'next_date datetime,'
+		.'func text'
+		.')default charset=utf8'
+	);
+	dbQuery(
+		'insert into cron values(1, "clear cache", "clears temporary files, etc,'
+		.' which can eventually fill up your server\'s hard-drive", "day", "1", '
+		.'date_add(date(now()), interval 1 day), "Core_cacheClear")'
+	);
+	$version=40;
 }
 
 $DBVARS['version']=$version;

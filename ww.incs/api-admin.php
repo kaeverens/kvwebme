@@ -11,6 +11,19 @@
 	* @link     http://kvsites.ie/
 	*/
 
+function Core_adminCronGet() {
+	return dbAll('select * from cron');
+}
+function Core_adminCronSave() {
+	$id=(int)$_REQUEST['id'];
+	$field=$_REQUEST['field'];
+	$value=$_REQUEST['value'];
+	dbQuery(
+		'update cron set `'.addslashes($field).'`="'.addslashes($value)
+		.'" where id='.$id
+	);
+	return array('ok'=>1);
+}
 function Core_adminDirectoriesGet() {
 	function get_subdirs($base, $dir) {
 		$arr=array();

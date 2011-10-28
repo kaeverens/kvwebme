@@ -31,7 +31,6 @@ class CoreGraphics{
 		switch (@$GLOBALS['DBVARS']['graphics-method']) {
 			case 'imagick': // {
 				$thumb=new Imagick();
-				var_dump(method_exists($thumb, 'read')); exit;
 				$thumb->read($from);
 				$thumb->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1, true);
 				$thumb->writeImage($to);

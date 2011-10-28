@@ -47,14 +47,26 @@ function Core_screen(plugin, page) {
 		window.current_screen=plugin+'|'+page;
 		return window[fname](page.replace(/^js:/, ''));
 	}
-	$('head')
-		.append('<link rel="stylesheet" href="/ww.plugins/'+plugin+'/admin.css"/>');
-	$.getScript('/ww.plugins/'+plugin+'/admin.js?'+(new Date()).getTime(), function(){
-		if (!window[fname]) {
-			return;
-		}
-		Core_screen(plugin, page);
-	});
+	if (/^Core[A-Z]/.test(plugin)) {
+		$('head')
+			.append('<link rel="stylesheet" href="/ww.admin/'+plugin+'/admin.css"/>');
+		$.getScript('/ww.admin/'+plugin+'/admin.js?'+(new Date()).getTime(), function(){
+			if (!window[fname]) {
+				return;
+			}
+			Core_screen(plugin, page);
+		});
+	}
+	else {
+		$('head')
+			.append('<link rel="stylesheet" href="/ww.plugins/'+plugin+'/admin.css"/>');
+		$.getScript('/ww.plugins/'+plugin+'/admin.js?'+(new Date()).getTime(), function(){
+			if (!window[fname]) {
+				return;
+			}
+			Core_screen(plugin, page);
+		});
+	}
 }
 $(function(){
 	$.post('/a/f=adminLoadJSVars', function(ret) {

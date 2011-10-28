@@ -114,7 +114,10 @@ $menus=array(
 		'General'=> array('_link'=>'siteoptions.php'),
 		'Users'  => array('_link'=>'siteoptions.php?page=users'),
 		'Themes' => array('_link'=>'siteoptions.php?page=themes'),
-		'Plugins'=> array('_link'=>'siteoptions.php?page=plugins')
+		'Plugins'=> array('_link'=>'siteoptions.php?page=plugins'),
+		'Timed Events'=>array(
+			'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Cron\')'
+		)
 	)
 );
 // }
@@ -137,7 +140,7 @@ foreach ($PLUGINS as $pname=>$p) {
 }
 // }
 // { add final items
-$menus['Stats']=    array('_link'=>'/ww.admin/stats.php');
+$menus['Site Options']['Stats']=array('_link'=>'/ww.admin/stats.php');
 $menus['View Site']=array( '_link'=>'/', '_target'=>'_blank');
 $menus['Help']=array( '_link'=>'http://kvweb.me/', '_target'=>'_blank');
 $menus['Log Out']=  array('_link'=>'/?logout=1');

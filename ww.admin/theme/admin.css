@@ -149,6 +149,7 @@ div.fg-menu-container ul li a:hover,#sidebar1 a:hover,#menu-top ul li a:hover{
 	margin-top:0;
 }
 .dataTables_wrapper{width:100%}
+.dataTables_wrapper>table{width:100%}
 .dataTables_wrapper tr:hover td{
 	background:#ffc;
 }
@@ -164,3 +165,5 @@ div.fg-menu-container ul li a:hover,#sidebar1 a:hover,#menu-top ul li a:hover{
 .ui-timepicker-div dl dt{ height: 25px; }
 .ui-timepicker-div dl dd{ margin: -25px 0 10px 65px; }
 .ui-timepicker-div td { font-size: 90%; }
+
+.clickable{cursor:pointer;}

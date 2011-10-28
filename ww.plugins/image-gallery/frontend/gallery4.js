@@ -126,6 +126,10 @@ var Gallery={
 		}
 		this.gallery().css({'width':this.width+'px'});
 		this.height=(this.options.thumbsize+15)*this.options.rows;
+		var actualHeight=$('#slider>table').outerHeight();
+		if (actualHeight>this.height) {
+			this.height=actualHeight;
+		}
 		$('#gallery-container').css('height', this.height+'px');
 		if (this.options.links==true && !$('#image-gallery-nav').length) {
 			this.gallery().append('<div id="prev-link"/><div id="next-link"/>');
@@ -157,10 +161,17 @@ var Gallery={
 			++Gallery.current;
 		});
 		html+='</tr></table>';
-		$('#slider')
+		var $slider=$('#slider');
+		$slider
 			.append(html)
 			.find('img')
 			.one('load', Gallery.applyFrame);
+		$slider.find('img').each(function() { // center images vertically
+			var $this=$(this);
+			var $span=$this.closest('span');
+			$span.css('line-height', $span.height()+'px');
+			$this.css('vertical-align', 'middle');
+		});
 	},
 	displayImage:function(e) { // displays the main "big" image if present
 		$('#image-gallery-video_wrapper').remove();
@@ -328,14 +339,13 @@ var Gallery={
 				this.options.display='list'; // }
 			case 'list': // {
 				var $thumblist=$('.ad-thumb-list');
-				if($thumblist.hasClass('working')) {
+				if ($thumblist.hasClass('working')) {
 					return;
 				}
 				$thumblist.addClass('working');
-				var current=parseInt($thumblist.find('li:last a').attr('id'));
-				var max=(num==null)?this.options.listSwitch:num, width=0;
-				var left=parseInt($('#slider').css('left'));
-				var list=[];
+				var current=parseInt($thumblist.find('li:last a').attr('id')),
+					max=(num==null)?this.options.listSwitch:num, width=0,
+					$slider=$('#slider'), left=parseInt($slider.css('left')), list=[];
 				for(var i=1;i<=max;++i) {
 					list[i-1]=current+i;
 				}
@@ -353,13 +363,13 @@ var Gallery={
 					width+=$thumblist.find('li:eq('+i+')').width();
 				}
 				$thumblist.append(item);
-				$('#slider').animate({
+				$slider.animate({
 					'left':(left-width)+'px'
 				}, 100, function() {
 					for(var i=0;i<count;++i) {
 						$thumblist.find('li:eq(0)').remove();
 					}
-					$('#slider').css('left', left+'px');
+					$slider.css('left', left+'px');
 					$thumblist.removeClass('working')
 				});
 				break; // }
@@ -470,9 +480,9 @@ var Gallery={
 			}, function(ret) {
 				Gallery.images=ret.items;
 				Gallery.frame=ret.frame;
-				Gallery.caption_in_slider=ret['caption-in-slider'];
-				Gallery.options.imageHeight=ret['image-height']||350;
-				Gallery.options.imageWidth=ret['image-width']||350;
+				Gallery.caption_in_slider=+ret['caption-in-slider'];
+				Gallery.options.imageHeight=+(ret['image-height']||350);
+				Gallery.options.imageWidth=+(ret['image-width']||350);
 				$('<style> #gallery-image,.ad-image{min-height:'+Gallery.options.imageHeight+'px;}</style>').appendTo('head');
 				var length=Gallery.images.length;
 				if (length==0) {
@@ -628,11 +638,12 @@ var Gallery={
 				?[this.options.thumbsize, (file.height*(this.options.thumbsize/file.width))]
 				:[(file.width*(this.options.thumbsize/file.height)), this.options.thumbsize];
 		var caption=Gallery.caption_in_slider
-			?'<br />'+file.caption
+			?file.caption
 			:'';
 		return '<a href="'+(file.media=='image'?file.url:file.href)+'" id="'
-			+Gallery.position+'"'+popup+style+'><img src="'+file.url+'/w='
-			+xy[0]+'/h='+xy[1]+'"/>'+caption+'</a>';
+			+Gallery.position+'"'+popup+style+'>'
+			+'<span class="image"><img src="'+file.url+'/w='+xy[0]+'/h='+xy[1]+'"/></span>'
+			+'<span class="caption">'+caption+'</span></a>';
 	},
 	resetTimeout:function() { // resets the slideshow timeout
 		clearTimeout(Gallery.t);
