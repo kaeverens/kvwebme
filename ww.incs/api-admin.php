@@ -15,6 +15,7 @@ function Core_adminCronGet() {
 	return dbAll('select * from cron');
 }
 function Core_adminCronSave() {
+	global $DBVARS;
 	$id=(int)$_REQUEST['id'];
 	$field=$_REQUEST['field'];
 	$value=$_REQUEST['value'];
@@ -22,6 +23,8 @@ function Core_adminCronSave() {
 		'update cron set `'.addslashes($field).'`="'.addslashes($value)
 		.'" where id='.$id
 	);
+	unset($DBVARS['cron-next']);
+	Core_configRewrite();
 	return array('ok'=>1);
 }
 function Core_adminDirectoriesGet() {

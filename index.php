@@ -136,6 +136,11 @@ if ($page=='' && isset($_GET['search']) || isset($_GET['s'])) {
 	$id=$p->id;
 }
 // }
+// { check for Cron events
+if (!isset($DBVARS['cron-next']) || $DBVARS['cron-next']<date('Y-m-d h:i:s')) {
+	require_once dirname(__FILE__).'/ww.incs/cron.php';
+}
+// }
 // { is maintenance mode enabled?
 if (@$DBVARS['maintenance-mode']=='yes') {
 	if (!Core_isAdmin()) {
