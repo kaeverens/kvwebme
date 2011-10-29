@@ -183,7 +183,7 @@ var Gallery={
 			$imgwrap=$('<div id="gallery-image">'
 				+'<div class="ad-image wholepage">'
 				+'<h1 class="caption"/>'
-				+'<img/>'
+				+'<span class="image"><img/></span>'
 				+'<p class="description"/>'
 				+'<em style="display:block;text-align:right" class="author"/>'
 				+'</div></div>')
@@ -231,8 +231,16 @@ var Gallery={
 							newsrc='/a/p=image-gallery/f=frameGet/w='+newwidth+'/h='
 								+newheight+'/pa='+padding+'/bo='+border+furl;
 						}
-						var marginTop=newheight<Gallery.options.imageHeight
-							?(Gallery.options.imageHeight-newheight)/2:0;
+						var marginTop=0;
+						var spanheight=$img.closest('span').height();
+						var $wrapper=$imgwrap.closest('#gallery-image');
+						if (newheight<spanheight) {
+							marginTop=(spanheight-newheight)/2;
+						}
+						else if (newheight>spanheight) {
+							console.log(newheight, spanheight, $wrapper.height(), $wrapper.height()+(newheight-spanheight)+'px');
+							$wrapper.css('height', $wrapper.height()+(newheight-spanheight)+'px');
+						}
 						$img
 							.css({
 								'background':'url("'+src+'") no-repeat '+bgoffset,
@@ -241,8 +249,12 @@ var Gallery={
 								'margin-top':marginTop
 							})
 							.attr('src', newsrc);
-						$imgwrap.css({'width':newwidth+'px'});
-						$imgwrap.closest('#gallery-image').css({'width':newwidth+'px'});
+//						$imgwrap.css({'width':newwidth+'px'});
+						if (newwidth>$wrapper.width()) {
+							$wrapper.css({
+								'width':newwidth+'px'
+							});
+						}
 						switch(Gallery.options.effect) {
     		      case 'fade': 
         		    $img.fadeIn('slow',Gallery.displayImageCallback); 

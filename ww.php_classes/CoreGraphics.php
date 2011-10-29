@@ -1,6 +1,9 @@
 <?php
 class CoreGraphics{
 	static function convert($from, $to) {
+		if (!file_exists($from)) {
+			return false;
+		}
 		switch (@$GLOBALS['DBVARS']['graphics-method']) {
 			case 'imagick': // {
 				$thumb=new Imagick();
@@ -28,6 +31,9 @@ class CoreGraphics{
 		}
 	}
 	static function resize($from, $to, $width, $height, $keepratio=true) {
+		if (!file_exists($from)) {
+			return false;
+		}
 		switch (@$GLOBALS['DBVARS']['graphics-method']) {
 			case 'imagick': // {
 				$thumb=new Imagick();
@@ -40,6 +46,13 @@ class CoreGraphics{
 			default: // { fallback to GD
 				$extFrom=CoreGraphics::getType($from);
 				$extTo  =CoreGraphics::getType($to);
+				switch (preg_replace('/.*\./', '', $to)) {
+					case 'png': // {
+						$extTo='png';
+					break; // }
+					default:
+						$extTo='jpeg';
+				}
 				$arr=getimagesize($from);
 				if ($arr===false) {
 					return false;
@@ -79,6 +92,9 @@ class CoreGraphics{
 		return true;
 	}
 	static function getType($fname) {
+		if (!file_exists($fname)) {
+			return false;
+		}
 		$data=getimagesize($fname);
 		if (@$data['mime']) {
 			return preg_replace('/.*\//', '', $data['mime']);
