@@ -94,7 +94,7 @@ function ImageGallery_templateImage($params, $smarty) {
 		.'<div class="ad-image">'
 		.'<span class="dark-background ad-image-description caption" style="display:none">'
 		.'</span>'
-		.'<img src="">'
+		.'<span class="image"><img src=""></span>'
 		.'</div>'
 		.'</div>';
 	return $html;

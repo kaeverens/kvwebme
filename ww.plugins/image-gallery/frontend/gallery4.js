@@ -234,11 +234,13 @@ var Gallery={
 						var marginTop=0;
 						var spanheight=$img.closest('span').height();
 						var $wrapper=$imgwrap.closest('#gallery-image');
+						if (spanheight==0) {
+							spanheight=newheight;
+						}
 						if (newheight<spanheight) {
 							marginTop=(spanheight-newheight)/2;
 						}
 						else if (newheight>spanheight) {
-							console.log(newheight, spanheight, $wrapper.height(), $wrapper.height()+(newheight-spanheight)+'px');
 							$wrapper.css('height', $wrapper.height()+(newheight-spanheight)+'px');
 						}
 						$img
