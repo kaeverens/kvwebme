@@ -168,9 +168,14 @@ $(function(){
 	});
 	$('ul.carousel').each(function() {
 		var $this=$(this);
-		$this.jcarousel({
-			scroll:1,
-			itemFallbackDimension:$this.attr('thumbsize')
+		$this.jcarousel();
+		$this.find('img').click(function() {
+			var src=$(this).css('background-image')
+				.replace(/^url\("|w=[0-9]*\/h=[0-9]*\/|"\)$/g, '');
+			var $wrap=$this.closest('.products-product').find('.products-image');
+			var bigw=$wrap.attr('width'), bigh=$wrap.attr('height');
+			$wrap.find('img').attr('src', src+'/w='+bigw+'/h='+bigh);
+			$wrap.find('a').attr('href', src);
 		});
 	});
 });
