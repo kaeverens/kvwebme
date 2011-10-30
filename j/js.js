@@ -142,9 +142,13 @@ function lightbox_show(src, sequence, seq_num) {
 }
 $(function(){
 	$('a[target=popup]').live('click', function(){
-		var src=$(this).attr('href');
+		var $this=$(this);
+		var src=$this.attr('href');
 		var sequence=[],num=0,id;
-		if (window.Gallery) {
+		if ($this.data('sequence')) {
+			sequence=$this.data('sequence');
+		}
+		else if (window.Gallery) {
 			for (var i=0;i<Gallery.images.length;++i) {
 				id=Gallery.images[i].id;
 				if (Gallery.images[i].url==src) {

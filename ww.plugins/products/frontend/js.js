@@ -172,13 +172,15 @@ $(function(){
 		var sequence=[];
 		var $wrap=$this.closest('.products-product').find('.products-image');
 		var bigw=$wrap.attr('width'), bigh=$wrap.attr('height');
-		$this.find('img').click(function() {
+		$this.find('img').each(function() {
 			var src=$(this).css('background-image')
 				.replace(/^url\("|w=[0-9]*\/h=[0-9]*\/|"\)$/g, '');
-			$wrap.find('img').attr('src', src+'/w='+bigw+'/h='+bigh);
-			$wrap.find('a').attr('href', src);
+			$(this).click(function() {
+				$wrap.find('img').attr('src', src+'/w='+bigw+'/h='+bigh);
+				$wrap.find('a').attr('href', src);
+			});
 			sequence.push(src);
 		});
-		$wrap.find('img').attr('sequence', sequence.join(','));
+		$wrap.find('a').data('sequence', sequence);
 	});
 });
