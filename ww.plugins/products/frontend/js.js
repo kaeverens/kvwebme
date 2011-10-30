@@ -169,13 +169,16 @@ $(function(){
 	$('ul.carousel').each(function() {
 		var $this=$(this);
 		$this.jcarousel();
+		var sequence=[];
+		var $wrap=$this.closest('.products-product').find('.products-image');
+		var bigw=$wrap.attr('width'), bigh=$wrap.attr('height');
 		$this.find('img').click(function() {
 			var src=$(this).css('background-image')
 				.replace(/^url\("|w=[0-9]*\/h=[0-9]*\/|"\)$/g, '');
-			var $wrap=$this.closest('.products-product').find('.products-image');
-			var bigw=$wrap.attr('width'), bigh=$wrap.attr('height');
 			$wrap.find('img').attr('src', src+'/w='+bigw+'/h='+bigh);
 			$wrap.find('a').attr('href', src);
+			sequence.push(src);
 		});
+		$wrap.find('img').attr('sequence', sequence.join(','));
 	});
 });
