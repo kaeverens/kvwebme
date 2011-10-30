@@ -469,31 +469,16 @@ function Products_images($params, $smarty) {
 		return Products_imageNotFound($params, $smarty);
 	}
 	// }
-	WW_addScript('/ww.plugins/image-gallery/frontend/gallery.js');
-	WW_addCSS('/ww.plugins/image-gallery/frontend/gallery.css');
-	$script='$(function(){
-		$(".main-image-big").each(function(){
-			$(this).remove();
-		});
-		$(".products-addtocart,.products-addmanytocart").append(
-			"<input type=\"hidden\" name=\"image-selected\"/>"
-		);
-		Gallery.options.customDisplayImageCallback=function(){
-			var image=$(".ad-image img").attr("src").split(",");
-			image=image[0].split("/");
-			image=image[2];
-			$(\'input[name="products_values_image"]\').val(image);
-		};
-	});';
-	WW_addInlineScript($script);
-	$style=count($images['files'])==1?'style="display:none"':'';
-	$product=$smarty->_tpl_vars['product'];
-	$vals=$product->vals;
-	$html='<div '.$style.' class="ad-gallery" display="'.$params['display'].'" ';
-	$html.=' hover="'.$params['hover'].'" cols="'.$params['columns'].'"';
-	$html.=' rows="'.$params['rows'].'" thumbsize="'.$params['thumbsize'].'"';
-	$html.=' directory="'.addslashes($vals['images_directory']).'">';
-	$html.='</div>';
+	$html='<ul class="products-images carousel jcarousel-skin-bland" thumbsize="'.$params['thumbsize'].'">';
+	foreach ($images['files'] as $image) {
+		$html.='<li><img src="/i/blank.gif" width="'.$params['thumbsize']
+			.'" height="'.$params['thumbsize'].'" style="background:url(/a/f=getImg/w='
+			.$params['thumbsize'].'/h='.$params['thumbsize'].'/'.$image['dir'].'/'
+			.$image['name'].') no-repeat center center"/></li>';
+	}
+	$html.='</ul>';
+	WW_addScript('/j/jsor-jcarousel-7bb2e0a/jquery.jcarousel.min.js');
+	WW_addCSS('/j/jsor-jcarousel-7bb2e0a/bland/skin.css');
 	return $html;
 }
 /**

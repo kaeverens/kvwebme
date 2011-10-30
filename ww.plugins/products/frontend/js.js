@@ -166,4 +166,11 @@ $(function(){
 		}
 		update();
 	});
+	$('ul.carousel').each(function() {
+		var $this=$(this);
+		$this.jcarousel({
+			scroll:1,
+			itemFallbackDimension:$this.attr('thumbsize')
+		});
+	});
 });
