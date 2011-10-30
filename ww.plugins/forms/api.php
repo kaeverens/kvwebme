@@ -70,14 +70,16 @@ function Forms_verificationSend() {
 					}
 					if ($prevent<4) { // parse conditions
 						$user=User::getInstance($id);
-						$cond_val=$page->vars['forms_preventUserFromSubmittingCondVal'];
-						$cond_key=$page->vars['forms_preventUserFromSubmittingCondKey'];
-						if (($prevent==3 && $user->get($cond_key) == $cond_val)
-							|| ($prevent==2 && $user->get($cond_key) != $cond_val)
-						) {
-							return array(
-								'error'=>$page->vars['forms_preventUserFromSubmittingMessage']
-							);
+						if ($user) {
+							$cond_val=$page->vars['forms_preventUserFromSubmittingCondVal'];
+							$cond_key=$page->vars['forms_preventUserFromSubmittingCondKey'];
+							if (($prevent==3 && $user->get($cond_key) == $cond_val)
+								|| ($prevent==2 && $user->get($cond_key) != $cond_val)
+							) {
+								return array(
+									'error'=>$page->vars['forms_preventUserFromSubmittingMessage']
+								);
+							}
 						}
 					}
 				}
