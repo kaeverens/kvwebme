@@ -40,7 +40,7 @@ if (!dbOne('select id from products_types limit 1','id')) {
 		.'here to create one</a></em>';
 	return;
 }
-$rs=dbAll('select id,name,stock_number,enabled from products order by name');
+$rs=dbAll('select id,images_directory,name,stock_number,enabled from products order by name');
 if(!count($rs)){
 	echo '<em>No existing products. <a href="plugin.php?_plugin=products&amp;'
 		.'_page=products-edit">Click here to create one</a>.'
@@ -65,7 +65,10 @@ foreach($rs as $r){
 		$images=$images['files'];
 		$has_images=count($images);
 	}
-	$img=$has_images?'<!-- '.$has_images.' --><div class="ui-icon"></div>';
+	$img=$has_images
+		?'<!-- '.$has_images.' --><div title="has images" '
+		.'class="ui-icon ui-icon-image"></div>'
+		:'';
 	// }
 	echo '<tr id="product-row-'.$r['id'].'">'
 		.'<td>'.$img.'</td>'
