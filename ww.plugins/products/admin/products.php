@@ -51,13 +51,24 @@ if(!count($rs)){
 }
 
 // { products list
-echo '<div><table class="datatable"><thead><tr><th>Name</th><th>Stock Number'
+echo '<div><table class="datatable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Stock Number'
 	.'</th><th>ID</th><th>Enabled</th><th>&nbsp;</th></tr></thead><tbody>';
 foreach($rs as $r){
-	/* do not delete the HTML comment in the next line - it's there
-	 * for datatables magic. without it, sorting will not work. */
 	$link='plugin.php?_plugin=products&amp;_page=products-edit&amp;id='.$r['id'];
+	// { has images
+	$has_images=0;
+	$dir_id=kfm_api_getDirectoryId(
+		preg_replace('/^\//', '', $r['images_directory'])
+	);
+	if ($dir_id) {
+		$images=kfm_loadFiles($dir_id);
+		$images=$images['files'];
+		$has_images=count($images);
+	}
+	$img=$has_images?'<!-- '.$has_images.' --><div class="ui-icon"></div>';
+	// }
 	echo '<tr id="product-row-'.$r['id'].'">'
+		.'<td>'.$img.'</td>'
 		.'<td class="edit-link"><!-- '.htmlspecialchars($r['name']).' -->'
 		.'<a href="'.$link.'">'.htmlspecialchars($r['name']).'</td>'
 		.'<td class="edit-link"><!-- '.htmlspecialchars($r['stock_number']).' -->'
