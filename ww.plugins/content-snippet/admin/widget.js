@@ -34,7 +34,6 @@ function content_snippet_edit(ev){
 		function(res){
 			if(res.content==null)res.content='';
 			d.dialog({
-				"modal":true,
 				"minWidth":630,
 				"minHeight":450,
 				"height":450,
