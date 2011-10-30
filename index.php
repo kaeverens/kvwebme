@@ -137,7 +137,7 @@ if ($page=='' && isset($_GET['search']) || isset($_GET['s'])) {
 }
 // }
 // { check for Cron events
-if (!isset($DBVARS['cron-next']) || $DBVARS['cron-next']<date('Y-m-d h:i:s')) {
+if (!isset($DBVARS['cron-next']) || $DBVARS['cron-next']<date('Y-m-d H:i:s')) {
 	require_once dirname(__FILE__).'/ww.incs/cron.php';
 }
 // }

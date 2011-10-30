@@ -207,6 +207,8 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 		}
 		// }
 		echo '<em>Product saved</em>';
+		unset($DBVARS['cron-next']);
+		Core_configRewrite();
 	}
 }
 
@@ -293,35 +295,21 @@ else {
 }
 echo '</td>';
 // }
-// { images directory
-if (!isset($pdata['images_directory']) 
-	|| !$pdata['images_directory'] 
-	|| $pdata['images_directory']=='/'
-	|| !is_dir(USERBASE.'f/'.$pdata['images_directory'])
-) {
-	if (!is_dir(USERBASE.'f/products/product-images')) {
-		mkdir(USERBASE.'f/products/product-images', 0777, true);
-	}
-	$pdata['images_directory']='/products/product-images/'
-		.md5(rand().microtime());
-	mkdir(USERBASE.'f'.$pdata['images_directory']);
+// { enable/disable dates
+// { enable date
+if (!$pdata['activates_on']) {
+	$pdata['activates_on']=date('Y-m-d').' 00:00:00';
 }
-if (!is_dir(USERBASE.'f'.$pdata['images_directory'])) {    
-	$parent_id = kfm_api_getDirectoryId('products/product-images');
-	$pos = strrpos($pdata['images_directory'], '/');
-	$dname='';
-	if ($pos===false) {
-		$dname = $pdata['images_directory'];
-	}
-	elseif (isset($_REQUEST['images_directory'])) {
-		$dname = substr($_REQUEST['images_directory'], $pos);
-	}
-	if ($dname!='') {
-		_createDirectory($parent_id, $dname);
-	}
+echo '<td>Enable Date<br /><input class="datetime" name="activates_on" '
+	.'value="'.$pdata['activates_on'].'"/></td>';
+// }
+// { disable date
+if (!$pdata['expires_on']) {
+	$pdata['expires_on']='2100-01-01 00:00:00';
 }
-echo '<td>Activates on<br /><input class="datetime" name="activates_on" value="'.$pdata['activates_on'].'"/></td>'
-	.'<td>Expires on<br /><input class="datetime" name="expires_on" value="'.$pdata['expires_on'].'"/></td>';
+echo '<td>Disable Date<br /><input class="datetime" name="expires_on" '
+	.'value="'.$pdata['expires_on'].'"/></td>';
+// }
 // }
 echo '</tr>';
 // }
@@ -379,6 +367,32 @@ else {
 // }
 echo '</tr>';
 // { images
+if (!isset($pdata['images_directory']) 
+	|| !$pdata['images_directory'] 
+	|| $pdata['images_directory']=='/'
+	|| !is_dir(USERBASE.'f/'.$pdata['images_directory'])
+) {
+	if (!is_dir(USERBASE.'f/products/product-images')) {
+		mkdir(USERBASE.'f/products/product-images', 0777, true);
+	}
+	$pdata['images_directory']='/products/product-images/'
+		.md5(rand().microtime());
+	mkdir(USERBASE.'f'.$pdata['images_directory']);
+}
+if (!is_dir(USERBASE.'f'.$pdata['images_directory'])) {    
+	$parent_id = kfm_api_getDirectoryId('products/product-images');
+	$pos = strrpos($pdata['images_directory'], '/');
+	$dname='';
+	if ($pos===false) {
+		$dname = $pdata['images_directory'];
+	}
+	elseif (isset($_REQUEST['images_directory'])) {
+		$dname = substr($_REQUEST['images_directory'], $pos);
+	}
+	if ($dname!='') {
+		_createDirectory($parent_id, $dname);
+	}
+}
 echo '<tr><th><input type="hidden" name="images_directory" value="'
 	.$pdata['images_directory'].'" /><div class="help products/images"></div>'
 	.'Images</th><td colspan="4">';

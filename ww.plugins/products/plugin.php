@@ -391,6 +391,53 @@ function Products_widget($vars=null) {
 	return $html;
 }
 
+/**
+	* function for handling timed events
+	*
+	* @return null
+	*/
+function Products_cronHandle() {
+	dbQuery(
+		'update products set enabled=1 where !enabled and activates_on<now() '
+		.'and expires_on>now()'
+	);
+	dbQuery(
+		'update products set enabled=0 where enabled and expires_on<now()'
+	);
+	Core_cacheClear('products');
+}
+
+/**
+	* function for getting next timed event
+	*
+	* @return array date, function for next timed event
+	*/
+function Products_cronGetNext() {
+	dbQuery('delete from cron where func="Products_cronHandle"');
+	$n1=dbOne(
+		'select activates_on from products where !enabled and '
+		.'expires_on>now() order by activates_on limit 1', 'activates_on'
+	);
+	$n2=dbOne(
+		'select expires_on from products where enabled order by expires_on '
+		.'limit 1', 'expires_on'
+	);
+	$n=false;
+	if ($n1 && $n2) {
+		$n=$n1<$n2?$n1:$n2;
+	}
+	elseif ($n1 || $n2) {
+		$n=$n1?$n1:$n2;
+	}
+	if ($n) {
+		dbQuery(
+			'insert into cron set name="disable/enable product", notes="disable '
+			.'or enable a product", period="day", period_multiplier=1, '
+			.'next_date="'.$n.'", func="Products_cronHandle"'
+		);
+	}
+}
+
 class Product{
 	static $instances=array();
 
