@@ -41,6 +41,8 @@ $l=dbRow("SELECT * FROM site_vars WHERE name='languages'");
 $keywords=$_REQUEST['keywords'];
 $description=$_REQUEST['description'];
 $associated_date=$_REQUEST['associated_date'];
+$date_publish=$_REQUEST['date_publish'];
+$date_unpublish=$_REQUEST['date_unpublish'];
 $title=$_REQUEST['title'];
 $importance=(float)$_REQUEST['importance'];
 if ($importance<0.1) {
@@ -81,6 +83,8 @@ if (dbOne($sql, 'id')) {
 $q='update pages set importance="'.$importance.'"'
 	.',template="'.addslashes($template).'",edate=now()'
 	.',type="'.addslashes($_POST['type']).'"'
+	.',date_unpublish="'.addslashes($date_unpublish).'"'
+	.',date_publish="'.addslashes($date_publish).'"'
 	.',associated_date="'.addslashes($associated_date).'"'
 	.',keywords="'.addslashes($keywords).'"'
 	.',description="'.addslashes($description).'"'
@@ -151,8 +155,9 @@ if ($_POST['type']==4) {
 }
 $msgs.='<em>'.__('The page has been updated.').'</em>';
 dbQuery('update page_summaries set rss=""');
-Core_cacheClear('menus');
-Core_cacheClear('pages');
+Core_cacheClear('pages,menus');
+unset($DBVARS['cron-next']);
+Core_configRewrite();
 echo '<script>window.parent.document.getElementById("page_'.$id.'")'
 	.'.childNodes[1].innerHTML=\'<ins class="jstree-icon">&nbsp;</ins>'
 	.htmlspecialchars($alias).'\';</script>';

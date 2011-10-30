@@ -88,6 +88,13 @@ function __($str, $context='core', $params=array()) {
   * @return null
   */
 function Core_cacheClear($type='') {
+	if (strpos($type, ',')!==false) {
+		$types=explode(',', $type);
+		foreach ($types as $t) {
+			Core_cacheClear($t);
+		}
+		return;
+	}
 	if (!is_dir(USERBASE.'/ww.cache/'.$type)) {
 		return;
 	}

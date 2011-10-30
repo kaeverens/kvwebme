@@ -79,10 +79,10 @@ $(function(){
 		.remoteselectoptions({url:'/a/f=adminPageParentsList',
 			other_GET_params:page_menu_currentpage
 		});
-	$('#pages_form input[name="associated_date"]')
+	$('#pages_form .datetime')
 		.datetimepicker({
 			dateFormat: 'yy-mm-dd',
-			timeFormat: 'hh:mm',
+			timeFormat: 'hh:mm:ss',
 			modal:      true,
 			changeMonth:true,
 			changeYear: true

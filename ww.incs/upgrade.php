@@ -422,6 +422,19 @@ if ($version==39) { // cron
 	);
 	$version=40;
 }
+if ($version==40) {
+	dbQuery('alter table pages add date_publish datetime');
+	dbQuery('alter table pages add date_unpublish datetime');
+	dbQuery(
+		'update pages set date_publish=cdate,date_unpublish="2100-01-01" '
+		.'where !(special&2)'
+	);
+	dbQuery(
+		'update pages set date_publish=cdate,date_unpublish=now() '
+		.'where special&2'
+	);
+	$version=41;
+}
 
 $DBVARS['version']=$version;
 Core_cacheClear();

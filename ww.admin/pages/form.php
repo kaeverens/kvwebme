@@ -11,12 +11,14 @@
 	* @link     http://kvsites.ie/
 	*/
 
+// { requires
 require_once '../../ww.incs/common.php';
 require_once '../admin_libs.php';
 if (!Core_isAdmin()) {
 	exit;
 }
-
+// }
+// { actions
 if ((!isset($_REQUEST['id']) || $_REQUEST['id']==0)
 	&& (!isset($_REQUEST['action']) || $_REQUEST['action']!='Insert Page Details')
 ) {
@@ -26,6 +28,8 @@ if ((!isset($_REQUEST['id']) || $_REQUEST['id']==0)
 	).'</p>';
 	exit;
 }
+// }
+// { functions
 
 /**
 	* function for showing a page's body, overriding using a plugin if necessary
@@ -44,6 +48,7 @@ function Page_showBody($page, $page_vars) {
 	return ckeditor('body', $page['body']);
 }
 
+// }
 // { take care of actions
 $id=isset($_REQUEST['id'])
 	?(int)$_REQUEST['id']
@@ -86,7 +91,7 @@ echo '<html><head>'
 	.'</head>'
 	.'<body class="noheader">';
 // }
-
+// { page data
 if ($id && $edit) { // check that page exists
 	$page=dbRow("SELECT * FROM pages WHERE id=$id");
 	if (!$page) {
@@ -136,6 +141,8 @@ $maxLength = (isset($DBVARS['site_page_length_limit'])
 )
 	?$DBVARS['site_page_length_limit']
 	:0;
+// }
+// { form header
 echo '<form enctype="multipart/form-data" id="pages_form" class="pageForm"'
 	.' method="post" action="'.$_SERVER['PHP_SELF'].'">'
 	.'<input type="hidden" name="MAX_FILE_SIZE" value="9999999" />';
@@ -146,10 +153,13 @@ if ($page['special']&2 && !isset($_REQUEST['newpage_dialog'])) {
 	).'</em>';
 }
 echo '<input type="hidden" name="id" value="'.$page['id'].'"/>';
+// }
+// { list of tabs
 echo '<div id="pages-tabs" class="tabs">'
 	.'<ul>'
 	.'<li><a href="#pages-common">'.__('Common Details').'</a></li>'
-	.'<li><a href="#pages-advanced">'.__('Advanced Options').'</a></li>';
+	.'<li><a href="#seo">'.__('SEO / Metadata').'</a></li>'
+	.'<li><a href="#misc">'.__('Misc.').'</a></li>';
 foreach ($PLUGINS as $n=>$p) {
 	if (isset($p['admin']['page_panel'])) {
 		$name = $p['admin']['page_panel']['name'];
@@ -157,6 +167,7 @@ foreach ($PLUGINS as $n=>$p) {
 	}
 }
 echo '</ul>';
+// }
 // { Common Details
 echo '<div id="pages-common">';
 // { name, url
@@ -321,40 +332,29 @@ switch ($form_type) {
 // }
 echo '</table></div>';
 // }
-// { Advanced Options
-echo '<div id="pages-advanced">';
-echo '<table>';
-echo '<tr><td>';
-// { metadata 
-echo '<h3>'.__('MetaData').'</h3><table>';
+// { SEO / Metadata
+echo '<div id="seo"><table>';
 // { title
 echo '<tr><th><span class="help title"></span>'.__('title').'</th>'
 	.'<td><input name="title" value="'.htmlspecialchars($page['title']).'"/></td>'
 	.'</tr>';
 // }
+// { keywords
 echo '<tr><th>'.__('keywords').'</th><td><input name="keywords" value="'
 	.htmlspecialchars($page['keywords']).'"/></td></tr>';
+// }
+// { description
 echo '<tr><th>'.__('description').'</th><td><textarea class="large" name="d'
 	.'escription">'.htmlspecialchars($page['description']).'</textarea></td><'
 	.'/tr>';
-// { associated date
-if (!isset($page['associated_date'])
-	|| !preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}/', $page['associated_date'])
-	|| $page['associated_date']=='0000-00-00 00:00:00'
-) {
-	$page['associated_date']=date('Y-m-d 00:00');
-}
-else {
-	$page['associated_date']=preg_replace('/:..$/', '', $page['associated_date']);
-}
-echo '<tr><th><span class="help associated-date"></span>'.__('Associated Date')
-	.'</th><td><input name="associated_date" value="'.$page['associated_date']
-	.'" title="'.__('year-month-day hour:minute').'"/></td></tr>';
 // }
+// { short URL
 echo '<tr><th>'.__('Short URL').'</th><td><input name="short_url" value="'
 	.htmlspecialchars(
 		dbOne('select short_url from short_urls where page_id='.$id, 'short_url')
 	).'" /></td></tr>';
+// }
+// { sitemap importance
 $importance=(float)$page['importance'];
 if ($importance<.1) {
 	$importance=.5;
@@ -369,12 +369,67 @@ echo '<tr title="'
 if (!isset($page_vars['google-site-verification'])) {
 	$page_vars['google-site-verification']='';
 }
+// }
+// { google site verification
 echo '<tr><th>'.__('Google Site Verification').'</th><td><input name="page_'
 	.'vars[google-site-verification]" value="'
 	.htmlspecialchars($page_vars['google-site-verification']).'" /></td></tr>';
-echo '<tr>';
+// }
+echo '</table></div>';
+// }
+// { Misc.
+echo '<div id="misc"><table><tr><td>';
+// { dates, templates
+echo '<table>';
+// { publish date
+echo '<tr><th>'.__('Date to Publish')
+	.'</th><td><input name="date_publish" value="'.$page['date_publish']
+	.'" class="datetime" title="'.__('year-month-day hour:minute').'"/></td></tr>';
+// }
+// { unpublish date
+echo '<tr><th>'.__('Date to Unpublish')
+	.'</th><td><input name="date_unpublish" value="'.$page['date_unpublish']
+	.'" class="datetime" title="'.__('year-month-day hour:minute').'"/></td></tr>';
+// }
+// { associated date
+if (!isset($page['associated_date'])
+	|| !preg_match(
+		'/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/',
+		$page['associated_date']
+	)
+	|| $page['associated_date']=='0000-00-00 00:00:00'
+) {
+	$page['associated_date']=date('Y-m-d 00:00:00');
+}
+echo '<tr><th>'.__('Associated Date')
+	.'</th><td><input name="associated_date" value="'.$page['associated_date']
+	.'" class="datetime" title="'.__('year-month-day hour:minute').'"/></td></tr>';
+// }
+// { order of sub-pages
+echo '<tr><th>'.__('Order of sub-pages').'</th><td>'
+	.'<select name="page_vars[order_of_sub_pages]">';
+$arr=array('as shown in admin menu', 'alphabetically', 'by associated date');
+foreach ($arr as $k=>$v) {
+	echo '<option value="'.$k.'"';
+	if (isset($page_vars['order_of_sub_pages'])
+		&& $page_vars['order_of_sub_pages']==$k
+	) {
+		echo ' selected="selected"';
+	}
+	echo '>'.__($v).'</option>';
+}
+echo '</select><select name="page_vars[order_of_sub_pages_dir]"><option val'
+	.'ue="0">'.__('ascending (a-z, 0-9)').'</option>';
+echo '<option value="1"';
+if (isset($page_vars['order_of_sub_pages_dir'])
+	&& $page_vars['order_of_sub_pages_dir']=='1'
+) {
+	echo ' selected="selected"';
+}
+echo '>'.__('descending (z-a, 9-0)').'</option></select></td></tr>';
+// }
 // { template
-echo '<th>'.__('template').'</th><td>';
+echo '<tr><th>'.__('template').'</th><td>';
 $d=array();
 if (!file_exists(THEME_DIR.'/'.THEME.'/h/')) {
 	echo __(
@@ -411,9 +466,13 @@ else {
 			.htmlspecialchars($d[0]).'" />';
 	}
 }
-echo '</td>';
+echo '</td></tr>';
 // }
-echo '</tr>';
+// { recursively update page templates
+echo '<tr><th>'.__('Recursively update page templates')
+	.'</th><td><input type="checkbox" name="recursively_update_page_templates'
+	.'" /></td></tr>';
+// }
 echo '</table>';
 // }
 echo '</td><td>';
@@ -434,37 +493,6 @@ for ($i=0;$i<count($specials);++$i) {
 	}
 }
 // }
-// { other
-echo '<h3>'.__('Other').'</h3>';
-echo '<table>';
-// { order of sub-pages
-echo '<tr><th>'.__('Order of sub-pages').'</th><td>'
-	.'<select name="page_vars[order_of_sub_pages]">';
-$arr=array('as shown in admin menu', 'alphabetically', 'by associated date');
-foreach ($arr as $k=>$v) {
-	echo '<option value="'.$k.'"';
-	if (isset($page_vars['order_of_sub_pages'])
-		&& $page_vars['order_of_sub_pages']==$k
-	) {
-		echo ' selected="selected"';
-	}
-	echo '>'.__($v).'</option>';
-}
-echo '</select><select name="page_vars[order_of_sub_pages_dir]"><option val'
-	.'ue="0">'.__('ascending (a-z, 0-9)').'</option>';
-echo '<option value="1"';
-if (isset($page_vars['order_of_sub_pages_dir'])
-	&& $page_vars['order_of_sub_pages_dir']=='1'
-) {
-	echo ' selected="selected"';
-}
-echo '>'.__('descending (z-a, 9-0)').'</option></select></td></tr>';
-// }
-echo '<tr><th>'.__('Recursively update page templates')
-	.'</th><td><input type="checkbox" name="recursively_update_page_templates'
-	.'" /></td></tr>';
-echo '</table>';
-// }
 echo '</td></tr></table></div>';
 // }
 // { tabs added by plugins
@@ -476,12 +504,16 @@ foreach ($PLUGINS as $n=>$p) {
 	}
 }
 // }
+// { form footer
 echo '</div>';
 echo '<input type="hidden" name="action" value="Update Page Details"/>';
 echo '<input type="submit" value="'.__('Update Page Details').'"/>';
 echo '</form>';
+// }
+// { page footer
 echo WW_getScripts();
 echo WW_getCss();
 echo '<script>//<![CDATA[
 window.page_menu_currentpage='.$id.';window.sessid="'.session_id().'";
 //]]></script></body></html>';
+// }

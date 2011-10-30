@@ -123,7 +123,7 @@ if (isset($DBVARS['canonical_name'])
 		.$_SERVER['REQUEST_URI'];
 	redirect($url);
 }
-if (!isset($DBVARS['version']) || $DBVARS['version']<40) {
+if (!isset($DBVARS['version']) || $DBVARS['version']<41) {
 	redirect('/ww.incs/upgrade.php');
 }
 $id=(int)@$_REQUEST['pageid'];
@@ -175,7 +175,7 @@ if (!$id) {
 	}
 	if (!$id) {          // or maybe it's a "special" or the home page
 		$special=1;
-		if (isset($_GET['special'])&&$_GET['special']) {
+		if (@$_GET['special']) {
 			$special=$_GET['special'];
 		}
 		if (!$page) {
