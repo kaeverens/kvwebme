@@ -11,17 +11,7 @@
 	* @link     http://kvsites.ie/
 	*/
 
-$html='';
-$widget_type=isset($vars->widget_type) && $vars->widget_type
-	?$vars->widget_type
-	:'List Categories';
-$diameter=isset($vars->diameter) && $vars->diameter?$vars->diameter:280;
-$parent_cat=isset($vars->parent_cat)?((int)$vars->parent_cat):0;
-$cats=dbAll(
-	'select id,name,associated_colour as col from products_categories '
-	.'where parent_id='.$parent_cat.' and enabled order by sortNum,name'
-);
-
+// { functions
 /**
 	* get a list of sub-categories in UL format
 	*
@@ -45,6 +35,19 @@ function Products_categoriesListSubCats($pid) {
 	}
 	return $html.'</ul>';
 }
+// }
+
+$html='';
+$widget_type=isset($vars->widget_type) && $vars->widget_type
+	?$vars->widget_type
+	:'List Categories';
+$diameter=isset($vars->diameter) && $vars->diameter?$vars->diameter:280;
+$parent_cat=isset($vars->parent_cat)?((int)$vars->parent_cat):0;
+$cats=dbAll(
+	'select id,name,associated_colour as col from products_categories '
+	.'where parent_id='.$parent_cat.' and enabled order by sortNum,name'
+);
+
 switch ($widget_type) {
 	case 'Pie Chart': // { Pie Chart
 		$id='products_categories_'.md5(rand());
@@ -59,14 +62,26 @@ switch ($widget_type) {
 		WW_addScript('/ww.plugins/products/frontend/widget.js');
 	break; // }
 	case 'Products': // { Products
-#		$html='<div class="products-widget-products">';
-#		$products=Products::getByCategory($parent_cat);
-#		foreach ($products['products_ids'] as $pid) {
-#			$product=Product::getInstance($pid);
-#			$html.='<table><tr><td class="image"><
-#			$html.=print_r($product, true);
-#		}
-#		$html.='</div>';
+		$html='<div class="products-widget-products">';
+		$products=Products::getByCategory($parent_cat);
+		foreach ($products->product_ids as $pid) {
+			$product=Product::getInstance($pid);
+			$iid=$product->getDefaultImage();
+			$img=$iid
+				?'<a href="'.$product->getRelativeURL().'"><img src="/kfmget/'
+				.$iid.'&amp;width=100&amp;height=100"/></a>'
+				:'';
+			$html.='<table class="product"><tr><td rowspan="2">'.$img
+				.'</td><td><strong>'.htmlspecialchars($product->name).'</strong>'
+				.'<p class="base-price">was: '.$_SESSION['currency']['symbol']
+				.$product->vals['online-store']['_price'].'</p>'
+				.'<p class="sale-price">now: '.$_SESSION['currency']['symbol']
+				.$product->vals['online-store']['_sale_price'].'</p>'
+				.'</td></tr>'
+				.'<tr><td><a href="'.$product->getRelativeURL().'">more info</a>'
+				.'</td></tr></table>';
+		}
+		$html.='</div>';
 	break; // }
 	case 'Tree View': // { Tree View
 		$html='<div class="product-categories-tree"><ul>';

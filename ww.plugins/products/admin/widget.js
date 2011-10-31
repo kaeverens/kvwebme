@@ -1,5 +1,5 @@
 function Products_widgetTypeChanged() {
-	$('form.products').each(function(){
+	$('form.panel-products').each(function(){
 		var $this=$(this);
 		if ($this.find('select[name=widget_type]').val() == 'Pie-Chart') {
 			$this.find('.diameter').css('display', 'block');
@@ -9,4 +9,4 @@ function Products_widgetTypeChanged() {
 		}
 	});
 }
-$('form.products select[name=widget_type]').live('change', Products_widgetTypeChanged);
+$('form.panel-products select[name=widget_type]').live('change', Products_widgetTypeChanged);

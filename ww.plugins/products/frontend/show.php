@@ -371,30 +371,7 @@ function Products_image($params, $smarty) {
 		$params
 	);
 	$product=$smarty->_tpl_vars['product'];
-	$vals=$product->vals;
-	if (!$vals['images_directory']) {
-		return Products_imageNotFound($params, $smarty);
-	}
-	$iid=0;
-	if ($vals['image_default']) {
-		$iid=$vals['image_default'];
-		$image=kfmImage::getInstance($iid);
-		if (!$image->exists()) {
-			$iid=0;
-		}
-	}
-	if (!$iid) {
-		$directory = $vals['images_directory'];
-		$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//', '', $directory));
-		if (!$dir_id) {
-			return Products_imageNotFound($params, $smarty);
-		}
-		$images=kfm_loadFiles($dir_id);
-		if (count($images['files'])) {
-			$image=$images['files'][0];
-			$iid=$image['id'];
-		}
-	}
+	$iid=$product->getDefaultImage();
 	if (!$iid) {
 		return Products_imageNotFound($params, $smarty);
 	}

@@ -84,6 +84,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 
 		echo 'done<img style="width:1px;height:1px" src="./" /><p>Import completed.</p>';
 		dbQuery('update pages set alias=name where alias is null');
+		Core_cacheClear();
 		return;
 	}
 }

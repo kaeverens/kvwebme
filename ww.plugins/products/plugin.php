@@ -603,6 +603,36 @@ class Product{
 	}
 
 	/**
+		* get KFM ID for default image
+		*
+		* @return int ID of the image
+		*/
+	function getDefaultImage() {
+		$vals=$this->vals;
+		if (!$vals['images_directory']) {
+			return 0;
+		}
+		$iid=0;
+		if ($vals['image_default']) {
+			$image=kfmImage::getInstance($iid);
+			if ($image->exists()) {
+				return $vals['image_default'];
+			}
+		}
+		$directory = $vals['images_directory'];
+		$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//', '', $directory));
+		if (!$dir_id) {
+			return 0;
+		}
+		$images=kfm_loadFiles($dir_id);
+		if (count($images['files'])) {
+			$image=$images['files'][0];
+			return $image['id'];
+		}
+		return 0;
+	}
+
+	/**
 	  * retrieve one of the product's values in human-readable form
 	  *
 	  * @param string $name the name of the field
