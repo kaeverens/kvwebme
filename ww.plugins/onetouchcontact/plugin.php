@@ -6,7 +6,7 @@ $plugin=array(
 			'form_url' => '/ww.plugins/onetouchcontact/admin/widget-form.php'
 		)
 	),
-	'description' => 'Create subscription forms for Webworks\' OneTouchContact.com newsletter service',
+	'description' => 'DEPRECATED. use the "Mailing Lists" plugin instead.',
 	'frontend' => array(
 		'widget' => 'onetouchcontact_widget',
 	)

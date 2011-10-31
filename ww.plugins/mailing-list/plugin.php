@@ -22,7 +22,7 @@ $plugin=array(
 			'form_url' => '/ww.plugins/mailing-list/admin/widget-form.php'
 		)
 	),
-	'description' => 'Add a mailing list widget that readers can subscribe to.',
+	'description' => 'DEPRECATED. use the "Mailing Lists" plugin instead.',
 	'frontend' => array(
 		'template_functions' => array(
 			'MAILING_LIST' => array(
