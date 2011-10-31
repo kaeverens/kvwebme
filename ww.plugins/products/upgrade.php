@@ -184,3 +184,9 @@ if ($version==24) { // activation/expiry dates
 	dbQuery('alter table products add expires_on datetime default "0000-00-00"');
 	$version=25;
 }
+if ($version==25) { // remove some silly ideas that are better done differently
+	dbQuery('alter table products drop voucher_value');
+	dbQuery('alter table products drop stock_amt');
+	dbQuery('alter table products drop sold_amt');
+	$version=26;
+}

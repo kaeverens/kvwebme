@@ -236,6 +236,7 @@ echo '<a href="plugin.php?_plugin=products&amp;_page=products-edit">Add a P'
 	.'roduct</a>'
 	.' <a href="plugin.php?_plugin=products&amp;_page=import">Import Products'
 	.'</a>';
+// { form header
 echo '<form id="products-form" action="'.$_url.'&amp;id='.$id.'" '
 	.'method="post" onsubmit="products_getData();">';
 echo '<input type="hidden" name="action" value="save" />';
@@ -261,6 +262,7 @@ if (count($relations)) {
 	echo '<li><a href="#relations">Related Items</a></li>';
 }
 echo '</ul>';
+// }
 // { main details
 echo '<div id="main-details"><table>';
 // { name, type, manage images
@@ -498,7 +500,8 @@ if (isset($PLUGINS['online-store'])) {
 			),
 			'_not_discountable' => array(
 				'Not Discountable', 'Options'=>array('No', 'Yes')
-			)
+			),
+			'_sold_amt' => 'Amount Sold'
 		);
 	if (dbOne(
 		'select is_voucher from products_types where id='.$pdata['product_type_id'],
@@ -525,7 +528,7 @@ if (isset($PLUGINS['online-store'])) {
 		echo '</th>';
 		echo '<td>';
 		if (!is_array($display)) {
-			echo '<input name="online-store-fields['.$internal.']"';
+			echo '<input class="small" type="number" name="online-store-fields['.$internal.']"';
 			if (isset($online_store_data->$internal)) {
 				echo ' value="'.$online_store_data->$internal.'"';
 			}

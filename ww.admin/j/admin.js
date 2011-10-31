@@ -144,6 +144,13 @@ $(function(){
 		$('.help').cluetip();
 	}
 	setTimeout(keepAlive,1700000);
+	$('input[type=number]').live('keyup', function() {
+		var val=this.value;
+		if (!/[^0-9.]/.test(val)) {
+			return;
+		}
+		this.value=val.replace(/[^0-9.]/, '');
+	});
 });
 var jsvars={
 	'datatables':{}

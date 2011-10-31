@@ -45,3 +45,26 @@ function Products_priceSale2($params, $smarty) {
 		:1;
 	return OnlineStore_numToPrice($p['_sale_price']*$vat);
 }
+function Products_soldAmount2($params, $smarty) {
+	$params=array_merge(
+		array(
+			'none'=>'none sold',
+			'one'=>'one sold',
+			'many'=>'%d sold'
+		),
+		$params
+	);
+	$pid=$smarty->_tpl_vars['product']->id;
+	$product=Product::getInstance($pid);
+	if (!isset($product->vals['online-store'])) {
+		return '';
+	}
+	$sold=(int)$product->vals['online-store']['_sold_amt'];
+	if ($sold==0) {
+		return __($params['none']);
+	}
+	if ($sold==1) {
+		return __($params['one']);
+	}
+	return str_replace('%d', $sold, $params['many']);
+}

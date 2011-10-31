@@ -89,13 +89,16 @@ $plugin=array(
 			),
 			'PRODUCTS_IMAGES_SLIDER' => array (
 				'function' => 'Products_imageSlider'
+			),
+			'PRODUCTS_AMOUNT_SOLD' => array(
+				'function' => 'Products_soldAmount'
 			)
 		)
 	),
 	'triggers' => array(
 		'initialisation-completed' => 'Products_addToCart'
 	),
-	'version' => '25'
+	'version' => '26'
 );
 // }
 
@@ -376,6 +379,10 @@ function Products_priceDiscountPercent($params, $smarty) {
 function Products_priceSale($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
 	return Products_priceSale2($params, $smarty);
+}
+function Products_soldAmount($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_soldAmount2($params, $smarty);
 }
 
 /**
