@@ -1,0 +1,71 @@
+<?php
+/**
+	* mailinglists admin functions
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+function Mailinglists_adminGetDashboardInfo() {
+	$lists=dbOne('select count(id) as lists from mailinglists_lists', 'lists');
+	$people=dbOne('select count(id) as people from mailinglists_people', 'people');
+	return array(
+		'numlists'=>(int)$lists,
+		'numpeople'=>(int)$people
+	);
+}
+function Mailinglists_adminListDetails() {
+	$id=(int)$_REQUEST['id'];
+	$row=dbRow('select * from mailinglists_lists where id='.$id);
+	if (!$row['meta']) {
+		$row['meta']='{}';
+	}
+	$row['meta']=json_decode($row['meta']);
+	return $row;
+}
+function Mailinglists_adminListsGetMailChimp() {
+	$apikey=$_REQUEST['other_GET_params'];
+	require_once dirname(__FILE__).'/MCAPI.class.php';
+	$api=new MCAPI($apikey);
+	$data=$api->lists();
+	if ($api->errorCode) {
+		return array(
+			'error'=>$api->errorCode,
+			'message'=>$api->errorMessage
+		);
+	}
+	$lists=array();
+	foreach ($data['data'] as $list) {
+		$lists[$list['id'].'|'.$list['name']]=$list['name'];
+	}
+	$lists['zzz']='add new...';
+	return $lists;
+}
+function Mailinglists_adminListsList() {
+	$lists=dbAll('select id,name from mailinglists_lists order by name');
+	foreach ($lists as $k=>$v) {
+		$lists[$k]['subscribers']=dbOne(
+			'select count(people_id) as subscribers from mailinglists_lists_people where lists_id='.$v['id'],
+			'subscribers'
+		);
+	}
+	return $lists;
+}
+function Mailinglists_adminListSave() {
+	$id=(int)$_REQUEST['vals']['id'];
+	$sql='mailinglists_lists set '
+		.'name="'.addslashes($_REQUEST['vals']['name']).'",'
+		.'meta="'.addslashes(json_encode($_REQUEST['meta'])).'"';
+	if ($id) {
+		dbQuery('update '.$sql.' where id='.$id);
+	}
+	else {
+		dbQuery('insert into '.$sql);
+	}
+	return array('ok'=>1);
+}
