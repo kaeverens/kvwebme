@@ -69,29 +69,38 @@ function OnlineStore_processOrder($id, $order=false) {
 		$headers
 	);
 	// }
-	// { send vouchers if there are any
+	// { handle item-specific stuff (vouchers, stock control)
 	foreach ($items as $item) {
 		if (!$item->id) {
 			continue;
 		}
 		$p=Product::getInstance($item->id);
 		$pt=ProductType::getInstance($p->vals['product_type_id']);
-		if (!$pt->is_voucher) {
-			continue;
+		if ($pt->is_voucher) {
+			$html=$pt->voucher_template;
+			$html=str_replace(
+				'{{$description}}',
+				$p->vals['description'],
+				$html
+			);
+			mail(
+				$form_vals->Email,
+				'['.str_replace('www.', '', $_SERVER['HTTP_HOST']).'] voucher',
+				$html,
+				$headers
+			);
 		}
-		$html=$pt->voucher_template;
-		$html=str_replace(
-			'{{$description}}',
-			$p->vals['description'],
-			$html
+		// { stock control
+		$valsOS=$p->vals['online-store'];
+		$valsOS['_stock_amt']=(int)@$valsOS['_stock_amt']-$item->amt;
+		$valsOS['_sold_amt']=(int)@$valsOS['_sold_amt']+$item->amt;
+		dbQuery(
+			'update products set online_store_fields="'
+			.addslashes(json_encode($valsOS)).'" where id='.$item->id
 		);
-		mail(
-			$form_vals->Email,
-			'['.str_replace('www.', '', $_SERVER['HTTP_HOST']).'] voucher',
-			$html,
-			$headers
-		);
+		// }
 	}
+	Core_cacheClear('products');
 	// }
 	// }
 }
