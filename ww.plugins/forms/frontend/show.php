@@ -22,6 +22,9 @@
   */
 function Form_show($page, $vars) {
 	$errors=array();
+	if (!isset($vars['forms_fields'])) {
+		$vars['forms_fields']='[]';
+	}
 	$form_fields=json_decode($vars['forms_fields'], true);
 	if (@$_REQUEST['funcFormInput']=='submit') {
 		require_once dirname(__FILE__).'/validate-and-send.php';
@@ -377,17 +380,19 @@ function Form_getValidationRules($vars, $form_fields=array()) {
 	global $recipientEmail;
 	$rulesCollection=array();
 	$from_field=preg_replace('/[^a-zA-Z]/', '', $vars['forms_replyto']);
-	foreach ($form_fields as $r2) {
-		$rules=array();
-		$name=preg_replace('/[^a-zA-Z0-9_]/', '', $r2['name']);
-		if ($r2['isrequired'] || $name==$from_field) {
-			$rules['required']=true;
-		}
-		if ($r2['type']=='email') {
-			$rules['email']=true;
-		}
-		if (count($rules)) {
-			$rulesCollection[$name]=$rules;
+	if (is_array($form_fields)) {
+		foreach ($form_fields as $r2) {
+			$rules=array();
+			$name=preg_replace('/[^a-zA-Z0-9_]/', '', $r2['name']);
+			if ($r2['isrequired'] || $name==$from_field) {
+				$rules['required']=true;
+			}
+			if ($r2['type']=='email') {
+				$rules['email']=true;
+			}
+			if (count($rules)) {
+				$rulesCollection[$name]=$rules;
+			}
 		}
 	}
 	// { check the captcha
