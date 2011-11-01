@@ -37,6 +37,22 @@ function Page_updatePageVars() {
 		$inp.val(v);
 	});
 }
+function pages_check_page_length(maxLength) {
+	if (!+maxLength) {
+		return true;
+	}
+	var textAreas = $('textarea[name=body]');
+	for (i=0; i<textAreas.length; ++i) {
+		var contents = $(textAreas[i]).val();
+		if (contents.length>maxLength) {
+			return confirm(
+				'This page has more characters than the set limit. This may cause '
+				+'problems\nDo you want to save the page anyway?'
+			);
+		}
+	}
+	return true;
+}
 function pages_validate(){
 	var ok=pages_validate_name();
 	if (ok) {
@@ -79,6 +95,17 @@ $(function(){
 		.remoteselectoptions({url:'/a/f=adminPageParentsList',
 			other_GET_params:page_menu_currentpage
 		});
+	$('#pages_form input[name="special[1]"]').change(function() {
+		var checked=$(this).is(':checked');
+		if (checked) {
+			$('input[name=date_publish]').val('2100-01-01 00:00:00');
+			$('input[name=date_unpublish]').val('2100-01-01 00:00:00');
+		}
+		else {
+			$('input[name=date_publish]').val('2000-01-01 00:00:00');
+			$('input[name=date_unpublish]').val('2100-01-01 00:00:00');
+		}
+	});
 	$('#pages_form .datetime')
 		.datetimepicker({
 			dateFormat: 'yy-mm-dd',
@@ -114,19 +141,3 @@ $(function(){
 		$('select[name=type]').change();
 	}
 });
-function pages_check_page_length(maxLength) {
-	if (!+maxLength) {
-		return true;
-	}
-	var textAreas = $('textarea[name=body]');
-	for (i=0; i<textAreas.length; ++i) {
-		var contents = $(textAreas[i]).val();
-		if (contents.length>maxLength) {
-			return confirm(
-				'This page has more characters than the set limit. This may cause '
-				+'problems\nDo you want to save the page anyway?'
-			);
-		}
-	}
-	return true;
-}
