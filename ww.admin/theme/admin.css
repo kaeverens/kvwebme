@@ -48,7 +48,14 @@ a[href^=http]{background:url("/ww.admin/theme/10x10_external.png") no-repeat rig
 .left-menu ul{margin:0;padding:0 0 0 20px }
 .left-menu li{margin:0;padding:0;display:inline}
 .left-menu span{display:block;text-transform:capitalize;color:#666;margin:0;padding:3px 0 3px 10px}
-.has-left-menu{position:absolute;right:5px;left:180px;top:95px;padding:5px}
+.has-left-menu{
+	position:absolute;
+	right:5px;
+	left:180px;
+	top:95px;
+	bottom:0px;
+	overflow:auto;
+}
 .has-left-menu input.checkbox{width:auto !important}
 div.resize-bar-w{position:absolute;background:#3b3c37;width:6px;bottom:0;top:0;right:0}
 .box{width:130px;padding:10px;margin:5px;border:1px solid #000;float:left;clear:right;text-align:center}

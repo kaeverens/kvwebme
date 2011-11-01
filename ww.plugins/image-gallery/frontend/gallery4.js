@@ -19,6 +19,7 @@ var Gallery={
 		listSwitch:2,
 		galleryWidth:null,	// allow for manual override of the gallery width
 		slideshow:false,
+		hidesidebar:false,
 		slideshowTime:2500,	// slideshow interval between slide change
 		directory:'',
 		// custom display functions
@@ -81,6 +82,9 @@ var Gallery={
 	closeWholepageImage:function() {
 		$('.ad-image,.image-gallery-close-wholepage,#gallery-image').remove();
 		$('div.ad-gallery,#image-gallery-nav').css('display', 'block');
+		if (Gallery.options.hidesidebar) {
+			$('#sidebar1_bak').toggle().attr('id', 'sidebar1');
+		}
 	},
 	count:function() { // counts the images object
 		var size=0,key;
@@ -142,10 +146,10 @@ var Gallery={
 		this.updateNav();
 	},
 	displayGrid:function() { // shows the grid display using a carousel
-		var file, size=this.options.thumbsize, row=0, j;
+		var file, size=Gallery.options.thumbsize, row=0, j;
 		var html='<table class="images-container" style="width:100%"><tr>';
-		this.current=0;
-		$.each(this.images,function(i) {
+		Gallery.current=0;
+		$.each(Gallery.images,function(i) {
 			if(i%Gallery.options.items==0) {
 				++row;
 				html+='</tr><tr>';
@@ -156,7 +160,7 @@ var Gallery={
 			}
 			file=Gallery.images[j];
 			html+='<td style="width:'+size+'px;height:'+size+'px">'
-				+Gallery.mediaDisplay(file, size)+'</td>';
+				+Gallery.mediaDisplay(file)+'</td>';
 			++Gallery.position;
 			++Gallery.current;
 		});
@@ -190,6 +194,10 @@ var Gallery={
 				.appendTo('#image-gallery-wrapper');
 			this.addLinksToLargeImage();
 			$('div.ad-gallery,#image-gallery-nav').css('display', 'none');
+			if (Gallery.options.hidesidebar) {
+				$('#sidebar1').toggle().attr('id', 'sidebar1_bak');
+			}
+
 		}
 		var $img=$imgwrap.find('img');
 		var files=this.images;
@@ -243,6 +251,8 @@ var Gallery={
 						else if (newheight>spanheight) {
 							$wrapper.css('height', $wrapper.height()+(newheight-spanheight)+'px');
 						}
+						$('#big-next-link,#big-prev-link')
+							.css('height', $wrapper.css('height'));
 						$img
 							.css({
 								'background':'url("'+src+'") no-repeat '+bgoffset,
@@ -640,24 +650,25 @@ var Gallery={
 		}
 	},
 	mediaDisplay:function(file) {
-		var size=this.options.thumbsize;
+		var size=Gallery.options.thumbsize;
 		var style=Gallery.options.ratio=='crop'
 			?' style="width:'+size+'px;height:'+size+'px;overflow:hidden"':'';
 		var popup=Gallery.options.hover=='popup'
 			?' target="popup"'
 			:(Gallery.options.hover=='opacity'?' style="opacity:0.7"':'');
-		var xy=this.options.ratio=='normal'
-			?[this.options.thumbsize,this.options.thumbsize]
+		var xy=Gallery.options.ratio=='normal'
+			?[Gallery.options.thumbsize,Gallery.options.thumbsize]
 			:file.height>file.width
-				?[this.options.thumbsize, (file.height*(this.options.thumbsize/file.width))]
-				:[(file.width*(this.options.thumbsize/file.height)), this.options.thumbsize];
+				?[Gallery.options.thumbsize, (file.height*(Gallery.options.thumbsize/file.width))]
+				:[(file.width*(Gallery.options.thumbsize/file.height)), Gallery.options.thumbsize];
 		var caption=Gallery.caption_in_slider
 			?file.caption
 			:'';
-		return '<a href="'+(file.media=='image'?file.url:file.href)+'" id="'
+		var html='<a href="'+(file.media=='image'?file.url:file.href)+'" id="'
 			+Gallery.position+'"'+popup+style+'>'
 			+'<span class="image"><img src="'+file.url+'/w='+xy[0]+'/h='+xy[1]+'"/></span>'
 			+'<span class="caption">'+caption+'</span></a>';
+		return html;
 	},
 	resetTimeout:function() { // resets the slideshow timeout
 		clearTimeout(Gallery.t);
@@ -752,7 +763,9 @@ $('#big-next-link').live('click',function() {
 		$('#'+n+' img').removeClass('image-selected');
 		n=((n+1)==Gallery.count())?0:++n;
 		$('#'+n+' img').addClass('image-selected');
-		Gallery.displayNext(1);
+		if ($('td.images-container:visible').length) {
+			Gallery.displayNext(1);
+		}
 		Gallery.displayImage(n);
 	}
 });
@@ -765,7 +778,9 @@ $('#big-prev-link').live('click',function() {
 		$('#'+n+' img').removeClass('image-selected');
 		n=(n==0)?(Gallery.count()-1):--n;
 		$('#'+n+' img').addClass('image-selected');
-		Gallery.displayPrevious(1);
+		if ($('td.images-container:visible').length) {
+			Gallery.displayPrevious(1);
+		}
 		Gallery.displayImage(n);
 	}
 });

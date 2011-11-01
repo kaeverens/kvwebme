@@ -25,7 +25,7 @@ require_once KFM_BASE_PATH.'/initialise.php';
   * @return string HTML of the nav menu
   */
 function ImageGallery_nav($params, $smarty) {
-	return '<div id="image-gallery-nav"><table style="width:100%">'
+	return '<div id="image-gallery-nav"><table>'
 		.'<tr><td style="text-align:left;"><div id="prev-link"/></td>'
 		.'<td class="pagelinks" style="width:90%;text-align:center"></td>'
 		.'<td style="text-align:right"><div id="next-link"/></td></tr>'
@@ -52,7 +52,8 @@ function ImageGallery_templateImages($params, $smarty) {
 		'image_gallery_links'=>'links',
 		'image_gallery_ratio'=>'ratio',
 		'image_gallery_width'=>'galleryWidth',
-		'image_gallery_thumbsize'=>'thumbsize'
+		'image_gallery_thumbsize'=>'thumbsize',
+		'image_gallery-hide-sidebar'=>'hidesidebar'
 	);
 	$new_args=array();
 	foreach ($args as $name=>$value) {

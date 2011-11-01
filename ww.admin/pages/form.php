@@ -87,6 +87,7 @@ echo '<html><head>'
 	.'<link rel="stylesheet" href="/j/cluetip/jquery.cluetip.'
 	.'css" />'
 	.'<link rel="stylesheet" href="/ww.admin/theme/admin.css" />'
+	.'<link rel="stylesheet" href="/ww.admin/pages/form.css" />'
 	.'<title>page form</title>'
 	.'</head>'
 	.'<body class="noheader">';
@@ -146,12 +147,6 @@ $maxLength = (isset($DBVARS['site_page_length_limit'])
 echo '<form enctype="multipart/form-data" id="pages_form" class="pageForm"'
 	.' method="post" action="'.$_SERVER['PHP_SELF'].'">'
 	.'<input type="hidden" name="MAX_FILE_SIZE" value="9999999" />';
-if ($page['special']&2 && !isset($_REQUEST['newpage_dialog'])) {
-	echo '<em>'.__(
-		'NOTE: this page is currently hidden from the front-end navigation. Use'
-		.' the "Advanced Options" to un-hide it.'
-	).'</em>';
-}
 echo '<input type="hidden" name="id" value="'.$page['id'].'"/>';
 // }
 // { list of tabs
@@ -170,6 +165,12 @@ echo '</ul>';
 // }
 // { Common Details
 echo '<div id="pages-common">';
+if ($page['special']&2 && !isset($_REQUEST['newpage_dialog'])) {
+	echo '<em>'.__(
+		'NOTE: this page is currently hidden from the front-end navigation. Use'
+		.' the "Misc." tab to un-hide it.'
+	).'</em>';
+}
 // { name, url
 echo '<table>';
 echo '<tr>';
@@ -507,7 +508,7 @@ foreach ($PLUGINS as $n=>$p) {
 // { form footer
 echo '</div>';
 echo '<input type="hidden" name="action" value="Update Page Details"/>';
-echo '<input type="submit" value="'.__('Update Page Details').'"/>';
+echo '<div id="submit-row"><input type="submit" value="'.__('Update Page Details').'"/></div>';
 echo '</form>';
 // }
 // { page footer

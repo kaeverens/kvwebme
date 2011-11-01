@@ -105,6 +105,10 @@
 #image-gallery-wrapper{
 	text-align:center;
 }
+#image-gallery-nav td{
+	vertical-align:middle;
+	height:35px;
+}
 #image-gallery-nav .pagelinks a{
 	padding:5px 7px;
 	margin:0 8px;
@@ -120,4 +124,7 @@
 }
 #image-gallery-nav .pagelinks a:hover{
 	border-color:red;
+}
+#image-gallery-nav #next-link,#image-gallery-nav #prev-link{
+	position:static!important;
 }

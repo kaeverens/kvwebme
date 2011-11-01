@@ -10,7 +10,7 @@
 	* @author     Kae Verens <kae@kvsites.ie>
 	* @license    GPL Version 2
 	* @link       www.kvweb.me
- */
+	*/
 
 $cssurl=false;
 // { form header
@@ -157,6 +157,13 @@ foreach ($types as $type) {
 	$c.='<option value="'.strtolower($type).'">'.$type.'</option>';
 }
 $c.='</select>';
+$c.=' When large image shown: <select name="page_vars[image_gallery-hide-sidebar]" val="'
+	.(@$vars['image_gallery-gallery-hide-sidebar']).'">'
+	.'<option value="">do nothing</option><option value="1"';
+if (@$vars['image_gallery-hide-sidebar']) {
+	$c.=' selected="selected"';
+}
+$c.='>hide sidebar</option></select>';
 $content=@$vars['gallery-template'];
 $c.=ckeditor('page_vars[gallery-template]', $content, 0);
 $c.='</div>';
