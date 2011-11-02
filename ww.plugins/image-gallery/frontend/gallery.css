@@ -50,8 +50,8 @@
 	right:-35px;
 }
 .image-selected{
-	border:2px solid #000;
 	opacity:1;
+	box-shadow:0 0 5px #f00;
 }
 .dark-background{
 	color:#fff;
