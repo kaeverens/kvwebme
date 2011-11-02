@@ -163,9 +163,9 @@ function Core_getImg() {
 		}
 	}
 	header('Content-type: image/'.$ext);
+	header('Cache-Control: max-age=2592000, public');
 	header('Expires-Active: On');
-	header('Cache-Control: max-age = 3600');
-	header('Expires: '. date('r', time()+3600));
+	header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
 	header('Pragma:');
 	header('Content-Length: ' . filesize($f));
 	readfile($f);

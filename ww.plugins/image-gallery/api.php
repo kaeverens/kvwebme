@@ -155,7 +155,7 @@ function ImageGallery_frameGet() {
 	}
 	$md5=md5($_SERVER['REQUEST_URI']);
 	$frame=USERBASE.'ww.cache/image-gallery-frames/frame-'.$md5.'.png';
-	if (1 || !file_exists($frame)) {
+	if (!file_exists($frame)) {
 		@mkdir(USERBASE.'ww.cache/image-gallery-frames');
 		$imgO=imagecreatefrompng($file);
 		$imgOsize=getimagesize($file);
@@ -213,9 +213,9 @@ function ImageGallery_frameGet() {
 	}
 	header('Content-type: image/png');
 	imagepng($imgN, $frame);
+	header('Cache-Control: max-age=2592000, public');
 	header('Expires-Active: On');
-	header('Cache-Control: max-age = 3600');
-	header('Expires: '. date('r', time()+3600));
+	header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
 	header('Pragma:');
 	header('Content-Length: ' . filesize($frame));
 	readfile($frame);
