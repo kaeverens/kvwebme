@@ -50,7 +50,7 @@ if ($action=='Save') {
 			unlink($f);
 		}
 		$from=addslashes($_FILES['site_favicon']['tmp_name']);
-		$to=addslashes($newdir.'/favicon.ico');
+		$to=addslashes($newdir.'/favicon.png');
 		CoreGraphics::resize($from, $to, 32, 32);
 	}
 	if (isset($_FILES['site_logo'])
