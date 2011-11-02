@@ -27,5 +27,6 @@ echo '/><br/>';
 // { template
 echo '<strong>Template (leave blank to use a default one)</strong><br />'
 	.'<textarea class="small" name="template">'
-	.htmlspecialchars(@$_REQUEST['template']).'</textarea>';
+	.htmlspecialchars(@$_REQUEST['template']).'</textarea>'
+	.'<a href="#" class="docs" page="/ww.plugins/online-store/docs/codes.html">codes</a>';
 // }

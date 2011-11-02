@@ -355,7 +355,7 @@ function Products_typeEdit(id) {
 			.val(tdata.multiview_template_footer)
 			.appendTo('#ts3')
 			.ckeditor();
-		$('<a href="#" class="docs" page="codes">codes</a>')
+		$('<a href="#" class="docs" page="/ww.plugins/products/docs/codes.html">codes</a>')
 			.appendTo(panel);
 	}
 	function showSingleView(panel) {
@@ -363,7 +363,7 @@ function Products_typeEdit(id) {
 			.val(tdata.singleview_template)
 			.appendTo(panel)
 			.ckeditor();
-		$('<a href="#" class="docs" page="codes">codes</a>')
+		$('<a href="#" class="docs" page="/ww.plugins/products/docs/codes.html">codes</a>')
 			.appendTo(panel);
 	}
 	function showVoucherTemplate() {
@@ -496,18 +496,3 @@ function Products_typeEdit(id) {
 			.appendTo($content);
 	});
 }
-
-$('.docs').live('click', function() {
-	var $this=$(this);
-	var page=$this.attr('page');
-	$.get('/ww.plugins/products/docs/'+page+'.html', function(html) {
-		$(html).dialog({
-			'modal':true,
-			'width':'90%',
-			'close':function() {
-				$(this).remove();
-			}
-		});
-	});
-	return false;
-});

@@ -151,6 +151,20 @@ $(function(){
 		}
 		this.value=val.replace(/[^\-0-9.]/, '');
 	});
+	$('.docs').live('click', function() {
+		var $this=$(this);
+		var page=$this.attr('page');
+		$.get(page, function(html) {
+			$(html).dialog({
+				'modal':true,
+				'width':'90%',
+				'close':function() {
+					$(this).remove();
+				}
+			});
+		});
+		return false;
+	});
 });
 var jsvars={
 	'datatables':{}
