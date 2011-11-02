@@ -98,7 +98,7 @@ $plugin=array(
 	'triggers' => array(
 		'initialisation-completed' => 'Products_addToCart'
 	),
-	'version' => '27'
+	'version' => '28'
 );
 // }
 
@@ -622,7 +622,7 @@ class Product{
 		$iid=0;
 		if ($vals['image_default']) {
 			$image=kfmImage::getInstance($iid);
-			if ($image->exists()) {
+			if ($image && $image->exists()) {
 				return $vals['image_default'];
 			}
 		}
