@@ -730,7 +730,7 @@ var Gallery={
 			link+='>'+i+'</a>';
 			links.push(link);
 		}
-		$nav.find('td.pagelinks').html(links.join(''));
+		$nav.find('td.pagelinks').html(links.join('')+'<br style="clear:both"/>');
 	}
 };
 

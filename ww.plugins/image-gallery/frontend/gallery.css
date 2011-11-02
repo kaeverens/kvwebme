@@ -3,6 +3,9 @@
 	position:relative;
 	overflow:hidden;
 }
+#gallery-container .images-container img{
+	cursor:pointer;
+}
 #slider{
 	position:absolute;
 	top:0;
@@ -26,22 +29,25 @@
 	cursor:pointer;
 }
 #big-prev-link,#prev-link{
-	left:-35px;
 	background: url('/ww.plugins/image-gallery/frontend/arrow-left.png')
 		center no-repeat;
 	opacity:.7;
+}
+#big-prev-link{
+	left:-35px;
 }
 #big-prev-link:hover,#prev-link:hover{
 	opacity:1;
 }
 #next-link,#big-next-link{
-	right:-35px;
-	background: url('/ww.plugins/image-gallery/frontend/arrow-right.png')
-		center no-repeat;
+	background: url('/ww.plugins/image-gallery/frontend/arrow-right.png') center no-repeat;
 	opacity:.7;
 }
 #next-link:hover,#big-next-link:hover{
 	opacity:1;
+}
+#big-next-link{
+	right:-35px;
 }
 .image-selected{
 	border:2px solid #000;
@@ -105,11 +111,16 @@
 #image-gallery-wrapper{
 	text-align:center;
 }
+#image-gallery-nav table{
+	margin:0 auto;
+}
 #image-gallery-nav td{
 	vertical-align:middle;
 	height:35px;
 }
 #image-gallery-nav .pagelinks a{
+	display:block;
+	float:left;
 	padding:5px 7px;
 	margin:0 8px;
 	color:#333;

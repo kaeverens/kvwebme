@@ -27,7 +27,7 @@ require_once KFM_BASE_PATH.'/initialise.php';
 function ImageGallery_nav($params, $smarty) {
 	return '<div id="image-gallery-nav"><table>'
 		.'<tr><td style="text-align:left;"><div id="prev-link"/></td>'
-		.'<td class="pagelinks" style="width:90%;text-align:center"></td>'
+		.'<td class="pagelinks"></td>'
 		.'<td style="text-align:right"><div id="next-link"/></td></tr>'
 		.'</table></div>';
 }
