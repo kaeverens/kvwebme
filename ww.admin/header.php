@@ -99,8 +99,7 @@ WW_addCSS('/ww.admin/theme/admin.css');
 WW_addInlineScript('var sessid="'.session_id().'";');
 foreach ($PLUGINS as $pname=>$p) {
 	if (file_exists(SCRIPTBASE.'/ww.plugins/'.$pname.'/admin/admin.css')) {
-		echo '<link rel="stylesheet" href="/ww.plugins/'.$pname
-			.'/admin/admin.css"/>';
+		WW_addCSS('/ww.plugins/'.$pname.'/admin/admin.css');
 	}
 }
 echo '</head><body';
