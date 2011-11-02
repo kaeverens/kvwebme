@@ -406,5 +406,5 @@ file_put_contents(
 	@$vars['gallery-template']
 );
 ww_addScript('/ww.plugins/image-gallery/admin/admin.js');
-$c.='<link rel="stylesheet" href="/ww.plugins/image-gallery/admin/admin.css" />';
+WW_addCSS('/ww.plugins/image-gallery/admin/admin.css');
 // }

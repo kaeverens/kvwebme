@@ -50,9 +50,10 @@ a[href^=http]{background:url("/ww.admin/theme/10x10_external.png") no-repeat rig
 .left-menu b{display:none}
 .left-menu h4{margin:20px 0 0 0;padding:0;border-bottom:2px solid #999;font-weight:bold;background:#333}
 .left-menu h5{margin:10px 0 0 0;padding:0;border-bottom:1px solid #ddd;font-style:italic;background:#eee}
-.left-menu ul{margin:0;padding:0 0 0 20px }
-.left-menu li{margin:0;padding:0;display:inline}
 .left-menu span{display:block;text-transform:capitalize;color:#666;margin:0;padding:3px 0 3px 10px}
+.left-menu .jstree a{
+	display:inline-block;
+}
 .has-left-menu{
 	position:absolute;
 	right:5px;

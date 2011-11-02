@@ -93,10 +93,10 @@ WW_addScript('/ww.admin/j/admin.js');
 echo '<!doctype html>
 <html><head><title>'.__('WebME admin area').'</title>';
 echo Core_getJQueryScripts()
-	.'<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'
-	.'<link rel="stylesheet" href="/j/cluetip/jquery.cluetip.css"/>'
-	.'<link rel="stylesheet" href="/ww.admin/theme/admin.css"/>'
-	.'<script>var sessid="'.session_id().'";</script>';
+	.'<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>';
+WW_addCSS('/j/cluetip/jquery.cluetip.css');
+WW_addCSS('/ww.admin/theme/admin.css');
+WW_addInlineScript('var sessid="'.session_id().'";');
 foreach ($PLUGINS as $pname=>$p) {
 	if (file_exists(SCRIPTBASE.'/ww.plugins/'.$pname.'/admin/admin.css')) {
 		echo '<link rel="stylesheet" href="/ww.plugins/'.$pname

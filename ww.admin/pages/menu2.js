@@ -1,4 +1,5 @@
 $(function(){
+	$.jstree._themes='/j/jstree/themes/';
 	$('#pages-wrapper')
 		.jstree({
 			'contextmenu': {

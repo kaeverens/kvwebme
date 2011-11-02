@@ -26,7 +26,7 @@ echo '</div>';
 echo '<div class="has-left-menu">'
 	,'<iframe id="page-form-wrapper" name="page-form-wrapper" '
 	,'src="/ww.admin/pages/form.php?id=',$id,'"></iframe>'
-	,'</div>'
-	,'<script>window.page_menu_currentpage=',$id,';</script>'
-	,'<style type="text/css">@import "pages/css.css";</style>';
+	,'</div>';
+WW_addInlineScript('window.page_menu_currentpage='.$id.';');
+WW_addCSS('/ww.admin/pages/css.css');
 require 'footer.php';

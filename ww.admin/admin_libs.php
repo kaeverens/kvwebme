@@ -246,7 +246,10 @@ function WW_getScripts() {
 			);
 		}
 	}
-	return '<script src="'.join('"></script><script src="', $external).'"></script>'
+	$external=count($external)
+		?'<script src="'.join('"></script><script src="', $external).'"></script>'
+		:'';
+	return $external
 		.'<script src="/ww.admin/js.php/md5='.$md5.'"></script>'
 		.$inline;
 }

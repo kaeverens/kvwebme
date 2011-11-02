@@ -22,9 +22,9 @@ function Core_getJQueryScripts() {
 			$h.'ui/'.$jquery_versions[1].'/themes/base/jquery-ui.css'
 		);
 	}
+	WW_addScript('/j/jquery.tooltip.min.js'); // REMOVE @ jQuery-UI 1.9
 	return '<script src="'.$jurls[0].'"></script>'
 		.'<script src="'.$jurls[1].'"></script>'
-		.'<script src="/j/jquery.tooltip.min.js"></script>' // REMOVE @ jQuery-UI 1.9
 		.(isset($DBVARS['disable-jqueryui-css'])
 			?''
 			:'<link href="'.$jurls[2].'" rel="stylesheet" />'
