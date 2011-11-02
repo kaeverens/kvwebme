@@ -68,3 +68,8 @@ function Products_soldAmount2($params, $smarty) {
 	}
 	return str_replace('%d', $sold, $params['many']);
 }
+function Products_qrCode2($params, $smarty) {
+//	var_dump($smarty);
+	return 'test';
+}
+

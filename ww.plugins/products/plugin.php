@@ -92,6 +92,9 @@ $plugin=array(
 			),
 			'PRODUCTS_AMOUNT_SOLD' => array(
 				'function' => 'Products_soldAmount'
+			),
+			'PRODUCTS_QRCODE' => array(
+				'function' => 'Products_qrCode'
 			)
 		)
 	),
@@ -383,6 +386,10 @@ function Products_priceSale($params, $smarty) {
 function Products_soldAmount($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
 	return Products_soldAmount2($params, $smarty);
+}
+function Products_qrCode($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_qrCode($params, $smarty);
 }
 
 /**
