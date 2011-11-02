@@ -1,0 +1,12 @@
+#submit-row{
+	position:fixed;
+	left:0;
+	bottom:0;
+	right:0;
+	background:#fff;
+	opacity:.8;
+	padding:5px;
+}
+#pages-tabs{
+	margin-bottom:60px;
+}
