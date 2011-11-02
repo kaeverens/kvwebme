@@ -214,15 +214,41 @@ function WW_getCSS() {
   * @return string the HTML
   */
 function WW_getScripts() {
-	global $scripts,$scripts_inline;
+	global $scripts, $scripts_inline;
 	if (!count($scripts)) {
 		return '';
 	}
 	$inline=count($scripts_inline)
 		?'<script>'.join('', $scripts_inline).'</script>'
 		:'';
-	return '<script src="'.join('"></script><script src="', $scripts)
-		.'"></script>'.$inline;
+	$external=array();
+	$local=array();
+	$latest=0;
+	foreach ($scripts as $script) {
+		if (strpos($script, '/')!==0) {
+			$external[]=$script;
+		}
+		else {
+			$local[]=$script;
+			if (filemtime($_SERVER['DOCUMENT_ROOT'].$script)>$latest) {
+				$latest=filemtime($_SERVER['DOCUMENT_ROOT'].$script);
+			}
+		}
+	}
+	$md5=md5(join('|', $local).'|'.$latest);
+	if (!file_exists(USERBASE.'/ww.cache/admin/'.$md5)) {
+		@mkdir(USERBASE.'/ww.cache/admin');
+		foreach ($local as $file) {
+			file_put_contents(
+				USERBASE.'/ww.cache/admin/'.$md5,
+				file_get_contents($_SERVER['DOCUMENT_ROOT'].$file),
+				FILE_APPEND
+			);
+		}
+	}
+	return '<script src="'.join('"></script><script src="', $external).'"></script>'
+		.'<script src="/ww.admin/js.php/md5='.$md5.'"></script>'
+		.$inline;
 }
 
 /**
