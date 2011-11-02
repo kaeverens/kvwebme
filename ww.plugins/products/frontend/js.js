@@ -98,7 +98,8 @@ $(function(){
 		$.post('/a/f=nothing',
 			$this.serializeArray(),
 			function(){
-				document.location=document.location.toString();
+				document.location=document.location.toString()
+					.replace('/showcart', '')+'/showcart';
 			}
 		);
 		return false;

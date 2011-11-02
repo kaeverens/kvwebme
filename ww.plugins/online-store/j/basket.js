@@ -146,5 +146,24 @@ function os_setup_basket_events(){
 	$('.amt .amt-del').click(os_remove_all);
 	$('.onlinestore-save-list').click(OnlineStore_saveList);
 	$('.onlinestore-load-list').click(OnlineStore_loadList);
+	$('.online-store-basket-widget.slidedown .slidedown-header')
+		.click(function() {
+			var $this=$(this);
+			var $wrapper=$this.closest('.slidedown').find('.slidedown-wrapper');
+			if ($wrapper.is(':visible')) {
+				$wrapper.hide('blind');
+				return;
+			}
+			$wrapper
+				.css({
+					'width':$this.outerWidth(),
+					'top':$this.position().top+$this.height(),
+					'left':$this.position().left
+				})
+				.show('blind');
+		});
+	if (/\/showcart/.test(document.location.toString())) {
+		$('.online-store-basket-widget.slidedown .slidedown-header').click();
+	}
 }
 $(os_setup_basket_events);

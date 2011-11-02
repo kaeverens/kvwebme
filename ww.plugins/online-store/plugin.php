@@ -245,11 +245,20 @@ function OnlineStore_numToPrice($val, $sym=true, $rounded=false) {
 	*/
 function OnlineStore_showBasketWidget($vars=null) {
 	global $DBVARS;
-	$html='<div class="online-store-basket-widget">';
+	$slidedown=@$vars->slidedown;
+	$html='<div class="online-store-basket-widget'
+		.($slidedown?' slidedown':'')
+		.'">';
+	if ($slidedown) {
+		$html.='<div class="slidedown-header">Your Items</div>'
+			.'<div class="slidedown-wrapper">';
+		WW_addCSS('/ww.plugins/online-store/basket.css');
+	}
+	// { basket body
 	if (!isset($_SESSION['online-store'])) {
 		$_SESSION['online-store']=array('items'=>array(),'total'=>0);
 	}
-	if (isset($vars->template) && $vars->template) {
+	if (@$vars->template) {
 		$t=$vars->template;
 		$t=str_replace('{{ONLINESTORE_NUM_ITEMS}}', OnlineStore_getNumItems(), $t);
 		if (!@$_SESSION['onlinestore_checkout_page']) {
@@ -315,6 +324,10 @@ function OnlineStore_showBasketWidget($vars=null) {
 		if (count(@$_SESSION['online-store']['items'])) {
 			$html.=' | <a href="javascript:;" class="onlinestore-save-list">save</a>';
 		}
+		$html.='</div>';
+	}
+	// }
+	if ($slidedown) {
 		$html.='</div>';
 	}
 	$html.='</div>';

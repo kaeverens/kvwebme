@@ -16,9 +16,16 @@ if (!Core_isAdmin()) {
 	die('access denied');
 }
 
+// { slide-down
+echo '<strong>Slide-down cart</strong><br/>'
+	.'<input type="checkbox" name="slidedown"';
+if (@$_REQUEST['slidedown']) {
+	echo ' checked="checked"';
+}
+echo '/><br/>';
+// }
 // { template
-$template=isset($_REQUEST['template'])?$_REQUEST['template']:'';
 echo '<strong>Template (leave blank to use a default one)</strong><br />'
-	.'<textarea class="small" name="template">'.htmlspecialchars($template)
-	.'</textarea>';
+	.'<textarea class="small" name="template">'
+	.htmlspecialchars(@$_REQUEST['template']).'</textarea>';
 // }

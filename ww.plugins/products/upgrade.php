@@ -188,6 +188,8 @@ if ($version==25) { // remove some silly ideas that are better done differently
 	dbQuery('alter table products drop voucher_value');
 	dbQuery('alter table products drop stock_amt');
 	dbQuery('alter table products drop sold_amt');
+	dbQuery('alter table products_types drop stock_management');
+	dbQuery('alter table products_types add stock_control smallint default 0');
 	$version=26;
 }
 if ($version==26) { // update expiry dates

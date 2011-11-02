@@ -251,7 +251,7 @@ function Products_typeEdit(id) {
 		$('<table class="wide">'
 			+'<tr><th>Name</th><td id="pte1"></td></tr>'
 			+'<tr><th>Are products of this type for sale?</th>'
-			+'<td id="pte2"></td></tr><tr id="pte4"/>'
+			+'<td id="pte2"></td></tr><tr id="pte4"/><tr id="pte5"/>'
 			+'<tr><th>If no image is uploaded for the product, what image should '
 			+'be shown?</th><td id="pte3"></td></tr>'
 			+'</table>'
@@ -268,9 +268,10 @@ function Products_typeEdit(id) {
 				tdata.is_for_sale=$(this).val();
 				if (+tdata.is_for_sale) {
 					addIsVoucher();
+					addStockControl();
 				}
 				else {
-					$('#pte4').empty();
+					$('#pte4,#pte5').empty();
 				}
 			})
 			.val(tdata.is_for_sale)
@@ -299,6 +300,13 @@ function Products_typeEdit(id) {
 					}
 				})
 				.change();
+		}
+		function addStockControl() {
+			$('<th>Use Stock Control?</th><td><select>'
+				+'<option value="0">No</option><option value="1">Yes</option>'
+				+'</select></td></tr>')
+				.appendTo('#pte5');
+			$('#pte5 select').val(tdata.stock_control);
 		}
 		if (+tdata.is_for_sale) {
 			addIsVoucher();

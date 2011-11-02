@@ -551,24 +551,16 @@ function Products_reviews($params, $smarty) {
 	$product = $smarty->_tpl_vars['product'];
 	$productid = (int)$product->id;
 	$c='';
-	$numReviews
-		= dbOne(
-			'select count(id) 
-			from products_reviews 
-			where product_id='.$productid,
-			'count(id)'
-		);
+	$numReviews=dbOne(
+		'select count(id) from products_reviews where product_id='.$productid,
+		'count(id)'
+	);
 	if ($numReviews) {
-		$reviews 
-			= dbAll(
-				'select * 
-				from products_reviews  
-				where product_id ='.$productid
-			);
-		$query = 'select avg(rating), product_id ';
-		$query.= 'from products_reviews ';
-		$query.= 'where product_id='.$productid;
-		$query.= ' group by product_id';
+		$reviews=dbAll(
+			'select * from products_reviews where product_id='.$productid
+		);
+		$query = 'select avg(rating),product_id from products_reviews '
+			.'where product_id='.$productid.' group by product_id';
 		$average = dbOne($query, 'avg(rating)');
 		$c.= '<div id="reviews_display">';
 		$c.= '<div id="average'.$productid.'">';
@@ -580,13 +572,10 @@ function Products_reviews($params, $smarty) {
 		$c.= ' was '.$average.'<br/><br/>';
 		$c.='</div>';
 		foreach ($reviews as $review) {
-			$name
-				= dbOne(
-					'select name 
-					from user_accounts 
-					where id='.(int)$review['user_id'], 
-					'name'
-				);
+			$name=dbOne(
+				'select name from user_accounts where id='.(int)$review['user_id'], 
+				'name'
+			);
 			$c.= '<div id="'.$review['id'].'">';
 			$date = $review['cdate'];
 			$date = substr_replace($date, '', strpos($date, ' '));
@@ -598,57 +587,35 @@ function Products_reviews($params, $smarty) {
 			$c.= ($body).'<br/>';
 			if (Core_isAdmin()|| $userid==$review['user_id']) {
 				// { Edit Review Link
-				$timeReviewMayBeEditedUntil
-					= dbOne(
-						'select 
-						date_add('
-						.'\''.$review['cdate'].'\''
-						.', interval 15 minute
-						)
-						as last_edit_time',
-						'last_edit_time'
-					);
-				$reviewMayBeEdited
-					= dbOne(
-						'select \''.$timeReviewMayBeEditedUntil.'\'>now()
-						as can_edit_review',
-						'can_edit_review'
-					);
+				$timeReviewMayBeEditedUntil=dbOne(
+					'select date_add("'.$review['cdate'].'", interval 15 minute) '
+					.'as last_edit_time',
+					'last_edit_time'
+				);
+				$reviewMayBeEdited=dbOne(
+					'select "'.$timeReviewMayBeEditedUntil.'">now() as can_edit_review',
+					'can_edit_review'
+				);
 				if ($reviewMayBeEdited) {
-					$c.= '<a href="javascript:;"';
-					$c.= 'onClick="';
-					$c.= 'edit_review('.
-							$review['id'].', '
-							.'\''.addslashes($body).'\''
-							.', '.$review['rating']
-							.', \''.addslashes($review['cdate']).'\'
-						);">';
-					$c.= 'edit</a> ';
+					$c.='<a href="javascript:;" onClick="edit_review('.$review['id']
+						.', \''.addslashes($body).'\', '.$review['rating'].', \''
+						.addslashes($review['cdate']).'\');">edit</a> ';
 				}
 				// }
 				// { Delete Review Link
-				$c.= '<a';
-				$c.= ' href="javascript:;" ';
-				$c.= 'onClick=
-					"delete_review('.
-						$review['id'].
-						', '.$review['user_id'].', '
-						.$productid
-					.');"';
-				$c.='>[x]';
-				$c.= '</a><br/>';
+				$c.= '<a href="javascript:;" onClick="delete_review('
+					.$review['id'].', '.$review['user_id'].', '.$productid
+					.');">[x]</a><br/>';
 				// }
 			}
 			$c.= '<br/></div>';
 		}
 		$c.= '</div>';
-		$userHasNotReviewedThisProduct
-			= !dbOne(
-				'select id
-				from products_reviews
-				where user_id='.$userid.' and product_id='.$productid,
-				'id'
-			);
+		$userHasNotReviewedThisProduct=!dbOne(
+			'select id from products_reviews where user_id='.$userid
+			.' and product_id='.$productid,
+			'id'
+		);
 		if (isset($_SESSION['userdata']) && $userHasNotReviewedThisProduct) {
 			$c.= Products_submitReviewForm($productid, $userid);
 		}

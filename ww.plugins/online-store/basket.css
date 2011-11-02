@@ -1,0 +1,17 @@
+.online-store-basket-widget.slidedown{
+	position:relative;
+}
+.online-store-basket-widget.slidedown .slidedown-header{
+	z-index:1;
+	padding-left:50px;
+	background:url(i/basket.gif) no-repeat left top;
+	min-height:50px;
+}
+.online-store-basket-widget.slidedown .slidedown-wrapper{
+	position:absolute;
+	top:0;
+	left:0;
+	display:none;
+	background:#fff;
+	z-index:0;
+}

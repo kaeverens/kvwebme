@@ -501,7 +501,8 @@ if (isset($PLUGINS['online-store'])) {
 			'_not_discountable' => array(
 				'Not Discountable', 'Options'=>array('No', 'Yes')
 			),
-			'_sold_amt' => 'Amount Sold'
+			'_sold_amt' => 'Amount Sold',
+			'_stock_amt' => 'Amount in Stock'
 		);
 	if (dbOne(
 		'select is_voucher from products_types where id='.$pdata['product_type_id'],
