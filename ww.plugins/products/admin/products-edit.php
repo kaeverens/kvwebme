@@ -192,6 +192,9 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 				if ($v && $_REQUEST['products-relations-product'][$k]) {
 					$rid=(int)$v;
 					$pid=(int)$_REQUEST['products-relations-product'][$k];
+					if ($pid==$id) { // don't relate a product to itself
+						continue;
+					}
 					dbQuery(
 						'delete from products_relations where from_id='.$id
 						.' and to_id='.$pid.' and relation_id='.$rid
