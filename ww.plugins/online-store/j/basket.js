@@ -151,7 +151,7 @@ function os_setup_basket_events(){
 			var $this=$(this);
 			var $wrapper=$this.closest('.slidedown').find('.slidedown-wrapper');
 			if ($wrapper.is(':visible')) {
-				$wrapper.hide('blind');
+				$wrapper.hide($wrapper.attr('slidedown')||'blind');
 				return;
 			}
 			$wrapper
@@ -160,7 +160,7 @@ function os_setup_basket_events(){
 					'top':$this.position().top+$this.height(),
 					'left':$this.position().left
 				})
-				.show('blind');
+				.show($wrapper.attr('slidedown')||'blind');
 		});
 	if (/\/showcart/.test(document.location.toString())) {
 		$('.online-store-basket-widget.slidedown .slidedown-header').click();

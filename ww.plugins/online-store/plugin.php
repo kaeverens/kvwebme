@@ -251,7 +251,8 @@ function OnlineStore_showBasketWidget($vars=null) {
 		.'">';
 	if ($slidedown) {
 		$html.='<div class="slidedown-header">Your Items</div>'
-			.'<div class="slidedown-wrapper">';
+			.'<div class="slidedown-wrapper" slidedown="'
+			.@$vars->slidedown_animation.'">';
 		WW_addCSS('/ww.plugins/online-store/basket.css');
 	}
 	// { basket body

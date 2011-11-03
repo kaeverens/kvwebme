@@ -23,6 +23,20 @@ if (@$_REQUEST['slidedown']) {
 	echo ' checked="checked"';
 }
 echo '/><br/>';
+echo '<strong>Slide animation</strong><br />'
+	.'<select name="slidedown_animation">';
+$arr=array(
+	'blind', 'bounce', 'clip', 'drop', 'explode', 'fold', 'highlight',
+	'puff', 'pulsat', 'scale', 'shake', 'size', 'slide'
+);
+foreach ($arr as $v) {
+	echo '<option';
+	if ($v==@$_REQUEST['slidedown_animation']) {
+		echo ' selected="selected"';
+	}
+	echo '>'.$v.'</option>';
+}
+echo '</select><br />';
 // }
 // { template
 echo '<strong>Template (leave blank to use a default one)</strong><br />'
