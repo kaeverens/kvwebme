@@ -1,4 +1,5 @@
 $(function(){
+	$.jstree._themes='/j/jstree/themes/';
 	function save(){
 		$.post('/a/p=products/f=adminCategoryEdit/id='+window.selected_cat, {
 			"name"   :$('#pc_edit_name').val(),

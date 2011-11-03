@@ -140,7 +140,7 @@ function Products_showQrCode() {
 	}
 	require_once 'phpqrcode.php';
 	$fname=USERBASE.'/ww.cache/products/qr'.$pid;
-	if (!file_exists($fname)) {
+	if (1 || !file_exists($fname)) {
 		@mkdir(USERBASE.'/ww.cache/products');
 		QRcode::png(
 			'http://'.$_SERVER['HTTP_HOST'].$product->getRelativeUrl(),

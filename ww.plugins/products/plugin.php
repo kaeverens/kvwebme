@@ -579,7 +579,7 @@ class Product{
 			if ($pid) {
 				$page = Page::getInstance($pid);
 				$this->relativeUrl=$page->getRelativeUrl()
-					.'?product_id='.$this->id;
+					.'/'.urlencode($this->name);
 				return $this->relativeUrl;
 			}
 		}
