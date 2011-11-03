@@ -126,3 +126,18 @@ function OnlineStore_adminChangeOrderStatus() {
 	}
 	return array('ok'=>1);
 }
+function OnlineStore_adminRedeemVoucher() {
+	$oid=(int)@$_REQUEST['oid'];
+	$pid=@$_REQUEST['pid'];
+	$order=dbRow('select * from online_store_orders where id='.$oid);
+	$items=json_decode($order['items'], true);
+	$item=$items[$pid];
+	$items[$pid]['voucher_redeemed']=1;
+	$order['items']=json_encode($items);
+	dbQuery(
+		'update online_store_orders set items="'.addslashes($order['items'])
+		.'" where id='.$oid
+	);
+	echo '<p>This voucher has been marked as Redeemed.</p>';
+	exit;
+}

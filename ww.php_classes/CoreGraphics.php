@@ -14,7 +14,13 @@ class CoreGraphics{
 			break; // }
 			default: // { fallback to GD
 				$extFrom=CoreGraphics::getType($from);
-				$extTo  =CoreGraphics::getType($to);
+				switch (preg_replace('/.*\./', '', $to)) {
+					case 'png': // {
+						$extTo='png';
+					break; // }
+					default:
+						$extTo='jpeg';
+				}
 				$arr=getimagesize($from);
 				if ($arr===false) {
 					return false;
@@ -45,7 +51,6 @@ class CoreGraphics{
 			break; // }
 			default: // { fallback to GD
 				$extFrom=CoreGraphics::getType($from);
-				$extTo  =CoreGraphics::getType($to);
 				switch (preg_replace('/.*\./', '', $to)) {
 					case 'png': // {
 						$extTo='png';

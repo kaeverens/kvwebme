@@ -730,6 +730,7 @@ class ProductType{
 		}
 		$this->data_fields=json_decode($r['data_fields']);
 		$this->meta=json_decode(isset($r['meta'])?$r['meta']:'{}');
+		@mkdir(USERBASE.'/ww.cache/products/templates', 0777, true);
 		$tpl_cache=USERBASE.'/ww.cache/products/templates/types_multiview_'.$v
 			.'_header';
 		if (!file_exists($tpl_cache)) {

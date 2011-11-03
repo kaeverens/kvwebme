@@ -70,7 +70,7 @@ function OnlineStore_processOrder($id, $order=false) {
 	);
 	// }
 	// { handle item-specific stuff (vouchers, stock control)
-	foreach ($items as $item) {
+	foreach ($items as $item_index=>$item) {
 		if (!$item->id) {
 			continue;
 		}
@@ -78,11 +78,40 @@ function OnlineStore_processOrder($id, $order=false) {
 		$pt=ProductType::getInstance($p->vals['product_type_id']);
 		if ($pt->is_voucher) {
 			$html=$pt->voucher_template;
+			// { common replaces
+			$html=str_replace(
+				'{{$_name}}',
+				$p->name,
+				$html
+			);
 			$html=str_replace(
 				'{{$description}}',
 				$p->vals['description'],
 				$html
 			);
+			$html=str_replace(
+				'{{$_recipient}}',
+				$form_vals->Email,
+				$html
+			);
+			$html=str_replace(
+				'{{$_amount}}',
+				$p->vals['online-store']['_voucher_value'],
+				$html
+			);
+			// }
+			if (strpos($html, '{{PRODUCTS_QRCODE}}')!==false) { // qr code
+				$url='http://'.$_SERVER['HTTP_HOST'].'/a/p=online-store/f=checkQrCode/'
+					.'oid='.$order['id'].'/pid='.$item_index.'/md5='
+					.md5($order['invoice']);
+				$html=str_replace(
+					'{{PRODUCTS_QRCODE}}',
+					'<img src="http://'.$_SERVER['HTTP_HOST']
+					.'/a/p=online-store/f=getQrCode/b64='
+					.urlencode(base64_encode($url)).'"/>',
+					$html
+				);
+			}
 			mail(
 				$form_vals->Email,
 				'['.str_replace('www.', '', $_SERVER['HTTP_HOST']).'] voucher',
