@@ -115,7 +115,7 @@ function Form_validate(&$vars, &$form_fields) {
 		}
 	}
 	// { check the captcha
-	if ($vars['forms_captcha_required']) {
+	if (@$vars['forms_captcha_required']) {
 		require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/recaptcha.php';
 		if (!isset($_REQUEST['recaptcha_challenge_field'])) {
 			$errors[]='You must fill in the captcha (image text).';
@@ -135,10 +135,15 @@ function Form_validate(&$vars, &$form_fields) {
 	}
 	// }
 	// { check the From field
-	$from_field=preg_replace('/[^a-zA-Z]/', '', $vars['forms_replyto']);
+	$from_field=preg_replace('/[^a-zA-Z]/', '', @$vars['forms_replyto']);
 	$from=isset($_REQUEST[$from_field])?$_REQUEST[$from_field]:'';
 	if ($from == '') {
-		$errors[]='please fill in the "'.$vars['forms_replyto'].'" field.';
+		if (!(@$vars['forms_replyto'])) {
+			$errors[]='no replyto field has been set up by the admin!';
+		}
+		else {
+			$errors[]='please fill in the "'.$vars['forms_replyto'].'" field.';
+		}
 	}
 	// }
 	return $errors;

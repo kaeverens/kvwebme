@@ -379,7 +379,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 function Form_getValidationRules($vars, $form_fields=array()) {
 	global $recipientEmail;
 	$rulesCollection=array();
-	$from_field=preg_replace('/[^a-zA-Z]/', '', $vars['forms_replyto']);
+	$from_field=preg_replace('/[^a-zA-Z]/', '', @$vars['forms_replyto']);
 	if (is_array($form_fields)) {
 		foreach ($form_fields as $r2) {
 			$rules=array();
