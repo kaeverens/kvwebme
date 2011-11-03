@@ -193,10 +193,18 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 					$rid=(int)$v;
 					$pid=(int)$_REQUEST['products-relations-product'][$k];
 					dbQuery(
+						'delete from products_relations where from_id='.$id
+						.' and to_id='.$pid.' and relation_id='.$rid
+					);
+					dbQuery(
 						'insert into products_relations set from_id='.$id
 						.',to_id='.$pid.',relation_id='.$rid
 					);
 					if (!$rls[$rid]['one_way']) {
+						dbQuery(
+							'delete from products_relations where from_id='.$pid
+							.' and to_id='.$id.' and relation_id='.$rid
+						);
 						dbQuery(
 							'insert into products_relations set from_id='.$pid
 							.',to_id='.$id.',relation_id='.$rid
@@ -236,9 +244,6 @@ echo '<a href="plugin.php?_plugin=products&amp;_page=products-edit">Add a P'
 	.'roduct</a>'
 	.' <a href="plugin.php?_plugin=products&amp;_page=import">Import Products'
 	.'</a>';
-// { form header
-echo '<form id="products-form" action="'.$_url.'&amp;id='.$id.'" '
-	.'method="post" onsubmit="products_getData();">';
 echo '<input type="hidden" name="action" value="save" />';
 echo '<div id="tabs"><ul>'
 	.'<li><a href="#main-details">Main Details</a></li>'
