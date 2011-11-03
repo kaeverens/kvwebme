@@ -69,7 +69,12 @@ function Products_soldAmount2($params, $smarty) {
 	return str_replace('%d', $sold, $params['many']);
 }
 function Products_qrCode2($params, $smarty) {
-//	var_dump($smarty);
+#	require_once dirname(__FILE__).'/../phpqrcode.php';
+	if (@$emarty->_tpl_vars['isvoucher']==1) {
+	}
+	else {
+		return '<img src="/a/p=products/f=showQrCode/pid='
+			.$smarty->_tpl_vars['product']->id.'"/>';
+	}
 	return 'test';
 }
-

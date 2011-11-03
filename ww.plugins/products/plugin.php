@@ -389,7 +389,7 @@ function Products_soldAmount($params, $smarty) {
 }
 function Products_qrCode($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
-	return Products_qrCode($params, $smarty);
+	return Products_qrCode2($params, $smarty);
 }
 
 /**

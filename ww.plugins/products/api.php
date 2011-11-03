@@ -126,6 +126,37 @@ function Products_reviewUpdate() {
 		'total'=>$total
 	);
 }
+
+/**
+	* show an image of a QR code leading to a product
+	*
+	* @return null
+	*/
+function Products_showQrCode() {
+	$pid=(int)$_REQUEST['pid'];
+	$product=Product::getInstance($pid);
+	if (!$product) {
+		redirect('/i/blank.gif');
+	}
+	require_once 'phpqrcode.php';
+	$fname=USERBASE.'/ww.cache/products/qr'.$pid;
+	if (!file_exists($fname)) {
+		@mkdir(USERBASE.'/ww.cache/products');
+		QRcode::png(
+			'http://'.$_SERVER['HTTP_HOST'].$product->getRelativeUrl(),
+			$fname
+		);
+	}
+	header('Content-type: image/png');
+	header('Cache-Control: max-age=2592000, public');
+	header('Expires-Active: On');
+	header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
+	header('Pragma:');
+	header('Content-Length: ' . filesize($fname));
+	readfile($fname);
+	exit;
+}
+
 /**
 	* get details about a specific product type
 	*
