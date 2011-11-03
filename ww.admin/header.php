@@ -61,6 +61,7 @@ function Core_adminMenuShow($items, $name=false, $prefix='', $depth=0) {
 }
 
 header('Content-type: text/html; Charset=utf-8');
+define('IN_ADMIN', 1);
 date_default_timezone_set('Eire');
 require_once dirname(__FILE__).'/../ww.incs/common.php';
 // { if not logged in, show login page

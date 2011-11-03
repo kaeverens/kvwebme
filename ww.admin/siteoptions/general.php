@@ -24,7 +24,7 @@ if ($action=='Save') {
 		unset($DBVARS['disable-hidden-sitemap']);
 	}
 	if (@$_REQUEST['disable-jqueryui-css']) {
-		$DBVARS['disable-jqueryui-css']=1;
+		$DBVARS['disable-jqueryui-css']=(int)$_REQUEST['disable-jqueryui-css'];
 	}
 	else {
 		unset($DBVARS['disable-jqueryui-css']);
@@ -208,14 +208,19 @@ echo '<tr '.$display.' class="maintenance-message">
 </tr>';
 // }
 // { disable jquery-ui css
+$values=array(
+	'Load jQuery UI CSS normally', 'Load only in admin area',
+	'Load only in front-end', 'Do not load at all'
+);
 echo '<tr><th>'.__('Don\'t load the jQuery-UI CSS').'</th><td>'
-	.'<select name="disable-jqueryui-css"><option value="0">'.__('No')
-	.'</option>';
-echo '<option value="1"';
-if (@$DBVARS['disable-jqueryui-css']) {
-	echo ' selected="selected"';
+	.'<select name="disable-jqueryui-css">';
+foreach ($values as $k=>$v) {
+	echo '<option value="'.$k.'"';
+	if ($k==(int)@$DBVARS['disable-jqueryui-css']) {
+		echo ' selected="selected"';
+	}
+	echo '>'.$v.'</option>';
 }
-echo '>'.__('Yes').'</option>';
 echo '</select></td></tr>';
 // }
 echo '</table><input type="hidden" name="action" value="Save"/>'

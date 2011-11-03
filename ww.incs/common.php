@@ -23,12 +23,13 @@ function Core_getJQueryScripts() {
 		);
 	}
 	WW_addScript('/j/jquery.tooltip.min.js'); // REMOVE @ jQuery-UI 1.9
+	$uicssbits=(int)@$DBVARS['disable-jqueryui-css'];
+	$uicss=defined('IN_ADMIN')
+		?($uicssbits&2 ? '':'<link href="'.$jurls[2].'" rel="stylesheet" />')
+		:($uicssbits&1 ? '':'<link href="'.$jurls[2].'" rel="stylesheet" />');
 	return '<script src="'.$jurls[0].'"></script>'
 		.'<script src="'.$jurls[1].'"></script>'
-		.(isset($DBVARS['disable-jqueryui-css'])
-			?''
-			:'<link href="'.$jurls[2].'" rel="stylesheet" />'
-		);
+		.$uicss;
 }
 /**
 	* convert a MySQL date to a human-readable one
