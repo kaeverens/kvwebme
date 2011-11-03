@@ -75,10 +75,10 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 			$vals_wrapper_end='</table>';
 			// }
 	}
-	if ($vars['forms_template'] && strpos($vars['forms_template'], '{{')===false) {
+	if (@$vars['forms_template'] && strpos($vars['forms_template'], '{{')===false) {
 		$vars['forms_template']='';
 	} // }}
-	if (!$vars['forms_template']||$vars['forms_template']=='&nbsp;') {
+	if (!(@$vars['forms_template'])||$vars['forms_template']=='&nbsp;') {
 		$c.='<div>'.$vals_wrapper_start;
 	}
 	$required=array();
