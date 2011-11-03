@@ -288,17 +288,11 @@ function Products_adminProductDatafieldsGet() {
 	*/
 function Products_adminProductsList() {
 	$ps=dbAll('select id,name from products order by name');
-	$end=count($ps);
-	echo "product_names=[\n";
-	for ($i=0;$i<$end;++$i) {
-		echo '	["'.addslashes($ps[$i]['name']).'",'.$ps[$i]['id'].']';
-		if ($i<$end-1) {
-			echo ',';
-		}
-		echo "\n";
+	$arr=array();
+	foreach ($ps as $v) {
+		$arr[$v['id']]=$v['name'];
 	}
-	echo "];";
-	exit;
+	return $arr;
 }
 /**
 	* delete a product type
