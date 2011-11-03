@@ -80,7 +80,7 @@ $(function(){
 			if (CKEDITOR.instances['p-description']) {
 				CKEDITOR.remove(CKEDITOR.instances['p-description']);
 			}
-			$('#p-description').val(ret.description).ckeditor();
+			$('#p-description').val(ret.description).ckeditor(CKEditor_config);
 			$('#p-author').val(ret.author);
 		});
 	});

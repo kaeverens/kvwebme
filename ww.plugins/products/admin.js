@@ -346,15 +346,15 @@ function Products_typeEdit(id) {
 		$('<textarea>')
 			.val(tdata.multiview_template)
 			.appendTo('#ts1')
-			.ckeditor();
+			.ckeditor(CKEditor_config);
 		$('<textarea>')
 			.val(tdata.multiview_template_header)
 			.appendTo('#ts2')
-			.ckeditor();
+			.ckeditor(CKEditor_config);
 		$('<textarea>')
 			.val(tdata.multiview_template_footer)
 			.appendTo('#ts3')
-			.ckeditor();
+			.ckeditor(CKEditor_config);
 		$('<a href="#" class="docs" page="/ww.plugins/products/docs/codes.html">codes</a>')
 			.appendTo(panel);
 	}
@@ -362,7 +362,7 @@ function Products_typeEdit(id) {
 		$('<textarea/>')
 			.val(tdata.singleview_template)
 			.appendTo(panel)
-			.ckeditor();
+			.ckeditor(CKEditor_config);
 		$('<a href="#" class="docs" page="/ww.plugins/products/docs/codes.html">codes</a>')
 			.appendTo(panel);
 	}
@@ -384,7 +384,7 @@ function Products_typeEdit(id) {
 					}
 				}
 			});
-		$template.ckeditor();
+		$template.ckeditor(CKEditor_config);
 		if (html=='') {
 			$.post('/a/p=products/f=adminProductTypeVoucherTemplateSample',
 				function(ret) {
