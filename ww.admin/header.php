@@ -102,6 +102,7 @@ foreach ($PLUGINS as $pname=>$p) {
 		WW_addCSS('/ww.plugins/'.$pname.'/admin/admin.css');
 	}
 }
+echo WW_getCSS();
 echo '</head><body';
 echo '><div id="header">';
 // { setup standard menu items

@@ -205,6 +205,7 @@ function WW_getCSS() {
 	foreach ($css_urls as $s) {
 		$url.='|'.$s;
 	}
+	$css_urls=array();
 	return '<link rel="stylesheet" href="'.htmlspecialchars($url).'" />';
 }
 
