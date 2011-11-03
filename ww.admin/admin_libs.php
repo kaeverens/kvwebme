@@ -241,7 +241,7 @@ function WW_getScripts() {
 		foreach ($local as $file) {
 			file_put_contents(
 				USERBASE.'/ww.cache/admin/'.$md5,
-				file_get_contents($_SERVER['DOCUMENT_ROOT'].$file),
+				file_get_contents($_SERVER['DOCUMENT_ROOT'].$file).';',
 				FILE_APPEND
 			);
 		}
