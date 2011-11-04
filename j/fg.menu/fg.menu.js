@@ -1,6 +1,3 @@
-jQuery.fn.outer = function() {
-  return $( $('<div></div>').html(this.clone()) ).html();
-}
 /*-------------------------------------------------------------------- 
 Scripts for creating and manipulating custom menus based on standard <ul> markup
 Version: 3.0, 03.31.2009
