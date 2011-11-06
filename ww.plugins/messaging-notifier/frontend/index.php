@@ -34,7 +34,7 @@ function Aggregator_parse($data, $vars) {
 	foreach ($data as $r) {
 		$md5=md5($r->url);
 		$f=Core_cacheLoad('messaging-notifier', $md5);
-		if ($f===false || (int)@$f['last-check']<time()-($r->refresh)) {
+		if ($f===false || (int)@$f['last-check']<time()-($r->refresh*60)) {
 			switch ($r->type) {
 				case 'WebME News Page': // {
 					$f=Aggregator_getWebmeNews($r);
