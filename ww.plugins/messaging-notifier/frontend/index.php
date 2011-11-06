@@ -34,22 +34,26 @@ function Aggregator_parse($data, $vars) {
 	foreach ($data as $r) {
 		$md5=md5($r->url);
 		$f=Core_cacheLoad('messaging-notifier', $md5);
-		switch ($r->type) {
-			case 'WebME News Page': // {
-				$f=Aggregator_getWebmeNews($r);
-			break; // }
-			case 'email': // {
-				$f=Aggregator_getEmail($r);
-			break; // }
-			case 'phpBB3': // {
-				$f=Aggregator_getPhpbb3($r);
-			break; // }
-			case 'RSS': // {
-				$f=Aggregator_getRss($r);
-			break; // }
-			case 'Twitter': // {
-				$f=Aggregator_getTwitter($r);
-			break; // }
+		if ($f===false || (int)@$f['last-check']<time()-($r->refresh)) {
+			switch ($r->type) {
+				case 'WebME News Page': // {
+					$f=Aggregator_getWebmeNews($r);
+				break; // }
+				case 'email': // {
+					$f=Aggregator_getEmail($r);
+				break; // }
+				case 'phpBB3': // {
+					$f=Aggregator_getPhpbb3($r);
+				break; // }
+				case 'RSS': // {
+					$f=Aggregator_getRss($r);
+				break; // }
+				case 'Twitter': // {
+					$f=Aggregator_getTwitter($r);
+				break; // }
+			}
+			$f['last-check']=time();
+			Core_cacheSave('messaging-notifier', $md5, $f);
 		}
 		$altogether=array_merge($altogether, $f);
 	}
