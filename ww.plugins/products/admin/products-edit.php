@@ -247,6 +247,8 @@ echo '<a href="plugin.php?_plugin=products&amp;_page=products-edit">Add a P'
 	.'roduct</a>'
 	.' <a href="plugin.php?_plugin=products&amp;_page=import">Import Products'
 	.'</a>';
+echo '<form id="products-form" action="'.$_url.'&amp;id='.$id.'" '
+	.'method="post" onsubmit="products_getData();">';
 echo '<input type="hidden" name="action" value="save" />';
 echo '<div id="tabs"><ul>'
 	.'<li><a href="#main-details">Main Details</a></li>'
@@ -307,15 +309,15 @@ echo '</td>';
 // }
 // { enable/disable dates
 // { enable date
-if (!$pdata['activates_on']) {
-	$pdata['activates_on']=date('Y-m-d').' 00:00:00';
+if (@!$pdata['activates_on']) {
+	@$pdata['activates_on']=date('Y-m-d').' 00:00:00';
 }
 echo '<td>Enable Date<br /><input class="datetime" name="activates_on" '
 	.'value="'.$pdata['activates_on'].'"/></td>';
 // }
 // { disable date
-if (!$pdata['expires_on']) {
-	$pdata['expires_on']='2100-01-01 00:00:00';
+if (@!$pdata['expires_on']) {
+	@$pdata['expires_on']='2100-01-01 00:00:00';
 }
 echo '<td>Disable Date<br /><input class="datetime" name="expires_on" '
 	.'value="'.$pdata['expires_on'].'"/></td>';
