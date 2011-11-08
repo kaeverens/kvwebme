@@ -5,17 +5,13 @@ $('#privacy-options input').live('change', function() {
 	}
 	if ($this.is('input[type=checkbox]')) {
 		if ($this.is(':checked')) {
-			alert(
-				'If you protect this page from public view, then people may not '
-				+'be able to log in or register'
-			);
+			$('<p>If you protect this page from public view, then people may not '
+				+'be able to log in or register</p>').dialog({modal:true});
 		}
 		return;
 	}
 	if ($this.val()) {
-		alert(
-			'If you protect this page from public view, then people may not '
-			+'be able to log in or register'
-		);
+		$('<p>If you protect this page from public view, then people may not '
+			+'be able to log in or register</p>').dialog({modal:true});
 	}
 });
