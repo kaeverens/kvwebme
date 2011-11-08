@@ -670,15 +670,19 @@ function Privacy_profileGet() {
 		.'script:add_address();" style="float:right">[+] Add Address</a> <div i'
 		.'d="address-container"> <table> ';
 
-	$addresses=json_decode($user['address'], true);
-	foreach ($addresses as $name=>$address) {
-	  $select=(@$address['default']=='yes')?' checked="checked"':'';
-	  $html.=' <tr> <td> <input type="radio"'.$select
-			.' name="default-address" value="'.$name.'"/> </td> <td>'
-			.str_replace(' ', '-', $name).'</td> <td> <a href="javascript:edit_addr'
-			.'ess(\''.$name.'\');" class="edit-addr" name="'.$name
-			.'">[edit]</a> <a href="javascript:;" class="delete-addr" name="'
-			.$name.'">[delete]</a> </td> </tr> ';
+	if($addresses=json_decode(@$user['address'], true)) {
+		foreach ($addresses as $name=>$address) {
+		  $select=(@$address['default']=='yes')?' checked="checked"':'';
+		  $html.=' <tr> <td> <input type="radio"'.$select
+				.' name="default-address" value="'.$name.'"/> </td> <td>'
+				.str_replace(' ', '-', $name).'</td> <td> <a href="javascript:edit_addr'
+				.'ess(\''.$name.'\');" class="edit-addr" name="'.$name
+				.'">[edit]</a> <a href="javascript:;" class="delete-addr" name="'
+				.$name.'">[delete]</a> </td> </tr> ';
+			}
+		}
+		else {
+			$html.= '<i>No adress(es) saved yet</i>';
 	}
 
 	$html.='</table></div><br style="clear:both"/></div>
