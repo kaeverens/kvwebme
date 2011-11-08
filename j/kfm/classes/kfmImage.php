@@ -155,7 +155,13 @@ class kfmImage extends kfmFile{
 		}
 	}
 	function setCaption($caption){
-		$GLOBALS['kfm']->db->exec("UPDATE ".KFM_DB_PREFIX."files_images SET caption='".sql_escape($caption)."' WHERE file_id=".$this->id);
+		$r=db_fetch_row("select * from ".KFM_DB_PREFIX."files_images where file_id=".$this->id);
+		if ($r) {
+			$GLOBALS['kfm']->db->exec("UPDATE ".KFM_DB_PREFIX."files_images SET caption='".sql_escape($caption)."' WHERE file_id=".$this->id);
+		}
+		else {
+			$GLOBALS['kfm']->db->exec("INSERT INTO ".KFM_DB_PREFIX."files_images (caption, file_id) values ('".sql_escape($caption)."', ".$this->id.")");
+		}
 		$this->caption=$caption;
 	}
 	function setThumbnail($width=64,$height=64,$hue=0,$saturation=0,$lightness=0){
