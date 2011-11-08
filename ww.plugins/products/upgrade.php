@@ -200,3 +200,7 @@ if ($version==27) { // clear cron
 	unset($DBVARS['cron-next']);
 	$version=28;
 }
+if ($version==28) { // add owner
+	dbQuery('alter table products add user_id int default 0');
+	$version=29;
+}

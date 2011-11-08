@@ -122,6 +122,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 		// }
 		// { save main data and data fields
 		$sql='set name="'.addslashes($_REQUEST['name']).'"'
+			.',user_id='.((int)$_REQUEST['user_id'])
 			.',stock_number="'.addslashes($_REQUEST['stock_number']).'"'
 			.',activates_on="'.addslashes($_REQUEST['activates_on']).'"'
 			.',expires_on="'.addslashes($_REQUEST['expires_on']).'"'
@@ -376,6 +377,18 @@ if ($id) {
 else {
 	echo '<td>&nbsp;</td>';
 }
+// }
+// { owner
+$user_id=(int)$pdata['user_id'];
+if (!$user_id) {
+	$user_id=(int)$_SESSION['userdata']['id'];
+}
+$user_name=dbOne(
+	'select name from user_accounts where id='.$user_id,
+	'name'
+);
+echo '<td><strong>Owner:</strong> <select name="user_id"><option value="'
+	.$user_id.'">'.$user_name.'</option></select></td>';
 // }
 echo '</tr>';
 // { images

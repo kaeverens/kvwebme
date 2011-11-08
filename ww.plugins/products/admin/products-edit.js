@@ -283,4 +283,8 @@ $(function(){
 			changeMonth:true,
 			changeYear: true
 		});
+	$('select[name=user_id]')
+		.remoteselectoptions({
+			"url":'/a/f=adminUserNamesGet'
+		});
 });

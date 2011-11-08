@@ -228,3 +228,15 @@ function Core_adminLoadJSVars() {
 	}
 	return $_SESSION['js'];
 }
+function Core_adminUserNamesGet() {
+	$names=array();
+	foreach(
+		dbAll('select id,name,email from user_accounts order by name') as $r
+	) {
+		if (!$r['name']) {
+			$r['name']=$r['email'];
+		}
+		$names[$r['id']]=$r['name'];
+	}
+	return $names;
+}
