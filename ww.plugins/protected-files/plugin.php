@@ -92,7 +92,6 @@ function protectedFiles_check($vars) {
 						else {
 							webmeMail(
 								$pr['recipient_email'], 
-								$pr['recipient_email'], 
 								'['.$_SERVER['HTTP_HOST'].'] protected file downloaded',
 								'protected file "'.addslashes($fname)
 								.'" was downloaded by "'.addslashes($email).'"'

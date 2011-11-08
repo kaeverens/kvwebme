@@ -20,6 +20,12 @@ if (!defined('START_TIME')) {
 }
 spl_autoload_register('WebME_autoload');
 
+// { common variables
+$css_urls=array();
+$scripts=array();
+$scripts_inline=array();
+// }
+
 /**
 	* translate a string
 	*
@@ -409,6 +415,56 @@ function dbRow($query) {
   */
 function WebME_autoload($name) {
 	require $name . '.php';
+}
+
+/**
+  * add a CSS file to be shown in the page
+  *
+  * @param string $url URL of the sheet
+  *
+  * @return null
+  */
+function WW_addCSS($url) {
+	global $css_urls;
+	if (in_array($url, $css_urls)) {
+		return;
+	}
+	$css_urls[]=$url;
+}
+
+/**
+  * add a JS script to be shown inline at the bottom of the page
+  *
+	* @param string $script the JS script
+  *
+  * @return null
+  */
+function WW_addInlineScript($script) {
+	global $scripts_inline;
+	$script=preg_replace(
+		'/\s+/',
+		' ',
+		str_replace(array("\n","\r"), ' ', $script)
+	);
+	if (in_array($script, $scripts_inline)) {
+		return;
+	}
+	$scripts_inline[]=$script;
+}
+
+/**
+  * add a JS script to be externally linked and shrunk
+  *
+	* @param string $url the URL of the external JS script
+  *
+  * @return null
+  */
+function WW_addScript($url) {
+	global $scripts;
+	if (in_array($url, $scripts)) {
+		return;
+	}
+	$scripts[]=$url;
 }
 
 // { set up language

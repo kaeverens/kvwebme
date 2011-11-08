@@ -33,7 +33,9 @@ function Core_adminDirectoriesGet() {
 		$D=new DirectoryIterator($base.$dir);
 		$ds=array();
 		foreach ($D as $dname) {
-			if ($dname->isDot() || !$dname->isDir()) {
+			if ($dname->isDot() || !$dname->isDir() 
+				|| strpos($dname->getFilename(), '.')===0
+			) {
 				continue;
 			}
 			$ds[]=$dname->getFilename();

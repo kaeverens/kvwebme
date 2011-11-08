@@ -139,68 +139,12 @@ function Core_unfixImageResizes($src) {
 }
 
 /**
-  * add an external CSS file to the document
-  *
-  * @param string $url URL of the external sheet
-  *
-  * @return null
-  */
-function WW_addCSS($url) {
-	global $css_urls;
-	if (!is_array($css_urls)) {
-		$css_urls=array();
-	}
-	if (in_array($url, $css_urls)) {
-		return;
-	}
-	$css_urls[]=$url;
-}
-
-/**
-  * add an external JS script to the document
-  *
-  * @param string $url URL of the external script
-  *
-  * @return null
-  */
-function WW_addScript($url) {
-	global $scripts;
-	if (in_array($url, $scripts)) {
-		return;
-	}
-	$scripts[]=$url;
-}
-
-/**
-  * add a fragment of script to a list to be shown at the end of the document
-  *
-  * @param string $script the JS fragment to add
-  *
-  * @return null
-  */
-function WW_addInlineScript($script) {
-	global $scripts_inline;
-	$script=preg_replace(
-		'/\s+/',
-		' ',
-		str_replace(array("\n","\r"), ' ', $script)
-	);
-	if (in_array($script, $scripts_inline)) {
-		return;
-	}
-	$scripts_inline[]=$script;
-}
-
-/**
   * generate a list of external CSS scripts and build a <style> tag
   *
   * @return string the HTML
   */
 function WW_getCSS() {
 	global $css_urls;
-	if (!is_array($css_urls)) {
-		return;
-	}
 	$url='/css/';
 	foreach ($css_urls as $s) {
 		$url.='|'.$s;
