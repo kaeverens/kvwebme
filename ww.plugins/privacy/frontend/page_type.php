@@ -682,7 +682,7 @@ function Privacy_profileGet() {
 			}
 		}
 		else {
-			$html.= '<i>No adress(es) saved yet</i>';
+			$html.= '<i>No address(es) saved yet</i>';
 	}
 
 	$html.='</table></div><br style="clear:both"/></div>
