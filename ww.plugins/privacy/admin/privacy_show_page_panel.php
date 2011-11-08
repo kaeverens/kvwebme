@@ -2,7 +2,7 @@
 
 echo '<h2>Privacy</h2>';
 
-echo '<table>';
+echo '<table id="privacy-options">';
 // { restrict access to members of these group
 echo '<tr><th>Page is viewable only by logged-in users:</th><td>';
 echo '<input type="checkbox" name="page_vars[privacy_require_login]"';
@@ -30,13 +30,15 @@ foreach ($rs as $r) {
 }
 echo '</td></tr>';
 // }
-// { optionally allow non-logged-in readers to view the page if they know a password
+// { allow non-logged-in readers to view the page if they know a password
 if (!isset($page_vars['privacy_password'])) {
 	$page_vars['privacy_password']='';
 }
-echo '<tr><th>Allow non-logged-in readers to view the page if they enter this password:</th>'
+echo '<tr><th>Allow non-logged-in readers to view the page if they enter '
+	.'this password:</th>'
 	.'<td><input name="page_vars[privacy_password]" value="'
 	.htmlspecialchars($page_vars['privacy_password'])
 	.'" /></td></tr>';
 // }
 echo '</table>';
+WW_addScript('/ww.plugins/privacy/admin/privacy_show_page_panel.js');
