@@ -86,7 +86,7 @@ foreach ($d as $f) {
 }
 asort($files);
 echo '<h2>CSS</h2>';
-echo '<ul>';
+echo '<ul id="themeeditor-css">';
 foreach ($files as $file) {
 	echo '<li><a href="/ww.admin/plugin.php?_plugin=theme-editor&amp;_page=in'
 		.'dex&amp;name='.urlencode($file).'&amp;type=c">'
