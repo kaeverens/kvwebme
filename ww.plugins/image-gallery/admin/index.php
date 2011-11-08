@@ -287,11 +287,11 @@ $c.='<td><input name="page_vars[image_gallery_image_x]"';
 $c.=' value="'.$width.'"/>';
 // }
 // { thumbnail size
-$ts=(int)@$vars['image_gallery_thumbsize'];
+$ts=@$vars['image_gallery_thumbsize'];
 $ts=$ts?$ts:150;
 $c.='<tr><th>Thumb Size</th><td>'
-	.'<input name="page_vars[image_gallery_thumbsize]" value="'.$ts.'" />'
-	.'</td>';
+	.'<input name="page_vars[image_gallery_thumbsize]" value="'
+	.htmlspecialchars($ts).'" title="examples: 100, 100x80"/></td>';
 // }
 // { main image effects
 $effects=array(

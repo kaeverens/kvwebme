@@ -9,6 +9,8 @@ var Gallery={
 		items:6,	// columns, rows
 		rows:1,
 		thumbsize:90,	// thumbnail size
+		thumbsizex:90,	// thumbnail size
+		thumbsizey:90,	// thumbnail size
 		links:true,	// set false to disable next and previous links
 		hover:'opacity',	// "hover" effect
 		click:'popup', // what to do when a large image is clicked
@@ -53,7 +55,7 @@ var Gallery={
 		var src=this.src,$img=$(this);
 		var newsrc='/i/blank.gif', bgoffset='0 0', newwidth=$img.width(),
 			newheight=$img.height(),
-			ratio=Gallery.options.imageWidth/Gallery.options.thumbsize;
+			ratio=Gallery.options.imageWidth/Gallery.options.thumbsizex;
 		if (Gallery.frame.type) {
 			var furl=Gallery.frame.type=='--custom--'
 				?'/image-galleries/frame-'+window.pagedata.id+'.png'
@@ -103,7 +105,7 @@ var Gallery={
 		var dis=this.options.display;
 		this.options.items=items?parseInt(items):(dis=='grid'?4:6);
 		this.width=this.options.galleryWidth==null
-			?(this.options.thumbsize+4)*this.options.items+4
+			?(this.options.thumbsizex+4)*this.options.items+4
 			:this.options.galleryWidth;
 		this.gallery().addClass(dis);
 		if (dis=='grid') {
@@ -124,12 +126,12 @@ var Gallery={
 				+'"ad-thumb-list" style="width:'+(this.width+400)+'px">'+list
 				+'</ul></div>'
 			);
-			this.height=this.options.thumbsize+15;
+			this.height=this.options.thumbsizey+15;
 			$('.ad-thumb-list').css('height', this.height+'px');
 			this.addLinksToLargeImage();
 		}
 		this.gallery().css({'width':this.width+'px'});
-		this.height=(this.options.thumbsize+15)*this.options.rows;
+		this.height=(this.options.thumbsizey+15)*this.options.rows;
 		var actualHeight=$('#slider>table').outerHeight();
 		if (actualHeight>this.height) {
 			this.height=actualHeight;
@@ -146,7 +148,7 @@ var Gallery={
 		this.updateNav();
 	},
 	displayGrid:function() { // shows the grid display using a carousel
-		var file, size=Gallery.options.thumbsize, row=0, j;
+		var file, sizex=Gallery.options.thumbsizex, sizey=Gallery.options.thumbsizey, row=0, j;
 		var html='<table class="images-container" style="width:100%"><tr>';
 		Gallery.current=0;
 		$.each(Gallery.images,function(i) {
@@ -159,7 +161,7 @@ var Gallery={
 				return false;
 			}
 			file=Gallery.images[j];
-			html+='<td style="width:'+size+'px;height:'+size+'px">'
+			html+='<td style="width:'+sizex+'px;height:'+sizey+'px">'
 				+Gallery.mediaDisplay(file)+'</td>';
 			++Gallery.position;
 			++Gallery.current;
@@ -359,13 +361,13 @@ var Gallery={
 		}
 	},
 	displayList:function(els) { // displays elements from this.images in a list
-		var file, size=this.options.thumbsize, html='', i;
+		var file, sizex=this.options.thumbsizex, html='', i;
 		for(i=els[0];i<=els[els.length-1];++i) {
 			if(!Gallery.images[i]) {
 				return i==els[0]?false:html;
 			}
 			file=Gallery.images[i];
-			html+='<li style="width:'+size+'px;">'
+			html+='<li style="width:'+sizex+'px;">'
 				+Gallery.mediaDisplay(file)
 				+ '</li>';
 			++Gallery.position;
@@ -504,7 +506,15 @@ var Gallery={
 			opts.links=true;
 		}
 		$.extend(this.options, opts);
-		this.options.thumbsize=parseInt(this.options.thumbsize);
+		// { thumbsize
+		var ts=this.options.thumbsize.replace(/[^0-9\.x]/g, '').split('x');
+		this.options.thumbsizex=+ts[0];
+		if (ts.length>1) {
+			this.options.thumbsizey=+ts[1];
+		}
+		else {
+			this.options.thumbsizey=+ts[0];
+		}
 		if (this.options.slideshow) {
 			this.options.slideshowTime=$gallery.attr('slideshowtime');
 		}
@@ -668,16 +678,16 @@ var Gallery={
 		}
 	},
 	mediaDisplay:function(file) {
-		var size=Gallery.options.thumbsize;
-		var style=' style="width:'+size+'px;height:'+size+'px;overflow:hidden"';
+		var sizex=Gallery.options.thumbsizex, sizey=Gallery.options.thumbsizey;
+		var style=' style="width:'+sizex+'px;height:'+sizey+'px;overflow:hidden"';
 		var popup=Gallery.options.hover=='popup'
 			?' target="popup"'
 			:(Gallery.options.hover=='opacity'?' style="opacity:0.7"':'');
 		var xy=Gallery.options.ratio=='normal'
-			?[Gallery.options.thumbsize,Gallery.options.thumbsize]
+			?[sizex, sizey]
 			:file.height>file.width
-				?[Gallery.options.thumbsize, (file.height*(Gallery.options.thumbsize/file.width))]
-				:[(file.width*(Gallery.options.thumbsize/file.height)), Gallery.options.thumbsize];
+				?[sizex, (file.height*(sizex/file.width))]
+				:[(file.width*(sizey/file.height)), sizey];
 		var caption=Gallery.caption_in_slider
 			?file.caption
 			:'';

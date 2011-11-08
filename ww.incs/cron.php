@@ -35,7 +35,7 @@ if (!isset($DBVARS['cron-next']) || $DBVARS['cron-next']<date('Y-m-d H:i:s')) {
 	);
 	$n2=dbOne(
 		'select date_unpublish from pages where !(special&2) '
-		.'order by date_unpublish limit 1', 'date_unpublish'
+		.'and date_unpublish!="0000-00-00 00:00:00" order by date_unpublish limit 1', 'date_unpublish'
 	);
 	$n=false;
 	if ($n1 && $n2) {
