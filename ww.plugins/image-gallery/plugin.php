@@ -56,6 +56,6 @@ function ImageGallery_frontend($PAGEDATA) {
 }
 
 function ImageGallery_widget($vars=null) {
-	require_once SCRIPTBASE.'ww.plugins/image-gallery/frontend/show.php';
+	require_once dirname(__FILE__).'/frontend/show.php';
 	return GalleryWidget_show($vars);
 }

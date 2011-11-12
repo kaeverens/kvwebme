@@ -12,7 +12,7 @@
   * @link       www.kvweb.me
  */
 
-require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 
 $uri=@$_GET['uri'];
 if ($uri=='') {

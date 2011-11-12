@@ -52,7 +52,7 @@ function ImageGallery_show($PAGEDATA) {
 		// }
 		// { display the template
 		require_once SCRIPTBASE.'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
-		require SCRIPTBASE.'ww.plugins/image-gallery/frontend/template-functions.php';
+		require_once SCRIPTBASE.'ww.plugins/image-gallery/frontend/template-functions.php';
 		$smarty=new Smarty;
 		$smarty->compile_dir=USERBASE.'/ww.cache/templates_c';
 		@mkdir(USERBASE.'/ww.cache/templates_c'); 
@@ -93,6 +93,9 @@ function GalleryWidget_show($vars){
 		$template=USERBASE.'ww.cache/image-gallery-widget/';
 		@mkdir($template, 0777, true);
 		$template.=$id;
+		if (!$vars['gallery_type']) {
+			$vars['gallery_type']='grid';
+		}
 		$thtml=file_get_contents(
 			SCRIPTBASE.'ww.plugins/image-gallery/admin/types/'.
 				strtolower($vars['gallery_type'])
@@ -108,7 +111,7 @@ function GalleryWidget_show($vars){
 		// }
 		// { display the template
 		require_once SCRIPTBASE.'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
-		require SCRIPTBASE.'ww.plugins/image-gallery/frontend/template-functions.php';
+		require_once SCRIPTBASE.'ww.plugins/image-gallery/frontend/template-functions.php';
 		$smarty=new Smarty;
 		$smarty->compile_dir=USERBASE.'/ww.cache/templates_c';
 		@mkdir(USERBASE.'/ww.cache/templates_c'); 
