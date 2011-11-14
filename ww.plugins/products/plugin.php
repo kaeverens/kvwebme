@@ -114,7 +114,8 @@ function Products_imageSlider($params) {
 	if ($height=='') {
 		$height='100%';
 	}
-	return '<div class="products-image-slider" style="width:'.$width.';height:'.$height.'"></div>';
+	return '<div class="products-image-slider" style="width:'.$width.';height:'
+		.$height.'"></div>';
 }
 function Products_expiryClock($params, $smarty) {
 	$unlimited=@$params['none'];

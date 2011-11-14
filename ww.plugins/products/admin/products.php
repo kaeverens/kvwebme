@@ -40,7 +40,7 @@ if (!dbOne('select id from products_types limit 1','id')) {
 		.'here to create one</a></em>';
 	return;
 }
-$rs=dbAll('select id,images_directory,name,stock_number,enabled from products order by name');
+$rs=dbAll('select id,user_id,images_directory,name,stock_number,enabled from products order by name');
 if(!count($rs)){
 	echo '<em>No existing products. <a href="plugin.php?_plugin=products&amp;'
 		.'_page=products-edit">Click here to create one</a>.'
@@ -51,8 +51,9 @@ if(!count($rs)){
 }
 
 // { products list
-echo '<div><table class="datatable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Stock Number'
-	.'</th><th>ID</th><th>Enabled</th><th>&nbsp;</th></tr></thead><tbody>';
+echo '<div><table class="datatable"><thead><tr><th>&nbsp;</th><th>Name</th>'
+	.'<th>Stock Number</th><th>Owner</th><th>ID</th><th>Enabled</th>'
+	.'<th>&nbsp;</th></tr></thead><tbody>';
 foreach($rs as $r){
 	$link='plugin.php?_plugin=products&amp;_page=products-edit&amp;id='.$r['id'];
 	// { has images
@@ -70,12 +71,15 @@ foreach($rs as $r){
 		.'class="ui-icon ui-icon-image"></div>'
 		:'';
 	// }
+	$user=User::getInstance($r['user_id'], false, false);
+	$username=$user?$user->get('name'):'unknown owner';
 	echo '<tr id="product-row-'.$r['id'].'">'
 		.'<td>'.$img.'</td>'
 		.'<td class="edit-link"><!-- '.htmlspecialchars($r['name']).' -->'
 		.'<a href="'.$link.'">'.htmlspecialchars($r['name']).'</td>'
 		.'<td class="edit-link"><!-- '.htmlspecialchars($r['stock_number']).' -->'
 		.'<a href="'.$link.'">'.htmlspecialchars($r['stock_number']).'</td>'
+		.'<td>'.$username.'</td>'
 		.'<td>'.$r['id'].'</td>'
 		.'<td>'.($r['enabled']=='1'?'Yes':'No').'</td>'
 		.'<td><a class="delete-product" href="javascript:;" title="delete">[x]</a>'

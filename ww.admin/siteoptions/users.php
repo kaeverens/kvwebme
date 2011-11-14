@@ -228,14 +228,16 @@ if (isset($_REQUEST['id'])) {
 // }
 // { list all users
 $users=dbAll(
-	'select id,email,last_login,last_view from user_accounts order by last_vi'
-	.'ew desc,last_login desc,email'
+	'select active,id,name,email,last_login,last_view from user_accounts '
+	.'order by last_view desc,last_login desc,email'
 );
 echo '<table style="min-width:50%"><tr><th>User</th><th>Groups</th><th>Last'
 	.' Login</th><th>Last View</th><th>Actions</th></tr>';
 foreach ($users as $user) {
-	echo '<tr><th><a href="siteoptions.php?page=users&amp;id='.$user['id'].'">'
-		.htmlspecialchars($user['email']).'</a></th>';
+	$name=$user['name']?$user['name']:$user['email'];
+	echo '<tr'.($user['active']?'':' class="inactive"').'>'
+		.'<th><a href="siteoptions.php?page=users&amp;id='.$user['id'].'">'
+		.htmlspecialchars($name).'</a></th>';
 	// { groups
 	echo '<td>';
 	$grs=dbAll("select * from users_groups where user_accounts_id=$user[id]");

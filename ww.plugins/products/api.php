@@ -1,4 +1,5 @@
 <?php
+
 /**
 	* show a list of categories
 	*
@@ -13,6 +14,7 @@ function Products_categoriesOptionsGet() {
 	}
 	return $arr;
 }
+
 /**
 	* remove a review
 	*
@@ -56,6 +58,39 @@ function Products_reviewDelete() {
 		'product'=>$productid
 	);
 }
+
+/**
+	* get a list of active products using map coordinates
+	*
+	* @return array of product IDs
+	*/
+function Products_getproductsByCoords() {
+	$coords=$_REQUEST['coords'];
+	// { sanitise coords
+	$x1=(float)$coords[0];
+	$x2=(float)$coords[2];
+	$y1=(float)$coords[1];
+	$y2=(float)$coords[3];
+	if ($x2<$x1) {
+		$t=$x1;
+		$x1=$x2;
+		$x2=$t;
+	}
+	if ($y2<$y1) {
+		$t=$y1;
+		$y1=$y2;
+		$y2=$t;
+	}
+	// }
+	// { get list of relevant users
+	$users=dbAll(
+		"select id from user_accounts where location_lat>$x1 and location_lat<$x2
+		and location_lng>$y1 and location_lng<$y2 and active"
+	);
+	return $users;
+	// }
+}
+
 /**
 	* Updates a review, calculates the new total and average
 	*

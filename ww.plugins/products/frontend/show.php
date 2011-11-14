@@ -1243,12 +1243,14 @@ class Products{
 		switch ($PAGEDATA->vars['products_show_multiple_with']) {
 			case 1: // { horizontal table, headers on top
 				$c.=Product_datatableMultiple($prods, 'horizontal');
-			break;
-			// }
+			break; // }
 			case 2: // { vertical table, headers on left
 				$c.=Product_datatableMultiple($prods, 'vertical');
-			break;
-			// }
+			break; // }
+			case 3: // { map view
+				WW_addScript('/ww.plugins/products/frontend/js.js');
+				return '<div id="products-mapview"></div>';
+			break; // }
 			default: // { use template
 				if (count($prods)) { // display the first item's header
 					$product=Product::getInstance($prods[0]);

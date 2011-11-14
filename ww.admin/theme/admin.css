@@ -67,7 +67,7 @@ div.resize-bar-w{position:absolute;background:#3b3c37;width:6px;bottom:0;top:0;r
 .box{width:130px;padding:10px;margin:5px;border:1px solid #000;float:left;clear:right;text-align:center}
 .button{display:inline-block;text-align:center;text-decoration:none;background:#F6F6F5;color:#666666;border:#999 solid 1px;-moz-border-radius:5px;border-radius:5px;box-shadow:1px 1px 2px #666;-moz-box-shadow:1px 1px 2px #666;padding:2px 5px}
 .inactive{font-style:italic;color:#bbb!important}
-.inactive a{color:#69f!important}
+.inactive a{color:#69f!important;font-style:italic;}
 .message{display:block;color:#f00;background:#fff}
 #main{margin:0;padding:0;border:0}
 .current{background:#416BA7;color:#fff !important}

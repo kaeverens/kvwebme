@@ -143,13 +143,14 @@ $c.='>Descending (Z-A)</option></select></td></tr>';
 // }
 // { template to use for multiple products
 $c.= '<tr id="products-show-multiple-with-row">'
-	.'<th>Show multiple products using</th>';
-$c.= '<td><select id="products_show_multiple_with" '
+	.'<th>Show multiple products using</th>'
+	.'<td><select id="products_show_multiple_with" '
 	.'name="page_vars[products_show_multiple_with]">';
 $arr=array(
-	'product type template',
-	'horizontal table (headers on top)',
-	'vertical table (headers on left)'
+	'0'=>'product type template',
+	'3'=>'map view',
+	'1'=>'horizontal table (headers on top)',
+	'2'=>'vertical table (headers on left)'
 );
 if (!isset($vars['products_show_multiple_with'])) {
 	$vars['products_show_multiple_with']=0;

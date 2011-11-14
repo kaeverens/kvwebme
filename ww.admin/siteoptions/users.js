@@ -82,15 +82,20 @@ $(function(){
 			.dialog({
 				'modal':'true',
 				'close':function() {
-					var ctr=map.getCenter();
-					$('input[name=location_lat]').val(ctr.lat());
-					$('input[name=location_lng]').val(ctr.lng());
 					$('#siteoptions-map').remove();
 					$(this).remove();
 				},
-				'title':'Find the user\'s location, then close the map',
 				'width':800,
-				'height':550
+				'height':550,
+				'buttons':{
+					'Save':function() {
+						var ctr=map.getCenter();
+						$('input[name=location_lat]').val(ctr.lat());
+						$('input[name=location_lng]').val(ctr.lng());
+						$('#siteoptions-map').remove();
+						$(this).remove();
+					}
+				}
 			});
 		var latlng=[
 			$('input[name=location_lat]').val(),

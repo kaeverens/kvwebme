@@ -111,7 +111,7 @@ $(function(){
 	$('.products-image-slider').each(function() {
 		var $this=$(this);
 		$.post('/a/p=products/f=getImgs/id='+$this.closest('.products-product').attr('id').replace(/products-/, ''), function(ret) {
-			if (!ret.length) {
+			if (ret.length<1) {
 				return;
 			}
 			var $imgs=[];
@@ -137,6 +137,9 @@ $(function(){
 						'opacity':1,
 						'left':0
 					}, 200, function() {
+						if ($imgs.length<2) {
+							return;
+						}
 						setTimeout(rotate, 2000);
 					});
 			}
@@ -184,4 +187,41 @@ $(function(){
 		});
 		$wrap.find('a').data('sequence', sequence);
 	});
+	Products_showMap();
 });
+function Products_showMap() {
+	var $mapview=$('#products-mapview');
+	if ($mapview.length) {
+		var width=$mapview.width(), height=$mapview.height();
+		if (height<100) {
+			$mapview.css('min-height', 100);
+		}
+	}
+	// { lat/long
+	if (!window.google || !google.maps) {
+		$('<script src="http://maps.googleapis.com/maps/api/js?sensor=true&c'
+			+'allback=Products_showMap"></script>')
+			.appendTo(document.body);
+		return;
+	}
+	var latlng=window.userdata
+		?[window.userdata.lat, window.userdata.lng]
+		:[0,0]
+	var myOptions={
+		zoom:8,
+		center:new google.maps.LatLng(latlng[0], latlng[1]),
+		mapTypeId:google.maps.MapTypeId.ROADMAP
+	};
+	var map=new google.maps.Map($mapview[0], myOptions);
+	var markers=[];
+	google.maps.event.addListener(map, 'bounds_changed', function(){
+		var bounds=map.getBounds();
+		var coords=bounds.toString().replace(/[^0-9\.\-,]/g, '').split(',');
+		$.post('/a/p=products/f=getProductsByCoords', {
+			'coords':coords
+		}, function(ret) {
+			console.log(ret);
+		});
+	});
+	// }
+}
