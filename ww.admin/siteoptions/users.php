@@ -199,6 +199,9 @@ if (isset($_REQUEST['id'])) {
 	echo '<h2>Addresses</h2> <a id="new-address" href="javascript:;" style="flo'
 		.'at:right">[+] Add Address</a> <div id="add-content">';
 	if (!is_array($r['address'])) {
+		if ($r['address']=='') {
+			$r['address']='[]';
+		}
 		$r['address']=json_decode($r['address'], true);
 	}
 	foreach ($r['address'] as $name=>$address) {

@@ -628,6 +628,9 @@ class Product{
 			return 0;
 		}
 		$iid=0;
+		$kfm_do_not_save_session=true;
+		require_once KFM_BASE_PATH.'/api/api.php';
+		require_once KFM_BASE_PATH.'/initialise.php';
 		if ($vals['image_default']) {
 			$image=kfmImage::getInstance($iid);
 			if ($image && $image->exists()) {
@@ -709,6 +712,84 @@ class Product{
 			}
 		}
 		return false;
+	}
+}
+class ProductCategory{
+	static $instances=array();
+	public $vals;
+
+	/**
+		* constructor for the class
+		*
+		* @param int $id ID of the category
+		*
+		* @return object the category instance
+		*/
+	function __construct($id) {
+		$id=(int)$id;
+		$r=dbRow('select * from products_categories where id='.$id);
+		if (!count($r)) {
+			return false;
+		}
+		$this->vals=$r;
+		self::$instances[$this->vals['id']] =& $this;
+		return $this;
+	}
+
+	/**
+		* get a category instance
+		*
+		* @param int $id ID of the category
+		*
+		* @return object the instance
+		*/
+	static function getInstance($id=0) {
+		if (!is_numeric($id)) {
+			return false;
+		}
+		if (!array_key_exists($id, self::$instances)) {
+			new ProductCategory($id);
+		}
+		return self::$instances[$id];
+	}
+
+	/**
+		* get a URL for showing this category
+		*
+		* @return string the URL
+		*/
+	function getRelativeUrl() {
+		// { see if there are any pages that use this category
+		$ps1=dbAll(
+			'select page_id from page_vars where name="products_category_to_show" '
+			.'and value='.$this->vals['id'],
+			'page_id'
+		);
+		if ($ps1 && count($ps1)) {
+			$sql='select id from pages,page_vars where page_id=pages.id '
+				.'and page_vars.name="products_what_to_show" and page_vars.value=2 '
+				.'and id in ('.join(', ', array_keys($ps1)).')';
+			$pid=dbOne($sql, 'id');
+			if ($pid) {
+				$page=Page::getInstance($pid);
+				return $page->getRelativeUrl();
+			}
+		}
+		// }
+		// { or if there's a category parent, return its URL plus the name appended
+		if ($this->vals['parent_id']!=0) {
+			$cat=ProductCategory::getInstance($this->vals['parent_id']);
+			return $cat->getRelativeUrl().'/'.urlencode($this->vals['name']);
+		}
+		// }
+		// { or get at least any product page
+		$pid=dbOne('select id from pages where type like "products%" limit 1', 'id');
+		if ($pid) {
+			$page=Page::getInstance($pid);
+			return $page->getRelativeUrl().'/'.urlencode($this->vals['name']);
+		}
+		// }
+		return '/#no-url-available';
 	}
 }
 class ProductType{

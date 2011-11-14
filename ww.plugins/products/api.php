@@ -1,6 +1,26 @@
 <?php
 
 /**
+	* show the default image of a product
+	*
+	* @return null
+	*/
+function Products_showDefaultImg() {
+	$id=(int)$_REQUEST['id'];
+	$product=Product::getInstance($id);
+	$w=(int)@$_REQUEST['w'];
+	$h=(int)@$_REQUEST['h'];
+	if ($product) {
+		$iid=$product->getDefaultImage();
+		if ($iid) {
+			header('Location: /kfmget/'.$iid.'&width='.$w.'&height='.$h);
+			exit;
+		}
+	}
+	header('Location: /i/blank.gif');
+}
+
+/**
 	* show a list of categories
 	*
 	* @return null
@@ -60,11 +80,11 @@ function Products_reviewDelete() {
 }
 
 /**
-	* get a list of active products using map coordinates
+	* get a list of users with active products using map coordinates
 	*
 	* @return array of product IDs
 	*/
-function Products_getproductsByCoords() {
+function Products_getProductOwnersByCoords() {
 	$coords=$_REQUEST['coords'];
 	// { sanitise coords
 	$x1=(float)$coords[0];
@@ -84,11 +104,43 @@ function Products_getproductsByCoords() {
 	// }
 	// { get list of relevant users
 	$users=dbAll(
-		"select id from user_accounts where location_lat>$x1 and location_lat<$x2
-		and location_lng>$y1 and location_lng<$y2 and active"
+		"select id,location_lat, location_lng from user_accounts where
+		location_lat>$x1 and location_lat<$x2
+		and location_lng>$y1 and location_lng<$y2 and active limit 1000",
+		'id'
 	);
-	return $users;
+	if (!count($users)) {
+		return array();
+	}
+	$users2=dbAll(
+		'select distinct user_id from products where enabled and user_id in ('
+		.join(',', array_keys($users)).')'
+	);
+	foreach ($users2 as $k=>$v) {
+		$users2[$k]=$users[$v['user_id']];
+	}
+	return $users2;
 	// }
+}
+
+/**
+	* get a list of products (id, name, relativeUrl) owned by a user
+	*
+	* @return array of products
+	*/
+function Products_getProductsByUser() {
+	$user_id=(int)$_REQUEST['user_id'];
+	$products=array();
+	$rs=dbAll('select id from products where user_id='.$user_id.' and enabled');
+	foreach ($rs as $r) {
+		$p=Product::getInstance($r['id']);
+		$products[]=array(
+			'id'=>$p->id,
+			'name'=>$p->name,
+			'url'=>$p->getRelativeUrl()
+		);
+	}
+	return $products;
 }
 
 /**

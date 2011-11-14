@@ -190,6 +190,12 @@ $(function(){
 	Products_showMap();
 });
 function Products_showMap() {
+	if (!window.google || !google.maps) {
+		$('<script src="http://maps.googleapis.com/maps/api/js?sensor=true&c'
+			+'allback=Products_showMap"></script>')
+			.appendTo(document.body);
+		return;
+	}
 	var $mapview=$('#products-mapview');
 	if ($mapview.length) {
 		var width=$mapview.width(), height=$mapview.height();
@@ -197,14 +203,7 @@ function Products_showMap() {
 			$mapview.css('min-height', 100);
 		}
 	}
-	// { lat/long
-	if (!window.google || !google.maps) {
-		$('<script src="http://maps.googleapis.com/maps/api/js?sensor=true&c'
-			+'allback=Products_showMap"></script>')
-			.appendTo(document.body);
-		return;
-	}
-	var latlng=window.userdata
+	var latlng=window.userdata&&window.userdata.lat&&window.userdata.lng
 		?[window.userdata.lat, window.userdata.lng]
 		:[0,0]
 	var myOptions={
@@ -215,13 +214,51 @@ function Products_showMap() {
 	var map=new google.maps.Map($mapview[0], myOptions);
 	var markers=[];
 	google.maps.event.addListener(map, 'bounds_changed', function(){
-		var bounds=map.getBounds();
-		var coords=bounds.toString().replace(/[^0-9\.\-,]/g, '').split(',');
-		$.post('/a/p=products/f=getProductsByCoords', {
-			'coords':coords
-		}, function(ret) {
-			console.log(ret);
-		});
+		clearTimeout(window.products_boundsChanged);
+		window.products_boundsChanged=setTimeout(function(){
+			var bounds=map.getBounds();
+			var coords=bounds.toString().replace(/[^0-9\.\-,]/g, '').split(',');
+			$.post('/a/p=products/f=getProductOwnersByCoords', {
+				'coords':coords
+			}, function(ret) {
+				for (var i=0;i<ret.length;++i) {
+					var user_id=+ret[i].id;
+					if (markers[user_id]) {
+						continue;
+					}
+					var marker=new google.maps.Marker({
+						position: new google.maps.LatLng(ret[i].location_lat, ret[i].location_lng), 
+						map     : map,
+						user_id : user_id
+					});
+					google.maps.event.addListener(marker, 'click', function() {
+						var user_id=+this.user_id;
+						var marker=this;
+						$.post('/a/p=products/f=getProductsByUser/user_id='+user_id, function(ret) {
+							var content='';
+							for (var i=0;i<ret.length;++i) {
+								content+='<li><a href="'+ret[i].url+'">'
+									+'<img src="/a/p=products/f=showDefaultImg/id='+ret[i].id+'/w=32/h=32"/>'
+									+ret[i].name+'</a></li>';
+							}
+							var infoWindow=new google.maps.InfoWindow({
+								content: '<ul style="margin:0;padding:0;list-style:none;">'+content+'</ul>'
+							});
+							infoWindow.open(map, marker);
+						});
+					});
+					markers[user_id]=marker;
+				}
+			});
+		}, 500);
 	});
-	// }
+	if (navigator.geolocation) {
+		browserSupportFlag = true;
+		navigator.geolocation.getCurrentPosition(function(position) {
+			map.setCenter(
+				new google.maps.LatLng(position.coords.latitude,position.coords.longitude)
+			);
+		}, function() {
+		});
+	}
 }
