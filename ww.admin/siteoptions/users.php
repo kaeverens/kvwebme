@@ -43,6 +43,8 @@ if (isset($_REQUEST['action'])) {
 		// }
 		$sql='set email="'.addslashes($_REQUEST['email']).'",'
 			.'name="'.addslashes($_REQUEST['name']).'",'
+			.'location_lat='.((float)$_REQUEST['location_lat']).','
+			.'location_lng='.((float)$_REQUEST['location_lng']).','
 			.'phone="'.addslashes($_REQUEST['phone']).'",'
 			.'active="'.(int)$_REQUEST['active'].'",'
 			.'address="'.addslashes($addresses).'"';
@@ -136,7 +138,7 @@ if (isset($_REQUEST['id'])) {
 		);
 	}
 	echo '<div id="tabs"> <ul> <li><a href="#details">User Details</a></li> <'
-		.'li><a href="#address">Address</a></li> </ul> <form action="siteoption'
+		.'li><a href="#locations">Locations</a></li> </ul> <form action="siteoption'
 		.'s.php?page=users&amp;id='.$id.'" method="post">';
 	echo '<input type="hidden" name="id" value="'.$id.'" />';
 	if (!isset($r['extras'])) {
@@ -183,8 +185,18 @@ if (isset($_REQUEST['id'])) {
 	echo '</table>';
 	echo '</div>';
 	// }
-	// { address
-	echo '<div id="address"> <a id="new-address" href="javascript:;" style="flo'
+	// {locations 
+	echo '<div id="locations">';
+	// { physical location
+	echo '<h2>Currently located</h2>'
+		.'<p id="user-location">The user is recorded as being located at '
+		.'Lat:<input type="number" name="location_lat" value="'
+		.((float)$r['location_lat']).'"/>, '
+		.'Long:<input type="number" name="location_lng" value="'
+		.((float)$r['location_lng']).'"/> <a href="#">edit</a></p>';
+	// }
+	// { addresses
+	echo '<h2>Addresses</h2> <a id="new-address" href="javascript:;" style="flo'
 		.'at:right">[+] Add Address</a> <div id="add-content">';
 	if (!is_array($r['address'])) {
 		$r['address']=json_decode($r['address'], true);
@@ -205,7 +217,9 @@ if (isset($_REQUEST['id'])) {
 			.'y</th> <td><input type="text" name="country-'.$name.'" value="'
 			.$address['country'].'"/></td> </tr> <th></tr></table>';
 	}
-	echo '</div><br style="clear:both"/></div>';
+	echo '</div><br style="clear:both"/>';
+	// }
+	echo '</div>';
 	// }
 	echo '<input type="submit" name="action" value="Save" />';
 	echo '</form></div>';

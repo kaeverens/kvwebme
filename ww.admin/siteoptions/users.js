@@ -1,4 +1,8 @@
+function Core_siteOptions_mapinit() {
+	$('#user-location a').click();
+}
 $(function(){
+	// { main details
 	function randchar(arg) {
 		return arg[Math.floor(Math.random() * arg.length)];
 	}
@@ -10,7 +14,6 @@ $(function(){
 			digits = ['1','2','3','4','5','6','7','8','9'];
 		return randchar(hard_consts) + randchar(link_consts) + randchar(vowels) + randchar(consts) + randchar(digits) + randchar(hard_consts) + randchar(vowels) + randchar(consts);
 	}
-
 	var active=$('select[name=active]').val();
 	$('<a href="javascript:;" style="float:right;text-decoration:none" title="add a new group">[+]</a>')
 		.click(function(){
@@ -65,7 +68,76 @@ $(function(){
 			}
 		});
 	});
-	$('#tabs').tabs();
+	// }
+	// { locations
+	// { lat/long
+	$('#user-location a').click(function() {
+		if (!window.google || !google.maps) {
+			$('<script src="http://maps.googleapis.com/maps/api/js?sensor=false&c'
+				+'allback=Core_siteOptions_mapinit"></script>')
+				.appendTo(document.body);
+			return;
+		}
+		$('<div id="siteoptions-map" style="width:800px;height:500px">loading...</div>')
+			.dialog({
+				'modal':'true',
+				'close':function() {
+					var ctr=map.getCenter();
+					$('input[name=location_lat]').val(ctr.lat());
+					$('input[name=location_lng]').val(ctr.lng());
+					$('#siteoptions-map').remove();
+					$(this).remove();
+				},
+				'title':'Find the user\'s location, then close the map',
+				'width':800,
+				'height':550
+			});
+		var latlng=[
+			$('input[name=location_lat]').val(),
+			$('input[name=location_lng]').val()
+		];
+		var myOptions={
+			zoom:8,
+			center:new google.maps.LatLng(latlng[0], latlng[1]),
+			mapTypeId:google.maps.MapTypeId.ROADMAP
+		};
+		var map=new google.maps.Map($('#siteoptions-map')[0], myOptions);
+		var reticleImage=new google.maps.MarkerImage(
+			'/i/reticle-32x32.png',
+			new google.maps.Size(32,32),
+			new google.maps.Point(0,0),
+			new google.maps.Point(16,16)
+		);
+		var reticleShape={
+			coords:[16,16,16,16],
+			type:'rect'
+		};
+		var reticleMarker=new google.maps.Marker({
+			position:map.getCenter(),
+			map: map,
+			icon: reticleImage,
+			shape: reticleShape,
+			optimized: false,
+			zIndex:5
+		});
+		var addressWindow=new google.maps.InfoWindow();
+		google.maps.event.addListener(map, 'bounds_changed', function(){
+			reticleMarker.setPosition(map.getCenter());
+			var geocoder=new google.maps.Geocoder();
+			var ctr=map.getCenter();
+			geocoder.geocode({
+				'latLng': new google.maps.LatLng(ctr.lat(), ctr.lng())
+			}, function(res, status) {
+				addressWindow.close();
+				if (res && res[1]) {
+					addressWindow.setContent(res[1].formatted_address);
+					addressWindow.open(map, reticleMarker);
+				}
+			});
+		});
+	});
+	// }
+	// { addresses
 	$('#new-address').click(function(){
 		$('<div id="new-dialog" title="New Address"></div>').dialog({
 			modal:true,
@@ -138,4 +210,7 @@ $(function(){
 	$('.delete-add').live('click',function(){
 		$(this).closest('.address-table').fadeOut('show').remove();
 	});
+	// }
+	// }
+	$('#tabs').tabs();
 });

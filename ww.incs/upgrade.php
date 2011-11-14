@@ -435,6 +435,11 @@ if ($version==40) {
 	);
 	$version=41;
 }
+if ($version==41) { // user locations
+	dbQuery('alter table user_accounts add location_lat float');
+	dbQuery('alter table user_accounts add location_lng float');
+	$version=42;
+}
 
 $DBVARS['version']=$version;
 Core_cacheClear();

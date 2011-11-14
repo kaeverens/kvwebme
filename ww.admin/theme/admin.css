@@ -18,7 +18,7 @@ input,textarea,select{background:#f6f6f6;color:#333;padding:2px}
 input.date-human,input.date-human-readable{width:180px !important}
 input.date{width:90px !important}
 input.large{width:100%}
-input.small{width:50px !important}
+input.small, input[type=number]{width:50px !important}
 input:focus,textarea:focus,select:focus{background:#def;color:#36f}
 input[disabled=disabled]{background:#ddd;color:#999;font-style:italic }
 input[type=checkbox]{width:auto !important}
