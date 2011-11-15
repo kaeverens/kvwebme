@@ -482,18 +482,23 @@ if ($dfjson=='') {
 $dfjson=str_replace(array("\n", "\r"), array('\n', ''), $dfjson);
 $dfjson=json_decode($dfjson, true);
 $dfdefs=array();
-foreach ($dfjson as $d) {
-	$dfdefs[$d['n']]=$d;
-}
-foreach ($dfs as $df) {
-	if (isset($df['n']) && isset($dfdefs[$df['n']])) {
-		$def=$dfdefs[$df['n']];
-		unset($dfdefs[$df['n']]);
-		Products_showDataField($df, $def);
+if (@$dfjson) {
+	foreach ($dfjson as $d) {
+		$dfdefs[$d['n']]=$d;
+	}
+	foreach ($dfs as $df) {
+		if (isset($df['n']) && isset($dfdefs[$df['n']])) {
+			$def=$dfdefs[$df['n']];
+			unset($dfdefs[$df['n']]);
+			Products_showDataField($df, $def);
+		}
+	}
+	foreach ($dfdefs as $def) {
+		Products_showDataField(array('v'=>''), $def);
 	}
 }
-foreach ($dfdefs as $def) {
-	Products_showDataField(array('v'=>''), $def);
+else {
+	echo '<p><i>No datafields defined in Product Type</i></p>';
 }
 echo '</table></div>';
 // }
