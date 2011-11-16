@@ -22,7 +22,11 @@ function showWidgetForm(w){
 		$('<button style="float:right">Save</button>')
 			.click(function(){
 				w.find('input,select,textarea').each(function(i,el){
-					p[el.name]=$(el).val();
+					var $el=$(el);
+					p[el.name]=$el.is('input[type=checkbox]')
+						?($el.is(':checked')?1:0)
+						:$el.val();
+					console.log(el.name, p[el.name]);
 				});
 				w.data('widget',p);
 				updateWidgets(form.closest('.panel-wrapper'));
