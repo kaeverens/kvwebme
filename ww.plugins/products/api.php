@@ -287,7 +287,7 @@ function Products_typesTemplatesGet() {
 	$dir=new DirectoryIterator(dirname(__FILE__).'/templates');
 	$templates=array();
 	foreach ($dir as $file) {
-		if ($file->isDot() || !preg_match('/\.json$/', $file->getFilename()) {
+		if ($file->isDot() || !preg_match('/\.json$/', $file->getFilename())) {
 			continue;
 		}
 		$templates[]=str_replace('.json', '', $file->getFilename());
