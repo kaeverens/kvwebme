@@ -205,7 +205,7 @@ function Products_showMap() {
 	}
 	var latlng=window.userdata&&window.userdata.lat&&window.userdata.lng
 		?[window.userdata.lat, window.userdata.lng]
-		:[0,0]
+		:[54.78310263573059,-6.278343984374946]
 	var myOptions={
 		zoom:8,
 		center:new google.maps.LatLng(latlng[0], latlng[1]),
