@@ -162,13 +162,14 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 		// }
 		// { save categories
 		dbQuery('delete from products_categories_products where product_id='.$id);
-		if (isset($_REQUEST['product_categories'])) {
-			foreach ($_REQUEST['product_categories'] as $key=>$val) {
-				dbQuery(
-					'insert into products_categories_products set product_id='
-					.$id.',category_id='.$key
-				);
-			}
+		if (!isset($_REQUEST['product_categories'])) {
+			$_REQUEST['product_categories']=array('1'=>'on');
+		}
+		foreach ($_REQUEST['product_categories'] as $key=>$val) {
+			dbQuery(
+				'insert into products_categories_products set product_id='
+				.$id.',category_id='.$key
+			);
 		}
 		// }
 		// { save product relations
@@ -581,7 +582,7 @@ if (isset($PLUGINS['online-store'])) {
 }
 // }
 // { categories
-echo '<div id="categories">';
+echo '<div id="categories"><p>At least one category must be chosen.</p>';
 // { build array of categories
 $rs=dbAll('select id,name,parent_id from products_categories');
 $cats=array();

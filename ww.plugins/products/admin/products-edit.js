@@ -287,4 +287,24 @@ $(function(){
 		.remoteselectoptions({
 			"url":'/a/f=adminUserNamesGet'
 		});
+	$('select[name=enabled]').change(function() {
+		var val=+$(this).val();
+		if (val) {	// enabled
+			$('input[name=activates_on]')
+				.val('2000-01-01 00:00:00');
+			$('input[name=expires_on]')
+				.val('2100-01-01 00:00:00');
+		}
+		else {
+			$('input[name=activates_on]')
+				.val('2000-01-01 00:00:00');
+			$('input[name=expires_on]')
+				.val('2001-01-01 00:00:00');
+		}
+		$('input[name=activates_on],input[name=expires_on]')
+			.css('color', '#fff')
+			.animate({
+				'color':'#000'
+			}, 2000);
+	});
 });

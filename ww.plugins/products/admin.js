@@ -252,6 +252,7 @@ function Products_typeEdit(id) {
 			+'<tr><th>Name</th><td id="pte1"></td></tr>'
 			+'<tr><th>Are products of this type for sale?</th>'
 			+'<td id="pte2"></td></tr><tr id="pte4"/><tr id="pte5"/>'
+			+'<tr><th>Default Category</th><td><select id="pte6"/></td></tr>'
 			+'<tr><th>If no image is uploaded for the product, what image should '
 			+'be shown?</th><td id="pte3"></td></tr>'
 			+'</table>'
@@ -313,6 +314,16 @@ function Products_typeEdit(id) {
 		}
 		// }
 		// }
+		// { default category
+		$('#pte6')
+			.html(
+				'<option value="'+tdata.default_category+'">'
+				+tdata.default_category_name+'</option>'
+			)
+			.remoteselectoptions({
+				"url":'/a/p=products/f=adminCategoriesGetRecursiveList'
+			});
+		// }
 		var src=id
 			?'/kfmgetfull/products/types/'+id
 			+'/image-not-found.png,width=64,height=64'
@@ -373,7 +384,6 @@ function Products_typeEdit(id) {
 			.dialog({
 				"width":700,
 				"height":400,
-				"modal":true,
 				"close":function() {
 					$template.remove();
 				},
@@ -423,6 +433,7 @@ function Products_typeEdit(id) {
 	function updateMain() {
 		tdata.name=$('#pte1 input').val();
 		tdata.is_for_sale=+$('#pte2 select').val();
+		tdata.default_category=+$('#pte6').val();
 		if (tdata.is_for_sale) {
 			tdata.is_voucher=+$('#pte4 select').val();
 		}

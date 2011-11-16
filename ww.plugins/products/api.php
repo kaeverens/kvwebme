@@ -252,6 +252,10 @@ function Products_showQrCode() {
 function Products_typeGet() {
 	$id=(int)@$_REQUEST['id'];
 	$r=dbRow("select * from products_types where id=$id");
+	$r['default_category_name']=dbOne(
+		'select name from products_categories where id='.$r['default_category'],
+		'name'
+	);
 	$r['data_fields']=json_decode($r['data_fields']);
 	return $r;
 }

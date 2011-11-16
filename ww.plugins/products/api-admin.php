@@ -12,6 +12,30 @@
 	*/
 
 /**
+	* get a recursive list of all categories
+	*
+	* @return array categories
+	*/
+function Products_adminCategoriesGetRecursiveList(
+	$params=array(),
+	$pid=0,
+	$level=0
+) {
+	$sql='select id,name from products_categories where parent_id='.$pid
+		.' order by name';
+	$cats=dbAll($sql);
+	$arr=array();
+	foreach ($cats as $cat) {
+		$arr[' '.$cat['id']]=str_repeat(' - ', $level).$cat['name'];
+		$arr=array_merge(
+			$arr,
+			Products_adminCategoriesGetRecursiveList($params, $cat['id'], $level+1)
+		);
+	}
+	return $arr;
+}
+
+/**
 	* get a category row from its id
 	*
 	* @param int $id the category ID
@@ -136,15 +160,18 @@ function Products_adminCategoryDelete() {
 	if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id'])) {
 		exit;
 	}
+	$id=(int)$_REQUEST['id'];
+	if ($id==1) {
+		return array('status'=>0);
+	}
 	$parent=dbOne(
-		'select parent_id from products_categories where id='.$_REQUEST['id'],
+		'select parent_id from products_categories where id='.$id,
 		'parent_id'
 	);
 	dbQuery(
-		'update products_categories set parent_id='.$parent.' where parent='
-		.$_REQUEST['id']
+		'update products_categories set parent_id='.$parent.' where parent='.$id
 	);
-	dbQuery('delete from products_categories where id='.$_REQUEST['id']);
+	dbQuery('delete from products_categories where id='.$id);
 	return array('status'=>1);
 }
 /**
@@ -322,6 +349,7 @@ function Products_adminTypeEdit() {
 		.'",data_fields="'.addslashes($data_fields).'",'
 		.'is_for_sale='.(int)$d['is_for_sale'].','
 		.'is_voucher='.(int)$d['is_voucher'].','
+		.'default_category='.(int)$d['default_category'].','
 		.'voucher_template="'
 		.addslashes(Core_sanitiseHtmlEssential($d['voucher_template'])).'",'
 		.'prices_based_on_usergroup="'
@@ -446,6 +474,7 @@ function Products_adminTypeCopy() {
 		.'data_fields="'.addslashes($r['data_fields']).'",'
 		.'is_for_sale='.((int)$r['is_for_sale']).','
 		.'is_voucher='.((int)$r['is_voucher']).','
+		.'default_category='.((int)$r['default_category']).','
 		.'voucher_template="'.addslashes($r['voucher_template']).'",'
 		.'multiview_template_header="'.addslashes($r['multiview_template_header'])
 		.'",'

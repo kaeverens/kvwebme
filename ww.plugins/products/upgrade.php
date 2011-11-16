@@ -204,3 +204,16 @@ if ($version==28) { // add owner
 	dbQuery('alter table products add user_id int default 0');
 	$version=29;
 }
+if ($version==29) { // default category
+	if (!dbOne('select id from products_categories where id=1', 'id')) {
+		dbQuery(
+			'insert into products_categories (id,name,parent_id,enabled) '
+			.'values (1,"default",0,1)'
+		);
+	}
+	$version=30;
+}
+if ($version==30) { // add default category to product type
+	dbQuery('alter table products_types add default_category int default 1');
+	$version=31;
+}

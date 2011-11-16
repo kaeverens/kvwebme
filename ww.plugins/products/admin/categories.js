@@ -162,10 +162,16 @@ $(function(){
 							return TREE_OBJ.check("deletable", NODE); 
 						}, 
 						'action':function(node, tree){
+							var id=node[0].id.replace(/.*_/,'');
+							if (id==1) {
+								$('<em>Cannot delete default category.</em>').dialog({
+									'modal':true
+								});
+								return;
+							}
 							if (!confirm("Are you sure you want to delete this category?")) {
 								return;
 							}
-							var id=node[0].id.replace(/.*_/,'');
 							$.post(
 								'/a/p=products/f=adminCategoryDelete/id='+id,
 								function(){
