@@ -26,15 +26,26 @@ function ImageTransition_getSubdirs ($base, $dir) {
 }
 
 if (isset($_REQUEST['get_image_transition'])) {
-	$r=dbRow(
-		'select * from image_transitions where id='
-		.(int)$_REQUEST['get_image_transition']
-	);
-	if (!$r['url']) {
-		$r['pagename']=' -- none -- ';
+	$id=(int)$_REQUEST['get_image_transition'];
+	if ($id) {
+		$r=dbRow('select * from image_transitions where id='.$id);
+		if (!$r['url']) {
+			$r['pagename']=' -- none -- ';
+		}
+		else {
+			$r['pagename']=Page::getInstance($r['url'])->name;
+		}
 	}
 	else {
-		$r['pagename']=Page::getInstance($r['url'])->name;
+		$r=array(
+			'url'=>0,
+			'pagename'=>' -- none -- ',
+			'trans_type'=>'fade',
+			'pause'=>3000,
+			'directory'=>'',
+			'width'=>0,
+			'height'=>0
+		);
 	}
 	$dirs=ImageTransition_getSubdirs(USERBASE.'f', '');
 	if ($r===false) {
@@ -49,12 +60,15 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	$directory=addslashes($_REQUEST['directory']);
 	$trans_type=addslashes($_REQUEST['trans_type']);
 	$pause=(int)$_REQUEST['pause'];
+	$width=(int)$_REQUEST['width'];
+	$height=(int)$_REQUEST['height'];
 	$url=(int)$_REQUEST['url'];
 	if (!$pause) {
 		$pause=3000;
 	}
 	$sql='image_transitions set directory="'.$directory.'",trans_type="'
-		.$trans_type.'",pause="'.$pause.'",url="'.$url.'"';
+		.$trans_type.'",pause="'.$pause.'",url="'.$url.'",width='.$width
+		.',height='.$height;
 	if ($id && dbOne('select id from image_transitions where id='.$id, 'id')) {
 		$sql="update $sql where id=$id";
 		dbQuery($sql);

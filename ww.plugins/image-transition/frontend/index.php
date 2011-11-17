@@ -7,43 +7,52 @@ function ImageTransition_show($vars) {
 			Core_cacheSave('image-transitions', 'id'.$vars->id, $r);
 		}
 		if ($r && is_array($r)) {
+			$width=(int)$r['width'];
+			$height=(int)$r['height'];
 			$imgs=array();
 			$dir=USERBASE.'f'.$r['directory'];
 			if (!file_exists($dir) || !is_dir($dir)) {
 				return '<!-- '.$dir.' -->';
 			}
 			$fs=new DirectoryIterator($dir);
-			$max=array(0,0);
+			$max=array($width, $height);
 			foreach ($fs as $f) {
 				if ( $f->isDot()
 					|| !preg_match('/\.(jpg|.jpeg|png|gif)$/i', $f->getFilename())
 				) {
 					continue;
 				}
-				list($width, $height) = getimagesize(
+				list($iw, $ih) = getimagesize(
 					USERBASE.'f'.$r['directory'].'/'.$f->getFilename()
 				);
-				if (!$width || !$height) {
+				if (!$iw || !$ih) { // not an image
 					continue;
 				}
-				if ($width>$max[0]) {
-					$max[0]=$width;
-				}
-				if ($height>$max[1]) {
-					$max[1]=$height;
+				if (!$width) { // no size predefined
+					if ($iw>$max[0]) {
+						$max[0]=$iw;
+					}
+					if ($ih>$max[1]) {
+						$max[1]=$ih;
+					}
 				}
 				$imgs[]=$f->getFilename();
 			}
+			$width=$max[0];
+			$height=$max[1];
 			asort($imgs);
 			if (!count($imgs)) {
 				return '<em>no images in selected directory</em>';
 			}
 			if ($r['trans_type']=='3dCarousel') {
 				$html.='<div id="k3dCarousel'.$vars->id.'" style="height:'
-					.($height+30).'px"><img style="display:none" src="/f'
+					.($height+30).'px"><img style="display:none" src="'
+					.'/a/f=getImg/w='.$width.'/h='.$height
 					.$r['directory'].'/'
 					.join(
-						'" /><img style="display:none" src="/f'.$r['directory'].'/',
+						'" /><img style="display:none" src="'
+						.'/a/f=getImg/w='.$width.'/h='.$height
+						.$r['directory'].'/',
 						$imgs
 					)
 					.'" />';
@@ -66,9 +75,12 @@ function ImageTransition_show($vars) {
 				}
 				$html.=' style="display:block;width:'.$width.'px;height:'.$height
 					.'px;" id="image_transitions_'.$vars->id.'">'
-					.'<img src="/f'.$r['directory'].'/'
+					.'<img src="/a/f=getImg/w='.$width.'/h='.$height
+					.$r['directory'].'/'
 					.join(
-						'" /><img style="display:none" src="/f'.$r['directory'].'/',
+						'" /><img style="display:none" src="/a/f=getImg/w='
+						.$width.'/h='.$height
+						.$r['directory'].'/',
 						$imgs
 					).'" />';
 				if ($r['url']) {
