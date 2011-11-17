@@ -1,0 +1,18 @@
+table.forms-table{
+	min-width:80%;
+}
+table.forms-table th{
+	width:15%;
+}
+table.forms-table textarea{
+	width:100%;
+}
+table.forms-table input{
+	min-width:70%;
+}
+table.forms-table input.submit{
+	min-width:0;
+}
+#recaptcha_response_field{
+	min-width:0;
+}

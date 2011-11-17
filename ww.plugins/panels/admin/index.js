@@ -26,7 +26,6 @@ function showWidgetForm(w){
 					p[el.name]=$el.is('input[type=checkbox]')
 						?($el.is(':checked')?1:0)
 						:$el.val();
-					console.log(el.name, p[el.name]);
 				});
 				w.data('widget',p);
 				updateWidgets(form.closest('.panel-wrapper'));

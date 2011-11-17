@@ -66,7 +66,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 			$vals_wrapper_end='';
 		break; // }
 		default: // {
-			$vals_wrapper_start='<table>';
+			$vals_wrapper_start='<table class="forms-table">';
 			$vals_field_start='<tr><th>';
 			$vals_field_middle='</th><td>';
 			$vals_field_end='</td></tr>';
@@ -336,7 +336,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 	else {
 		$c.=$vals_2col_start;
 	}
-	$c.='<input type="submit" />'
+	$c.='<input class="submit" type="submit" />'
 		.'<input type="hidden" name="funcFormInput" value="submit" />'
 		.'<input type="hidden" name="requiredFields" value="'
 		.join(',', $required).'" />';
@@ -365,6 +365,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 	if ($has_ccdate) {
 		WW_addInlineScript('$("input.ccdate").datepicker({"dateFormat":"yy-mm"});');
 	}
+	WW_addCSS('/ww.plugins/forms/forms.css');
 	return $c;
 }
 
