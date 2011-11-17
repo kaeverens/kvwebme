@@ -75,14 +75,14 @@ function ImageTransition_show($vars) {
 				}
 				$html.=' style="display:block;width:'.$width.'px;height:'.$height
 					.'px;" id="image_transitions_'.$vars->id.'">'
-					.'<img src="/a/f=getImg/w='.$width.'/h='.$height
-					.$r['directory'].'/'
+					.'<div style="width:'.$width.'px;height:'.$height.'px;background:'
+					.'url(\'/a/f=getImg/w='.$width.'/h='.$height.$r['directory'].'/'
 					.join(
-						'" /><img style="display:none" src="/a/f=getImg/w='
-						.$width.'/h='.$height
-						.$r['directory'].'/',
+						'\') no-repeat center center">&nbsp;</div><div style="width:'
+						.$width.'px;height:'.$height.'px;display:none;background:'
+						.'url(\'/a/f=getImg/w='.$width.'/h='.$height.$r['directory'].'/',
 						$imgs
-					).'" />';
+					).'\') no-repeat center center">&nbsp;</div>';
 				if ($r['url']) {
 					$html.='</a>';
 				}
@@ -90,7 +90,7 @@ function ImageTransition_show($vars) {
 					$html.='</div>';
 				}
 				WW_addScript(
-					'/ww.plugins/image-transition/frontend/jquery.cycle.all.min.js'
+					'/ww.plugins/image-transition/frontend/jquery.cycle.all.js'
 				);
 				WW_addInlineScript('$(window).load(function(){$("#image_transitions_'
 					.$vars->id.'").cycle({fx:"'.$r['trans_type'].'",speed:'
