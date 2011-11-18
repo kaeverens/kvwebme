@@ -9,7 +9,7 @@ require_once SCRIPTBASE . 'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
 	*/
 function Core_getJQueryScripts() {
 	global $DBVARS;
-	$jquery_versions=array('1', '1');
+	$jquery_versions=array('1.7', '1.8.16');
 	if (@$DBVARS['offline']) {
 		require SCRIPTBASE.'/ww.incs/get-offline-files.php';
 		$jurls=Core_getOfflineJQueryScripts($jquery_versions);

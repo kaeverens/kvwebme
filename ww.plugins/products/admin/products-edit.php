@@ -127,6 +127,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 			.',activates_on="'.addslashes($_REQUEST['activates_on']).'"'
 			.',expires_on="'.addslashes($_REQUEST['expires_on']).'"'
 			.',product_type_id='.((int)$_REQUEST['product_type_id'])
+			.',default_category='.((int)$_REQUEST['products_default_category'])
 			.',enabled='.(int)$_REQUEST['enabled']
 			.',images_directory="'.addslashes($_REQUEST['images_directory']).'"';
 		// { add data fields to SQL
@@ -616,6 +617,17 @@ function show_sub_cats($parent) {
 	return '<ul>'.join('', $found).'</ul>';
 }
 echo show_sub_cats(0);
+$cid=((int)$pdata['default_category']);
+if (!$cid) {
+	$cid=1;
+}
+echo '<label>Default Category: <select name="products_default_category">'
+	.'<option value="'.((int)$pdata['products_default_category']).'">'
+	.dbOne(
+		'select name from products_categories where id='.$cid,
+		'name'
+	)
+	.'</option></select></label>';
 echo '</div>';
 // }
 // { related items

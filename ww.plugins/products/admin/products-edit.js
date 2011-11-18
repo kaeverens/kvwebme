@@ -307,4 +307,8 @@ $(function(){
 				'color':'#000'
 			}, 2000);
 	});
+	$('select[name=products_default_category]')
+		.remoteselectoptions({
+			"url":'/a/p=products/f=adminCategoriesGetRecursiveList'
+		});
 });

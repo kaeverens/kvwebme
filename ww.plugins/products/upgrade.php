@@ -217,3 +217,7 @@ if ($version==30) { // add default category to product type
 	dbQuery('alter table products_types add default_category int default 1');
 	$version=31;
 }
+if ($version==31) { // add default category to product
+	dbQuery('alter table products add default_category int default 1');
+	$version=32;
+}

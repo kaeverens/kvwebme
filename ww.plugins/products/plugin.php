@@ -101,7 +101,7 @@ $plugin=array(
 	'triggers' => array(
 		'initialisation-completed' => 'Products_addToCart'
 	),
-	'version' => '31'
+	'version' => '32'
 );
 // }
 
@@ -502,6 +502,7 @@ class Product{
 		}
 		$this->id=$r['id'];
 		$this->name=$r['name'];
+		$this->default_category=$r['default_category'];
 		$this->stock_number=$r['stock_number'];
 		self::$instances[$this->id]=&$this;
 		return $this;
@@ -540,7 +541,7 @@ class Product{
 		$pageID 
 			= dbOne(
 				'select page_id '
-				.'from page_vars where name= "products_product_to_show" '
+				.'from page_vars where name="products_product_to_show" '
 				.'and value='.$this->id.' limit 1', 
 				'page_id'
 			);
@@ -550,12 +551,13 @@ class Product{
 		}
 		// }
 		// { Is there a page intended to display its category?
-		$productCats 
-			= dbAll(
-				'select category_id '
-				.'from products_categories_products '
+		$productCats=array_merge(
+			array(array('category_id'=>$this->default_category)),
+			dbAll(
+				'select category_id from products_categories_products '
 				.'where product_id='.$this->id
-			);
+			)
+		);
 		if (count($productCats)) {
 			$pcats=array();
 			foreach ($productCats as $productCat) {
