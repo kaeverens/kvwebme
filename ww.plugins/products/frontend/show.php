@@ -685,12 +685,8 @@ function Products_show($PAGEDATA) {
 	}
 	// }
 	// { set order fields
-	$order_by=isset($PAGEDATA->vars['products_order_by'])
-		?$PAGEDATA->vars['products_order_by']
-		:'';
-	$order_dir=isset($PAGEDATA->vars['products_order_direction'])
-		?(int)$PAGEDATA->vars['products_order_direction']
-		:0;
+	$order_by=@$PAGEDATA->vars['products_order_by'];
+	$order_dir=(int)@$PAGEDATA->vars['products_order_direction'];
 	// }
 	// { export button
 	$export='';

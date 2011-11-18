@@ -369,7 +369,7 @@ function Products_adminTypeEdit() {
 	* @return null
 	*/
 function Products_adminDatafieldsList() {
-	$fields=array();
+	$fields=array('_name');
 	$filter='';
 	if ($_REQUEST['other_GET_params']) {
 		if (is_numeric($_REQUEST['other_GET_params'])) { // product type

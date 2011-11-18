@@ -614,6 +614,9 @@ class Product{
 		if (isset($this->vals[$name])) {
 			return $this->vals[$name];
 		}
+		if (strpos($name, '_')===0) {
+			return $this->{preg_replace('/^_/', '', $name)};
+		}
 		return false;
 	}
 

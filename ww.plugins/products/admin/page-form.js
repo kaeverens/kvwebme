@@ -15,20 +15,22 @@ $(function(){
 	$('.tabs').tabs();
 	$('#products_what_to_show').change(products_what_to_show_change);
 	products_what_to_show_change();
-	$('#products_order_by_select').remoteselectoptions({url:'/a/p=products/f=adminDatafieldsList',
-		other_GET_params:function(){
-			var val=$('#products_what_to_show').val();
-			switch(val){
-				case '1': // { product type
-					return $('#products_what_to_show_1 select').val();
-				// }
-				case '2': // { category
-					return 'c'+$('#products_what_to_show_2 select').val();
-				// }
+	$('#products_order_by_select')
+		.remoteselectoptions({
+			url:'/a/p=products/f=adminDatafieldsList',
+			other_GET_params:function(){
+				var val=$('#products_what_to_show').val();
+				switch(val){
+					case '1': // { product type
+						return $('#products_what_to_show_1 select').val();
+					// }
+					case '2': // { category
+						return 'c'+$('#products_what_to_show_2 select').val();
+					// }
+				}
+				return '';
 			}
-			return '';
-		}
-	});
+		});
 	$('#products_what_to_show_1 select,#products_what_to_show_2 select').change(function(){
 		$('#products_order_by_select').trigger('mousedown');
 	});
