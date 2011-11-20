@@ -60,5 +60,5 @@ if (isset($_POST[ 'delete-theme' ])) {
 /**
  * redirect to themes personal
  */
-header('location: /ww.admin/siteoptions.php?page=themes');
+echo '<script>document.location="/ww.admin/siteoptions.php?page=themes";</script>';
 exit;
