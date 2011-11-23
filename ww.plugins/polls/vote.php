@@ -1,0 +1,21 @@
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
+
+$id=(int)$_REQUEST['id'];
+$vote=(int)$_REQUEST['vote'];
+$ip=$_SERVER['REMOTE_ADDR'];
+
+header('Content-type: text/json');
+
+$r=dbRow('select * from poll_vote where poll_id='.$id.' and ip="'.$ip.'"');
+if ($r) {
+	echo json_encode(array(
+		'status'=>1,
+		'message'=>'You have already voted in this poll'
+	));
+	exit;
+}
+dbQuery('insert into poll_vote set poll_id='.$id.',ip="'.$ip.'",num='.$vote);
+echo json_encode(array(
+	'status'=>0
+));

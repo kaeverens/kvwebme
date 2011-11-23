@@ -50,9 +50,15 @@ echo '<tr><th>Answer</th><th>Votes so far</th><th><a href="javascript:add'
 if ($id) {
 	$answers=dbAll("select * from poll_answer where poll_id=$id order by num");
 	foreach ($answers as $answer) {
+		$count=dbOne(
+			'select count(ip) as votes from poll_vote where poll_id='.$id.' and num='
+			.$answer['num'],
+			'votes'
+		);
 		echo '<tr><td><input class="large" name="answers[]" value="'
-			.htmlspecialchars($answer['answer']).'" /></td><td colspan="2">todo'
-			.'</td></tr>';
+			.htmlspecialchars($answer['answer']).'" /></td>'
+			.'<td style="text-align:center;">'.$count.'</td>'
+			.'<td>&nbsp;</td></tr>';
 	}
 }
 echo '<tr><td><input class="large" name="answers[]" /></td>'
