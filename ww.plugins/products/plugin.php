@@ -154,8 +154,8 @@ function Products_getProductPrice(
 	if (isset($product->vals['online-store'])) {
 		$p=$product->vals['online-store'];
 		$price=(float)$p['_price'];
-		if (isset($p['_sale_price']) && $p['_sale_price']>0) {
-			$price=$p['_sale_price'];
+		if (@$p['_sale_price']) {
+			$price=$product->getPrice('sale');
 		}
 		if (isset($p['_bulk_price'])
 			&& $p['_bulk_price']>0
@@ -653,6 +653,35 @@ class Product{
 			return $image['id'];
 		}
 		return 0;
+	}
+
+	/**
+		* get price
+		*
+		* @param string $type type of price (base, sale, bulk)
+		*
+		* @return float price value
+		*/
+	function getPrice($type='base') {
+		switch ($type) {
+			case 'sale': // {
+				if (!$this->vals['online-store']['_sale_price']) {
+					return 0;
+				}
+				$amt=$this->vals['online-store']['_sale_price'];
+				switch (@$this->vals['online-store']['_sale_price_type']) {
+					case '1': // discount
+						return $this->vals['online-store']['_price']-$amt;
+					case '2': // percentage
+						return $this->vals['online-store']['_price']*(100-$amt)/100;
+					default: // actual amount
+						return $amt;
+				}
+				// }
+			default: // { base
+				return $this->vals['online-store']['_price'];
+				// }
+		}
 	}
 
 	/**

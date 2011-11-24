@@ -147,7 +147,7 @@ function os_setup_basket_events(){
 	$('.onlinestore-save-list').click(OnlineStore_saveList);
 	$('.onlinestore-load-list').click(OnlineStore_loadList);
 	$('.online-store-basket-widget.slidedown .slidedown-header')
-		.click(function() {
+		.click(function(e, opts) {
 			var $this=$(this);
 			var $wrapper=$this.closest('.slidedown').find('.slidedown-wrapper');
 			if ($wrapper.is(':visible')) {
@@ -161,9 +161,22 @@ function os_setup_basket_events(){
 					'left':$this.position().left
 				})
 				.show($wrapper.attr('slidedown')||'blind');
+			if (opts && opts.slideup) {
+				var timeout=+$wrapper.attr('slideup');
+				console.log(timeout);
+				if (!timeout) {
+					return;
+				}
+				setTimeout(function() {
+					$this.click();
+				}, timeout*1000);
+			}
 		});
 	if (/\/showcart/.test(document.location.toString())) {
-		$('.online-store-basket-widget.slidedown .slidedown-header').click();
+		$('.online-store-basket-widget.slidedown .slidedown-header')
+			.trigger('click', {
+				'slideup':true
+			});
 	}
 }
 $(os_setup_basket_events);

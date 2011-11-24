@@ -509,9 +509,17 @@ if (isset($PLUGINS['online-store'])) {
 	// { set up fields
 	$online_store_fields 
 		= array (
-			'_price' => 'Price',
+			'_price' => 'Base Price',
 			'_trade_price' => 'Trade Price',
 			'_sale_price' => 'Sale Price',
+			'_sale_price_type' => array(
+				'Sale Type',
+				'Options' => array(
+					'set actual price',
+					'subtract from base price',
+					'reduce base price by percentage'
+				)
+			),
 			'_bulk_price' => 'Bulk Price',
 			'_bulk_amount' => 'Bulk Amount',
 			'_weight(kg)' => 'Weight (kg)',

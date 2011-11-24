@@ -23,6 +23,11 @@ if (@$_REQUEST['slidedown']) {
 	echo ' checked="checked"';
 }
 echo '/><br/>';
+echo '<div id="online-store-slide"';
+if (!@$_REQUEST['slidedown']) {
+	echo ' style="display:none"';
+}
+echo '>';
 echo '<strong>Slide animation</strong><br />'
 	.'<select name="slidedown_animation">';
 $arr=array(
@@ -37,6 +42,10 @@ foreach ($arr as $v) {
 	echo '>'.$v.'</option>';
 }
 echo '</select><br />';
+echo '<strong>Slide up auto-slider (in seconds)</strong>';
+$s=(float)@$_REQUEST['slideup_delay'];
+echo '<input name="slideup_delay" value="'.$s.'"/><br />';
+echo '</div>';
 // }
 // { template
 echo '<strong>Template (leave blank to use a default one)</strong><br />'

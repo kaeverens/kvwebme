@@ -23,7 +23,8 @@ $plugin=array(
 			'Online Store>Create New Checkout' => 'wizard'
 		),
 		'widget' => array(
-			'form_url' => '/ww.plugins/online-store/admin/widget-form.php'
+			'form_url' => '/ww.plugins/online-store/admin/widget-form.php',
+			'js_include' => '/ww.plugins/online-store/j/widget-admin.js'
 		)
 	),
 	'description'=>'Add online-shopping capabilities to some plugins. '
@@ -246,13 +247,14 @@ function OnlineStore_numToPrice($val, $sym=true, $rounded=false) {
 function OnlineStore_showBasketWidget($vars=null) {
 	global $DBVARS;
 	$slidedown=@$vars->slidedown;
+	$slideup=(int)@$vars->slideup_delay;
 	$html='<div class="online-store-basket-widget'
-		.($slidedown?' slidedown':'')
+		.($slidedown?' slidedown':'').'"'
 		.'">';
 	if ($slidedown) {
 		$html.='<div class="slidedown-header">Your Items</div>'
 			.'<div class="slidedown-wrapper" slidedown="'
-			.@$vars->slidedown_animation.'">';
+			.@$vars->slidedown_animation.'" slideup="'.$slideup.'">';
 		WW_addCSS('/ww.plugins/online-store/basket.css');
 	}
 	// { basket body

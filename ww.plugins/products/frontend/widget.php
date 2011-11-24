@@ -76,7 +76,7 @@ switch ($widget_type) {
 				.'<p class="base-price">was: '.$_SESSION['currency']['symbol']
 				.$product->vals['online-store']['_price'].'</p>'
 				.'<p class="sale-price">now: '.$_SESSION['currency']['symbol']
-				.$product->vals['online-store']['_sale_price'].'</p>'
+				.$product->getPrice('sale').'</p>'
 				.'</td></tr>'
 				.'<tr><td><a href="'.$product->getRelativeURL().'">more info</a>'
 				.'</td></tr></table>';

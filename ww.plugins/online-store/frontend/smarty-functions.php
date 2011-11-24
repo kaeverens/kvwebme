@@ -28,6 +28,7 @@ function OnlineStore_productPriceFull2($params, $smarty) {
 			'_price'=>0,
 			'_trade_price'=>0,
 			'_sale_price'=>0,
+			'_sale_price_type'=>0,
 			'_bulk_price'=>0,
 			'_bulk_amount'=>0,
 			'_weight'=>0,
@@ -43,9 +44,9 @@ function OnlineStore_productPriceFull2($params, $smarty) {
 		$p[$k]=(float)$v;
 	}
 	if ($p['_sale_price']) {
-		$tmp='<strike class="os_price">'.OnlineStore_numToPrice($p['_price']*$vat)
+		$tmp='<strike class="os_price">'.OnlineStore_numToPrice($product->getPrice()*$vat)
 			.'</strike> <strong class="os_price">'
-			.OnlineStore_numToPrice($p['_sale_price']*$vat).'</strong>';
+			.OnlineStore_numToPrice($product->getPrice('sale')*$vat).'</strong>';
 	}
 	else {
 		$tmp='<strong class="os_price">'
