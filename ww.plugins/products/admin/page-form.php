@@ -148,6 +148,7 @@ $c.= '<tr id="products-show-multiple-with-row">'
 	.'name="page_vars[products_show_multiple_with]">';
 $arr=array(
 	'0'=>'product type template',
+	'4'=>'carousel',
 	'3'=>'map view',
 	'1'=>'horizontal table (headers on top)',
 	'2'=>'vertical table (headers on left)'

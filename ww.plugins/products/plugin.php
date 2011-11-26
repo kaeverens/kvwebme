@@ -206,7 +206,7 @@ function Products_frontend($PAGEDATA) {
 		foreach ($bits as $bit) {
 			$id=dbOne(
 				'select id from products_categories where parent_id='.$cat_id
-				.' and name="'.addslashes($bit).'"',
+				.' and name like "'.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'"',
 				'id'
 			);
 			if ($id) {
@@ -217,14 +217,14 @@ function Products_frontend($PAGEDATA) {
 				if ($cat_id) {
 					$id=dbOne(
 						'select product_id,name from products_categories_products,products'
-						.' where category_id='.$cat_id.' and name="'.addslashes($bit).'"'
-						.' and id=product_id',
+						.' where category_id='.$cat_id.' and name like "'
+						.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'" and id=product_id',
 						'product_id'
 					);
 				}
 				if (!$id) {
 					$id=dbOne(
-						'select id from products where name="'.addslashes($bit).'"',
+						'select id from products where name like "'.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'"',
 						'id'
 					);
 				}
@@ -502,7 +502,10 @@ class Product{
 		}
 		$this->id=$r['id'];
 		$this->name=$r['name'];
-		$this->default_category=$r['default_category'];
+		$this->default_category=(int)$r['default_category'];
+		if ($this->default_category==0) {
+			$this->default_category=1;
+		}
 		$this->stock_number=$r['stock_number'];
 		self::$instances[$this->id]=&$this;
 		return $this;
@@ -555,7 +558,7 @@ class Product{
 			array(array('category_id'=>$this->default_category)),
 			dbAll(
 				'select category_id from products_categories_products '
-				.'where product_id='.$this->id
+				.'where category_id!=0 and product_id='.$this->id
 			)
 		);
 		if (count($productCats)) {
@@ -582,7 +585,7 @@ class Product{
 			if ($pid) {
 				$page = Page::getInstance($pid);
 				$this->relativeUrl=$page->getRelativeUrl()
-					.'/'.urlencode($this->name);
+					.'/'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->name);
 				return $this->relativeUrl;
 			}
 		}
@@ -925,7 +928,7 @@ class ProductType{
 	  *
 	  * @return string html of the product
 	  */
-	function render($product, $template='singleview') {
+	function render($product, $template='singleview', $add_wrapper=true) {
 		global $DBVARS;
 		$GLOBALS['products_template_used']=$template;
 		if (isset($DBVARS['online_store_currency'])) {
@@ -1092,10 +1095,17 @@ class ProductType{
 		}
 		$smarty->assign('_name', $product->name);
 		$smarty->assign('_stock_number', $product->stock_number);
-		return '<div class="products-product" id="products-'.$product->get('id')
-			.'">'.$smarty->fetch(
-				USERBASE.'/ww.cache/products/templates/types_'.$template.'_'.$this->id
-			)
-			.'</div>';
+		$html='';
+		if ($add_wrapper) {
+			$html.='<div class="products-product" id="products-'
+				.$product->get('id').'">';
+		}
+		$html.=$smarty->fetch(
+			USERBASE.'/ww.cache/products/templates/types_'.$template.'_'.$this->id
+		);
+		if ($add_wrapper) {
+			$html.='</div>';
+		}
+		return $html;
 	}
 }

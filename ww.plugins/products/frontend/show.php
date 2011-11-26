@@ -1246,7 +1246,29 @@ class Products{
 			case 3: // { map view
 				WW_addScript('/ww.plugins/products/frontend/js.js');
 				return '<div id="products-mapview"></div>';
-			break; // }
+				// }
+			case 4: // { carousel
+				WW_addScript('/ww.plugins/products/frontend/js.js');
+				$c='<div id="products-carousel"><ul id="products-carousel-slider">';
+				foreach ($prods as $pid) {
+					$product=Product::getInstance($pid);
+					if ($product && isset($product->id) && $product->id) {
+						$typeID = $product->get('product_type_id');
+						$type=ProductType::getInstance($typeID);
+						if (!$type) {
+							$c.='<li>Missing product type: '.$typeID.'</li>';
+						}
+						else {
+							$c.='<li id="products-'.$product->id.'" class="products-product">'
+								.$type->render($product, 'multiview', 0).'</li>';
+						}
+					}
+				}
+				$c.='</ul></div>';
+				WW_addScript('/j/jsor-jcarousel-7bb2e0a/jquery.jcarousel.min.js');
+				WW_addCSS('/ww.plugins/products/products.css');
+				return $c;
+				// }
 			default: // { use template
 				if (count($prods)) { // display the first item's header
 					$product=Product::getInstance($prods[0]);
@@ -1265,7 +1287,7 @@ class Products{
 							$c.='Missing product type: '.$typeID;
 						}
 						else if (isset($_REQUEST['product_id'])) {
-							$c.= $type->render($product, 'singleview');
+							$c.=$type->render($product, 'singleview');
 						}
 						else {
 							$c.=$type->render($product, 'multiview');

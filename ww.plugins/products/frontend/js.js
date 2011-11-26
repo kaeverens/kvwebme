@@ -188,6 +188,14 @@ $(function(){
 		$wrap.find('a').data('sequence', sequence);
 	});
 	Products_showMap();
+	$('#products-carousel-slider').each(function() {
+		var $this=$(this);
+		$this.jcarousel({
+			itemFallbackDimension: 180,
+			wrap: 'circular',
+			animation:1000
+		});
+	});
 });
 function Products_showMap() {
 	if (!window.google || !google.maps) {
