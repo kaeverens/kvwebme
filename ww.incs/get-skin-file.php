@@ -40,7 +40,7 @@ if ($mimetype=='text/css') {
 		for ($i=0; $i<count($matches[0]); ++$i) {
 			switch($matches[1][$i]) {
 				case 'linear-gradient': // {
-					$bits=preg_split('/, *{1,2}/', $matches[2][$i]);
+					$bits=preg_split('/, */', $matches[2][$i]);
 					$colours=array();
 					foreach ($bits as $k=>$v) {
 						if (strpos($v, '#')===false) {
