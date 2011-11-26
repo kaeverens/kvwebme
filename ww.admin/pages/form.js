@@ -65,8 +65,8 @@ function pages_validate_name(){
 	var $name=$('#name');
 	var name=$name.val();
 	var errors=[];
-	if (name.length<4) {
-		errors.push('name must be at least 4 characters in length');
+	if (name.length<3) {
+		errors.push('name must be at least 2 characters in length');
 	}
 	else {
 		if (/^[^0-9\w\u00C0-\u00FF]/.test(name)) {

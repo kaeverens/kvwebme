@@ -308,8 +308,8 @@ $tmp='var pagedata={id:'.$PAGEDATA->id
 if (isset($_SESSION['userdata'])) {
 	$tmp.='userdata={isAdmin:'.(Core_isAdmin()?1:0)
 		.',id:'.$_SESSION['userdata']['id']
-		.',lat:'.((float)$_SESSION['userdata']['location_lat'])
-		.',lng:'.((float)$_SESSION['userdata']['location_lng']);
+		.',lat:'.((float)@$_SESSION['userdata']['location_lat'])
+		.',lng:'.((float)@$_SESSION['userdata']['location_lng']);
 	if (isset($_SESSION['userdata']['discount'])) {
 		$tmp.=',discount:'.(int)$_SESSION['userdata']['discount'];
 	}

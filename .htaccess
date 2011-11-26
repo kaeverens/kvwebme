@@ -22,8 +22,8 @@ RewriteRule ^favicon.ico$ /i/blank.gif [L]
 RewriteRule ^sitemap.xml /ww.incs/sitemap.php [L]
 RewriteRule ^_r$ /ww.incs/redirector.php [QSA,L]
 RewriteRule ^_s/(.*)$ /ww.incs/short-url.php?s=$1 [L]
-RewriteRule ^([^./]{3}[^.&]*)\&(.*)$ /index.php?page=$1&$2 [L]
-RewriteRule ^([^./]{3}[^.]*)$ /index.php?page=$1 [QSA,L]
+RewriteRule ^([^./]{2}[^.&]*)\&(.*)$ /index.php?page=$1&$2 [L]
+RewriteRule ^([^./]{2}[^.]*)$ /index.php?page=$1 [QSA,L]
 
 ErrorDocument 404 /ww.incs/404.php
 

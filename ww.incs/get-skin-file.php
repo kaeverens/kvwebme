@@ -40,18 +40,47 @@ if ($mimetype=='text/css') {
 		for ($i=0; $i<count($matches[0]); ++$i) {
 			switch($matches[1][$i]) {
 				case 'linear-gradient': // {
-					$colours=preg_split('/, */', $matches[2][$i]);
-					foreach ($colours as $k=>$v) {
-						$colours[$k]=CSS_colourCode($v);
+					$bits=preg_split('/, *{1,2}/', $matches[2][$i]);
+					$colours=array();
+					foreach ($bits as $k=>$v) {
+						if (strpos($v, '#')===false) {
+							continue;
+						}
+						$colours[]=CSS_colourCode($v);
 					}
-					$css='background:-moz-linear-gradient(top,#'
-						.$colours[0].',#'.$colours[1].');'
-						.'background:-webkit-gradient(linear,left top,left bottom,from(#'
-						.$colours[0].'), to(#'.$colours[1].'));'
-						.'filter: progid:DXImageTransform.Microsoft.gradient(startColor'
-						.'str=#FF'.$colours[0].', endColorstr=#FF'.$colours[1].');'
-						.'-ms-filter: "progid:DXImageTransform.Microsoft.gradient(start'
-						.'Colorstr=#FF'.$colours[0].', endColorstr=#FF'.$colours[1].')";';
+					if ($bits[0]=='left') { // horizontal
+						$css='background:-moz-linear-gradient(left,#'.$colours[0].' 0%,#'
+							.$colours[1].' 100%);'
+							.'background:-webkit-gradient(linear,left top,right top,'
+							.'color-stop(0%,#'.$colours[0].'), color-stop(100%,#'.$colours[1].'));'
+							.'background:-webkit-linear-gradient(left,#'.$colours[0].' 0%,#'
+							.$colours[1].' 100%);'
+							.'background:-o-linear-gradient(left,#'.$colours[0].' 0%,'
+							.'#'.$colours[1].' 100%);'
+							.'background: -ms-linear-gradient(left, #'.$colours[0].' 0%,'
+							.'#'.$colours[1].' 100%);'
+							.'background: linear-gradient(left, #'.$colours[0].' 0%,'
+							.'#'.$colours[1].' 100%);'
+							.'filter: progid:DXImageTransform.Microsoft.gradient( '
+							.'startColorstr=\'#'.$colours[0].'\', '
+							.'endColorstr=\'#'.$colours[1].'\',GradientType=1 );';
+					}
+					else {
+						$css='background: -moz-linear-gradient(top, #'.$colours[0].' 0%,'
+							.'#'.$colours[1].' 100%);'
+							.'background: -webkit-gradient(linear, left top, left bottom, '
+							.'color-stop(0%,#'.$colours[0].'), color-stop(100%,#'.$colours[1].'));'
+							.'background: -webkit-linear-gradient(top, #'.$colours[0].' 0%,#'
+							.$colours[1].' 100%);'
+							.'background: -o-linear-gradient(top, #'.$colours[0].' 0%,#'
+							.$colours[1].' 100%);'
+							.'background: -ms-linear-gradient(top, #'.$colours[0].' 0%,#'
+							.$colours[1].' 100%);'
+							.'background: linear-gradient(top, #'.$colours[0].' 0%,#'
+							.$colours[1].' 100%);'
+							.'filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#'
+							.$colours[0].'\', endColorstr=\'#'.$colours[1].'\',GradientType=0 );';
+					}
 				break; // }
 				case 'border-radius': // {
 					$radius=$matches[2][$i];

@@ -94,14 +94,14 @@ function Core_adminPageParentsList() {
 		}
 		foreach ($q as $r) {
 			if ($r['id']!='') {
-				$arr[$r['id']]=str_repeat('» ', $n).$r['name'];
+				$arr[' '.$r['id']]=str_repeat('» ', $n).$r['name'];
 				$arr=array_merge($arr, selectkiddies($r['id'], $n+1, $id));
 			}
 		}
 		return $arr;
 	}
 	return array_merge(
-		array('0'=>' -- none -- '),
+		array(' 0'=>' -- none -- '),
 		selectkiddies(0, 0, $id)
 	);
 }

@@ -33,7 +33,7 @@ if (isset($_REQUEST['get_content_snippet'])) {
 if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	$id=(int)$_REQUEST['id'];
 	$id_was=$id;
-	$content=json_decode(utf8_decode($_REQUEST['html']));
+	$content=json_decode($_REQUEST['html']);
 	foreach ($content as $k=>$v) {
 		$content[$k]->html=Core_sanitiseHtml($v->html);
 	}

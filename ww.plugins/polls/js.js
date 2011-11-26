@@ -5,18 +5,23 @@ $(function() {
 		if (!val) {
 			return alert('select an answer first!');
 		}
+		var id=$wrapper.attr('poll-id');
 		$.post('/ww.plugins/polls/vote.php', {
-			'id':$wrapper.attr('poll-id'),
+			'id':id,
 			'vote':val
 		}, function(ret) {
 			if (ret.status) {
 				alert(ret.message);
 			}
-			setTimeout(showResults, 1000);
+			setTimeout(function() {
+				showResults(0, 0, $wrapper);
+			}, 1000);
 		});
 	}
-	function showResults() {
-		var $wrapper=$(this).closest('.polls-wrapper');
+	function showResults(e, p, $wrapper) {
+		if (!$wrapper && !id) {
+			var $wrapper=$(this).closest('.polls-wrapper');
+		}
 		$.post('/ww.plugins/polls/results.php', {
 			'id':$wrapper.attr('poll-id')
 		}, function(ret) {
