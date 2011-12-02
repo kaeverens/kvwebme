@@ -29,6 +29,7 @@ $html='<form id="online-store-paypal" method="post" action="https://www.pay'
 	.'/ww.plugins/online-store/verify/paypal.php" name="notify_url"/>'
 	.'<input type="hidden" value="IC_Sample" name="bn"/><input type="image" a'
 	.'lt="Make payments with payPal - it\'s fast, free and secure!" name="sub'
-	.'mit" src="https://www.paypal.com/en_US/i/btn/x-click-but23.gif"/><img w'
+	.'mit" src="https://www.paypal.com/en_US/i/btn/x-click-but23.gif" style="'
+	.'width:68px;height:23px;"/><img w'
 	.'idth="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" '
 	.'alt=""/></form>';
