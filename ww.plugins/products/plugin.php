@@ -472,7 +472,13 @@ class Product{
 		}
 		$filter=$enabled?' and enabled ':'';
 		if (!$r) {
-			$r=dbRow("select * from products where id=$v $filter limit 1");
+			$sql="select * from products where id=$v $filter limit 1";
+			$md5=md5($sql);
+			$r=Core_cacheLoad('products', $md5, -1);
+			if ($r===-1) {
+				$r=dbRow($sql);
+				Core_cacheSave('products', $md5, $r);
+			}
 		}
 		if (!count($r) || !is_array($r)) {
 			return false;
@@ -541,36 +547,54 @@ class Product{
 			return $this->relativeUrl;
 		}
 		// { Does the product have a page assigned to display the product?
-		$pageID 
-			= dbOne(
-				'select page_id '
-				.'from page_vars where name="products_product_to_show" '
+		$pageID=Core_cacheLoad('products', 'page_for_product_'.$this->id, -1);
+		if ($pageID===-1) {
+			$pageID=dbOne(
+				'select page_id from page_vars where name="products_product_to_show" '
 				.'and value='.$this->id.' limit 1', 
 				'page_id'
 			);
+			Core_cacheSave('products', 'page_for_product_'.$this->id, $pageID);
+		}
 		if ($pageID) {
 			$this->relativeUrl=Page::getInstance($pageID)->getRelativeUrl();
 			return $this->relativeUrl; 
 		}
 		// }
 		// { Is there a page intended to display its category?
-		$productCats=array_merge(
-			array(array('category_id'=>$this->default_category)),
-			dbAll(
+		$cs=Core_cacheLoad('products', 'categories_for_product_'.$this->id);
+		if ($cs===false) {
+			$cs=dbAll(
 				'select category_id from products_categories_products '
 				.'where category_id!=0 and product_id='.$this->id
-			)
+			);
+			Core_cacheSave('products', 'categories_for_product_'.$this->id, $cs);
+		}
+		$productCats=array_merge(
+			array(array('category_id'=>$this->default_category)),
+			$cs
 		);
 		if (count($productCats)) {
 			$pcats=array();
 			foreach ($productCats as $productCat) {
 				$pcats[]=$productCat['category_id'];
 			}
-			$rs=dbAll(
-				'select page_id '
-				.'from page_vars where name="products_category_to_show" '
-				.'and value in ('.join(',', $pcats).')'
+			$rs=Core_cacheLoad(
+				'products',
+				'pages_with_categories_'.join(',', $pcats)
 			);
+			if ($rs===false) {
+				$rs=dbAll(
+					'select page_id from page_vars where '
+					.'name="products_category_to_show" and value in ('
+					.join(',', $pcats).')'
+				);
+				Core_cacheSave(
+					'products',
+					'pages_with_categories_'.join(',', $pcats),
+					$rs
+				);
+			}
 			$pid=0;
 			foreach ($rs as $r) {
 				$page=Page::getInstance($r['page_id']);
@@ -797,11 +821,15 @@ class ProductCategory{
 		*/
 	function getRelativeUrl() {
 		// { see if there are any pages that use this category
-		$ps1=dbAll(
-			'select page_id from page_vars where name="products_category_to_show" '
-			.'and value='.$this->vals['id'],
-			'page_id'
-		);
+		$ps1=Core_cacheLoad('products', 'page_for_category_'.$this->vals['id']);
+		if ($ps1===false) {
+			$ps1=dbAll(
+				'select page_id from page_vars where name="products_category_to_show" '
+				.'and value='.$this->vals['id'],
+				'page_id'
+			);
+			Core_cacheSave('products', 'page_for_category_'.$this->vals['id'], $ps1);
+		}
 		if ($ps1 && count($ps1)) {
 			$sql='select id from pages,page_vars where page_id=pages.id '
 				.'and page_vars.name="products_what_to_show" and page_vars.value=2 '
@@ -843,7 +871,11 @@ class ProductType{
 		if ($v<1) {
 			return false;
 		}
-		$r=dbRow("select * from products_types where id=$v limit 1");
+		$r=Core_cacheLoad('products', 'productTypes_'.$v, -1);
+		if ($r===-1) {
+			$r=dbRow("select * from products_types where id=$v limit 1");
+			Core_cacheSave('products', 'productTypes_'.$v, $r);
+		}
 		if (!count($r)) {
 			return false;
 		}

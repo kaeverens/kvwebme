@@ -42,7 +42,7 @@ function __($str, $context='core', $params=array()) {
 	}
 
 	// webme is written in en-GB
-	if ($_languages[0]=='en' || $_languages[0]=='en-GB') {
+	if ($_languages[0]=='en' || $_languages[0]=='en-gb' || $_languages[0]=='en-us') {
 		return $str;
 	}
 

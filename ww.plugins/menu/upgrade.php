@@ -1,10 +1,10 @@
 <?php
 if ($version=='0') { // add menu table
-	dbQuery('create table if not exists menus(
-		id int auto_increment not null primary key,
-		parent int default 0,
-		direction smallint default 1
-	)default charset=utf8;');
+	dbQuery(
+		'create table if not exists menus(id int auto_increment not null '
+		.'primary key,parent int default 0,direction smallint default 1)'
+		.'default charset=utf8'
+	);
 	$version=1;
 }
 if ($version=='1') { // add background colours
@@ -29,10 +29,10 @@ if ($version=='5') { // where to inherit styles from
 	dbQuery('update menus set style_from=1');
 	$version=6;
 }
-if( $version == '6' ){
+if ($version=='6') {
 	// create state column in database
-	dbQuery( 'alter table menus add state text' );
+	dbQuery('alter table menus add state text');
 	// set default value for state
-	dbQuery( 'update menus set state=0' );
+	dbQuery('update menus set state=0');
 	$version=7;
 }
