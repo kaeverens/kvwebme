@@ -124,21 +124,22 @@ function Core_cacheClear($type='') {
   * retrieve a cached variable if it exists
   *
   * @param string $type type of cache
-	* @param string $md5  unique identifier of the cache
+	* @param string $id   unique identifier of the cache
+	* @param mixed  $fail what to return if cache doesn't exist
   *
   * @return mixed the variable if it was cached, or false
   */
-function Core_cacheLoad($type, $md5) {
-	if (strlen($md5)>32) {
-		$md5=md5($md5);
+function Core_cacheLoad($type, $id, $fail=false) {
+	if (strlen($id)>32) {
+		$id=md5($id);
 	}
-	if (file_exists(USERBASE.'/ww.cache/'.$type.'/'.$md5)) {
+	if (file_exists(USERBASE.'/ww.cache/'.$type.'/'.$id)) {
 		return json_decode(
-			file_get_contents(USERBASE.'/ww.cache/'.$type.'/'.$md5),
+			file_get_contents(USERBASE.'/ww.cache/'.$type.'/'.$id),
 			true
 		);
 	}
-	return false;
+	return $fail;
 }
 
 /**

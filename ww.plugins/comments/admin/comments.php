@@ -1,17 +1,16 @@
 <?php
-
 /**
-  * Shows all comments for the site with a delete link
-  *
-  * PHP Version 5
-  *
-  * @category   CommentsPlugin
-  * @package    WebworksWebme
-  * @subpackage CommentsPlugin
-  * @author     Belinda Hamilton <bhamilton@webworks.ie>
-  * @license    GPL Version 2.0
-  * @link       www.kvweb.me
-**/
+	* Shows all comments for the site with a delete link
+	*
+	* PHP Version 5
+	*
+	* @category   CommentsPlugin
+	* @package    KVWebme
+	* @subpackage CommentsPlugin
+	* @author     Belinda Hamilton <bhamilton@webworks.ie>
+	* @license    GPL Version 2.0
+	* @link       www.kvweb.me
+	**/
 
 // { global options
 echo '<table>';
@@ -55,7 +54,8 @@ echo '<strong>Comments</strong>';
 $comments = dbAll('select * from comments');
 echo '<div style="width:80%">';
 echo '<table id="comments-table" style="width:100%"><thead><tr>';
-echo '<th>Date</th><th>Name</th><th>Email</th><th>URL</th><th>Comment</th><th>Mod</th><th>Edit</th><th>Delete</th></tr></thead><tbody>';
+echo '<th>Date</th><th>Name</th><th>Email</th><th>URL</th><th>Comment</th>'
+	.'<th>Mod</th><th>Edit</th><th>Delete</th></tr></thead><tbody>';
 foreach ($comments as $comment) {
 	$id = $comment['id'];
 	echo '<tr id="comment-'.$id.'">';

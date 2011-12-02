@@ -22,13 +22,14 @@ if (!is_numeric($id)) {
 }
 
 dbQuery(
-	'update comments set comment = "'.addslashes($_REQUEST['comment']).'"
-	where id = '.$id
+	'update comments set comment="'.addslashes($_REQUEST['comment']).'" where id='
+	.$id
 );
-
+Core_cacheClear('comments');
 $comment = dbRow('select * from comments where id = '.$id);
-
-echo '{
-		"id":'.$id.',
-		"comment":"'.$comment['comment'].'"
-	}';
+echo json_encode(
+	array(
+		'id'=>$id,
+		'comment'=>$comment
+	)
+);

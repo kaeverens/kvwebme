@@ -1,28 +1,28 @@
 <?php
 
 /**
-  * Displays validated comments
-  *
-  * PHP Version 5
-  *
-  * @category   CommentsPlugin
-  * @package    WebworksWebme
-  * @subpackage CommentsPlugin
-  * @author     Belinda Hamilton <bhamilton@webworks.ie>
-  * @author     Kae Verens <kae@kvsites.ie>
-  * @license    GPL Version 2
-  * @link       www.kvweb.me
-**/
+	* Displays validated comments
+	*
+	* PHP Version 5
+	*
+	* @category   CommentsPlugin
+	* @package    WebworksWebme
+	* @subpackage CommentsPlugin
+	* @author     Belinda Hamilton <bhamilton@webworks.ie>
+	* @author     Kae Verens <kae@kvsites.ie>
+	* @license    GPL Version 2
+	* @link       www.kvweb.me
+	**/
 
 require_once SCRIPTBASE.'ww.incs/recaptcha.php';
 
 /**
-  * The main display function
-  *
-  * @param Object $page Page Info
-  *
-  * @return $html The comments and an add comment form
-**/
+	* The main display function
+	*
+	* @param Object $page Page Info
+	*
+	* @return $html The comments and an add comment form
+	**/
 function Comments_displayComments($page) {
 	if (!$GLOBALS['access_allowed']) {
 		return '';
@@ -37,44 +37,34 @@ function Comments_displayComments($page) {
 	$hideComments=isset($page->vars['hide_comments'])
 		&& $page->vars['hide_comments'];
 	if ($hideComments) {
-		if (isset($_SESSION['comment_ids']) && count($_SESSION['comment_ids'])) {
-			$query = 'select * from comments where objectid = '.$page->id;
-			$query.= ' and id in (';
-			foreach ($_SESSION['comment_ids'] as $comment) {
-				$query.= (int)$comment.', ';
-			}
-			if (is_numeric(strpos($query, ', '))) {
-				$query = substr_replace($query, '', strrpos($query, ', '));
-				$query.= ')';
-			}
-			else {
-				$query = '';
-			}
+		if (count(@$_SESSION['comment_ids'])) {
+			$query='select * from comments where objectid='.$page->id.' and id in ('
+				.join(', ', $_SESSION['comment_ids']).')';
 		}
 		else {
 			$query = '';
 		}
 	}
 	else {
-		$query = 'select * from comments where objectid = '.$page->id;
-		$query.= ' and (isvalid = 1 or id in (';
-		if (isset($_SESSION['comment_ids']) && is_array($_SESSION['comment_ids'])) {
-			foreach ($_SESSION['comment_ids'] as $comment) {
-				$query.= (int)$comment.', ';
-			}
-		}
-		if (is_numeric(strpos($query, ', '))) {
-			$query = substr_replace($query, '', strrpos($query, ', '));
-			$query.= '))';
+		if (count(@$_SESSION['comment_ids'])) {
+			$query='select * from comments where objectid='.$page->id
+				.' and (isvalid=1 or id in ('.join(', ', $_SESSION['comment_ids']).'))';
 		}
 		else {
-			$query = 'select * from comments where objectid = '.$page->id;
-			$query.= ' and isvalid = 1';
+			$query = 'select * from comments where objectid='.$page->id
+				.' and isvalid=1';
 		}
 	}
-	if (!empty($query)) {
-		$comments = dbAll($query.' order by cdate '.($commentboxfirst?'desc':'asc'));
+	if ($query) {
+		$sql=$query.' order by cdate '.($commentboxfirst?'desc':'asc');
+		$md5=md5($sql);
+		$comments=Core_cacheLoad('comments', $md5);
+		if ($comments===false) {
+			$comments=dbAll($sql);
+			Core_cacheSave('comments', $md5, $comments);
+		}
 	}
+	// }
 	$clist='';
 	if (count($comments)) {
 		$clist = '<div id="start-comments" class="comments-list"><a name="comments"></a>'
@@ -107,7 +97,8 @@ function Comments_displayComments($page) {
 				$clist.= htmlspecialchars($comment['name']);
 			}
 			$clist.= ' on '.date_m2h($datetime).'</div>'
-				.'<div id="comment-'.$id.'" class="comments-comment">'.htmlspecialchars($comment['comment'])
+				.'<div id="comment-'.$id.'" class="comments-comment">'
+				.htmlspecialchars($comment['comment'])
 				.'</div></div>';
 		}
 		$clist.='</div>';
@@ -116,11 +107,15 @@ function Comments_displayComments($page) {
 		$clist.= '';
 	}
 	// { get comment box HTML
-	$allowComments = dbOne(
-		'select value from page_vars 
-		where name = "allow_comments" and page_id = '.$page->id,
-		'value'
-	);
+	$allowComments=Core_cacheLoad('comments', 'allow-'.$page->id, -1);
+	if ($allowComments===-1) {
+		$allowComments=dbOne(
+			'select value from page_vars where name="allow_comments" and page_id='
+			.$page->id,
+			'value'
+		);
+		Core_cacheSave('comments', 'allow-'.$page->id, $allowComments);
+	}
 	$cbhtml=$allowComments=='on'?Comments_showCommentForm($page->id):'';
 	// }
 	return '<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.8/'
@@ -139,20 +134,19 @@ function Comments_displayComments($page) {
 function Comments_showCommentForm($pageID) {
 	if (isset($_SESSION['userdata'])) {
 		$userID =$_SESSION['userdata']['id'];
-		$user 
-			= dbRow(
-				'select name, email from user_accounts 
-				where id = '.$userID
-			);
+		$user=dbRow('select name, email from user_accounts where id = '.$userID);
 	}
-	$noCaptchas=(int)dbOne('select value from site_vars where name = "comments_no_captchas"', 'value');
+	$noCaptchas=(int)dbOne(
+		'select value from site_vars where name = "comments_no_captchas"',
+		'value'
+	);
 	$display= '<form id="comment-form" class="comments-form" method="post" 
 		action="javascript:comments_check_captcha();">';
 	$display.= '<strong>Add Comment</strong>';
 	$display.= '<input type="hidden" name="page" id="comments-page-id" 
 		value="'.$pageID.'" />';
-	$display.='<table class="comments-form-table"><tr class="comments-name"><th>Name</th>';
-	$display.= '<td><input id="comments-name-input" name="name" ';
+	$display.='<table class="comments-form-table"><tr class="comments-name">'
+		.'<th>Name</th><td><input id="comments-name-input" name="name" ';
 	if (isset($user)) {
 		$display.= ' value="'.htmlspecialchars($user['name']).'"';
 	}
@@ -165,15 +159,16 @@ function Comments_showCommentForm($pageID) {
 	$display.= ' /></td></tr>'
 		.'<tr class="comments-url"><th>Website</th>'
 		.'<td><input id="site" name="comments-site-input" /></td></tr>'
-		.'<tr class="comments-comment"><th>Comment</th>'
-		.'<td><textarea id="comments-comment-input" name="comment"></textarea></td></tr>';
+		.'<tr class="comments-comment"><th>Comment</th><td>'
+		.'<textarea id="comments-comment-input" name="comment"></textarea></td>'
+		.'</tr>';
 	if (!$noCaptchas) {
 		$display.='<tr><td colspan="2"><div id="captcha" class="comments_captcha">'
 			.Recaptcha_getHTML()
 			.'</div></td></tr>';
 	}
-	$display.='<tr class="comments-submit-comment"><th>&nbsp;</th><td><input type="submit" id="submit" '
-		.'value="Submit Comment"  /></td></tr>'
+	$display.='<tr class="comments-submit-comment"><th>&nbsp;</th><td>'
+		.'<input type="submit" id="submit" value="Submit Comment"  /></td></tr>'
 		.'</table></form><script>comments_noCaptchas='.$noCaptchas.';</script>';
 	return $display;
 }

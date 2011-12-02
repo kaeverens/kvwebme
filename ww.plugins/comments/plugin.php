@@ -1,19 +1,20 @@
 <?php
 
 /**
-  * The plugin.php file for Webme's comments plugin
-  *
-  * PHP Version 5
-  *
-  * @category   WebmeCommentsPlugin
-  * @package    WebworksWembe
-  * @subpackage Comments
-  * @author     Belinda Hamilton <bhamilton@webworks.ie>
-  * @author     Kae Verens <kae@kvsites.ie>
-  * @license    GPL Version 2
-  * @link       www.kvweb.me
-**/
+	* The plugin.php file for Webme's comments plugin
+	*
+	* PHP Version 5
+	*
+	* @category   WebmeCommentsPlugin
+	* @package    WebworksWembe
+	* @subpackage Comments
+	* @author     Belinda Hamilton <bhamilton@webworks.ie>
+	* @author     Kae Verens <kae@kvsites.ie>
+	* @license    GPL Version 2
+	* @link       www.kvweb.me
+	**/
 
+// { configure
 $plugin = array(
 	'name'=>'Comments',
 	'description' =>'Allow visitors to comment on pages on your site',
@@ -33,47 +34,45 @@ $plugin = array(
 	),
 	'rss-handler'=>'Comments_rssHandler'
 );
+// }
 
 /**
-  * A stub function to display the contents of the comments tab
-  *
-  * @param Object $page     The page
-  * @param Object $pagevars Page related variables
-  *
-  * @return void
-  *
-  * @see admin/comments-tab.php
-  *
-**/
-
+	* A stub function to display the contents of the comments tab
+	*
+	* @param Object $page     The page
+	* @param Object $pagevars Page related variables
+	*
+	* @return void
+	*
+	* @see admin/comments-tab.php
+	*
+	**/
 function Comments_pageTab ($page, $pagevars) {
 	require_once SCRIPTBASE.'ww.plugins/comments/admin/comments-tab.php';
 }
 
 /**
-  * A stub function to show comments
-  *
-  * @param Object $PAGEDATA The page
-  *
-  * @return string The comment html
-  *
-  * @see frontend/comments-show.php
-  *
-**/
-
+	* A stub function to show comments
+	*
+	* @param Object $PAGEDATA The page
+	*
+	* @return string The comment html
+	*
+	* @see frontend/comments-show.php
+	*
+	**/
 function Comments_getCommentsHTML($PAGEDATA) {
 	require_once dirname(__FILE__).'/frontend/show-comments.php';
 	return Comments_displayComments($PAGEDATA);
 }
 
 /**
-  * get RSS link if available
-  *
-  * @param Object $PAGEDATA The page
-  *
-  * @return string URL of the RSS feed
-**/
-
+	* get RSS link if available
+	*
+	* @param Object $PAGEDATA The page
+	*
+	* @return string URL of the RSS feed
+	**/
 function Comments_getRssLink($PAGEDATA) {
 	$hideComments=isset($PAGEDATA->vars['hide_comments'])
 		&& $PAGEDATA->vars['hide_comments'];
@@ -86,13 +85,12 @@ function Comments_getRssLink($PAGEDATA) {
 }
 
 /**
-  * get a list of comments for an RSS feed
-  *
-  * @param Object $PAGEDATA The page
-  *
-  * @return array array of articles
-**/
-
+	* get a list of comments for an RSS feed
+	*
+	* @param Object $PAGEDATA The page
+	*
+	* @return array array of articles
+	**/
 function Comments_rssHandler($PAGEDATA) {
 	$hideComments=isset($PAGEDATA->vars['hide_comments'])
 		&& $PAGEDATA->vars['hide_comments'];

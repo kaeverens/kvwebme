@@ -1,11 +1,23 @@
 <?php
+/**
+	* API for Comments plugin
+	*
+	* PHP Version 5
+	*
+	* @category   CommentsPlugin
+	* @package    KVWebme
+	* @subpackage CommentsPlugin
+	* @author     Kae Verens <kae@kvsites.ie>
+	* @author     Belinda Hamilton <bhamilton@webworks.ie>
+	* @license    GPL Version 2.0
+	* @link       www.kvweb.me
+	**/
 
 /**
 	* Update the comments table
 	*
 	* @return null
 	*/
-
 function Comments_update() {
 	$id = $_REQUEST['id'];
 	$comment = $_REQUEST['comment'];
@@ -20,5 +32,6 @@ function Comments_update() {
 		'update comments set comment = "'.addslashes($comment)
 		.'" where id = '.(int)$id
 	);
+	Core_cacheClear('comments');
 	return array('status'=>1, 'id'=>$id, 'comment'=>$comment);
 }

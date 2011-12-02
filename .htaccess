@@ -1,8 +1,9 @@
 <IfModule mod_deflate.c>
 	SetOutputFilter DEFLATE
 </IfModule>
-
-php_flag magic_quotes_gpc off
+<IfModule mod_php5.c>
+	php_flag magic_quotes_gpc off
+</IfModule>
 
 RewriteEngine on
 
