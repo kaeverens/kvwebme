@@ -208,15 +208,47 @@ function WW_getScripts() {
   *
   * @return string the HTML of the RTE
   */
-function ckeditor($name, $value='', $height=250) {
-	return '<textarea style="width:100%;height:'.$height.'px" name="'
-		.addslashes($name).'">'.htmlspecialchars($value).'</textarea>'
-		."<script>//<![CDATA[\n"
-		.'$(function(){window.ckeditor_'.preg_replace('/[^a-zA-Z_]/', '', $name)
-		.'=CKEDITOR.replace("'
-		.str_replace(array('[',']'), array('\[','\]'), addslashes($name))
-		.'",CKEditor_config);});'
-		."//]]></script>";
+function ckeditor($name, $value='', $height=250, $translatable=0) {
+	if (!$translatable) {
+		return '<textarea style="width:100%;height:'.$height.'px" name="'
+			.addslashes($name).'">'.htmlspecialchars($value).'</textarea>'
+			."<script>//<![CDATA[\n"
+			.'$(function(){window.ckeditor_'.preg_replace('/[^a-zA-Z_]/', '', $name)
+			.'=CKEDITOR.replace("'
+			.str_replace(array('[',']'), array('\[','\]'), addslashes($name))
+			.'",CKEditor_config);});'
+			."//]]></script>";
+	}
+	global $langs, $tabindex;
+	if (!$tabindex) {
+		$tabindex=time();
+	}
+	$html='<div class="tabs mini-tabs"><ul>';
+	foreach ($langs as $lang) {
+		$html.='<li><a href="#tab-'.$tabindex.'-'.$lang['code'].'">'.$lang['name'].'</a></li>';
+	}
+	$html.='</ul>';
+	foreach ($langs as $lang) {
+		$v2=__FromJson($value, true, $lang['code']);
+		$html.='<div id="tab-'.$tabindex.'-'.$lang['code'].'">'
+			.'<textarea style="width:100%;height:'.$height.'px" name="'
+			.addslashes($name).'['.$lang['code'].']">'.htmlspecialchars($v2).'</textarea>'
+			."<script>//<![CDATA[\n"
+			.'$(function(){window.ckeditor_'
+			.preg_replace('/[^a-zA-Z_]/', '', $name.'_'.$lang['code'])
+			.'=CKEDITOR.replace("'
+			.str_replace(
+				array('[',']'),
+				array('\[','\]'),
+				addslashes($name.'['.$lang['code'].']')
+			)
+			.'",CKEditor_config);});'
+			."//]]></script>"
+			.'</div>';
+	}
+	$html.='</div>';
+	$tabindex++;
+	return $html;
 }
 
 /**

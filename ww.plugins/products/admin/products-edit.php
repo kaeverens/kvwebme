@@ -57,7 +57,12 @@ function Products_showDataField($df, $def) {
 			}
 		break; // }
 		case 'textarea': // {
-			echo ckeditor('data_fields['.htmlspecialchars($def['n']).']', $df['v']);
+			echo ckeditor(
+				'data_fields['.htmlspecialchars($def['n']).']',
+				$df['v'],
+				null,
+				true
+			);
 		break; // }
 		default: // { inputbox
 			echo '<input name="data_fields['.htmlspecialchars($def['n']).']"';
@@ -138,7 +143,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 		foreach ($_REQUEST['data_fields'] as $n=>$v) {
 			$dfs[]=array(
 				'n'=>$n,
-				'v'=>$v
+				'v'=>is_array($v)?json_encode($v):$v
 			);
 		}
 		$sql.=',data_fields="'.addslashes(json_encode($dfs)).'"';

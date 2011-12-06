@@ -86,13 +86,16 @@ function __($str, $context='core', $params=array()) {
 	return $str;
 }
 
-function __FromJson($str, $first_result=false) {
+function __FromJson($str, $first_result=false, $specific_lang=false) {
 	global $_languages;
 	$s=json_decode($str, true);
 	if ($s===null) {
 		return $str;
 	}
 	else {
+		if ($specific_lang && $s[$specific_lang]) {
+			return $s[$specific_lang];
+		}
 		if ($first_result) {
 			foreach ($s as $l=>$r) {
 				return $r;

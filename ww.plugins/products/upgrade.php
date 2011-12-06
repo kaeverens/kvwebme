@@ -221,3 +221,14 @@ if ($version==31) { // add default category to product
 	dbQuery('alter table products add default_category int default 1');
 	$version=32;
 }
+if ($version==32) { // add link field to help with multilingual
+	dbQuery('alter table products add link text');
+	$rs=dbAll('select name,id from products');
+	foreach ($rs as $r) {
+		dbQuery(
+			'update products set link="'.addslashes(__FromJson($r['name'], true))
+			.'" where id='.$r['id']
+		);
+	}
+	$version=33;
+}

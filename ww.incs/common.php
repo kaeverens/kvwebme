@@ -108,7 +108,7 @@ function menu_build_fg($parentid, $depth, $options) {
 		$page=Page::getInstance($r['id'])->initValues();
 		$item.='<a class="menu-fg menu-pid-'.$r['id'].'" href="'
 			.$page->getRelativeUrl().'">'
-			.htmlspecialchars($page->alias).'</a>';
+			.htmlspecialchars(__FromJson($page->name)).'</a>';
 		$item.=menu_build_fg($r['id'], $depth+1, $options);
 		$item.='</li>';
 		$items[]=$item;
@@ -159,7 +159,8 @@ function menu_build_fg($parentid, $depth, $options) {
 	* @return string the html
 	*/
 function menu_show_fg ($opts) {
-	$md5=md5('menu_fg|'.print_r($opts, true));
+	global $_languages;
+	$md5=md5('menu_fg|'.print_r($opts, true).'|'.join(', ', $_languages));
 	$cache=Core_cacheLoad('menus', $md5);
 	if ($cache) {
 		return $cache;
@@ -196,7 +197,9 @@ function menu_show_fg ($opts) {
 	$options['type']=(int)$options['type'];
 	$items=array();
 	$menuid=$GLOBALS['fg_menus']++;
-	$md5=md5($options['parent'].'|0|'.json_encode($options));
+	$md5=md5(
+		$options['parent'].'|0|'.json_encode($options).'|'.join(', ', $_languages)
+	);
 	$html=Core_cacheLoad('pages', 'fgmenu-'.$md5);
 	if ($html===false) {
 		$html=menu_build_fg($options['parent'], 0, $options);

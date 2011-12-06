@@ -101,7 +101,7 @@ $plugin=array(
 	'triggers' => array(
 		'initialisation-completed' => 'Products_addToCart'
 	),
-	'version' => '32'
+	'version' => '33'
 );
 // }
 
@@ -217,14 +217,15 @@ function Products_frontend($PAGEDATA) {
 				if ($cat_id) {
 					$id=dbOne(
 						'select product_id,name from products_categories_products,products'
-						.' where category_id='.$cat_id.' and name like "'
+						.' where category_id='.$cat_id.' and link like "'
 						.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'" and id=product_id',
 						'product_id'
 					);
 				}
 				if (!$id) {
 					$id=dbOne(
-						'select id from products where name like "'.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'"',
+						'select id from products where link like "'
+						.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'"',
 						'id'
 					);
 				}
@@ -508,6 +509,7 @@ class Product{
 		}
 		$this->id=$r['id'];
 		$this->name=$r['name'];
+		$this->link=$r['link'];
 		$this->default_category=(int)$r['default_category'];
 		if ($this->default_category==0) {
 			$this->default_category=1;
@@ -609,7 +611,7 @@ class Product{
 			if ($pid) {
 				$page = Page::getInstance($pid);
 				$this->relativeUrl=$page->getRelativeUrl()
-					.'/'.preg_replace('/[^a-zA-Z0-9]/', '-', __FromJson($this->name, true));
+					.'/'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
 				return $this->relativeUrl;
 			}
 		}
@@ -623,10 +625,10 @@ class Product{
 		}
 		if ($cat) {
 			$cat=ProductCategory::getInstance($cat);
-			return $cat->getRelativeUrl().'/'.urlencode(__FromJson($this->name));
+			return $cat->getRelativeUrl().'/'.urlencode($this->link);
 		}
 		if (preg_match('/^products(\||$)/', $PAGEDATA->type)) { // TODO
-			return $PAGEDATA->getRelativeUrl().'/'.urlencode(__FromJson($this->name));
+			return $PAGEDATA->getRelativeUrl().'/'.urlencode($this->link);
 		}
 		$this->relativeUrl='/_r?type=products&amp;product_id='.$this->id;
 		return $this->relativeUrl;

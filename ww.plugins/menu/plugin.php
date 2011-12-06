@@ -1,4 +1,5 @@
 <?php
+// { setup the config
 $plugin=array(
 	'name' => 'Menu',
 	'admin' => array(
@@ -17,6 +18,7 @@ $plugin=array(
 	),
 	'version'=>7
 );
+// }
 
 require_once SCRIPTBASE.'ww.incs/menus.php';
 function menu_showWidget($vars=null) {

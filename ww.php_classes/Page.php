@@ -339,12 +339,15 @@ class Page{
 			}
 		}
 		$smarty=smarty_setup(USERBASE.'/ww.cache/pages');
-		if (!file_exists(USERBASE.'/ww.cache/pages/template_'.$this->id)) {
+		global $_languages;
+		$fname=USERBASE.'/ww.cache/pages/template_'.$this->id.'|'
+			.join(',', $_languages);
+		if (!file_exists($fname)) {
 			file_put_contents(
-				USERBASE.'/ww.cache/pages/template_'.$this->id,
-				$this->body
+				$fname,
+				__FromJson($this->body)
 			);
 		}
-		return $smarty->fetch(USERBASE.'/ww.cache/pages/template_'.$this->id);
+		return $smarty->fetch($fname);
 	}
 }

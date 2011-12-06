@@ -45,7 +45,7 @@ function Page_showBody($page, $page_vars) {
 			return $plugin['admin']['body_override']($page, $page_vars);
 		}
 	}
-	return ckeditor('body', $page['body']);
+	return ckeditor('body', $page['body'], null, 1);
 }
 
 // }

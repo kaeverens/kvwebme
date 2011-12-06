@@ -222,7 +222,7 @@ $(function(){
 			modal:true
 		});
 	});
-	$("#tabs").tabs();
+	$("#tabs,.tabs").tabs();
 	$('#products-form').submit(products_form_validate);
 	$('a.delete-product-page').click(function(){
 		if (!confirm('are you sure you want to delete the product page?')) {

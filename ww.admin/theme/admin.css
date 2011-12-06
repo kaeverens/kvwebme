@@ -190,3 +190,13 @@ div.fg-menu-container ul li a:hover,#sidebar1 a:hover,#menu-top ul li a:hover{
 	position:absolute;
 	right:0;
 }
+
+div.mini-tabs .ui-tabs-panel{
+	padding:0;
+}
+div.mini-tabs .ui-tabs-nav li a{
+	padding:.1em 2px;
+}
+div.mini-tabs .ui-tabs-nav{
+	height:1.7em;
+}
