@@ -282,7 +282,7 @@ echo '<div id="main-details"><table>';
 echo '<tr>';
 // { name
 echo '<th><div class="help products/name"></div>Name</th><td>';
-echo '<input class="not-empty" name="name" value="'
+echo '<input class="not-empty translatable" name="name" value="'
 	.htmlspecialchars($pdata['name']).'" /></td>';
 // }
 // { type

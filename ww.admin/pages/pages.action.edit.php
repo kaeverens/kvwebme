@@ -89,6 +89,7 @@ $q='update pages set importance="'.$importance.'"'
 	.',keywords="'.addslashes($keywords).'"'
 	.',description="'.addslashes($description).'"'
 	.',name="'.addslashes($name).'",title="'.addslashes($_POST['title']).'"'
+	.',link="'.addslashes(__FromJson($name, true)).'"'
 	.',original_body="'.addslashes(Core_sanitiseHtmlEssential($original_body)).'"'
 	.',body="'.addslashes($body).'"'
 	.',special='.$special
@@ -160,4 +161,4 @@ unset($DBVARS['cron-next']);
 Core_configRewrite();
 echo '<script>window.parent.document.getElementById("page_'.$id.'")'
 	.'.childNodes[1].innerHTML=\'<ins class="jstree-icon">&nbsp;</ins>'
-	.htmlspecialchars($alias).'\';</script>';
+	.htmlspecialchars(__FromJson($_REQUEST['name'], true)).'\';</script>';

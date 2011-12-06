@@ -107,7 +107,8 @@ function menu_build_fg($parentid, $depth, $options) {
 		$item='<li>';
 		$page=Page::getInstance($r['id'])->initValues();
 		$item.='<a class="menu-fg menu-pid-'.$r['id'].'" href="'
-			.$page->getRelativeUrl().'">'.htmlspecialchars($page->alias).'</a>';
+			.$page->getRelativeUrl().'">'
+			.htmlspecialchars($page->alias).'</a>';
 		$item.=menu_build_fg($r['id'], $depth+1, $options);
 		$item.='</li>';
 		$items[]=$item;

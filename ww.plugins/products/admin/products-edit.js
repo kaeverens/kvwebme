@@ -311,4 +311,5 @@ $(function(){
 		.remoteselectoptions({
 			"url":'/a/p=products/f=adminCategoriesGetRecursiveList'
 		});
+	Core_createTranslatableInputs();
 });

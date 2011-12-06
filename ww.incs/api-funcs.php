@@ -22,6 +22,15 @@ function Core_nothing() {
 }
 
 /**
+	* return a list of the site's languages
+	*
+	* @return array the list of languages
+	*/
+function Core_languagesGet() {
+	return dbAll('select * from language_names order by is_default desc, name');
+}
+
+/**
 	* check that a directory exists
 	*
 	* @param string $file directory to check

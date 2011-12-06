@@ -86,6 +86,26 @@ function __($str, $context='core', $params=array()) {
 	return $str;
 }
 
+function __FromJson($str, $first_result=false) {
+	global $_languages;
+	$s=json_decode($str, true);
+	if ($s===null) {
+		return $str;
+	}
+	else {
+		if ($first_result) {
+			foreach ($s as $l=>$r) {
+				return $r;
+			}
+		}
+		foreach ($_languages as $l) {
+			if (isset($s[$l]) && $s[$l]) {
+				return $s[$l];
+			}
+		}
+	}
+}
+
 /**
   * clear a cache or all caches
   *
@@ -470,6 +490,12 @@ function WW_addScript($url) {
 
 // { set up language
 $_languages=array();
+if (isset($_REQUEST['__LANG'])) {
+	$_SESSION['language']=$_REQUEST['__LANG'];
+}
+if (isset($_SESSION['language'])) {
+	$_languages[]=$_SESSION['language'];
+}
 if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 	$_languages[]='en';
 }

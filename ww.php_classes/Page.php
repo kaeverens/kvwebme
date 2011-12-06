@@ -38,7 +38,7 @@ class Page{
 				}
 			}
 		}
-		elseif ($byField == 1) { // by name
+		elseif ($byField == 1) { // by link (name)
 			if (preg_match('/[^a-zA-Z0-9 \-_]/', $v)) {
 				return false;
 			}
@@ -47,7 +47,7 @@ class Page{
 			$r=Core_cacheLoad('pages', $fname);
 			if ($r===false) {
 				$r=dbRow(
-					"select * from pages where name like '".addslashes($name)
+					"select * from pages where link like '".addslashes($name)
 					."' limit 1"
 				);
 				if (count($r)) {
@@ -301,7 +301,7 @@ class Page{
 			return $this->getURLSafeName;
 		}
 		$r=$this->urlname;
-		$r=preg_replace('/[^,a-zA-Z0-9,-]/', '-', $r);
+		$r=preg_replace('/[^,a-zA-Z0-9,-]/', '-', __FromJson($r, true));
 		$this->getURLSafeName=$r;
 		return $r;
 	}

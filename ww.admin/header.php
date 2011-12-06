@@ -81,6 +81,7 @@ foreach (array('show_items','start') as $v) {
 }
 $id=isset($_REQUEST['id'])?(int)$_REQUEST['id']:0;
 // }
+WW_addScript('/ww.admin/j/admin.js');
 WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
 WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
 WW_addScript('/j/jquery.remoteselectoptions.js');
@@ -90,7 +91,6 @@ WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
 WW_addScript('/j/cluetip/jquery.cluetip.js');
 WW_addScript('/j/jquery.uploadify/jquery.uploadify.js');
 WW_addScript('/j/jquery-ui-timepicker-addon.js');
-WW_addScript('/ww.admin/j/admin.js');
 echo '<!doctype html>
 <html><head><title>'.__('WebME admin area').'</title>';
 echo Core_getJQueryScripts()
@@ -104,6 +104,12 @@ foreach ($PLUGINS as $pname=>$p) {
 	}
 }
 echo WW_getCSS();
+// { languages
+$langs=dbAll(
+	'select code,name from language_names order by is_default desc,code,name'
+);
+echo '<script>var languages='.json_encode($langs).';</script>';
+// }
 echo '</head><body';
 echo '><div id="header">';
 // { setup standard menu items
@@ -113,9 +119,12 @@ $menus=array(
 	),
 	'Site Options'=>array(
 		'General'=> array('_link'=>'siteoptions.php'),
+		'Languages'=>array(
+			'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Languages\')'
+		),
 		'Users'  => array('_link'=>'siteoptions.php?page=users'),
-		'Themes' => array('_link'=>'siteoptions.php?page=themes'),
 		'Plugins'=> array('_link'=>'siteoptions.php?page=plugins'),
+		'Themes' => array('_link'=>'siteoptions.php?page=themes'),
 		'Timed Events'=>array(
 			'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Cron\')'
 		)

@@ -50,6 +50,60 @@ function Core_adminDirectoriesGet() {
 	$arr=array_merge(array('/'=>'/'), get_subdirs(USERBASE.'f', ''));
 	return $arr;
 }
+function Core_adminLanguagesAdd() {
+	$name=$_REQUEST['name'];
+	$code=$_REQUEST['code'];
+	if (!$name || !$code) {
+		return array(
+			'error'=>'You must fill in Name and Code'
+		);
+	}
+	if (dbOne(
+		'select count(id) as ids from language_names where name="'
+		.addslashes($name).'" or code="'.addslashes($code).'"',
+		'ids'
+	)) {
+		return array(
+			'error'=>'Either the Name or Code are already in use'
+		);
+	}
+	dbQuery(
+		'insert into language_names set name="'.addslashes($name).'"'
+		.',code="'.addslashes($code).'",is_default=0'
+	);
+	return array('ok'=>1);
+}
+function Core_adminLanguagesDelete() {
+	$id=(int)$_REQUEST['id'];
+	dbQuery('delete from language_names where id='.$id);
+	return array('ok'=>1);
+}
+function Core_adminLanguagesEdit() {
+	$id=(int)$_REQUEST['id'];
+	$name=$_REQUEST['name'];
+	$code=$_REQUEST['code'];
+	$is_default=(int)$_REQUEST['is_default'];
+	if (!$name || !$code) {
+		return array(
+			'error'=>'You must fill in Name and Code'
+		);
+	}
+	if ($is_default) {
+		dbQuery('update language_names set is_default=0');
+	}
+	else {
+		$r=dbRow('select * from language_names where id='.$id);
+		if ($r['is_default']=='1') {
+			$is_default=1; // cannot unset is_default. must set on a different lang
+		}
+	}
+	dbQuery(
+		'update language_names set name="'.addslashes($name).'"'
+		.',code="'.addslashes($code).'",is_default='.$is_default
+		.' where id='.$id
+	);
+	return array('ok'=>1);
+}
 function Core_adminPageChildnodes() {
 	$pid=(int)preg_replace('/[^0-9]/', '', $_REQUEST['id']);
 	$c=Core_cacheLoad('pages', 'adminmenu'.$pid);
@@ -57,14 +111,14 @@ function Core_adminPageChildnodes() {
 		return $c;
 	}
 	$rs=dbAll(
-		'select id,id as pid,special&2 as hide,type,alias,'
+		'select id,id as pid,special&2 as hide,type,name,'
 		.'(select count(id) from pages where parent=pid) as children '
 		.'from pages where parent='.$pid.' order by ord,name'
 	);
 	$data=array();
 	foreach ($rs as $r) {
 		$item=array(
-			'data' => $r['alias'],
+			'data' => __FromJson($r['name'], true),
 			'attr' => array(
 				'id'   => 'page_'.$r['id']
 			),

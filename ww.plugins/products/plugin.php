@@ -609,7 +609,7 @@ class Product{
 			if ($pid) {
 				$page = Page::getInstance($pid);
 				$this->relativeUrl=$page->getRelativeUrl()
-					.'/'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->name);
+					.'/'.preg_replace('/[^a-zA-Z0-9]/', '-', __FromJson($this->name, true));
 				return $this->relativeUrl;
 			}
 		}
@@ -623,10 +623,10 @@ class Product{
 		}
 		if ($cat) {
 			$cat=ProductCategory::getInstance($cat);
-			return $cat->getRelativeUrl().'/'.urlencode($this->name);
+			return $cat->getRelativeUrl().'/'.urlencode(__FromJson($this->name));
 		}
 		if (preg_match('/^products(\||$)/', $PAGEDATA->type)) { // TODO
-			return $PAGEDATA->getRelativeUrl().'/'.urlencode($this->name);
+			return $PAGEDATA->getRelativeUrl().'/'.urlencode(__FromJson($this->name));
 		}
 		$this->relativeUrl='/_r?type=products&amp;product_id='.$this->id;
 		return $this->relativeUrl;
@@ -1040,7 +1040,7 @@ class ProductType{
 					$smarty->assign(
 						$f->n,
 						'<input type="hidden" name="products_values_'.$f->n
-						.'" value="'.htmlspecialchars($val).'"/>'
+						.'" value="'.htmlspecialchars(FromJson($val)).'"/>'
 					);
 				break; // }
 				case 'selectbox': // {
@@ -1097,14 +1097,14 @@ class ProductType{
 							$f->n,
 							'<textarea class="product-field '.$f->n.$required
 							.'" name="products_values_'.$f->n.'">'
-							.trim(htmlspecialchars(preg_replace('/<[^>]*>/', '', $val)))
+							.trim(htmlspecialchars(preg_replace('/<[^>]*>/', '', __FromJson($val))))
 							.'</textarea>'
 						);
 					}
 					else {
 						$smarty->assign(
 							$f->n,
-							$val
+							__FromJson($val)
 						);
 					}
 				break; // }
@@ -1113,19 +1113,20 @@ class ProductType{
 						$smarty->assign(
 							$f->n,
 							'<input class="product-field '.$f->n.$required
-							.'" value="'.htmlspecialchars($val).'" name="products_values_'.$f->n.'"/>'
+							.'" value="'.htmlspecialchars(__FromJson($val))
+							.'" name="products_values_'.$f->n.'"/>'
 						);
 					}
 					else {
 						$smarty->assign(
 							$f->n,
-							$val
+							__FromJson($val)
 						);
 					}
 					// }
 			}
 		}
-		$smarty->assign('_name', $product->name);
+		$smarty->assign('_name', __FromJson($product->name));
 		$smarty->assign('_stock_number', $product->stock_number);
 		$html='';
 		if ($add_wrapper) {

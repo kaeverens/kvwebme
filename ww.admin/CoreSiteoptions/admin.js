@@ -1,6 +1,6 @@
 function CoreSiteoptions_screen(page) {
 	Core_sidemenu(
-		[ 'General', 'Users', 'Themes', 'Plugins', 'Cron' ],
+		[ 'General', 'Users', 'Themes', 'Plugins', 'Cron', 'Languages' ],
 		'CoreSiteoptions',
 		page
 	);
@@ -78,4 +78,109 @@ function CoreSiteoptions_screenCron() {
 		}
 		$this.attr('clicked', 1)
 	}
+}
+function CoreSiteoptions_screenLanguages() {
+	var $content=$('#content').empty();
+	$.post('/a/f=languagesGet', function(languages) {
+		var table='<table id="languages-table"><thead>'
+			+'<tr><th>Name</th><th>Code</th>'
+			+'<th>Default</th><th>&nbsp;</th></tr></thead>'
+			+'<tbody>';
+		for (var i=0;i<languages.length;++i) {
+			var lang=languages[i];
+			var links=['<a href="#" class="edit">edit</a>'];
+			if (!(+lang.is_default)) {
+				links.push('<a href="#" class="delete">[x]</a>');
+			}
+			table+='<tr cid="'+lang.id+'"><td>'+lang.name+'</td>'
+				+'<td>'+lang.code+'</td><td>'+(+lang.is_default?'Yes':'')+'</td>'
+				+'<td>'+links.join(', ')+'</td></tr>';
+		}
+		table+='</tbody></table>';
+		var $table=$(table)
+			.appendTo($content);
+		$table.dataTable();
+		$('<a href="#">Add Language</a>')
+			.click(function() {
+				$('<form id="languages-form"><table>'
+					+'<tr><th>Name</th><td><input name="name"/></td></tr>'
+					+'<tr><th>Code <a href="http://en.wikipedia.org/wiki/List_of_ISO_63'
+					+'9-1_codes" target="_blank">#</a></th><td>'
+					+'<input name="code" class="small"/></td></tr>'
+					+'</table></form>'
+				)
+					.dialog({
+						'modal':true,
+						'close':function() {
+							$('#languages-form').remove();
+						},
+						'buttons': {
+							'Add': function() {
+								$.post('/a/f=adminLanguagesAdd',
+									$('#languages-form').serialize(),
+									CoreSiteoptions_screenLanguages
+								);
+								$('#languages-form').remove();
+							},
+							'Cancel': function() {
+								$('#languages-form').remove();
+							}
+						}
+					});
+				return false;
+			})
+			.appendTo($content);
+		$('#languages-table .delete').click(function() {
+			var id=$(this).closest('tr').attr('cid');
+			if (!confirm('are you sure you want to delete this language?')) {
+				return;
+			}
+			$.post(
+				'/a/f=adminLanguagesDelete/id='+id,
+				CoreSiteoptions_screenLanguages
+			);
+			return false;
+		});
+		$('#languages-table .edit').click(function() {
+			var id=$(this).closest('tr').attr('cid');
+			var language;
+			for (var i=0;i<languages.length;++i) {
+				if (languages[i].id==id) {
+					language=languages[i];
+				}
+			}
+			$('<form id="languages-form"><input name="id" type="hidden"/><table>'
+				+'<tr><th>Name</th><td><input name="name"/></td></tr>'
+				+'<tr><th>Code <a href="http://en.wikipedia.org/wiki/List_of_ISO_63'
+				+'9-1_codes" target="_blank">#</a></th><td>'
+				+'<input name="code" class="small"/></td></tr>'
+				+'<tr><th>Is Default</th><td><select name="is_default">'
+				+'<option value="0">No</option><option value="1">Yes</option>'
+				+'</select></td></tr>'
+				+'</table></form>'
+			)
+				.dialog({
+					'modal':true,
+					'close':function() {
+						$('#languages-form').remove();
+					},
+					'buttons': {
+						'Save': function() {
+							$.post('/a/f=adminLanguagesEdit',
+								$('#languages-form').serialize(),
+								CoreSiteoptions_screenLanguages
+							);
+							$('#languages-form').remove();
+						},
+						'Cancel': function() {
+							$('#languages-form').remove();
+						}
+					}
+				});
+			for (var k in language) {
+				$('#languages-form *[name='+k+']').val(language[k]);
+			}
+			return false;
+		});
+	});
 }

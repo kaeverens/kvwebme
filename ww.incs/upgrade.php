@@ -440,6 +440,20 @@ if ($version==41) { // user locations
 	dbQuery('alter table user_accounts add location_lng float');
 	$version=42;
 }
+if ($version==42) { // language names
+	dbQuery(
+		'create table language_names(id int auto_increment not null primary key,'
+		.'name text, code char(5), is_default smallint default 0,'
+		.'complete float default 0) default charset=utf8'
+	);
+	dbQuery('insert into language_names values(1, "English", "en", 1, 100);');
+	$version=43;
+}
+if ($version==43) { // add link field to page, so name field can be changed
+	dbQuery('alter table pages add link text');
+	dbQuery('update pages set link=name');
+	$version=44;
+}
 
 $DBVARS['version']=$version;
 Core_cacheClear();

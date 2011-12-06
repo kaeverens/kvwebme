@@ -49,7 +49,7 @@ $search_options=isset($_REQUEST['search_options'])
 if (!isset($_GET['pageid'])) {
 	exit;
 }
-$md5=md5($_GET['pageid'].'|'.$search_options);
+$md5=md5($_GET['pageid'].'|'.$search_options.'|'.join($_languages));
 $cache=Core_cacheLoad('menus', $md5);
 
 ob_start();

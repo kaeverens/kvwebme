@@ -69,9 +69,10 @@ $q='insert into pages set ord="'.$ord.'",importance="'.$importance.'",'
 	.'keywords="'.$keywords.'",description="'.$description.'",cdate=now()'
 	.',date_unpublish="0000-00-00 00:00:00"'
 	.',date_publish="0000-00-00 00:00:00"'
-	.',template="'.$template.'",edate=now(),name="'.$name.'",title="'.$title.'",'
-	.'original_body="'.addslashes($original_body).'",'
-	.'body="'.addslashes($body).'",type="'.$type.'",'
+	.',template="'.$template.'",edate=now(),name="'.$name.'",title="'.$title.'"'
+	.',original_body="'.addslashes($original_body).'",'
+	.',link="'.addslashes(__FromJson($name, true)).'"'
+	.',body="'.addslashes($body).'",type="'.$type.'",'
 	.'associated_date="'.addslashes($associated_date).'",'
 	.'alias="'.$alias.'",parent='.$pid.',special='.$special;
 dbQuery($q);

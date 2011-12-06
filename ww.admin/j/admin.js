@@ -169,3 +169,80 @@ $(function(){
 var jsvars={
 	'datatables':{}
 };
+function Core_createTranslatableInputs() {
+	$('input.translatable').each(function() {
+		function showLanguages() {
+			if ($button.attr('has-translatable-menu')) {
+				$('#translatable-menu').remove();
+				$button.removeAttr('has-translatable-menu');
+				return;
+			}
+			var menu='<div id="translatable-menu" style="top:'
+				+$button.outerHeight()+'px;" class="menu">';
+			for (var i=0;i<languages.length;++i) {
+				var lang=languages[i];
+				menu+='<a href="#" lang="'+lang.code+'"';
+				if (lang.code==$button.attr('translatable-selected-language')) {
+					menu+=' class="selected"';
+				}
+				menu+='>'+lang.name+'</a>';
+			}
+			menu+='</div>';
+			$(menu)
+				.appendTo($div)
+				.find('a').click(function() {
+					var $this=$(this);
+					$this.siblings().removeClass('selected');
+					$this.addClass('selected');
+					$button.attr('translatable-selected-language', $this.attr('lang'));
+					selectLanguage();
+				});
+			$button.attr('has-translatable-menu', true);
+		}
+		function selectLanguage() {
+			$('#translatable-menu').remove();
+			$button.removeAttr('has-translatable-menu');
+			var lang=$button.attr('translatable-selected-language');
+			if (!vals[lang]) {
+				vals[lang]=vals[languages[0].code];
+			}
+			$inp.val(vals[lang]);
+		}
+		function update() {
+			var lang=$button.attr('translatable-selected-language');
+			vals[lang]=$inp.val();
+			$orig.val($.toJSON(vals));
+		}
+		var $orig=$(this);
+		if ($orig.attr('hasTranslatable')) {
+			return;
+		}
+		// { get the data
+		$orig
+			.attr('autocomplete', 'off')
+			.attr('hasTranslatable', true)
+		var val=$orig.val();
+		try{
+			var vals=$.parseJSON(val);
+		}
+		catch(err) {
+			var vals={};
+			vals[languages[0].code]=val;
+		}
+		// }
+		// { convert the element
+		var $div=$('<div style="position:relative;width:'+$orig.width()+'px;"/>');
+		var $inp=$('<input style="width:'+($orig.width()-16)+'px'
+			+';float:left;display:block"/>')
+			.change(update)
+			.appendTo($div);
+		var $button=$('<span class="ui-icon ui-icon-triangle-1-s '
+			+'translatable-button"></span>')
+			.click(showLanguages)
+			.attr('translatable-selected-language', languages[0].code)
+			.appendTo($div);
+		$div.insertAfter($orig.css('display', 'none'));
+		selectLanguage();
+		// }
+	});
+}

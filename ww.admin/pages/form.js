@@ -62,6 +62,7 @@ function pages_validate(){
 	return false;
 }
 function pages_validate_name(){
+	return true;
 	var $name=$('#name');
 	var name=$name.val();
 	var errors=[];
@@ -75,7 +76,7 @@ function pages_validate_name(){
 		if (/[^0-9\w\u00C0-\u00FF]$/.test(name)) {
 			errors.push('Ends with non-alphanumeric character');
 		}
-		if (name.replace(/[\-',0-9_ \w\u00C0-\u00FF]/g,'')!='') {
+		if (name.replace(/[\-',\/0-9_ \w\u00C0-\u00FF]/g,'')!='') {
 			errors.push('Only use alphanumeric characters, spaces, hyphens or underscores');
 		}
 	}
@@ -140,4 +141,5 @@ $(function(){
 		});
 		$('select[name=type]').change();
 	}
+	Core_createTranslatableInputs();
 });

@@ -88,8 +88,15 @@ echo '<html><head>'
 	.'css" />'
 	.'<link rel="stylesheet" href="/ww.admin/theme/admin.css" />'
 	.'<link rel="stylesheet" href="/ww.admin/pages/form.css" />'
-	.'<title>page form</title>'
-	.'</head>'
+	.'<script src="/ww.admin/j/common.js"></script>'
+	.'<title>page form</title>';
+// { languages
+$langs=dbAll(
+	'select code,name from language_names order by is_default desc,code,name'
+);
+echo '<script>var languages='.json_encode($langs).';</script>';
+// }
+echo '</head>'
 	.'<body class="noheader">';
 // }
 // { page data
@@ -178,7 +185,7 @@ echo '<tr>';
 echo '<th style="width:6%"><span class="help name"></span>'.__('name')
 	.'</th><td style="width:23%">'
 	.'<input id="name" name="name" value="'.htmlspecialchars($page['alias'])
-	.'" /></td>';
+	.'" class="translatable" /></td>';
 // }
 // { type
 echo '<th><span class="help type"></span>type</th><td><select name="type">';
