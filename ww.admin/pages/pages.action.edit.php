@@ -53,7 +53,12 @@ if ($importance>1) {
 }
 $template=$_REQUEST['template'];
 //$original_body=(isset($_REQUEST['body']))?$_REQUEST['body']:'';
-$original_body=json_encode($_REQUEST['body']);
+if (is_array($_REQUEST['body'])) {
+	$original_body=json_encode($_REQUEST['body']);
+}
+else {
+	$original_body=$_REQUEST['body'];
+}
 //echo htmlspecialchars($original_body);
 foreach ($GLOBALS['PLUGINS'] as $plugin) {
 	if (isset($plugin['admin']['body_override'])) {

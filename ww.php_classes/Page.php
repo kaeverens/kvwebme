@@ -44,8 +44,8 @@ class Page{
 			}
 			$name=strtolower(str_replace('-', '_', $v));
 			$fname='page_by_name_'.md5($name);
-			$r=Core_cacheLoad('pages', $fname);
-			if ($r===false) {
+			$r=Core_cacheLoad('pages', $fname, -1);
+			if ($r===-1) {
 				$r=dbRow(
 					"select * from pages where link like '".addslashes($name)
 					."' limit 1"
@@ -227,7 +227,7 @@ class Page{
 			$r=Core_cacheLoad('pages', md5($parent.'|'.$name));
 			if ($r===false) {
 				$r=dbRow(
-					"SELECT * FROM pages WHERE parent=$parent AND name LIKE '"
+					"SELECT * FROM pages WHERE parent=$parent AND link LIKE '"
 					.addslashes($name)."'"
 				);
 				if ($r===false) {
@@ -342,10 +342,10 @@ class Page{
 		global $_languages;
 		$fname=USERBASE.'/ww.cache/pages/template_'.$this->id.'|'
 			.join(',', $_languages);
-		if (!file_exists($fname)) {
+		if (!file_exists($fname) || !filesize($fname)) {
 			file_put_contents(
 				$fname,
-				__FromJson($this->body)
+				__FromJson(str_replace(array("\n", "\r"), ' ', $this->body))
 			);
 		}
 		return $smarty->fetch($fname);

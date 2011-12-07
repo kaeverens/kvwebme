@@ -290,7 +290,7 @@ $smarty->assign('THEMEDIR', '/ww.skins/'.THEME);
 // { page title
 $title=$PAGEDATA->title
 	?$PAGEDATA->title
-	:str_replace('www.', '', $_SERVER['HTTP_HOST']).' > '.$PAGEDATA->alias;
+	:str_replace('www.', '', $_SERVER['HTTP_HOST']).' > '.__FromJson($PAGEDATA->name);
 $c='<title>'.htmlspecialchars($title).'</title>';
 // }
 // { show stylesheet and javascript links
