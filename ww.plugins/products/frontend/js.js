@@ -12,7 +12,7 @@ $(function(){
 			}
 			price+= +(val.split('|')[1]);
 		});
-		$price.text(currency+price);
+		$price.text(currency+(Math.round(price*100)/100));
 	}
 	$('a.products-lightbox').lightBox();
 	$('div.product-images img').click(function(){
