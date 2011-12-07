@@ -68,7 +68,7 @@ function Menu_getChildren(
 	}
 	// }
 	$rs=dbAll(
-		'select id as subid,id,name,type,(select count(id) from pages where '
+		'select id as subid,id,name,alias,type,(select count(id) from pages where '
 		."parent=subid $filter) as numchildren from pages where parent='"
 		.$parentid."' $filter order by $order"
 	);
@@ -111,7 +111,7 @@ function Menu_getChildren(
 		}
 		$rs[$k]['classes']=join(' ', $c);
 		$rs[$k]['link']=$PAGEDATA->getRelativeURL();
-		$rs[$k]['name']=__FromJson($PAGEDATA->name);
+		$rs[$k]['name']=__FromJson($PAGEDATA->alias);
 		$rs[$k]['parent']=$parentid;
 		$menuitems[]=$rs[$k];
 	}
@@ -207,7 +207,7 @@ function Menu_show($b) {
 			}
 			$c.='<a id="ajaxmenu_link'.$r['id'].'" class="'.$r['classes'].'" href="'
 				.$page->getRelativeURL().'">'.$spanl
-				.htmlspecialchars(__FromJson($page->name))
+				.htmlspecialchars(__FromJson($page->alias))
 				.$spanr.'</a>';
 			$links++;
 		}
@@ -229,7 +229,7 @@ function Menu_show($b) {
 				$page=Page::getInstance($r['id']);
 				$c.='<a id="ajaxmenu_link'.$r['id'].'" class="'.$r['classes']
 					.'" href="'.$page->getRelativeURL().'">'.$spanl
-					.htmlspecialchars($page->name).$spanr.'</a>';
+					.htmlspecialchars($page->alias).$spanr.'</a>';
 			}
 		}
 		else {

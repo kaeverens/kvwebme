@@ -25,8 +25,8 @@ class Page{
 			}
 			else {
 				if ($v) {
-					$r=Core_cacheLoad('pages', 'id'.$v);
-					if ($r===false) {
+					$r=Core_cacheLoad('pages', 'id'.$v, -1);
+					if ($r===-1) {
 						$r=dbRow("select * from pages where id=$v limit 1");
 						if (count($r)) {
 							Core_cacheSave('pages', 'id'.$v, $r);

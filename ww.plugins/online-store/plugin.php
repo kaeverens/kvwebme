@@ -465,6 +465,9 @@ function OnlineStore_getFinalTotal() {
 		$user_is_vat_free=$user->isInGroup('_vatfree');
 		$group_discount=$user->getGroupHighest('discount');
 	}
+	if (!isset($_SESSION['online-store']['items'])) {
+		$_SESSION['online-store']['items']=array();
+	}
 	foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
 		$totalItemCost=$item['cost']*$item['amt'];
 		$grandTotal+=$totalItemCost;

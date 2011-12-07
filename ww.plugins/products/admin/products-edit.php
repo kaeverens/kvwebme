@@ -635,7 +635,7 @@ if (!$cid) {
 	$cid=1;
 }
 echo '<label>Default Category: <select name="products_default_category">'
-	.'<option value="'.((int)$pdata['products_default_category']).'">'
+	.'<option value="'.((int)@$pdata['products_default_category']).'">'
 	.dbOne(
 		'select name from products_categories where id='.$cid,
 		'name'

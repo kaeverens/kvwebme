@@ -108,7 +108,7 @@ function menu_build_fg($parentid, $depth, $options) {
 		$page=Page::getInstance($r['id'])->initValues();
 		$item.='<a class="menu-fg menu-pid-'.$r['id'].'" href="'
 			.$page->getRelativeUrl().'">'
-			.htmlspecialchars(__FromJson($page->name)).'</a>';
+			.htmlspecialchars(__FromJson($page->alias)).'</a>';
 		$item.=menu_build_fg($r['id'], $depth+1, $options);
 		$item.='</li>';
 		$items[]=$item;
@@ -318,7 +318,7 @@ function Template_breadcrumbs($id=0, $top=1) {
 	$suf=$top?'</div>':'';
 	return $pre.$c.'<a href="' . $page->getRelativeURL() . '" title="' 
 		. htmlspecialchars($page->title) . '">' 
-		. htmlspecialchars($page->name) . '</a>'.$suf;
+		. htmlspecialchars($page->alias) . '</a>'.$suf;
 }
 /**
 	* return a logo HTML string if the admin uploaded one
