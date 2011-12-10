@@ -89,9 +89,7 @@ function ImageTransition_show($vars) {
 				else {
 					$html.='</div>';
 				}
-				WW_addScript(
-					'/ww.plugins/image-transition/frontend/jquery.cycle.all.js'
-				);
+				WW_addScript('/j/jquery.cycle.all.js');
 				WW_addInlineScript('$(window).load(function(){$("#image_transitions_'
 					.$vars->id.'").cycle({fx:"'.$r['trans_type'].'",speed:'
 					.$r['pause'].'})});');

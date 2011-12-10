@@ -1,24 +1,42 @@
 <?php
-require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if(!Core_isAdmin())die('access denied');
+/**
+	* SMS widget form
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
-if(isset($_REQUEST['sms_addressbook_id']))$sms_addressbook_id=$_REQUEST['sms_addressbook_id'];
-else $sms_addressbook_id='';
+require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
+if (!Core_isAdmin()) {
+	die('access denied');
+}
+
+$sms_addressbook_id=@$_REQUEST['sms_addressbook_id'];
 
 // { Addressbook
 echo '<strong>Addressbook</strong><br />';
 $cs=dbAll('select id,name from sms_addressbooks order by name');
-if(!count($cs)){
-	echo 'no sms_addressbook_ids created. please <a href="/ww.admin/plugin.php?_plugin=sms&_page=sms_addressbook_ids">create one</a> first.';
+if (!count($cs)) {
+	echo 'no sms_addressbook_ids created. please <'
+		.'a href="/ww.admin/plugin.php?_plugin=sms&_page=sms_addressbook_ids">'
+		.'create one</a> first.';
 	exit;
 }
-else{
-	$ids=explode(',',$sms_addressbook_id);
+else {
+	$ids=explode(',', $sms_addressbook_id);
 	echo '<div class="sms_addressbooks">'
-		.'<input type="hidden" name="sms_addressbook_id" value="'.$sms_addressbook_id.'" />';
-	foreach($cs as $v){
+		.'<input type="hidden" name="sms_addressbook_id" value="'
+		.$sms_addressbook_id.'" />';
+	foreach ($cs as $v) {
 		echo '<input type="checkbox" value="'.$v['id'].'"';
-		if(in_array($v['id'],$ids))echo ' checked="checked"';
+		if (in_array($v['id'], $ids)) {
+			echo ' checked="checked"';
+		}
 		echo '>'.htmlspecialchars($v['name']).'<br />';
 	}
 	echo '</div>';

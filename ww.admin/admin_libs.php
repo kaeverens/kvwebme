@@ -220,12 +220,30 @@ function ckeditor($name, $value='', $height=250, $translatable=0) {
 			."//]]></script>";
 	}
 	global $langs, $tabindex;
+	if (count($langs)<2) {
+		$lang=$langs[0];
+		$v2=__FromJson($value, true, $lang['code']);
+		return '<textarea style="width:100%;height:'.$height.'px" name="'
+			.addslashes($name).'['.$lang['code'].']">'
+			.htmlspecialchars($v2).'</textarea>'
+			."<script>//<![CDATA[\n".'$(function(){window.ckeditor_'
+			.preg_replace('/[^a-zA-Z_]/', '', $name.'_'.$lang['code'])
+			.'=CKEDITOR.replace("'
+			.str_replace(
+				array('[',']'),
+				array('\[','\]'),
+				addslashes($name.'['.$lang['code'].']')
+			)
+			.'",CKEditor_config);});'
+			."//]]></script>";
+	}
 	if (!$tabindex) {
 		$tabindex=time();
 	}
 	$html='<div class="tabs mini-tabs"><ul>';
 	foreach ($langs as $lang) {
-		$html.='<li><a href="#tab-'.$tabindex.'-'.$lang['code'].'">'.$lang['name'].'</a></li>';
+		$html.='<li><a href="#tab-'.$tabindex.'-'.$lang['code'].'">'
+			.$lang['name'].'</a></li>';
 	}
 	$html.='</ul>';
 	foreach ($langs as $lang) {
@@ -377,7 +395,7 @@ function Core_sanitiseHtmlEssential($original_html) {
 		// }
 		if (strpos($html, '{')===0) {
 			$html=str_replace('&quot;', '\\"', $html);
-		}
+		} // }
 		else {
 			$html=str_replace('&quot;', '"', $html);
 		}
@@ -566,3 +584,24 @@ function Core_getExternalFile($url) {
 	curl_close($ch);
 	return $response;
 }
+
+/**
+ * transcribe
+ *
+ * replaces accented characters with their
+ * non-accented equivellants
+ *
+ * @param string $string the string to transcribe
+ *
+ * @return string the transcribed string
+ */
+function transcribe($string) {
+    $a = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞ
+ßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿŔŕ';
+    $b = 'aaaaaaaceeeeiiiidnoooooouuuuy
+bsaaaaaaaceeeeiiiidnoooooouuuyybyRr';
+    $string = utf8_decode($string);    
+    $string = strtr($string, utf8_decode($a), $b);
+    $string = strtolower($string);
+    return utf8_encode($string);
+} 

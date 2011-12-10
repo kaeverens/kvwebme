@@ -124,7 +124,8 @@ function Products_expiryClock($params, $smarty) {
 	}
 	$pid=$smarty->_tpl_vars['product']->id;
 	$product=Product::getInstance($pid);
-	return '<div class="products-expiry-clock" unlimited="'.htmlspecialchars($unlimited).'">'.$product->vals['expires_on'].'</div>';
+	return '<div class="products-expiry-clock" unlimited="'
+		.htmlspecialchars($unlimited).'">'.$product->vals['expires_on'].'</div>';
 }
 
 /**
@@ -770,7 +771,9 @@ class Product{
 		}
 		$product_type=ProductType::getInstance($this->vals['product_type_id']);
 		foreach ($product_type->data_fields as $data_field) {
-			if ($data_field->s && strpos(strtolower($this->get($data_field->n)), $search)!==false) {
+			if ($data_field->s
+				&& strpos(strtolower($this->get($data_field->n)), $search)!==false
+			) {
 				return true;
 			}
 		}
@@ -859,6 +862,16 @@ class ProductCategory{
 		return '/#no-url-available';
 	}
 }
+
+/**
+	* ProductType object
+	*
+	*	@category WebME
+	* @package  WebME
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvweb.me/
+	*/
 class ProductType{
 	static $instances=array();
 	/**
@@ -957,8 +970,9 @@ class ProductType{
 	/**
 	  * produce a HTML version of the product
 	  *
-	  * @param string $product  the product to render
-	  * @param string $template is this to be a multi-view product or single-view?
+	  * @param string  $product     the product to render
+	  * @param string  $template    multi-view product or single-view?
+		* @param boolean $add_wrapper wrap in div.products-product before return
 	  *
 	  * @return string html of the product
 	  */

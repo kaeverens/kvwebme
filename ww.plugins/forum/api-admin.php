@@ -13,6 +13,12 @@
   * @link       www.kvweb.me
   **/
 
+
+/**
+	* add a forum
+	*
+	* @return array status
+	*/
 function Forum_adminForumAdd() {
 	$page = $_REQUEST['page'];
 	if (!is_numeric($page)) {
@@ -33,7 +39,7 @@ function Forum_adminForumAdd() {
 		$data['status'] = 1;
 		$groups = array();
 		$dbGroups = dbAll('select id, name from groups');
-		foreach($dbGroups as $group) {
+		foreach ($dbGroups as $group) {
 			$groups[]['id'] = $group['id'];
 			$groups[count($groups)-1]['name'] = $group['name'];
 		}
@@ -43,6 +49,12 @@ function Forum_adminForumAdd() {
 	}
 	return $data;
 }
+
+/**
+	* delete a post
+	*
+	* @return array status
+	*/
 function Forum_adminForumDelete() {
 	$id = $_REQUEST['id'];
 	if (!(is_numeric($id))) {
@@ -72,26 +84,30 @@ function Forum_adminForumDelete() {
 	}
 	return $data;
 }
+
+/**
+	* approve a post
+	*
+	* @return array status
+	*/
 function Forum_adminPostApprove() {
 	$id = $_REQUEST['id'];
 	$userID =$_SESSION['userdata']['id'];
 	if (! ($userID==0 && Core_isAdmin())) { // not a superadmin
 		$user = User::getInstance($userID);
 		$usersGroups = $user->getGroups();
-		$thread 
-			= dbOne(
-				'select thread_id from forums_posts where id = '.$id, 
-				'thread_id'
-			);
-		$forum 
-			= dbOne(
-				'select forum_id from forums_threads where id = '.$thread, 
-				'forum_id'
-			);
+		$thread=dbOne(
+			'select thread_id from forums_posts where id = '.$id, 
+			'thread_id'
+		);
+		$forum=dbOne(
+			'select forum_id from forums_threads where id = '.$thread, 
+			'forum_id'
+		);
 		$moderatorGroups=dbOne(
-				'select moderator_groups from forums where id = '.$forum,
-				'moderator_groups'
-			);
+			'select moderator_groups from forums where id = '.$forum,
+			'moderator_groups'
+		);
 		$moderatorGroups = explode(',', $moderatorGroups);
 		$isModerator = false;
 		foreach ($usersGroups as $group) {
@@ -132,16 +148,14 @@ function Forum_adminPostDelete() {
 	else {
 		$usersGroups = array(1);
 	}
-	$thread 
-	    = dbOne(
-			'select thread_id from forums_posts where id = '.$id,
-			'thread_id'
-		);  
-	$forum
-		= dbOne(
-			'select forum_id from forums_threads where id = '.$thread,
-			'forum_id'
-		); 
+	$thread=dbOne(
+		'select thread_id from forums_posts where id = '.$id,
+		'thread_id'
+	);
+	$forum=dbOne(
+		'select forum_id from forums_threads where id = '.$thread,
+		'forum_id'
+	);
 	$moderatorGroups
 		= dbOne(
 			'select moderator_groups from forums where id = '.$forum,
@@ -229,7 +243,7 @@ function Forum_adminGroupModeratorSet() {
 		$moderatorGroups[] = $group;
 	}
 	else { //remove a group
-		foreach($moderatorGroups as $k=>$val) {
+		foreach ($moderatorGroups as $k=>$val) {
 			if ($val==$group) {
 				unset($moderatorGroups[$k]);
 			}

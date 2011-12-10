@@ -242,6 +242,10 @@ function Core_createTranslatableInputs() {
 			.attr('translatable-selected-language', languages[0].code)
 			.appendTo($div);
 		$div.insertAfter($orig.css('display', 'none'));
+		if (languages.length<2) {
+			$inp.css('width', $orig.width()+'px');
+			$button.css('display', 'none');
+		}
 		selectLanguage();
 		// }
 	});

@@ -1,14 +1,16 @@
 <?php
-
 /**
- * plugin.php, KV-Webme Themes Repository
- *
- * plugin file for the themes api
- *
- * @author	 Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license	GPL 2.0
- * @version	3.0
- */
+	* plugin file for the themes api
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 
 /**
  * plugin array, which holds the configuartion
@@ -37,15 +39,32 @@ $plugin = array(
 	)
 );
 
+/**
+	* show front-end page type for uploading themes
+	*
+	* @return html
+	*/
 function ThemesApi_frontend() {
 	require SCRIPTBASE . 'ww.plugins/themes-api/frontend/upload.php';
 	return $html;
 }
 
+/**
+	* what's the point of this?
+	*
+	* @return html
+	*/
 function ThemesApi_admin() {
 	echo 'this is the admin area page type';
 }
 
+/**
+	* check uploaded file to see if it's acceptable
+	*
+	* @param array $vars list of parameters
+	*
+	* @return html
+	*/
 function ThemesApi_filesCheck( $vars ) {
 	/**
 	 * check if this file should be handled
@@ -80,10 +99,20 @@ function ThemesApi_filesCheck( $vars ) {
 	);
 }
 
+/**
+	* is this necessary??
+	*
+	* @return html
+	*/
 function ThemesApi_catalogueAdmin() {
 	echo '<h1>Themes Repository</h1>';
 }
 
+/**
+	* get catalogue of themes for front-end
+	*
+	* @return html
+	*/
 function ThemesApi_catalogueFrontend() {
 	require SCRIPTBASE . 'ww.plugins/themes-api/frontend/catalogue.php';
 	return $html;

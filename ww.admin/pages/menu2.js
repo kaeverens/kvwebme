@@ -14,7 +14,7 @@ $(function(){
 							}
 							return TREE_OBJ.check("creatable", NODE); 
 						}, 
-						'action':pages_add_subpage,
+						'action':addNew,
 						'separator_after' : true
 					},
 					'remove' : {
@@ -86,7 +86,7 @@ $(function(){
 		});
 	var div=$('<div><i>right-click for options</i><br /><br /></div>');
 	$('<button>add main page</button>')
-		.click(pages_add_main_page)
+		.click(addNew)
 		.appendTo(div);
 	div.appendTo('div.left-menu');
 	$('#pages-wrapper a').live('click',function(e){
@@ -119,52 +119,45 @@ $(function(){
 			}
 		})
 		.appendTo('div.left-menu');
+	function addNew(node) {
+		var pid=node[0]?node[0].id.replace(/.*_/,''):0;
+		$('<table id="newpage-dialog">'
+			+'<tr><th>Name</th><td><input name="name"/></td></tr>'
+			+'<tr><th>Page Type</th><td><select name="type">'
+			+'<option value="0">normal</option></select></td></tr>'
+			+'</table>'
+		).dialog({
+			modal:true,
+			close:function(){
+				$('#newpage-dialog').remove();
+			},
+			buttons:{
+				'Create Page': function() {
+					var name=$('#newpage-dialog input[name="name"]').val();
+					if (name=='') {
+						return alert('Name must be provided');
+					}
+					$.post('/a/f=adminPageEdit', {
+						'parent':pid,
+						'name':name,
+						'type':$('#newpage-dialog select[name="type"]').val()
+					}, function(ret) {
+						pages_add_node(ret.alias, ret.id, ret.pid);
+						$('#page-form-wrapper').attr('src', 'pages/form.php?id='+ret.id);
+					});
+					$(this).dialog('close');
+				},
+				'Cancel': function() {
+					$(this).dialog('close');
+				}
+			}
+		});
+		$('#newpage-dialog select[name=type]')
+			.remoteselectoptions({url:'/a/f=adminPageTypesList'});
+		return false;
+	}
 });
 
-function pages_add_subpage(node, tree){
-	var p=node[0].id.replace(/.*_/,'');
-	pages_new(p);
-}
-function pages_add_main_page(){
-	pages_new(0);
-}
-function pages_new(p){
-	$('<form id="newpage_dialog" action="/ww.admin/pages/form.php" method="post" target="page-form-wrapper"><input type="hidden" name="prefill_body_with_title_as_header" value="1" /><input type="hidden" name="action" value="Insert Page Details" /><input type="hidden" name="special[1]" value="1" /><input type="hidden" name="newpage_dialog" value="1" /><input type="hidden" name="parent" value="'+p+'" /><table><tr><th>Name</th><td><input name="name" /></td></tr><tr><th>Page Type</th><td><select name="type"><option value="0">normal</option></select></td></tr><tr><th>Associated Date</th><td><input name="associated_date" id="newpage_date" title="year-month-day hour:minute"/></td></tr></table></form>').dialog({
-		modal:true,
-		close:function(){
-			$(this).closest('div').remove();
-			$('#newpage_dialog').remove();
-		},
-		buttons:{
-			'Create Page': function() {
-				if ($('#newpage_dialog input[name="name"]').val()=='') {
-					return alert('Name must be provided');
-				}
-				document.getElementById('newpage_dialog').submit();
-				$(this).dialog('close');
-			},
-			'Cancel': function() {
-				$(this).dialog('close');
-			}
-		}
-	});
-	$('#newpage_dialog select[name=type]').remoteselectoptions({url:'/a/f=adminPageTypesList'});
-	var date1=new Date();
-	$('#newpage_date')
-		.datetimepicker({
-			dateFormat: 'yy-mm-dd',
-			timeFormat: 'hh:mm',
-			modal:      true,
-			changeMonth:true,
-			changeYear: true
-		})
-		.val(
-			date1.getFullYear()+'-'+(date1.getMonth()< 9?'0':'')+(date1.getMonth()+1)
-			+'-'+(date1.getDate()<10?'0':'')+date1.getDate()
-			+' 00:00'
-		);
-	return false;
-}
 function pages_copy(node, tree) {
 	$.post('/a/f=adminPageCopy', {
 		'id':node[0].id.replace(/.*_/,'')

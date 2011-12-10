@@ -11,9 +11,21 @@
 	* @link     http://kvsites.ie/
 	*/
 
+
+/**
+	* get list of cron jobs
+	*
+	* @return status
+	*/
 function Core_adminCronGet() {
 	return dbAll('select * from cron');
 }
+
+/**
+	* save cron job
+	*
+	* @return status
+	*/
 function Core_adminCronSave() {
 	global $DBVARS;
 	$id=(int)$_REQUEST['id'];
@@ -27,8 +39,22 @@ function Core_adminCronSave() {
 	Core_configRewrite();
 	return array('ok'=>1);
 }
+
+/**
+	* get list of directories (recursive)
+	*
+	* @return status
+	*/
 function Core_adminDirectoriesGet() {
-	function get_subdirs($base, $dir) {
+	/**
+		* return list of contained directories
+		*
+		* @param string $base base directory of site
+		* @param string $dir  directory to list
+		*
+		* @return array list of contained directories
+		*/
+	function getSubdirs($base, $dir) {
 		$arr=array();
 		$D=new DirectoryIterator($base.$dir);
 		$ds=array();
@@ -43,13 +69,19 @@ function Core_adminDirectoriesGet() {
 		asort($ds);
 		foreach ($ds as $d) {
 			$arr[$dir.'/'.$d]=$dir.'/'.$d;
-			$arr=array_merge($arr, get_subdirs($base, $dir.'/'.$d));
+			$arr=array_merge($arr, getSubdirs($base, $dir.'/'.$d));
 		}
 		return $arr;
 	}
-	$arr=array_merge(array('/'=>'/'), get_subdirs(USERBASE.'f', ''));
+	$arr=array_merge(array('/'=>'/'), getSubdirs(USERBASE.'f', ''));
 	return $arr;
 }
+
+/**
+	* add language
+	*
+	* @return status
+	*/
 function Core_adminLanguagesAdd() {
 	$name=$_REQUEST['name'];
 	$code=$_REQUEST['code'];
@@ -58,11 +90,11 @@ function Core_adminLanguagesAdd() {
 			'error'=>'You must fill in Name and Code'
 		);
 	}
-	if (dbOne(
-		'select count(id) as ids from language_names where name="'
-		.addslashes($name).'" or code="'.addslashes($code).'"',
-		'ids'
-	)) {
+	$isInUse=dbOne(
+		'select count(id) as ids from language_names where name="' 
+		.addslashes($name).'" or code="'.addslashes($code).'"', 'ids'
+	);
+	if ($isInUse) {
 		return array(
 			'error'=>'Either the Name or Code are already in use'
 		);
@@ -73,11 +105,23 @@ function Core_adminLanguagesAdd() {
 	);
 	return array('ok'=>1);
 }
+
+/**
+	* delete language
+	*
+	* @return status
+	*/
 function Core_adminLanguagesDelete() {
 	$id=(int)$_REQUEST['id'];
 	dbQuery('delete from language_names where id='.$id);
 	return array('ok'=>1);
 }
+
+/**
+	* update language
+	*
+	* @return status
+	*/
 function Core_adminLanguagesEdit() {
 	$id=(int)$_REQUEST['id'];
 	$name=$_REQUEST['name'];
@@ -104,6 +148,12 @@ function Core_adminLanguagesEdit() {
 	);
 	return array('ok'=>1);
 }
+
+/**
+	* get list of pages and and number of their kids
+	*
+	* @return array
+	*/
 function Core_adminPageChildnodes() {
 	$pid=(int)preg_replace('/[^0-9]/', '', $_REQUEST['id']);
 	$c=Core_cacheLoad('pages', 'adminmenu'.$pid);
@@ -135,8 +185,23 @@ function Core_adminPageChildnodes() {
 	Core_cacheSave('pages', 'adminmenu'.$pid, $data);
 	return $data;
 }
+
+/**
+	* get array of pages
+	*
+	* @return array
+	*/
 function Core_adminPageParentsList() {
 	$id=isset($_REQUEST['other_GET_params'])?(int)$_REQUEST['other_GET_params']:-1;
+	/**
+		* get list of contained directories
+		*
+		* @param int $i  ID of the parent page
+		* @param int $n  indentation level
+		* @param int $id ID of a page /not/ to show
+		*
+		* @return array
+		*/
 	function selectkiddies($i=0, $n=1, $id=0) {
 		$arr=array();
 		$q=dbAll(
@@ -159,6 +224,12 @@ function Core_adminPageParentsList() {
 		selectkiddies(0, 0, $id)
 	);
 }
+
+/**
+	* get an array of page types
+	*
+	* @return array
+	*/
 function Core_adminPageTypesList() {
 	$arr=array();
 	global $pagetypes,$PLUGINS;
@@ -179,6 +250,7 @@ function Core_adminPageTypesList() {
 	}
 	return $arr;
 }
+
 /**
   * create a copy of a page
   *
@@ -254,6 +326,89 @@ function Core_adminPageMove() {
 }
 
 /**
+	* create or edit a page
+	*
+	* @return array status of the edit
+	*/
+function Core_adminPageEdit() {
+	$id=(int)@$_REQUEST['id'];
+	$pid=(int)$_REQUEST['parent'];
+	// { name, alias
+	$name=trim($_REQUEST['name']);
+	if (!$name) {
+		$name='no page name provided';
+	}
+	else { // check to see if name is already in use
+		$sql='select id from pages where name="'.addslashes($name)
+			.'" and parent='.$pid;
+		if (dbQuery($sql)->rowCount()) {
+			$i=2;
+			while (dbQuery(
+				"select id from pages where name='$name$i' and parent=$pid"
+			)->rowCount()
+			) {
+				$i++;
+			}
+			$msgs.='<em>A page named "'.$name.'" already exists. Page name amended'
+				.' to "'.$name.$i.'"</em>';
+			$name.=$i;
+		}
+	}
+	$alias = $name;
+	$name = transcribe($name);
+	// }
+	// { body
+	$original_body=@$_REQUEST['body'];
+	if (!$id) {
+		$original_body='<h1>'.htmlspecialchars($name).'</h1><p>&nbsp;</p>';
+	}
+	else {
+		$original_body=@$_REQUEST['body'];
+	}
+	$body=$original_body;
+	$body=Core_sanitiseHtml($body);
+	// }
+	// { template
+	$template=@$_REQUEST['template'];
+	if ($template=='' && $pid) {
+		$template=dbOne('select template from pages where id='.$pid, 'template');
+	}
+	// }
+	$type=$_REQUEST['type'];
+	// { ord
+	$ord=dbOne(
+		'select ord from pages where parent='.$pid.' order by ord desc limit 1',
+		'ord'
+	)+1;
+	// }
+	$special=0;
+	$associated_date=date('Y-m-d H:i:s');
+	// { insert the page
+	$q='insert into pages set ord="'.$ord.'",importance=0,'
+		.'keywords="",description="",cdate=now()'
+		.',date_unpublish="0000-00-00 00:00:00"'
+		.',date_publish="0000-00-00 00:00:00"'
+		.',template="'.$template.'",edate=now(),name="'.addslashes($name)
+		.'",title=""'
+		.',original_body="'.addslashes($original_body).'"'
+		.',link="'.addslashes($name).'"'
+		.',body="'.addslashes($body).'",type="'.$type.'",'
+		.'associated_date="'.addslashes($associated_date).'",'
+		.'alias="'.$alias.'",parent='.$pid.',special='.$special;
+	dbQuery($q);
+	$id=dbOne('select last_insert_id() as id', 'id');
+	// }
+	dbQuery('update page_summaries set rss=""');
+	Core_cacheClear();
+
+	return array(
+		'id'   =>$id,
+		'pid'  =>$pid,
+		'alias'=>$alias
+	);
+}
+
+/**
 	* save a session variable
 	*
 	* @return array status of save
@@ -282,9 +437,15 @@ function Core_adminLoadJSVars() {
 	}
 	return $_SESSION['js'];
 }
+
+/**
+	* get an array of names and emails of users
+	*
+	* @return array
+	*/
 function Core_adminUserNamesGet() {
 	$names=array();
-	foreach(
+	foreach (
 		dbAll('select id,name,email from user_accounts order by name') as $r
 	) {
 		if (!$r['name']) {

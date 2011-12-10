@@ -57,15 +57,8 @@ $parent=isset($_REQUEST['parent'])?(int)$_REQUEST['parent']:0;
 $action=isset($_REQUEST['action'])?$_REQUEST['action']:'';
 $msgs='';
 require_once 'pages.funcs.php';
-if ($action=='Insert Page Details' || $action=='Update Page Details') {
-	switch ($action) {
-		case 'Insert Page Details':
-			require_once 'pages.action.new.php';
-		break;
-		case 'Update Page Details':
-			require_once 'pages.action.edit.php';
-		break;
-	}
+if ($action=='Update Page Details') {
+	require_once 'pages.action.edit.php';
 }
 $is_an_update=$action=='Insert Page Details'||$action=='Update Page Details';
 $edit=($is_an_update || $action=='edit' || $id)?1:0;
