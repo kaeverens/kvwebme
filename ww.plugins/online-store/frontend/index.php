@@ -369,7 +369,7 @@ if (!$submitted) {
 			if (isset($item['url'])&&!empty($item['url'])) {
 				$c.='<a href="'.$item['url'].'">';
 			}
-			$c.= htmlspecialchars($item['short_desc']);
+			$c.= htmlspecialchars(__FromJson($item['short_desc']));
 			if (isset($item['url'])&&!empty($item['url'])) {
 				$c.='</a>';
 			}

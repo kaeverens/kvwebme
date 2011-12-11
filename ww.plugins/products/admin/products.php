@@ -76,7 +76,7 @@ foreach($rs as $r){
 	echo '<tr id="product-row-'.$r['id'].'">'
 		.'<td>'.$img.'</td>'
 		.'<td class="edit-link"><!-- '.htmlspecialchars($r['name']).' -->'
-		.'<a href="'.$link.'">'.htmlspecialchars($r['name']).'</td>'
+		.'<a href="'.$link.'">'.htmlspecialchars(__FromJson($r['name'])).'</td>'
 		.'<td class="edit-link"><!-- '.htmlspecialchars($r['stock_number']).' -->'
 		.'<a href="'.$link.'">'.htmlspecialchars($r['stock_number']).'</td>'
 		.'<td>'.$username.'</td>'
