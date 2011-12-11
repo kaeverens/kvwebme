@@ -236,8 +236,9 @@
           'filter' : 'alpha( opacity=' + ( value * 100 ) + ' )'
         }); 
 
-        if( index == i ) 
+        if( index == i ) {
           return false;
+				}
     
       }); 
     },  
@@ -248,9 +249,10 @@
       var html = '<div class="ratings-wrapper" style="display:inline-block">'
         + '<div class="stars">';
 
-			for( var i = 0; i <= 4; ++i )
+			for( var i = 0; i <= 4; ++i ) {
         html += '<img src="' + methods.settings.saveRemotely 
 						+ '/ww.plugins/ratings/i/star.gif" class="star"/>';
+			}
 
       html += '</div>';
 

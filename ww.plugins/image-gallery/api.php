@@ -18,6 +18,8 @@ require_once KFM_BASE_PATH.'/initialise.php';
 
 /**
   * script for retrieving a JSON array of images/videos in a gallery
+	*
+	* @return array gallery details
 	*/
 function ImageGallery_galleryGet() {
 	$page_id=(int)@$_REQUEST['id'];
@@ -122,6 +124,12 @@ function ImageGallery_galleryGet() {
 		)
 	);
 }
+
+/**
+	* retrieve an image from the database
+	*
+	* @return null
+	*/
 function ImageGallery_img() {
 	$id    =(int)$_REQUEST['id'];
 	$width =@(int)$_REQUEST['w'];
@@ -134,6 +142,12 @@ function ImageGallery_img() {
 	header('Location: '.$url);
 	exit;
 }
+
+/**
+	* get a frame for images
+	*
+	* @return null
+	*/
 function ImageGallery_frameGet() {
 	if (isset($_REQUEST['ratio'])) {
 		$ratio=(float)$_REQUEST['ratio'];
@@ -183,32 +197,39 @@ function ImageGallery_frameGet() {
 		// bottom right 
 		imagecopyresampled(
 			$imgN, $imgO,
-			$width-floor($border[1]/$ratio)-1, $height-floor($border[2]/$ratio)-1, $imgOsize[0]-$border[1]-1, $imgOsize[1]-$border[2]-1,
+			$width-floor($border[1]/$ratio)-1, $height-floor($border[2]/$ratio)-1,
+			$imgOsize[0]-$border[1]-1, $imgOsize[1]-$border[2]-1,
 			ceil($border[1]/$ratio), ceil($border[2]/$ratio), $border[1], $border[2]
 		);
 		// left
 		imagecopyresampled(
 			$imgN, $imgO,
 			0, floor($border[0]/$ratio), 0, $border[0],
-			ceil($border[3]/$ratio), $height-floor(($border[2]+$border[0])/$ratio), $border[3], $imgOsize[1]-$border[2]-$border[0]
+			ceil($border[3]/$ratio), $height-floor(($border[2]+$border[0])/$ratio),
+			$border[3], $imgOsize[1]-$border[2]-$border[0]
 		);
 		// right
 		imagecopyresampled(
 			$imgN, $imgO,
-			$width-floor($border[1]/$ratio)-1, floor($border[0]/$ratio), $imgOsize[0]-$border[1]-1, $border[0],
-			ceil($border[1]/$ratio), $height-floor(($border[2]+$border[0])/$ratio), $border[3], $imgOsize[1]-$border[2]-$border[0]
+			$width-floor($border[1]/$ratio)-1, floor($border[0]/$ratio),
+			$imgOsize[0]-$border[1]-1, $border[0],
+			ceil($border[1]/$ratio), $height-floor(($border[2]+$border[0])/$ratio),
+			$border[3], $imgOsize[1]-$border[2]-$border[0]
 		);
 		// top
 		imagecopyresampled(
 			$imgN, $imgO,
 			floor($border[3]/$ratio), 0, $border[3], 0,
-			$width-floor(($border[3]+$border[1])/$ratio), ceil($border[0]/$ratio), $imgOsize[0]-$border[3]-$border[1], $border[0]
+			$width-floor(($border[3]+$border[1])/$ratio), ceil($border[0]/$ratio),
+			$imgOsize[0]-$border[3]-$border[1], $border[0]
 		);
 		// bottom
 		imagecopyresampled(
 			$imgN, $imgO,
-			floor($border[3]/$ratio), $height-floor($border[2]/$ratio)-1, $border[3], $imgOsize[1]-$border[2]-1,
-			$width-floor(($border[3]+$border[1])/$ratio), ceil($border[2]/$ratio), $imgOsize[0]-$border[3]-$border[1], $border[2]
+			floor($border[3]/$ratio), $height-floor($border[2]/$ratio)-1,
+			$border[3], $imgOsize[1]-$border[2]-1,
+			$width-floor(($border[3]+$border[1])/$ratio), ceil($border[2]/$ratio),
+			$imgOsize[0]-$border[3]-$border[1], $border[2]
 		);
 	}
 	header('Content-type: image/png');

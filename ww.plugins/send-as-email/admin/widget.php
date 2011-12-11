@@ -1,4 +1,16 @@
 <?php
+/**
+	* widget admin form for send-as-email plugin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!Core_isAdmin()) {
 	die('access denied');
@@ -21,16 +33,22 @@ else {
 echo '<strong>Template to use</strong><br />';
 echo '<select name="template"><option value=""> -- choose -- </option>';
 $dir=new DirectoryIterator(THEME_DIR.'/'.THEME.'/h/');
-foreach($dir as $f){
-	if($f->isDot())continue;
+foreach ($dir as $f) {
+	if ($f->isDot()) {
+		continue;
+	}
 	$n=$f->getFilename();
-	if(preg_match('/\.html$/',$n))$d[]=preg_replace('/\.html$/','',$n);
+	if (preg_match('/\.html$/', $n)) {
+		$d[]=preg_replace('/\.html$/', '', $n);
+	}
 }
 asort($d);
-if(count($d)>1){
-	foreach($d as $name){
+if (count($d)>1) {
+	foreach ($d as $name) {
 		echo '<option ';
-		if($name==$template)echo ' selected="selected"';
+		if ($name==$template) {
+			echo ' selected="selected"';
+		}
 		echo '>'.$name.'</option>';
 	}
 }

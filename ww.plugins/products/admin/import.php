@@ -53,7 +53,7 @@ if (isset($_POST['import'])) {
 			$newName = 'webworks_webme_products_import'.time().rand().'.csv';
 			$location = USERBASE.'ww.cache/products/imports';
 			if (!is_dir($location)) {
-				mkdir($location,0777,true);
+				mkdir($location, 0777, true);
 			}
 			move_uploaded_file(
 				$file['tmp_name'], 
@@ -135,7 +135,7 @@ if (isset($_POST['import'])) {
 				$row = fgetcsv($file);
 			}
 			if ($_POST['data_fields_option']=='cols') {
-				foreach($data_fields as $k=>$v) {
+				foreach ($data_fields as $k=>$v) {
 					$data_fields[$k]=json_encode($v);
 				}
 			}
@@ -151,11 +151,12 @@ if (isset($_POST['import'])) {
 			if (isset($_REQUEST['product_type_id'])) {
 				$ptid=dbOne(
 					'select id from products_types where id='
-					.((int)$_REQUEST['product_type_id']),'id'
+					.((int)$_REQUEST['product_type_id']),
+					'id'
 				);
 			}
 			if (!$ptid) {
-				$ptid=dbOne('select id from products_types','id');
+				$ptid=dbOne('select id from products_types', 'id');
 			}
 			for ($i=0; $i<$numRows; $i++) {
 				if (!isset($name[$i]) || $name[$i]=='') {
@@ -165,35 +166,30 @@ if (isset($_POST['import'])) {
 				if (is_array($id)) {
 					if (in_array($id[$i], $ids, false)&&is_numeric($id[$i])) {
 						dbQuery(
-							'update products 
-							set 
-								name = 
-									\''.addslashes($name[$i]).'\',
-								product_type_id = '.(isset($product_type_id[$i])?(int)$product_type_id[$i]:$ptid).',
-								image_default = 
-									\''.addslashes($image_default[$i]).'\',
-								enabled = 1, 
-								date_created = 
-									\''.addslashes($date_created[$i]).'\',
-								data_fields = 
-									\''.addslashes($data_fields[$i]).'\',
-								images_directory = 
-									\''.addslashes($images_directory[$i]).'\'
-							where id = '.(int)$id[$i]
+							'update products set'
+							.' name="'.addslashes($name[$i]).'"'
+							.',product_type_id='
+							.(isset($product_type_id[$i])?(int)$product_type_id[$i]:$ptid)
+							.',image_default="'.addslashes($image_default[$i]).'"'
+							.',enabled=1'
+							.',date_created="'.addslashes($date_created[$i]).'"'
+							.',data_fields="'.addslashes($data_fields[$i]).'"'
+							.',images_directory="'.addslashes($images_directory[$i]).'"'
+							.' where id='.(int)$id[$i]
 						);
 					}
 					elseif (is_numeric($id[$i])) {
 						dbQuery(
-							'insert into products 
-								set id='.(int)$id[$i].',
-								name=\''.addslashes($name[$i]).'\',
-								product_type_id=\''.$ptid.'\',
-								enabled=\'1\',
-								image_default=\''.addslashes($image_default[$i]).'\',
-								date_created=\''.addslashes($date_created[$i]).'\',
-								data_fields=\''.addslashes($data_fields[$i]).'\',
-								images_directory=\''.addslashes($images_directory[$i]).'\'
-						');
+							'insert into products set'
+							' id='.(int)$id[$i]
+							',name="'.addslashes($name[$i]).'"'
+							',product_type_id='.$ptid
+							',enabled=1'
+							',image_default="'.addslashes($image_default[$i]).'"'
+							',date_created="'.addslashes($date_created[$i]).'"'
+							',data_fields="'.addslashes($data_fields[$i]).'"'
+							',images_directory="'.addslashes($images_directory[$i]).'"'
+						);
 					}
 					elseif ($id[$i]==null) {
 						dbQuery(
@@ -221,11 +217,13 @@ if (isset($_POST['import'])) {
 					}
 				}
 				else {
-					$sql='insert into products	set name = \''.addslashes($name[$i]).'\', product_type_id = '.$ptid.',
-						image_default = \''.addslashes($image_default[$i]).'\', enabled = 1, 
-						date_created = \''.(isset($date_created[$i])?addslashes($date_created[$i]):'').'\',
-						data_fields = \''.addslashes($data_fields[$i]).'\',
-						images_directory = \''.(isset($images_directory[$i])?addslashes($images_directory[$i]):'').'\'';
+					$sql='insert into products set'
+						.' name="'.addslashes($name[$i]).'", product_type_id='.$ptid
+						.',image_default="'.addslashes($image_default[$i]).'"'
+						.',enabled=1'
+						.',date_created="'.addslashes(@$date_created[$i]).'"'
+						.',data_fields="'.addslashes($data_fields[$i]).'"'
+						.',images_directory="'.addslashes(@$images_directory[$i]).'"';
 					dbQuery($sql);
 				}
 				++$products_imported;
@@ -302,8 +300,8 @@ echo '<tr><th>Delete categories before import?</th>'
 	.'id="clear_categories_database" '
 	.'onchange=\'show_hide_cat_options('.$jsonCats.');\' /></td></tr>';
 echo '<tr><th>Delete empty categories on import?</th>'
-	.'<td><input type="checkbox" name="prune_cats" id = "prune-cats" /></td></tr>';
-echo '<tr><th>Import into categories</th>'
+	.'<td><input type="checkbox" name="prune_cats" id = "prune-cats" /></td></tr>'
+	.'<tr><th>Import into categories</th>'
 	.'<td><select id="cat_options" name="cat_options">'
 	.'<option value="">--none--</option>'
 	.'<option value="0">In File</option>';
@@ -311,17 +309,19 @@ foreach ($cats as $cat) {
 	echo '<option value="'.$cat['id'].'">'.$cat['name'].'</option>';
 }
 echo '</select></td></tr>';
-echo '<tr><th>Create pages for imported categories?</th>'
-	.'<td><input type="checkbox" name="create_page" /></td></tr>';
-echo '<tr><th>Hide created pages?</th>'
-	.'<td><input type="checkbox" name="hide_pages" /></td></tr>';
-echo '<tr><th>Delete empty category pages on import?</th>'
-	.'<td><input type="checkbox" name="prune_cat_pages" /></td></tr>';
-echo '<tr><th>Select import file</th>'
-	.'<td><input type="file" name="file" /></td></tr>';
-echo '</table><input type="submit" name="import" value="Import Data" />';
-echo '</form>';
-echo '<p>The imported file must be a CSV file, where the headers exaclty match (including letter-case) the product types you are importing into.</p>';
+	.'<tr><th>Create pages for imported categories?</th>'
+	.'<td><input type="checkbox" name="create_page" /></td></tr>'
+	.'<tr><th>Hide created pages?</th>'
+	.'<td><input type="checkbox" name="hide_pages" /></td></tr>'
+	.'<tr><th>Delete empty category pages on import?</th>'
+	.'<td><input type="checkbox" name="prune_cat_pages" /></td></tr>'
+	.'<tr><th>Select import file</th>'
+	.'<td><input type="file" name="file" /></td></tr>'
+	.'</table><input type="submit" name="import" value="Import Data" />'
+	.'</form>'
+	.'<p>The imported file must be a CSV file, where the headers exactly '
+	.'match (including letter-case) the product types you are importing into.'
+	.'</p>';
 // }
 
 /**

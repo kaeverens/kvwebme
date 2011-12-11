@@ -1,23 +1,24 @@
 <?php
-
 /**
- * frontend/edit_user_info.php, KV-Webme Privacy Plugin
- *
- * displays editable user info
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
-
+	* displays editable user info
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 require '../../../ww.incs/basics.php';
 
 $id = (int)@$_SESSION[ 'userdata' ][ 'id' ];
-if( $id == 0 )
+if ($id == 0) {
 	exit;
+}
 
-$user = dbRow( 'select * from user_accounts where id=' . $id );
+$user = dbRow('select * from user_accounts where id=' . $id);
 
 echo '
 <p id="error"></p>

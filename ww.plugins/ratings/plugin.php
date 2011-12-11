@@ -1,14 +1,15 @@
 <?php
-
 /**
- * plugin.php, KV-Webme Ratings Plugin
- *
- * plugin file for the ratings plugin
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    2.0
- */
+	* plugin file for the ratings plugin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 // { plugin array
 $plugin = array(
@@ -18,7 +19,7 @@ $plugin = array(
   'frontend'=>array(
 		'template_functions'=>array(
 			'RATINGS'=>array(
-				'function' => 'ratings_template_function'
+				'function' => 'Ratings_templateFunction'
 			)   
 		)   
 	)
@@ -26,11 +27,15 @@ $plugin = array(
 // }
 
 /**
- * ratings_template_function
+ * Ratings_templateFunction
  *
  * replaces {{RATINGS}} with a rating interface
+ *
+ * @param array $vars settings
+ *
+ * @return string html
  */
-function ratings_template_function($vars) {
+function Ratings_templateFunction($vars) {
 	$name = @$vars[ 'name' ];
 	$type = @$vars[ 'type' ];
 

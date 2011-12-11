@@ -397,11 +397,9 @@ echo '<tr><th>'.__('Date to Unpublish')
 	.'" class="datetime" title="'.__('year-month-day hour:minute').'"/></td></tr>';
 // }
 // { associated date
+$reg='/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/';
 if (!isset($page['associated_date'])
-	|| !preg_match(
-		'/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/',
-		$page['associated_date']
-	)
+	|| !preg_match($reg, $page['associated_date'])
 	|| $page['associated_date']=='0000-00-00 00:00:00'
 ) {
 	$page['associated_date']=date('Y-m-d 00:00:00');
@@ -512,7 +510,8 @@ foreach ($PLUGINS as $n=>$p) {
 // { form footer
 echo '</div>';
 echo '<input type="hidden" name="action" value="Update Page Details"/>';
-echo '<div id="submit-row"><input type="submit" value="'.__('Update Page Details').'"/></div>';
+echo '<div id="submit-row"><input type="submit" value="'
+	.__('Update Page Details').'"/></div>';
 echo '</form>';
 // }
 // { page footer

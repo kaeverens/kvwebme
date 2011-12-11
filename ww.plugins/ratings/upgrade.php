@@ -1,14 +1,15 @@
 <?php
-
 /**
- * upgrade.php, KV-Webme Ratings Plugin
- *
- * upgrades the themes api to the latest version
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* upgrades the themes api to the latest version
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 if ($version == 0) {
 

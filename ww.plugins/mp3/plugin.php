@@ -25,7 +25,7 @@ $plugin = array(
 		)
 	),
 	'frontend'	=>	array(
-		'widget'=>'mp3_frontend_widget',
+		'widget'=>'MP3_frontendWidget',
 	)
 );
 require SCRIPTBASE.'ww.plugins/mp3/frontend/show.php';

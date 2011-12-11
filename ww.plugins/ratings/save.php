@@ -1,14 +1,15 @@
 <?php
-
 /**
- * plugin.php, KV-Webme Ratings Plugin
- *
- * saves the rating to the database
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* saves the rating to the database
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 require '../../ww.incs/basics.php';
 

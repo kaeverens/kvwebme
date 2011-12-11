@@ -1,4 +1,16 @@
 <?php
+/**
+	* load up a JS file
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 require_once '../ww.incs/basics.php';
 $md5=preg_replace('/.*md5=/', '', $_SERVER['REQUEST_URI']);
 if (strpos($md5, '..')!==false) {

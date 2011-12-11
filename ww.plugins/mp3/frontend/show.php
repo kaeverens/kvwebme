@@ -1,7 +1,27 @@
 <?php
-function mp3_frontend_widget($vars=null) {
+/**
+	* MP3 plugin functions
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conor.macaoidh@gmail.com>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+
+/**
+	* show frontend widget
+	*
+	* @param array $vars settings
+	*
+	* @return string html
+	*/
+function MP3_frontendWidget($vars=null) {
 	$db=dbRow('select fields,template from mp3_plugin where id='.$vars->id);
-	$files=json_decode($db['fields'],true);
+	$files=json_decode($db['fields'], true);
 	if (count($files)==0) {
 		return 'No files yet';
 	}
@@ -28,9 +48,9 @@ function mp3_frontend_widget($vars=null) {
 	if (!file_exists(USERBASE.'/ww.cache/templates_c/image-gallery')) {
 		mkdir(USERBASE.'/ww.cache/templates_c/image-gallery');
 	}
-	$smarty->register_function('LIST', 'mp3_list');
+	$smarty->register_function('LIST', 'MP3_list');
 	$smarty->register_function('PLAY', 'mp3_play');
-	$smarty->register_function('PROGRESS', 'mp3_progress');
+	$smarty->register_function('PROGRESS', 'MP3_progress');
 	$smarty->left_delimiter='{{';
 	$smarty->right_delimiter='}}';
 	$smarty->_tpl_vars['mp3_files']=$files;
@@ -42,7 +62,16 @@ function mp3_frontend_widget($vars=null) {
 	// }
 	return $html;
 }
-function mp3_list($params, $smarty) {
+
+/**
+	* show list of MP3s
+	*
+	* @param array  $params settings
+	* @param object $smarty Smarty object
+	*
+	* @return null
+	*/
+function MP3_list($params, $smarty) {
 	$files=$smarty->_tpl_vars['mp3_files'];
 	$opts=array(
 		'play_button'=>false,
@@ -70,7 +99,16 @@ function mp3_list($params, $smarty) {
 	}
 	echo '</ul>';
 }
-function mp3_play($params, $smarty) {
+
+/**
+	* get play link
+	*
+	* @param array  $params settings
+	* @param object $smarty Smarty object
+	*
+	* @return null
+	*/
+function MP3_play($params, $smarty) {
 	$opts=array(
 		'image_link'=>'false',
 	);
@@ -85,7 +123,16 @@ function mp3_play($params, $smarty) {
 	}
 	echo '</a>';
 }
-function mp3_progress($params, $smarty) {
+
+/**
+	* show MP3 progress wrapper
+	*
+	* @param array  $params settings
+	* @param object $smarty Smarty object
+	*
+	* @return null
+	*/
+function MP3_progress($params, $smarty) {
 	$opts=array(
 		'show_times'=>false,
 	);	

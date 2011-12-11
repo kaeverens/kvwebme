@@ -1,4 +1,16 @@
 <?php
+/**
+	* admin libs
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 $scripts=array();
 $scripts_inline=array();
 // { built-in page types
@@ -202,9 +214,10 @@ function WW_getScripts() {
 /**
   * output an RTE's HTML
   *
-  * @param string $name   name of the textarea to replace
-  * @param string $value  prefill the textarea with this value
-  * @param int    $height the height of the RTE to show
+  * @param string $name         name of the textarea to replace
+  * @param string $value        prefill the textarea with this value
+  * @param int    $height       the height of the RTE to show
+	* @param int    $translatable is this editor a multi-lingual one
   *
   * @return string the HTML of the RTE
   */
