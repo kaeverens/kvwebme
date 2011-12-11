@@ -58,7 +58,11 @@ $action=isset($_REQUEST['action'])?$_REQUEST['action']:'';
 $msgs='';
 require_once 'pages.funcs.php';
 if ($action=='Update Page Details') {
-	require_once 'pages.action.edit.php';
+	require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/api-admin.php';
+	$arr=Core_adminPageEdit();
+	echo '<script>window.parent.document.getElementById("page_'.$id.'")'
+		.'.childNodes[1].innerHTML=\'<ins class="jstree-icon">&nbsp;</ins>'
+		.htmlspecialchars(__FromJson($_REQUEST['name'], true)).'\';</script>';
 }
 $is_an_update=$action=='Insert Page Details'||$action=='Update Page Details';
 $edit=($is_an_update || $action=='edit' || $id)?1:0;

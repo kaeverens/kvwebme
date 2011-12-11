@@ -1,20 +1,52 @@
 <?php
-/*
-	Webme Mailing List Plugin v0.2
-	File: frontend/mailing-list.php
-	Developer: Conor Mac Aoidh <http://macaoidh.name>
-	Report Bugs: <conor@macaoidh.name>
-*/
-function falert($text) {
+/**
+	* Webme Mailing List Plugin v0.2
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor MacAoidh <conor@macaoidh.name>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+/**
+	* show alert
+	*
+	* @param string $text text to alert
+	*
+	* @return null
+	*/
+function Mailinglist_showAlert($text) {
 	return '<script>fAlert(\''.$text.'\');</script>';
 }
-function check_details($email, $name) {
+
+/**
+	* check person's email and name
+	*
+	* @param string $email email address to check format of
+	* @param string $name  name to check
+	*
+	* @return null
+	*/
+function Mailinglist_checkNameAndEmail($email, $name) {
 	if ($name=='') {
 		return false;
 	}
 	return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
-function add_database($email, $name, $mobile) {
+
+/**
+	* add a person to the database
+	*
+	* @param string $email  person's email address
+	* @param string $name   name of the person
+	* @param string $mobile person's mobile number
+	*
+	* @return null
+	*/
+function Mailinglist_addPersonToDatabase($email, $name, $mobile) {
 	if ($name=='__empty__') {
 		$name='not collected';
 	}
@@ -29,7 +61,16 @@ function add_database($email, $name, $mobile) {
 	);
 	return $hash;
 }
-function send_confirmation($email, $hash) {
+
+/**
+	* send a confirmation email
+	*
+	* @param string $email email address to send the confirmation to
+	* @param string $hash  hash key for verification
+	*
+	* @return null
+	*/
+function Mailinglist_sendConfirmation($email, $hash) {
 	$data=dbAll('select name,value from mailing_list_options');
 	foreach ($data as $d) {
 		$EMAIL[$d['name']]=$d['value'];
@@ -54,7 +95,13 @@ function send_confirmation($email, $hash) {
 		$EMAIL['headers']
 	);
 }
-function create_form() {
+
+/**
+	* function for creating the form for the mailinglist
+	*
+	* @return null
+	*/
+function Mailinglist_createForm() {
 	$f='';
 	$fields=dbAll('select name,value from mailing_list_options');
 	foreach ($fields as $field) {
@@ -84,22 +131,28 @@ function create_form() {
 	$f.='</form>';
 	return $f;
 }
-function show_form() {
+
+/**
+	* function for showing the form for the mailinglist
+	*
+	* @return null
+	*/
+function Mailinglist_showForm() {
 	WW_addScript('/ww.plugins/mailing-list/files/impromptu.jquery.min.js');
 	WW_addScript('/ww.plugins/mailing-list/files/general.js');
 	WW_addCSS('/ww.plugins/mailing-list/files/mailing-list.css');
-	$html=create_form();
+	$html=Mailinglist_createForm();
 	if (isset($_GET['mailing_list_hash'])) {
 		$hash=$_GET['mailing_list_hash'];
 		$email=dbQuery('select email from mailing_list where hash="'.$hash.'"');
 		if (count($email)!=1) {
-			$html.=falert('Error. Invalid link provided');
+			$html.=Mailinglist_showAlert('Error. Invalid link provided');
 		}
 		else {
 			dbQuery(
 				'update mailing_list set status="Activated" where hash="'.$hash.'"'
 			);
-			$html.=falert('Thank You, Email added to the list.');
+			$html.=Mailinglist_showAlert('Thank You, Email added to the list.');
 		}
 	}
 	elseif (isset($_POST['submit'])) {
@@ -116,14 +169,16 @@ function show_form() {
 		else {
 			$mobile='__empty__';
 		}
-		$valid=check_details($email, $name);
+		$valid=Mailinglist_checkNameAndEmail($email, $name);
 		if ($valid==true) {
-			$hash=add_database($email, $name, $mobile);
-			send_confirmation($email, $hash);
-			$html.=falert('Thank You! A confirmation email has been sent to '.$email);
+			$hash=Mailinglist_addPersonToDatabase($email, $name, $mobile);
+			Mailinglist_sendConfirmation($email, $hash);
+			$html.=Mailinglist_showAlert(
+				'Thank You! A confirmation email has been sent to '.$email
+			);
 		}
 		else {
-			$html.=falert('Error. Invalid details.');
+			$html.=Mailinglist_showAlert('Error. Invalid details.');
 		}
 	}
 	return $html;

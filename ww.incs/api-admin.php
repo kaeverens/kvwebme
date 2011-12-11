@@ -331,8 +331,73 @@ function Core_adminPageMove() {
 	* @return array status of the edit
 	*/
 function Core_adminPageEdit() {
+	/**
+		* function for recursively updating a page (and its children) template
+		*
+		* @param int    $id       the page id
+		* @param string $template the template name
+		*
+		* @return null
+		*/
+	function recursivelyUpdatePageTemplates($id, $template) {
+		$pages=Pages::getInstancesByParent($id, false);
+		$ids=array();
+		foreach ($pages->pages as $page) {
+			$ids[]=$page->id;
+			recursivelyUpdatePageTemplates($page->id, $template);
+		}
+		if (!count($ids)) {
+			return;
+		}
+		dbQuery(
+			'update pages set template="'.addslashes($template).'" where id in ('
+			.join(',', $ids).')'
+		);
+	}
 	$id=(int)@$_REQUEST['id'];
-	$pid=(int)$_REQUEST['parent'];
+	$pid=$id
+		?dbOne('select parent from pages where id='.$id, 'parent')
+		:(int)$_REQUEST['parent'];
+	$special=0;
+	if (isset($_REQUEST['special'])) {
+		$specials=$_REQUEST['special'];
+		if (is_array($specials)) {
+			foreach ($specials as $a=>$b) {
+				$special+=pow(2, $a);
+			}
+		}
+		$homes=dbOne(
+			"SELECT COUNT(id) AS ids FROM pages WHERE (special&1)"
+			.($id?" AND id!=$id":""),
+			'ids'
+		);
+		if ($special&1) { // there can be only one homepage
+			if ($homes!=0) {
+				dbQuery("UPDATE pages SET special=special-1 WHERE special&1");
+			}
+		}
+		else {
+			if ($homes==0) {
+				$special+=1;
+			}
+		}
+	}
+	$keywords=@$_REQUEST['keywords'];
+	$title=@$_REQUEST['title'];
+	$description=@$_REQUEST['description'];
+	$date_publish=isset($_REQUEST['date_publish'])
+		?$_REQUEST['date_publish']
+		:'0000-00-00 00:00:00';
+	$date_unpublish=isset($_REQUEST['date_unpublish'])
+		?$_REQUEST['date_unpublish']
+		:'0000-00-00 00:00:00';
+	$importance=(float)@$_REQUEST['importance'];
+	if ($importance<0.1) {
+		$importance=0.5;
+	}
+	if ($importance>1) {
+		$importance=1;
+	}
 	// { name, alias
 	$name=trim($_REQUEST['name']);
 	if (!$name) {
@@ -340,13 +405,13 @@ function Core_adminPageEdit() {
 	}
 	else { // check to see if name is already in use
 		$sql='select id from pages where name="'.addslashes($name)
-			.'" and parent='.$pid;
-		if (dbQuery($sql)->rowCount()) {
+			.'" and parent='.$pid.' and id!='.$id;
+		if (dbOne($sql, 'id')) {
 			$i=2;
-			while (dbQuery(
-				"select id from pages where name='$name$i' and parent=$pid"
-			)->rowCount()
-			) {
+			while (dbOne(
+				'select id from pages where name="'.addslashes($name.$i).'" and parent='
+				.$pid.' and id!="'.$id.'"', 'id'
+			)) {
 				$i++;
 			}
 			$msgs.='<em>A page named "'.$name.'" already exists. Page name amended'
@@ -358,12 +423,25 @@ function Core_adminPageEdit() {
 	$name = transcribe($name);
 	// }
 	// { body
-	$original_body=@$_REQUEST['body'];
+	if (@$_REQUEST['page_vars']['_body']) {
+		$_REQUEST['body']=$_REQUEST['page_vars']['_body'];
+		unset($_REQUEST['page_vars']['_body']);
+	}
 	if (!$id) {
 		$original_body='<h1>'.htmlspecialchars($name).'</h1><p>&nbsp;</p>';
 	}
 	else {
-		$original_body=@$_REQUEST['body'];
+		if (is_array($_REQUEST['body'])) {
+			$original_body=json_encode($_REQUEST['body']);
+		}
+		else {
+			$original_body=$_REQUEST['body'];
+		}
+	}
+	foreach ($GLOBALS['PLUGINS'] as $plugin) {
+		if (isset($plugin['admin']['body_override'])) {
+			$original_body=$plugin['admin']['body_override'](false);
+		}
 	}
 	$body=$original_body;
 	$body=Core_sanitiseHtml($body);
@@ -373,39 +451,117 @@ function Core_adminPageEdit() {
 	if ($template=='' && $pid) {
 		$template=dbOne('select template from pages where id='.$pid, 'template');
 	}
+	if (isset($_REQUEST['recursively_update_page_templates'])) {
+		recursivelyUpdatePageTemplates($id, $template);
+	}
 	// }
 	$type=$_REQUEST['type'];
-	// { ord
-	$ord=dbOne(
-		'select ord from pages where parent='.$pid.' order by ord desc limit 1',
-		'ord'
-	)+1;
-	// }
-	$special=0;
-	$associated_date=date('Y-m-d H:i:s');
+	$associated_date=isset($_REQUEST['associated_date'])
+		?$_REQUEST['associated_date']
+		:date('Y-m-d H:i:s');
+	$q='pages set importance='.$importance
+		.',template="'.addslashes($template).'",edate=now()'
+		.',type="'.addslashes($type).'"'
+		.',date_unpublish="'.addslashes($date_unpublish).'"'
+		.',date_publish="'.addslashes($date_publish).'"'
+		.',associated_date="'.addslashes($associated_date).'"'
+		.',keywords="'.addslashes($keywords).'"'
+		.',description="'.addslashes($description).'"'
+		.',name="'.addslashes($name).'"'
+		.',title="'.addslashes($title).'"'
+		.',original_body="'
+		.addslashes(Core_sanitiseHtmlEssential($original_body))
+		.'"'
+		.',link="'.addslashes(__FromJson($name, true)).'"'
+		.',body="'.addslashes($body).'"'
+		.',type="'.$type.'"'
+		.',alias="'.$alias.'",parent='.$pid
+		.',special='.$special;
+	if (!$id) { // ord
+		$ord=dbOne(
+			'select ord from pages where parent='.$pid.' order by ord desc limit 1',
+			'ord'
+		)+1;
+		$q.=',ord='.$ord.',cdate=now()';
+	}
 	// { insert the page
-	$q='insert into pages set ord="'.$ord.'",importance=0,'
-		.'keywords="",description="",cdate=now()'
-		.',date_unpublish="0000-00-00 00:00:00"'
-		.',date_publish="0000-00-00 00:00:00"'
-		.',template="'.$template.'",edate=now(),name="'.addslashes($name)
-		.'",title=""'
-		.',original_body="'.addslashes($original_body).'"'
-		.',link="'.addslashes($name).'"'
-		.',body="'.addslashes($body).'",type="'.$type.'",'
-		.'associated_date="'.addslashes($associated_date).'",'
-		.'alias="'.$alias.'",parent='.$pid.',special='.$special;
+	if ($id) {
+		$q='update '.$q.' where id='.$id;
+	}
+	else {
+		$q='insert into '.$q;
+	}
 	dbQuery($q);
-	$id=dbOne('select last_insert_id() as id', 'id');
+	if (!$id) {
+		$id=dbOne('select last_insert_id() as id', 'id');
+	}
 	// }
+	// { page_vars
+	dbQuery('delete from page_vars where page_id="'.$id.'"');
+	$pagevars=isset($_REQUEST['page_vars'])?$_REQUEST['page_vars']:array();
+	if (@$_REQUEST['short_url']) {
+		dbQuery(
+			'insert into short_urls set cdate=now(),page_id='.$id.',short_url="'
+			.addslashes($_REQUEST['short_url']).'"'
+		);
+		$pagevars['_short_url']=1;
+	}
+	else {
+		dbQuery('delete from short_urls where page_id='.$id);
+		unset($pagevars['_short_url']);
+	}
+	if (is_array($pagevars)) {
+		if (isset($pagevars['google-site-verification'])) {
+			$pagevars['google-site-verification']=preg_replace(
+				'#.*content="([^"]*)".*#',
+				'\1',
+				$pagevars['google-site-verification']
+			);
+		}
+		foreach ($pagevars as $k=>$v) {
+			if (is_array($v)) {
+				$v=json_encode($v);
+			}
+			dbQuery(
+				'insert into page_vars (name,value,page_id) values("'.addslashes($k)
+				.'","'.addslashes($v).'",'.$id.')'
+			);
+		}
+	}
+	// }
+	if ($_POST['type']==4) {
+		$r2=dbRow('select * from page_summaries where page_id="'.$id.'"');
+		$do=1;
+		if ($r2) {
+			if (isset($_POST['page_summary_parent'])
+				&& $r2['parent_id']!=$_POST['page_summary_parent']
+			) {
+				dbQuery('delete from page_summaries where page_id="'.$_POST['id'].'"');
+			}
+			else {
+				$do=0;
+			}
+		}
+		if ($do) {
+			dbQuery(
+				'insert into page_summaries set page_id="'.$id.'",parent_id="'
+				.$_POST['page_summary_parent'].'",rss=""'
+			);
+		}
+		require_once SCRIPTBASE.'/ww.incs/page.summaries.php';
+		PageSummaries_getHtml($_POST['id']);
+	}
+	// { clean up and return
 	dbQuery('update page_summaries set rss=""');
+	unset($DBVARS['cron-next']);
 	Core_cacheClear();
-
+	Core_configRewrite();
 	return array(
 		'id'   =>$id,
 		'pid'  =>$pid,
 		'alias'=>$alias
 	);
+	// }
 }
 
 /**

@@ -386,7 +386,7 @@ else {
 }
 // }
 // { owner
-$user_id=(int)$pdata['user_id'];
+$user_id=(int)@$pdata['user_id'];
 if (!$user_id) {
 	$user_id=(int)$_SESSION['userdata']['id'];
 }
@@ -630,7 +630,7 @@ function show_sub_cats($parent) {
 	return '<ul>'.join('', $found).'</ul>';
 }
 echo show_sub_cats(0);
-$cid=((int)$pdata['default_category']);
+$cid=(int)@$pdata['default_category'];
 if (!$cid) {
 	$cid=1;
 }

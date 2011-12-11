@@ -12,6 +12,7 @@
 	* @link     http://kvsites.ie/
 	*/
 
+// { plugin config
 $plugin=array(
 	'name' => 'Mailing List',
 	'admin' => array(
@@ -33,7 +34,9 @@ $plugin=array(
 	),
 	'version' => '4'
 );
+// }
+
 function MailingList_showForm(){
-	include_once SCRIPTBASE . 'ww.plugins/mailing-list/frontend/mailing-list.php';
-	return show_form();
+	require_once SCRIPTBASE.'ww.plugins/mailing-list/frontend/mailing-list.php';
+	return Mailinglist_showForm();
 }
