@@ -27,9 +27,9 @@ function Core_getJQueryScripts() {
 	$uicss=defined('IN_ADMIN')
 		?($uicssbits&2 ? '':'<link href="'.$jurls[2].'" rel="stylesheet" />')
 		:($uicssbits&1 ? '':'<link href="'.$jurls[2].'" rel="stylesheet" />');
-	return '<script src="'.$jurls[0].'"></script>'
-		.'<script src="'.$jurls[1].'"></script>'
-		.$uicss;
+	return $uicss
+		.'<script src="'.$jurls[0].'"></script>'
+		.'<script src="'.$jurls[1].'"></script>';
 }
 /**
 	* convert a MySQL date to a human-readable one
