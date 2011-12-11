@@ -1079,7 +1079,7 @@ class Products{
 					.' and enabled order by name'
 				);
 			}
-			self::$instances[$md5]->subCategories=dbAll($pcs);
+			self::$instances[$md5]->subCategories=$pcs;
 		}
 		return self::$instances[$md5];
 	}
