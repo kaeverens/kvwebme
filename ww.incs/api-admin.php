@@ -474,7 +474,6 @@ function Core_adminPageEdit() {
 		.'"'
 		.',link="'.addslashes(__FromJson($name, true)).'"'
 		.',body="'.addslashes($body).'"'
-		.',type="'.$type.'"'
 		.',alias="'.$alias.'",parent='.$pid
 		.',special='.$special;
 	if (!$id) { // ord
