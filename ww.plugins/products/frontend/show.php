@@ -14,6 +14,7 @@
 $kfm_do_not_save_session=true;
 require_once KFM_BASE_PATH.'/api/api.php';
 require_once KFM_BASE_PATH.'/initialise.php';
+
 if (!file_exists(USERBASE.'/ww.cache/products')) {
 	mkdir(USERBASE.'/ww.cache/products');
 }
@@ -21,6 +22,7 @@ if (!file_exists(USERBASE.'/ww.cache/products/templates')) {
 	mkdir(USERBASE.'/ww.cache/products/templates');
 	mkdir(USERBASE.'/ww.cache/products/templates_c');
 }
+
 /**
 	* get a list of product categories
 	*
@@ -110,6 +112,7 @@ function products_categories ($params, $smarty) {
 	$c.= '</ul>';
 	return $c;
 }
+
 /**
 	* display a table in simple table format
 	*
@@ -150,11 +153,11 @@ function Products_datatable ($params, $smarty) {
 					}
 				break; // }
 				case 'textarea': // {
-					$c.=$product->vals[$data->n];
+					$c.=__FromJson($product->vals[$data->n]);
 				break; // }
 				default: // {
 					if (isset($product->vals[$data->n])) {
-						$c.=htmlspecialchars($product->vals[$data->n]);
+						$c.=htmlspecialchars(__FromJson($product->vals[$data->n]));
 					}
 					else {
 						$c.= '&nbsp;';
@@ -211,6 +214,7 @@ function Products_datatable ($params, $smarty) {
 	$c.= '</table>';
 	return $c;
 }
+
 /**
 	* display products in a datatable format
 	*
@@ -312,6 +316,7 @@ function Product_datatableMultiple ($products, $direction) {
 			// }
 	}
 }
+
 /**
 	* get a button for adding single items to a cart
 	*
@@ -332,6 +337,7 @@ function products_get_add_to_cart_button($params, $smarty) {
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'" /></form>';
 }
+
 /**
 	* get a button for adding multiple items to a cart
 	*
@@ -354,6 +360,7 @@ function Products_getAddManyToCartButton($params, $smarty) {
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'"/></form>';
 }
+
 /**
 	* display the default product image
 	*
@@ -385,6 +392,7 @@ function Products_image($params, $smarty) {
 		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'"/>'
 		.$link2.'</div>';
 }
+
 /**
 	* display an "image not found" message
 	*
@@ -399,6 +407,7 @@ function Products_imageNotFound($params, $smarty) {
 	$pt=ProductType::getInstance($product->vals['product_type_id']);
 	return $pt->getMissingImage($s);
 }
+
 /**
 	* get a list of images for a product
 	*
@@ -460,6 +469,7 @@ function Products_images($params, $smarty) {
 	WW_addCSS('/j/jsor-jcarousel-7bb2e0a/bland/skin.css');
 	return $html;
 }
+
 /**
 	* get a URL for a product page
 	*
@@ -471,6 +481,7 @@ function Products_images($params, $smarty) {
 function Products_link($params, $smarty) {
 	return $smarty->_tpl_vars['product']->getRelativeURL();
 }
+
 /**
 	* list all categories contained within a parent category
 	*
@@ -496,6 +507,7 @@ function _Products_listCategories($params, $smarty) {
 	$html.='</ul>';
 	return $html;
 }
+
 /**
 	* display the contents of a product category
 	*
@@ -520,6 +532,7 @@ function _Products_listCategoryContents ($params, $smarty) {
 	$html.='</ul>';
 	return $html;
 }
+
 /**
 	* if VAT applies to the product, return '+ VAT'
 	*
@@ -536,6 +549,7 @@ function Products_plusVat($params, $smarty) {
 		return '+ VAT';
 	}
 }
+
 /**
 	* display a list of reviews for the product
 	*
@@ -629,6 +643,7 @@ function Products_reviews($params, $smarty) {
 	}
 	return $c;
 }
+
 /**
 	* setup Smarty with Products-specific stuff
 	*
@@ -643,6 +658,7 @@ function Products_setupSmarty() {
 	}
 	return $smarty;
 }
+
 /**
 	* show the products in a page
 	*
@@ -701,7 +717,7 @@ function Products_show($PAGEDATA) {
 	}
 	// }
 	switch($PAGEDATA->vars['products_what_to_show']) {
-		case '1': // {
+		case '1': // { by type
 			return $c
 				.Products_showByType(
 					$PAGEDATA,
@@ -714,7 +730,7 @@ function Products_show($PAGEDATA) {
 				)
 				.$export;
 			// }
-		case '2': // {
+		case '2': // { by category
 			return $c
 				.Products_showByCategory(
 					$PAGEDATA,
@@ -727,7 +743,7 @@ function Products_show($PAGEDATA) {
 				)
 				.$export;
 			// }
-		case '3': // {
+		case '3': // { by id
 			return $c.Products_showById($PAGEDATA).$export;
 			// }
 	}
@@ -742,6 +758,7 @@ function Products_show($PAGEDATA) {
 		)
 		.$export;
 }
+
 /**
 	* show a specific product in a page
 	*
@@ -765,6 +782,7 @@ function Products_showById($PAGEDATA, $id=0) {
 	}
 	return $type->render($product);
 }
+
 /**
 	* display all products in a specified category
 	*
@@ -787,6 +805,7 @@ function Products_showByCategory(
 	$products=Products::getByCategory($id, $search);
 	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
+
 /**
 	* display all products of a certain type
 	*
@@ -809,6 +828,7 @@ function Products_showByType(
 	$products=Products::getByType($id, $search);
 	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
+
 /**
 	* display all products
 	*
@@ -836,6 +856,7 @@ function Products_showAll(
 	}
 	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
+
 /**
 	* get a list of products that are related and show them
 	*
@@ -902,6 +923,7 @@ function Products_showRelatedProducts($params, $smarty) {
 	}
 	return 'none yet';
 }
+
 /**
 	* submit the form for submitting a review
 	*
@@ -939,6 +961,15 @@ function Products_submitReviewForm ($productid, $userid) {
 	return $c;
 }
 
+/**
+	* Products object
+	*
+	*	@category WebME
+	* @package  WebME
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvweb.me/
+	*/
 class Products{
 	static $instances=array();
 	/**

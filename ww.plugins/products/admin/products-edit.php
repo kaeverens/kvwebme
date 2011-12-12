@@ -127,6 +127,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 		// }
 		// { save main data and data fields
 		$sql='set name="'.addslashes($_REQUEST['name']).'"'
+			.',link="'.addslashes(__FromJson($_REQUEST['name'], true)).'"'
 			.',user_id='.((int)@$_REQUEST['user_id'])
 			.',stock_number="'.addslashes($_REQUEST['stock_number']).'"'
 			.',activates_on="'.addslashes($_REQUEST['activates_on']).'"'

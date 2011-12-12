@@ -205,11 +205,9 @@ function Products_frontend($PAGEDATA) {
 		$cat_id=0;
 		$product_id=0;
 		foreach ($bits as $bit) {
-			$id=dbOne(
-				'select id from products_categories where parent_id='.$cat_id
-				.' and name like "'.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'"',
-				'id'
-			);
+			$sql='select id from products_categories where parent_id='.$cat_id
+				.' and name like "'.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'"';
+			$id=dbOne($sql, 'id');
 			if ($id) {
 				$cat_id=$id;
 				$_REQUEST['product_cid']=$cat_id;
@@ -455,6 +453,15 @@ function Products_cronGetNext() {
 	}
 }
 
+/**
+	* Product object
+	*
+	*	@category WebME
+	* @package  WebME
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvweb.me/
+	*/
 class Product{
 	static $instances=array();
 
@@ -511,6 +518,9 @@ class Product{
 		$this->id=$r['id'];
 		$this->name=$r['name'];
 		$this->link=$r['link'];
+		if ($this->link==null) {
+			$this->link=__FromJson($r['name'], true);
+		}
 		$this->default_category=(int)$r['default_category'];
 		if ($this->default_category==0) {
 			$this->default_category=1;
@@ -626,10 +636,12 @@ class Product{
 		}
 		if ($cat) {
 			$cat=ProductCategory::getInstance($cat);
-			return $cat->getRelativeUrl().'/'.urlencode($this->link);
+			return $cat->getRelativeUrl().'/'
+				.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
 		}
 		if (preg_match('/^products(\||$)/', $PAGEDATA->type)) { // TODO
-			return $PAGEDATA->getRelativeUrl().'/'.urlencode($this->link);
+			return $PAGEDATA->getRelativeUrl().'/'
+				.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
 		}
 		$this->relativeUrl='/_r?type=products&amp;product_id='.$this->id;
 		return $this->relativeUrl;
@@ -780,6 +792,16 @@ class Product{
 		return false;
 	}
 }
+
+/**
+	* ProductCategory object
+	*
+	*	@category WebME
+	* @package  WebME
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvweb.me/
+	*/
 class ProductCategory{
 	static $instances=array();
 	public $vals;

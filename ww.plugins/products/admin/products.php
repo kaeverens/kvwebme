@@ -32,6 +32,7 @@ if (isset($_REQUEST['delete']) && is_numeric($_REQUEST['delete'])) {
 	}
 	dbQuery('delete from products where id='.$_REQUEST['delete']);
 	echo '<em>Product deleted.</em>';
+	Core_cacheClear();
 }
 
 if (!dbOne('select id from products_types limit 1','id')) {
