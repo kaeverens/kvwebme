@@ -222,8 +222,13 @@ function Core_createTranslatableInputs() {
 			.attr('autocomplete', 'off')
 			.attr('hasTranslatable', true)
 		var val=$orig.val();
+		var vals;
 		try{
 			var vals=$.parseJSON(val);
+			if (vals==null) {
+				vals={};
+				vals[languages[0].code]=val;
+			}
 		}
 		catch(err) {
 			var vals={};
