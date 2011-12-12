@@ -6,7 +6,8 @@ function menu_edit(ev){
 	var id=el.id.replace(/menu_editlink_/,'');
 	// { build the HTML for the form
 	var html='<div id="menu_form">'
-		+'<ul><li><a href="#menu_main">Main</a></li><li><a href="#menu_style">Sub-menu Style</a></li></ul>'
+		+'<ul><li><a href="#menu_main">Main</a></li><li><a href="#menu_style">'
+		+'Sub-menu Style</a></li></ul>'
 		// {
 		+'<div id="menu_main"><table>'
 		+'<tr><th>Parent Page</th><td><select id="menu_parent"></select></td></tr>'
@@ -83,7 +84,9 @@ function menu_edit(ev){
 		});
 		// { set up initial values
 		$('#menu_form').tabs();
-		$('#menu_parent').html('<option value="'+res.parent+'">'+htmlspecialchars(res.parent_name)+'</option>');
+		$('#menu_parent')
+			.html('<option value="'+res.parent+'">'
+			+htmlspecialchars(res.parent_name)+'</option>');
 		$('#menu_direction')
 			.val(+res.direction)
 			.change(function(){
@@ -105,10 +108,13 @@ function menu_edit(ev){
 					val?'table-row':'none'
 				);
 			} );
-		if( res.state!=0)
+		if (res.state!=0) {
 			$('#row-menu-state').css('display','table-row');
+		}
 		$('select[name="menu_state_a"]').val(+res.state);
-		if(!res.background)res.background='#ffffff';
+		if (!res.background) {
+			res.background='#ffffff';
+		}
 		$('#menu_background')
 			.val(res.background)
 			.css('background-color',res.background);
@@ -135,7 +141,18 @@ function menu_edit(ev){
 			.val(+res.style_from)
 			.change(update_styles_table);
 		setTimeout(function(){
-			$('#menu_parent').remoteselectoptions({url:'/a/f=adminPageParentsList'});
+			$('#menu_parent').remoteselectoptions({
+				url:'/a/f=adminPageParentsList',
+				load:function(ret) {
+					var arr={
+						' -1':' -- current page -- '
+					};
+					$.each(ret, function(k, v) {
+						arr[k]=v;
+					});
+					return arr;
+				}
+			});
 			update_styles_table();
 		},1);
 		// }

@@ -25,11 +25,16 @@ if (isset($_REQUEST['get_menu'])) {
 			'state'=>0
 		);
 	}
-	if ($r['parent']) {
+	if ($r['parent']>0) {
 		$r['parent_name']=Page::getInstance($r['parent'])->name;
 	}
 	else {
-		$r['parent_name']=' -- none -- ';
+		if ($r['parent']==0) {
+			$r['parent_name']=' -- none -- ';
+		}
+		else {
+			$r['parent_name']=' -- current page -- ';
+		}
 	}
 	echo json_encode($r);
 	exit;
