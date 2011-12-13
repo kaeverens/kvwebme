@@ -355,10 +355,10 @@ function Form_readonly($page_id, &$vars, &$form_fields) {
 	$vals_2col_end='</td></tr>';
 	$vals_wrapper_end='</table>';
 	// }
-	if ($vars['forms_template'] && strpos($vars['forms_template'], '{{')===false) {
-		$vars['forms_template']='';
+	if (@$vars['forms_template'] && @strpos($vars['forms_template'], '{{')===false) {
+		@$vars['forms_template']='';
 	} // }}
-	if (!$vars['forms_template']||$vars['forms_template']=='&nbsp;') {
+	if (!@$vars['forms_template']||@$vars['forms_template']=='&nbsp;') {
 		$c.='<div>'.$vals_wrapper_start;
 	}
 	$required=array();
@@ -438,13 +438,13 @@ function Form_readonly($page_id, &$vars, &$form_fields) {
 				$d=nl2br(htmlspecialchars($_REQUEST[$name]));
 				// }
 		}
-		if ($vars['forms_template']&&$vars['forms_template']!='&nbsp;') {
-			$vars['forms_template']=str_replace(
+		if (@$vars['forms_template']&&@$vars['forms_template']!='&nbsp;') {
+			@$vars['forms_template']=str_replace(
 				'{{$'.$cnt.'}}',
 				$d,
-				$vars['forms_template']
+				@$vars['forms_template']
 			);
-			$vars['forms_template']=str_replace(
+			@$vars['forms_template']=str_replace(
 				'{{$'.htmlspecialchars($r2['name']).'}}',
 				$d,
 				$vars['forms_template']
@@ -456,7 +456,7 @@ function Form_readonly($page_id, &$vars, &$form_fields) {
 		}
 		$cnt++;
 	}
-	if ($vars['forms_template']&&$vars['forms_template']!='&nbsp;') {
+	if (@$vars['forms_template']&&@$vars['forms_template']!='&nbsp;') {
 		$c.=$vars['forms_template'];
 	}
 	else {
