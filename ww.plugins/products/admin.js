@@ -277,11 +277,10 @@ function Products_typeEdit(id) {
 			})
 			.val(tdata.is_for_sale)
 			.appendTo('#pte2');
-		// { is a printable voucher
 		function addIsVoucher() {
 			$('<th>Is it a printable voucher?</th><td><select>'
 				+'<option value="">No</option><option value="1">Yes</option>'
-				+'</select></td></tr>')
+				+'</select></td>')
 				.appendTo('#pte4');
 			var $select=$('#pte4 select');
 			if (+tdata.is_voucher) {
@@ -305,14 +304,14 @@ function Products_typeEdit(id) {
 		function addStockControl() {
 			$('<th>Use Stock Control?</th><td><select>'
 				+'<option value="0">No</option><option value="1">Yes</option>'
-				+'</select></td></tr>')
+				+'</select></td>')
 				.appendTo('#pte5');
 			$('#pte5 select').val(tdata.stock_control);
 		}
 		if (+tdata.is_for_sale) {
 			addIsVoucher();
+			addStockControl();
 		}
-		// }
 		// }
 		// { default category
 		$('#pte6')

@@ -3,7 +3,7 @@ if (!Core_isAdmin()) {
 	exit;
 }
 
-function Products_showDataField($df, $def) {
+function Products_showDataField($datafield, $def) {
 	if ($def['t']=='selected-image') {
 		return;
 	}
@@ -15,7 +15,7 @@ function Products_showDataField($df, $def) {
 			if ($def['r']) {
 				echo ' class="required"';
 			}
-			if ($df['v']) {
+			if ($datafield['v']) {
 				echo ' checked="checked"';
 			}
 			echo ' />';
@@ -30,17 +30,17 @@ function Products_showDataField($df, $def) {
 					echo ' required';
 				}
 				echo '" name="data_fields['.htmlspecialchars($def['n']).']" value="'
-					.htmlspecialchars($df['v']).'" />';
+					.htmlspecialchars($datafield['v']).'" />';
 			}
 		break; // }
 		case 'selectbox': // {
 			if (@$def['u']) {
-				if ($df['v']=='') {
-					$df['v']=$def['e'];
+				if ($datafield['v']=='') {
+					$datafield['v']=$def['e'];
 				}
 				echo '<textarea class="selectbox-userdefined" '
 					.'name="data_fields['.htmlspecialchars($def['n']).']">'
-					.htmlspecialchars($df['v'])
+					.htmlspecialchars($datafield['v'])
 					.'</textarea>';
 			}
 			else {
@@ -48,7 +48,7 @@ function Products_showDataField($df, $def) {
 				echo '<select name="data_fields['.htmlspecialchars($def['n']).']">';
 				foreach ($opts as $opt) {
 					echo '<option';
-					if ($opt==$df['v']) {
+					if ($opt==$datafield['v']) {
 						echo ' selected="selected"';
 					}
 					echo '>'.htmlspecialchars($opt).'</option>';
@@ -59,7 +59,7 @@ function Products_showDataField($df, $def) {
 		case 'textarea': // {
 			echo ckeditor(
 				'data_fields['.htmlspecialchars($def['n']).']',
-				$df['v'],
+				$datafield['v'],
 				null,
 				true
 			);
@@ -69,7 +69,7 @@ function Products_showDataField($df, $def) {
 			if ($def['r'] && !(@$def['u'])) {
 				echo ' class="required"';
 			}
-			echo ' value="'.htmlspecialchars($df['v']).'" />';
+			echo ' value="'.htmlspecialchars($datafield['v']).'" />';
 			// }
 	}
 	echo '</td></tr>';
@@ -137,19 +137,19 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 			.',enabled='.(int)$_REQUEST['enabled']
 			.',images_directory="'.addslashes($_REQUEST['images_directory']).'"';
 		// { add data fields to SQL
-		$dfs=array();
+		$datafields=array();
 		if (!isset($_REQUEST['data_fields'])) {
 			$_REQUEST['data_fields']=array();
 		}
 		foreach ($_REQUEST['data_fields'] as $n=>$v) {
-			$dfs[]=array(
+			$datafields[]=array(
 				'n'=>$n,
 				'v'=>is_array($v)?json_encode($v):$v
 			);
 		}
-		$sql.=',data_fields="'.addslashes(json_encode($dfs)).'"';
+		$sql.=',data_fields="'.addslashes(json_encode($datafields)).'"';
 		// }
-		// { add online store data to SQL, if it exists
+		// { online store stuff
 		if (isset($_REQUEST['online-store-fields'])) {
 			$online_store_data = array();
 			foreach ($_REQUEST['online-store-fields'] as $name=>$value) {
@@ -158,6 +158,32 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 			$online_store_data = json_encode($online_store_data);
 			$sql.=',online_store_fields="'.addslashes($online_store_data).'"';
 		}
+		// { stock control
+		$stockcontrol_total=(int)@$_REQUEST['stockcontrol_total'];
+		$stockcontrol_detail='false';
+		if (isset($_REQUEST['stockcontrol_detail'])) {
+			$detail=$_REQUEST['stockcontrol_detail'];
+			$stockcontrol_total=0;
+			$rows=array();
+			foreach ($detail as $row) {
+				$empty=0;
+				foreach ($row as $k=>$v) {
+					if ($k!='_amt' && $v=='') {
+						$empty++;
+					}
+				}
+				if (!$empty) {
+					$rows[]=$row;
+					$stockcontrol_total+=$row['_amt'];
+				}
+			}
+			if (count($rows)) {
+				$stockcontrol_detail=json_encode($rows);
+			}
+		}
+		$sql.=',stockcontrol_total='.$stockcontrol_total
+			.',stockcontrol_details="'.addslashes($stockcontrol_detail).'"';
+		// }
 		// }
 		if ($id) {
 			dbQuery("update products $sql where id=$id");
@@ -252,14 +278,28 @@ else {
 		'online_store_fields'=>'{}'
 	);
 }
+
+// { top links
 echo '<a href="plugin.php?_plugin=products&amp;_page=products-edit">Add a P'
 	.'roduct</a>'
 	.' <a href="plugin.php?_plugin=products&amp;_page=import">Import Products'
 	.'</a>';
+// }
+// { gather needed data
+$product_type=dbRow(
+	'select stock_control,data_fields from products_types '
+	.'where id='.$pdata['product_type_id']
+);
+// }
+
+// { start form and tabs
 echo '<form novalidate="novalidate" id="products-form" action="'.$_url.'&amp;id='.$id.'" '
-	.'method="post" onsubmit="products_getData();">';
-echo '<input type="hidden" name="action" value="save" />';
-echo '<div id="tabs"><ul>'
+	.'method="post" onsubmit="products_getData();">'
+	.'<input type="hidden" name="action" value="save" />'
+	.'<div id="tabs">';
+// }
+// { tabs menu
+echo '<ul>'
 	.'<li><a href="#main-details">Main Details</a></li>'
 	.'<li><a href="#data-fields">Data Fields</a></li>';
 if (isset($PLUGINS['online-store'])) {
@@ -275,6 +315,9 @@ if (isset($PLUGINS['online-store'])) {
 		echo ' style="display:none";';
 	}
 	echo '><a href="#online-store-fields">Online Store</a></li>';
+	if ((int)$product_type['stock_control']) {
+		echo '<li><a href="#stock-control">Stock Control</a></li>';
+	}
 }
 echo '<li><a href="#categories">Categories</a></li>';
 if (count($relations)) {
@@ -478,30 +521,26 @@ echo '</table></div>';
 // }
 // { data fields
 echo '<div id="data-fields"><table id="data-fields-table">';
-$dfs=json_decode($pdata['data_fields'], true);
-$dfjson=dbOne(
-	'select data_fields from products_types '
-	.'where id='.$pdata['product_type_id'],
-	'data_fields'
-);
-if ($dfjson=='') {
-	$dfjson='[]';
+$datafields=json_decode($pdata['data_fields'], true);
+$datafieldjson=$product_type['data_fields'];
+if ($datafieldjson=='') {
+	$datafieldjson='[]';
 }
-$dfjson=str_replace(array("\n", "\r"), array('\n', ''), $dfjson);
-$dfjson=json_decode($dfjson, true);
-$dfdefs=array();
-if (@$dfjson) {
-	foreach ($dfjson as $d) {
-		$dfdefs[$d['n']]=$d;
+$datafieldjson=str_replace(array("\n", "\r"), array('\n', ''), $datafieldjson);
+$datafieldjson=json_decode($datafieldjson, true);
+$datafielddefs=array();
+if (@$datafieldjson) {
+	foreach ($datafieldjson as $d) {
+		$datafielddefs[$d['n']]=$d;
 	}
-	foreach ($dfs as $df) {
-		if (isset($df['n']) && isset($dfdefs[$df['n']])) {
-			$def=$dfdefs[$df['n']];
-			unset($dfdefs[$df['n']]);
-			Products_showDataField($df, $def);
+	foreach ($datafields as $datafield) {
+		if (isset($datafield['n']) && isset($datafielddefs[$datafield['n']])) {
+			$def=$datafielddefs[$datafield['n']];
+			unset($datafielddefs[$datafield['n']]);
+			Products_showDataField($datafield, $def);
 		}
 	}
-	foreach ($dfdefs as $def) {
+	foreach ($datafielddefs as $def) {
 		Products_showDataField(array('v'=>''), $def);
 	}
 }
@@ -510,7 +549,7 @@ else {
 }
 echo '</table></div>';
 // }
-// { Online Store
+// { online store tabs
 if (isset($PLUGINS['online-store'])) {
 	// { set up fields
 	$online_store_fields 
@@ -560,8 +599,7 @@ if (isset($PLUGINS['online-store'])) {
 	if (!isset($addOnlineStoreFields)||!$addOnlineStoreFields) {
 		echo ' style="display:none';
 	}
-	echo '>';
-	echo '<table>';
+	echo '><table>';
 	foreach ($online_store_fields as $internal=>$display) {
 		echo '<tr><th>';
 		if (is_array($display)) {
@@ -594,6 +632,37 @@ if (isset($PLUGINS['online-store'])) {
 		echo '</td>';
 	}
 	echo '</table></div>';
+	if ((int)$product_type['stock_control']) {
+		echo '<div id="stock-control">';
+		// { figure out what kind of stock control we have
+		$options=array();
+		foreach ($datafieldjson as $datafield) {
+			if ($datafield['t']=='selectbox' && $datafield['u']=='1') {
+				$options[]=$datafield['n'];
+			}
+		}
+		// }
+		// { stock control for simple products
+		echo '<label>Amount in stock: '
+			.'<input class="small" name="stockcontrol_total" value="'
+			.(int)@$pdata['stockcontrol_total'].'"/></label>';
+		// }
+		// { stock control for products which have user-selectable options
+		if (count($options)) {
+			$detail=@$pdata['stockcontrol_details'];
+			if (!$detail) {
+				$detail='[]';
+			}
+			echo '<table id="stockcontrol-complex"></table><script>'
+				.'window.stockcontrol_detail='.$detail.';window.stockcontrol_options=["'
+				.join('", "', $options).'"];</script><a href="#" id="'
+				.'stockcontrol-addrow">add row</a>'
+				.'<p>to remove rows, set their options to "-- choose --" and save '
+				.'the product.</p>';
+		}
+		// }
+		echo '</div>';
+	}
 }
 // }
 // { categories
@@ -690,6 +759,8 @@ if (count($relations)) {
 	echo '</td></tr></table></div>';
 }
 // }
+// { end form and tabs
 echo '</div><input type="submit" value="Save" /></form>';
+// }
 WW_addScript('/ww.plugins/products/admin/products-edit.js');
 WW_addScript('/ww.plugins/products/admin/create-page.js');

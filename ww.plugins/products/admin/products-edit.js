@@ -312,4 +312,59 @@ $(function(){
 			"url":'/a/p=products/f=adminCategoriesGetRecursiveList'
 		});
 	Core_createTranslatableInputs();
+	// { stock control
+	if (window.stockcontrol_options) {
+		function addRow(vals) {
+			if (!vals || (!vals._amt && vals._amt!==0)) {
+				vals={'_amt':0};
+			}
+			var numrows=$tbody.find('tr').length;
+			var row='<tr>';
+			for (var i=0;i<options.length;++i) {
+				var option=options[i];
+				var sopts=$('textarea[name="data_fields['+option+']"]')
+					.val().split("\n");
+				row+='<td><select name="stockcontrol_detail['+numrows+']['
+					+option+']"><option value=""> -- choose -- </option>';
+				for (var j=0;j<sopts.length;++j) {
+					if (sopts[j]!='') {
+						row+='<option>'+sopts[j].replace(/\|.*/, '')+'</option>';
+					}
+				}
+				row+='</select></td>';
+			}
+			row+='<td><input class="small" name="stockcontrol_detail['+numrows
+				+'][_amt]"/></td></tr>';
+			var $row=$(row).appendTo($tbody);
+			$row.find('input').val(+vals._amt);
+			for (var i=0;i<options.length;++i) {
+				$row.find('td:nth-child('+(i+1)+') select').val(vals[options[i]]);
+			}
+		}
+		function recount() {
+			var sum=0;
+			$table.find('input').each(function() {
+				sum+= +$(this).val();
+			});
+			$('input[name=stockcontrol_total]').val(sum);
+		}
+		$('input[name=stockcontrol_total]').attr('disabled', true);
+		var options=window.stockcontrol_options;
+		var detail=window.stockcontrol_detail;
+		var $table=$('#stockcontrol-complex');
+		var head='<thead><tr>';
+		for (var i=0;i<options.length;++i) {
+			head+='<th>'+options[i]+'</th>';
+		}
+		head+='</th><th>Amt</th><th>&nbsp;</th></tr></thead>';
+		$table.append(head);
+		var $tbody=$('<tbody/>').appendTo($table);
+		for (var i=0;i<detail.length;++i) {
+			addRow(detail[i]);
+		}
+		addRow();
+		$('#stockcontrol-complex input').live('change',recount);
+		$('#stockcontrol-addrow').click(addRow);
+	}
+	// }
 });

@@ -232,3 +232,8 @@ if ($version==32) { // add link field to help with multilingual
 	}
 	$version=33;
 }
+if ($version==33) { // stock control
+	dbQuery('alter table products add stockcontrol_details text');
+	dbQuery('alter table products add stockcontrol_total int default 0');
+	$version=34;
+}
