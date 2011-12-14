@@ -196,6 +196,91 @@ $(function(){
 			animation:1000
 		});
 	});
+	$('.products-product.stock-control').each(function() {
+		var $this=$(this), $stockcontrol=$this.find('input.stock-control-total');
+		var details=$stockcontrol.attr('details');
+		if (!details) {
+			details='[]';
+		}
+		details=eval(details);
+		var total=+$stockcontrol.val();
+		if (!total) {
+			$this.find('select,input,button').attr('disabled', true);
+			return;
+		}
+		var options=[];
+		function recheck() {
+			var $this=$(this),
+				name=$this.attr('name').replace('products_values_', '');
+			var selected=[];
+			for (var i=0;i<options.length;++i) {
+				selected.push(
+					$('select[name=products_values_'+options[i]+']')
+						.val().replace(/\|.*/, '')
+				);
+				if (name==options[i]) {
+					i++;
+					break;
+				}
+			}
+			if (i>=options.length) {
+				return;
+			}
+			name=options[i];
+			var $select=$('select[name=products_values_'+options[i]+']');
+			var $options=$select.find('option');
+			$options.attr('disabled', true);
+			for (var i=0;i<details.length;++i) {
+				if (+details[i]._amt<1) {
+					continue;
+				}
+				var mismatch=0;
+				for (j=0;j<selected.length;++j) {
+					if (details[i][options[j]]!=selected[j]) {
+						mismatch=1;
+					}
+				}
+				if (mismatch) {
+					continue;
+				}
+				for (var j=0;j<$options.length;++j) {
+					if ($options[j].value.replace(/\|.*/, '')==details[i][name]) {
+						$($options[j]).attr('disabled', false);
+					}
+				}
+			}
+			for (j=0;j<$options.length;++j) {
+				if (!$($options[j]).attr('disabled')) {
+					$select.val($options[j].value);
+					break;
+				}
+			}
+		}
+		if (details.length) {
+			$.each(details[0], function(k, v) {
+				if (k=='_amt') {
+					return;
+				}
+				$this.find('select[name=products_values_'+k+']')
+					.change(recheck)
+					.find('option').attr('disabled', true);
+				options.push(k);
+			});
+			var found;
+			var $options=$this
+				.find('select[name=products_values_'+options[0]+'] option');
+			for (var i=0;i<details.length;++i) {
+				if (+details[i]._amt) {
+					for (var j=0;j<$options.length;++j) {
+						if ($options[j].value.replace(/\|.*/, '')==details[i][options[0]]) {
+							$($options[j]).attr('disabled', false);
+						}
+					}
+				}
+			}
+			$('select[name=products_values_'+options[0]+']').change();
+		}
+	});
 });
 function Products_showMap() {
 	if (!window.google || !google.maps) {

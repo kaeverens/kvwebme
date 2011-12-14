@@ -942,6 +942,7 @@ class ProductType{
 		$this->id=$r['id'];
 		$this->is_for_sale=(int)$r['is_for_sale'];
 		$this->is_voucher=(int)$r['is_voucher'];
+		$this->stock_control=(int)$r['stock_control'];
 		$this->voucher_template=$r['voucher_template'];
 		self::$instances[$this->id] =& $this;
 		return $this;
@@ -1168,7 +1169,11 @@ class ProductType{
 		$smarty->assign('_stock_number', $product->stock_number);
 		$html='';
 		if ($add_wrapper) {
-			$html.='<div class="products-product" id="products-'
+			$classes=array('products-product');
+			if ($this->stock_control) {
+				$classes[]='stock-control';
+			}
+			$html.='<div class="'.join(' ', $classes).'" id="products-'
 				.$product->get('id').'">';
 		}
 		$html.=$smarty->fetch(

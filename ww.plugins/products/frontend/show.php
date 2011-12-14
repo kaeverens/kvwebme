@@ -330,9 +330,19 @@ function products_get_add_to_cart_button($params, $smarty) {
 	if (!$text) {
 		$text='Add to Cart';
 	}
-	$price=$_SESSION['currency']['symbol'].(float)$smarty->_tpl_vars['product']->vals['online-store']['_price'];
+	$price=$_SESSION['currency']['symbol']
+		.(float)$smarty->_tpl_vars['product']->vals['online-store']['_price'];
+	$instock=(int)@$smarty->_tpl_vars['product']->vals['stockcontrol_total'];
+	$stockcontrol=$instock
+		?'<input type="hidden" class="stock-control-total" value="'
+		.((int)@$smarty->_tpl_vars['product']->vals['stockcontrol_total']).'"'
+		.' details="'.htmlspecialchars(
+			@$smarty->_tpl_vars['product']->vals['stockcontrol_details']
+		).'"/>'
+		:'';
 	return '<form method="POST" class="products-addtocart">'
 		.'<input type="hidden" name="products_action" value="add_to_cart" />'
+		.$stockcontrol
 		.'<button class="submit-button" price="'.$price.'">'.$text.'</button>'
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'" /></form>';
@@ -351,11 +361,21 @@ function Products_getAddManyToCartButton($params, $smarty) {
 	if (!$text) {
 		$text='Add to Cart';
 	}
-	$price=$_SESSION['currency']['symbol'].(float)$smarty->_tpl_vars['product']->vals['online-store']['_price'];
+	$price=$_SESSION['currency']['symbol']
+		.(float)$smarty->_tpl_vars['product']->vals['online-store']['_price'];
+	$instock=(int)@$smarty->_tpl_vars['product']->vals['stockcontrol_total'];
+	$stockcontrol=$instock
+		?'<input type="hidden" class="stock-control-total" value="'
+		.((int)@$smarty->_tpl_vars['product']->vals['stockcontrol_total']).'"'
+		.' details="'.htmlspecialchars(
+			@$smarty->_tpl_vars['product']->vals['stockcontrol_details']
+		).'"/>'
+		:'';
 	return '<form method="POST" class="products-addmanytocart">'
 		.'<input type="hidden" name="products_action" value="add_to_cart"/>'
 		.'<input name="products-howmany" value="1" '
 		.'class="add_multiple_widget_amount" style="width:50px"/>'
+		.$stockcontrol
 		.'<button class="submit-button" price="'.$price.'">'.$text.'</button>'
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'"/></form>';
