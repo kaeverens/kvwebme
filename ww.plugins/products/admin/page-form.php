@@ -71,6 +71,23 @@ $c.='</td></tr>';
 // { category names
 $c.='<tr id="products_what_to_show_2"><th>Which category to show</th><td>';
 $rs=dbAll('select id,name from products_categories order by name');
+function showCategoriesRecursive($pid, $level, $sid) {
+	$opts=array();
+	$cs=dbAll(
+		'select id,name from products_categories where parent_id='.$pid.' order by name'
+	);
+	foreach ($cs as $c) {
+		$opt='<option value="'.$c['id'].'"';
+		if ($c['id']==$sid) {
+			$opt.=' selected="selected"';
+		}
+		$opt.='>'.str_repeat('&raquo;&nbsp;', $level)
+			.htmlspecialchars(__FromJson($c['name'])).'</option>';
+		$opts[]=$opt;
+		$opts[]=showCategoriesRecursive($c['id'], $level+1, $sid);
+	}
+	return join('', $opts);
+}
 if ($rs===false || !count($rs)) {
 	$c.='<p><strong>no categories exist.</strong> '
 		.'<a href="/ww.admin/plugin.php?_plugin=products&amp;_page=categories">'
@@ -78,14 +95,8 @@ if ($rs===false || !count($rs)) {
 }
 else {
 	$c.='<select name="page_vars[products_category_to_show]">'
-		.'<option value="0"> -- choose -- </option>';
-	foreach ($rs as $r) {
-		$c.='<option value="'.$r['id'].'"';
-		if (@$vars['products_category_to_show']==$r['id']) {
-			$c.=' selected="selected"';
-		}
-		$c.='>'.htmlspecialchars($r['name']).'</option>';
-	}
+		.'<option value="0"> -- choose -- </option>'
+		.showCategoriesRecursive(0, 0, $r['id']);
 	$c.='</select>';
 }
 $c.='</td></tr>';
