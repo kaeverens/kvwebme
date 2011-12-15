@@ -32,14 +32,18 @@ function content_snippet_edit(ev){
 		'/ww.plugins/content-snippet/admin/widget-form.php',
 		{'get_content_snippet':id},
 		function(res){
-			if(res.content==null)res.content='';
+			if (res.content==null) {
+				res.content='';
+			}
 			d.dialog({
 				"minWidth":630,
 				"minHeight":450,
 				"height":450,
 				"width":630,
 				"beforeclose":function(){
-					if(!ww.content_snippet.rte)return;
+					if (!ww.content_snippet.rte) {
+						return;
+					}
 					ww.content_snippet.rte.destroy();
 					ww.content_snippet.rte=null;
 				},
@@ -124,7 +128,9 @@ function content_snippet_changePage(){
 	content_snippet_showPage(val);
 }
 function content_snippet_savePage(page){
-	if(page<0)return;
+	if (page<0) {
+		return;
+	}
 	ww.content_snippet.data[page].html=ww.content_snippet.rte.getData();
 	ww.content_snippet.data[page].title=$('#content_snippet_page_title').val();
 }

@@ -81,9 +81,9 @@ foreach (array('show_items','start') as $v) {
 }
 $id=isset($_REQUEST['id'])?(int)$_REQUEST['id']:0;
 // }
+// { scripts
 WW_addScript('/ww.admin/j/admin.js');
 WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
-WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
 WW_addScript('/j/jquery.remoteselectoptions.js');
 WW_addScript('/j/fg.menu/fg.menu.js');
 WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
@@ -91,19 +91,23 @@ WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
 WW_addScript('/j/cluetip/jquery.cluetip.js');
 WW_addScript('/j/jquery.uploadify/jquery.uploadify.js');
 WW_addScript('/j/jquery-ui-timepicker-addon.js');
+// }
+// { css
+WW_addCSS('/j/cluetip/jquery.cluetip.css');
+WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
+WW_addCSS('/ww.admin/theme/admin.css');
+// }
 echo '<!doctype html>
 <html><head><title>'.__('WebME admin area').'</title>';
-echo Core_getJQueryScripts()
-	.'<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>';
-WW_addCSS('/j/cluetip/jquery.cluetip.css');
-WW_addCSS('/ww.admin/theme/admin.css');
-WW_addInlineScript('var sessid="'.session_id().'";');
 foreach ($PLUGINS as $pname=>$p) {
 	if (file_exists(SCRIPTBASE.'/ww.plugins/'.$pname.'/admin/admin.css')) {
 		WW_addCSS('/ww.plugins/'.$pname.'/admin/admin.css');
 	}
 }
 echo WW_getCSS();
+echo Core_getJQueryScripts()
+	.'<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>';
+WW_addInlineScript('var sessid="'.session_id().'";');
 // { languages
 $langs=dbAll(
 	'select code,name from language_names order by is_default desc,code,name'
@@ -124,6 +128,9 @@ $menus=array(
 		),
 		'Users'  => array('_link'=>'siteoptions.php?page=users'),
 		'Plugins'=> array('_link'=>'siteoptions.php?page=plugins'),
+#		'Stats2'=>array(
+#			'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Stats\')'
+#		),
 		'Themes' => array('_link'=>'siteoptions.php?page=themes'),
 		'Timed Events'=>array(
 			'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Cron\')'

@@ -16,13 +16,13 @@ $plugin=array(
 	'name'            => 'User - Get Location',
 	'description' => 'Utility to find the location of a user',
 	'admin' => array(
-		'page_type' => 'User_getLocation_admin'
+		'page_type' => 'UserGetLocation_admin'
 	),
 	'frontend' => array(
-		'page_type' => 'User_getLocation_frontend'
+		'page_type' => 'UserGetLocation_frontend'
 	),
 	'triggers'=>array(
-		'page-object-loaded'=>'User_getLocation_checkUserLocation'
+		'page-object-loaded'=>'UserGetLocation_checkUserLocation'
 	),
 	'version'=>1
 );
@@ -35,10 +35,10 @@ $plugin=array(
   *
   * @return string page html
   */
-function User_getLocation_frontend($PAGEDATA) {
+function UserGetLocation_frontend($PAGEDATA) {
 	require dirname(__FILE__).'/frontend/page.php';
 	return $PAGEDATA->render()
-		.User_getLocation_frontendShow($PAGEDATA->dbVals, $PAGEDATA->vars)
+		.UserGetLocation_frontendShow($PAGEDATA->dbVals, $PAGEDATA->vars)
 		.$PAGEDATA->vars['footer'];
 }
 
@@ -50,7 +50,7 @@ function User_getLocation_frontend($PAGEDATA) {
   *
   * @return string HTML of the map thing
   */
-function User_getLocation_admin($page, $vars) {
+function UserGetLocation_admin($page, $vars) {
 	require dirname(__FILE__).'/admin/form.php';
 	return $c;
 }
@@ -62,7 +62,7 @@ function User_getLocation_admin($page, $vars) {
   *
   * @return string stuff
   */
-function User_getLocation_checkUserLocation($PAGEDATA) {
+function UserGetLocation_checkUserLocation($PAGEDATA) {
 	if (!isset($_SESSION['userdata'])
 		|| $_SESSION['userdata']['latitude']
 	) {

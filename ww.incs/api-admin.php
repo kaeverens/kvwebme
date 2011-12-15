@@ -150,6 +150,18 @@ function Core_adminLanguagesEdit() {
 }
 
 /**
+	* save a session variable
+	*
+	* @return array status of save
+	*/
+function Core_adminLoadJSVars() {
+	if (!isset($_SESSION['js'])) {
+		$_SESSION['js']=array();
+	}
+	return $_SESSION['js'];
+}
+
+/**
 	* get list of pages and and number of their kids
 	*
 	* @return array
@@ -582,15 +594,17 @@ function Core_adminSaveJSVar() {
 }
 
 /**
-	* save a session variable
+	* get stats
 	*
-	* @return array status of save
+	* @return array details
 	*/
-function Core_adminLoadJSVars() {
-	if (!isset($_SESSION['js'])) {
-		$_SESSION['js']=array();
-	}
-	return $_SESSION['js'];
+function Core_adminStatsGetVisits() {
+	$from=isset($_REQUEST['from'])
+		?$_REQUEST['from']
+		:date('Y-m-d',time()-3600*24*7);
+	$to=isset($_REQUEST['to'])
+		?$_REQUEST['to']
+		:date('Y-m-d', time()+3600*24);
 }
 
 /**

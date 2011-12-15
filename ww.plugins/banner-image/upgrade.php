@@ -1,12 +1,16 @@
 <?php
-/*
-	Webme Banner Image Plugin
-	File: upgrade.php
-	Developers: Conor Mac Aoidh <http://macaoidh.name>
-	            Kae Verens <http://verens.com/>
-	Report Bugs: <conor@macaoidh.name>
-	             <kae@verens.com>
-*/
+/**
+	* Webme Banner Image Plugin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conor.macaoidh@gmail.com>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 if ($version==0) {
 	$version='0.1';
@@ -45,7 +49,7 @@ if ($version=='2') { // convert all image types to HTML, add a Name to each item
 	$o=new stdClass();
 	foreach ($rs as $r) {
 		$o->id=(int)$r['id'];
-		$html=showBanner($o);
+		$html=BannerImage_showBanner($o);
 		dbQuery(
 			'update banners_images set name="banner_'.$r['id'].'",html="'
 			.addslashes($html).'",type=1 where id='.$r['id']

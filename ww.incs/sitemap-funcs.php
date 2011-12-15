@@ -40,10 +40,7 @@ function Sitemap_getLinks($rs) {
 	foreach ($rs as $r) {
 		$d=(strpos($r['classes'], 'hasChildren')!==false)
 			?'<ul>'.Sitemap_getLinks(
-				Menu_getChildren(
-					$r['id'],
-					$PAGEDATA->id
-				)
+				Menu_getChildren($r['id'], $PAGEDATA->id)
 			).'</ul>'
 			:'';
 		$c.='<li><a href="'.$r['link'].'" class="'.$r['classes'].'">'

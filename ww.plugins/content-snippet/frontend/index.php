@@ -1,6 +1,25 @@
 <?php
-function show_content_snippet($vars) {
-	if (!is_array($vars) && @$vars->id){
+/**
+	* file for showing content snippets
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+/**
+	* return a content snippet
+	*
+	* @param array $vars array of variables
+	*
+	* @return string content snippet
+	*/
+function ContentSnippet_show2($vars) {
+	if (!is_array($vars) && @$vars->id) {
 		$data=Core_cacheLoad('content_snippets', $vars->id.'-data');
 		if ($data===false) {
 			$data=dbRow(

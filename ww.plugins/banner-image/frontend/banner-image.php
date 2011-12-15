@@ -14,7 +14,7 @@ function show_banner($vars) {
 		if ($b===false) {
 			$b=dbRow('select * from banners_images where id='.$vars->id);
 			if ($b && count($b) && !$b['html']) {
-				$b['html']=banner_image_getImgHTML($vars->id);
+				$b['html']=BannerImage_getImgHtml($vars->id);
 				dbQuery(
 					'update banners_pages set html="'.addslashes($b['html'])
 					.'" where id='.$vars->id
@@ -34,7 +34,7 @@ function show_banner($vars) {
 		}
 		$b=$b[rand(0, count($b)-1)];
 		if ($b && count($b) && !$b['html']) {
-			$b['html']=banner_image_getImgHTML($b['id']);
+			$b['html']=BannerImage_getImgHtml($b['id']);
 			dbQuery(
 				'update banners_pages set html="'.addslashes($b['html'])
 				.'" where id='.$b['id']
@@ -52,7 +52,7 @@ function show_banner($vars) {
 	if ($b && count($b)) {
 		$banner=$b['html'];
 		if (!$banner) {
-			$banner=banner_image_getImgHTML($vars->id);
+			$banner=BannerImage_getImgHtml($vars->id);
 		}
 	}
 	if (!$banner) {

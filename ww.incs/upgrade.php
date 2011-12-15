@@ -454,6 +454,35 @@ if ($version==43) { // add link field to page, so name field can be changed
 	dbQuery('update pages set link=name');
 	$version=44;
 }
+if ($version==44) { // stats archive tables
+	dbQuery(
+		'create table logs_archive('
+		.'cdate date'
+		.',unique_visitors int default 0'
+		.',page_loads int default 0'
+		.',ram_used int default 0'
+		.',bandwidth_used int default 0'
+		.',render_time int default 0'
+		.',db_calls int default 0'
+		.')default charset=utf8'
+	);
+	dbQuery(
+		'create table logs_referers('
+		.'cdate date'
+		.',referer text'
+		.',page text'
+		.',amt int default 0'
+		.')default charset=utf8'
+	);
+	dbQuery(
+		'create table logs_pages('
+		.'cdate date'
+		.',page text'
+		.',amt int default 0'
+		.')default charset=utf8'
+	);
+	$version=45;
+}
 
 $DBVARS['version']=$version;
 Core_cacheClear();

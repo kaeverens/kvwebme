@@ -1,4 +1,17 @@
 <?php
+/**
+	* front controller for WebME files
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+// { plugin config
 $plugin=array(
 	'name' => 'Content Snippets',
 	'admin' => array(
@@ -7,13 +20,23 @@ $plugin=array(
 			'js_include' => '/ww.plugins/content-snippet/admin/widget.js'
 		)
 	),
-	'description' => 'Add small static HTML snippets to any panel - address, slogan, footer, image, etc.',
+	'description' => 'Add small static HTML snippets to any panel - address, '
+		.'slogan, footer, image, etc.',
 	'frontend' => array(
-		'widget' => 'showContentSnippet'
+		'widget' => 'ContentSnippet_show'
 	),
 	'version' => '3'
 );
-function showContentSnippet($vars=null){
-	include_once SCRIPTBASE.'ww.plugins/content-snippet/frontend/index.php';
-	return show_content_snippet($vars);
+// }
+
+/**
+	* show a content snippet
+	*
+	* @param array $vars array of parameters
+	*
+	* @return string contentsnippet
+	*/
+function ContentSnippet_show($vars=null) {
+	require_once SCRIPTBASE.'ww.plugins/content-snippet/frontend/index.php';
+	return ContentSnippet_show2($vars);
 }

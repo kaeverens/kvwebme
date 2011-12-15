@@ -176,17 +176,16 @@
 				var container = $(this).attr("id") || $(this).attr("class");			
 				
 				$(this).data('settings', settings);
-				
 				$(this).wrap("<div class='"+settings.containerClass+"'></div>");
 			
 				var elementCount = $('#'+container+' > li, .'+container+' > li').size();
-												
 				var containerWidth =  $("."+settings.containerClass).width();
-				
 				var handleWidth = $("."+settings.handleClass).css("width");
 		
 				handleWidth =  handleWidth.replace(/px/,"");
-				if(handleWidth=='auto')handleWidth=$('.handle')[0].offsetWidth;
+				if (handleWidth=='auto') {
+					handleWidth=$('.handle')[0].offsetWidth;
+				}
 
 			  var finalWidth;
 				var handle;

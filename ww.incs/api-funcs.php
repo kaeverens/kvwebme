@@ -182,6 +182,29 @@ function Core_getImg() {
 }
 
 /**
+	* retrieve list of pages for a menu
+	*
+	* @return array array of menu items
+	*/
+function Core_getMenu() {
+	require_once 'menus.php';
+	header('Expires-Active: On');
+	header('Cache-Control: max-age = 9999999999');
+	header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
+	header('Pragma:');
+	return array(
+		$_REQUEST['pid'],
+		Menu_getChildren(
+			$_REQUEST['pid'],
+			$_REQUEST['id'],
+			0,
+			$_REQUEST['top_id'],
+			0
+		)
+	);
+}
+
+/**
 	* get details of the logged-in user
 	*
 	* @return array of details

@@ -1,8 +1,28 @@
 <?php
+/**
+	* form for editing a product
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 if (!Core_isAdmin()) {
 	exit;
 }
 
+/**
+	* display a field
+	*
+	* @param array $datafield the field's data
+	* @param array $def       field definition data
+	*
+	* @return string categories
+	*/
 function Products_showDataField($datafield, $def) {
 	if ($def['t']=='selected-image') {
 		return;
@@ -73,6 +93,33 @@ function Products_showDataField($datafield, $def) {
 			// }
 	}
 	echo '</td></tr>';
+}
+
+/**
+	* show categories and subcategories
+	*
+	* @param int $parent parent category
+	*
+	* @return string categories
+	*/
+function showCats($parent) {
+	global $cats;
+	$found=array();
+	foreach ($cats as $id=>$cat) {
+		if (isset($cat['parent_id'])
+			&& $cat['parent_id']==$parent
+			&& isset($cat['name'])
+		) {
+			$l='<li><input type="checkbox" name="product_categories['.$id.']"';
+			if (isset($cat['selected'])) {
+				$l.=' checked="checked"';
+			}
+			$l.='>'.htmlspecialchars($cat['name']);
+			$l.=showCats($id);
+			$found[]=$l;
+		}
+	}
+	return '<ul>'.join('', $found).'</ul>';
 }
 // { set up initial variables
 if (isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
@@ -293,8 +340,8 @@ $product_type=dbRow(
 // }
 
 // { start form and tabs
-echo '<form novalidate="novalidate" id="products-form" action="'.$_url.'&amp;id='.$id.'" '
-	.'method="post" onsubmit="products_getData();">'
+echo '<form novalidate="novalidate" id="products-form" action="'.$_url
+	.'&amp;id='.$id.'" method="post" onsubmit="products_getData();">'
 	.'<input type="hidden" name="action" value="save" />'
 	.'<div id="tabs">';
 // }
@@ -587,10 +634,9 @@ if (isset($PLUGINS['online-store'])) {
 			'_sold_amt' => 'Amount Sold',
 			'_stock_amt' => 'Amount in Stock'
 		);
-	if (dbOne(
-		'select is_voucher from products_types where id='.$pdata['product_type_id'],
-		'is_voucher'
-	)=='1') {
+	$sql='select is_voucher from products_types where id='
+		.$pdata['product_type_id'];
+	if (dbOne($sql, 'is_voucher')=='1') {
 		$online_store_fields['_voucher_value']='Voucher Value';
 	}
 	// }
@@ -608,10 +654,10 @@ if (isset($PLUGINS['online-store'])) {
 		else {
 			echo $display;
 		}
-		echo '</th>';
-		echo '<td>';
+		echo '</th><td>';
 		if (!is_array($display)) {
-			echo '<input class="small" type="number" name="online-store-fields['.$internal.']"';
+			echo '<input class="small" type="number" name="online-store-fields['
+				.$internal.']"';
 			if (isset($online_store_data->$internal)) {
 				echo ' value="'.$online_store_data->$internal.'"';
 			}
@@ -680,26 +726,7 @@ foreach ($rs as $r) {
 	$cats[$r['category_id']]['selected']=true;
 }
 // }
-function show_sub_cats($parent) {
-	global $cats;
-	$found=array();
-	foreach ($cats as $id=>$cat) {
-		if (isset($cat['parent_id'])
-			&& $cat['parent_id']==$parent
-			&& isset($cat['name'])
-		) {
-			$l='<li><input type="checkbox" name="product_categories['.$id.']"';
-			if (isset($cat['selected'])) {
-				$l.=' checked="checked"';
-			}
-			$l.='>'.htmlspecialchars($cat['name']);
-			$l.=show_sub_cats($id);
-			$found[]=$l;
-		}
-	}
-	return '<ul>'.join('', $found).'</ul>';
-}
-echo show_sub_cats(0);
+echo showCats(0);
 $cid=(int)@$pdata['default_category'];
 if (!$cid) {
 	$cid=1;

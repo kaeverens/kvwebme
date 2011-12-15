@@ -1,19 +1,16 @@
 <?php
-
 /**
- * api/download.php, KV-Webme Themes API
- *
- * downloads a file with the given id
- *
- * paramaters that can be given:
- *
- * download	-       should be boolean true
- * id	        -       id of theme to download
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* api/download.php, KV-Webme Themes API
+	* downloads a file with the given id
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 /**
  * make sure api rules are being followed
@@ -49,11 +46,7 @@ if ($theme == false) {
  * make sure theme has been moderated, if not
  * still let moderators download
  */
-if ($theme[ 'moderated' ] == 'no'
-	&& ( !isset( $_SESSION[ 'userdata' ] )
-		&& !isset( $_SESSION[ 'userdate' ][ 'groups' ][ 'moderators' ] )
-	)
-) {
+if ($theme['moderated'] == 'no' && !isset($_SESSION['userdata'])) {
 	die(
 		'This theme is awaiting moderation and has not been deemed as safe yet.'
 	);

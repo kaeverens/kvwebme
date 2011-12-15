@@ -70,7 +70,7 @@ if (isset($DBVARS['canonical_name'])
 		.$_SERVER['REQUEST_URI'];
 	redirect($url);
 }
-if (!isset($DBVARS['version']) || $DBVARS['version']<44) {
+if (!isset($DBVARS['version']) || $DBVARS['version']<45) {
 	redirect('/ww.incs/upgrade.php');
 }
 $id=(int)@$_REQUEST['pageid'];
@@ -303,6 +303,7 @@ if (Core_isAdmin()) {
 // { generate inline javascript
 $tmp='var pagedata={id:'.$PAGEDATA->id
 	.Core_trigger('displaying-pagedata')
+	.',ptop:'.$PAGEDATA->getTopParentId()
 	.',sessid:"'.session_id().'"'
 	.'},';
 if (isset($_SESSION['userdata'])) {

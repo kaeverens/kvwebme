@@ -4,11 +4,11 @@
 	*
 	* PHP Version 5
 	*
-	* @category   none
-	* @package    none
-	* @author     Kae Verens <kae@kvsites.ie>
-	* @license    GPL Version 2
-	* @link       http://kvweb.me/
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL Version 2
+	* @link     http://kvweb.me/
 	**/
 if (isset($_POST['import'])) {
 	if (isset($_FILES['file'])) {
@@ -62,9 +62,8 @@ if (isset($_POST['import'])) {
 							}
 							echo '<em>images imported</em>';
 						break; // }
-						default: // {
+						default:
 							echo '<em>unknown table '.$table.'</em>';
-						// }
 					}
 				}
 			}
@@ -74,9 +73,9 @@ if (isset($_POST['import'])) {
 }
 // { display form
 echo '<form method="post" enctype="multipart/form-data">'
-	.'<input type="file" name="file" /><input type="submit" name="import" value="Import Data" />'
-	.'</form>';
-echo '<p>This form imports data in JSON format. For example, a '
+	.'<input type="file" name="file" />'
+	.'<input type="submit" name="import" value="Import Data" /></form>'
+	'<p>This form imports data in JSON format. For example, a '
 	.'products export file that has been prepared by the Wordpress WPSC '
 	.'export tool.</p>'
 	.'<p>If you don\'t know what that is, you are not in the right place ;-)</p>';

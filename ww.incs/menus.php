@@ -25,13 +25,12 @@ function Menu_getChildren(
 	$parentid,
 	$currentpage=0,
 	$isadmin=0,
-	$topParent=0,
-	$search_options=0
+	$topParent=0
 ) {
 	global $_languages;
 	$md5=md5(
-		$parentid.'|'.$currentpage.'|'.$isadmin.'|'.$topParent.'|'.$search_options
-		.'|'.join(',', $_languages)
+		$parentid.'|'.$currentpage.'|'.$isadmin.'|'.$topParent
+			.'|'.join(',', $_languages)
 	);
 	$cache=Core_cacheLoad('menus', $md5);
 	if ($cache) {
@@ -185,11 +184,10 @@ function Menu_show($b) {
 	else {
 		$vals['spans']=1;
 	}
-	$search_options=0;
 	$ajaxmenu=$vals['nodropdowns']?'':' ajaxmenu ';
 	$c='<div id="ajaxmenu'.$parent.'" class="menuBar'.$align.$ajaxmenu
 		.$classes.' parent'.$parent.'">';
-	$rs=Menu_getChildren($parent, $PAGEDATA->id, 0, $parent, $search_options);
+	$rs=Menu_getChildren($parent, $PAGEDATA->id, 0, $parent);
 	$links=0;
 	if ($vals['spans']) {
 		$spanl='<span class="l"></span>';
@@ -222,7 +220,7 @@ function Menu_show($b) {
 		if ($pid!=2 && $pid!=3 && $pid!=17 && $pid!=32 && $pid!=33 && $pid!=34) {
 			$pid=2;
 		}
-		$rs=Menu_getChildren($pid, $PAGEDATA->id, 0, $parent, $search_options);
+		$rs=Menu_getChildren($pid, $PAGEDATA->id, 0, $parent);
 		$c.='<div id="ajaxmenu'.$pid.'" class="menu tier-two">';
 		if (count($rs)) {
 			foreach ($rs as $r) {

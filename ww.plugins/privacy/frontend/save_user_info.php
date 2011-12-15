@@ -1,17 +1,18 @@
 <?php
-
 /**
- * frontend/save_user_info.php, KV-Webme Privacy Plugin
- *
- * saves user info
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* frontend/save_user_info.php, KV-Webme Privacy Plugin
+	* saves user info
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
-
-require '../../../ww.incs/basics.php';
+require_once '../../../ww.incs/basics.php';
 
 $id = addslashes(@$_SESSION[ 'userdata' ][ 'id' ]);
 $name = addslashes(@$_POST[ 'name' ]);
@@ -34,7 +35,7 @@ if ($action=='delete') {
 }
 if ($action=='update') {
 	$user=dbRow('select address from user_accounts where id='.$id);
-	$address=json_decode($user['address'],true);
+	$address=json_decode($user['address'], true);
 	$address[$name]=array(
 		'street'=>$_POST['street'],
 		'street2'=>$_POST['street2'],

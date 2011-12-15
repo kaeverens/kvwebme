@@ -1,4 +1,16 @@
 <?php
+/**
+	* verify a QuickPay payment
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 
 $md5secret=dbOne(

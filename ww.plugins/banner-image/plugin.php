@@ -24,17 +24,17 @@ $plugin=array(
 	'frontend' => array(
 		'template_functions' => array(
 			'BANNER' => array(
-				'function' => 'showBanner'
+				'function' => 'BannerImage_showBanner'
 			)
 		),
-		'widget' => 'showBanner'
+		'widget' => 'BannerImage_showBanner'
 	),
 	'version' => '3'
 );
 // }
 $banner_image_types=array('jpg','gif','png');
 
-function banner_image_getImgHTML($id, $hide_message=false) {
+function BannerImage_getImgHtml($id, $hide_message=false) {
 	global $banner_image_types;
 	$type='';
 	foreach ($banner_image_types as $t) {
@@ -47,7 +47,7 @@ function banner_image_getImgHTML($id, $hide_message=false) {
 	}
 	return '<img src="/f/skin_files/banner-image/'.$id.'.'.$type.'" />';
 }
-function showBanner($vars=null) {
+function BannerImage_showBanner($vars=null) {
 	require_once SCRIPTBASE.'ww.plugins/banner-image/frontend/banner-image.php';
 	return show_banner($vars);
 }
