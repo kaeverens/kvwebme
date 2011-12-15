@@ -453,6 +453,12 @@ function Products_images($params, $smarty) {
 	if (!$vals['images_directory']) {
 		return Products_imageNotFound($params, $smarty);
 	}
+	$directory = $vals['images_directory'];
+	$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//', '', $directory));
+	if (!$dir_id) {
+		return Products_imageNotFound($params, $smarty);
+	}
+	$images=kfm_loadFiles($dir_id);
 	$iid=0;
 	if ($vals['image_default']) {
 		$iid=$vals['image_default'];
@@ -462,12 +468,6 @@ function Products_images($params, $smarty) {
 		}
 	}
 	if (!$iid) {
-		$directory = $vals['images_directory'];
-		$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//', '', $directory));
-		if (!$dir_id) {
-			return Products_imageNotFound($params, $smarty);
-		}
-		$images=kfm_loadFiles($dir_id);
 		if (count($images['files'])) {
 			$image=$images['files'][0];
 			$iid=$image['id'];
@@ -477,16 +477,19 @@ function Products_images($params, $smarty) {
 		return Products_imageNotFound($params, $smarty);
 	}
 	// }
-	$html='<ul class="products-images carousel jcarousel-skin-bland" thumbsize="'.$params['thumbsize'].'">';
+	$carousel=count($images['files'])>1?' carousel jcarousel-skin-bland':'';
+	$html='<ul class="products-images'.$carousel.'" thumbsize="'.$params['thumbsize'].'">';
 	foreach ($images['files'] as $image) {
-		$html.='<li><img src="/i/blank.gif" width="'.$params['thumbsize']
-			.'" height="'.$params['thumbsize'].'" style="background:url(/a/f=getImg/w='
+		$html.='<li><img src="/i/blank.gif" style="width:'.$params['thumbsize'].'px;'
+			.'height:'.$params['thumbsize'].'px;background:url(\'/a/f=getImg/w='
 			.$params['thumbsize'].'/h='.$params['thumbsize'].'/'.$image['dir'].'/'
-			.$image['name'].') no-repeat center center"/></li>';
+			.$image['name'].'\') no-repeat center center"/></li>';
 	}
 	$html.='</ul>';
-	WW_addScript('/j/jsor-jcarousel-7bb2e0a/jquery.jcarousel.min.js');
-	WW_addCSS('/j/jsor-jcarousel-7bb2e0a/bland/skin.css');
+	if ($carousel) {
+		WW_addScript('/j/jsor-jcarousel-7bb2e0a/jquery.jcarousel.min.js');
+		WW_addCSS('/j/jsor-jcarousel-7bb2e0a/bland/skin.css');
+	}
 	return $html;
 }
 

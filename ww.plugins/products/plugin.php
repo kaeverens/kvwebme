@@ -670,8 +670,12 @@ class Product{
 		* @return int ID of the image
 		*/
 	function getDefaultImage() {
+		if (isset($this->default_image)) {
+			return $this->default_image;
+		}
 		$vals=$this->vals;
 		if (!$vals['images_directory']) {
+			$this->default_image=0;
 			return 0;
 		}
 		$iid=0;
@@ -679,21 +683,25 @@ class Product{
 		require_once KFM_BASE_PATH.'/api/api.php';
 		require_once KFM_BASE_PATH.'/initialise.php';
 		if ($vals['image_default']) {
-			$image=kfmImage::getInstance($iid);
+			$image=kfmImage::getInstance($vals['image_default']);
 			if ($image && $image->exists()) {
+				$this->default_image=$vals['image_default'];
 				return $vals['image_default'];
 			}
 		}
 		$directory = $vals['images_directory'];
 		$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//', '', $directory));
 		if (!$dir_id) {
+			$this->default_image=0;
 			return 0;
 		}
 		$images=kfm_loadFiles($dir_id);
 		if (count($images['files'])) {
 			$image=$images['files'][0];
+			$this->default_image=$image['id'];
 			return $image['id'];
 		}
+		$this->default_image=0;
 		return 0;
 	}
 
