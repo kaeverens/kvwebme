@@ -564,7 +564,9 @@ function Core_adminPageEdit() {
 	}
 	// { clean up and return
 	dbQuery('update page_summaries set rss=""');
-	unset($DBVARS['cron-next']);
+	if(@$DBVARS['cron-next']) {
+		unset($DBVARS['cron-next']);	
+	}
 	Core_cacheClear();
 	Core_configRewrite();
 	return array(
