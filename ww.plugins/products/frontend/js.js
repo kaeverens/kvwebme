@@ -12,7 +12,13 @@ $(function(){
 			}
 			price+= +(val.split('|')[1]);
 		});
-		$price.text(currency+(Math.round(price*100)/100));
+		var n=Math.round(price*100)/100;
+		if (!/\./.test(n)) {
+			n+='.';
+		}
+		n+='00';
+		n=n.replace(/\.(..).*/, '.$1');
+		$price.text(currency+n);
 	}
 	$('a.products-lightbox').lightBox();
 	$('div.product-images img').click(function(){
