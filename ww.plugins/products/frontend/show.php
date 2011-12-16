@@ -480,7 +480,8 @@ function Products_images($params, $smarty) {
 	$carousel=count($images['files'])>1?' carousel jcarousel-skin-bland':'';
 	$html='<ul class="products-images'.$carousel.'" thumbsize="'.$params['thumbsize'].'">';
 	foreach ($images['files'] as $image) {
-		$html.='<li><img src="/i/blank.gif" style="width:'.$params['thumbsize'].'px;'
+		$html.='<li><img src="/i/blank.gif" width="'.$params['thumbsize'].'"'
+			.' height="'.$params['thumbsize'].'" style="width:'.$params['thumbsize'].'px;'
 			.'height:'.$params['thumbsize'].'px;background:url(\'/a/f=getImg/w='
 			.$params['thumbsize'].'/h='.$params['thumbsize'].'/'.$image['dir'].'/'
 			.$image['name'].'\') no-repeat center center"/></li>';

@@ -96,7 +96,7 @@ if ($rs===false || !count($rs)) {
 else {
 	$c.='<select name="page_vars[products_category_to_show]">'
 		.'<option value="0"> -- choose -- </option>'
-		.showCategoriesRecursive(0, 0, $r['id']);
+		.showCategoriesRecursive(0, 0, @$vars['products_category_to_show']);
 	$c.='</select>';
 }
 $c.='</td></tr>';
