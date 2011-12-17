@@ -431,7 +431,7 @@ function Core_adminPageEdit() {
 			$name.=$i;
 		}
 	}
-	$alias = $name;
+	$alias = __FromJson($name, true);
 	$name = transcribe($name);
 	// }
 	// { body
@@ -564,8 +564,8 @@ function Core_adminPageEdit() {
 	}
 	// { clean up and return
 	dbQuery('update page_summaries set rss=""');
-	if(@$DBVARS['cron-next']) {
-		unset($DBVARS['cron-next']);	
+	if(@$GLOBALS['DBVARS']['cron-next']) {
+		unset($GLOBALS['DBVARS']['cron-next']);	
 	}
 	Core_cacheClear();
 	Core_configRewrite();

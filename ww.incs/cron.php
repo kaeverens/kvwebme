@@ -2,8 +2,20 @@
 /**
 	* script for handling timed events
 	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
 	*/
 
+/**
+	* handle page publishing
+	*
+	* @return null
+	*/
 function Core_pagesCronHandle() {
 	dbQuery(
 		'update pages set special=special-2 where special&2 and '
@@ -34,8 +46,9 @@ if (!isset($DBVARS['cron-next']) || $DBVARS['cron-next']<date('Y-m-d H:i:s')) {
 		.'date_unpublish>now() order by date_publish limit 1', 'date_publish'
 	);
 	$n2=dbOne(
-		'select date_unpublish from pages where !(special&2) '
-		.'and date_unpublish!="0000-00-00 00:00:00" order by date_unpublish limit 1', 'date_unpublish'
+		'select date_unpublish from pages where !(special&2) and '
+		.'date_unpublish!="0000-00-00 00:00:00" order by date_unpublish limit 1',
+		'date_unpublish'
 	);
 	$n=false;
 	if ($n1 && $n2) {
