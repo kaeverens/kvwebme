@@ -32,12 +32,6 @@ function menu_showWidget($vars=null) {
 		if ($vars['parent']=='-1') {
 			global $PAGEDATA;
 			$pid=$PAGEDATA->id;
-			if ($pid) {
-				$n=dbOne('select id from pages where parent='.$pid.' limit 1', id);
-				if (!$n) {
-					$pid=$PAGEDATA->parent;
-				}
-			}
 			$vars['parent']=$pid;
 		}
 	}
