@@ -13,5 +13,5 @@ $plugin=array(
 );
 function onetouchcontact_widget($vars){
 	include_once SCRIPTBASE.'ww.plugins/onetouchcontact/frontend/widget.php';
-	return onetouchcontact_widget_show($vars);
+	return Onetouchcontact_widgetShow($vars);
 }

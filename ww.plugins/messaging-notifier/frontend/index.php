@@ -1,4 +1,23 @@
 <?php
+/**
+	* RSS aggregator plugin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+/**
+	* check for new emails
+	*
+	* @param object $vars config object
+	*
+	* @return array array of results
+	*/
 function Aggregator_show($vars) {
 	if (!is_array($vars) && isset($vars->id) && $vars->id) {
 		$data=Core_cacheLoad('messaging_notifier', 'id'.$vars->id);
@@ -14,6 +33,15 @@ function Aggregator_show($vars) {
 		}
 	}
 }
+
+/**
+	* check for new emails
+	*
+	* @param array  $data data
+	* @param object $vars config object
+	*
+	* @return array array of results
+	*/
 function Aggregator_parse($data, $vars) {
 	if (!isset($vars->hide_story_title)) {
 		$vars->hide_story_title=0;
@@ -109,6 +137,14 @@ function Aggregator_parse($data, $vars) {
 		:'';
 	return $html;
 }
+
+/**
+	* check for new emails
+	*
+	* @param object $r config object
+	*
+	* @return array array of results
+	*/
 function Aggregator_getRss($r) {
 	$f=@file_get_contents($r->url);
 	if (!$f) {
@@ -133,6 +169,14 @@ function Aggregator_getRss($r) {
 	Core_cacheSave('messaging-notifier', md5($r->url), $arr);
 	return $arr;
 }
+
+/**
+	* check for new emails
+	*
+	* @param object $r config object
+	*
+	* @return array array of results
+	*/
 function Aggregator_getWebmeNews($r) {
 	if (!is_numeric($r->url)) {
 		return array();
@@ -155,6 +199,14 @@ function Aggregator_getWebmeNews($r) {
 	Core_cacheSave('messaging-notifier', md5($r->url), $arr);
 	return $arr;
 }
+
+/**
+	* check for new emails
+	*
+	* @param object $r config object
+	*
+	* @return array array of results
+	*/
 function Aggregator_getTwitter($r) {
 	$f=@file_get_contents($r->url);
 	if (!$f) {
@@ -177,6 +229,14 @@ function Aggregator_getTwitter($r) {
 	Core_cacheSave('messaging-notifier', md5($r->url), $arr);
 	return $arr;
 }
+
+/**
+	* check for new emails
+	*
+	* @param object $r config object
+	*
+	* @return array array of results
+	*/
 function Aggregator_getPhpbb3($r) {
 	$f=@file_get_contents($r->url);
 	if (!$f) {
@@ -224,6 +284,14 @@ function Aggregator_getPhpbb3($r) {
 	Core_cacheSave('messaging-notifier', md5($r->url), $arr);
 	return $arr;
 }
+
+/**
+	* check for new emails
+	*
+	* @param object $r config object
+	*
+	* @return array array of results
+	*/
 function Aggregator_getEmail($r) {
 	$bs=explode('|', $r->url);
 	$username=$bs[0];

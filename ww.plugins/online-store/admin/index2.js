@@ -361,4 +361,15 @@ $(function(){
 			document.location="/ww.admin/pages/form.php?id="+$('input[name=id]').val();
 		});
 	});
+	$('#online-store-countries a.all').click(function() {
+		$(this).siblings('table').find('input').attr('checked', true);
+		return false;
+	});
+	$('#online-store-countries a.none').click(function() {
+		$(this).siblings('table').find('input').attr('checked', false);
+		return false;
+	});
+	if (!$('#online-store-countries input:checked').length) {
+		$('#online-store-countries input').attr('checked', true);
+	}
 });

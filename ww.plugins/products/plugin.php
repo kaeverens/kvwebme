@@ -105,6 +105,13 @@ $plugin=array(
 );
 // }
 
+/**
+	* return all products in a slider
+	*
+	* @param array $params parameters
+	*
+	* @return string HTML of the slider
+	*/
 function Products_imageSlider($params) {
 	$width=@$params['width'];
 	$height=@$params['height'];
@@ -117,6 +124,15 @@ function Products_imageSlider($params) {
 	return '<div class="products-image-slider" style="width:'.$width.';height:'
 		.$height.'"></div>';
 }
+
+/**
+  * show expiry clock
+  *
+  * @param array  $params parameters to pass to the function
+  * @param object $smarty the current Smarty instance
+  *
+  * @return HTML of the expiry clock
+  */
 function Products_expiryClock($params, $smarty) {
 	$unlimited=@$params['none'];
 	if ($unlimited=='') {
@@ -368,26 +384,79 @@ function Products_listCategoryContents($params, $smarty) {
 	return _Products_listCategoryContents($params, $smarty);
 }
 
+/**
+	* show the base price
+	*
+	* @param array  $params parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string the base price
+	*/
 function Products_priceBase($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
 	return Products_priceBase2($params, $smarty);
 }
+
+/**
+	* show how much the discount is worth
+	*
+	* @param array  $params parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string the discount amount
+	*/
 function Products_priceDiscount($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
 	return Products_priceDiscount2($params, $smarty);
 }
+
+/**
+	* show the discount percentage
+	*
+	* @param array  $params parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string the discount percentage
+	*/
 function Products_priceDiscountPercent($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
 	return Products_priceDiscountPercent2($params, $smarty);
 }
+
+/**
+	* show the sale price
+	*
+	* @param array  $params parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string the sale price
+	*/
 function Products_priceSale($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
 	return Products_priceSale2($params, $smarty);
 }
+
+/**
+	* show the sold amount
+	*
+	* @param array  $params parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string the amount sold
+	*/
 function Products_soldAmount($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
 	return Products_soldAmount2($params, $smarty);
 }
+
+/**
+	* show a QR code for the product page
+	*
+	* @param array  $params parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return the QR code
+	*/
 function Products_qrCode($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
 	return Products_qrCode2($params, $smarty);

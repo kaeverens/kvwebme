@@ -12,6 +12,25 @@
 	*/
 
 /**
+  * function for showing list of countries selected
+  *
+  * @return string the HTML
+  */
+function OnlineStore_getCountriesSelectbox($params, &$smarty) {
+	$page=Page::getInstance($_SESSION['onlinestore_checkout_page']);
+	$cjson=$page->vars['online-store-countries'];
+	$countries='<select name="'.(@$params['prefix']).'Country">'
+		.'<option values=""> -- choose -- </option>';
+	if ($cjson) {
+		$cjson=json_decode($cjson);
+		foreach ($cjson as $country=>$val) {
+			$countries.='<option>'.htmlspecialchars($country).'</option>';
+		}
+	}
+	return $countries.'</select>';
+}
+
+/**
   * function for showing HTML of a voucher input
   *
   * @return string the HTML

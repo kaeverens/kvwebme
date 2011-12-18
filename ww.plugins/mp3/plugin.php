@@ -1,19 +1,17 @@
 <?php
-
 /**
- * plugin.php, KV-Webme MP3 Plugin
- *
- * plugin file for the mp3 plugin
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* plugin file for the mp3 plugin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
-/**
- * plugin array, which holds the configuartion
- * options for the plugin
- */
+// { plugin config
 $plugin = array( 
 	'name'	=>	'Mp3 Plugin',
 	'version'	=>	1,
@@ -28,4 +26,6 @@ $plugin = array(
 		'widget'=>'MP3_frontendWidget',
 	)
 );
+// }
+
 require SCRIPTBASE.'ww.plugins/mp3/frontend/show.php';

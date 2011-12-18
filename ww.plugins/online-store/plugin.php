@@ -33,6 +33,9 @@ $plugin=array(
 		'widget' => 'OnlineStore_showBasketWidget',
 		'page_type' => 'OnlineStore_frontend',
 		'template_functions' => array(
+			'ONLINESTORE_COUNTRIES' => array(
+				'function' => 'OnlineStore_getCountriesSelectbox'
+			),
 			'ONLINESTORE_PAYMENT_TYPES' => array(
 				'function' => 'OnlineStore_paymentTypes'
 			),

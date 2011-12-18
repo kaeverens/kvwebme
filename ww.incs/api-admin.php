@@ -150,6 +150,146 @@ function Core_adminLanguagesEdit() {
 }
 
 /**
+	* get an array of dependent plugins
+	*
+	* @param array $plugins array of plugins to check
+	*
+	* @return array array of dependencies
+	*/
+function Core_adminPluginsDependenciesGet($plugins) {
+	$new_plugs=array();
+	foreach ($plugins as $plug) {
+		if (!is_dir(SCRIPTBASE.'ww.plugins/'.$plug)
+			||!file_exists(SCRIPTBASE.'ww.plugins/'.$plug.'/plugin.php')
+		) {
+			// plugin doesn't exist
+			return $plug;
+		}
+		global $PLUGINS;
+		if (isset($PLUGINS[$plug])) { // if installed load from memory
+			$plugin=$PLUGINS[$plug];
+		}
+		else { // else include plugin file
+			// if already included then it must be
+			// already on the list
+			// I think there's a logic problem here. Kae
+			require_once SCRIPTBASE.'ww.plugins/'.$plug.'/plugin.php';
+		}
+		if (isset($plugin['dependencies'])) {
+			$dependencies=(strpos($plugin['dependencies'], ',')===false)
+				?array($plugin['dependencies'])
+				:explode(',', $plugin['dependencies']);
+			foreach ($dependencies as $dependency) {
+				if (!in_array($dependency, $plugins)
+					&&!in_array($dependency, $new_plugs)
+				) {
+					array_push($new_plugs, $dependency);
+				}
+			}
+		}
+		array_push($new_plugs, $plug);
+		$plugin=array();
+	}
+	$diff=array_diff($new_plugs, $plugins);
+	$new_plugs=array_merge($plugins, $new_plugs);
+	if (is_array($diff)&&count($diff)!=0) {
+		$check=Core_adminPluginsDependenciesGet($diff);
+		if (!is_array($check)) {
+			return $check;
+		}
+		$new_plugs=array_merge($new_plugs, $check);
+	}
+	return array_unique($new_plugs);
+}
+
+/**
+	* build array of installed plugins
+	*
+	* @return array of plugins
+	*/
+function Core_adminPluginsGetInstalled() {
+	global $PLUGINS;
+	$installed = array();
+	foreach ($PLUGINS as $name => $plugin) {
+		// exclude hidden plugins
+		if (isset($plugin[ 'hide_from_admin' ]) && $plugin['hide_from_admin']) {
+			continue;
+		}
+		$installed[ $name ] = array(
+			'name' => $plugin[ 'name' ],
+			'description' => $plugin[ 'description' ],
+			'version' => ( @$plugin[ 'version' ] == 0 ) ? '0' : $plugin[ 'version' ]
+		);
+	}
+	return $installed;
+}
+
+/**
+	* build array of available (not installed) plugins
+	*
+	* @return array of available plugins
+	*/
+function Core_adminPluginsGetAvailable() {
+	global $PLUGINS;
+	$available = array( );
+	$dir = new DirectoryIterator(SCRIPTBASE . 'ww.plugins');
+	foreach ($dir as $p) {
+		if ($p->isDot()) {
+			continue;
+		}
+		$name = $p->getFilename();
+		if (!is_dir(SCRIPTBASE.'ww.plugins/'.$name)||isset($PLUGINS[$name])) {
+		  continue;
+		}
+		if (!file_exists(SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php')) {
+			continue;
+		}
+		require SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php';
+		if (isset( $plugin[ 'hide_from_admin' ] ) && $plugin[ 'hide_from_admin' ]) {
+		  continue;
+		}
+		$available[ $name ] = array( 
+			'name' => $plugin[ 'name' ],
+			'description' => @$plugin[ 'description' ],
+			'version' => ( @$plugin[ 'version' ] == 0 ) ? '0' : $plugin[ 'version' ]
+		);
+	}	
+	return $available;
+}
+
+/**
+	* install/de-install plugins
+	*
+	* @return array status
+	*/
+function Core_adminPluginsSetInstalled() {
+	// { get hidden plugins (those the admin installs manually)
+	$tmp_hidden=array();
+	foreach ($GLOBALS['PLUGINS'] as $name=>$plugin) {
+		if (isset($plugin['hide_from_admin']) && $plugin['hide_from_admin']) {
+			$tmp_hidden[]=$name;
+		}
+	}
+	// }
+	// { get changes from form
+	$tmp=array();
+	foreach ($_REQUEST['plugins'] as $name=>$var) {
+		if (file_exists(SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php')) {
+			$tmp[]=$name;
+		}
+	}
+	// }
+	$plugins=array_merge($tmp, $tmp_hidden);
+	$plugins=Core_adminPluginsDependenciesGet($plugins);
+	if (is_array($plugins)) {
+	  $GLOBALS['DBVARS']['plugins']=$plugins;
+	  Core_configRewrite();
+		return array('ok'=>1);
+	}
+	return array('ok'=>0);
+}
+
+/**
 	* save a session variable
 	*
 	* @return array status of save
