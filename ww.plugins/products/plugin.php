@@ -229,18 +229,22 @@ function Products_frontend($PAGEDATA) {
 				$_REQUEST['product_cid']=$cat_id;
 			}
 			else {
+				if (strpos($bit, '|')===false) {
+					$pconstraint='link like "'.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'"';
+				}
+				else {
+					$pconstraint='id='.(int)preg_replace('/\|.*/', '', $bit);
+				}
 				if ($cat_id) {
 					$id=dbOne(
 						'select product_id,name from products_categories_products,products'
-						.' where category_id='.$cat_id.' and link like "'
-						.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'" and id=product_id',
+						.' where category_id='.$cat_id.' and '.$pconstraint.' and id=product_id',
 						'product_id'
 					);
 				}
 				if (!$id) {
 					$id=dbOne(
-						'select id from products where link like "'
-						.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'"',
+						'select id from products where '.$pconstraint,
 						'id'
 					);
 				}
@@ -691,7 +695,7 @@ class Product{
 			if ($pid) {
 				$page = Page::getInstance($pid);
 				$this->relativeUrl=$page->getRelativeUrl()
-					.'/'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
+					.'/'.$this->id.'|'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
 				return $this->relativeUrl;
 			}
 		}
@@ -705,12 +709,12 @@ class Product{
 		}
 		if ($cat) {
 			$cat=ProductCategory::getInstance($cat);
-			return $cat->getRelativeUrl().'/'
-				.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
+			return $cat->getRelativeUrl()
+				.'/'.$this->id.'|'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
 		}
 		if (preg_match('/^products(\||$)/', $PAGEDATA->type)) { // TODO
-			return $PAGEDATA->getRelativeUrl().'/'
-				.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
+			return $PAGEDATA->getRelativeUrl()
+				.'/'.$this->id.'|'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
 		}
 		$this->relativeUrl='/_r?type=products&amp;product_id='.$this->id;
 		return $this->relativeUrl;
