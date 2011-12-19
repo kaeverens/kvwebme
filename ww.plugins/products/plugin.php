@@ -1019,7 +1019,7 @@ class ProductType{
 		$this->id=$r['id'];
 		$this->is_for_sale=(int)$r['is_for_sale'];
 		$this->is_voucher=(int)$r['is_voucher'];
-		$this->stock_control=(int)$r['stock_control'];
+		$this->stock_control=(int)@$r['stock_control'];
 		$this->voucher_template=$r['voucher_template'];
 		self::$instances[$this->id] =& $this;
 		return $this;
