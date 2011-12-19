@@ -150,6 +150,12 @@ $(function(){
 			$this.closest('form').submit();
 		}, 'json');
 	});
+	$('select[name=Country]').change(function() {
+		var $this=$(this);
+		$('<input type="hidden" name="os_no_submit" value="1"/>')
+			.insertAfter($this);
+		$this.closest('form').submit();
+	});
 	if (os_post_vars) {
 		for (var i in os_post_vars) {
 			$('input[name="'+i+'"],select[name="'+i+'"],textarea[name="'+i+'"]')

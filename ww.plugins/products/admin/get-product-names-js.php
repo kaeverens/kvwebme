@@ -7,7 +7,7 @@ $end=count($ps);
 
 echo "product_names=[\n";
 for($i=0;$i<$end;++$i){
-	echo '	["'.addslashes($ps[$i]['name']).'",'.$ps[$i]['id'].']';
+	echo '	["'.addslashes(__FromJson($ps[$i]['name'])).'",'.$ps[$i]['id'].']';
 	if($i<$end-1)echo ',';
 	echo "\n";
 }

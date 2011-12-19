@@ -107,4 +107,8 @@ background:#ddf;
 div.selectWrapper div.listWrapper input.listBox {
 margin:-1px 5px 0 -20px;
 }
-
+#pc_edit_productschoices{
+	display:block;
+	max-height:80px;
+	overflow:auto;
+}

@@ -161,9 +161,6 @@ function pandp_add_top(i,data){
 	}
 	var users_only=$('<input type="checkbox" id="pandp_users_only_'+i+'"'+(data.users_only?' checked="checked"':'')+' title="tick if this postage method is only available to logged-in users" />');
 	var opener=$('<a id="pandp_opener_'+i+'" href="javascript:pandp_showhide('+i+','+(pandp_open[i]?0:1)+')">'+text+'</a>');
-//	$('<div><a href="javascript:pand_countries_select('+i+')" id="pandp_countries_'+i+'" class="pandp_countries">Countries: '
-//		+(data.countries && data.countries.length?join(', ',data.countries):'all')
-//		+'</a></div>').appendTo(constraint);
 	var row=$('<div class="pandp_row">Postage Name: </div>')
 		.append(name)
 		.append(users_only)
@@ -178,50 +175,21 @@ function pandp_showhide(i,v){
 	$('#pandp_opener_'+i)
 		.replaceWith('<a id="pandp_opener_'+i+'" href="javascript:pandp_showhide('+i+','+(pandp_open[i]?0:1)+')">'+(pandp_open[i]?'hide':'show')+'</a>');
 }
-function pand_countries_select(i){
-	if (!window.pandp_countries) {
-		$.getJSON('/ww.admin/products/postage_countries.php',function(ret){
-			window.pandp_countries=ret;
-			pandp_countries_select_show(i); 
-		});
-	}
-	else {
-		pandp_countries_select_show(i);
-	}
-}
-function pandp_countries_select_show(i){
-	if(!window.pandp_countries_dialog){
-		var h='<form style="max-height:300px;height:300px;overflow:auto;">';
-		var c,i;
-		for(i=0;i<window.pandp_countries.length;++i){
-			c=window.pandp_countries[i];
-			h+='<div><input id="pandp_countries_opt_'+c.iso+'" value="'+c.iso+'" type="checkbox" />'+c.name+'</div>';
-		}
-		h+='</form>';
-		window.pandp_countries_dialog=$(h);
-		window.pandp_countries_dialog.dialog({
-			autoOpen:false,
-			modal:true,
-			buttons:{
-				'Choose':function(){
-				}
-			}
-		});
-	}
-	window.pandp_countries_dialog.dialog('open');
-}
 function pandp_rebuild_constraints(prefix){
 	var cstrs=[],el;
 	for(var i=0;el=document.getElementById('pandp_constraint_'+prefix+i);++i){
 		var cstr={};
 		cstr.type=el.value;
 		switch(cstr.type){
-			case 'set_value': case 'total_less_than_or_equal_to': case 'total_more_than_or_equal_to':
+			case 'set_value': case 'total_less_than_or_equal_to':
+			case 'total_more_than_or_equal_to':
 			case 'numitems_less_than_or_equal_to': case 'numitems_more_than_or_equal_to':
-			case 'total_weight_less_than_or_equal_to': case 'total_weight_more_than_or_equal_to': // {
+			case 'total_weight_less_than_or_equal_to':
+			case 'total_weight_more_than_or_equal_to':
+			case 'is_in_country': // {
 				cstr.value=document.getElementById('pandp_constraint_value_'+prefix+i).value;
-				break;
-			// }
+				console.log(cstr.value);
+			break; // }
 		}
 		if (cstr.type!='set_value') {
 			cstr.constraints=pandp_rebuild_constraints(prefix+i+'_');
@@ -247,6 +215,7 @@ function pandp_rebuild_value_from_top(){
 }
 function pandp_rebuild_widget(){
 	$('#postage_wrapper').empty();
+	$('.selectWrapper').remove();
 	var has_blank=0;
 	for(var i=0;i<pandp.length;++i){
 		pandp_add_top(i,pandp[i]);
@@ -279,7 +248,8 @@ function pandp_show_constraints(i, cstrs_old){
 		['total_weight_less_than_or_equal_to','if weight <='],
 		['total_weight_more_than_or_equal_to','if weight >='],
 		['numitems_less_than_or_equal_to','if num items <='],
-		['numitems_more_than_or_equal_to','if num items >=']
+		['numitems_more_than_or_equal_to','if num items >='],
+		['is_in_country', 'is in country']
 	];
 	var wrapper=$('#pandp_constraint_wrapper_'+i);
 	for(var j=0;j<cstrs.length;++j){
@@ -294,7 +264,9 @@ function pandp_show_constraints(i, cstrs_old){
 			tmp+='>'+prefix+options[k][1]+'</option>';
 			opts.push(tmp);
 		}
-		var selectbox=$('<select id="pandp_constraint_'+i+'_'+j+'">'+opts.join('')+'</select>')
+		var selectbox=$(
+			'<select id="pandp_constraint_'+i+'_'+j+'">'+opts.join('')+'</select>'
+		)
 			.change(pandp_rebuild_value_from_top);
 		wrapper.append(selectbox);
 		switch(cstr.type){
@@ -307,19 +279,57 @@ function pandp_show_constraints(i, cstrs_old){
 					.appendTo(wrapper);
 				break;
 			// }
-			case 'total_less_than_or_equal_to': case 'total_more_than_or_equal_to':
-			case 'numitems_less_than_or_equal_to': case 'numitems_more_than_or_equal_to':
-			case 'total_weight_less_than_or_equal_to': case 'total_weight_more_than_or_equal_to': // {
+			case 'total_less_than_or_equal_to':
+			case 'total_more_than_or_equal_to':
+			case 'numitems_less_than_or_equal_to':
+			case 'numitems_more_than_or_equal_to':
+			case 'total_weight_less_than_or_equal_to':
+			case 'total_weight_more_than_or_equal_to': // {
 				if (!cstr.value) {
 					cstr.value=0;
 				}
 				$('<input id="pandp_constraint_value_'+i+'_'+j+'" class="small">')
 					.val(cstr.value)
 					.appendTo(wrapper);
-				break;
-			// }
+			break; // }
+			case 'is_in_country': // {
+				var scountries=cstr.value?cstr.value.split('|'):[];
+				$('<input id="pandp_constraint_value_'+i+'_'+j+'" type="hidden"/>')
+					.val(cstr.value)
+					.appendTo(wrapper);
+				var $select=$(
+					'<select multiple="multiple" name="pandp_constraint_select_'
+					+i+'_'+j+'"></select>'
+				);
+				var $countries=$('#online-store-countries input:checked');
+				$countries.each(function() {
+					$select.append(
+						'<option>'+$(this).attr('name')
+						.replace(/.*\[([^\]]*)\]$/, '$1')
+						+'</option>'
+					);
+				});
+				$select
+					.appendTo(wrapper)
+					.val(scountries)
+					.inlinemultiselect({
+						"endSeparator":", ",
+						"onClose":function(opts){
+							var id=opts[0].name.replace(/\[.*/, '');
+							var selected=[];
+							$('#'+id+' input:checked').each(function(i, opt){
+						    selected.push($(opt).val());
+							});
+							$('#'+id.replace('select', 'value')).val(selected.join('|'));
+							pandp_rebuild_value_from_top();
+						}
+					});
+			break; // }
 		}
-		wrapper.append('<div class="pand-constraint" id="pandp_constraint_wrapper_'+i+'_'+j+'"></div>');
+		wrapper.append(
+			'<div class="pand-constraint" id="pandp_constraint_wrapper_'
+			+i+'_'+j+'"></div>'
+		);
 		if (cstr.type!='set_value') {
 			pandp_show_constraints(i+'_'+j, cstr.constraints || []);
 		}
@@ -334,7 +344,7 @@ $(function(){
 		$('#postage').val('[]');
 	}
 	pandp_rebuild_widget();
-	$('#postage_wrapper').live('change',pandp_rebuild_value_from_top);
+	$('#postage_wrapper').live('change', pandp_rebuild_value_from_top);
 	$('#action').mousedown(pandp_rebuild_value_from_top);
 	$('#online-store-authorised th input').change(function(){
 		$('#online-store-authorised td input')

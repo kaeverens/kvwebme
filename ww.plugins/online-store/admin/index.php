@@ -32,11 +32,11 @@ $c.= '<ul>'
 if ($has_authrs) { // show authorised payments (for retrieval)
 	$c.='<li><a href="#online-store-authorised">Authorised Payments</a></li>';
 }
-$c.='<li><a href="#online-store-delivery">Postage and Packaging</a></li>'
-	.'<li><a href="#online-store-form">Form</a></li>'
+$c.='<li><a href="#online-store-form">Form</a></li>'
 	.'<li><a href="#online-stores-fields">Fields</a></li>'
 	.'<li><a href="#online-store-invoice">Invoice</a></li>'
 	.'<li><a href="#online-store-payment">Payment Details</a></li>'
+	.'<li><a href="#online-store-delivery">Postage and Packaging</a></li>'
 	.'<li><a href="#online-store-countries">Countries</a></li>'
 	.'</ul>';
 // }
@@ -542,13 +542,14 @@ foreach ($continents as $continent=>$countries) {
 		}
 		$c.='</tr>';
 		++$row;
-	} while (($row*3+3)<$num_countries);
+	} while ($row*3<=$num_countries);
 	$c.='</table></div>';
 }
 $c.='</div></div>';
 // }
 $c.='</div>';
 WW_addScript('/ww.plugins/online-store/admin/index2.js');
+WW_addScript('/j/jquery.inlinemultiselect.js');
 
 if (!file_exists(USERBASE.'ww.cache/online-store')) {
 	mkdir(USERBASE.'ww.cache/online-store');
