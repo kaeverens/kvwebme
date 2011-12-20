@@ -107,6 +107,9 @@ function __FromJson($str, $first_result=false, $specific_lang=false) {
 			}
 		}
 	}
+	foreach ($s as $l=>$r) { // else just return the first found
+		return $r;
+	}
 }
 
 /**
