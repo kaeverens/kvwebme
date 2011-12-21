@@ -484,7 +484,7 @@ function Products_images($params, $smarty) {
 			.' height="'.$params['thumbsize'].'" style="width:'.$params['thumbsize'].'px;'
 			.'height:'.$params['thumbsize'].'px;background:url(\'/a/f=getImg/w='
 			.$params['thumbsize'].'/h='.$params['thumbsize'].'/'.$image['dir'].'/'
-			.$image['name'].'\') no-repeat center center"/></li>';
+			.urlencode($image['name']).'\') no-repeat center center"/></li>';
 	}
 	$html.='</ul>';
 	if ($carousel) {

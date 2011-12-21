@@ -351,7 +351,7 @@ function Products_addToCart() {
 	OnlineStore_addToCart(
 		$price+$price_amendments,
 		$amount,
-		$product->get('name'),
+		__FromJson($product->get('name')),
 		$long_desc,
 		'products_'.$id.$md5,
 		$_SERVER['HTTP_REFERER'],

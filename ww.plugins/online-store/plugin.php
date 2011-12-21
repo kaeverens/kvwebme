@@ -321,7 +321,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 				.'Proceed to Checkout</a>';
 		}
 		else {
-			$html.='<em>empty</em>';
+			$html.='<em class="os-basket empty">empty</em>';
 		}
 	}
 	if (@$_SESSION['userdata']['id']) {
