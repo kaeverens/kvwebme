@@ -237,3 +237,26 @@ if ($version==33) { // stock control
 	dbQuery('alter table products add stockcontrol_total int default 0');
 	$version=34;
 }
+if ($version==34) { // add link column to products_categories
+	if (!function_exists('transcribe')) {
+		function transcribe($string) {
+		    $a = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞ
+ßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿŔŕ';
+		    $b = 'aaaaaaaceeeeiiiidnoooooouuuuy
+bsaaaaaaaceeeeiiiidnoooooouuuyybyRr';
+		    $string = utf8_decode($string);    
+		    $string = strtr($string, utf8_decode($a), $b);
+		    $string = strtolower($string);
+		    return utf8_encode($string);
+		}
+	}
+	dbQuery('alter table products_categories add link text');
+	$rs=dbAll('select id,name from products_categories');
+	foreach ($rs as $r) {
+		dbQuery(
+			'update products_categories set link="'
+			.addslashes(transcribe($r['name'])).'" where id='.$r['id']
+		);
+	}
+	$version=35;
+}

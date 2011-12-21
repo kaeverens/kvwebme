@@ -101,7 +101,7 @@ $plugin=array(
 	'triggers' => array(
 		'initialisation-completed' => 'Products_addToCart'
 	),
-	'version' => '34'
+	'version' => '35'
 );
 // }
 
@@ -952,14 +952,14 @@ class ProductCategory{
 		// { or if there's a category parent, return its URL plus the name appended
 		if ($this->vals['parent_id']!=0) {
 			$cat=ProductCategory::getInstance($this->vals['parent_id']);
-			return $cat->getRelativeUrl().'/'.urlencode($this->vals['name']);
+			return $cat->getRelativeUrl().'/'.urlencode($this->vals['link']);
 		}
 		// }
 		// { or get at least any product page
 		$pid=dbOne('select id from pages where type like "products%" limit 1', 'id');
 		if ($pid) {
 			$page=Page::getInstance($pid);
-			return $page->getRelativeUrl().'/'.urlencode($this->vals['name']);
+			return $page->getRelativeUrl().'/'.urlencode($this->vals['link']);
 		}
 		// }
 		return '/#no-url-available';

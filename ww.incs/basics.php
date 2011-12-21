@@ -626,6 +626,7 @@ if (!isset($ignore_webme_plugins)) {
 			require SCRIPTBASE . 'ww.plugins/'.$pname.'/upgrade.php';
 			$DBVARS[$pname.'|version']=$version;
 			Core_configRewrite();
+			Core_cacheClear();
 			header('Location: '.$_SERVER['REQUEST_URI']);
 			exit;
 		}
