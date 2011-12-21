@@ -199,13 +199,17 @@ $c.= '</table></div>';
 // { header
 $c.= '<div id="products-header">';
 $c.= '<p>Text to be shown above the product/product list</p>';
-$c.= ckeditor('body', $page['body']);
+$c.= ckeditor('body', $page['body'], null, 1);
 $c.= '</div>';
 // }
 // { footer
 $c.= '<div id="products-footer">';
 $c.= '<p>Text to be shown below the product/product list</p>';
-$c.= ckeditor('page_vars[footer]', isset($vars['footer'])?$vars['footer']:'');
+$c.= ckeditor(
+	'page_vars[footer]',
+	isset($vars['footer'])?$vars['footer']:'',
+	null, 1
+);
 $c.= '</div>';
 // }
 $c.= '</div>';

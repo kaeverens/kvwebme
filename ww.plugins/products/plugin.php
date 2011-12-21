@@ -272,7 +272,7 @@ function Products_frontend($PAGEDATA) {
 	$producthtml=Products_show($PAGEDATA);
 	return $PAGEDATA->render()
 		.$producthtml
-		.$PAGEDATA->vars['footer'];
+		.__FromJson($PAGEDATA->vars['footer']);
 }
 
 /**
