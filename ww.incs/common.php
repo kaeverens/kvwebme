@@ -31,6 +31,25 @@ function Core_getJQueryScripts() {
 		.'<script src="'.$jurls[0].'"></script>'
 		.'<script src="'.$jurls[1].'"></script>';
 }
+
+/**
+	* show list of languages
+	*
+	* @return string HTML of <ul> list of languages
+	*/
+function Core_languagesGetUl() {
+	require_once dirname(__FILE__).'/api-funcs.php';
+	$languages=Core_languagesGet();
+	$ul='<ul class="languages">';
+	$url=preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI']);
+	foreach ($languages as $language) {
+		$ul.='<li><a href="'.$url.'?__LANG='.$language['code'].'">'
+			.htmlspecialchars($language['name']).'</a></li>';
+	}
+	$ul.='</ul>';
+	return $ul;
+}
+
 /**
 	* convert a MySQL date to a human-readable one
 	*
@@ -283,6 +302,7 @@ function smarty_setup($compile_dir) {
 	);
 	$smarty->assign('GLOBALS', $GLOBALS);
 	$smarty->register_function('BREADCRUMBS', 'Template_breadcrumbs');
+	$smarty->register_function('LANGUAGES', 'Core_languagesGetUl');
 	$smarty->register_function('LOGO', 'Template_logoDisplay');
 	$smarty->register_function('MENU', 'menuDisplay');
 	$smarty->register_function('nuMENU', 'menu_show_fg');
