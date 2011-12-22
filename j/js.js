@@ -95,7 +95,7 @@ function lightbox_show(src, sequence, seq_num) {
 	});
 }
 $(function(){
-	$('a[target=popup]').live('click', function(){
+	$('a[target=popup]').live('click', function() {
 		var $this=$(this);
 		var src=$this.attr('href');
 		var sequence=[],num=0,id;
@@ -113,6 +113,11 @@ $(function(){
 		}
 		lightbox_show(src, sequence, num);
 		return false;
+	});
+	$('#core-language').live('change', function() {
+		var val=$(this).val();
+		document.location=document.location.toString().replace(/\?.*/, '')
+			+'?__LANG='+$(this).val();
 	});
 	if (!window.console) {
 		window.console={

@@ -35,19 +35,39 @@ function Core_getJQueryScripts() {
 /**
 	* show list of languages
 	*
+	* @param array $params array of parameters
+	*
 	* @return string HTML of <ul> list of languages
 	*/
-function Core_languagesGetUl() {
+function Core_languagesGetUi($params) {
 	require_once dirname(__FILE__).'/api-funcs.php';
 	$languages=Core_languagesGet();
-	$ul='<ul class="languages">';
-	$url=preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI']);
-	foreach ($languages as $language) {
-		$ul.='<li><a href="'.$url.'?__LANG='.$language['code'].'">'
-			.htmlspecialchars($language['name']).'</a></li>';
+	switch (@$params['type']) {
+		case 'selectbox': // {
+			$ui='<select id="core-language">';
+			foreach ($languages as $language) {
+				$ui.='<option value="'.$language['code'].'"';
+				if ($language['code']==@$_SESSION['language']) {
+					$ui.=' selected="selected"';
+				}
+				$ui.='>'.htmlspecialchars($language['name']).'</option>';
+			}
+			$ui.='</select>';
+		break; // }
+		default: // {
+			$ui='<ul class="languages">';
+			$url=preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI']);
+			foreach ($languages as $language) {
+				$ui.='<li><a href="'.$url.'?__LANG='.$language['code'].'"';
+				if ($language['code']==@$_SESSION['language']) {
+					$ui.=' class="selected"';
+				}
+				$ui.='>'.htmlspecialchars($language['name']).'</a></li>';
+			}
+			$ui.='</ul>';
+		// }
 	}
-	$ul.='</ul>';
-	return $ul;
+	return $ui;
 }
 
 /**
@@ -302,7 +322,7 @@ function smarty_setup($compile_dir) {
 	);
 	$smarty->assign('GLOBALS', $GLOBALS);
 	$smarty->register_function('BREADCRUMBS', 'Template_breadcrumbs');
-	$smarty->register_function('LANGUAGES', 'Core_languagesGetUl');
+	$smarty->register_function('LANGUAGES', 'Core_languagesGetUi');
 	$smarty->register_function('LOGO', 'Template_logoDisplay');
 	$smarty->register_function('MENU', 'menuDisplay');
 	$smarty->register_function('nuMENU', 'menu_show_fg');
