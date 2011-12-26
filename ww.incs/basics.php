@@ -258,8 +258,13 @@ function Core_flushBuffer($type, $header='') {
   * @return boolean true or false
   */
 function Core_isAdmin() {
-	return isset($_SESSION['userdata'])
-		&& isset($_SESSION['userdata']['groups']['administrators']);
+	if (!isset($_SESSION['userdata'])) { // not logged in
+		return false;
+	}
+	if (!isset($_SESSION['userdata']['groups'])) {
+		require_once dirname(__FILE__).'/user-authentication.php';
+	}
+	return isset($_SESSION['userdata']['groups']['administrators']);
 }
 
 /**
