@@ -30,10 +30,10 @@ function Menu_getChildren(
 	global $_languages;
 	$md5=md5(
 		$parentid.'|'.$currentpage.'|'.$isadmin.'|'.$topParent
-			.'|'.join(',', $_languages)
+			.'|'.join(',', $_languages).'|'.@$_SESSION['language']
 	);
 	$cache=Core_cacheLoad('menus', $md5);
-	if ($cache) {
+	if (0 && $cache) {
 		return $cache;
 	}
 	$pageParentFound=0;
@@ -110,7 +110,7 @@ function Menu_getChildren(
 		}
 		$rs[$k]['classes']=join(' ', $c);
 		$rs[$k]['link']=$PAGEDATA->getRelativeURL();
-		$rs[$k]['name']=__FromJson($PAGEDATA->alias);
+		$rs[$k]['name']=__FromJson($PAGEDATA->name);
 		$rs[$k]['parent']=$parentid;
 		$menuitems[]=$rs[$k];
 	}
@@ -122,7 +122,7 @@ function Menu_show($b) {
 	if (!$PAGEDATA->id) {
 		return '';
 	}
-	$md5=md5('ww_menudisplay|'.print_r($b, true).'|'.join(',', $_languages));
+	$md5=md5('ww_menudisplay|'.print_r($b, true).'|'.join(',', $_languages).'|'.@$_SESSION['language']);
 	$cache=Core_cacheLoad('menus', $md5);
 	if ($cache) {
 		return $cache;
@@ -205,7 +205,7 @@ function Menu_show($b) {
 			}
 			$c.='<a id="ajaxmenu_link'.$r['id'].'" class="'.$r['classes'].'" href="'
 				.$page->getRelativeURL().'">'.$spanl
-				.htmlspecialchars(__FromJson($page->alias))
+				.htmlspecialchars(__FromJson($page->name))
 				.$spanr.'</a>';
 			$links++;
 		}
@@ -227,7 +227,7 @@ function Menu_show($b) {
 				$page=Page::getInstance($r['id']);
 				$c.='<a id="ajaxmenu_link'.$r['id'].'" class="'.$r['classes']
 					.'" href="'.$page->getRelativeURL().'">'.$spanl
-					.htmlspecialchars($page->alias).$spanr.'</a>';
+					.htmlspecialchars($page->name).$spanr.'</a>';
 			}
 		}
 		else {

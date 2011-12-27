@@ -571,8 +571,8 @@ function Core_adminPageEdit() {
 			$name.=$i;
 		}
 	}
-	$alias = __FromJson($name, true);
-	$name = transcribe($name);
+	$alias = transcribe(__FromJson($name, true));
+//	$name = transcribe($name);
 	// }
 	// { body
 	if (@$_REQUEST['page_vars']['_body']) {

@@ -136,6 +136,10 @@ function ImageGallery_img() {
 	$height=@(int)$_REQUEST['h'];
 	$sql='select * from image_gallery where id='.$id;
 	$r=dbRow($sql);
+	if ($_SERVER['REMOTE_ADDR']=='93.107.212.207') {
+		var_dump($r);
+		exit;
+	}
 	$meta=json_decode($r['meta']);
 	$url='/a/f=getImg/w='.$width.'/h='.$height.'/image-galleries/'
 		.'imagegallery-'.$r['gallery_id'].'/'.$meta->name;

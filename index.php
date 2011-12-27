@@ -305,6 +305,7 @@ $tmp='var pagedata={id:'.$PAGEDATA->id
 	.Core_trigger('displaying-pagedata')
 	.',ptop:'.$PAGEDATA->getTopParentId()
 	.',sessid:"'.session_id().'"'
+	.',lang:"'.@$_SESSION['language'].'"'
 	.'},';
 if (isset($_SESSION['userdata'])) {
 	$tmp.='userdata={isAdmin:'.(Core_isAdmin()?1:0)

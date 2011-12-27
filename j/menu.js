@@ -122,7 +122,7 @@ function ajaxmenu_initialise(p){
 		}
 		else {
 			$.get(
-				'/a/f=getMenu/pid='+p+'/id='+pagedata.id+'/top_id='+_am.topMenu,
+				'/a/f=getMenu/lang='+pagedata.lang+'/pid='+p+'/id='+pagedata.id+'/top_id='+_am.topMenu,
 				AjaxMenu_getChildren
 			);
 		}

@@ -181,7 +181,7 @@ echo '<tr>';
 // { name
 echo '<th style="width:6%"><span class="help name"></span>'.__('name')
 	.'</th><td style="width:23%">'
-	.'<input id="name" name="name" value="'.htmlspecialchars($page['alias'])
+	.'<input id="name" name="name" value="'.htmlspecialchars($page['name'])
 	.'" class="translatable" /></td>';
 // }
 // { type

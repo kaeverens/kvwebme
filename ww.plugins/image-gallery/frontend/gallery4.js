@@ -70,6 +70,7 @@ var Gallery={
 				'width'     :newwidth+'px',
 				'height'    :newheight+'px'
 			})
+			.attr('image', src)
 			.attr('src', newsrc);
 	},
 	bump:function(offset) { // bump effect
@@ -281,6 +282,7 @@ var Gallery={
 								'height'    :newheight+'px',
 								'margin-top':marginTop
 							})
+							.attr('image', src)
 							.attr('src', newsrc);
 						if (newwidth>$wrapper.width()) {
 							$wrapper.css({
@@ -342,10 +344,13 @@ var Gallery={
 			var width=$img.width()-14;
 			var offset=$img.height();
 			var offset=$img.height()+ +$img.css('margin-top').replace('px', '');
-			var $caption=$('.ad-image .caption');
 			$caption
 				.html(caption)
-				.css({'width':width+'px','display':'block'});
+				.css({
+					'width':width+'px',
+					'display':'block',
+					'left':$img.position().left
+				});
 			var height=$caption.outerHeight();
 			$caption
 				.css({'top':(offset-height)+'px'})
@@ -768,13 +773,12 @@ $(function() {
 			return;
 		}
 		var $this=$(this), sequence=$this.attr('sequence').split(','), i;
-		for (i=0;i<sequence.length;++i) {
-			sequence[i]='/a/p=image-gallery/f=img/id='+sequence[i];
+		var files=Gallery.images;
+		for (i=0; i<files.length; ++i) {
+			sequence[i]=files[i].url;
 		}
 		lightbox_show(
-			$this.css('background-image')
-				.replace(/^url\(|\)$/, '')
-				.replace(/,.*/, ''),
+			$this.attr('image'),
 			sequence,
 			$this.attr('num')
 		);
