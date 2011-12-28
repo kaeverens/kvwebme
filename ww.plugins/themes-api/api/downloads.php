@@ -1,21 +1,22 @@
 <?php
-
 /**
- * api/downloads.php, KV-Webme Themes API
- *
- * returns a number of most downloaded themes, where
- * count is the number of themes to return,
- * 10 is the default value
- * * paramaters that can be given:
- *
- * downloads	-       should be boolean true
- * count	-	number of themes to return, default = 10
- * start	-	offset to start query from, default = 0
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* api/downloads.php, KV-Webme Themes API
+	* returns a number of most downloaded themes, where
+	* count is the number of themes to return,
+	* 10 is the default value
+	* * paramaters that can be given:
+	* downloads	-       should be boolean true
+	* count	-	number of themes to return, default = 10
+	* start	-	offset to start query from, default = 0
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 /**
  * make sure api rules are being followed

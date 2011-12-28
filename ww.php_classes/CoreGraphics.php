@@ -1,5 +1,34 @@
 <?php
+/**
+	* CoreGraphics class
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+/**
+	* CoreGraphics object
+	*
+	*	@category WebME
+	* @package  WebME
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvweb.me/
+	*/
 class CoreGraphics{
+	/**
+		* convert image
+		*
+		* @param string $from file to convert
+		* @param string $to   convert to what
+		*
+		* @return null
+		*/
 	static function convert($from, $to) {
 		if (!file_exists($from)) {
 			return false;
@@ -33,9 +62,21 @@ class CoreGraphics{
 				$im=$load($from);
 				$save($im, $to, $extTo=='jpeg'?100:9);
 				imagedestroy($im);
-			// }
+				// }
 		}
 	}
+
+	/**
+		* resize an image
+		*
+		* @param string  $from      file to convert
+		* @param string  $to        convert to what
+		* @param int     $width     width to convert to
+		* @param int     $height    height to convert to
+		* @param boolean $keepratio keep image ratio, or force an exact resize
+		*
+		* @return null
+		*/
 	static function resize($from, $to, $width, $height, $keepratio=true) {
 		if (!file_exists($from)) {
 			return false;
@@ -92,10 +133,18 @@ class CoreGraphics{
 				$save($imresized, $to, $extTo=='jpeg'?100:9);
 				imagedestroy($imresized);
 				imagedestroy($im);
-			// }
+				// }
 		}
 		return true;
 	}
+
+	/**
+		* get the type of image
+		*
+		* @param string $fname filename
+		*
+		* @return string image type
+		*/
 	static function getType($fname) {
 		if (!file_exists($fname)) {
 			return false;

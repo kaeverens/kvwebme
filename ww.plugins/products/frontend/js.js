@@ -203,7 +203,9 @@ $(function(){
 		});
 	});
 	$('.products-product.stock-control').each(function() {
+		// { get details
 		var $this=$(this), $stockcontrol=$this.find('input.stock-control-total');
+		var $qty=$this.find('.add_multiple_widget_amount');
 		var details=$stockcontrol.attr('details');
 		if (!details) {
 			details='[]';
@@ -214,6 +216,8 @@ $(function(){
 			$this.find('select,input,button').attr('disabled', true);
 			return;
 		}
+		// }
+		// { change selectboxes if applicable
 		var options=[];
 		function recheck() {
 			var $this=$(this),
@@ -261,6 +265,7 @@ $(function(){
 					break;
 				}
 			}
+			$qty.val(1);
 		}
 		if (details.length) {
 			$.each(details[0], function(k, v) {
@@ -286,6 +291,34 @@ $(function(){
 			}
 			$('select[name=products_values_'+options[0]+']').change();
 		}
+		// }
+		// { make sure no more than is available can be added to cart
+		$qty.change(function() {
+			var qty=+$qty.val();
+			var match=null;
+			for (var i=0;i<details.length;++i) {
+				var match=details[i];
+				$.each(details[i], function(k, v) {
+					if (k=='_amt') {
+						return;
+					}
+					var val=$this.find('select[name=products_values_'+k+']').val();
+					val=val.replace(/\|.*/, '');
+					if (val!=v) {
+						match=null;
+					}
+				});
+				if (match) {
+					break;
+				}
+			}
+			if (+match._amt<qty) {
+				return $('<p>only '+match._amt+' in stock</p>').dialog({
+					'modal':true
+				});
+			}
+		});
+		// }
 	});
 });
 function Products_showMap() {

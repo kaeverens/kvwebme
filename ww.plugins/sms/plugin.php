@@ -23,7 +23,7 @@ $plugin=array(
 		)
 	),
 	'frontend' => array(
-		'widget' => 'sms_showWidget'
+		'widget' => 'SMS_showWidget'
 	),
 	'description' => 'Add SMS capabilities to your site, using the textr.mobi '
 		.'service.',
@@ -31,12 +31,28 @@ $plugin=array(
 );
 // }
 
-function sms_showWidget($vars) {
+/**
+	* show a widget
+	*
+	* @param array $vars widget parameters
+	*
+	* @return string $html
+	*/
+function SMS_showWidget($vars) {
 	require_once SCRIPTBASE.'ww.plugins/sms/frontend/widget.php';
 	return $html;
 }
-function sms_getSubscriberId($phone, $name='') {
-	$phone=sms_sanitisePhoneNumber($phone);
+
+/**
+	* get the ID of a subscriber (adding if necessary)
+	*
+	* @param string $phone phone number of the subscriber
+	* @param string $name  name of the subscriber
+	*
+	* @return int $sid subscriber ID
+	*/
+function SMS_getSubscriberId($phone, $name='') {
+	$phone=SMS_sanitisePhoneNumber($phone);
 	if ($phone===false) {
 		return false;
 	}
@@ -56,7 +72,15 @@ function sms_getSubscriberId($phone, $name='') {
 	}
 	return (int)$sid;
 }
-function sms_sanitisePhoneNumber($phone) {
+
+/**
+	* clean up a phone number
+	*
+	* @param string $phone phone number to clean up
+	*
+	* @return string $phone
+	*/
+function SMS_sanitisePhoneNumber($phone) {
 	$phone=preg_replace('/[^0-9]/', '', $phone);
 	if ($phone=='') {
 		return false;
@@ -74,7 +98,16 @@ function sms_sanitisePhoneNumber($phone) {
 	}
 	return $phone;
 }
-function sms_subscribeToAddressbook($sid, $aid) {
+
+/**
+	* add a subscriber to an addressbook
+	*
+	* @param int $sid subscriber ID
+	* @param int $aid addressbook ID
+	*
+	* @return null
+	*/
+function SMS_subscribeToAddressbook($sid, $aid) {
 	$subscribers=json_decode(
 		dbOne(
 			'select subscribers from sms_addressbooks where id='.$aid,

@@ -16,7 +16,7 @@ function Sms_subscribe() {
 			'errmsg'=>'incorrect number format'
 		);
 	}
-	$sid=sms_getSubscriberId($phone, $name);
+	$sid=SMS_getSubscriberId($phone, $name);
 	if (!$sid) {
 		return array(
 			'err'=>2,
@@ -25,7 +25,7 @@ function Sms_subscribe() {
 	}
 	$ids=explode(',', $_REQUEST['ids']);
 	foreach ($ids as $aid) {
-		sms_subscribeToAddressbook($sid, (int)$aid);
+		SMS_subscribeToAddressbook($sid, (int)$aid);
 	}
 	return array('err'=>0);
 }

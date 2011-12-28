@@ -30,7 +30,12 @@ $c.='<div id="f-header"><p>Text to be shown above the form</p>'
 // }
 // { footer
 $c.='<div id="footer"><p>Text to appear below the form.</p>';
-$c.=ckeditor('page_vars[footer]',(isset($vars['footer'])?$vars['footer']:''),0,$cssurl);
+$c.=ckeditor(
+	'page_vars[footer]',
+	(isset($vars['footer'])?$vars['footer']:''),
+	0,
+	$cssurl
+);
 $c.='</div>';
 // }
 // { email to friend
@@ -44,8 +49,8 @@ if (!isset($vars['recommendthissite_emailtothefriend'])) {
 		.'<p>Please take some time to look at our site and let us know'
 		.' what you think.</p>'
 		.'<p>Kind Regards</p><p>{{$smarty.server.HTTP_HOST}}</p>';
-	$vars['recommendthissite_emailtothefriend_subject']=
-		'Website Recommendation From {{$sender_name}}';
+	$vars['recommendthissite_emailtothefriend_subject']
+		='Website Recommendation From {{$sender_name}}';
 }
 $c.='<table><tr><th>Subject</th><td><input '
 	.'name="page_vars[recommendthissite_emailtothefriend_subject]" value="'
@@ -64,8 +69,8 @@ if (!isset($vars['recommendthissite_emailtosender'])) {
 		.'<p>Thank you for recommending our site to your friend. We really '
 		.'appreciate it!</p>'
 		.'<p>Kind Regards</p><p>{{$smarty.server.HTTP_HOST}}</p>';
-	$vars['recommendthissite_emailtosender_subject']=
-		'Your recommendation of {{$smarty.server.HTTP_HOST}}';
+	$vars['recommendthissite_emailtosender_subject']
+		='Your recommendation of {{$smarty.server.HTTP_HOST}}';
 }
 $c.='<table><tr><th>Subject</th><td><input '
 	.'name="page_vars[recommendthissite_emailtosender_subject]" value="'
@@ -84,8 +89,8 @@ if (!isset($vars['recommendthissite_emailtoadmin'])) {
 		.'({{$sender_email}}) has recommended your site '
 		.'{{$smarty.server.HTTP_HOST}} to {{$friend_name}} '
 		.'({{$friend_email}})</p>';
-	$vars['recommendthissite_emailtoadmin_subject']=
-		'[{{$smarty.server.HTTP_HOST}}] Website Recommendation';
+	$vars['recommendthissite_emailtoadmin_subject']
+		='[{{$smarty.server.HTTP_HOST}}] Website Recommendation';
 	$vars['recommendthissite_emailtoadmin_email']='info@'
 		.preg_replace('/^www\./', '', $_SERVER['HTTP_HOST']);
 }
@@ -110,7 +115,10 @@ if (!isset($vars['recommendthissite_successmsg'])) {
 	$vars['recommendthissite_successmsg']='<p>Thank you for your recommendation.'
 		.'</p><p>We really appreciate it!</p>';
 }
-$c.= ckeditor('page_vars[recommendthissite_successmsg]', $vars['recommendthissite_successmsg']);
+$c.=ckeditor(
+	'page_vars[recommendthissite_successmsg]',
+	$vars['recommendthissite_successmsg']
+);
 $c.= '</div>';
 // }
 echo '</div>';

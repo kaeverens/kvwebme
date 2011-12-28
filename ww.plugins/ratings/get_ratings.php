@@ -1,16 +1,18 @@
 <?php
-
 /**
- * get_ratings.php, KV-Webme Ratings Plugin
- *
- * returns an array of ratings for items
- *
- * @author     Conor Mac Aoidh <conormacaoidh@gmail.com>
- * @license    GPL 2.0
- * @version    1.0
- */
+	* get_ratings.php, KV-Webme Ratings Plugin
+	* returns an array of ratings for items
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conormacaoidh@gmail.com>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
-require '../../ww.incs/basics.php';
+require_once '../../ww.incs/basics.php';
 
 // { get and validate get data 
 $names = @$_GET[ 'names' ];
@@ -19,7 +21,6 @@ if ($names == '') {
 }
 $names = explode(',', $names);
 // }
-
 // { build query and execute
 $query = 'select * from ratings where ';
 for ( $i = 0; $i < count($names); ++$i) {
@@ -30,7 +31,6 @@ for ( $i = 0; $i < count($names); ++$i) {
 }
 $ratings = dbAll($query);
 // }
-
 // { calculate ratings
 $scores = array();
 if ($ratings!==false) {
