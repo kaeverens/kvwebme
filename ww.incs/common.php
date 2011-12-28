@@ -39,7 +39,7 @@ function Core_getJQueryScripts() {
 	*
 	* @return string HTML of <ul> list of languages
 	*/
-function Core_languagesGetUi($params) {
+function Core_languagesGetUi($params=null) {
 	require_once dirname(__FILE__).'/api-funcs.php';
 	$languages=Core_languagesGet();
 	switch (@$params['type']) {
