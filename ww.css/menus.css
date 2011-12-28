@@ -11,4 +11,6 @@
 	background:transparent;
 }
 .ui-tabs-nav { height:2.5em; }
-
+.menu-fg-horizontal li{
+	display:inline-block;
+}

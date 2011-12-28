@@ -11,16 +11,31 @@
 	* @link     http://kvsites.ie/
 	*/
 
+if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+	header('HTTP/1.0 304 Not Modified');
+	die;
+}
+
 require_once '../ww.incs/basics.php';
-$md5=preg_replace('/.*md5=/', '', $_SERVER['REQUEST_URI']);
+if (strpos($_SERVER['REQUEST_URI'], '=')!==false) {
+	$md5=preg_replace('/.*md5=/', '', $_SERVER['REQUEST_URI']);
+	$blah=0;
+}
+else {
+	$md5=preg_replace('/.*.php/', '', $_SERVER['REQUEST_URI']);
+	$blah=1;
+}
 if (strpos($md5, '..')!==false) {
 	exit;
 }
 
-header('Cache-Control: max-age=2592000, public');
-header('Expires-Active: On');
-header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
+$fname=USERBASE.'/ww.cache/admin/'.$md5;
+header('X-Powered-By:');
+header("Expires: " . gmdate("D, d M Y H:i:s", filemtime($fname) + 216000) . " GMT");
+header("Cache-Control: max-age=216000, private, must-revalidate", true);
+header("Last-Modified: ".gmdate("D, d M Y H:i:s", filemtime($fname))." GMT");
+header('Set-Cookie:');
 header('Pragma:');
-header('Content-type: text/javascript;');
+header('Content-Type: application/x-javascript; charset=utf-8');
 
-echo file_get_contents(USERBASE.'/ww.cache/admin/'.$md5);
+readfile($fname);

@@ -4,6 +4,11 @@
 <IfModule mod_php5.c>
 	php_flag magic_quotes_gpc off
 </IfModule>
+<IfModule mod_headers.c>
+	Header unset ETag
+	Header unset Last-Modified
+</IfModule>
+FileETag None
 
 RewriteEngine on
 

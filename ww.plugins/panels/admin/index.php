@@ -59,6 +59,11 @@ foreach ($PLUGINS as $n=>$p) {
 		}
 	}
 }
+$ws[]=json_encode(array(
+	'type'=>'languages',
+	'description' => 'Language selector',
+	'name'        => 'Languages'
+));
 echo join(',', $ws);
 echo '];';
 // }

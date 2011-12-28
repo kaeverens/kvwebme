@@ -147,7 +147,7 @@ function menu_build_fg($parentid, $depth, $options) {
 		$page=Page::getInstance($r['id'])->initValues();
 		$item.='<a class="menu-fg menu-pid-'.$r['id'].'" href="'
 			.$page->getRelativeUrl().'">'
-			.htmlspecialchars(__FromJson($page->alias)).'</a>';
+			.htmlspecialchars(__FromJson($page->name)).'</a>';
 		$item.=menu_build_fg($r['id'], $depth+1, $options);
 		$item.='</li>';
 		$items[]=$item;
@@ -199,8 +199,9 @@ function menu_build_fg($parentid, $depth, $options) {
 	*/
 function menu_show_fg ($opts) {
 	global $_languages;
-	$md5=md5('menu_fg|'.print_r($opts, true).'|'.join(', ', $_languages));
-	$cache=Core_cacheLoad('menus', $md5);
+	$c='';
+	$md5_1=md5('menu_fg|'.print_r($opts, true).'|'.join(', ', $_languages));
+	$cache=Core_cacheLoad('menus', $md5_1);
 	if ($cache) {
 		return $cache;
 	}
@@ -273,6 +274,7 @@ function menu_show_fg ($opts) {
 			."});"
 		);
 	}
+	Core_cacheSave('menus', $md5_1, $c);
 	return $c;
 }
 /**

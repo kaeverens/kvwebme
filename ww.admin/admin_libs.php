@@ -207,7 +207,7 @@ function WW_getScripts() {
 		?'<script src="'.join('"></script><script src="', $external).'"></script>'
 		:'';
 	return $external
-		.'<script src="/ww.admin/js.php/md5='.$md5.'"></script>'
+		.'<script src="/ww.admin/js.php/'.$md5.'"></script>'
 		.$inline;
 }
 

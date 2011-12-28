@@ -98,7 +98,13 @@ function panels_show($vars) {
 			}
 		}
 		else {
-			$h.='<em>missing plugin "'.htmlspecialchars($widget->type).'".</em>';
+			$file=$_SERVER['DOCUMENT_ROOT'].'/ww.plugins/panels/built-in/'.$widget->type.'.php';
+			if (file_exists($file)) {
+				require $file;
+			}
+			else {
+				$h.='<em>missing plugin "'.htmlspecialchars($widget->type).'".</em>';
+			}
 		}
 		$h.='</div>';
 	}
