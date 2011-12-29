@@ -125,7 +125,20 @@ function Core_getFileInfo() {
 function Core_getImg() {
 	$w=isset($_REQUEST['w'])?(int)$_REQUEST['w']:0;
 	$h=isset($_REQUEST['h'])?(int)$_REQUEST['h']:0;
-	$f=USERBASE.'f/'.$_REQUEST['_remainder'];
+	if (isset($_REQUEST['base64'])) {
+		$f=base64_decode($_REQUEST['base64']);
+		if (@fopen($f, 'r')!=true) {
+			echo 'file "'.$f.'" does not exist';
+			exit;
+		}
+	}
+	else {
+		$f=USERBASE.'f/'.$_REQUEST['_remainder'];
+		if (!file_exists($f)) {
+			echo 'file "'.$f.'" does not exist';
+			exit;
+		}
+	}
 	$ext=strtolower(preg_replace('/.*\./', '', $f));
 	switch ($ext) {
 		case 'jpg': case 'jpe': // {
@@ -140,10 +153,6 @@ function Core_getImg() {
 	}
 	if (strpos($f, '/.')!=false) {
 		return false; // hack attempt
-	}
-	if (!file_exists($f)) {
-		echo 'file "'.$f.'" does not exist';
-		exit;
 	}
 	if ($w || $h) {
 		list($width, $height)=getimagesize($f);

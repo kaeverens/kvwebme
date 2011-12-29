@@ -121,8 +121,7 @@ if ($n) {
 			case 'video': // {
 				$image=($meta['image']=='')?
 					'/ww.plugins/image-gallery/files/video.png':
-					'/ww.plugins/image-gallery/get-image.php?uri='.$meta['image']
-					.',width=64,height=64';
+					'/a/f=getImg/w=64/h=64/base64='.base64_encode($meta['image'])
 				$c.='<li id="image_'.$id.'">'
 					.'<img alt="" src="'.$image.'"'
 					.' id="image-gallery-image'.$id.'"/><br/>'

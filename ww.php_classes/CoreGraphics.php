@@ -30,7 +30,7 @@ class CoreGraphics{
 		* @return null
 		*/
 	static function convert($from, $to) {
-		if (!file_exists($from)) {
+		if (!file_exists($from) && @fopen($from, 'r')!=true) {
 			return false;
 		}
 		switch (@$GLOBALS['DBVARS']['graphics-method']) {
@@ -78,7 +78,7 @@ class CoreGraphics{
 		* @return null
 		*/
 	static function resize($from, $to, $width, $height, $keepratio=true) {
-		if (!file_exists($from)) {
+		if (!file_exists($from) && @fopen($from, 'r')!=true) {
 			return false;
 		}
 		switch (@$GLOBALS['DBVARS']['graphics-method']) {
@@ -99,8 +99,8 @@ class CoreGraphics{
 					default:
 						$extTo='jpeg';
 				}
-				$arr=getimagesize($from);
-				if ($arr===false) {
+				$size=getimagesize($from);
+				if ($size===false) {
 					return false;
 				}
 				$load='imagecreatefrom'.$extFrom;
@@ -108,9 +108,18 @@ class CoreGraphics{
 				if (!function_exists($load) || !function_exists($save)) {
 					return false;
 				}
-				$im=$load($from);
+				if (strpos($from, '/')!==0) { // external image
+					$tmp=USERBASE.'/ww.cache/'.md5($from).'.'.$extFrom;
+					if (!file_exists($tmp)) {
+						copy($from, $tmp);
+					}
+					$im=$load($tmp);
+					unlink($tmp);
+				}
+				else {
+					$im=$load($from);
+				}
 				if ($keepratio) {
-					$size=getimagesize($from);
 					$multx=$size[0]/$width;
 					$multy=$size[1]/$height;
 					if ($multx>$multy) {
@@ -127,7 +136,7 @@ class CoreGraphics{
 				imagecopyresampled(
 					$imresized, $im,
 					0, 0, 0, 0,
-					$width, $height, $arr[0], $arr[1]
+					$width, $height, $size[0], $size[1]
 				);
 				imagesavealpha($imresized, true);
 				$save($imresized, $to, $extTo=='jpeg'?100:9);
@@ -146,7 +155,7 @@ class CoreGraphics{
 		* @return string image type
 		*/
 	static function getType($fname) {
-		if (!file_exists($fname)) {
+		if (!file_exists($fname) && @fopen($fname, 'r')!=true) {
 			return false;
 		}
 		$data=getimagesize($fname);
