@@ -37,10 +37,10 @@ $plugin=array(
 		'widget' => 'Products_widget',
 		'template_functions' => array(
 			'PRODUCTS_BUTTON_ADD_TO_CART' => array(
-				'function' => 'products_get_add_to_cart_button'
+				'function' => 'Products_getAddToCartWidget'
 			),
 			'PRODUCTS_BUTTON_ADD_MANY_TO_CART' => array(
-				'function' => 'Products_getAddManyToCartButton'
+				'function' => 'Products_getAddManyToCartWidget'
 			),
 			'PRODUCTS_CATEGORIES' => array(
 				'function' => 'products_categories'

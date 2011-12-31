@@ -325,13 +325,11 @@ function Product_datatableMultiple ($products, $direction) {
 	*
 	* @return string the HTML
 	*/
-function products_get_add_to_cart_button($params, $smarty) {
+function Products_getAddToCartWidget($params, $smarty) {
 	$text=@$params['text'];
 	if (!$text) {
 		$text='Add to Cart';
 	}
-	$price=$_SESSION['currency']['symbol']
-		.(float)$smarty->_tpl_vars['product']->vals['online-store']['_price'];
 	$instock=(int)@$smarty->_tpl_vars['product']->vals['stockcontrol_total'];
 	$stockcontrol=$instock
 		?'<input type="hidden" class="stock-control-total" value="'
@@ -343,7 +341,11 @@ function products_get_add_to_cart_button($params, $smarty) {
 	return '<form method="POST" class="products-addtocart">'
 		.'<input type="hidden" name="products_action" value="add_to_cart" />'
 		.$stockcontrol
-		.'<button class="submit-button" price="'.$price.'">'.$text.'</button>'
+		.Products_getAddToCartButton(
+			$text,
+			(float)$smarty->_tpl_vars['product']->vals['online-store']['_price'],
+			(float)$smarty->_tpl_vars['product']->vals['online-store']['_sale_price']
+		)
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'" /></form>';
 }
@@ -356,13 +358,11 @@ function products_get_add_to_cart_button($params, $smarty) {
 	*
 	* @return string the HTML
 	*/
-function Products_getAddManyToCartButton($params, $smarty) {
+function Products_getAddManyToCartWidget($params, $smarty) {
 	$text=@$params['text'];
 	if (!$text) {
 		$text='Add to Cart';
 	}
-	$price=$_SESSION['currency']['symbol']
-		.(float)$smarty->_tpl_vars['product']->vals['online-store']['_price'];
 	$instock=(int)@$smarty->_tpl_vars['product']->vals['stockcontrol_total'];
 	$stockcontrol=$instock
 		?'<input type="hidden" class="stock-control-total" value="'
@@ -376,9 +376,32 @@ function Products_getAddManyToCartButton($params, $smarty) {
 		.'<input name="products-howmany" value="1" '
 		.'class="add_multiple_widget_amount" style="width:50px"/>'
 		.$stockcontrol
-		.'<button class="submit-button" price="'.$price.'">'.$text.'</button>'
+		.Products_getAddToCartButton(
+			$text,
+			(float)$smarty->_tpl_vars['product']->vals['online-store']['_price'],
+			(float)$smarty->_tpl_vars['product']->vals['online-store']['_sale_price']
+		)
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'"/></form>';
+}
+
+/**
+	* create an "add to cart" button
+	*
+	* @params string $text      what to show on the button
+	* @params float  $price     base price of the product
+	* @params float  $saleprice sale price of the product
+	*
+	* @return string html of the button
+	*/
+function Products_getAddToCartButton($text, $baseprice=0, $saleprice=0) {
+	$price=$baseprice;
+	if ($saleprice && $saleprice<$baseprice) {
+		$price=$saleprice;
+	}
+	$price=$_SESSION['currency']['symbol'].$price;
+	return '<button class="submit-button" price="'.$price.'" baseprice="'.$baseprice
+		.'" saleprice="'.$saleprice.'">'.$text.'</button>';
 }
 
 /**
