@@ -184,7 +184,7 @@ $(function(){
 		var bigw=$wrap.attr('width'), bigh=$wrap.attr('height');
 		$this.find('img').each(function() {
 			var src=$(this).css('background-image')
-				.replace(/^url\("|w=[0-9]*\/h=[0-9]*\/|"\)$/g, '');
+				.replace(/^url\("?|w=[0-9]*\/h=[0-9]*\/|"?\)$/g, '');
 			$(this).click(function() {
 				$wrap.find('img').attr('src', src+'/w='+bigw+'/h='+bigh);
 				$wrap.find('a').attr('href', src);
