@@ -349,6 +349,7 @@ function Products_adminTypeEdit() {
 		.'",data_fields="'.addslashes($data_fields).'",'
 		.'is_for_sale='.(int)$d['is_for_sale'].','
 		.'is_voucher='.(int)$d['is_voucher'].','
+		.'stock_control='.(int)$d['stock_control'].','
 		.'default_category='.(int)$d['default_category'].','
 		.'voucher_template="'
 		.addslashes(Core_sanitiseHtmlEssential($d['voucher_template'])).'",'

@@ -306,7 +306,11 @@ function Products_typeEdit(id) {
 				+'<option value="0">No</option><option value="1">Yes</option>'
 				+'</select></td>')
 				.appendTo('#pte5');
-			$('#pte5 select').val(tdata.stock_control);
+			$('#pte5 select')
+				.val(tdata.stock_control)
+				.change(function() {
+					tdata.stock_control=$(this).val();
+				});
 		}
 		if (+tdata.is_for_sale) {
 			addIsVoucher();
@@ -432,6 +436,7 @@ function Products_typeEdit(id) {
 	function updateMain() {
 		tdata.name=$('#pte1 input').val();
 		tdata.is_for_sale=+$('#pte2 select').val();
+		tdata.stock_control=+$('#pte5 select').val();
 		tdata.default_category=+$('#pte6').val();
 		if (tdata.is_for_sale) {
 			tdata.is_voucher=+$('#pte4 select').val();
