@@ -105,7 +105,7 @@ echo '<tr><th>'.__('Canonical Domain Name')
 // { logo
 echo '<tr><th>'.__('Logo').'</th><td><input type="file" name="site_logo" />'
 	.'<br />';
-if (file_exists(USERBASE.'f/skin_files/logo.png')) {
+if (file_exists(USERBASE.'/f/skin_files/logo.png')) {
 	echo '<img src="/f/skin_files/logo.png?rand='.mt_rand(0, 9999).'" /><a hre'
 		.'f="/ww.admin/siteoptions.php?action=remove_logo" onclick="return conf'
 		.'irm(\''.__('are you sure you want to remove the logo?').'\')" title="'
@@ -116,7 +116,7 @@ echo '</td></tr>';
 // { favicon
 echo '<tr><th>'.__('Favicon').'</th><td>'
 	.'<input type="file" name="site_favicon" /><br />';
-if (file_exists(USERBASE.'f/skin_files/favicon.ico')) {
+if (file_exists(USERBASE.'/f/skin_files/favicon.ico')) {
 	echo '<img src="/f/skin_files/favicon.ico?rand='.mt_rand(0, 9999)
 		.'" /><a href="/ww.admin/siteoptions.php?action=remove_favicon" '
 		.'onclick="return confirm(\''

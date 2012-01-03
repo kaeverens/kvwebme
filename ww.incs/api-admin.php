@@ -73,7 +73,7 @@ function Core_adminDirectoriesGet() {
 		}
 		return $arr;
 	}
-	$arr=array_merge(array('/'=>'/'), getSubdirs(USERBASE.'f', ''));
+	$arr=array_merge(array('/'=>'/'), getSubdirs(USERBASE.'/f', ''));
 	return $arr;
 }
 

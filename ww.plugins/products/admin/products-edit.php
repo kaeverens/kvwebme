@@ -146,9 +146,9 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 	else {
 		// { Recreate the directory because for some reason it was looking
 		//   in the old directory for the image files
-		if (!is_dir(USERBASE.'f'.$_REQUEST['images_directory'])) {    
-			if (!is_dir(USERBASE.'f/products/product-images')) {
-				if (!is_dir(USERBASE.'f/products')) {
+		if (!is_dir(USERBASE.'/f'.$_REQUEST['images_directory'])) {    
+			if (!is_dir(USERBASE.'/f/products/product-images')) {
+				if (!is_dir(USERBASE.'/f/products')) {
 					echo 'Creating products directory ';
 					$parent_id = kfm_api_getDirectoryId('f');
 					_createDirectory($parent_id, 'products');
@@ -493,16 +493,16 @@ echo '</tr>';
 if (!isset($pdata['images_directory']) 
 	|| !$pdata['images_directory'] 
 	|| $pdata['images_directory']=='/'
-	|| !is_dir(USERBASE.'f/'.$pdata['images_directory'])
+	|| !is_dir(USERBASE.'/f/'.$pdata['images_directory'])
 ) {
-	if (!is_dir(USERBASE.'f/products/product-images')) {
-		mkdir(USERBASE.'f/products/product-images', 0777, true);
+	if (!is_dir(USERBASE.'/f/products/product-images')) {
+		mkdir(USERBASE.'/f/products/product-images', 0777, true);
 	}
 	$pdata['images_directory']='/products/product-images/'
 		.md5(rand().microtime());
-	mkdir(USERBASE.'f'.$pdata['images_directory']);
+	mkdir(USERBASE.'/f'.$pdata['images_directory']);
 }
-if (!is_dir(USERBASE.'f'.$pdata['images_directory'])) {    
+if (!is_dir(USERBASE.'/f'.$pdata['images_directory'])) {    
 	$parent_id = kfm_api_getDirectoryId('products/product-images');
 	$pos = strrpos($pdata['images_directory'], '/');
 	$dname='';

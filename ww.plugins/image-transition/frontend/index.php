@@ -10,7 +10,7 @@ function ImageTransition_show($vars) {
 			$width=(int)$r['width'];
 			$height=(int)$r['height'];
 			$imgs=array();
-			$dir=USERBASE.'f'.$r['directory'];
+			$dir=USERBASE.'/f'.$r['directory'];
 			if (!file_exists($dir) || !is_dir($dir)) {
 				return '<!-- '.$dir.' -->';
 			}
@@ -23,7 +23,7 @@ function ImageTransition_show($vars) {
 					continue;
 				}
 				list($iw, $ih) = getimagesize(
-					USERBASE.'f'.$r['directory'].'/'.$f->getFilename()
+					USERBASE.'/f'.$r['directory'].'/'.$f->getFilename()
 				);
 				if (!$iw || !$ih) { // not an image
 					continue;

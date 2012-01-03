@@ -81,7 +81,7 @@ function Core_getFileList() {
 	if (!isset($_REQUEST['src'])) {
 		return array('error'=>'missing src');
 	}
-	$dir=USERBASE.$_REQUEST['src'];
+	$dir=USERBASE.'/'.$_REQUEST['src'];
 	Core_directoryCheckName($dir);
 	$files=array();
 	$dir=new DirectoryIterator($dir);
@@ -106,7 +106,7 @@ function Core_getFileInfo() {
 	if (!isset($_REQUEST['src'])) {
 		return array('error'=>'missing src');
 	}
-	$file=USERBASE.$_REQUEST['src'];
+	$file=USERBASE.'/'.$_REQUEST['src'];
 	Core_fileCheckName($file);
 
 	$finfo=finfo_open(FILEINFO_MIME_TYPE);
@@ -133,7 +133,7 @@ function Core_getImg() {
 		}
 	}
 	else {
-		$f=USERBASE.'f/'.$_REQUEST['_remainder'];
+		$f=USERBASE.'/f/'.$_REQUEST['_remainder'];
 		if (!file_exists($f)) {
 			echo 'file "'.$f.'" does not exist';
 			exit;
@@ -170,8 +170,8 @@ function Core_getImg() {
 		if ($resize) {
 			$width=(int)$width;
 			$height=(int)$height;
-			@mkdir(USERBASE.'ww.cache/resized.images');
-			$c=USERBASE.'ww.cache/resized.images/'.md5($f).','.$width.'x'.$height
+			@mkdir(USERBASE.'/ww.cache/resized.images');
+			$c=USERBASE.'/ww.cache/resized.images/'.md5($f).','.$width.'x'.$height
 				.'.png';
 			if (!file_exists($c) || filesize($c)==0) {
 				CoreGraphics::resize($f, $c, $width, $height);

@@ -33,8 +33,8 @@ $theme_name=dbOne('select name from themes_api where id='.$theme_id, 'name');
  * delete theme from user-files
  * and from themes-personal
  */
-shell_exec('rm -rf ' . USERBASE . 'f/themes_api/themes/' . $theme_id);
-shell_exec('rm -rf ' . USERBASE . 'themes-personal/' . $theme_name);
+shell_exec('rm -rf ' . USERBASE.'/f/themes_api/themes/' . $theme_id);
+shell_exec('rm -rf ' . USERBASE.'/themes-personal/' . $theme_name);
 
 /**
  * delete the theme from the db

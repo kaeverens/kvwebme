@@ -34,6 +34,6 @@ function find_old_files($dirname, $before_date) {
 		}
 	}
 }
-find_old_files(USERBASE.'f/.files', time()-3600*24*182);
+find_old_files(USERBASE.'/f/.files', time()-3600*24*182);
 echo $deleted.' files deleted.<br />';
 echo $saved.' bytes saved.';

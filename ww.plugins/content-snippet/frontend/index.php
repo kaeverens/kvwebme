@@ -78,9 +78,9 @@ function ContentSnippet_show2($vars) {
 		$html='<ul class="hrzAccordion" id="'.$id.'">';
 		$imgs=array();
 		if ($data['images_directory']
-			&& file_exists(USERBASE.'f'.$data['images_directory'])
+			&& file_exists(USERBASE.'/f'.$data['images_directory'])
 		) {
-			$dir=new DirectoryIterator(USERBASE.'f'.$data['images_directory']);
+			$dir=new DirectoryIterator(USERBASE.'/f'.$data['images_directory']);
 			foreach ($dir as $file) {
 				if ($file->isDot()) {
 					continue;
@@ -93,7 +93,7 @@ function ContentSnippet_show2($vars) {
 		foreach ($data['content'] as $content) {
 			$html.='<li><div class="handle">';
 			if (count($imgs) && isset($imgs[$i])) {
-				$size=getimagesize(USERBASE.$imgs[$i]);
+				$size=getimagesize(USERBASE.'/'.$imgs[$i]);
 				$html.='<img src="'.htmlspecialchars($imgs[$i]).'" style="width:'
 					.$size[0].'px;height:'.$size[1].'px" />';
 			}

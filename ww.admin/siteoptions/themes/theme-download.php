@@ -48,7 +48,7 @@ echo '<h2>Downloading Theme</h2>';
  */
 echo 'Downloading...<br/>';
 $zipfile = Core_getExternalFile($theme[ 'download' ]);
-$theme_dir = USERBASE . 'themes-personal/';
+$theme_dir = USERBASE.'/themes-personal/';
 file_put_contents($theme_dir . $theme[ 'name' ] . '.zip', $zipfile);
 
 /**

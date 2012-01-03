@@ -30,13 +30,13 @@ $c.='<div id="image-gallery-images">';
 $c.='<a href="javascript:;" style="float:right" id="video">Add Video File</a>';
 if (!isset($vars['image_gallery_directory'])
 	|| !$vars['image_gallery_directory']
-	|| !is_dir(USERBASE.'f/'.$vars['image_gallery_directory'])
+	|| !is_dir(USERBASE.'/f/'.$vars['image_gallery_directory'])
 ) {
-	if (!is_dir(USERBASE.'f/image-galleries')) {
-		mkdir(USERBASE.'f/image-galleries');
+	if (!is_dir(USERBASE.'/f/image-galleries')) {
+		mkdir(USERBASE.'/f/image-galleries');
 	}
 	$vars['image_gallery_directory']='/image-galleries/imagegallery-'.$page['id'];
-	$dir=USERBASE.'f/'.$vars['image_gallery_directory'];
+	$dir=USERBASE.'/f/'.$vars['image_gallery_directory'];
 	@mkdir($dir);
 }
 $c.='<input type="hidden" name="page_vars[image_gallery_directory]" value="';
@@ -55,7 +55,7 @@ $images=dbAll(
 	.' order by position asc'
 );
 // { find images that are not in the database...
-$dir=USERBASE.'f/'.$vars['image_gallery_directory'];
+$dir=USERBASE.'/f/'.$vars['image_gallery_directory'];
 $notfound=array();
 $files=new DirectoryIterator($dir);
 foreach ($files as $file) {
@@ -394,14 +394,14 @@ $c.='</tr>';
 $c.='</table>';
 $c.='</div>';
 $c.='</div>';
-if (!is_dir(USERBASE.'ww.cache/image-gallery')) {
-	mkdir(USERBASE.'ww.cache/image-gallery');
+if (!is_dir(USERBASE.'/ww.cache/image-gallery')) {
+	mkdir(USERBASE.'/ww.cache/image-gallery');
 }
-if (file_exists(USERBASE.'ww.cache/image-gallery/'.$page['id'])) {
-	unlink(USERBASE.'ww.cache/image-gallery/'.$page['id']);
+if (file_exists(USERBASE.'/ww.cache/image-gallery/'.$page['id'])) {
+	unlink(USERBASE.'/ww.cache/image-gallery/'.$page['id']);
 } 
 file_put_contents(
-	USERBASE.'ww.cache/image-gallery/'.$page['id'],
+	USERBASE.'/ww.cache/image-gallery/'.$page['id'],
 	@$vars['gallery-template']
 );
 ww_addScript('/ww.plugins/image-gallery/admin/admin.js');

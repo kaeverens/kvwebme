@@ -36,7 +36,7 @@ function ImageGallery_show($PAGEDATA) {
 	}
 	if ($n) {
 		// { if template doesn't exist, create it
-		$template=USERBASE.'ww.cache/image-gallery/';
+		$template=USERBASE.'/ww.cache/image-gallery/';
 		@mkdir($template);
 		$template.=$PAGEDATA->id;
 		if (!file_exists($template) || !filesize($template)) {
@@ -64,7 +64,7 @@ function ImageGallery_show($PAGEDATA) {
 		$smarty->left_delimiter='{{';
 		$smarty->right_delimiter='}}';
 		$c.=$smarty->fetch(
-			USERBASE.'ww.cache/image-gallery/'.$PAGEDATA->id
+			USERBASE.'/ww.cache/image-gallery/'.$PAGEDATA->id
 		);
 		WW_addScript('/ww.plugins/image-gallery/frontend/gallery4.js');
 		WW_addCSS('/ww.plugins/image-gallery/frontend/gallery.css');
@@ -90,7 +90,7 @@ function GalleryWidget_show($vars){
 	$n=count($images);
 	if ($n) {
 		// { if template doesn't exist, create it
-		$template=USERBASE.'ww.cache/image-gallery-widget/';
+		$template=USERBASE.'/ww.cache/image-gallery-widget/';
 		@mkdir($template, 0777, true);
 		$template.=$id;
 		if (!$vars['gallery_type']) {
@@ -121,7 +121,7 @@ function GalleryWidget_show($vars){
 		$smarty->left_delimiter='{{';
 		$smarty->right_delimiter='}}';
 		$c.=$smarty->fetch(
-			USERBASE.'ww.cache/image-gallery-widget/'.$id
+			USERBASE.'/ww.cache/image-gallery-widget/'.$id
 		);
 		// { quick hack to add the options rather than
 		// writing a whole new function in php

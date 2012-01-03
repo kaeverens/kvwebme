@@ -223,7 +223,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 				$d.='<input type="file" id="'.$name.'" name="file-upload"'.$help.'/>';
 				$d.='</div>';
 				// { add existing files
-				$dir=USERBASE.'f/.files/forms/'.session_id();
+				$dir=USERBASE.'/f/.files/forms/'.session_id();
 				if (is_dir($dir)) {
 					$files=array();
 					$uploads=new DirectoryIterator($dir);

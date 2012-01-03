@@ -13,7 +13,7 @@
 	*/
 
 $themes = array( );
-$theme_dir = USERBASE . 'themes-personal/';
+$theme_dir = USERBASE.'/themes-personal/';
 
 /**
  * scan through theme dirs, gather information

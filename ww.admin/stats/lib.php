@@ -21,7 +21,7 @@ function WebME_Stats_update() {
 	$time=time()+30;
 	$domains='kvsites.ie,kvwebme,kvsites.com';
 	$domains=explode(',', $domains);
-	$f=file(USERBASE.'log.txt');
+	$f=file(USERBASE.'/log.txt');
 	foreach ($f as $l) {
 		list(
 			$tmp,$type_data,$user_agent,$referer,
@@ -42,7 +42,7 @@ function WebME_Stats_update() {
 			."',$ram_used,$bandwidth,$time_to_render,$db_calls)"
 		);
 	}
-	file_put_contents(USERBASE.'log.txt', '');
+	file_put_contents(USERBASE.'/log.txt', '');
 	do {
 		$cdate=dbOne(
 			'select date(log_date) as cdate from logs '

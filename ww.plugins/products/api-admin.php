@@ -61,7 +61,7 @@ function Products_adminCategoryGetFromID($id) {
 			.'egories where id='.$id
 		),
 		'products'=>$products,
-		'hasIcon'=>file_exists(USERBASE.'f/products/categories/'.$id.'/icon.png')
+		'hasIcon'=>file_exists(USERBASE.'/f/products/categories/'.$id.'/icon.png')
 	);
 	if (isset($pageid)) {
 		$page= Page::getInstance($pageid);
@@ -200,7 +200,7 @@ function Products_adminCategoryMove() {
 	*/
 function Products_adminCategorySetIcon() {
 	$cat_id=(int)$_REQUEST['cat_id'];
-	$dir=USERBASE.'f/products/categories/'.$cat_id;
+	$dir=USERBASE.'/f/products/categories/'.$cat_id;
 	@mkdir($dir, 0777, true);
 	$tmpname=$_FILES['file_upload']['tmp_name'];
 	CoreGraphics::resize($tmpname, $dir.'/icon.png', 128, 128);
@@ -430,10 +430,10 @@ function Products_adminDatafieldsList() {
 	*/
 function Products_adminTypeUploadMissingImage() {
 	$id=(int)$_REQUEST['id'];
-	if (!file_exists(USERBASE.'f/products/types/'.$id)) {
-		mkdir(USERBASE.'f/products/types/'.$id, 0777, true);
+	if (!file_exists(USERBASE.'/f/products/types/'.$id)) {
+		mkdir(USERBASE.'/f/products/types/'.$id, 0777, true);
 	}
-	$imgs=new DirectoryIterator(USERBASE.'f/products/types/'.$id);
+	$imgs=new DirectoryIterator(USERBASE.'/f/products/types/'.$id);
 	foreach ($imgs as $img) {
 		if ($img->isDot()) {
 			continue;
@@ -441,7 +441,7 @@ function Products_adminTypeUploadMissingImage() {
 		unlink($img->getPathname());
 	}
 	$from=$_FILES['Filedata']['tmp_name'];
-	$to=USERBASE.'f/products/types/'.$id.'/image-not-found.png';
+	$to=USERBASE.'/f/products/types/'.$id.'/image-not-found.png';
 	move_uploaded_file($from, $to);
 	Core_cacheClear();
 	echo '/kfmgetfull/products/types/'.$id

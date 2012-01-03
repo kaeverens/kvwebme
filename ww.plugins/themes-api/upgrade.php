@@ -47,11 +47,11 @@ if ($version == 0) {
 	 * make room in the user files dir to
 	 * store the themes
 	 */
-	if (!is_dir(USERBASE . 'f/themes_api')) {
-		mkdir(USERBASE . 'f/themes_api');
+	if (!is_dir(USERBASE.'/f/themes_api')) {
+		mkdir(USERBASE.'/f/themes_api');
 	}
-	if ( !is_dir(USERBASE . 'f/themes_api/themes') ) {
-		mkdir(USERBASE . 'f/themes_api/themes');
+	if ( !is_dir(USERBASE.'/f/themes_api/themes') ) {
+		mkdir(USERBASE.'/f/themes_api/themes');
 	}
 	$version = 1;
 }
@@ -59,8 +59,8 @@ if ( $version == 1 ) {
 	/**
 	 * make dir to extract files for verification
 	 */
-	if ( !is_dir(USERBASE . 'f/themes_api/extract') ) {
-		mkdir(USERBASE . 'f/themes_api/extract');
+	if ( !is_dir(USERBASE.'/f/themes_api/extract') ) {
+		mkdir(USERBASE.'/f/themes_api/extract');
 	}
 	$version = 2;
 }

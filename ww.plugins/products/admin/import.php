@@ -37,7 +37,7 @@ if (isset($_POST['import'])) {
 					$base = $_SERVER['DOCUMENT_ROOT'];
 					require_once $base.'/j/kfm/api/api.php';
 					require_once $base.'/j/kfm/classes/kfmDirectory.php';
-					$base_dir_name = USERBASE.'f/products/products-images';
+					$base_dir_name = USERBASE.'/f/products/products-images';
 					$base_dir_id = kfm_api_getDirectoryId($base_dir_name);
 					$base_dir = kfmDirectory::getInstance($base_dir_id);
 					$sub_dirs = $base_dir->getSubDirs();
@@ -51,7 +51,7 @@ if (isset($_POST['import'])) {
 				dbQuery('delete from products_categories_products');
 			}
 			$newName = 'webworks_webme_products_import'.time().rand().'.csv';
-			$location = USERBASE.'ww.cache/products/imports';
+			$location = USERBASE.'/ww.cache/products/imports';
 			if (!is_dir($location)) {
 				mkdir($location, 0777, true);
 			}

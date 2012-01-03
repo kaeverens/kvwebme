@@ -38,7 +38,7 @@ function BannerImage_getImgHtml($id, $hide_message=false) {
 	global $banner_image_types;
 	$type='';
 	foreach ($banner_image_types as $t) {
-		if (file_exists(USERBASE.'f/skin_files/banner-image/'.$id.'.'.$t)) {
+		if (file_exists(USERBASE.'/f/skin_files/banner-image/'.$id.'.'.$t)) {
 			$type=$t;
 		}
 	}

@@ -22,7 +22,7 @@ require_once SCRIPTBASE . 'ww.admin/admin_libs.php';
 	*/
 function Theme_getTemplateNames() {
 	$themes = array();
-	$dir = USERBASE . 'themes-personal/';
+	$dir = USERBASE.'/themes-personal/';
 	$handler = opendir($dir);
 	while ($file = readdir($handler)) {
 		if ($file == '.' || $file == '..') {

@@ -45,11 +45,11 @@ if (isset($_POST['mp3_id'])) { // save mp3 files
 		);
 		$id=dbOne('select last_insert_id() as id', 'id');
 		// create caches
-		if (!is_dir(USERBASE.'ww.cache/mp3')) {
-			mkdir(USERBASE.'ww.cache/mp3');
+		if (!is_dir(USERBASE.'/ww.cache/mp3')) {
+			mkdir(USERBASE.'/ww.cache/mp3');
 		}
-		if (file_exists(USERBASE.'ww.cache/mp3/'.$id)) {
-			unlink(USERBASE.'ww.cache/mp3/'.$id);
+		if (file_exists(USERBASE.'/ww.cache/mp3/'.$id)) {
+			unlink(USERBASE.'/ww.cache/mp3/'.$id);
 		} 
 	}
 	else {
@@ -62,7 +62,7 @@ if (isset($_POST['mp3_id'])) { // save mp3 files
 		array('id'=>$id, 'id_was'=>$last_id)
 	);
 	file_put_contents(
-	  USERBASE.'ww.cache/mp3/'.$id,
+	  USERBASE.'/ww.cache/mp3/'.$id,
 	  @$template
 	);
 	exit;

@@ -32,8 +32,8 @@ if ($file==false||$dir==false) {
 	exit;
 }
 $meta=json_decode($file['meta'], true);
-if (file_exists(USERBASE.'f/'.$dir.'/'.$meta['name'])) {
-	unlink(USERBASE.'f'.$dir.'/'.$meta['name']);
+if (file_exists(USERBASE.'/f/'.$dir.'/'.$meta['name'])) {
+	unlink(USERBASE.'/f'.$dir.'/'.$meta['name']);
 }
 
 dbQuery('delete from image_gallery where id='.$id);

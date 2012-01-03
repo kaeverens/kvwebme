@@ -30,7 +30,7 @@ if (isset($_REQUEST['get_image_gallery'])) {
 		'select * from image_gallery_widget where id='
 		.(int)$_REQUEST['get_image_gallery']
 	);
-	$dirs=ImageGallery_getSubdirs(USERBASE.'f', '');
+	$dirs=ImageGallery_getSubdirs(USERBASE.'/f', '');
 	if ($r===false) {
 		$r=array(
 			'gallery_type'=>'List',

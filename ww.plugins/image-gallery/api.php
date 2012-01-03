@@ -27,7 +27,7 @@ function ImageGallery_galleryGet() {
 		exit;
 	}
 	$image_dir=@$_REQUEST['image_gallery_directory'];
-	if ($image_dir!=''&&is_dir(USERBASE.'f'.$image_dir)) { // read from KFM
+	if ($image_dir!=''&&is_dir(USERBASE.'/f'.$image_dir)) { // read from KFM
 		$dir=preg_replace('/^\//', '', $image_dir);
 		$dir_id=kfm_api_getDirectoryID($dir);
 		$images=kfm_loadFiles($dir_id);
@@ -159,7 +159,7 @@ function ImageGallery_frameGet() {
 	$border=explode(' ', $_REQUEST['bo']);
 	$width=$_REQUEST['w']+($padding[1]+$padding[3])/$ratio;
 	$height=$_REQUEST['h']+($padding[0]+$padding[2])/$ratio;
-	$file=USERBASE.'f/'.$_REQUEST['_remainder'];
+	$file=USERBASE.'/f/'.$_REQUEST['_remainder'];
 	if (strpos($file, '/.')!==false) {
 		exit;
 	}
@@ -168,9 +168,9 @@ function ImageGallery_frameGet() {
 		exit;
 	}
 	$md5=md5($_SERVER['REQUEST_URI']);
-	$frame=USERBASE.'ww.cache/image-gallery-frames/frame-'.$md5.'.png';
+	$frame=USERBASE.'/ww.cache/image-gallery-frames/frame-'.$md5.'.png';
 	if (!file_exists($frame)) {
-		@mkdir(USERBASE.'ww.cache/image-gallery-frames');
+		@mkdir(USERBASE.'/ww.cache/image-gallery-frames');
 		$imgO=imagecreatefrompng($file);
 		$imgOsize=getimagesize($file);
 		$imgN=imagecreatetruecolor($width, $height);

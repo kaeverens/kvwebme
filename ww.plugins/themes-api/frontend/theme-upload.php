@@ -68,7 +68,7 @@ dbQuery(
  * the id
  */
 $last_id = dbLastInsertId();
-$dir = USERBASE . 'f/themes_api/themes/';
+$dir = USERBASE.'/f/themes_api/themes/';
 if (!is_dir($dir . $last_id)) {
 	mkdir($dir . $last_id);
 }

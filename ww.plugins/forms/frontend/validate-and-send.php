@@ -194,7 +194,7 @@ function Form_send($page, $vars, &$form_fields) {
 			break; // }
 			case 'file': // { build $files array which emulates the $_FILES array
 				// { first remove old uploads
-				$dir=USERBASE.'f/.files/forms/';
+				$dir=USERBASE.'/f/.files/forms/';
 				if (!is_dir($dir)) {
 					break;
 				}
@@ -261,12 +261,12 @@ function Form_send($page, $vars, &$form_fields) {
 			);
 			$id=dbLastInsertId();
 			if (isset($_FILES) && count($_FILES)) {
-				@mkdir(USERBASE.'f/user-files');
-				@mkdir(USERBASE.'f/user-files/'.$id);
+				@mkdir(USERBASE.'/f/user-files');
+				@mkdir(USERBASE.'/f/user-files/'.$id);
 				foreach ($_FILES as $file) {
 					copy(
 						$file['tmp_name'],
-						USERBASE.'f/user-files/'.$id.'/'.$file['name']
+						USERBASE.'/f/user-files/'.$id.'/'.$file['name']
 					);
 				}
 			}
@@ -292,8 +292,8 @@ function Form_send($page, $vars, &$form_fields) {
 			'<html><head></head><body>'.$form.'</body></html>',
 			$_FILES
 		);
-		if (is_dir(USERBASE.'f/.files/forms/'.session_id())) { // remove uploaded files
-			CoreDirectory::delete(USERBASE.'f/.files/forms/'.session_id());
+		if (is_dir(USERBASE.'/f/.files/forms/'.session_id())) { // remove uploaded files
+			CoreDirectory::delete(USERBASE.'/f/.files/forms/'.session_id());
 		}
 	}
 	if ($vars['forms_record_in_db']) {

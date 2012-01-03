@@ -47,7 +47,7 @@ if (isset($_REQUEST['get_image_transition'])) {
 			'height'=>0
 		);
 	}
-	$dirs=ImageTransition_getSubdirs(USERBASE.'f', '');
+	$dirs=ImageTransition_getSubdirs(USERBASE.'/f', '');
 	if ($r===false) {
 		$r=array('pause'=>3000);
 	}

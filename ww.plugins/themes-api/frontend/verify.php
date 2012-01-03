@@ -38,9 +38,9 @@ if ($id == 0) {
 $name = dbOne('select name from themes_api where id='.$id, 'name');
 $f_name = str_replace(' ', '-', $name);
 
-$extract_dir = USERBASE.'f/themes_api/extract/';
+$extract_dir = USERBASE.'/f/themes_api/extract/';
 $files_dir = $extract_dir.$f_name .'/';
-$theme_dir = USERBASE.'f/themes_api/themes/';
+$theme_dir = USERBASE.'/f/themes_api/themes/';
 
 /**
  * cd to extract dir and unzip theme there

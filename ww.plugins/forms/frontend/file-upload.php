@@ -17,7 +17,7 @@ session_id($session_id);
 
 require '../../../ww.incs/basics.php';
 
-$dir=USERBASE.'f/.files/forms/';
+$dir=USERBASE.'/f/.files/forms/';
 if (!is_dir($dir)) { // make forms dir
 	mkdir($dir);
 }

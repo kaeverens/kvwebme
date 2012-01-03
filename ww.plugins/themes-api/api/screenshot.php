@@ -32,7 +32,7 @@ if ($id == 0) {
 	exit;
 }
 
-$theme_dir = USERBASE . 'f/themes_api/themes/' . $id . '/' . $id . '/';
+$theme_dir = USERBASE.'/f/themes_api/themes/' . $id . '/' . $id . '/';
 
 /**
  * check if variant is defined

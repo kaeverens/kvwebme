@@ -23,11 +23,11 @@ if ($version=='0.1') { // banners_images and banners_pages
 	dbQuery(
 		'create table if not exists banners_pages( pageid int, bannerid int);'
 	);
-	if (file_exists(USERBASE.'f/skin_files/banner.png')) {
-		mkdir(USERBASE.'f/skin_files/banner-images');
+	if (file_exists(USERBASE.'/f/skin_files/banner.png')) {
+		mkdir(USERBASE.'/f/skin_files/banner-images');
 		rename(
-			USERBASE.'f/skin_files/banner.png',
-			USERBASE.'f/skin_files/banner-images/1.png'
+			USERBASE.'/f/skin_files/banner.png',
+			USERBASE.'/f/skin_files/banner-images/1.png'
 		);
 		dbQuery('insert into banners_images values(1,"")');
 	}

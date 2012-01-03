@@ -39,11 +39,11 @@ dbQuery('update themes_api set moderated="yes" where id=' . $theme_id);
  * install theme on server
  */
 shell_exec(
-	'cp -R ' . USERBASE . 'f/themes_api/themes/' . $theme_id . '/' 
-	. $theme_id . '.zip ' . USERBASE . 'themes-personal'
+	'cp -R ' . USERBASE.'/f/themes_api/themes/' . $theme_id . '/' 
+	. $theme_id . '.zip ' . USERBASE.'/themes-personal'
 );
-shell_exec('cd '.USERBASE.'themes-personal && unzip -o '.$theme_id.'.zip');
-shell_exec('rm -rf ' . USERBASE . 'themes-personal/' . $theme_id . '.zip');
+shell_exec('cd '.USERBASE.'/themes-personal && unzip -o '.$theme_id.'.zip');
+shell_exec('rm -rf ' . USERBASE.'/themes-personal/' . $theme_id . '.zip');
 
 /**
  * send the user an email telling them the theme

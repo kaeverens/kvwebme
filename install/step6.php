@@ -58,7 +58,7 @@ if (isset($_POST[ 'install-theme' ])) { // install theme if selected
 	// downloading
 	echo 'Downloading...<br/>';
 	$zipfile = curl($theme[ 'download' ]);
-	$theme_dir = USERBASE . '/themes-personal/';
+	$theme_dir = USERBASE.'/themes-personal/';
 	@mkdir($theme_dir);
 	file_put_contents($theme_dir . $theme[ 'name' ] . '.zip', $zipfile);
 

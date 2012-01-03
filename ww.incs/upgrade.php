@@ -316,9 +316,9 @@ if ($version==27) { // create personal copy of theme if it exists
 		mkdir(USERBASE.'/themes-personal');
 	}
 	if (file_exists(THEME_DIR.'/'.THEME)) {
-		Copy_recursive(THEME_DIR.'/'.THEME, USERBASE.'themes-personal/'.THEME);
+		Copy_recursive(THEME_DIR.'/'.THEME, USERBASE.'/themes-personal/'.THEME);
 	}
-	$DBVARS['theme_dir_personal']=USERBASE.'themes-personal';
+	$DBVARS['theme_dir_personal']=USERBASE.'/themes-personal';
 	$version=28;
 }
 if ($version==28) { // update user accounts to remember last login and last view

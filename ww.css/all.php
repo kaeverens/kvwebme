@@ -27,7 +27,7 @@ if (isset($_REQUEST['extra'])) {
 			continue;
 		}
 		if (strpos($f, 'ww.skins')!==false) {
-			$fname=USERBASE.'themes-personal'.str_replace('/ww.skins', '', $f);
+			$fname=USERBASE.'/themes-personal'.str_replace('/ww.skins', '', $f);
 		}
 		else {
 			$fname=SCRIPTBASE.$f;

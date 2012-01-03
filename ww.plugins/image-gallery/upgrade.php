@@ -14,19 +14,19 @@
 
 if ($version==0) { // major upgrade from old gallery type to new type
 	$pages=dbAll('select id from pages where type="image-gallery"');
-	if (!is_dir(USERBASE.'ww.cache')) {
-		mkdir(USERBASE.'ww.cache');
+	if (!is_dir(USERBASE.'/ww.cache')) {
+		mkdir(USERBASE.'/ww.cache');
 	}
-	if (!is_dir(USERBASE.'ww.cache/image-gallery')) {
-		mkdir(USERBASE.'ww.cache/image-gallery');
+	if (!is_dir(USERBASE.'/ww.cache/image-gallery')) {
+		mkdir(USERBASE.'/ww.cache/image-gallery');
 	}
 	foreach ($pages as $page) {
 		$vars=dbRow(
 			'select value from page_vars where name="image_gallery_type" and '
 			.'page_id='.$page['id']
 		);
-		if (file_exists(USERBASE.'ww.cache/image-gallery/'.$page['id'])) {
-			unlink(USERBASE.'ww.cache/image-gallery/'.$page['id']);
+		if (file_exists(USERBASE.'/ww.cache/image-gallery/'.$page['id'])) {
+			unlink(USERBASE.'/ww.cache/image-gallery/'.$page['id']);
 		}
 		$newvars=array();
 		switch ($vars['value']) { // upgrade gallery type
@@ -46,7 +46,7 @@ if ($version==0) { // major upgrade from old gallery type to new type
 			break; // }
 		}
 		file_put_contents(
-			USERBASE.'ww.cache/image-gallery/'.$page['id'],
+			USERBASE.'/ww.cache/image-gallery/'.$page['id'],
 			$newvars['gallery-template']
 		);
 		$query='insert into page_vars set '
@@ -71,11 +71,11 @@ if ($version==1) { // move from kfm to database orientated
 	);
 	$pages=dbAll('select id from pages where type="image-gallery"');
 	if (count($pages)!=0) {
-		if (!is_dir(USERBASE.'ww.cache')) {
-			mkdir(USERBASE.'ww.cache');
+		if (!is_dir(USERBASE.'/ww.cache')) {
+			mkdir(USERBASE.'/ww.cache');
 		}
-		if (!is_dir(USERBASE.'ww.cache/image-gallery')) {
-			mkdir(USERBASE.'ww.cache/image-gallery');
+		if (!is_dir(USERBASE.'/ww.cache/image-gallery')) {
+			mkdir(USERBASE.'/ww.cache/image-gallery');
 		}
 		$kfm_do_not_save_session=true;
 		require_once KFM_BASE_PATH.'/api/api.php';
@@ -118,7 +118,7 @@ if ($version==1) { // move from kfm to database orientated
 				array_push($new_images, $new);
 			}
 			file_put_contents(
-				USERBASE.'ww.cache/image-gallery/'.$page['id'],
+				USERBASE.'/ww.cache/image-gallery/'.$page['id'],
 				@$vars[1]['value']
 			);
 		}

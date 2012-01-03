@@ -71,8 +71,8 @@ if (!isset($_POST[ 'install-theme' ]) && !isset($_POST[ 'upload-theme' ])
 }
 // }
 // { make temporary dir and move uploaded file there
-$themes_personal = USERBASE . 'themes-personal/';
-$temp_dir = USERBASE . 'themes-personal/temp_dir/';
+$themes_personal = USERBASE.'/themes-personal/';
+$temp_dir = USERBASE.'/themes-personal/temp_dir/';
 shell_exec('rm -rf ' . $temp_dir); // start fresh
 shell_exec('mkdir ' . $temp_dir);
 move_uploaded_file(

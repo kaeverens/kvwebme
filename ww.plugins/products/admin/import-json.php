@@ -40,7 +40,7 @@ if (isset($_POST['import'])) {
 								}
 								$dirs=explode('/', $arr[0]);
 								$filename=array_pop($dirs);
-								$dirname=USERBASE.'f';
+								$dirname=USERBASE.'/f';
 								foreach ($dirs as $dir) {
 									$dirname.='/'.$dir;
 									if ($dir=='..') { // hack attempt?

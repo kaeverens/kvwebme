@@ -551,14 +551,14 @@ $c.='</div>';
 WW_addScript('/ww.plugins/online-store/admin/index2.js');
 WW_addScript('/j/jquery.inlinemultiselect.js');
 
-if (!file_exists(USERBASE.'ww.cache/online-store')) {
-	mkdir(USERBASE.'ww.cache/online-store');
+if (!file_exists(USERBASE.'/ww.cache/online-store')) {
+	mkdir(USERBASE.'/ww.cache/online-store');
 }
-if (file_exists(USERBASE.'ww.cache/online-store/'.$page['id'])) {
-	unlink(USERBASE.'ww.cache/online-store/'.$page['id']);
+if (file_exists(USERBASE.'/ww.cache/online-store/'.$page['id'])) {
+	unlink(USERBASE.'/ww.cache/online-store/'.$page['id']);
 }
 file_put_contents(
-	USERBASE.'ww.cache/online-store/'.$page['id'],
+	USERBASE.'/ww.cache/online-store/'.$page['id'],
 	$vars['online_stores_invoice']
 );
 $c.='<style>@import "/ww.plugins/online-store/admin/styles.css";</style>';

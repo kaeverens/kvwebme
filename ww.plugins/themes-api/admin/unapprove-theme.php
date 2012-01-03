@@ -33,7 +33,7 @@ $theme_name=dbOne('select name from themes_api where id='.$theme_id, 'name');
 /**
  * delete theme from themes-personal
  */
-shell_exec('rm -rf ' . USERBASE . 'themes-personal/' . $theme_name);
+shell_exec('rm -rf ' . USERBASE.'/themes-personal/' . $theme_name);
 
 /**
  * mark the theme as unmoderated in the db

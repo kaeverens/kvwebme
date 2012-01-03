@@ -34,10 +34,10 @@ $dir=dbOne(
 if (!$dir) {
 	$dir='image-galleries/imagegallery-'.$gallery_id;
 }
-$dir=USERBASE.'f/'.$dir;
+$dir=USERBASE.'/f/'.$dir;
 
 if (!file_exists($dir)) {
-	@mkdir(USERBASE.'f/image-galleries'); // parent dir
+	@mkdir(USERBASE.'/f/image-galleries'); // parent dir
 	mkdir($dir);
 }
 

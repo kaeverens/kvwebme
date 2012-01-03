@@ -40,7 +40,7 @@ function ImageGallery_adminFrameUpload() {
 	if (!$gallery_id) {
 		exit;
 	}
-	$dir=USERBASE.'f/image-galleries';
+	$dir=USERBASE.'/f/image-galleries';
 	@mkdir($dir);
 	$from=$_FILES['file_upload']['tmp_name'];
 	$to  =$dir.'/frame-'.$gallery_id.'.png';

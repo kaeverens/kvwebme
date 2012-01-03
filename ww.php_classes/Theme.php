@@ -35,7 +35,7 @@ class Theme{
 			if (!file_exists($dir)) {
 				return false;
 			}
-			$temp_dir = USERBASE . 'temp_dir';
+			$temp_dir = USERBASE.'/temp_dir';
 			shell_exec('mkdir ' . $temp_dir);
 			shell_exec('cd ' . $temp_dir . ' && unzip -o ' . $dir);
 			$dir = basename($dir, '.zip');
@@ -92,7 +92,7 @@ class Theme{
 		*/
 	function __destruct() {
 		if ($this->zip == true) {
-			shell_exec('rm -rf ' . USERBASE . 'temp_dir');
+			shell_exec('rm -rf ' . USERBASE.'/temp_dir');
 		}
 	}
 }

@@ -63,7 +63,7 @@ dbQuery(
 /**
  * download file
  */
-$file = USERBASE . 'f/themes_api/themes/' . $id . '/' . $id . '.zip';
+$file = USERBASE.'/f/themes_api/themes/' . $id . '/' . $id . '.zip';
 header('Content-type: application/force-download');
 header('Content-Transfer-Encoding: Binary');
 header('Content-length: '.filesize($file));

@@ -33,7 +33,7 @@ function ThemesApi_getScreenshot($id) {
 	*/
 function ThemesApi_getVariants($id) {
 
-	$variant_dir = USERBASE.'f/themes_api/themes/'.$id.'/'.$id.'/cs/';
+	$variant_dir = USERBASE.'/f/themes_api/themes/'.$id.'/'.$id.'/cs/';
 	$variants = array();
 
 	/**
@@ -106,14 +106,14 @@ function ThemesApi_error($msg, $id = null) {
 	/**
 	 * remove temporary extract stuff
 	 */
-	shell_exec('rm -rf '.USERBASE.'f/themes_api/extract/*');
+	shell_exec('rm -rf '.USERBASE.'/f/themes_api/extract/*');
 
 	if ($id != 0) {
 
 		/**
 		 * remove theme from server
 		 */
-		shell_exec('rm -rf '.USERBASE.'f/themes_api/themes/'.$id);
+		shell_exec('rm -rf '.USERBASE.'/f/themes_api/themes/'.$id);
 
 		/**
 		 * remove theme from database

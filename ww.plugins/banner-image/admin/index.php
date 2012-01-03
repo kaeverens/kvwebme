@@ -12,8 +12,8 @@ if (isset($_GET['delete_banner']) && (int)$_GET['delete_banner']) {
 	$id=(int)$_GET['delete_banner'];
 	dbQuery("delete from banners_images where id=$id");
 	dbQuery("delete from banners_pages where bannerid=$id");
-	unlink(USERBASE.'f/skin_files/banner-image/'.$id.'.png');
-	$n=USERBASE.'f/skin_files/banner-image/'.$id.'_*';
+	unlink(USERBASE.'/f/skin_files/banner-image/'.$id.'.png');
+	$n=USERBASE.'/f/skin_files/banner-image/'.$id.'_*';
 	CoreDirectory::delete($n);
 	$updated='Banner Deleted';
 	Core_cacheClear('banner-images');
@@ -47,11 +47,11 @@ if (isset($_POST['save_banner'])) {
 if (isset($updated)) {
 	echo '<em>'.$updated.'</em>';
 }
-if (!is_dir(USERBASE.'f/skin_files')) {
-	mkdir(USERBASE.'f/skin_files');
+if (!is_dir(USERBASE.'/f/skin_files')) {
+	mkdir(USERBASE.'/f/skin_files');
 }
-if (!is_dir(USERBASE.'f/skin_files/banner-image')) {
-	mkdir(USERBASE.'f/skin_files/banner-image');
+if (!is_dir(USERBASE.'/f/skin_files/banner-image')) {
+	mkdir(USERBASE.'/f/skin_files/banner-image');
 }
 
 function banner_image_selectkiddies(

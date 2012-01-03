@@ -52,8 +52,8 @@ if (isset($_POST[ 'delete-theme' ])) {
 	if ($DBVARS[ 'theme' ] == $name) {
 		header('location: /ww.admin/siteoptions.php?page=themes');
 	}
-	elseif (is_dir(USERBASE . 'themes-personal/' . $name)) {
-		CoreDirectory::delete(USERBASE.'themes-personal/'.$name);
+	elseif (is_dir(USERBASE.'/themes-personal/' . $name)) {
+		CoreDirectory::delete(USERBASE.'/themes-personal/'.$name);
 	}
 }
 

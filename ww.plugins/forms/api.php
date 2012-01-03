@@ -24,7 +24,7 @@ function Forms_fileDelete() {
 	if ($id==''||strpos('..', $id)!==false) {
 		exit;
 	}
-	$dir=USERBASE.'f/.files/forms/'.session_id().'/';
+	$dir=USERBASE.'/f/.files/forms/'.session_id().'/';
 	if (!is_dir($dir)) {
 		exit;
 	}

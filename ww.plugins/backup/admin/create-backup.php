@@ -33,8 +33,8 @@ CoreDirectory::delete($dir);
 mkdir($dir);
 
 $ubase=USERBASE;
-$fdir=USERBASE.'f';
-$tdir=USERBASE.'themes-personal';
+$fdir=USERBASE.'/f';
+$tdir=USERBASE.'/themes-personal';
 
 `cd $ubase  && zip -r $dir/files.zip f`;
 

@@ -7,7 +7,7 @@ function kfm_api_createDirectory($parent,$name){
 	return 0;
 }
 function kfm_api_getDirectoryId($address){
-	if(!is_dir(USERBASE.'f/'.$address))return 0;
+	if(!is_dir(USERBASE.'/f/'.$address))return 0;
 	$arr=explode('/',$address);
 	$curdir=1;
 	if($arr[count($arr)-1]==''&&count($arr)>1)array_pop($arr);

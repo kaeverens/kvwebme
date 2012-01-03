@@ -26,7 +26,7 @@ function MP3_frontendWidget($vars=null) {
 		return 'No files yet';
 	}
 	// { if template doesnt exist, create it
-	$template=USERBASE.'ww.cache/mp3/';
+	$template=USERBASE.'/ww.cache/mp3/';
 	if (!is_dir($template)) {
 		mkdir($template);
 	}
@@ -55,7 +55,7 @@ function MP3_frontendWidget($vars=null) {
 	$smarty->right_delimiter='}}';
 	$smarty->_tpl_vars['mp3_files']=$files;
 	$html=$smarty->fetch(
-		USERBASE.'ww.cache/mp3/'.$vars->id
+		USERBASE.'/ww.cache/mp3/'.$vars->id
 	);
 	WW_addScript('/ww.plugins/mp3/frontend/jwplayer.js');
 	WW_addScript('/ww.plugins/mp3/frontend/widget.js');
