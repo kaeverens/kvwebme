@@ -2,19 +2,32 @@
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if(!Core_isAdmin())die('access denied');
 
-$id=isset($_REQUEST['id'])?(int)$_REQUEST['id']:0;
+$id=(int)@$_REQUEST['id'];
+$loginpageid=(int)@$_REQUEST['login-page-id'];
 
-// { login page
-echo '<strong>registration page</strong><br />';
-$ua_pages=dbAll('select id,name from pages where type="privacy" order by name');
+// { make sure there's a user authentication page created
+$ua_pages=dbAll('select id,name from pages where type like "%privacy%" order by name');
 if(!count($ua_pages)){
 	echo 'no User Authentication pages created. please <a href="/ww.admin/pages.php">create one</a> first.';
 	exit;
 }
+// }
+// { registration page
+echo '<strong>registration page</strong><br />';
 echo '<select name="id"><option value=""> -- registration page -- </option>';
 foreach($ua_pages as $b){
 	echo '<option value="'.$b['id'].'"';
 	if($id==$b['id'])echo ' selected="selected"';
+	echo '>'.htmlspecialchars($b['name']).'</option>';
+}
+echo '</select><br />';
+// }
+// { login page
+echo '<strong>login page</strong><br />';
+echo '<select name="login-page-id"><option value=""> -- login page -- </option>';
+foreach($ua_pages as $b){
+	echo '<option value="'.$b['id'].'"';
+	if($loginpageid==$b['id'])echo ' selected="selected"';
 	echo '>'.htmlspecialchars($b['name']).'</option>';
 }
 echo '</select><br />';

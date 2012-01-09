@@ -171,3 +171,6 @@
     cursor: default;
     background-position: 0 -96px;
 }
+#products-mapview{
+	min-height:400px;
+}

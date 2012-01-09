@@ -31,6 +31,20 @@ function Core_languagesGet() {
 }
 
 /**
+	* return a list of locations recorded by the CMS
+	*
+	* @return array the list of locations
+	*/
+function Core_locationsGet() {
+	$locs=Core_cacheLoad('core', 'locations', -1);
+	if ($locs == -1) {
+		$locs=dbAll('select * from locations order by is_default desc, name');
+		Core_cacheSave('core', 'locations', $locs);
+	}
+	return $locs;
+}
+
+/**
 	* check that a directory exists
 	*
 	* @param string $file directory to check

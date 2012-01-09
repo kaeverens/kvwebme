@@ -483,6 +483,14 @@ if ($version==44) { // stats archive tables
 	);
 	$version=45;
 }
+if ($version==45) { // named locations
+	dbQuery(
+		'create table locations(id int auto_increment not null primary key,'
+		.'name text, lat float, lng float, is_default smallint default 0)'
+		.'default charset=utf8'
+	);
+	$version=46;
+}
 
 $DBVARS['version']=$version;
 Core_cacheClear();

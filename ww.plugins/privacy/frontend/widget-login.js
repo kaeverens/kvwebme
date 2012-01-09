@@ -2,14 +2,9 @@ $(function(){
 	var $form=$('#userauthentication-widget');
 	$form.find('button,img').click(function(){
 		var $this=$(this), btn='';
-		if ($this.text()=='email/password') {
-			btn='email and password';
-		}
-		if ($this[0].className=='facebook') {
-			btn='facebook';
-		}
-		switch (btn) {
-			case 'email and password': // {
+		var action=$this.closest('li').attr('class').replace(/userauthentication-/, '');
+		switch (action) {
+			case 'login': // {
 				$('<table id="userauthentication-email-and-password">'
 					+'<tr><th>email</th><td><input type="email" /></td></tr>'
 					+'<tr><th>password</th><td><input type="password" /></td></tr>'
@@ -48,6 +43,9 @@ $(function(){
 						/(https?:\/\/[^\/]*\/).*/,
 						'$1ww.plugins/privacy/frontend/widget-login-facebook.php'
 					)+'/widget-id='+widget_id+'/';
+			break; // }
+			case 'register': // {
+				document.location=$this.attr('href');
 			break; // }
 		}
 	});

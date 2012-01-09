@@ -126,7 +126,7 @@ function Privacy_controller() {
 		}
 	}
 	if (!isset($PAGEDATA->vars['userlogin_visibility'])
-		||$PAGEDATA->vars['userlogin_visibility']
+		||!$PAGEDATA->vars['userlogin_visibility']
 	) {
 		$PAGEDATA->vars['userlogin_visibility']=3;
 	}

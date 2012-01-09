@@ -92,14 +92,15 @@ function UserAuthentication_pageTest($pagedata) {
 	* @return string html to return
 	*/
 function UserAuthentication_showWidget($vars=null, $widget_id=0) {
+	WW_addCSS('/ww.plugins/privacy/widget.css');
 	if (!isset($_SESSION['userdata']) || !$_SESSION['userdata']['id']) {
 		require_once SCRIPTBASE.'ww.plugins/privacy/frontend/widget-login.php';
 		WW_addScript('/ww.plugins/privacy/frontend/widget-login.js');
 		return $c;
 	}
-	return '<div id="userauthentication-widget" style="margin:3px">Logged in '
-		.'as <strong>'
-		.$_SESSION['userdata']['name'].'</strong>'
-		.' [<a href="/?logout">log out</a>]'
-		.'[<a href="/_r?type=loginpage">edit profile</a>]</div>';
+	return '<div id="userauthentication-widget"><ul>'
+		.'<li>Hi, <strong>'.$_SESSION['userdata']['name'].'</strong></li>'
+		.'<li class="userauthentication-logout"><a href="/?logout">log out</a></li>'
+		.'<li class="userauthentication-edit-profile"><a href="/_r?type=loginpage">edit profile</a></li>'
+		.'</ul></div>';
 }

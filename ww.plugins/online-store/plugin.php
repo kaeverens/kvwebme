@@ -230,14 +230,16 @@ function OnlineStore_productPriceFull($params, $smarty) {
 	*
 	* @param float   $val     the number to convert
 	* @param boolean $sym     whether to return a symbol as well
-	* @param boomean $rounded should the returned value be rounded?
+	* @param boolean $rounded should the returned value be rounded?
 	*
 	* @return string
 	*/
 function OnlineStore_numToPrice($val, $sym=true, $rounded=false) {
 	$rate=$_SESSION['currency']['value'];
 	$sym=$_SESSION['currency']['symbol'];
-	return $sym.sprintf("%.2f", $rounded?round($val*$rate):$val*$rate);
+	return $sym.($rounded
+		?round($val*$rate)
+		:sprintf("%.2f", $val*$rate));
 }
 
 /**

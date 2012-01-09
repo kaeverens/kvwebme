@@ -612,6 +612,32 @@ else {
 	define('THEME', $DBVARS['theme']);
 }
 // }
+// { set up location
+if (!isset($_SESSION['location'])) {
+	require_once dirname(__FILE__).'/api-funcs.php';
+	$locations=Core_locationsGet();
+	$_SESSION['location']=false;
+	if (count($locations)) {
+		$_SESSION['location']=array(
+			'lat'=>$locations[0]['lat'],
+			'lng'=>$locations[0]['lng'],
+			'locid'=>$locations[0]['id'],
+			'locname'=>$locations[0]['name']
+		);
+	}
+}
+if (isset($_REQUEST['__LOCATION'])) {
+	$loc=dbRow('select * from locations where id='.(int)$_REQUEST['__LOCATION']);
+	if ($loc) {
+		$_SESSION['location']=array(
+			'lat'=>$loc['lat'],
+			'lng'=>$loc['lng'],
+			'id'=>$loc['id'],
+			'name'=>$loc['name']
+		);
+	}
+}
+// }
 // { plugins
 $PLUGINS=array();
 $PLUGIN_TRIGGERS=array();

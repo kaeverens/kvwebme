@@ -29,7 +29,7 @@ function Products_priceBase2($params, $smarty) {
 	$vat=isset($params['vat']) && $params['vat']
 		?(100+$_SESSION['onlinestore_vat_percent'])/100
 		:1;
-	return OnlineStore_numToPrice($p['_price']*$vat);
+	return OnlineStore_numToPrice($p['_price']*$vat, true, (int)@$params['round']);
 }
 
 /**
@@ -51,7 +51,7 @@ function Products_priceDiscount2($params, $smarty) {
 	$vat=isset($params['vat']) && $params['vat']
 		?(100+$_SESSION['onlinestore_vat_percent'])/100
 		:1;
-	return OnlineStore_numToPrice($discount*$vat);
+	return OnlineStore_numToPrice($discount*$vat, true, (int)@$params['round']);
 }
 
 /**
@@ -88,7 +88,7 @@ function Products_priceSale2($params, $smarty) {
 	$vat=isset($params['vat']) && $params['vat']
 		?(100+$_SESSION['onlinestore_vat_percent'])/100
 		:1;
-	return OnlineStore_numToPrice($product->getPrice('sale')*$vat);
+	return OnlineStore_numToPrice($product->getPrice('sale')*$vat, true, (int)@$params['round']);
 }
 
 /**

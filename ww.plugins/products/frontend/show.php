@@ -1327,6 +1327,7 @@ class Products{
 			break; // }
 			case 3: // { map view
 				WW_addScript('/ww.plugins/products/frontend/js.js');
+				WW_addCSS('/ww.plugins/products/products.css');
 				return '<div id="products-mapview"></div>';
 				// }
 			case 4: // { carousel

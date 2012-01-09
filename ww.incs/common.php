@@ -71,6 +71,28 @@ function Core_languagesGetUi($params=null) {
 }
 
 /**
+	* show list of locations
+	*
+	* @param array $params array of parameters
+	*
+	* @return string HTML of <select> list of locations
+	*/
+function Core_locationsGetUi($params=null) {
+	require_once dirname(__FILE__).'/api-funcs.php';
+	$locations=Core_locationsGet();
+	$ui='<select id="core-location">';
+	foreach ($locations as $location) {
+		$ui.='<option value="'.$location['id'].'"';
+		if ($location['id']==@$_SESSION['location']['id']) {
+			$ui.=' selected="selected"';
+		}
+		$ui.='>'.htmlspecialchars($location['name']).'</option>';
+	}
+	$ui.='</select>';
+	return $ui;
+}
+
+/**
 	* convert a MySQL date to a human-readable one
 	*
 	* @param string $d    the date to convert
@@ -323,8 +345,10 @@ function smarty_setup($compile_dir) {
 		htmlspecialchars($DBVARS['site_subtitle'])
 	);
 	$smarty->assign('GLOBALS', $GLOBALS);
+	$smarty->assign('LOCATIONNAME', @$_SESSION['location']['name']);
 	$smarty->register_function('BREADCRUMBS', 'Template_breadcrumbs');
 	$smarty->register_function('LANGUAGES', 'Core_languagesGetUi');
+	$smarty->register_function('LOCATIONSELECTOR', 'Core_locationsGetUi');
 	$smarty->register_function('LOGO', 'Template_logoDisplay');
 	$smarty->register_function('MENU', 'menuDisplay');
 	$smarty->register_function('nuMENU', 'menu_show_fg');

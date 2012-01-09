@@ -126,6 +126,9 @@ $menus=array(
 		'Languages'=>array(
 			'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Languages\')'
 		),
+		'Locations'=>array(
+			'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Locations\')'
+		),
 		'Users'  => array('_link'=>'siteoptions.php?page=users'),
 		'Plugins'=> array('_link'=>'siteoptions.php?page=plugins'),
 #		'Stats2'=>array(

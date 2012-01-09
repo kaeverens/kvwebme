@@ -103,6 +103,7 @@ function Core_adminLanguagesAdd() {
 		'insert into language_names set name="'.addslashes($name).'"'
 		.',code="'.addslashes($code).'",is_default=0'
 	);
+	Core_cacheClear('core');
 	return array('ok'=>1);
 }
 
@@ -114,6 +115,7 @@ function Core_adminLanguagesAdd() {
 function Core_adminLanguagesDelete() {
 	$id=(int)$_REQUEST['id'];
 	dbQuery('delete from language_names where id='.$id);
+	Core_cacheClear('core');
 	return array('ok'=>1);
 }
 
@@ -146,6 +148,84 @@ function Core_adminLanguagesEdit() {
 		.',code="'.addslashes($code).'",is_default='.$is_default
 		.' where id='.$id
 	);
+	Core_cacheClear('core');
+	return array('ok'=>1);
+}
+
+/**
+	* add location
+	*
+	* @return status
+	*/
+function Core_adminLocationsAdd() {
+	$name=$_REQUEST['name'];
+	$lat=(float)$_REQUEST['lat'];
+	$lng=(float)$_REQUEST['lng'];
+	if (!$name) {
+		return array(
+			'error'=>'You must fill in Name'
+		);
+	}
+	$isInUse=dbOne(
+		'select count(id) as ids from locations where name="' 
+		.addslashes($name).'"', 'ids'
+	);
+	if ($isInUse) {
+		return array(
+			'error'=>'Name already in use'
+		);
+	}
+	dbQuery(
+		'insert into locations set name="'.addslashes($name).'"'
+		.',lat='.$lat.',lng='.$lng.',is_default=0'
+	);
+	Core_cacheClear('core');
+	return array('ok'=>1);
+}
+
+/**
+	* delete location
+	*
+	* @return status
+	*/
+function Core_adminLocationDelete() {
+	$id=(int)$_REQUEST['id'];
+	dbQuery('delete from locations where id='.$id);
+	Core_cacheClear('core');
+	return array('ok'=>1);
+}
+
+/**
+	* update location
+	*
+	* @return status
+	*/
+function Core_adminLocationsEdit() {
+	$id=(int)$_REQUEST['id'];
+	$name=$_REQUEST['name'];
+	$lat=(float)$_REQUEST['lat'];
+	$lng=(float)$_REQUEST['lng'];
+	$is_default=(int)$_REQUEST['is_default'];
+	if (!$name) {
+		return array(
+			'error'=>'You must fill in Name'
+		);
+	}
+	if ($is_default) {
+		dbQuery('update locations set is_default=0');
+	}
+	else {
+		$r=dbRow('select * from locations where id='.$id);
+		if ($r['is_default']=='1') {
+			$is_default=1; // cannot unset is_default. must set on a different lang
+		}
+	}
+	dbQuery(
+		'update locations set name="'.addslashes($name).'"'
+		.',lat='.$lat.',lng='.$lng.',is_default='.$is_default
+		.' where id='.$id
+	);
+	Core_cacheClear('core');
 	return array('ok'=>1);
 }
 
