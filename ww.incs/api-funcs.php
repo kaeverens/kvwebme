@@ -366,7 +366,7 @@ function Core_translationsGet() {
 	$context=$_REQUEST['context'];
 	$md5=md5(join('|', $_languages).'|'.$context);
 	$strings=Core_cacheLoad('core-translation', $md5);
-	if ($strings==false) {
+	if (1 || $strings==false) {
 		$strings=array();
 		for ($i=count($_languages)-1;$i>=0;--$i) {
 			$rs=dbAll(

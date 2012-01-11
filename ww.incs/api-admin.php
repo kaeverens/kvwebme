@@ -153,6 +153,41 @@ function Core_adminLanguagesEdit() {
 }
 
 /**
+	* so a translation
+	*
+	* @return status
+	*/
+function Core_adminLanguagesEditString() {
+	$str=$_REQUEST['str'];
+	$trstr=$_REQUEST['trstr'];
+	$lang=$_REQUEST['lang'];
+	$context=$_REQUEST['context'];
+	dbQuery('delete from languages where str="'.addslashes($str).'" and lang="'.addslashes($lang).'" and context="'.addslashes($context).'"');
+	dbQuery('insert into languages set str="'.addslashes($str).'", lang="'.addslashes($lang).'", context="'.addslashes($context).'", trstr="'.addslashes($trstr).'"');
+	Core_cacheClear('core');
+	return array('ok'=>1);
+}
+
+/**
+	* get list of translateable strings
+	*
+	* @return array of strings
+	*/
+function Core_adminLanguagesGetStrings() {
+	return dbAll('select distinct str,context from languages');
+}
+
+/**
+	* get list of translated strings
+	*
+	* @return array of strings
+	*/
+function Core_adminLanguagesGetTrStrings() {
+	$lang=$_REQUEST['lang'];
+	return dbAll('select str,context,trstr from languages where lang="'.addslashes($lang).'"');
+}
+
+/**
 	* add location
 	*
 	* @return status

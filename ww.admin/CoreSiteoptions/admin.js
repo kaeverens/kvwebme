@@ -80,33 +80,95 @@ function CoreSiteoptions_screenCron() {
 	}
 }
 function CoreSiteoptions_screenLanguages() {
-	var $content=$('#content').empty();
-	$.post('/a/f=languagesGet', function(languages) {
-		var table='<table id="languages-table"><thead>'
-			+'<tr><th>Name</th><th>Code</th>'
-			+'<th>Default</th><th>&nbsp;</th></tr></thead>'
-			+'<tbody>';
-		for (var i=0;i<languages.length;++i) {
-			var lang=languages[i];
-			var links=['<a href="#" class="edit">edit</a>'];
-			if (!(+lang.is_default)) {
-				links.push('<a href="#" class="delete">[x]</a>');
-			}
-			table+='<tr cid="'+lang.id+'"><td>'+lang.name+'</td>'
-				+'<td>'+lang.code+'</td><td>'+(+lang.is_default?'Yes':'')+'</td>'
-				+'<td>'+links.join(', ')+'</td></tr>';
+	$('#content').empty().html('<select><option>list languages</option><option>translations</option></select><div id="lang-content"/>');
+	var $content=$('#lang-content');
+	$('#content select').change(function() {
+		switch ($(this).val()) {
+			case 'list languages':
+				return showLanguages();
+			case 'translations':
+				return showTranslations();
 		}
-		table+='</tbody></table>';
-		var $table=$(table)
-			.appendTo($content);
-		$table.dataTable();
-		$('<a href="#">Add Language</a>')
-			.click(function() {
-				$('<form id="languages-form"><table>'
+	});
+
+	function showLanguages() {
+		$content.empty();
+		$.post('/a/f=languagesGet', function(languages) {
+			var table='<table id="languages-table"><thead>'
+				+'<tr><th>Name</th><th>Code</th>'
+				+'<th>Default</th><th>&nbsp;</th></tr></thead>'
+				+'<tbody>';
+			for (var i=0;i<languages.length;++i) {
+				var lang=languages[i];
+				var links=['<a href="#" class="edit">edit</a>'];
+				if (!(+lang.is_default)) {
+					links.push('<a href="#" class="delete">[x]</a>');
+				}
+				table+='<tr cid="'+lang.id+'"><td>'+lang.name+'</td>'
+					+'<td>'+lang.code+'</td><td>'+(+lang.is_default?'Yes':'')+'</td>'
+					+'<td>'+links.join(', ')+'</td></tr>';
+			}
+			table+='</tbody></table>';
+			var $table=$(table)
+				.appendTo($content);
+			$table.dataTable();
+			$('<a href="#">Add Language</a>')
+				.click(function() {
+					$('<form id="languages-form"><table>'
+						+'<tr><th>Name</th><td><input name="name"/></td></tr>'
+						+'<tr><th>Code <a href="http://en.wikipedia.org/wiki/List_of_ISO_63'
+						+'9-1_codes" target="_blank">#</a></th><td>'
+						+'<input name="code" class="small"/></td></tr>'
+						+'</table></form>'
+					)
+						.dialog({
+							'modal':true,
+							'close':function() {
+								$('#languages-form').remove();
+							},
+							'buttons': {
+								'Add': function() {
+									$.post('/a/f=adminLanguagesAdd',
+										$('#languages-form').serialize(),
+										showLanguages
+									);
+									$('#languages-form').remove();
+								},
+								'Cancel': function() {
+									$('#languages-form').remove();
+								}
+							}
+						});
+					return false;
+				})
+				.appendTo($content);
+			$('#languages-table .delete').click(function() {
+				var id=$(this).closest('tr').attr('cid');
+				if (!confirm('are you sure you want to delete this language?')) {
+					return;
+				}
+				$.post(
+					'/a/f=adminLanguagesDelete/id='+id,
+					showLanguages
+				);
+				return false;
+			});
+			$('#languages-table .edit').click(function() {
+				var id=$(this).closest('tr').attr('cid');
+				var language;
+				for (var i=0;i<languages.length;++i) {
+					if (languages[i].id==id) {
+						language=languages[i];
+					}
+				}
+				$('<form id="languages-form"><input name="id" type="hidden"/><table>'
 					+'<tr><th>Name</th><td><input name="name"/></td></tr>'
 					+'<tr><th>Code <a href="http://en.wikipedia.org/wiki/List_of_ISO_63'
 					+'9-1_codes" target="_blank">#</a></th><td>'
 					+'<input name="code" class="small"/></td></tr>'
+					+'<tr><th>Is Default</th><td><select name="is_default">'
+					+'<option value="0">No</option><option value="1">Yes</option>'
+					+'</select></td></tr>'
 					+'</table></form>'
 				)
 					.dialog({
@@ -115,10 +177,10 @@ function CoreSiteoptions_screenLanguages() {
 							$('#languages-form').remove();
 						},
 						'buttons': {
-							'Add': function() {
-								$.post('/a/f=adminLanguagesAdd',
+							'Save': function() {
+								$.post('/a/f=adminLanguagesEdit',
 									$('#languages-form').serialize(),
-									CoreSiteoptions_screenLanguages
+									showLanguages
 								);
 								$('#languages-form').remove();
 							},
@@ -127,62 +189,118 @@ function CoreSiteoptions_screenLanguages() {
 							}
 						}
 					});
-				return false;
-			})
-			.appendTo($content);
-		$('#languages-table .delete').click(function() {
-			var id=$(this).closest('tr').attr('cid');
-			if (!confirm('are you sure you want to delete this language?')) {
-				return;
-			}
-			$.post(
-				'/a/f=adminLanguagesDelete/id='+id,
-				CoreSiteoptions_screenLanguages
-			);
-			return false;
-		});
-		$('#languages-table .edit').click(function() {
-			var id=$(this).closest('tr').attr('cid');
-			var language;
-			for (var i=0;i<languages.length;++i) {
-				if (languages[i].id==id) {
-					language=languages[i];
+				for (var k in language) {
+					$('#languages-form *[name='+k+']').val(language[k]);
 				}
+				return false;
+			});
+		});
+	}
+	function showTranslations() {
+		var $languages=$('<select><option> -- loading -- </option></select>')
+			.appendTo($content.empty());
+		var currentTr=[];
+		var $languagestable;
+		$.post('/a/f=languagesGet', function(languages) {
+			var opts='<option value=""> -- choose a language -- </option>';
+			for (var i=0;i<languages.length;++i) {
+				opts+='<option value="'+languages[i].code+'">'+languages[i].name+'</option>';
 			}
-			$('<form id="languages-form"><input name="id" type="hidden"/><table>'
-				+'<tr><th>Name</th><td><input name="name"/></td></tr>'
-				+'<tr><th>Code <a href="http://en.wikipedia.org/wiki/List_of_ISO_63'
-				+'9-1_codes" target="_blank">#</a></th><td>'
-				+'<input name="code" class="small"/></td></tr>'
-				+'<tr><th>Is Default</th><td><select name="is_default">'
-				+'<option value="0">No</option><option value="1">Yes</option>'
-				+'</select></td></tr>'
-				+'</table></form>'
-			)
-				.dialog({
-					'modal':true,
-					'close':function() {
-						$('#languages-form').remove();
-					},
-					'buttons': {
-						'Save': function() {
-							$.post('/a/f=adminLanguagesEdit',
-								$('#languages-form').serialize(),
-								CoreSiteoptions_screenLanguages
-							);
-							$('#languages-form').remove();
-						},
-						'Cancel': function() {
-							$('#languages-form').remove();
+			$languages.html(opts).change(changeLanguage);
+		});
+		$.post('/a/f=adminLanguagesGetStrings', function(strings) {
+			var table='<table id="languages-table"><thead>'
+				+'<tr><th>String</th><th>Context</th>'
+				+'<th>Translation</th></tr></thead>'
+				+'<tbody>';
+			var links=[];
+			for (var i=0;i<strings.length;++i) {
+				var str=strings[i];
+				table+='<tr><td>'+htmlspecialchars(str.str)+'</td>'
+					+'<td>'+str.context+'</td><td class="context">-- choose a language --</td>'
+					+'</tr>';
+			}
+			table+='</tbody></table>';
+			$languagestable=$(table)
+				.appendTo($content)
+				.dataTable();
+			$languagestable.on('click', 'tbody td:last-child', function() {
+				if ($languages.val()=='') {
+					return;
+				}
+				var $this=$(this);
+				var $tr=$this.closest('tr'), trstr=$this.text();
+				var str=$tr.find('td:first-child').text(), context=$tr.find('td:nth-child(2)').text();
+				if (!str) {
+					return;
+				}
+				var newtrstr=prompt(str, trstr);
+				if (!newtrstr || trstr==newtrstr) {
+					return;
+				}
+				$.post('/a/f=adminLanguagesEditString', {
+					'lang': $languages.val(),
+					'context': context,
+					'str': str,
+					'trstr': newtrstr
+				}, function() {
+					$this.text(newtrstr);
+					for (var j=0;j<currentTr.length;++j) {
+						var cstr=currentTr[j];
+						if (cstr.str==str && cstr.context==context) {
+							currentTr[j].trstr=newtrstr;
+							return;
 						}
 					}
+					currentTr[j].push({
+						'str':str,
+						'trstr':newtrstr,
+						'context':context
+					});
 				});
-			for (var k in language) {
-				$('#languages-form *[name='+k+']').val(language[k]);
-			}
-			return false;
+			});
 		});
-	});
+		function changeLanguage() {
+			var lang=$(this).val();
+			if (lang=='') {
+				$languagestable.find('.context')
+					.text('-- choose a language --')
+					.css('cursor', 'default');
+				return;
+			}
+			$.post('/a/f=adminLanguagesGetTrStrings', {
+				'lang':lang
+			}, function(ret) {
+				$languagestable.find('.context')
+					.text('')
+					.css('cursor', 'pointer');
+				currentTr=ret;
+				updateVisibleTranslations();
+			});
+		}
+		function updateVisibleTranslations() {
+			if ($languages.val()=='') {
+				return;
+			}
+			var trs=$languagestable.find('tbody tr');
+			trs.find('td:last-child').text('');
+			for (var i=0;i<trs.length;++i) {
+				var $tr=$(trs[i]);
+				var str=$tr.find('td:first-child').text(), context=$tr.find('td:nth-child(2)').text();
+				if (!str) {
+					continue;
+				}
+				$tr.find('td:last-child').text(str);
+				for (var j=0;j<currentTr.length;++j) {
+					var cstr=currentTr[j];
+					if (cstr.str==str && cstr.context==context) {
+						$tr.find('td:last-child').text(cstr.trstr);
+					}
+				}
+			}
+		}
+	}
+	showLanguages();
 }
 function CoreSiteoptions_screenLocations() {
 	var $content=$('#content').empty();

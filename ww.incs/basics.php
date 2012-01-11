@@ -373,9 +373,9 @@ function dbInit() {
 	$db=new PDO(
 		'mysql:host='.$DBVARS['hostname'].';dbname='.$DBVARS['db_name'],
 		$DBVARS['username'],
-		$DBVARS['password']
+		$DBVARS['password'],
+		array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")
 	);
-	$db->query('SET NAMES utf8');
 	$db->num_queries=0;
 	$GLOBALS['db']=$db;
 	return $db;

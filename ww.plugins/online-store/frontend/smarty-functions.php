@@ -45,7 +45,7 @@ function OnlineStore_productPriceFull2($params, $smarty) {
 	}
 	if ($p['_sale_price']) {
 		$tmp='<strike class="os_price">'.OnlineStore_numToPrice($product->getPrice()*$vat)
-			.'</strike> <strong class="os_price">'
+			.'</strike> <strong class="os_price with-sale-price">'
 			.OnlineStore_numToPrice($product->getPrice('sale')*$vat).'</strong>';
 	}
 	else {

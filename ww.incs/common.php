@@ -55,7 +55,7 @@ function Core_languagesGetUi($params=null) {
 			$ui.='</select>';
 		break; // }
 		default: // {
-			$ui='<ul class="languages">';
+			$ui='<h2 class="__">Languages</h2><ul class="languages">';
 			$url=preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI']);
 			foreach ($languages as $language) {
 				$ui.='<li><a href="'.$url.'?__LANG='.$language['code'].'"';

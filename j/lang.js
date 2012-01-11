@@ -7,7 +7,7 @@ function __langInit() {
 	});
 }
 function __(el) {
-	var context=$(this).data('lang-context')||'core';
+	var context=$(el).attr('lang-context')||'core';
 	// if language is not yet loaded, start it loading
 	if (!__lang[context]) {
 		__lang[context]={
@@ -28,6 +28,7 @@ function __(el) {
 	// ok - let's do this
 	var $el=$(el);
 	var str=$el.html();
+	console.log(str);
 	$el
 		.removeData('lang-context')
 		.removeData('lang-params')
