@@ -70,6 +70,9 @@ if (isset($_SESSION['userdata']['id'])) {
 			}
 		}
 		$_SESSION['userdata']['groups']=$USERGROUPS;
+		if (isset($_SESSION['userdata']['groups']['administrators'])) {
+			$_SESSION['wasAdmin']=true;
+		}
 	}
 }
 if (isset($_REQUEST['logout'])) {

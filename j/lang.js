@@ -1,13 +1,8 @@
 $(function() {
 	__langInit();
 });
-function __langInit() {
-	$('.__').each(function() {
-		__(this);
-	});
-}
 function __(el) {
-	var context=$(el).attr('lang-context')||'core';
+	var context=$(el).attr('lang-context')||'unknown';
 	// if language is not yet loaded, start it loading
 	if (!__lang[context]) {
 		__lang[context]={
@@ -28,7 +23,6 @@ function __(el) {
 	// ok - let's do this
 	var $el=$(el);
 	var str=$el.html();
-	console.log(str);
 	$el
 		.removeData('lang-context')
 		.removeData('lang-params')
@@ -36,5 +30,27 @@ function __(el) {
 	if (__lang[context][str] && __lang[context][str]!=str) {
 		$el.html(__lang[context][str]);
 	}
+	else if (!__lang[context][str]) {
+		__lang[context][str]=str;
+		if (userdata.wasAdmin) {
+			__langUnknown.push([str, context]);
+			window.__reportTimer=setTimeout(__report, 1000);
+		}
+	}
 }
-var __lang={};
+function __langInit() {
+	$('.__').each(function() {
+		__(this);
+	});
+}
+function __report() {
+	clearTimeout(window.__reportTimer);
+	if (__langUnknown.length) {
+		$.post('/a/f=languagesAddStrings', {
+			strings:__langUnknown
+		});
+		__langUnknown=[];
+	}
+	window.__reportTimer=setTimeout(__report, 5000);
+}
+var __lang={},__langUnknown=[];

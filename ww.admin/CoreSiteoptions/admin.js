@@ -223,7 +223,9 @@ function CoreSiteoptions_screenLanguages() {
 			table+='</tbody></table>';
 			$languagestable=$(table)
 				.appendTo($content)
-				.dataTable();
+				.dataTable({
+					fnDrawCallback:updateVisibleTranslations
+				});
 			$languagestable.on('click', 'tbody td:last-child', function() {
 				if ($languages.val()=='') {
 					return;

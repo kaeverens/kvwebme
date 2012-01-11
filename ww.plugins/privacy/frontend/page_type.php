@@ -134,11 +134,11 @@ function Privacy_controller() {
 		$c.='<div class="tabs"><ul>';
 		// { menu
 		if ($PAGEDATA->vars['userlogin_visibility']&1) {
-			$c.='<li><a href="#Privacy_controllerLoginBox">Login</a></li>';
-			$c.='<li><a href="#userPasswordReminder">Password reminder</a></li>';
+			$c.='<li><a href="#Privacy_controllerLoginBox" class="__" lang-context="core">Login</a></li>';
+			$c.='<li><a href="#userPasswordReminder" class="__" lang-context="core">Password reminder</a></li>';
 		}
 		if ($PAGEDATA->vars['userlogin_visibility']&2) {
-			$c.='<li><a href="#userregistration">Register</a></li>';
+			$c.='<li><a href="#userregistration" class="__" lang-context="core">Register</a></li>';
 		}
 		// }
 		$c.='</ul>';
@@ -164,7 +164,7 @@ function Privacy_loginForm() {
 	global $PAGEDATA;
 	$c='<div id="Privacy_controllerLoginBox">';
 	if (@$_REQUEST['action']=='Login') {
-		$c.='<em>incorrect email or password given.</em>';
+		$c.='<em>'.__('incorrect email or password given.').'</em>';
 	}
 	if (isset($PAGEDATA->vars['userlogin_message_login'])) {
 		$c.=$PAGEDATA->vars['userlogin_message_login'];
@@ -172,17 +172,19 @@ function Privacy_loginForm() {
 	$c.='<form class="userLoginBox" action="'
 		.$GLOBALS['PAGEDATA']->getRelativeUrl()
 		.'#tab=Login" method="post"><table>';
-	$c.='<tr><th><label for="email">Email</label></th><td><input name="email" '
+	$c.='<tr><th><label for="email" class="__" lang-context="core">Email</label></th>'
+		.'<td><input name="email" '
 		.'value="'.@$_REQUEST['email'].'" /></td>';
-	$c.='<th><label for="password">Password</label></th><td><input '
-		.'type="password" name="password" /></td></tr>';
-	$c.='</table><input type="submit" name="action" value="Login" />';
+	$c.='<th><label for="password" class="__" lang-context="core">Password</label></th>'
+		.'<td><input type="password" name="password" /></td></tr>';
+	$c.='</table>'
+		.'<button class="__" lang-context="core">Login</button>'
+		.'<input type="hidden" name="action" value="Login"/>';
 	if (isset($_REQUEST['login_referer'])) {
 		$c.='<input type="hidden" name="login_referer" value="'
 			.htmlspecialchars($_REQUEST['login_referer'], ENT_QUOTES).'" />';
 	}
-	$c.='</form>';
-	$c.='</div>';
+	$c.='</form></div>';
 	return $c;
 }
 
@@ -200,10 +202,10 @@ function Privacy_passwordReminderForm() {
 	$c.='<form class="userLoginBox" action="'
 		.$GLOBALS['PAGEDATA']->getRelativeUrl()
 		.'#tab=Password Reminder" method="post"><table>';
-	$c.='<tr><th><label for="email">Email</label></th><td><input name="email"'
-		.'/></td></tr></table>';
-	$c.='<input type="submit" name="action" value="Remind" /></form>';
-	$c.='</div>';
+	$c.='<tr><th><label for="email" class="__" lang-context="core">Email</label></th>'
+		.'<td><input name="email"/></td></tr></table>';
+	$c.='<button class="__" lang-context="core">Remind</button>'
+		.'<input type="hidden" name="action" value="Remind" /></form></div>';
 	return $c;
 }
 
@@ -243,13 +245,16 @@ function Privacy_registrationShowForm($error='', $alert='') {
 	$c.=$error.'<form id="reg-form" class="userRegistrationBox" action="'
 		.$GLOBALS['PAGEDATA']->getRelativeUrl()
 		.'#userregistration" method="post"><table>'
-		.'<tr><th>Name</th><td><input type="text" name="name" value="'
+		.'<tr><th class="__" lang-context="core">Name</th>'
+		.'<td><input type="text" name="name" value="'
 		.htmlspecialchars(@$_REQUEST['name']).'" /></td>'
-		.'<th>Email</th><td><input type="text" name="email" value="'
+		.'<th class="__" lang-context="core">Email</th>'
+		.'<td><input type="text" name="email" value="'
 		.htmlspecialchars(@$_REQUEST['email']).'" /></td></tr>'
-		.'<tr><th>Preferred Password</th><td><input name="pass1" type="password"'
-		.'/></td>'
-		.'<th>Repeat Password</th><td><input name="pass2" type="password" /></td'
+		.'<tr><th class="__" lang-context="core">Preferred Password</th>'
+		.'<td><input name="pass1" type="password"/></td>'
+		.'<th class="__" lang-context="core">Repeat Password</th>'
+		.'<td><input name="pass2" type="password"/></td'
 		.'></tr><tr><td colspan="2">'.Recaptcha_getHTML().'</td></tr></table>';
 	if (strlen(@$PAGEDATA->vars['privacy_extra_fields'])>2) {
 		$c.='<table>';
@@ -371,7 +376,7 @@ function Privacy_registrationShowForm($error='', $alert='') {
 						.$name.'" value="'.$val.'" class="'.$class.' text" />';
 					// }
 			}
-			$c.='<tr><th>'.htmlspecialchars($r->name);
+			$c.='<tr><th class="__">'.htmlspecialchars($r->name);
 			if (isset($r->is_required) && $r->is_required) {
 				$c.='<sup>*</sup>';
 			}
@@ -380,13 +385,14 @@ function Privacy_registrationShowForm($error='', $alert='') {
 		}
 		$c.='</table>';
 		if (count($required)) {
-			$c.='<br />* indicates required fields';
+			$c.='<br /><span class="__" lang-context="core">* indicates required fields</span>';
 		}
 	}
 	if (@$PAGEDATA->vars['userlogin_terms_and_conditions']) {
-		$c.='<input type="checkbox" name="terms_and_conditions" /> I agree to t'
-			.'he <a href="javascript:userlogin_t_and_c()">terms and conditions</a'
-			.'>.<br />';
+		$c.='<input type="checkbox" name="terms_and_conditions" /> '
+			.'<span class="__" lang-context="core">I agree to the '
+			.'<a href="javascript:userlogin_t_and_c()">terms and conditions</a>.'
+			.'</span><br />';
 		$c.='<script>function userlogin_t_and_c(){$("<div>'
 			.addslashes(
 				str_replace(
@@ -402,8 +408,8 @@ function Privacy_registrationShowForm($error='', $alert='') {
 			.'</div>\').dialog({modal:true});});'
 		);
 	}
-	$c.='<input type="submit" name="a" id="registration-submit" value="Regist'
-		.'er" /></form></div>';
+	$c.='<button class="__" lang-context="core" id="registration-submit">Register</button>'
+		.'<input type="hidden" name="a" value="Register" /></form></div>';
 
 	/** 
 	 * add jquery form validation
@@ -444,8 +450,8 @@ function Privacy_registrationRegister() {
 	if (@$PAGEDATA->vars['userlogin_terms_and_conditions']
 		&& !isset($_REQUEST['terms_and_conditions'])
 	) {
-		return '<em>You must agree to the terms and conditions. Please press "B'
-			.'ack" and try again.</em>';
+		return '<em class="__" lang-context="core">You must agree to the terms and'
+			.'conditions. Please press "Back" and try again.</em>';
 	}
 	$missing=array();
 	// { check for user_account table "extras"
@@ -470,14 +476,15 @@ function Privacy_registrationRegister() {
 	// }
 	// { check for required fields
 	if (!$name) {
-		$missing[]='your name';
+		$missing[]='<span class="__" lang-context="core">your name</span>';
 	}
 	if (!$email) {
-		$missing[]='your email address';
+		$missing[]='<span class="__" lang-context="core">your email address</span>';
 	};
 	if (count($missing)) {
 		return Privacy_registrationShowForm(
-			'<em>You must fill in the following fields: '.join(', ', $missing).'</em>'
+			'<em><span class="__" lang-context="core">'
+			.'You must fill in the following fields:</span> '.join(', ', $missing).'</em>'
 		);
 	}
 	// }
@@ -485,14 +492,14 @@ function Privacy_registrationRegister() {
 	$r=dbRow('select id from user_accounts where email="'.$email.'"');
 	if ($r && count($r)) {
 		return Privacy_registrationShowForm(
-			'<p><em>That email is already registered.</em></p>'
+			'<p><em class="__" lang-context="core">That email is already registered.</em></p>'
 		);
 	}
 	// }
 	// { check that passwords match
 	if (!$pass1 || $pass1!=$pass2) {
 		return Privacy_registrationShowForm(
-			'<p><em>Please enter your preferred password twice</em></p>'
+			'<p><em class="__" lang-context="core">Please enter your preferred password twice</em></p>'
 		);
 	}
 	// }
@@ -500,7 +507,7 @@ function Privacy_registrationRegister() {
 	require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/recaptcha.php';
 	if (!isset($_REQUEST['recaptcha_challenge_field'])) {
 		return Privacy_registrationShowForm(
-			'<p><em>You must fill in the Captcha</em></p>'
+			'<p><em class="__" lang-context="core">You must fill in the Captcha</em></p>'
 		);
 	}
 	else {
@@ -513,7 +520,7 @@ function Privacy_registrationRegister() {
 			);
 		if (!$result->is_valid) {
 			return Privacy_registrationShowForm(
-				'<p><em>Invalid captcha. Please try again.</em></p>'
+				'<p><em class="__" lang-context="core">Invalid captcha. Please try again.</em></p>'
 			);
 		}
 	}
@@ -582,7 +589,7 @@ function Privacy_registrationRegister() {
 		}
 		return Privacy_registrationShowForm(
 			false,
-			'<p><strong>Thank you for registering</strong>. Please check your e'
+			'<p class="__" lang-context="core"><strong>Thank you for registering</strong>. Please check your e'
 			.'mail for a verification URL. Once that\'s been followed, your acc'
 			.'ount will be activated.</p>'
 		);
@@ -606,7 +613,7 @@ function Privacy_registrationRegister() {
 		}
 		return Privacy_registrationShowForm(
 			false,
-			'<p><strong>Thank you for registering</strong>. Our admins will mod'
+			'<p class="__" lang-context="core"><strong>Thank you for registering</strong>. Our admins will mod'
 			.'erate your registration, and you will receive an email when it is'
 			.'activated.</p>'
 		);
@@ -624,7 +631,7 @@ function Privacy_profileGet() {
 	$user = dbRow('select * from user_accounts where id=' . $uid);
 
 	$phone = ($user[ 'phone' ] == '')
-		?'<a href="javascript:edit_user_dialog(' . $user[ 'id' ] . ');">Add</a>'
+		?'<a href="javascript:edit_user_dialog(' . $user[ 'id' ] . ');" class="__" lang-context="core">Add</a>'
 		:htmlspecialchars($user[ 'phone' ]);
 
 	// get array of groups the user is a member of
@@ -640,34 +647,32 @@ function Privacy_profileGet() {
 	}
 	$groups = implode(',', $groups);
 
-	$html='<a class="logout" href="/?logout=1" style="float:right">Logout</a>
+	$html='<a class="logout __" href="/?logout=1" style="float:right" lang-context="core">Logout</a>
 	<h2>' . htmlspecialchars($user[ 'name' ]) . '</h2>
 	<div id="tabs">
 		<ul>
-			<li><a href="#details">User Details</a></li>
-			<li><a href="#address">Address</a></li>
+			<li><a href="#details" class="__" lang-context="core">User Details</a></li>
+			<li><a href="#address" class="__" lang-context="core">Address</a></li>
 		</ul>
 		<div id="details">
 
 	<p style="float:right">
-	<a href="javascript:edit_user_dialog('.$user['id'].');" id="edit-user-info">
-		Edit Details
-	</a>
+	<a href="javascript:edit_user_dialog('.$user['id'].');" id="edit-user-info" class="__" lang-context="core">Edit Details</a>
 	<a href="javascript:change_password_dialog(' . $user[ 'id' ] . ');"
 	id="user-change-password" style="diplay:inline">Change Password</a></p>
 	<table id="user-info" style="border:1px solid #ccc;margin:10px">
 		<tr>
-			<th>Email:</th><td>' . htmlspecialchars($user[ 'email' ]) . '</td>
+			<th class="__" lang-context="core">Email</th><td>' . htmlspecialchars($user[ 'email' ]) . '</td>
 		</tr>
 		<tr>
-			<th>Group(s):</th><td>' . htmlspecialchars($groups) . '</td>
+			<th class="__" lang-context="core">Group(s)</th><td>' . htmlspecialchars($groups) . '</td>
 		</tr>
 		<tr>
-			<th>Phone:</th><td>' . $phone . '</td>
+			<th class="__" lang-context="core">Phone</th><td>' . $phone . '</td>
 		</tr>';
 
 	$html .= '</table></div> <div id="address"><a id="new-address" href="java'
-		.'script:add_address();" style="float:right">[+] Add Address</a> <div i'
+		.'script:add_address();" style="float:right" class="__" lang-context="core">[+] Add Address</a> <div i'
 		.'d="address-container"> <table> ';
 
 	if($addresses=json_decode(@$user['address'], true)) {
@@ -676,13 +681,13 @@ function Privacy_profileGet() {
 		  $html.=' <tr> <td> <input type="radio"'.$select
 				.' name="default-address" value="'.$name.'"/> </td> <td>'
 				.str_replace(' ', '-', $name).'</td> <td> <a href="javascript:edit_addr'
-				.'ess(\''.$name.'\');" class="edit-addr" name="'.$name
-				.'">[edit]</a> <a href="javascript:;" class="delete-addr" name="'
-				.$name.'">[delete]</a> </td> </tr> ';
+				.'ess(\''.$name.'\');" class="__ edit-addr" name="'.$name
+				.'" lang-context="core">edit</a> <a href="javascript:;" class="delete-addr" name="'
+				.$name.'">[x]</a> </td> </tr> ';
 			}
 		}
 		else {
-			$html.= '<i>No address(es) saved yet</i>';
+			$html.= '<i class="__" lang-context="core">No address(es) saved yet</i>';
 	}
 
 	$html.='</table></div><br style="clear:both"/></div>

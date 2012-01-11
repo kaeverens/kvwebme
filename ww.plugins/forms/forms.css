@@ -16,3 +16,7 @@ table.forms-table input.submit{
 #recaptcha_response_field{
 	min-width:0;
 }
+table.forms-table .required:before{
+	content:'*';
+	color:red;
+}

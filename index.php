@@ -307,9 +307,11 @@ $tmp='var pagedata={id:'.$PAGEDATA->id
 	.',sessid:"'.session_id().'"'
 	.',lang:"'.@$_SESSION['language'].'"'
 	.'},';
+$wasAdmin=@$_SESSION['wasAdmin']?',wasAdmin:1':'';
 if (isset($_SESSION['userdata'])) {
 	$tmp.='userdata={isAdmin:'.(Core_isAdmin()?1:0)
 		.',id:'.$_SESSION['userdata']['id']
+		.$wasAdmin
 		.',lat:'.((float)@$_SESSION['userdata']['location_lat'])
 		.',lng:'.((float)@$_SESSION['userdata']['location_lng']);
 	if (isset($_SESSION['userdata']['discount'])) {
@@ -318,7 +320,7 @@ if (isset($_SESSION['userdata'])) {
 	$tmp.='};';
 }
 else {
-	$tmp.='userdata={isAdmin:0};';
+	$tmp.='userdata={isAdmin:0'.$wasAdmin.'};';
 }
 array_unshift($scripts_inline, $tmp);
 // }

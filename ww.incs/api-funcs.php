@@ -258,6 +258,26 @@ function Core_getUserData() {
 }
 
 /**
+	* add a number of strings to the languages table
+	*
+	* @return status
+	*/
+function Core_languagesAddStrings() {
+	global $_languages;
+	if (!@$_SESSION['wasAdmin']) {
+		return;
+	}
+	foreach ($_REQUEST['strings'] as $str) {
+		dbQuery(
+			'insert into languages set str="'.addslashes($str[0]).'",'
+			.'context="'.addslashes($str[1]).'",'
+			.'trstr="'.addslashes($str[0]).'",'
+			.'lang="'.addslashes($_languages[0]).'"'
+		);
+	}
+}
+
+/**
 	* log in
 	*
 	* @return null

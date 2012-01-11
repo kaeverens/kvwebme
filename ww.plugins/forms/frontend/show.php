@@ -58,7 +58,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 	switch(@$vars['forms_htmltype']) {
 		case 'div': // {
 			$vals_wrapper_start='';
-			$vals_field_start='<div><span>';
+			$vals_field_start='<div><span class="__" lang-context="core">';
 			$vals_field_middle='</span>';
 			$vals_field_end='</div>';
 			$vals_2col_start='<div>';
@@ -67,7 +67,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 		break; // }
 		default: // {
 			$vals_wrapper_start='<table class="forms-table">';
-			$vals_field_start='<tr><th>';
+			$vals_field_start='<tr><th class="__" lang-context="core">';
 			$vals_field_middle='</th><td>';
 			$vals_field_end='</td></tr>';
 			$vals_2col_start='<tr><td colspan="2">';
