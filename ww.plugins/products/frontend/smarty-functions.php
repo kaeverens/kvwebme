@@ -12,6 +12,28 @@
 	*/
 
 /**
+	* return data about the product owner
+	*
+	* @param array  $params parameters
+	* @param object $smarty Smarty object
+	*
+	* @return string owner variables
+	*/
+function Products_owner2($params, $smarty) {
+	$pid=$smarty->_tpl_vars['product']->id;
+	$product=Product::getInstance($pid);
+	$uid=(int)$product->vals['user_id'];
+	if (!$uid) {
+		return 'unknown';
+	}
+	$user=User::getInstance($uid);
+	if (!$user) {
+		return 'unknown';
+	}
+	return $user->name;
+}
+
+/**
 	* return the base price for the product
 	*
 	* @param array  $params parameters

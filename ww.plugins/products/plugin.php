@@ -66,6 +66,9 @@ $plugin=array(
 			'PRODUCTS_LIST_CATEGORY_CONTENTS' => array(
 				'function' => 'Products_listCategoryContents'
 			),
+			'PRODUCTS_OWNER' => array(
+				'function' => 'Products_owner'
+			),
 			'PRODUCTS_PLUS_VAT' => array (
 				'function' => 'Products_plusVat'
 			),
@@ -386,6 +389,19 @@ function Products_listCategories($params, $smarty) {
 function Products_listCategoryContents($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/show.php';
 	return _Products_listCategoryContents($params, $smarty);
+}
+
+/**
+	* show the product owner
+	*
+	* @param array  $params parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string html of the selected variable
+	*/
+function Products_owner($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_owner2($params, $smarty);
 }
 
 /**
