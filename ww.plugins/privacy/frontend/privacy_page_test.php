@@ -24,8 +24,8 @@ if (!isset($_SESSION['userdata'])
 }
 
 // if there's no restriction on this page, then return true
-if (!@$pagedata->vars['restrict_to_groups']==''
-	&& !@$pagedata->vars['privacy_password']==''
+if (!@$pagedata->vars['restrict_to_groups']
+	&& !@$pagedata->vars['privacy_password']
 ) {
 	$allowed=true;
 	return;
