@@ -1,4 +1,15 @@
 <?php
+/**
+	* panel for Page admin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 echo '<h2>Privacy</h2>';
 

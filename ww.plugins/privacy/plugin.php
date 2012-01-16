@@ -101,6 +101,7 @@ function UserAuthentication_showWidget($vars=null, $widget_id=0) {
 	return '<div id="userauthentication-widget"><ul>'
 		.'<li>Hi, <strong>'.$_SESSION['userdata']['name'].'</strong></li>'
 		.'<li class="userauthentication-logout"><a href="/?logout">log out</a></li>'
-		.'<li class="userauthentication-edit-profile"><a href="/_r?type=loginpage">edit profile</a></li>'
+		.'<li class="userauthentication-edit-profile">'
+		.'<a href="/_r?type=loginpage">edit profile</a></li>'
 		.'</ul></div>';
 }

@@ -10,12 +10,18 @@ function privacyfieldsAddRow(){
 function privacyfieldsChange(e){
 }
 function privacy_export(id){
-	if(!id)return alert('cannot export from an empty privacy database');
-	if(!(+$('select[name="page_vars\\[privacys_record_in_db\\]"]').val()))return alert('this privacy doesn\'t record to database');
+	if (!id) {
+		return alert('cannot export from an empty privacy database');
+	}
+	if (!(+$('select[name="page_vars\\[privacys_record_in_db\\]"]').val())) {
+		return alert('this privacy doesn\'t record to database');
+	}
 	var d=$('#export_from').val();
 	document.location='/ww.plugins/privacys/j/export.php?date='+d+'&id='+id;
 }
-if(!privacyfieldElements)var privacyfieldElements=0;
+if (!privacyfieldElements) {
+	var privacyfieldElements=0;
+}
 $(function(){
 	$('.tabs').tabs();
 	privacyfieldsAddRow();

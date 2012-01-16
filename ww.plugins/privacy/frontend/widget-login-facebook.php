@@ -1,13 +1,34 @@
 <?php
+/**
+	* login via facebook
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 if (isset($_REQUEST['error']) || !isset($_REQUEST['code'])) {
 	header('Location: /');
 	exit;
 }
 
-list($pid, $wid)=explode('-', preg_replace('/.*widget-id=([0-9]*-[0-9]*).*/', '\1', $_SERVER['REQUEST_URI']));
+list($pid, $wid)=explode(
+	'-',
+	preg_replace(
+		'/.*widget-id=([0-9]*-[0-9]*).*/',
+		'\1',
+		$_SERVER['REQUEST_URI']
+	)
+);
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-$panel=json_decode(dbOne('select body from panels where id='.((int)$pid), 'body'));
+$panel=json_decode(
+	dbOne('select body from panels where id='.((int)$pid), 'body')
+);
 
 foreach ($panel->widgets as $widget) {
 	if ($widget->id==$wid) {

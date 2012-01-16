@@ -134,11 +134,14 @@ function Privacy_controller() {
 		$c.='<div class="tabs"><ul>';
 		// { menu
 		if ($PAGEDATA->vars['userlogin_visibility']&1) {
-			$c.='<li><a href="#Privacy_controllerLoginBox" class="__" lang-context="core">Login</a></li>';
-			$c.='<li><a href="#userPasswordReminder" class="__" lang-context="core">Password reminder</a></li>';
+			$c.='<li><a href="#Privacy_controllerLoginBox" class="__" '
+				.'lang-context="core">Login</a></li>'
+				.'<li><a href="#userPasswordReminder" class="__" '
+				.'lang-context="core">Password reminder</a></li>';
 		}
 		if ($PAGEDATA->vars['userlogin_visibility']&2) {
-			$c.='<li><a href="#userregistration" class="__" lang-context="core">Register</a></li>';
+			$c.='<li><a href="#userregistration" class="__" lang-context="core">'
+				.'Register</a></li>';
 		}
 		// }
 		$c.='</ul>';
@@ -385,7 +388,8 @@ function Privacy_registrationShowForm($error='', $alert='') {
 		}
 		$c.='</table>';
 		if (count($required)) {
-			$c.='<br /><span class="__" lang-context="core">* indicates required fields</span>';
+			$c.='<br /><span class="__" lang-context="core">* indicates required '
+				.'fields</span>';
 		}
 	}
 	if (@$PAGEDATA->vars['userlogin_terms_and_conditions']) {
@@ -408,7 +412,8 @@ function Privacy_registrationShowForm($error='', $alert='') {
 			.'</div>\').dialog({modal:true});});'
 		);
 	}
-	$c.='<button class="__" lang-context="core" id="registration-submit">Register</button>'
+	$c.='<button class="__" lang-context="core" id="registration-submit">'
+		.'Register</button>'
 		.'<input type="hidden" name="a" value="Register" /></form></div>';
 
 	/** 
@@ -484,7 +489,8 @@ function Privacy_registrationRegister() {
 	if (count($missing)) {
 		return Privacy_registrationShowForm(
 			'<em><span class="__" lang-context="core">'
-			.'You must fill in the following fields:</span> '.join(', ', $missing).'</em>'
+			.'You must fill in the following fields:</span> '
+			.join(', ', $missing).'</em>'
 		);
 	}
 	// }
@@ -492,14 +498,16 @@ function Privacy_registrationRegister() {
 	$r=dbRow('select id from user_accounts where email="'.$email.'"');
 	if ($r && count($r)) {
 		return Privacy_registrationShowForm(
-			'<p><em class="__" lang-context="core">That email is already registered.</em></p>'
+			'<p><em class="__" lang-context="core">That email is already '
+			.'registered.</em></p>'
 		);
 	}
 	// }
 	// { check that passwords match
 	if (!$pass1 || $pass1!=$pass2) {
 		return Privacy_registrationShowForm(
-			'<p><em class="__" lang-context="core">Please enter your preferred password twice</em></p>'
+			'<p><em class="__" lang-context="core">Please enter your preferred '
+			.'password twice</em></p>'
 		);
 	}
 	// }
@@ -507,7 +515,8 @@ function Privacy_registrationRegister() {
 	require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/recaptcha.php';
 	if (!isset($_REQUEST['recaptcha_challenge_field'])) {
 		return Privacy_registrationShowForm(
-			'<p><em class="__" lang-context="core">You must fill in the Captcha</em></p>'
+			'<p><em class="__" lang-context="core">You must fill in the '
+			.'Captcha</em></p>'
 		);
 	}
 	else {
@@ -520,7 +529,8 @@ function Privacy_registrationRegister() {
 			);
 		if (!$result->is_valid) {
 			return Privacy_registrationShowForm(
-				'<p><em class="__" lang-context="core">Invalid captcha. Please try again.</em></p>'
+				'<p><em class="__" lang-context="core">Invalid captcha. Please try '
+				.'again.</em></p>'
 			);
 		}
 	}
@@ -589,9 +599,9 @@ function Privacy_registrationRegister() {
 		}
 		return Privacy_registrationShowForm(
 			false,
-			'<p class="__" lang-context="core"><strong>Thank you for registering</strong>. Please check your e'
-			.'mail for a verification URL. Once that\'s been followed, your acc'
-			.'ount will be activated.</p>'
+			'<p class="__" lang-context="core"><strong>Thank you for registering'
+			.'</strong>. Please check your email for a verification URL. Once '
+			.'that\'s been followed, your account will be activated.</p>'
 		);
 	}
 	else {
@@ -613,9 +623,9 @@ function Privacy_registrationRegister() {
 		}
 		return Privacy_registrationShowForm(
 			false,
-			'<p class="__" lang-context="core"><strong>Thank you for registering</strong>. Our admins will mod'
-			.'erate your registration, and you will receive an email when it is'
-			.'activated.</p>'
+			'<p class="__" lang-context="core"><strong>Thank you for registering'
+			.'</strong>. Our admins will moderate your registration, and you '
+			.'will receive an email when it is activated.</p>'
 		);
 	}
 	// }
@@ -631,7 +641,8 @@ function Privacy_profileGet() {
 	$user = dbRow('select * from user_accounts where id=' . $uid);
 
 	$phone = ($user[ 'phone' ] == '')
-		?'<a href="javascript:edit_user_dialog(' . $user[ 'id' ] . ');" class="__" lang-context="core">Add</a>'
+		?'<a href="javascript:edit_user_dialog('.$user['id']
+		.');" class="__" lang-context="core">Add</a>'
 		:htmlspecialchars($user[ 'phone' ]);
 
 	// get array of groups the user is a member of
@@ -647,7 +658,8 @@ function Privacy_profileGet() {
 	}
 	$groups = implode(',', $groups);
 
-	$html='<a class="logout __" href="/?logout=1" style="float:right" lang-context="core">Logout</a>
+	$html='<a class="logout __" href="/?logout=1" style="float:right" '
+		.'lang-context="core">Logout</a>
 	<h2>' . htmlspecialchars($user[ 'name' ]) . '</h2>
 	<div id="tabs">
 		<ul>
@@ -657,155 +669,46 @@ function Privacy_profileGet() {
 		<div id="details">
 
 	<p style="float:right">
-	<a href="javascript:edit_user_dialog('.$user['id'].');" id="edit-user-info" class="__" lang-context="core">Edit Details</a>
+	<a href="javascript:edit_user_dialog('.$user['id']
+	.');" id="edit-user-info" class="__" lang-context="core">Edit Details</a>
 	<a href="javascript:change_password_dialog(' . $user[ 'id' ] . ');"
 	id="user-change-password" style="diplay:inline">Change Password</a></p>
 	<table id="user-info" style="border:1px solid #ccc;margin:10px">
 		<tr>
-			<th class="__" lang-context="core">Email</th><td>' . htmlspecialchars($user[ 'email' ]) . '</td>
+			<th class="__" lang-context="core">Email</th><td>'
+				. htmlspecialchars($user[ 'email' ]) . '</td>
 		</tr>
 		<tr>
-			<th class="__" lang-context="core">Group(s)</th><td>' . htmlspecialchars($groups) . '</td>
+			<th class="__" lang-context="core">Group(s)</th><td>'
+				. htmlspecialchars($groups) . '</td>
 		</tr>
 		<tr>
 			<th class="__" lang-context="core">Phone</th><td>' . $phone . '</td>
 		</tr>';
 
 	$html .= '</table></div> <div id="address"><a id="new-address" href="java'
-		.'script:add_address();" style="float:right" class="__" lang-context="core">[+] Add Address</a> <div i'
-		.'d="address-container"> <table> ';
+		.'script:add_address();" style="float:right" class="__" '
+		.'lang-context="core">[+] Add Address</a> <div id="address-container">'
+		.'<table>';
 
-	if($addresses=json_decode(@$user['address'], true)) {
+	if ($addresses=json_decode(@$user['address'], true)) {
 		foreach ($addresses as $name=>$address) {
 		  $select=(@$address['default']=='yes')?' checked="checked"':'';
 		  $html.=' <tr> <td> <input type="radio"'.$select
 				.' name="default-address" value="'.$name.'"/> </td> <td>'
 				.str_replace(' ', '-', $name).'</td> <td> <a href="javascript:edit_addr'
 				.'ess(\''.$name.'\');" class="__ edit-addr" name="'.$name
-				.'" lang-context="core">edit</a> <a href="javascript:;" class="delete-addr" name="'
+				.'" lang-context="core">edit</a> <a href="javascript:;" '
+				.'class="delete-addr" name="'
 				.$name.'">[x]</a> </td> </tr> ';
-			}
 		}
-		else {
-			$html.= '<i class="__" lang-context="core">No address(es) saved yet</i>';
 	}
-
+	else {
+		$html.= '<i class="__" lang-context="core">No address(es) saved yet</i>';
+	}
 	$html.='</table></div><br style="clear:both"/></div>
 	</div>';
-
-	$script = '
-		function edit_user_dialog( id ){
-			$( "<div id=\'users-dialog\' title=\'Edit User Details\'></div>" )
-			.html( "Loading..." )
-			.dialog({
-				modal : true,
-				buttons : {
-					"Save" : function( ){
-						var name = $( "input[name=\'user-name\']" ).val( );
-						if( name == "" ){
-							$( "#error" ).html( "the name field is required" );
-							return false;
-						}
-						var phone = $( "input[name=\'user-phone\']" ).val( );
-						$.post("/ww.plugins/privacy/frontend/save_user_info.php",
-							{ "name" : name, "phone" : phone }	
-						);
-						location.reload( true );
-					},
-					"Cancel" : function( ){
-						$( "#users-dialog" ).dialog( "close" ).remove( );
-					}
-				}
-			});
-			$.get("/ww.plugins/privacy/frontend/edit_user_info.php",
-				function( html ){
-					$( "#users-dialog" ).html( html );
-				}
-			);
-		}
-		function edit_address(id){
-			$( "<div id=\'users-dialog\' title=\'Edit Address\'></div>" )
-			.html( "Loading..." )
-			.dialog({
-				modal : true,
-				buttons : {
-					"Save" : function( ){
-			  var name=$(\'input[name="add-name"]\').val();
-			  var street=$(\'input[name="add-street"]\').val();
-			  var street2=$(\'input[name="add-street2"]\').val();
-			  var town=$(\'input[name="add-town"]\').val();
-			  var county=$(\'input[name="add-county"]\').val();
-			  var country=$(\'input[name="add-country"]\').val();
-						$.post("/ww.plugins/privacy/frontend/save_user_info.php?action=update",
-							{
-								"name" : name,
-								"street" : street,
-								"street2" : street2,
-								"town" : town,
-								"county" : county,
-								"country" : country,
-							}	
-						);
-						userdata.address[name]={
-							"name" : name,
-							"street" : street,
-							"street2" : street2,
-							"town" : town,
-							"county" : county,
-							"country" : country
-						};
-						$( "#users-dialog" ).dialog( "close" ).remove( );
-					},
-					"Cancel" : function( ){
-						$( "#users-dialog" ).dialog( "close" ).remove( );
-					}
-				}
-			});
-
-			street=userdata.address[id].street;
-			street2=userdata.address[id].street2;
-			town=userdata.address[id].town;
-			county=userdata.address[id].county;
-			country=userdata.address[id].country;
-
-			$("#users-dialog").html(
-	  \'<table>\'
-			+ \'<input type="hidden" name="add-name" value="\'+id+\'"/>\'
-	  + \'<tr>\'
-		+ \'<th>Street</th>\'
-	 + \'<td><input type="text" name="add-street" value="\'+street+\'"/></td>\'
-	  + \'</tr>\'
-	  + \'<tr>\'
-		+ \'<th>Street 2</th>\'
-	+ \'<td><input type="text" name="add-street2" value="\'+street2+\'"/></td>\'
-	  + \'</tr>\'
-	  + \'<tr>\'
-		+ \'<th>Town</th>\'
-		+ \'<td><input type="text" name="add-town" value="\'+town+\'"/></td>\'
-	  + \'</tr>\'
-	  + \'<tr>\'
-		+ \'<th>County</th>\'
-	  + \'<td><input type="text" name="add-county" value="\'+county+\'"/></td>\'
-	  + \'</tr>\'
-	  + \'<tr>\'
-		+ \'<th>Country</th>\'
-	+ \'<td><input type="text" name="add-country" value="\'+country+\'"/></td>\'
-	  + \'</tr>\'
-	  + \'</table>\'
-			);
-		}
-		$(function(){
-			$("#tabs").tabs();
-		});
-		$(".delete-addr").live("click",function(){
-			var name=$(this).attr("name");
-			$(this).parent().parent().fadeOut("slow").remove();
-			$.get("/ww.plugins/privacy/frontend/save_user_info.php?action=delete"
-				+"&address="+name
-			);
-		});
-	';
-	WW_addInlineScript($script);
+	WW_addScript('/ww.plugins/privacy/js.js');
 	WW_addScript('/ww.plugins/privacy/frontend/change_password.js');
 	$html .= Core_trigger('privacy_user_profile', array($user));
 	return $html;
