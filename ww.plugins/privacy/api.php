@@ -29,3 +29,34 @@ function Privacy_login() {
 		'error'=>'incorrect email or password'
 	);
 }
+
+/**
+	* send registration token
+	*
+	* @return null
+	*/
+function Privacy_sendRegistrationToken() {
+	$email=@$_REQUEST['email'];
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		return array('error'=>'invalid email address');
+	}
+	if (!isset($_SESSION['privacy'])) {
+		$_SESSION['privacy']=array();
+	}
+	$_SESSION['privacy']['registration']=array(
+		'token'         => rand(10000, 99999),
+		'token_matched' => false,
+		'custom'        => array()
+	);
+	if (@$_REQUEST['custom'] && is_array($_REQUEST['custom'])) {
+		$_SESSION['privacy']['registration']['custom']=$_REQUEST['custom'];
+	}
+	$emaildomain=str_replace('www.', '', $_SERVER['HTTP_HOST']);
+	mail(
+		$email,
+		'['.$_SERVER['HTTP_HOST'].'] user registration',
+		'Your token is: '.$_SESSION['privacy']['registration']['token'],
+		"Reply-to: info@".$emaildomain."\nFrom: info@".$emaildomain
+	);
+	return array('ok'=>1);
+}
