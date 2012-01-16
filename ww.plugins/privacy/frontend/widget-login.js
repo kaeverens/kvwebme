@@ -45,6 +45,9 @@ $(function(){
 					)+'/widget-id='+widget_id+'/';
 			break; // }
 			case 'register': // {
+				if ($this.hasClass('override-default')) {
+					return;
+				}
 				document.location=$this.attr('href');
 			break; // }
 		}
