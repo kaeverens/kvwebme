@@ -646,7 +646,7 @@ if (!isset($ignore_webme_plugins)) {
 		if (strpos('/', $pname)!==false) {
 			continue;
 		}
-		require SCRIPTBASE . 'ww.plugins/'.$pname.'/plugin.php';
+		require_once SCRIPTBASE . 'ww.plugins/'.$pname.'/plugin.php';
 		if (isset($plugin['version']) && $plugin['version']
 			&& (!isset($DBVARS[$pname.'|version'])
 			|| $DBVARS[$pname.'|version']!=$plugin['version'] )

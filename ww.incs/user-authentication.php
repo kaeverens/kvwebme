@@ -26,6 +26,32 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']=='login') {
 		$_SESSION['userdata'] = $r;
 		dbQuery('update user_accounts set last_login=now() where id='.$r['id']);
 		// }
+		// { update location
+		if ($r['location_lat'] || $r['location_lng']) {
+			$_SESSION['location']=array(
+				'lat'=>$r['location_lat'],
+				'lng'=>$r['location_lng'],
+				'locid'=>0,
+				'locname'=>''
+			);
+			require_once dirname(__FILE__).'/api-funcs.php';
+			$locations=Core_locationsGet();
+			if (count($locations)) {
+				foreach ($locations as $loc) {
+					if ($loc['lat']==$r['location_lat']
+						&& $loc['lng']==$r['location_lng']
+					) {
+						$_SESSION['location']=array(
+							'lat'=>$loc['lat'],
+							'lng'=>$loc['lng'],
+							'locid'=>$loc['id'],
+							'locname'=>$loc['name']
+						);
+					}
+				}
+			}
+		}
+		// }
 		// { redirect if applicable
 		$redirect_url='';
 		if (isset($_POST['login_referer'])
