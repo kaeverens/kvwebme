@@ -158,9 +158,9 @@ else{
 	if ($page!='') {
 		redirect('/');
 	}
-	echo 'no page loaded. If this is a new site, then please '
+	echo '<p class="__" lang-context="core">no page loaded. If this is a new site, then please '
 		.'<a href="/ww.admin/">log into the admin area</a> and create '
-		.'your first page.';
+		.'your first page.</p>';
 	exit;
 }
 $c=Core_trigger('page-object-loaded');
@@ -186,16 +186,16 @@ foreach ($PLUGINS as $p) {
 }
 // }
 if (!$access_allowed) {
-	$c.='<h2>Permission Denied</h2><p>This is a protected document.</p>';
+	$c.='<h2 class="__" lang-context="core">Permission Denied</h2><p>This is a protected document.</p>';
 	if (isset($_SESSION['userdata'])) {
-		$c.='<p>You are not in a user-group which has access to this page. '
+		$c.='<p class="__" lang-context="core">You are not in a user-group which has access to this page. '
 			.'If you think you should be, please contact the site administrator.</p>';
 	}
 	else {
-		$c.='<p><strong>If you have a user account, please <a href="'
+		$c.='<p><strong class="__" lang-context="core">If you have a user account, please <a href="'
 			.'/_r?type=loginpage">click here</a> to log in.</strong></p>';
 	}
-	$c.='<p>If you do not have a user account, but have been supplied with a '
+	$c.='<p class="__" lang-context="core">If you do not have a user account, but have been supplied with a '
 		.'password for the page, please enter it here and submit the form:</p>'
 		.'<form method="post"><input type="password" name="privacy_password" />'
 		.'<input type="submit" /></form>';
@@ -253,9 +253,9 @@ else {
 				}
 			}
 			if ($not_found) {
-				$c.='<em>No plugin found to handle page type <strong>'
+				$c.='<em><span class="__" lang-context="core">No plugin found to handle page type:</span> <strong>'
 					.htmlspecialchars($PAGEDATA->type)
-					.'</strong>. Is the plugin installed and enabled?</em>';
+					.'</strong>. <span class="__" lang-context="core">Is the plugin installed and enabled?</span></em>';
 			}
 			// }
 	}

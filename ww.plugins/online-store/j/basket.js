@@ -45,7 +45,7 @@ function os_wheres_the_basket(from){
 	var to=$('.online-store-basket-widget');
 	var t_off=to.offset();
 	var t_size=[to.width(),to.height()];
-	var slider=$('<div style="position:absolute;border:1px solid white;background:#ff0;opacity:.2;left:'+f_off.left+'px;top:'+f_off.top+'px;width:'+f_size[0]+'px;height:'+f_size[1]+'px">TEST</div>').appendTo(document.body);
+	var slider=$('<div style="position:absolute;border:1px solid white;background:#ff0;opacity:.2;left:'+f_off.left+'px;top:'+f_off.top+'px;width:'+f_size[0]+'px;height:'+f_size[1]+'px"></div>').appendTo(document.body);
 	slider.animate({
 		left:t_off.left+'px',
 		top:t_off.top+'px',
@@ -59,8 +59,8 @@ function os_wheres_the_basket(from){
 	});
 }
 function os_reset_basket(res){
-	var html='<table><tr><th>&nbsp;</th><th>Price</th><th>Amount</th>'
-		+'<th>Total</th></tr>';
+	var html='<table><tr><th>&nbsp;</th><th class="__" lang-context="core">Price</th><th class="__" lang-context="core">Amount</th>'
+		+'<th class="__" lang-context="core">Total</th></tr>';
 	for(var md5 in res.items){
 		var item=res.items[md5];
 		if(md5.length!='32' || !item.amt){
@@ -74,12 +74,13 @@ function os_reset_basket(res){
 			+'</td><td class="amt">'+item.amt+'</td><td class="item-total">'
 			+(item.cost*item.amt)+'</td></tr>';
 	}
-	html+='<tr class="os_total"><th colspan="3">Total</th><td class="total">'
+	html+='<tr class="os_total"><th colspan="3" class="__" lang-context="core">Total</th><td class="total">'
 		+pagedata.currency+res.total
 		+'</td></tr></table>'
-		+'<a href="/_r?type=online-store">Proceed to Checkout</a>';
+		+'<a href="/_r?type=online-store" class="__" lang-context="core">Proceed to Checkout</a>';
 	$('.online-store-basket-widget').html(html);
 	os_setup_basket_events();
+	__langInit();
 }
 function OnlineStore_saveList(){
 	var name=prompt('What name do you want to give to this list?', 'default');
@@ -109,11 +110,12 @@ function OnlineStore_loadList(){
 				+'</a></li>';
 		}
 		html+='</ul>';
-		$('<div id="onlinestore-load-lists"><p>Choose one of your saved lists.</p>'
+		$('<div id="onlinestore-load-lists"><p class="__" lang-context="core">Choose one of your saved lists.</p>'
 			+html+'</div>')
 			.dialog({
 				"modal":true
 			});
+		__langInit();
 		$('#onlinestore-load-lists a').click(function(){
 			$.post('/a/p=online-store/f=loadSavedList',{
 				"name":$(this).text()

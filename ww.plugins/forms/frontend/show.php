@@ -336,7 +336,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 	else {
 		$c.=$vals_2col_start;
 	}
-	$c.='<input class="submit" type="submit" />'
+	$c.='<button class="submit __" lang-context="core">Submit Form</button>'
 		.'<input type="hidden" name="funcFormInput" value="submit" />'
 		.'<input type="hidden" name="requiredFields" value="'
 		.join(',', $required).'" />';
