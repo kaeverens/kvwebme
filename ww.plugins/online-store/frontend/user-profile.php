@@ -12,7 +12,7 @@
 	* @link     None
 	*/
 
-$html = '<h2>Online Store - Order History</h2>';
+$html = '<h2 class="__" lang-context="core">Online Store - Order History</h2>';
 
 $history = array();
 $orders = dbAll(
@@ -34,10 +34,10 @@ WW_addScript('/ww.plugins/online-store/frontend/user-profile.js');
 $html .= '<table id="online_store_orders" style="border:1px solid #ccc;'
 	.'margin:10px">
 	<tr>
-		<th>Date</th>
-		<th>Amount</th>
-		<th>Status</th>
-		<th>Invoice</th>
+		<th class="__" lang-context="core">Date</th>
+		<th class="__" lang-context="core">Amount</th>
+		<th class="__" lang-context="core">Status</th>
+		<th class="__" lang-context="core">Invoice</th>
 	</tr>';
 
 foreach ($history as $order) {

@@ -341,7 +341,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 		.'<input type="hidden" name="requiredFields" value="'
 		.join(',', $required).'" />';
 	if (count($required)) {
-		$c.='<br />* indicates required fields';
+		$c.='<br /><span class="__" lang-context="core">* indicates required fields</span>';
 	}
 	if (!@$vars['forms_template']||@$vars['forms_template']=='&nbsp;') {
 		$c.=$vals_2col_end.$vals_wrapper_end.'</div>';

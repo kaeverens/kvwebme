@@ -112,7 +112,7 @@ $html.='<div id="privacy-messages-login"><br />';
 $html.='<p>This message appears above the login form.</p>';
 if (!isset($page_vars['userlogin_message_login'])) {
 	$page_vars['userlogin_message_login']
-		='<p>Please log in using your email address and password. '
+		='<p class="__" lang-context="core">Please log in using your email address and password. '
 		.'If you don\'t already have a user account, '
 		.'please use the Register tab (see above) to register.</p>';
 }
@@ -128,7 +128,7 @@ $html.='<div id="privacy-messages-reminder"><br />';
 $html.='<p>This message appears above the password reminder form.</p>';
 if (!isset($page_vars['userlogin_message_reminder'])) {
 	$page_vars['userlogin_message_reminder']
-		='<p>If you have forgotten your password, '
+		='<p class="__" lang-context="core">If you have forgotten your password, '
 		.'please enter your email address here '
 		.'to have a new verification email sent out to you.</p>';
 }
@@ -144,7 +144,7 @@ $html.='<div id="privacy-messages-registeration"><br />';
 $html.='<p>This message appears above the user registration form.</p>';
 if (!isset($page_vars['userlogin_message_registration'])) {
 	$page_vars['userlogin_message_registration']
-		='<p>Please enter your name and email address. '
+		='<p class="__" lang-context="core">Please enter your name and email address. '
 		.'After submitting, please check your email account '
 		.'for your account verification link.</p>';
 }
