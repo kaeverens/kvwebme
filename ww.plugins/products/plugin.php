@@ -93,6 +93,9 @@ $plugin=array(
 			'PRODUCTS_IMAGES_SLIDER' => array (
 				'function' => 'Products_imageSlider'
 			),
+			'PRODUCTS_AMOUNT_IN_STOCK' => array(
+				'function' => 'Products_amountInStock'
+			),
 			'PRODUCTS_AMOUNT_SOLD' => array(
 				'function' => 'Products_soldAmount'
 			),
@@ -363,6 +366,16 @@ function Products_addToCart() {
 		(int)(@$product->vals['online-store']['_deliver_free']),
 		(int)(@$product->vals['online-store']['_not_discountable'])
 	);
+}
+
+/**
+	* get amount of product in stock (simple)
+	*
+	* @return int number in stock
+	*/
+function Products_amountInStock($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_amountInStock2($params, $smarty);
 }
 
 /**

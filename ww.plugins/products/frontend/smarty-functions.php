@@ -12,6 +12,17 @@
 	*/
 
 /**
+	* get amount of product in stock (simple)
+	*
+	* @return int number in stock
+	*/
+function Products_amountInStock2($params, $smarty) {
+	$pid=$smarty->_tpl_vars['product']->id;
+	$product=Product::getInstance($pid);
+	return (int)$product->vals['stockcontrol_total'];
+}
+
+/**
 	* return data about the product owner
 	*
 	* @param array  $params parameters
@@ -90,7 +101,10 @@ function Products_priceDiscountPercent2($params, $smarty) {
 	if (!isset($product->vals['online-store'])) {
 		return '0';
 	}
-	return (int)(100*$product->getPrice('sale')/$product->getPrice()).'%';
+	if ($product->getPrice()) {
+		return (int)(100*$product->getPrice('sale')/$product->getPrice()).'%';
+	}
+	return '--';
 }
 
 /**
@@ -124,9 +138,9 @@ function Products_priceSale2($params, $smarty) {
 function Products_soldAmount2($params, $smarty) {
 	$params=array_merge(
 		array(
-			'none'=>'none sold',
-			'one'=>'one sold',
-			'many'=>'%d sold'
+			'none'=>'0',
+			'one'=>'1',
+			'many'=>'%d'
 		),
 		$params
 	);
