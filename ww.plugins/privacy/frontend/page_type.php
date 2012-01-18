@@ -672,7 +672,7 @@ function Privacy_profileGet() {
 	<a href="javascript:edit_user_dialog('.$user['id']
 	.');" id="edit-user-info" class="__" lang-context="core">Edit Details</a>
 	<a href="javascript:change_password_dialog(' . $user[ 'id' ] . ');"
-	id="user-change-password" style="diplay:inline">Change Password</a></p>
+	id="user-change-password" style="diplay:inline" class="__" lang-context="core">Change Password</a></p>
 	<table id="user-info" style="border:1px solid #ccc;margin:10px">
 		<tr>
 			<th class="__" lang-context="core">Email</th><td>'

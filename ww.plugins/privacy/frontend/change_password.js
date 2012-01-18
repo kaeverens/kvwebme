@@ -9,8 +9,22 @@
  */
 
 function change_password_dialog( id ){
-	$( "<div id='password-dialog' title='Change User Password'></div>" )
-		.html( "Loading..." )
+	var html ='<div id="password-dialog"><p id="password-error"></p>'
+		+ '<table id="password-table">'
+			+ '<tr id="password-current">'
+				+ '<th class="__" lang-context="core">Current Password:</th>'
+				+ '<td><input type="password" name="password-current"/></td>'
+			+ '</tr>'
+			+ '<tr style="display:none" class="passwords">'
+				+ '<th class="__" lang-context="core">New Password:</th>'
+				+ '<td><input type="password" name="password-new"/></td>'
+			+ '</tr>'
+			+ '<tr style="display:none" class="passwords">'
+				+ '<th class="__" lang-context="core">Repeat Password:</th>'
+				+ '<td><input type="password" name="password-repeat"/></td>'
+			+ '</tr>'
+		+ '</table></div>';
+	$( html )
 		.dialog({
 			modal : true,
 			buttons : {
@@ -22,23 +36,10 @@ function change_password_dialog( id ){
 				}
  			}
  		});
-		var html = '<p id="password-error"></p>'
-		+ '<table id="password-table">'
-			+ '<tr id="password-current">'
-				+ '<th>Current Password:</th>'
-				+ '<td><input type="password" name="password-current"/></td>'
-			+ '</tr>'
-			+ '<tr style="display:none" class="passwords">'
-				+ '<th>New Password:</th>'
-				+ '<td><input type="password" name="password-new"/></td>'
-			+ '</tr>'
-			+ '<tr style="display:none" class="passwords">'
-				+ '<th>Repeat Password:</th>'
-				+ '<td><input type="password" name="password-repeat"/></td>'
-			+ '</tr>'
-		+ '</table>';
-
-		$( '#password-dialog' ).html( html );
+	$('#password-dialog').closest('.ui-dialog').find('.ui-dialog-buttonset button .ui-button-text')
+		.attr('lang-context', 'core')
+		.addClass('__');
+	__langInit();
 }
 
 $('input[name="password-current"]').live('keyup', function(){
