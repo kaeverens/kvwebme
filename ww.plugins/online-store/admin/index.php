@@ -193,6 +193,19 @@ $c.='<th width="20%">Users must log in</th><td><input type="checkbox"'
 	.($vars['online_stores_requires_login']?' checked="checked"':'')
 	.' /></td></tr>';
 // }
+// { checkout view type
+$c.='<tr><th>Checkout View</th><td>'
+	.'<select name="page_vars[onlinestore_viewtype]">';
+$types=array('All-in-one view', 'Basket, then All-in-one');
+foreach ($types as $k=>$v) {
+	$c.='<option value="'.$k.'"';
+	if ($k==@$vars['onlinestore_viewtype']) {
+		$c.=' selected="selected"';
+	}
+	$c.='>'.__($v).'</option>';
+}
+$c.='</select></td></tr>';
+// }
 // { currency
 $c.='<tr><th>Currency</th><td><select name="online_store_currency">';
 foreach ($online_store_currencies as $key=>$val) {

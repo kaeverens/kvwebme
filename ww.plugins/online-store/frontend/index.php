@@ -359,10 +359,12 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 }
 
 if (!$submitted) {
-	if (isset($_SESSION['online-store'])
-		&&isset($_SESSION['online-store']['items'])
-		&&count($_SESSION['online-store']['items'])>0
+	if (@$_SESSION['online-store']['items']
+		&& count($_SESSION['online-store']['items'])>0
 	) {
+		$viewtype=(int)$_REQUEST['viewtype'];
+		$pviewtype=(int)@$PAGEDATA->vars['onlinestore_viewtype'];
+		// { show baskeet contents
 		$user_is_vat_free=0;
 		$group_discount=0;
 		if (@$_SESSION['userdata']['id']) {
@@ -474,15 +476,27 @@ if (!$submitted) {
 		if ($has_vatfree) {
 			$c.='<div><sup>1</sup><span class="__" lang-context="core">VAT-free item</span></div>';
 		}
-		$c.='<form method="post">'
-			.$PAGEDATA->render()
-			.'<input type="hidden" name="action" value="Proceed to Payment" />'
-			.'<button class="__" lang-context="core">Proceed to Payment</button>'
-			.'</form>';
+		// }
+		// { show details form
+		if ($viewtype==1 || !$pviewtype) {
+			$c.='<form method="post">'
+				.$PAGEDATA->render()
+				.'<input type="hidden" name="action" value="Proceed to Payment" />'
+				.'<button class="__" lang-context="core">Proceed to Payment</button>'
+				.'</form>';
+		}
+		else {
+			$c.='<form method="post"><input type="hidden" name="viewtype" value="1"/>'
+				.'<button class="onlinestore-view-checkout __" lang-context="core">'
+				.'Checkout</button></form>';
+		}
+		// }
+		// { add scripts
 		$post=$_POST;
 		unset($post['action']);
 		WW_addInlineScript('var os_post_vars='.json_encode($post).';');
 		WW_addScript('/ww.plugins/online-store/frontend/index.js');
+		// }
 	}
 	else {
 		$c.='<em class="__" lang-context="core">No items in your basket</em>';
