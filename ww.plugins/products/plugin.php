@@ -1189,7 +1189,7 @@ class ProductType{
 					$smarty->assign(
 						$f->n,
 						'<input type="hidden" name="products_values_'.$f->n
-						.'" value="'.htmlspecialchars(FromJson($val)).'"/>'
+						.'" value="'.htmlspecialchars(__FromJson($val)).'"/>'
 					);
 				break; // }
 				case 'selectbox': // {
