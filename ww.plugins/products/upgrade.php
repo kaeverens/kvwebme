@@ -260,3 +260,10 @@ bsaaaaaaaceeeeiiiidnoooooouuuyybyRr';
 	}
 	$version=35;
 }
+if ($version==35) { // fix a bug that has popped up again
+	dbQuery(
+		'alter table products_types change stock_management stock_control '
+		.'smallint default 0'
+	);
+	$version=36;
+}

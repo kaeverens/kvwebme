@@ -335,7 +335,6 @@ echo '<a href="plugin.php?_plugin=products&amp;_page=products-edit">Add a P'
 // { gather needed data
 $sql='select stock_control,data_fields from products_types '
 	.'where id='.$pdata['product_type_id'];
-	echo $sql;
 $product_type=dbRow($sql);
 // }
 

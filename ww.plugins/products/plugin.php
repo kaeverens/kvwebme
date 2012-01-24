@@ -107,7 +107,7 @@ $plugin=array(
 	'triggers' => array(
 		'initialisation-completed' => 'Products_addToCart'
 	),
-	'version' => '35'
+	'version' => '36'
 );
 // }
 
