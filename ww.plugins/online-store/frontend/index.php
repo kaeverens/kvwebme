@@ -14,6 +14,9 @@
 /**
   * function for showing list of countries selected
   *
+	* @param array  $params  Smarty parameters
+	* @param object &$smarty Smarty object
+	*
   * @return string the HTML
   */
 function OnlineStore_getCountriesSelectbox($params, &$smarty) {
@@ -37,8 +40,8 @@ function OnlineStore_getCountriesSelectbox($params, &$smarty) {
   */
 function OnlineStore_showVoucherInput() {
 	$code=@$_REQUEST['os_voucher'];
-	return '<div id="os-voucher"><span class="__">Voucher Code:</span> <input name="os_voucher" value="'
-		.htmlspecialchars($code).'"/></div>';
+	return '<div id="os-voucher"><span class="__">Voucher Code:</span> '
+		.'<input name="os_voucher" value="'.htmlspecialchars($code).'"/></div>';
 }
 
 if (isset($PAGEDATA->vars['online_stores_requires_login'])
@@ -46,8 +49,9 @@ if (isset($PAGEDATA->vars['online_stores_requires_login'])
 	&& !isset($_SESSION['userdata'])
 ) {
 	$c='<h2 class="__" lang-context="core">Login Required</h2>'
-		.'<p class="__" lang-context="core">You must be logged-in in order to use this online store. Please <a'
-		.' href="/_r?type=privacy">login / register</a> to access the checkout.'
+		.'<p class="__" lang-context="core">You must be logged-in in order to '
+		.'use this online store. Please '
+		.'<a href="/_r?type=privacy">login / register</a> to access the checkout.'
 		.'</p>';
 	return;
 }
@@ -150,10 +154,10 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		);
 	}
 	// }
-	unset($_REQUEST['action']);
-	unset($_REQUEST['page']);
+	unset($_REQUEST['action'], $_REQUEST['page']);
 	if (count($errors)) {
-		$c.='<div class="errors"><em class="__" lang-context="core">'.join('</em><br /><em class="__" lang-context="core">', $errors)
+		$c.='<div class="errors"><em class="__" lang-context="core">'
+			.join('</em><br /><em class="__" lang-context="core">', $errors)
 			.'</em></div>';
 	} 
 	else {
@@ -183,8 +187,9 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		$table='<table id="onlinestore-invoice" style="clear:both" width="100%"'
 			.'><tr><th class="quantityheader __" lang-context="core">Quantity</th>'
 			.'<th class="descriptionheader __" lang-context="core">Description</th>'
-			.'<th class="unitamountheader __" lang-context="core">'
-			.'Unit Price</th><th class="amountheader" class="__" lang-context="core">Amount</th></tr>';
+			.'<th class="unitamountheader __" lang-context="core">Unit Price</th>'
+			.'<th class="amountheader" class="__" lang-context="core">Amount</th>'
+			.'</tr>';
 		$user_is_vat_free=0;
 		$group_discount=0;
 		if (@$_SESSION['userdata']['id']) {
@@ -232,9 +237,10 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$code=$_REQUEST['os_voucher'];
 			$voucher_amount=OnlineStore_voucherAmount($code, $email, $grandTotal);
 			if ($voucher_amount) {
-				$table.='<tr><td colspan="2" class="nobord">&nbsp;</td><td class="v'
-					.'oucher" style="text-align: right;"><span class="__" lang-context="core">'
-					.'Voucher</span> ('.htmlspecialchars($code).')</td><td class="totals amountcell">-'
+				$table.='<tr><td colspan="2" class="nobord">&nbsp;</td>'
+					.'<td class="voucher" style="text-align: right;">'
+					.'<span class="__" lang-context="core">Voucher</span> '
+					.'('.htmlspecialchars($code).')</td><td class="totals amountcell">-'
 					.OnlineStore_numToPrice($voucher_amount).'</td></tr>';
 				$grandTotal-=$voucher_amount;
 				OnlineStore_voucherRecordUsage($id, $voucher_amount);
@@ -259,17 +265,18 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		}
 		// }
 		if ($vattable && $_SESSION['onlinestore_vat_percent']) {
-			$table.='<tr><td colspan="2" class="nobord">&nbsp;</td><td style="tex'
-				.'t-align:right" class="vat"><span class="__" lang-context="core">VAT</span> ('.$_SESSION['onlinestore_vat_perc'
-				.'ent'].'% on '
+			$table.='<tr><td colspan="2" class="nobord">&nbsp;</td>'
+				.'<td style="text-align:right" class="vat">'
+				.'<span class="__" lang-context="core">VAT</span> '
+				.'('.$_SESSION['onlinestore_vat_percent'].'% on '
 				.OnlineStore_numToPrice($vattable).')</td><td class="amountcell">';
 			$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);
 			$table.=OnlineStore_numToPrice($vat).'</td></tr>';
 			$grandTotal+=$vat;
 		}
-		$table.='<tr class="os_basket_amountcell"><td colspan="2" class="nobord'
-			.'">&nbsp;</td><td class="totalcell __" lang-context="core" style="text-align: right;">Total'
-			.' Due</td>'
+		$table.='<tr class="os_basket_amountcell"><td colspan="2" class="nobord">'
+			.'&nbsp;</td><td class="totalcell __" lang-context="core" '
+			.'style="text-align: right;">Total Due</td>'
 			.'<td class="amountcell">'.OnlineStore_numToPrice($grandTotal)
 			.'</td></tr>';
 		$table.='</table>';
@@ -335,18 +342,21 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 				$c.=$msg;
 			break; // }
 			case 'PayPal': // {
-				$c.='<p class="__" lang-context="core">Your order has been recorded. Please click the button below '
-					.'to go to PayPal for payment. Thank you.</p>';
+				$c.='<p class="__" lang-context="core">Your order has been recorded. '
+					.'Please click the button below to go to PayPal for payment. '
+					.'Thank you.</p>';
 				$c.=OnlineStore_generatePaypalButton($PAGEDATA, $id, $total);
 			break; // }
 			case 'QuickPay': // {
-				$c.='<p class="__" lang-context="core">Your order has been recorded. Please click the button below '
-					.'to go to QuickPay for payment. Thank you.</p>';
+				$c.='<p class="__" lang-context="core">Your order has been recorded. '
+					.'Please click the button below to go to QuickPay for payment. '
+					.'Thank you.</p>';
 				$c.=OnlineStore_generateQuickPayButton($PAGEDATA, $id, $total);
 			break; // }
 			case 'Realex': // {
-				$c.='<p class="__" lang-context="core">Your order has been recorded. Please click the button below '
-					.'to go to Realex Payments for payment. Thank you.</p>';
+				$c.='<p class="__" lang-context="core">Your order has been recorded. '
+					.'Please click the button below to go to Realex Payments for '
+					.'payment. Thank you.</p>';
 				$c.=OnlineStore_generateRealexButton($PAGEDATA, $id, $total);
 			break; // }
 		}
@@ -364,7 +374,7 @@ if (!$submitted) {
 	) {
 		$viewtype=(int)$_REQUEST['viewtype'];
 		$pviewtype=(int)@$PAGEDATA->vars['onlinestore_viewtype'];
-		// { show baskeet contents
+		// { show basket contents
 		$user_is_vat_free=0;
 		$group_discount=0;
 		if (@$_SESSION['userdata']['id']) {
@@ -439,16 +449,17 @@ if (!$submitted) {
 			$voucher_amount=OnlineStore_voucherAmount($code, $email, $grandTotal);
 			if ($voucher_amount) {
 				$c.='<tr><td class="voucher" style="text-align: right;" colspan="3">'
-					.'<span class="__" lang-context="core">Voucher</span> ('.htmlspecialchars($code).')</td><td class="totals">-'
+					.'<span class="__" lang-context="core">Voucher</span> ('
+					.htmlspecialchars($code).')</td><td class="totals">-'
 					.OnlineStore_numToPrice($voucher_amount).'</td></tr>';
 				$grandTotal-=$voucher_amount;
 			}
 		}
 		if ($group_discount && $discountableTotal) { // group discount
 			$discount_amount=$discountableTotal*($group_discount/100);
-			$c.='<tr><td class="group-discount" style="text-align:right;" colspan'
-				.'="3">'
-				.'<span class="__" lang-context="core">Group Discount</span> ('.$group_discount.'%)</td><td class="totals">-'
+			$c.='<tr><td class="group-discount" style="text-align:right;" '
+				.'colspan="3"><span class="__" lang-context="core">Group Discount'
+				.'</span> ('.$group_discount.'%)</td><td class="totals">-'
 				.OnlineStore_numToPrice($discount_amount).'</td></tr>';
 			$grandTotal-=$discount_amount;
 		}
@@ -456,13 +467,15 @@ if (!$submitted) {
 		$postage=OnlineStore_getPostageAndPackaging($deliveryTotal, '', 0);
 		if ($postage['total']) {
 			$grandTotal+=$postage['total'];
-			$c.='<tr><td class="p_and_p __" lang-context="core" style="text-align: right;" colspan="3">'
+			$c.='<tr><td class="p_and_p __" lang-context="core" '
+				.'style="text-align: right;" colspan="3">'
 				.'Postage and Packaging (P&amp;P)</td><td class="totals">'
 				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
 		}
 		// }
 		if ($vattable && $_SESSION['onlinestore_vat_percent']) {
-			$c.='<tr><td style="text-align:right" class="vat" colspan="3"><span class="__" lang-context="core">VAT</span> ('
+			$c.='<tr><td style="text-align:right" class="vat" colspan="3">'
+				.'<span class="__" lang-context="core">VAT</span> ('
 				.$_SESSION['onlinestore_vat_percent'].'% on '
 				.OnlineStore_numToPrice($vattable).')</td><td class="totals">';
 			$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);
@@ -474,16 +487,21 @@ if (!$submitted) {
 			.'<td class="totals">'.OnlineStore_numToPrice($grandTotal).'</td></tr>'
 			.'</table>';
 		if ($has_vatfree) {
-			$c.='<div><sup>1</sup><span class="__" lang-context="core">VAT-free item</span></div>';
+			$c.='<div><sup>1</sup><span class="__" lang-context="core">'
+				.'VAT-free item</span></div>';
 		}
 		// }
 		// { show details form
-		if ($viewtype==1 || !$pviewtype) {
+		$_POST['_viewtype']=$pviewtype;
+		if ($pviewtype==1&&$viewtype==1 || !$pviewtype) {
 			$c.='<form method="post">'
 				.$PAGEDATA->render()
 				.'<input type="hidden" name="action" value="Proceed to Payment" />'
 				.'<button class="__" lang-context="core">Proceed to Payment</button>'
 				.'</form>';
+		}
+		else if ($pviewtype==2) {
+			$c.='<div id="online-store-wrapper" class="online-store"></div>';
 		}
 		else {
 			$c.='<form method="post"><input type="hidden" name="viewtype" value="1"/>'
@@ -492,8 +510,21 @@ if (!$submitted) {
 		}
 		// }
 		// { add scripts
+		// { set up variables
 		$post=$_POST;
 		unset($post['action']);
+		$postage=dbOne(
+			'select value from page_vars where page_id=1302 and '
+			.'name="online_stores_postage"',
+			'value'
+		);
+		if (!$postage) {
+			$post['_pandp']=0;
+		}
+		else {
+			$post['_pandp']=count(json_decode($postage));
+		}
+		// }
 		WW_addInlineScript('var os_post_vars='.json_encode($post).';');
 		WW_addScript('/ww.plugins/online-store/frontend/index.js');
 		// }

@@ -188,6 +188,7 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 	require_once SCRIPTBASE.'ww.incs/bb2html.php';
 	WW_addCSS('/ww.plugins/forum/frontend/forum.css');
 	$script='$(function(){$(".ratings").ratings();});';
+	WW_addScript('/j/jquery.tooltip.min.js');
 	WW_addScript('/ww.plugins/ratings/ratings.js');
 	WW_addInlineScript($script);
 	$thread=dbRow('select * from forums_threads where id='.$id);

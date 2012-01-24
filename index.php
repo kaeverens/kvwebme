@@ -312,6 +312,7 @@ if (isset($_SESSION['userdata'])) {
 	$tmp.='userdata={isAdmin:'.(Core_isAdmin()?1:0)
 		.',id:'.$_SESSION['userdata']['id']
 		.$wasAdmin
+		.',name:"'.addslashes($_SESSION['userdata']['name']).'"'
 		.',lat:'.((float)@$_SESSION['userdata']['location_lat'])
 		.',lng:'.((float)@$_SESSION['userdata']['location_lng']);
 	if (isset($_SESSION['userdata']['discount'])) {

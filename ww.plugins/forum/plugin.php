@@ -12,6 +12,7 @@
   * @link       www.kvweb.me
  */
 
+// { plugin config
 $plugin=array(
 	'name' => 'Forum',
 	'admin' => array(
@@ -28,6 +29,7 @@ $plugin=array(
 	'rss-handler' => 'Forum_rssHandler',
 	'version' => 6
 );
+// }
 
 /**
   * display the forum-creation tool

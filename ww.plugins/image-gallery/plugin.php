@@ -12,6 +12,7 @@
   * @link       www.kvweb.me
  */
 
+// { config
 $plugin=array(
 	'name' => 'Image Gallery',
 	'version'=>3,
@@ -26,9 +27,9 @@ $plugin=array(
 	'frontend' => array(
 		'page_type' => 'ImageGallery_frontend',
 		'widget' => 'ImageGallery_widget'
-	),
-
+	)
 );
+// }
 
 /**
   * administration area for the image gallery

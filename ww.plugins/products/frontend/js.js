@@ -110,7 +110,7 @@ $(function(){
 		);
 		return false;
 	});
-	$('.products-product select').change(updatePrice);
+	$('.products-product select').live('change', updatePrice);
 	$('.products-product').each(function() {
 		$($(this).find('select')[0]).change();
 	});

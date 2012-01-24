@@ -86,16 +86,14 @@ if (isset($_POST[ 'install-theme' ])) { // install theme if selected
 }
 
 
-echo '<script type="text/javascript" src="/ww.incs/proxy.php?url=http://'
-	.'kvweb.me/ww.plugins/ratings/ratings.js"></script>'
-	.'<script type="text/javascript" src="/ww.incs/proxy.php?url=http://kvw'
-	.'eb.me/ww.plugins/themes-api/carousel.js"></script>'
-	.'<script type="text/javascript" src="/install/themes.js"></script>'
+echo
+	'<script src="/ww.plugins/ratings/ratings.js"></script>'
+	.'<script src="/j/jquery.tooltip.min.js"></script>'
+	.'<script src="/ww.plugins/themes-api/carousel.js"></script>'
+	.'<script src="/install/themes.js"></script>'
 	.'<link rel="stylesheet" type="text/css" href="/ww.plugins/themes-api'
 	.'/api.css"/>'
-	.'<script type="text/javascript">'
-	.'window.installed_themes = [];'
-	.'</script>'
+	.'<script>window.installed_themes=[];</script>'
 	.'<h1>Select Themes</h1>'
 	.'<div id="themes-carousel">'
 	.'Loading.. If you have no internet connection, please <a href="/'

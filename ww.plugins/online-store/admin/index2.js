@@ -145,6 +145,18 @@ $(function(){
 	$('form').bind('submit',os_update_fields);
 	$("#online_store_redirect_to,#online_store_quickpay_redirect_to,#online_store_quickpay_redirect_failed")
 		.remoteselectoptions({url:"/a/f=adminPageParentsList"});
+	var $checkout_type=$('select[name="page_vars[onlinestore_viewtype]"]');
+	$checkout_type.change(function() {
+		switch(+$(this).val()) {
+			case 2: // {
+				$('.online-store-checkout-form').css('display', 'none');
+			break; // }
+			default: // {
+				$('.online-store-checkout-form').css('display', 'block');
+			// }
+		}
+	}).change();
+
 });
 $('#online_stores_fields_table input').live('click',os_update_fields_value);
 

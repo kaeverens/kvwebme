@@ -142,6 +142,7 @@ function OnlineStore_adminPageForm($page, $vars) {
 	*/
 function OnlineStore_frontend($PAGEDATA) {
 	require dirname(__FILE__).'/frontend/index.php';
+	WW_addCss('/ww.plugins/online-store/frontend/index.css');
 	return $c;
 }
 
@@ -474,8 +475,10 @@ function OnlineStore_getFinalTotal() {
 	$group_discount=0;
 	if (@$_SESSION['userdata']['id']) {
 		$user=User::getInstance($_SESSION['userdata']['id']);
-		$user_is_vat_free=$user->isInGroup('_vatfree');
-		$group_discount=$user->getGroupHighest('discount');
+		if ($user) {
+			$user_is_vat_free=$user->isInGroup('_vatfree');
+			$group_discount=$user->getGroupHighest('discount');
+		}
 	}
 	if (!isset($_SESSION['online-store']['items'])) {
 		$_SESSION['online-store']['items']=array();
@@ -570,6 +573,11 @@ function OnlineStore_startup() {
 	}
 }
 
+/**
+	* set the page to use as a checkout
+	*
+	* @return null
+	*/
 function OnlineStore_setCheckoutPage() {
 	$p=dbOne('select id from pages where type like "online-store%"', 'id');
 	if ($p) {

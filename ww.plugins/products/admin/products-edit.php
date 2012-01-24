@@ -333,10 +333,10 @@ echo '<a href="plugin.php?_plugin=products&amp;_page=products-edit">Add a P'
 	.'</a>';
 // }
 // { gather needed data
-$product_type=dbRow(
-	'select stock_control,data_fields from products_types '
-	.'where id='.$pdata['product_type_id']
-);
+$sql='select stock_control,data_fields from products_types '
+	.'where id='.$pdata['product_type_id'];
+	echo $sql;
+$product_type=dbRow($sql);
 // }
 
 // { start form and tabs

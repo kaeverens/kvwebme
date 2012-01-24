@@ -343,7 +343,9 @@ function Products_addToCart() {
 					$long_desc='<img style="float:left" src="'.$v.',width=60,height=60"/>';
 				break; // }
 			}
-			$vals[]='<span>'.$n.'</span>: '.$v;
+			$vals[]='<div class="products-desc-'
+				.preg_replace('/[^a-zA-Z0-9]/', '', $k).'">'
+				.'<span >'.$n.'</span>: '.$v.'</div>';
 		}
 	}
 	if (count($vals)) {

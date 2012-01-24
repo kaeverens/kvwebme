@@ -307,10 +307,10 @@ function Products_typeEdit(id) {
 				+'</select></td>')
 				.appendTo('#pte5');
 			$('#pte5 select')
-				.val(tdata.stock_control)
 				.change(function() {
 					tdata.stock_control=$(this).val();
-				});
+				})
+				.val(tdata.stock_control);
 		}
 		if (+tdata.is_for_sale) {
 			addIsVoucher();

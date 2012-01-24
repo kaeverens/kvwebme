@@ -31,46 +31,9 @@ function Privacy_login() {
 }
 
 /**
-	* send registration token
-	*
-	* @return array status
-	*/
-function Privacy_sendRegistrationToken() {
-	$email=@$_REQUEST['email'];
-	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-		return array('error'=>'invalid email address');
-	}
-	if (dbOne(
-		'select id from user_accounts where email="'.addslashes($email).'"',
-		'id'
-	)) {
-		return array('error'=>'already registered');
-	}
-	if (!isset($_SESSION['privacy'])) {
-		$_SESSION['privacy']=array();
-	}
-	$_SESSION['privacy']['registration']=array(
-		'token'         => rand(10000, 99999),
-		'custom'        => array(),
-		'email'         => $email
-	);
-	if (@$_REQUEST['custom'] && is_array($_REQUEST['custom'])) {
-		$_SESSION['privacy']['registration']['custom']=$_REQUEST['custom'];
-	}
-	$emaildomain=str_replace('www.', '', $_SERVER['HTTP_HOST']);
-	mail(
-		$email,
-		'['.$_SERVER['HTTP_HOST'].'] user registration',
-		'Your token is: '.$_SESSION['privacy']['registration']['token'],
-		"Reply-to: info@".$emaildomain."\nFrom: info@".$emaildomain
-	);
-	return array('ok'=>1);
-}
-
-/**
 	* register, and login
 	*
-	* return array status
+	* @return array status
 	*/
 function Privacy_register() {
 	$password=$_REQUEST['password'];
@@ -81,10 +44,8 @@ function Privacy_register() {
 	if (!is_array($custom)) {
 		$custom=array();
 	}
-	if (dbOne(
-		'select id from user_accounts where email="'.addslashes($email).'"',
-		'id'
-	)) {
+	$sql='select id from user_accounts where email="'.addslashes($email).'"';
+	if (dbOne($sql, 'id')) {
 		return array('error'=>'already registered');
 	}
 	if ($token && $token==@$reg['token']) {
