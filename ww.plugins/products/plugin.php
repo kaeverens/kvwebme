@@ -111,451 +111,7 @@ $plugin=array(
 );
 // }
 
-/**
-	* return all products in a slider
-	*
-	* @param array $params parameters
-	*
-	* @return string HTML of the slider
-	*/
-function Products_imageSlider($params) {
-	$width=@$params['width'];
-	$height=@$params['height'];
-	if ($width=='') {
-		$width='100%';
-	}
-	if ($height=='') {
-		$height='100%';
-	}
-	return '<div class="products-image-slider" style="width:'.$width.';height:'
-		.$height.'"></div>';
-}
-
-/**
-  * show expiry clock
-  *
-  * @param array  $params parameters to pass to the function
-  * @param object $smarty the current Smarty instance
-  *
-  * @return HTML of the expiry clock
-  */
-function Products_expiryClock($params, $smarty) {
-	$unlimited=@$params['none'];
-	if ($unlimited=='') {
-		$unlimited='no expiry date';
-	}
-	$pid=$smarty->_tpl_vars['product']->id;
-	$product=Product::getInstance($pid);
-	return '<div class="products-expiry-clock" unlimited="'
-		.htmlspecialchars($unlimited).'">'.$product->vals['expires_on'].'</div>';
-}
-
-/**
-  * figure out how much a product costs
-  *
-  * @param object  $product        the product data
-	* @param int     $amount         how many are wanted
-	* @param string  $md5            unique identifier
-	* @param boolean $removefromcart remove any copies of this from the cart first
-  *
-  * @return object the product instance
-  */
-function Products_getProductPrice(
-	$product,
-	$amount,
-	$md5,
-	$removefromcart=true
-) {
-	$id=$product->id;
-	if (isset($_SESSION['online-store']['items']['products_'.$id.$md5])) {
-		$amount+=$_SESSION['online-store']['items']['products_'.$id.$md5]['amt'];
-		if ($removefromcart) {
-			unset($_SESSION['online-store']['items']['products_'.$id.$md5]);
-		}
-	}
-	// { get price
-	if (isset($product->vals['online-store'])) {
-		$p=$product->vals['online-store'];
-		$price=(float)$p['_price'];
-		if (@$p['_sale_price']) {
-			$price=$product->getPrice('sale');
-		}
-		if (isset($p['_bulk_price'])
-			&& $p['_bulk_price']>0
-			&& $p['_bulk_price']<$price
-			&& $amount>=$p['_bulk_amount']
-		) {
-			$price=$p['_bulk_price'];
-		}
-		$vat=(isset($p['_vatfree']) && $p['_vatfree']=='1')?false:true;
-	}
-	else {
-		$price=(float)$product->get('price');
-		$vat=true;
-	}
-	// }
-	return array($price, $amount, $vat);
-}
-
-/**
-  * form for a products admin page
-  *
-  * @param array $page the page database table
-  * @param array $vars the page's vars data
-  *
-  * @return HTML of the form
-  */
-function Products_adminPage($page, $vars) {
-	$id=$page['id'];
-	$c='';
-	require_once dirname(__FILE__).'/admin/page-form.php';
-	return $c;
-}
-
-/**
-  * render a product page
-  *
-  * @param object $PAGEDATA the page instance
-  *
-  * @return string HTML of the page
-  */
-function Products_frontend($PAGEDATA) {
-	require_once dirname(__FILE__).'/frontend/show.php';
-	global $PAGE_UNUSED_URI;
-	if ($PAGE_UNUSED_URI) {
-		$bits=explode('/', $PAGE_UNUSED_URI);
-		$cat_id=0;
-		$product_id=0;
-		foreach ($bits as $bit) {
-			$sql='select id from products_categories where parent_id='.$cat_id
-				.' and name like "'.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'"';
-			$id=dbOne($sql, 'id');
-			if ($id) {
-				$cat_id=$id;
-				$_REQUEST['product_cid']=$cat_id;
-			}
-			else {
-				if (strpos($bit, '|')===false) {
-					$pconstraint='link like "'.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'"';
-				}
-				else {
-					$pconstraint='id='.(int)preg_replace('/\|.*/', '', $bit);
-				}
-				if ($cat_id) {
-					$id=dbOne(
-						'select product_id,name from products_categories_products,products'
-						.' where category_id='.$cat_id.' and '.$pconstraint.' and id=product_id',
-						'product_id'
-					);
-				}
-				if (!$id) {
-					$id=dbOne(
-						'select id from products where '.$pconstraint,
-						'id'
-					);
-				}
-				if ($id) {
-					$_REQUEST['product_id']=$id;
-				}
-			}
-		}
-	}
-	if (isset($_REQUEST['product_category'])) {
-		$_REQUEST['product_cid']=$_REQUEST['product_category'];
-	}
-	if (isset($_REQUEST['product_cid'])) {
-		$PAGEDATA->vars['products_what_to_show']=2;
-		$PAGEDATA->vars['products_category_to_show']=(int)$_REQUEST['product_cid'];
-	}
-	if (isset($_REQUEST['product_id'])) {
-		$PAGEDATA->vars['products_what_to_show']=3;
-		$PAGEDATA->vars['products_product_to_show']=(int)$_REQUEST['product_id'];
-	}
-	if (!isset($PAGEDATA->vars['footer'])) {
-		$PAGEDATA->vars['footer']='';
-	}
-	// first render the products, in case the page needs to know what template was used
-	$producthtml=Products_show($PAGEDATA);
-	return $PAGEDATA->render()
-		.$producthtml
-		.__FromJson($PAGEDATA->vars['footer']);
-}
-
-/**
-  * check the $_REQUEST array for products to add to the cart
-  *
-  * @return null
-  */
-function Products_addToCart() {
-	if (!isset($_REQUEST['products_action'])) {
-		return;
-	}
-	$id=(int)$_REQUEST['product_id'];
-	require_once dirname(__FILE__).'/frontend/show.php';
-	$product=Product::getInstance($id);
-	if (!$product) {
-		return;
-	}
-	$amount=1;
-	if (isset($_REQUEST['products-howmany'])) {
-		$amount=(int)$_REQUEST['products-howmany'];
-	}
-	// { find "custom" values
-	$price_amendments=0;
-	$vals=array();
-	$md5='';
-	$product_type=ProductType::getInstance($product->vals['product_type_id']);
-	$long_desc='';
-	foreach ($_REQUEST as $k=>$v) {
-		if (strpos($k, 'products_values_')===0) {
-			$n=str_replace('products_values_', '', $k);
-			$data_field=$product_type->getField($n);
-			if ($data_field === false // not a real field
-				|| $data_field->u!=1    // not a user-choosable field
-			) {
-				continue;
-			}
-			switch ($data_field->t) {
-				case 'selectbox': // {
-					$ok=0;
-					if (@$product->vals[$n]) { // if product has custom values
-						$strs=explode("\n", $product->vals[$n]);
-						foreach ($strs as $a=>$b) {
-							$strs[$a]=trim($b);
-						}
-					}
-					else { // else use the product type defaults
-						$strs=explode("\n", $data_field->e);
-					}
-					if (in_array($v, $strs)) {
-						if (strpos($v, '|')!==false) {
-							$bits=explode('|', $v);
-							$price_amendments+=(float)$bits[1];
-						}
-						$ok=1;
-					}
-					if (!$ok) {
-						continue;
-					}
-				break; // }
-				case 'selected-image': // {
-					$v='http://'.$_SERVER['HTTP_HOST'].'/kfmget/'.$v;
-					$long_desc='<img style="float:left" src="'.$v.',width=60,height=60"/>';
-				break; // }
-			}
-			$vals[]='<div class="products-desc-'
-				.preg_replace('/[^a-zA-Z0-9]/', '', $k).'">'
-				.'<span >'.$n.'</span>: '.$v.'</div>';
-		}
-	}
-	if (count($vals)) {
-		$long_desc.=join("\n", $vals).'<br style="clear:left"/>';
-		$md5=','.md5($long_desc.'products_'.$id);
-	}
-	// }
-	list($price, $amount, $vat)=Products_getProductPrice(
-		$product, $amount, $md5
-	);
-	OnlineStore_addToCart(
-		$price+$price_amendments,
-		$amount,
-		__FromJson($product->get('name')),
-		$long_desc,
-		'products_'.$id.$md5,
-		$_SERVER['HTTP_REFERER'],
-		$vat,
-		$id,
-		(int)(@$product->vals['online-store']['_deliver_free']),
-		(int)(@$product->vals['online-store']['_not_discountable'])
-	);
-}
-
-/**
-	* get amount of product in stock (simple)
-	*
-	* @return int number in stock
-	*/
-function Products_amountInStock($params, $smarty) {
-	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
-	return Products_amountInStock2($params, $smarty);
-}
-
-/**
-  * list product categories contained in a parent
-  *
-  * @param array  $params parameters to pass to the function
-  * @param object $smarty the current Smarty instance
-  *
-  * @return HTML the list of categories
-  */
-function Products_listCategories($params, $smarty) {
-	require_once dirname(__FILE__).'/frontend/show.php';
-	return _Products_listCategories($params, $smarty);
-}
-
-/**
-  * build up a list of the contents of a product category
-  *
-  * @param array  $params parameters to pass to the function
-  * @param object $smarty the current Smarty instance
-  *
-  * @return HTML the list of contents
-  */
-function Products_listCategoryContents($params, $smarty) {
-	require_once dirname(__FILE__).'/frontend/show.php';
-	return _Products_listCategoryContents($params, $smarty);
-}
-
-/**
-	* show the product owner
-	*
-	* @param array  $params parameters
-	* @param object $smarty the Smarty object
-	*
-	* @return string html of the selected variable
-	*/
-function Products_owner($params, $smarty) {
-	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
-	return Products_owner2($params, $smarty);
-}
-
-/**
-	* show the base price
-	*
-	* @param array  $params parameters
-	* @param object $smarty the Smarty object
-	*
-	* @return string the base price
-	*/
-function Products_priceBase($params, $smarty) {
-	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
-	return Products_priceBase2($params, $smarty);
-}
-
-/**
-	* show how much the discount is worth
-	*
-	* @param array  $params parameters
-	* @param object $smarty the Smarty object
-	*
-	* @return string the discount amount
-	*/
-function Products_priceDiscount($params, $smarty) {
-	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
-	return Products_priceDiscount2($params, $smarty);
-}
-
-/**
-	* show the discount percentage
-	*
-	* @param array  $params parameters
-	* @param object $smarty the Smarty object
-	*
-	* @return string the discount percentage
-	*/
-function Products_priceDiscountPercent($params, $smarty) {
-	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
-	return Products_priceDiscountPercent2($params, $smarty);
-}
-
-/**
-	* show the sale price
-	*
-	* @param array  $params parameters
-	* @param object $smarty the Smarty object
-	*
-	* @return string the sale price
-	*/
-function Products_priceSale($params, $smarty) {
-	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
-	return Products_priceSale2($params, $smarty);
-}
-
-/**
-	* show the sold amount
-	*
-	* @param array  $params parameters
-	* @param object $smarty the Smarty object
-	*
-	* @return string the amount sold
-	*/
-function Products_soldAmount($params, $smarty) {
-	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
-	return Products_soldAmount2($params, $smarty);
-}
-
-/**
-	* show a QR code for the product page
-	*
-	* @param array  $params parameters
-	* @param object $smarty the Smarty object
-	*
-	* @return the QR code
-	*/
-function Products_qrCode($params, $smarty) {
-	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
-	return Products_qrCode2($params, $smarty);
-}
-
-/**
-  * get HTML for the Products widget
-  *
-  * @param array $vars any parameters to pass to the widget
-  *
-  * @return string HTML of the widget
-  */
-function Products_widget($vars=null) {
-	require_once dirname(__FILE__).'/frontend/show.php';
-	require dirname(__FILE__).'/frontend/widget.php';
-	return $html;
-}
-
-/**
-	* function for handling timed events
-	*
-	* @return null
-	*/
-function Products_cronHandle() {
-	dbQuery(
-		'update products set enabled=1 where !enabled and activates_on<now() '
-		.'and expires_on>now()'
-	);
-	dbQuery(
-		'update products set enabled=0 where enabled and expires_on<now()'
-	);
-	Core_cacheClear('products');
-}
-
-/**
-	* function for getting next timed event
-	*
-	* @return array date, function for next timed event
-	*/
-function Products_cronGetNext() {
-	dbQuery('delete from cron where func="Products_cronHandle"');
-	$n1=dbOne(
-		'select activates_on from products where !enabled and '
-		.'expires_on>now() order by activates_on limit 1', 'activates_on'
-	);
-	$n2=dbOne(
-		'select expires_on from products where enabled order by expires_on '
-		.'limit 1', 'expires_on'
-	);
-	$n=false;
-	if ($n1 && $n2) {
-		$n=$n1<$n2?$n1:$n2;
-	}
-	elseif ($n1 || $n2) {
-		$n=$n1?$n1:$n2;
-	}
-	if ($n) {
-		dbQuery(
-			'insert into cron set name="disable/enable product", notes="disable '
-			.'or enable a product", period="day", period_multiplier=1, '
-			.'next_date="'.$n.'", func="Products_cronHandle"'
-		);
-	}
-}
+// { class Product
 
 /**
 	* Product object
@@ -905,6 +461,9 @@ class Product{
 	}
 }
 
+// }
+// { class ProductCategory
+
 /**
 	* ProductCategory object
 	*
@@ -996,6 +555,9 @@ class ProductCategory{
 		return '/#no-url-available';
 	}
 }
+
+// }
+// { class ProductType
 
 /**
 	* ProductType object
@@ -1297,3 +859,512 @@ class ProductType{
 		return $html;
 	}
 }
+
+// }
+
+// { Products_addToCart
+
+/**
+  * check the $_REQUEST array for products to add to the cart
+  *
+  * @return null
+  */
+function Products_addToCart() {
+	if (!isset($_REQUEST['products_action'])) {
+		return;
+	}
+	$id=(int)$_REQUEST['product_id'];
+	require_once dirname(__FILE__).'/frontend/show.php';
+	$product=Product::getInstance($id);
+	if (!$product) {
+		return;
+	}
+	$amount=1;
+	if (isset($_REQUEST['products-howmany'])) {
+		$amount=(int)$_REQUEST['products-howmany'];
+	}
+	// { find "custom" values
+	$price_amendments=0;
+	$vals=array();
+	$md5='';
+	$product_type=ProductType::getInstance($product->vals['product_type_id']);
+	$long_desc='';
+	foreach ($_REQUEST as $k=>$v) {
+		if (strpos($k, 'products_values_')===0) {
+			$n=str_replace('products_values_', '', $k);
+			$data_field=$product_type->getField($n);
+			if ($data_field === false // not a real field
+				|| $data_field->u!=1    // not a user-choosable field
+			) {
+				continue;
+			}
+			switch ($data_field->t) {
+				case 'selectbox': // {
+					$ok=0;
+					if (@$product->vals[$n]) { // if product has custom values
+						$strs=explode("\n", $product->vals[$n]);
+						foreach ($strs as $a=>$b) {
+							$strs[$a]=trim($b);
+						}
+					}
+					else { // else use the product type defaults
+						$strs=explode("\n", $data_field->e);
+					}
+					if (in_array($v, $strs)) {
+						if (strpos($v, '|')!==false) {
+							$bits=explode('|', $v);
+							$price_amendments+=(float)$bits[1];
+						}
+						$ok=1;
+					}
+					if (!$ok) {
+						continue;
+					}
+				break; // }
+				case 'selected-image': // {
+					$v='http://'.$_SERVER['HTTP_HOST'].'/kfmget/'.$v;
+					$long_desc='<img style="float:left" src="'.$v.',width=60,height=60"/>';
+				break; // }
+			}
+			$vals[]='<div class="products-desc-'
+				.preg_replace('/[^a-zA-Z0-9]/', '', $k).'">'
+				.'<span >'.$n.'</span>: '.$v.'</div>';
+		}
+	}
+	if (count($vals)) {
+		$long_desc.=join("\n", $vals).'<br style="clear:left"/>';
+		$md5=','.md5($long_desc.'products_'.$id);
+	}
+	// }
+	list($price, $amount, $vat)=Products_getProductPrice(
+		$product, $amount, $md5
+	);
+	OnlineStore_addToCart(
+		$price+$price_amendments,
+		$amount,
+		__FromJson($product->get('name')),
+		$long_desc,
+		'products_'.$id.$md5,
+		$_SERVER['HTTP_REFERER'],
+		$vat,
+		$id,
+		(int)(@$product->vals['online-store']['_deliver_free']),
+		(int)(@$product->vals['online-store']['_not_discountable'])
+	);
+}
+
+// }
+// { Products_adminPage
+
+/**
+  * form for a products admin page
+  *
+  * @param array $page the page database table
+  * @param array $vars the page's vars data
+  *
+  * @return HTML of the form
+  */
+function Products_adminPage($page, $vars) {
+	$id=$page['id'];
+	$c='';
+	require_once dirname(__FILE__).'/admin/page-form.php';
+	return $c;
+}
+
+// }
+// { Products_amountInStock
+
+/**
+	* get amount of product in stock (simple)
+	*
+  * @param array  $params parameters to pass to the function
+  * @param object $smarty the current Smarty instance
+	*
+	* @return int number in stock
+	*/
+function Products_amountInStock($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_amountInStock2($params, $smarty);
+}
+
+// }
+// { Products_cronHandle
+
+/**
+	* function for handling timed events
+	*
+	* @return null
+	*/
+function Products_cronHandle() {
+	dbQuery(
+		'update products set enabled=1 where !enabled and activates_on<now() '
+		.'and expires_on>now()'
+	);
+	dbQuery(
+		'update products set enabled=0 where enabled and expires_on<now()'
+	);
+	Core_cacheClear('products');
+}
+
+// }
+// { Products_cronGetNext
+
+/**
+	* function for getting next timed event
+	*
+	* @return array date, function for next timed event
+	*/
+function Products_cronGetNext() {
+	dbQuery('delete from cron where func="Products_cronHandle"');
+	$n1=dbOne(
+		'select activates_on from products where !enabled and '
+		.'expires_on>now() order by activates_on limit 1', 'activates_on'
+	);
+	$n2=dbOne(
+		'select expires_on from products where enabled order by expires_on '
+		.'limit 1', 'expires_on'
+	);
+	$n=false;
+	if ($n1 && $n2) {
+		$n=$n1<$n2?$n1:$n2;
+	}
+	elseif ($n1 || $n2) {
+		$n=$n1?$n1:$n2;
+	}
+	if ($n) {
+		dbQuery(
+			'insert into cron set name="disable/enable product", notes="disable '
+			.'or enable a product", period="day", period_multiplier=1, '
+			.'next_date="'.$n.'", func="Products_cronHandle"'
+		);
+	}
+}
+
+// }
+// { Products_expiryClock
+
+/**
+  * show expiry clock
+  *
+  * @param array  $params parameters to pass to the function
+  * @param object $smarty the current Smarty instance
+  *
+  * @return HTML of the expiry clock
+  */
+function Products_expiryClock($params, $smarty) {
+	$unlimited=@$params['none'];
+	if ($unlimited=='') {
+		$unlimited='no expiry date';
+	}
+	$pid=$smarty->_tpl_vars['product']->id;
+	$product=Product::getInstance($pid);
+	return '<div class="products-expiry-clock" unlimited="'
+		.htmlspecialchars($unlimited).'">'.$product->vals['expires_on'].'</div>';
+}
+
+// }
+// { Products_frontend
+
+/**
+  * render a product page
+  *
+  * @param object $PAGEDATA the page instance
+  *
+  * @return string HTML of the page
+  */
+function Products_frontend($PAGEDATA) {
+	require_once dirname(__FILE__).'/frontend/show.php';
+	global $PAGE_UNUSED_URI;
+	if ($PAGE_UNUSED_URI) {
+		$bits=explode('/', $PAGE_UNUSED_URI);
+		$cat_id=0;
+		$product_id=0;
+		foreach ($bits as $bit) {
+			$sql='select id from products_categories where parent_id='.$cat_id
+				.' and name like "'.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'"';
+			$id=dbOne($sql, 'id');
+			if ($id) {
+				$cat_id=$id;
+				$_REQUEST['product_cid']=$cat_id;
+			}
+			else {
+				if (strpos($bit, '|')===false) {
+					$pconstraint='link like "'.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'"';
+				}
+				else {
+					$pconstraint='id='.(int)preg_replace('/\|.*/', '', $bit);
+				}
+				if ($cat_id) {
+					$id=dbOne(
+						'select product_id,name from products_categories_products,products'
+						.' where category_id='.$cat_id.' and '.$pconstraint.' and id=product_id',
+						'product_id'
+					);
+				}
+				if (!$id) {
+					$id=dbOne(
+						'select id from products where '.$pconstraint,
+						'id'
+					);
+				}
+				if ($id) {
+					$_REQUEST['product_id']=$id;
+				}
+			}
+		}
+	}
+	if (isset($_REQUEST['product_category'])) {
+		$_REQUEST['product_cid']=$_REQUEST['product_category'];
+	}
+	if (isset($_REQUEST['product_cid'])) {
+		$PAGEDATA->vars['products_what_to_show']=2;
+		$PAGEDATA->vars['products_category_to_show']=(int)$_REQUEST['product_cid'];
+	}
+	if (isset($_REQUEST['product_id'])) {
+		$PAGEDATA->vars['products_what_to_show']=3;
+		$PAGEDATA->vars['products_product_to_show']=(int)$_REQUEST['product_id'];
+	}
+	if (!isset($PAGEDATA->vars['footer'])) {
+		$PAGEDATA->vars['footer']='';
+	}
+	// first render the products, in case the page needs to know what template was used
+	$producthtml=Products_show($PAGEDATA);
+	return $PAGEDATA->render()
+		.$producthtml
+		.__FromJson($PAGEDATA->vars['footer']);
+}
+
+// }
+// { Products_getProductPrice
+
+/**
+  * figure out how much a product costs
+  *
+  * @param object  $product        the product data
+	* @param int     $amount         how many are wanted
+	* @param string  $md5            unique identifier
+	* @param boolean $removefromcart remove any copies of this from the cart first
+  *
+  * @return object the product instance
+  */
+function Products_getProductPrice(
+	$product,
+	$amount,
+	$md5,
+	$removefromcart=true
+) {
+	$id=$product->id;
+	if (isset($_SESSION['online-store']['items']['products_'.$id.$md5])) {
+		$amount+=$_SESSION['online-store']['items']['products_'.$id.$md5]['amt'];
+		if ($removefromcart) {
+			unset($_SESSION['online-store']['items']['products_'.$id.$md5]);
+		}
+	}
+	// { get price
+	if (isset($product->vals['online-store'])) {
+		$p=$product->vals['online-store'];
+		$price=(float)$p['_price'];
+		if (@$p['_sale_price']) {
+			$price=$product->getPrice('sale');
+		}
+		if (isset($p['_bulk_price'])
+			&& $p['_bulk_price']>0
+			&& $p['_bulk_price']<$price
+			&& $amount>=$p['_bulk_amount']
+		) {
+			$price=$p['_bulk_price'];
+		}
+		$vat=(isset($p['_vatfree']) && $p['_vatfree']=='1')?false:true;
+	}
+	else {
+		$price=(float)$product->get('price');
+		$vat=true;
+	}
+	// }
+	return array($price, $amount, $vat);
+}
+
+// }
+// { Products_imageSlider
+
+/**
+	* return all products in a slider
+	*
+	* @param array $params parameters
+	*
+	* @return string HTML of the slider
+	*/
+function Products_imageSlider($params) {
+	$width=@$params['width'];
+	$height=@$params['height'];
+	if ($width=='') {
+		$width='100%';
+	}
+	if ($height=='') {
+		$height='100%';
+	}
+	return '<div class="products-image-slider" style="width:'.$width.';height:'
+		.$height.'"></div>';
+}
+
+// }
+// { Products_listCategories
+
+/**
+  * list product categories contained in a parent
+  *
+  * @param array  $params parameters to pass to the function
+  * @param object $smarty the current Smarty instance
+  *
+  * @return HTML the list of categories
+  */
+function Products_listCategories($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/show.php';
+	return _Products_listCategories($params, $smarty);
+}
+
+// }
+// { Products_listCategoryContents 
+
+/**
+  * build up a list of the contents of a product category
+  *
+  * @param array  $params parameters to pass to the function
+  * @param object $smarty the current Smarty instance
+  *
+  * @return HTML the list of contents
+  */
+function Products_listCategoryContents($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/show.php';
+	return _Products_listCategoryContents($params, $smarty);
+}
+
+// }
+// { Products_owner
+
+/**
+	* show the product owner
+	*
+	* @param array  $params parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string html of the selected variable
+	*/
+function Products_owner($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_owner2($params, $smarty);
+}
+
+// }
+// { Products_priceBase
+
+/**
+	* show the base price
+	*
+	* @param array  $params parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string the base price
+	*/
+function Products_priceBase($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_priceBase2($params, $smarty);
+}
+
+// }
+// { Products_priceDiscount
+
+/**
+	* show how much the discount is worth
+	*
+	* @param array  $params parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string the discount amount
+	*/
+function Products_priceDiscount($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_priceDiscount2($params, $smarty);
+}
+
+// }
+// { Products_priceDiscountPercent
+
+/**
+	* show the discount percentage
+	*
+	* @param array  $params parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string the discount percentage
+	*/
+function Products_priceDiscountPercent($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_priceDiscountPercent2($params, $smarty);
+}
+
+// }
+// { Products_priceSale
+
+/**
+	* show the sale price
+	*
+	* @param array  $params parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string the sale price
+	*/
+function Products_priceSale($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_priceSale2($params, $smarty);
+}
+
+// }
+// { Products_qrCode
+
+/**
+	* show a QR code for the product page
+	*
+	* @param array  $params parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return the QR code
+	*/
+function Products_qrCode($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_qrCode2($params, $smarty);
+}
+
+// }
+// { Products_soldAmount
+
+/**
+	* show the sold amount
+	*
+	* @param array  $params parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string the amount sold
+	*/
+function Products_soldAmount($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_soldAmount2($params, $smarty);
+}
+
+// }
+// { Products_widget
+
+/**
+  * get HTML for the Products widget
+  *
+  * @param array $vars any parameters to pass to the widget
+  *
+  * @return string HTML of the widget
+  */
+function Products_widget($vars=null) {
+	require_once dirname(__FILE__).'/frontend/show.php';
+	require dirname(__FILE__).'/frontend/widget.php';
+	return $html;
+}
+
+// }
