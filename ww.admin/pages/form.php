@@ -80,7 +80,7 @@ echo '<html><head>'
 	.'<script src="/j/jquery.remoteselectoptions.js"></script>'
 	.'<script src="/j/cluetip/jquery.cluetip.js"></script>'
 	.'<script src="/j/jquery-ui-timepicker-addon.js"></script>'
-	.'<script src="form.js"></script>'
+	.'<script src="form2.js"></script>'
 	.'<link rel="stylesheet" href="/j/cluetip/jquery.cluetip.'
 	.'css" />'
 	.'<link rel="stylesheet" href="/ww.admin/theme/admin.css" />'
@@ -510,7 +510,7 @@ foreach ($PLUGINS as $n=>$p) {
 // { form footer
 echo '</div>';
 echo '<input type="hidden" name="action" value="Update Page Details"/>';
-echo '<div id="submit-row"><input type="submit" value="'
+echo '<div id="submit-row"><input id="pages-submit" type="submit" value="'
 	.__('Update Page Details').'"/></div>';
 echo '</form>';
 // }

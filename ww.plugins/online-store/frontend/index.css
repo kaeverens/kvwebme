@@ -12,3 +12,6 @@
 .online-store{
 	text-align:left;
 }
+#online-store-personal, #online-store-address{
+	display:inline-block;
+}

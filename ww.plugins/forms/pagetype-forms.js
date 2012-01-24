@@ -564,4 +564,5 @@ function Forms_Pagetype_forms() {
 		$.getScript('/j/jquery.autogrowtextarea.js');
 	}
 	// }
+	$('#pages_form').submit(updateValues);
 }

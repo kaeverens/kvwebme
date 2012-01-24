@@ -116,12 +116,23 @@ $(function(){
 			changeYear: true
 		});
 	var $form=$('#pages_form')
-		.submit(pages_validate);
+		.submit(pages_validate)
+		.submit(function() {
+			Page_updatePageVars();
+			return pages_check_page_length($(this).attr('maxLength'))
+		})
+		.submit(function() { // delay to let tardy updates finish
+			$('input[type=submit]').attr('disabled', true);
+			if (!$(this).attr('ok-to-go')) {
+				$(this).attr('ok-to-go', 1);
+				setTimeout(function() {
+					$('#pages_form').submit();
+				}, 200);
+				return false;
+			}
+			return true;
+		});
 	$('#name').keyup(pages_validate_name);
-	$('form#pages_form').submit(function() {
-		Page_updatePageVars();
-		return pages_check_page_length($(this).attr('maxLength'))
-	});
 	$('select[name=type]')
 		.change(function(){
 			if (!$('#body-wrapper').length) {

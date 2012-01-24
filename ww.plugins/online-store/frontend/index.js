@@ -285,10 +285,10 @@ $(function(){
 											if (!pass1 || pass1!=pass2) {
 												return alert('Passwords must be equal');
 											}
-											$.post('/a/p=privacy/f=register', {
+											$.post('/a/f=register', {
 												'token':token,
 												'password':pass1
-											}, function() {
+											}, function(ret) {
 												if (ret.error) {
 													return alert(ret.error);
 												}
@@ -309,6 +309,32 @@ $(function(){
 								'h2[panel="Delivery Address"]'
 							);
 						});
+					break; // }
+					case 'Delivery Address': // {
+						var html='<div id="online-store-personal">'
+							+'<label><span class="__" lang-context="core">First Name</span>'
+							+'<input id="online-store-FirstName"/></label>'
+							+'<label><span class="__" lang-context="core">Surname</span>'
+							+'<input id="online-store-Surname"/></label>'
+							+'<label><span class="__" lang-context="core">Phone</span>'
+							+'<input id="online-store-Phone"/></label>'
+							+'<label><span class="__" lang-context="core">Email</span>'
+							+'<input id="online-store-Email"/></label>'
+							+'</div><div id="online-store-address">'
+							+'<label><span class="__" lang-context="core">Street</span>'
+							+'<input id="online-store-Street"/></label>'
+							+'<label><span class="__" lang-context="core">Street 2</span>'
+							+'<input id="online-store-Street2"/></label>'
+							+'<label><span class="__" lang-context="core">Town</span>'
+							+'<input id="online-store-Town"/></label>'
+							+'<label><span class="__" lang-context="core">Postcode</span>'
+							+'<input id="online-store-Postcode"/></label>'
+							+'<label><span class="__" lang-context="core">County</span>'
+							+'<input id="online-store-County"/></label>'
+							+'<label><span class="__" lang-context="core">Country</span>'
+							+'<input id="online-store-Country"/></label>'
+							+'</div>';
+						content.html(html);
 					break; // }
 				}
 			}
