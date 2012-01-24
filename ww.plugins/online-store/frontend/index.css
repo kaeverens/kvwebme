@@ -1,0 +1,14 @@
+.online-store label{
+	display:block;
+}
+.online-store label span{
+	display:inline-block;
+	width:5em;
+}
+.online-store .or{
+	vertical-align:middle;
+	font-weight:bold;
+}
+.online-store{
+	text-align:left;
+}

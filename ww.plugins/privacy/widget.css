@@ -1,0 +1,12 @@
+#userauthentication-widget button, #userauthentication-widget img{
+	cursor: pointer;
+}
+#userauthentication-widget ul{
+	padding:0;
+	margin:0;
+	list-style:none;
+}
+#userauthentication-widget li{
+	list-style:none;
+	float:left;
+}
