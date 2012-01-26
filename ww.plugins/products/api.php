@@ -136,7 +136,7 @@ function Products_getProductsByUser() {
 		$p=Product::getInstance($r['id']);
 		$products[]=array(
 			'id'=>$p->id,
-			'name'=>$p->name,
+			'name'=>__FromJson($p->name),
 			'url'=>$p->getRelativeUrl()
 		);
 	}

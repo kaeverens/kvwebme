@@ -146,7 +146,7 @@ $(function(){
 						if ($imgs.length<2) {
 							return;
 						}
-						setTimeout(rotate, 2000);
+						setTimeout(rotate, 5000);
 					});
 			}
 			rotate();
