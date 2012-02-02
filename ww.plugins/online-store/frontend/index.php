@@ -188,7 +188,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			.'><tr><th class="quantityheader __" lang-context="core">Quantity</th>'
 			.'<th class="descriptionheader __" lang-context="core">Description</th>'
 			.'<th class="unitamountheader __" lang-context="core">Unit Price</th>'
-			.'<th class="amountheader" class="__" lang-context="core">Amount</th>'
+			.'<th class="amountheader __" lang-context="core">Amount</th>'
 			.'</tr>';
 		$user_is_vat_free=0;
 		$group_discount=0;
