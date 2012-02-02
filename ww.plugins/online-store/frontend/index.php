@@ -464,7 +464,11 @@ if (!$submitted) {
 			$grandTotal-=$discount_amount;
 		}
 		// { postage
-		$postage=OnlineStore_getPostageAndPackaging($deliveryTotal, '', 0);
+		$postage=OnlineStore_getPostageAndPackaging(
+			$deliveryTotal,
+			@$_REQUEST['Country'],
+			0
+		);
 		if ($postage['total']) {
 			$grandTotal+=$postage['total'];
 			$c.='<tr><td class="p_and_p __" lang-context="core" '
@@ -524,6 +528,7 @@ if (!$submitted) {
 		else {
 			$post['_pandp']=count(json_decode($postage));
 		}
+		$post['os_pandp']=(int)$_SESSION['os_pandp'];
 		// }
 		WW_addInlineScript('var os_post_vars='.json_encode($post).';');
 		WW_addScript('/ww.plugins/online-store/frontend/index.js');

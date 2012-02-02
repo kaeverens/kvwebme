@@ -153,7 +153,7 @@ $(function(){
 				'Billing_Street', 'Billing_Street2', 'Billing_Surname',
 				'Billing_Town', 'Country', 'County', 'Email', 'FirstName', 'Phone',
 				'Postcode', 'Street', 'Street2', 'Surname', 'Town',
-				'_payment_method_type', 'action', 'os_no_submit'
+				'_payment_method_type', 'action', 'os_no_submit', 'os_pandp'
 			];
 			html+='<form id="online-store-form" method="post" action="'
 				+document.location.toString().replace(/\?.*/, '')
@@ -440,6 +440,9 @@ $(function(){
 										.appendTo($this);
 								}
 								$this.val($('input[name=Billing_Country]').val());
+								$this.change(function() {
+									$('input[name=Billing_Country]').val($this.val());
+								});
 							}
 						);
 						$('#online-store-billing button').click(function() {
@@ -462,10 +465,14 @@ $(function(){
 								for (var i=0;i<ret.length;++i) {
 									$('<option/>')
 										.text(ret[i])
-										.attr('value', ret[i])
+										.attr('value', i)
 										.appendTo($this);
 								}
-								$this.val($('input[name=Billing_Country]').val());
+								$this.val($('input[name=os_pandp]').val());
+								$this.change(function() {
+									$('input[name=os_pandp]').val($this.val());
+									reloadPage(3);
+								});
 							}
 						);
 						$('#online-store-pandp button').click(function() {
@@ -474,6 +481,40 @@ $(function(){
 								'h2[panel="Payment"]'
 							);
 						});
+					break; // }
+					case 'Payment': // {
+						content.html(
+							'<div id="online-store-payment-method"><select/>'
+							+'<button class="__" lang-context="core">Proceed to Payment'
+							+'</button></div>'
+						);
+						$.get('/a/p=online-store/f=paymentTypesList/page_id='+pagedata.id,
+							function(ret) {
+								if (ret.error) {
+									return alert(ret.error);
+								}
+								var $this=$('#online-store-payment-method select');
+								$.each(ret, function(k, v) {
+									$('<option/>')
+										.text(v)
+										.attr('value', k)
+										.appendTo($this);
+								});
+								$this.val($('input[name=_payment_method]').val());
+								$this.change(function() {
+									$('input[name=_payment_method]').val($this.val());
+								});
+								$('#online-store-payment-method button').click(function() {
+									$('#online-store-form input[name=os_no_submit]').remove();
+									$('#online-store-form')
+										.append(
+											'<input type="hidden" name="action" '
+											+'value="Proceed to Payment" />'
+										)
+										.submit();
+								});
+							}
+						);
 					break; // }
 				}
 			}
@@ -487,6 +528,9 @@ $(function(){
 				}
 				if (!$('input[name=Billing_Email]').val()) {
 					errs.push('You must fill in your email address');
+				}
+				if (!$('input[name=Billing_Phone]').val()) {
+					errs.push('You must fill in your phone');
 				}
 				if (!$('input[name=Billing_Street]').val()) {
 					errs.push('You must fill in your street');
@@ -510,6 +554,9 @@ $(function(){
 				}
 				if (!$('input[name=Email]').val()) {
 					errs.push('You must fill in your email address');
+				}
+				if (!$('input[name=Phone]').val()) {
+					errs.push('You must fill in your phone');
 				}
 				if (!$('input[name=Street]').val()) {
 					errs.push('You must fill in your street');

@@ -210,6 +210,55 @@ function OnlineStore_pandpGetList() {
 }
 
 // }
+// { OnlineStore_paymentTypesList
+
+/**
+	* get list of payment types accepted by a checkout
+	*
+	* @return array of payment types
+	*/
+function OnlineStore_paymentTypesList() {
+	$page_id=(int)@$_REQUEST['page_id'];
+	if ($page_id) {
+		$page=Page::getInstance($page_id);
+		$page->initValues();
+	}
+	else {
+		$page=@$GLOBALS['PAGEDATA'];
+		if ($page->type!='online-store') {
+			$page=Page::getInstanceByType('online-store');
+			if (!$page) {
+				return array(
+					'error'=>'No online-store page created.'
+				);
+			}
+			$page->initValues();
+		}
+	}
+	// { build list of payment methods
+	$arr=array();
+	if (@$page->vars['online_stores_quickpay_merchantid']) {
+		$arr['QuickPay']='Credit Card';
+	}
+	if (@$page->vars['online_stores_realex_sharedsecret']) {
+		$arr['Realex']='Credit Card';
+	}
+	if (@$page->vars['online_stores_paypal_address']) {
+		$arr['PayPal']='PayPal';
+	}
+	if (@$page->vars['online_stores_bank_transfer_account_number']) {
+		$arr['Bank Transfer']='Bank Transfer';
+	}
+	// }
+	if (!count($arr)) {
+		return array(
+			'error'=>'No payment methods have been defined.'
+		);
+	}
+	return $arr;
+}
+
+// }
 // { OnlineStore_saveSavedList
 
 /**

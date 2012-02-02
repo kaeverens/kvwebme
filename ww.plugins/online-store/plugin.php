@@ -208,7 +208,20 @@ function OnlineStore_pagedata() {
 	* @return string
 	*/
 function OnlineStore_paymentTypes() {
-	require_once dirname(__FILE__).'/frontend/payment-types.php';
+	require_once dirname(__FILE__).'/api.php';
+	$c='<select id="payment_method_type" name="_payment_method_type">';
+	$arr=OnlineStore_paymentTypesList();
+	if (@$arr['error']) {
+		return '<em class="__" lang-context="core">'.$arr['error'].'</em>';
+	}
+	foreach ($arr as $n=>$v) {
+		$c.='<option value="'.$n.'"';
+		if (@$_REQUEST['_payment_method_type']==$n) {
+			$c.=' selected="selected"';
+		}
+		$c.='>'.$v.'</option>';
+	}
+	$c.='</select>';
 	return $c;
 }
 
