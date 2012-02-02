@@ -358,6 +358,9 @@ function OnlineStore_getPostageAndPackaging($total, $country, $weight) {
 		return array('name'=>'none', 'total'=>0);
 	}
 	$pandps=OnlineStore_getPostageAndPackagingData();
+	if (isset($_REQUEST['os_pandp'])) {
+		$_SESSION['os_pandp']=(int)$_REQUEST['os_pandp'];
+	}
 	if (!isset($_SESSION['os_pandp'])) {
 		$_SESSION['os_pandp']=0;
 	}

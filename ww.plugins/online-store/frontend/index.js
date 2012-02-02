@@ -8,11 +8,9 @@ function compare(obj1, obj2) {
 		}
 		return size;
 	}
-
 	if (size(obj1) != size(obj2)) {
 		return false;
 	}
-
 	for(var keyName in obj1) {
 		var value1 = obj1[keyName];
 		var value2 = obj2[keyName];
@@ -138,6 +136,7 @@ $(function(){
 			}
 			tabs.push('Payment');
 			// }
+			// { setup
 			var html='<div id="online-store-checkout-accordion-wrapper">'
 			// { panels
 			for (var i=0;i<tabs.length;++i) {
@@ -165,6 +164,7 @@ $(function(){
 			// }
 			$(html).appendTo('#online-store-wrapper');
 			$('input[name=os_no_submit]').val(1);
+			// }
 			function showStep(ev, ui) {
 				if (!ui.newHeader) {
 					ui.newHeader=$('#online-store-wrapper>div>h2:first-child');
@@ -172,6 +172,7 @@ $(function(){
 				}
 				var content=ui.newContent;
 				var panel=ui.newHeader.attr('panel');
+				$('#online-store-wrapper>div>div').empty();
 				switch(panel) {
 					case 'Login': // {
 						if (userdata.id) {
@@ -232,7 +233,7 @@ $(function(){
 							if (ret.error) {
 								return alert(ret.error);
 							}
-							$('#online-store-form').submit();
+							reloadPage(0);
 						}
 						content.find('.user-login button').click(function() {
 							var $form=$('#online-store-wrapper .user-login');
@@ -311,7 +312,10 @@ $(function(){
 						});
 					break; // }
 					case 'Delivery Address': // {
-						var html='<div id="online-store-personal">'
+						var html=
+							'<div id="online-store-delivery">'
+							// { contact info
+							+'<div id="online-store-delivery-personal">'
 							+'<label><span class="__" lang-context="core">First Name</span>'
 							+'<input id="online-store-FirstName"/></label>'
 							+'<label><span class="__" lang-context="core">Surname</span>'
@@ -320,7 +324,10 @@ $(function(){
 							+'<input id="online-store-Phone"/></label>'
 							+'<label><span class="__" lang-context="core">Email</span>'
 							+'<input id="online-store-Email"/></label>'
-							+'</div><div id="online-store-address">'
+							+'</div>'
+							// }
+							// { address
+							+'<div id="online-store-delivery-address">'
 							+'<label><span class="__" lang-context="core">Street</span>'
 							+'<input id="online-store-Street"/></label>'
 							+'<label><span class="__" lang-context="core">Street 2</span>'
@@ -332,17 +339,204 @@ $(function(){
 							+'<label><span class="__" lang-context="core">County</span>'
 							+'<input id="online-store-County"/></label>'
 							+'<label><span class="__" lang-context="core">Country</span>'
-							+'<input id="online-store-Country"/></label>'
+							+'<select id="online-store-Country"><option/></select></label>'
+							+'</div>'
+							// }
+							// { next
+							+'<div id="online-store-delivery-next">'
+							+'<button class="__" lang-context="core">Next</button>'
+							+'</div>'
+							// }
 							+'</div>';
 						content.html(html);
+						$('#online-store-delivery input').each(function() {
+							var $this=$(this),
+								name=$this.attr('id').replace('online-store-', '');
+							$this
+								.val($('input[name='+name+']').val())
+								.change(function() {
+									$('input[name='+name+']').val($this.val());
+								});
+						});
+						$.get('/a/p=online-store/f=getCountries/page_id='+pagedata.id,
+							function(ret) {
+								var $this=$('#online-store-Country');
+								for (var i=0;i<ret.length;++i) {
+									$('<option/>')
+										.text(ret[i])
+										.attr('value', ret[i])
+										.appendTo($this);
+								}
+								$this.val($('input[name=Country]').val());
+								$this.change(function() {
+									$('input[name=Country]').val($this.val());
+									reloadPage(1);
+								});
+							}
+						);
+						$('#online-store-delivery button').click(function() {
+							if (checkDeliveryAddress()) {
+								$accordion.accordion(
+									'activate',
+									'h2[panel="Billing Address"]'
+								);
+							}
+						});
+					break; // }
+					case 'Billing Address': // {
+						var html=
+							'<div id="online-store-billing">'
+							// { contact info
+							+'<div id="online-store-billing-personal">'
+							+'<label><span class="__" lang-context="core">First Name</span>'
+							+'<input id="online-store-FirstName"/></label>'
+							+'<label><span class="__" lang-context="core">Surname</span>'
+							+'<input id="online-store-Surname"/></label>'
+							+'<label><span class="__" lang-context="core">Phone</span>'
+							+'<input id="online-store-Phone"/></label>'
+							+'<label><span class="__" lang-context="core">Email</span>'
+							+'<input id="online-store-Email"/></label>'
+							+'</div>'
+							// }
+							// { address
+							+'<div id="online-store-billing-address">'
+							+'<label><span class="__" lang-context="core">Street</span>'
+							+'<input id="online-store-Street"/></label>'
+							+'<label><span class="__" lang-context="core">Street 2</span>'
+							+'<input id="online-store-Street2"/></label>'
+							+'<label><span class="__" lang-context="core">Town</span>'
+							+'<input id="online-store-Town"/></label>'
+							+'<label><span class="__" lang-context="core">Postcode</span>'
+							+'<input id="online-store-Postcode"/></label>'
+							+'<label><span class="__" lang-context="core">County</span>'
+							+'<input id="online-store-County"/></label>'
+							+'<label><span class="__" lang-context="core">Country</span>'
+							+'<select id="online-store-Country"><option/></select></label>'
+							+'</div>'
+							// }
+							// { next
+							+'<div id="online-store-billing-next">'
+							+'<button class="__" lang-context="core">Next</button>'
+							+'</div>'
+							// }
+							+'</div>';
+						content.html(html);
+						$('#online-store-billing input').each(function() {
+							var $this=$(this),
+								name='Billing_'+$this.attr('id').replace('online-store-', '');
+							$this
+								.val($('input[name='+name+']').val())
+								.change(function() {
+									$('input[name='+name+']').val($this.val());
+								});
+						});
+						$.get('/a/p=online-store/f=getCountries/page_id='+pagedata.id,
+							function(ret) {
+								var $this=$('#online-store-Country');
+								for (var i=0;i<ret.length;++i) {
+									$('<option/>')
+										.text(ret[i])
+										.attr('value', ret[i])
+										.appendTo($this);
+								}
+								$this.val($('input[name=Billing_Country]').val());
+							}
+						);
+						$('#online-store-billing button').click(function() {
+							if (checkBillingAddress()) {
+								$accordion.accordion(
+									'activate',
+									'h2[panel="Delivery Options"]'
+								);
+							}
+						});
+					break; // }
+					case 'Delivery Options': // {
+						content.html(
+							'<div id="online-store-pandp"><select/>'
+							+'<button class="__" lang-context="core">Next</button></div>'
+						);
+						$.get('/a/p=online-store/f=pandpGetList/page_id='+pagedata.id,
+							function(ret) {
+								var $this=$('#online-store-pandp select');
+								for (var i=0;i<ret.length;++i) {
+									$('<option/>')
+										.text(ret[i])
+										.attr('value', ret[i])
+										.appendTo($this);
+								}
+								$this.val($('input[name=Billing_Country]').val());
+							}
+						);
+						$('#online-store-pandp button').click(function() {
+							$accordion.accordion(
+								'activate',
+								'h2[panel="Payment"]'
+							);
+						});
 					break; // }
 				}
 			}
+			function checkBillingAddress() {
+				var errs=[];
+				if (!$('input[name=Billing_FirstName]').val()) {
+					errs.push('You must fill in your first name');
+				}
+				if (!$('input[name=Billing_Surname]').val()) {
+					errs.push('You must fill in your surname');
+				}
+				if (!$('input[name=Billing_Email]').val()) {
+					errs.push('You must fill in your email address');
+				}
+				if (!$('input[name=Billing_Street]').val()) {
+					errs.push('You must fill in your street');
+				}
+				if (!$('input[name=Billing_Country]').val()) {
+					errs.push('You must fill in your country');
+				}
+				if (errs.length) {
+					alert(errs.join("\n"));
+					return false;
+				}
+				return true;
+			}
+			function checkDeliveryAddress() {
+				var errs=[];
+				if (!$('input[name=FirstName]').val()) {
+					errs.push('You must fill in your first name');
+				}
+				if (!$('input[name=Surname]').val()) {
+					errs.push('You must fill in your surname');
+				}
+				if (!$('input[name=Email]').val()) {
+					errs.push('You must fill in your email address');
+				}
+				if (!$('input[name=Street]').val()) {
+					errs.push('You must fill in your street');
+				}
+				if (!$('input[name=Country]').val()) {
+					errs.push('You must fill in your country');
+				}
+				if (errs.length) {
+					alert(errs.join("\n"));
+					return false;
+				}
+				return true;
+			}
+			// { setup the accordion
+			var tabNum=+os_post_vars.tabNum;
 			var $accordion=$('#online-store-checkout-accordion-wrapper').accordion({
 				'autoHeight':false,
 				'create':showStep,
 				'changestart':showStep
 			});
+			if (!tabNum) {
+				tabNum=0;
+			}
+			setTimeout(function() {
+				$accordion.accordion('activate', tabNum);
+			}, 1);
+			// }
 		break; // }
 		default: // {
 			$('input[name=os_voucher]').change(function() {
@@ -381,5 +575,11 @@ $(function(){
 			$('input[name="'+i+'"],select[name="'+i+'"],textarea[name="'+i+'"]')
 				.val(os_post_vars[i]);
 		}
+	}
+	function reloadPage(tabNum) {
+		var $form=$('#online-store-form');
+		$('<input type="hidden" name="tabNum" value="'+tabNum+'"/>')
+			.appendTo($form);
+		$form.submit();
 	}
 });

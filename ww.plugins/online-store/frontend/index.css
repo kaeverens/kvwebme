@@ -12,6 +12,9 @@
 .online-store{
 	text-align:left;
 }
-#online-store-personal, #online-store-address{
+#online-store-delivery>div{
+	display:inline-block;
+}
+#online-store-billing>div{
 	display:inline-block;
 }
