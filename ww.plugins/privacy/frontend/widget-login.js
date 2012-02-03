@@ -2,6 +2,9 @@ $(function(){
 	var $form=$('#userauthentication-widget');
 	$form.find('button,img').click(function(){
 		var $this=$(this), btn='';
+		if ($this.hasClass('override-default')) {
+			return;
+		}
 		var action=$this.closest('li').attr('class').replace(/userauthentication-/, '');
 		switch (action) {
 			case 'login': // {
@@ -45,9 +48,6 @@ $(function(){
 					)+'/widget-id='+widget_id+'/';
 			break; // }
 			case 'register': // {
-				if ($this.hasClass('override-default')) {
-					return;
-				}
 				document.location=$this.attr('href');
 			break; // }
 		}

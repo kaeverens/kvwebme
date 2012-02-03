@@ -18,7 +18,7 @@ class Pages{
 		Pages::$instancesByParent[$constraint] =& $this;
 	}
 	static function getInstancesByType($type) {
-		$constraint='type="'.addslashes($type).'"';
+		$constraint='type like "'.addslashes($type).'%"';
 		if (!array_key_exists($constraint, self::$instancesByParent)) {
 			new Pages($constraint, false);
 		}

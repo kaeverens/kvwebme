@@ -222,10 +222,6 @@ function menu_show_fg ($opts) {
 	global $_languages;
 	$c='';
 	$md5_1=md5('menu_fg|'.print_r($opts, true).'|'.join(', ', $_languages));
-	$cache=Core_cacheLoad('menus', $md5_1);
-	if ($cache) {
-		return $cache;
-	}
 	$options=array(
 		'direction' => 0,  // 0: horizontal, 1: vertical
 		'parent'    => 0,  // top-level
@@ -295,7 +291,6 @@ function menu_show_fg ($opts) {
 			."});"
 		);
 	}
-	Core_cacheSave('menus', $md5_1, $c);
 	return $c;
 }
 /**

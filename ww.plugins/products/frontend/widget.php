@@ -22,7 +22,7 @@
 function Products_categoriesListSubCats($pid) {
 	$cats=dbAll(
 		'select id,name from products_categories '
-		.'where parent_id='.$pid.' and enabled order by sortNum,name'
+		.'where parent_id='.$pid.' and enabled order by sortNum'
 	);
 	if (!$cats || !count($cats)) {
 		return '';
@@ -30,7 +30,10 @@ function Products_categoriesListSubCats($pid) {
 	$html='<ul>';
 	foreach ($cats as $c) {
 		$cat=ProductCategory::getInstance($c['id']);
-		$html.='<li><a href="'.$cat->getRelativeUrl().'">'.$c['name'].'</a>';
+		$name=$c['name'];
+		$html.='<li class="products-cat-'
+			.preg_replace('/[^a-zA-Z0-9\-_]/', '', $name).'">'
+			.'<a href="'.$cat->getRelativeUrl().'">'.htmlspecialchars($name).'</a>';
 		$html.='</li>';
 	}
 	return $html.'</ul>';
@@ -45,7 +48,7 @@ $diameter=isset($vars->diameter) && $vars->diameter?$vars->diameter:280;
 $parent_cat=isset($vars->parent_cat)?((int)$vars->parent_cat):0;
 $cats=dbAll(
 	'select id,name,associated_colour as col from products_categories '
-	.'where parent_id='.$parent_cat.' and enabled order by sortNum,name'
+	.'where parent_id='.$parent_cat.' and enabled order by sortNum'
 );
 
 switch ($widget_type) {
@@ -87,7 +90,10 @@ switch ($widget_type) {
 		$html='<div class="product-categories-tree"><ul>';
 		foreach ($cats as $c) {
 			$cat=ProductCategory::getInstance($c['id']);
-			$html.='<li><a href="'.$cat->getRelativeUrl().'">'.$c['name'].'</a>';
+			$name=$c['name'];
+			$html.='<li class="products-cat-'
+				.preg_replace('/[^a-zA-Z0-9\-_]/', '', $name).'">'
+				.'<a href="'.$cat->getRelativeUrl().'">'.htmlspecialchars($name).'</a>';
 			$html.=Products_categoriesListSubCats($c['id']);
 			$html.='</li>';
 		}
@@ -98,8 +104,11 @@ switch ($widget_type) {
 	default: // { List Categories
 		$html='<ul>';
 		foreach ($cats as $c) {
-			$html.='<li><a href="/_r?type=products&product_cid='.$c['id'].'">'
-				.$c['name'].'</a></li>';
+			$name=$c['name'];
+			$html.='<li class="products-cat-'
+				.preg_replace('/[^a-zA-Z0-9\-_]/', '', $name).'">'
+				.'<a href="/_r?type=products&product_cid='.$c['id'].'">'
+				.$name.'</a></li>';
 		}
 		$html.='</ul>';
 	break; // }

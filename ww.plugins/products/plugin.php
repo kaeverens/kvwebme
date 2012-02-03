@@ -928,7 +928,7 @@ function Products_addToCart() {
 			}
 			$vals[]='<div class="products-desc-'
 				.preg_replace('/[^a-zA-Z0-9]/', '', $k).'">'
-				.'<span >'.$n.'</span>: '.$v.'</div>';
+				.'<span class="__">'.$n.'</span>: '.$v.'</div>';
 		}
 	}
 	if (count($vals)) {
