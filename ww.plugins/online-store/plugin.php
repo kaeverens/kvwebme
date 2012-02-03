@@ -256,6 +256,8 @@ function OnlineStore_numToPrice($val, $sym=true, $rounded=false) {
 		:sprintf("%.2f", $val*$rate));
 }
 
+// { OnlineStore_showBasketWidget
+
 /**
 	* returns a HTML string to show the Online-Store basket
 	*
@@ -291,9 +293,13 @@ function OnlineStore_showBasketWidget($vars=null) {
 			OnlineStore_numToPrice(OnlineStore_getFinalTotal()),
 			$t
 		);
+		if (strpos($t, '{{ONLINESTORE_CHECKOUTURL}}')!==false) {
+			$cpage=Page::getInstance($_SESSION['onlinestore_checkout_page']);
+			$cpage=$cpage->getRelativeUrl();
+		}
 		$t=str_replace(
 			'{{ONLINESTORE_CHECKOUTURL}}',
-			'/?pageid='.$_SESSION['onlinestore_checkout_page'],
+			$cpage,
 			$t
 		);
 		$html.=$t;
@@ -356,6 +362,8 @@ function OnlineStore_showBasketWidget($vars=null) {
 	WW_addScript('/ww.plugins/online-store/j/basket.js');
 	return $html;
 }
+
+// }
 
 /**
 	* get data about postage and packaging

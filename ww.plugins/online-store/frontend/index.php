@@ -372,7 +372,7 @@ if (!$submitted) {
 	if (@$_SESSION['online-store']['items']
 		&& count($_SESSION['online-store']['items'])>0
 	) {
-		$viewtype=(int)$_REQUEST['viewtype'];
+		$viewtype=(int)@$_REQUEST['viewtype'];
 		$pviewtype=(int)@$PAGEDATA->vars['onlinestore_viewtype'];
 		// { show basket contents
 		$user_is_vat_free=0;
