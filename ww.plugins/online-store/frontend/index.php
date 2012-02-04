@@ -518,7 +518,7 @@ if (!$submitted) {
 		$post=$_POST;
 		unset($post['action']);
 		$postage=dbOne(
-			'select value from page_vars where page_id=1302 and '
+			'select value from page_vars where page_id='.$PAGEDATA->id.' and '
 			.'name="online_stores_postage"',
 			'value'
 		);

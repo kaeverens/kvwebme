@@ -510,6 +510,8 @@ function OnlineStore_showBasketWidget($vars=null) {
 	if (!isset($_SESSION['online-store'])) {
 		$_SESSION['online-store']=array('items'=>array(),'total'=>0);
 	}
+	$cpage=Page::getInstance($_SESSION['onlinestore_checkout_page']);
+	$cpage=$cpage->getRelativeUrl();
 	if (@$vars->template) {
 		$t=$vars->template;
 		$t=str_replace('{{ONLINESTORE_NUM_ITEMS}}', OnlineStore_getNumItems(), $t);
@@ -522,14 +524,12 @@ function OnlineStore_showBasketWidget($vars=null) {
 			$t
 		);
 		if (strpos($t, '{{ONLINESTORE_CHECKOUTURL}}')!==false) {
-			$cpage=Page::getInstance($_SESSION['onlinestore_checkout_page']);
-			$cpage=$cpage->getRelativeUrl();
+			$t=str_replace(
+				'{{ONLINESTORE_CHECKOUTURL}}',
+				$cpage,
+				$t
+			);
 		}
-		$t=str_replace(
-			'{{ONLINESTORE_CHECKOUTURL}}',
-			$cpage,
-			$t
-		);
 		$html.=$t;
 	}
 	else {
@@ -566,8 +566,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 				.OnlineStore_numToPrice($_SESSION['online-store']['total'])
 				.'</td></tr>'
 				.'</table>'
-				.'<a class="online-store-checkout-link" href="/?pageid='
-				.$_SESSION['onlinestore_checkout_page'].'">'
+				.'<a class="online-store-checkout-link" href="'.$cpage.'">'
 				.'Proceed to Checkout</a>';
 		}
 		else {
