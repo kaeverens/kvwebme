@@ -339,6 +339,7 @@ function smarty_setup($compile_dir) {
 		htmlspecialchars($DBVARS['site_subtitle'])
 	);
 	$smarty->assign('GLOBALS', $GLOBALS);
+	$smarty->assign('LANGUAGE', @$_SESSION['language']);
 	$smarty->assign('LOCATIONNAME', @$_SESSION['location']['name']);
 	$smarty->register_function('BREADCRUMBS', 'Template_breadcrumbs');
 	$smarty->register_function('LANGUAGES', 'Core_languagesGetUi');

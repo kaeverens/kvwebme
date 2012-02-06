@@ -111,7 +111,8 @@ function CoreSiteoptions_screenLanguages() {
 			table+='</tbody></table>';
 			var $table=$(table)
 				.appendTo($content);
-			$table.dataTable();
+			$table.dataTable(
+			);
 			$('<a href="#">Add Language</a>')
 				.click(function() {
 					$('<form id="languages-form"><table>'
@@ -224,7 +225,12 @@ function CoreSiteoptions_screenLanguages() {
 			$languagestable=$(table)
 				.appendTo($content)
 				.dataTable({
-					fnDrawCallback:updateVisibleTranslations
+					fnDrawCallback:updateVisibleTranslations,
+					"aoColumns": [
+						{ "sWidth": "46%" },
+						{ "sWidth": "8%" },
+						{ "sWidth": "46%"}
+					]
 				});
 			$languagestable.on('click', 'tbody td:last-child', function() {
 				if ($languages.val()=='') {

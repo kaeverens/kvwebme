@@ -55,6 +55,7 @@ function Form_adminPageForm($page, $vars) {
   */
 function Form_frontend($PAGEDATA) {
 	require dirname(__FILE__).'/frontend/show.php';
+	WW_addScript('/j/jquery.tooltip.min.js');
 	return $PAGEDATA->render()
 		.Form_show($PAGEDATA->dbVals, $PAGEDATA->vars)
 		.@$PAGEDATA->vars['footer'];

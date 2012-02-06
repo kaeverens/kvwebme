@@ -177,7 +177,7 @@ function Forum_adminPostDelete() {
 	}
 	dbQuery('delete from forums_posts where id = '.$id);
 	if (dbOne('select id from forums_posts where id = '.$id, 'id')) {
-		return('status'=>0);
+		return(array('status'=>0));
 	}
 	return array('status'=>1, 'action'=>'deleted', 'id'=>$id);
 }
