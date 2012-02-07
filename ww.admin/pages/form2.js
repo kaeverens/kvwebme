@@ -26,7 +26,7 @@ function Page_updatePageVars() {
 		return;
 	}
 	$.each(page_vars, function(k, v) {
-		var $inp=$('page_vars[name='+k+']');
+		var $inp=$('input[name="page_vars['+k+']"],select[name="page_vars['+k+']"]');
 		if (!$inp.length) {
 			$inp=$('<input type="hidden" name="page_vars['+k+']"/>')
 				.appendTo('#pages_form');

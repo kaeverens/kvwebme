@@ -519,5 +519,5 @@ echo WW_getScripts();
 echo WW_getCss();
 echo '<script>//<![CDATA[
 window.page_menu_currentpage='.$id.';window.sessid="'.session_id().'";
-//]]></script></body></html>';
+//]]></script><div style="float:right">pageid: '.$id.'</div></body></html>';
 // }

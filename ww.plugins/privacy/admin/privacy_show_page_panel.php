@@ -16,11 +16,12 @@ echo '<h2>Privacy</h2>';
 echo '<table id="privacy-options">';
 // { restrict access to members of these group
 echo '<tr><th>Page is viewable only by logged-in users:</th><td>';
-echo '<input type="checkbox" name="page_vars[privacy_require_login]"';
-if (isset($page_vars['privacy_require_login'])) {
-	echo ' checked="checked"';
+echo '<select name="page_vars[privacy_require_login]">'
+	.'<option value="">No</option><option value="1"';
+if (@$page_vars['privacy_require_login']) {
+	echo ' selected="selected"';
 }
-echo '/></td></tr>';
+echo '>Yes</option></select></td></tr>';
 // }
 // { restrict access to members of these group
 echo '<tr><th>Page is viewable only by members of these groups:</th><td>';

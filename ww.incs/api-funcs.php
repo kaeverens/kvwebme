@@ -12,6 +12,8 @@
 	* @link     http://kvsites.ie/
 	*/
 
+// { Core_nothing
+
 /**
 	* does nothing... :-)
 	*
@@ -21,6 +23,9 @@ function Core_nothing() {
 	return array();
 }
 
+// }
+// { Core_languagesGet
+
 /**
 	* return a list of the site's languages
 	*
@@ -29,6 +34,9 @@ function Core_nothing() {
 function Core_languagesGet() {
 	return dbAll('select * from language_names order by is_default desc, name');
 }
+
+// }
+// { Core_locationsGet
 
 /**
 	* return a list of locations recorded by the CMS
@@ -43,6 +51,9 @@ function Core_locationsGet() {
 	}
 	return $locs;
 }
+
+// }
+// { Core_directoryCheckName
 
 /**
 	* check that a directory exists
@@ -65,6 +76,9 @@ function Core_directoryCheckName($file) {
 	}
 }
 
+// }
+// { Core_fileCheckName
+
 /**
 	* check that a file exists
 	*
@@ -85,6 +99,9 @@ function Core_fileCheckName($file) {
 		exit;
 	}
 }
+
+// }
+// { Core_getFileList
 
 /**
 	* get list of files in a directory
@@ -110,6 +127,8 @@ function Core_getFileList() {
 	}
 	return $files;
 }
+
+// }
 
 /**
 	* get mime data about a file

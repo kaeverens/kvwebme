@@ -11,6 +11,7 @@
 	* @link     http://kvsites.ie/
 	*/
 
+// { Core_adminCronGet
 
 /**
 	* get list of cron jobs
@@ -20,6 +21,9 @@
 function Core_adminCronGet() {
 	return dbAll('select * from cron');
 }
+
+// }
+// { Core_adminCronSave
 
 /**
 	* save cron job
@@ -39,6 +43,9 @@ function Core_adminCronSave() {
 	Core_configRewrite();
 	return array('ok'=>1);
 }
+
+// }
+// { Core_adminDirectoriesGet
 
 /**
 	* get list of directories (recursive)
@@ -77,6 +84,9 @@ function Core_adminDirectoriesGet() {
 	return $arr;
 }
 
+// }
+// { Core_adminLanguagesAdd
+
 /**
 	* add language
 	*
@@ -107,6 +117,9 @@ function Core_adminLanguagesAdd() {
 	return array('ok'=>1);
 }
 
+// }
+// { Core_adminLanguagesDelete
+
 /**
 	* delete language
 	*
@@ -118,6 +131,9 @@ function Core_adminLanguagesDelete() {
 	Core_cacheClear('core');
 	return array('ok'=>1);
 }
+
+// }
+// { Core_adminLanguagesEdit
 
 /**
 	* update language
@@ -152,6 +168,9 @@ function Core_adminLanguagesEdit() {
 	return array('ok'=>1);
 }
 
+// }
+// { Core_adminLanguagesEditString
+
 /**
 	* so a translation
 	*
@@ -168,6 +187,9 @@ function Core_adminLanguagesEditString() {
 	return array('ok'=>1);
 }
 
+// }
+// { Core_adminLanguagesGetStrings
+
 /**
 	* get list of translateable strings
 	*
@@ -176,6 +198,9 @@ function Core_adminLanguagesEditString() {
 function Core_adminLanguagesGetStrings() {
 	return dbAll('select distinct str,context from languages');
 }
+
+// }
+// { Core_adminLanguagesGetTrStrings
 
 /**
 	* get list of translated strings
@@ -186,6 +211,24 @@ function Core_adminLanguagesGetTrStrings() {
 	$lang=$_REQUEST['lang'];
 	return dbAll('select str,context,trstr from languages where lang="'.addslashes($lang).'"');
 }
+
+// }
+// { Core_adminLoadJSVars
+
+/**
+	* save a session variable
+	*
+	* @return array status of save
+	*/
+function Core_adminLoadJSVars() {
+	if (!isset($_SESSION['js'])) {
+		$_SESSION['js']=array();
+	}
+	return $_SESSION['js'];
+}
+
+// }
+// { Core_adminLocationsAdd
 
 /**
 	* add location
@@ -218,6 +261,9 @@ function Core_adminLocationsAdd() {
 	return array('ok'=>1);
 }
 
+// }
+// { Core_adminLocationDelete
+
 /**
 	* delete location
 	*
@@ -229,6 +275,9 @@ function Core_adminLocationDelete() {
 	Core_cacheClear('core');
 	return array('ok'=>1);
 }
+
+// }
+// { Core_adminLocationsEdit
 
 /**
 	* update location
@@ -264,157 +313,8 @@ function Core_adminLocationsEdit() {
 	return array('ok'=>1);
 }
 
-/**
-	* get an array of dependent plugins
-	*
-	* @param array $plugins array of plugins to check
-	*
-	* @return array array of dependencies
-	*/
-function Core_adminPluginsDependenciesGet($plugins) {
-	$new_plugs=array();
-	foreach ($plugins as $plug) {
-		if (!is_dir(SCRIPTBASE.'ww.plugins/'.$plug)
-			||!file_exists(SCRIPTBASE.'ww.plugins/'.$plug.'/plugin.php')
-		) {
-			// plugin doesn't exist
-			return $plug;
-		}
-		global $PLUGINS;
-		if (isset($PLUGINS[$plug])) { // if installed load from memory
-			$plugin=$PLUGINS[$plug];
-		}
-		else { // else include plugin file
-			// if already included then it must be
-			// already on the list
-			// I think there's a logic problem here. Kae
-			require_once SCRIPTBASE.'ww.plugins/'.$plug.'/plugin.php';
-		}
-		if (isset($plugin['dependencies'])) {
-			$dependencies=(strpos($plugin['dependencies'], ',')===false)
-				?array($plugin['dependencies'])
-				:explode(',', $plugin['dependencies']);
-			foreach ($dependencies as $dependency) {
-				if (!in_array($dependency, $plugins)
-					&&!in_array($dependency, $new_plugs)
-				) {
-					array_push($new_plugs, $dependency);
-				}
-			}
-		}
-		array_push($new_plugs, $plug);
-		$plugin=array();
-	}
-	$diff=array_diff($new_plugs, $plugins);
-	$new_plugs=array_merge($plugins, $new_plugs);
-	if (is_array($diff)&&count($diff)!=0) {
-		$check=Core_adminPluginsDependenciesGet($diff);
-		if (!is_array($check)) {
-			return $check;
-		}
-		$new_plugs=array_merge($new_plugs, $check);
-	}
-	return array_unique($new_plugs);
-}
-
-/**
-	* build array of installed plugins
-	*
-	* @return array of plugins
-	*/
-function Core_adminPluginsGetInstalled() {
-	global $PLUGINS;
-	$installed = array();
-	foreach ($PLUGINS as $name => $plugin) {
-		// exclude hidden plugins
-		if (isset($plugin[ 'hide_from_admin' ]) && $plugin['hide_from_admin']) {
-			continue;
-		}
-		$installed[ $name ] = array(
-			'name' => $plugin[ 'name' ],
-			'description' => $plugin[ 'description' ],
-			'version' => ( @$plugin[ 'version' ] == 0 ) ? '0' : $plugin[ 'version' ]
-		);
-	}
-	return $installed;
-}
-
-/**
-	* build array of available (not installed) plugins
-	*
-	* @return array of available plugins
-	*/
-function Core_adminPluginsGetAvailable() {
-	global $PLUGINS;
-	$available = array( );
-	$dir = new DirectoryIterator(SCRIPTBASE . 'ww.plugins');
-	foreach ($dir as $p) {
-		if ($p->isDot()) {
-			continue;
-		}
-		$name = $p->getFilename();
-		if (!is_dir(SCRIPTBASE.'ww.plugins/'.$name)||isset($PLUGINS[$name])) {
-		  continue;
-		}
-		if (!file_exists(SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php')) {
-			continue;
-		}
-		require SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php';
-		if (isset( $plugin[ 'hide_from_admin' ] ) && $plugin[ 'hide_from_admin' ]) {
-		  continue;
-		}
-		$available[ $name ] = array( 
-			'name' => $plugin[ 'name' ],
-			'description' => @$plugin[ 'description' ],
-			'version' => ( @$plugin[ 'version' ] == 0 ) ? '0' : $plugin[ 'version' ]
-		);
-	}	
-	return $available;
-}
-
-/**
-	* install/de-install plugins
-	*
-	* @return array status
-	*/
-function Core_adminPluginsSetInstalled() {
-	// { get hidden plugins (those the admin installs manually)
-	$tmp_hidden=array();
-	foreach ($GLOBALS['PLUGINS'] as $name=>$plugin) {
-		if (isset($plugin['hide_from_admin']) && $plugin['hide_from_admin']) {
-			$tmp_hidden[]=$name;
-		}
-	}
-	// }
-	// { get changes from form
-	$tmp=array();
-	foreach ($_REQUEST['plugins'] as $name=>$var) {
-		if (file_exists(SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php')) {
-			$tmp[]=$name;
-		}
-	}
-	// }
-	$plugins=array_merge($tmp, $tmp_hidden);
-	$plugins=Core_adminPluginsDependenciesGet($plugins);
-	if (is_array($plugins)) {
-	  $GLOBALS['DBVARS']['plugins']=$plugins;
-	  Core_configRewrite();
-		return array('ok'=>1);
-	}
-	return array('ok'=>0);
-}
-
-/**
-	* save a session variable
-	*
-	* @return array status of save
-	*/
-function Core_adminLoadJSVars() {
-	if (!isset($_SESSION['js'])) {
-		$_SESSION['js']=array();
-	}
-	return $_SESSION['js'];
-}
+// }
+// { Core_adminPageChildnodes
 
 /**
 	* get list of pages and and number of their kids
@@ -453,70 +353,8 @@ function Core_adminPageChildnodes() {
 	return $data;
 }
 
-/**
-	* get array of pages
-	*
-	* @return array
-	*/
-function Core_adminPageParentsList() {
-	$id=isset($_REQUEST['other_GET_params'])?(int)$_REQUEST['other_GET_params']:-1;
-	/**
-		* get list of contained directories
-		*
-		* @param int $i  ID of the parent page
-		* @param int $n  indentation level
-		* @param int $id ID of a page /not/ to show
-		*
-		* @return array
-		*/
-	function selectkiddies($i=0, $n=1, $id=0) {
-		$arr=array();
-		$q=dbAll(
-			'select name,id,alias from pages where parent="'.$i.'" and id!="'.$id
-			.'" order by ord,name'
-		);
-		if (count($q)<1) {
-			return $arr;
-		}
-		foreach ($q as $r) {
-			if ($r['id']!='') {
-				$arr[' '.$r['id']]=str_repeat('» ', $n).__FromJson($r['name']);
-				$arr=array_merge($arr, selectkiddies($r['id'], $n+1, $id));
-			}
-		}
-		return $arr;
-	}
-	return array_merge(
-		array(' 0'=>' -- none -- '),
-		selectkiddies(0, 0, $id)
-	);
-}
-
-/**
-	* get an array of page types
-	*
-	* @return array
-	*/
-function Core_adminPageTypesList() {
-	$arr=array();
-	global $pagetypes,$PLUGINS;
-	foreach ($pagetypes as $a) {
-		$arr[$a[0]]=$a[1];
-	}
-	foreach ($PLUGINS as $n=>$p) {
-		if (isset($p['admin']['page_type'])) {
-			if (is_array($p['admin']['page_type'])) {
-				foreach ($p['admin']['page_type'] as $name=>$type) {
-					$arr[$n.'|'.$name]=$name;
-				}
-			}
-			else {
-				$arr[$n.'|'.$n]=$n;
-			}
-		}
-	}
-	return $arr;
-}
+// }
+// { Core_adminPageCopy
 
 /**
   * create a copy of a page
@@ -543,6 +381,9 @@ function Core_adminPageCopy() {
 	Core_cacheClear();
 	return array('name'=>$name.'_'.$id, 'id'=>$id, 'pid'=>$p['parent']);
 }
+
+// }
+// { Core_adminPageDelete
 
 /**
   * delete a page
@@ -573,24 +414,8 @@ function Core_adminPageDelete() {
 	return array('error'=>'page does not exist');
 }
 
-/**
-  * move a page
-  *
-  * @return array status of the move
-  */
-function Core_adminPageMove() {
-	$id=(int)$_REQUEST['id'];
-	$to=(int)$_REQUEST['parent_id'];
-	$order=$_REQUEST['order'];
-	dbQuery("update pages set parent=$to where id=$id");
-	for ($i=0;$i<count($order);++$i) {
-		$pid=(int)$order[$i];
-		dbQuery("update pages set ord=$i where id=$pid");
-	}
-	Core_cacheClear();
-	dbQuery('update page_summaries set rss=""');
-	return array('ok'=>1);
-}
+// }
+// { Core_adminPageEdit
 
 /**
 	* create or edit a page
@@ -687,7 +512,6 @@ function Core_adminPageEdit() {
 		}
 	}
 	$alias = transcribe(__FromJson($name, true));
-//	$name = transcribe($name);
 	// }
 	// { body
 	if (@$_REQUEST['page_vars']['_body']) {
@@ -832,6 +656,254 @@ function Core_adminPageEdit() {
 	// }
 }
 
+// }
+// { Core_adminPageMove
+
+/**
+  * move a page
+  *
+  * @return array status of the move
+  */
+function Core_adminPageMove() {
+	$id=(int)$_REQUEST['id'];
+	$to=(int)$_REQUEST['parent_id'];
+	$order=$_REQUEST['order'];
+	dbQuery("update pages set parent=$to where id=$id");
+	for ($i=0;$i<count($order);++$i) {
+		$pid=(int)$order[$i];
+		dbQuery("update pages set ord=$i where id=$pid");
+	}
+	Core_cacheClear();
+	dbQuery('update page_summaries set rss=""');
+	return array('ok'=>1);
+}
+
+// }
+// { Core_adminPageParentsList
+
+/**
+	* get array of pages
+	*
+	* @return array
+	*/
+function Core_adminPageParentsList() {
+	$id=isset($_REQUEST['other_GET_params'])?(int)$_REQUEST['other_GET_params']:-1;
+	/**
+		* get list of contained directories
+		*
+		* @param int $i  ID of the parent page
+		* @param int $n  indentation level
+		* @param int $id ID of a page /not/ to show
+		*
+		* @return array
+		*/
+	function selectkiddies($i=0, $n=1, $id=0) {
+		$arr=array();
+		$q=dbAll(
+			'select name,id,alias from pages where parent="'.$i.'" and id!="'.$id
+			.'" order by ord,name'
+		);
+		if (count($q)<1) {
+			return $arr;
+		}
+		foreach ($q as $r) {
+			if ($r['id']!='') {
+				$arr[' '.$r['id']]=str_repeat('» ', $n).__FromJson($r['name']);
+				$arr=array_merge($arr, selectkiddies($r['id'], $n+1, $id));
+			}
+		}
+		return $arr;
+	}
+	return array_merge(
+		array(' 0'=>' -- none -- '),
+		selectkiddies(0, 0, $id)
+	);
+}
+
+// }
+// { Core_adminPageTypesList
+
+/**
+	* get an array of page types
+	*
+	* @return array
+	*/
+function Core_adminPageTypesList() {
+	$arr=array();
+	global $pagetypes,$PLUGINS;
+	foreach ($pagetypes as $a) {
+		$arr[$a[0]]=$a[1];
+	}
+	foreach ($PLUGINS as $n=>$p) {
+		if (isset($p['admin']['page_type'])) {
+			if (is_array($p['admin']['page_type'])) {
+				foreach ($p['admin']['page_type'] as $name=>$type) {
+					$arr[$n.'|'.$name]=$name;
+				}
+			}
+			else {
+				$arr[$n.'|'.$n]=$n;
+			}
+		}
+	}
+	return $arr;
+}
+
+// }
+// { Core_adminPluginsDependenciesGet
+
+/**
+	* get an array of dependent plugins
+	*
+	* @param array $plugins array of plugins to check
+	*
+	* @return array array of dependencies
+	*/
+function Core_adminPluginsDependenciesGet($plugins) {
+	$new_plugs=array();
+	foreach ($plugins as $plug) {
+		if (!is_dir(SCRIPTBASE.'ww.plugins/'.$plug)
+			||!file_exists(SCRIPTBASE.'ww.plugins/'.$plug.'/plugin.php')
+		) {
+			// plugin doesn't exist
+			return $plug;
+		}
+		global $PLUGINS;
+		if (isset($PLUGINS[$plug])) { // if installed load from memory
+			$plugin=$PLUGINS[$plug];
+		}
+		else { // else include plugin file
+			// if already included then it must be
+			// already on the list
+			// I think there's a logic problem here. Kae
+			require_once SCRIPTBASE.'ww.plugins/'.$plug.'/plugin.php';
+		}
+		if (isset($plugin['dependencies'])) {
+			$dependencies=(strpos($plugin['dependencies'], ',')===false)
+				?array($plugin['dependencies'])
+				:explode(',', $plugin['dependencies']);
+			foreach ($dependencies as $dependency) {
+				if (!in_array($dependency, $plugins)
+					&&!in_array($dependency, $new_plugs)
+				) {
+					array_push($new_plugs, $dependency);
+				}
+			}
+		}
+		array_push($new_plugs, $plug);
+		$plugin=array();
+	}
+	$diff=array_diff($new_plugs, $plugins);
+	$new_plugs=array_merge($plugins, $new_plugs);
+	if (is_array($diff)&&count($diff)!=0) {
+		$check=Core_adminPluginsDependenciesGet($diff);
+		if (!is_array($check)) {
+			return $check;
+		}
+		$new_plugs=array_merge($new_plugs, $check);
+	}
+	return array_unique($new_plugs);
+}
+
+// }
+// { Core_adminPluginsGetAvailable
+
+/**
+	* build array of available (not installed) plugins
+	*
+	* @return array of available plugins
+	*/
+function Core_adminPluginsGetAvailable() {
+	global $PLUGINS;
+	$available = array( );
+	$dir = new DirectoryIterator(SCRIPTBASE . 'ww.plugins');
+	foreach ($dir as $p) {
+		if ($p->isDot()) {
+			continue;
+		}
+		$name = $p->getFilename();
+		if (!is_dir(SCRIPTBASE.'ww.plugins/'.$name)||isset($PLUGINS[$name])) {
+		  continue;
+		}
+		if (!file_exists(SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php')) {
+			continue;
+		}
+		require SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php';
+		if (isset( $plugin[ 'hide_from_admin' ] ) && $plugin[ 'hide_from_admin' ]) {
+		  continue;
+		}
+		$available[ $name ] = array( 
+			'name' => $plugin[ 'name' ],
+			'description' => @$plugin[ 'description' ],
+			'version' => ( @$plugin[ 'version' ] == 0 ) ? '0' : $plugin[ 'version' ]
+		);
+	}	
+	return $available;
+}
+
+// }
+// { Core_adminPluginsGetInstalled
+
+/**
+	* build array of installed plugins
+	*
+	* @return array of plugins
+	*/
+function Core_adminPluginsGetInstalled() {
+	global $PLUGINS;
+	$installed = array();
+	foreach ($PLUGINS as $name => $plugin) {
+		// exclude hidden plugins
+		if (isset($plugin[ 'hide_from_admin' ]) && $plugin['hide_from_admin']) {
+			continue;
+		}
+		$installed[ $name ] = array(
+			'name' => $plugin[ 'name' ],
+			'description' => $plugin[ 'description' ],
+			'version' => ( @$plugin[ 'version' ] == 0 ) ? '0' : $plugin[ 'version' ]
+		);
+	}
+	return $installed;
+}
+
+// }
+// { Core_adminPluginsSetInstalled
+
+/**
+	* install/de-install plugins
+	*
+	* @return array status
+	*/
+function Core_adminPluginsSetInstalled() {
+	// { get hidden plugins (those the admin installs manually)
+	$tmp_hidden=array();
+	foreach ($GLOBALS['PLUGINS'] as $name=>$plugin) {
+		if (isset($plugin['hide_from_admin']) && $plugin['hide_from_admin']) {
+			$tmp_hidden[]=$name;
+		}
+	}
+	// }
+	// { get changes from form
+	$tmp=array();
+	foreach ($_REQUEST['plugins'] as $name=>$var) {
+		if (file_exists(SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php')) {
+			$tmp[]=$name;
+		}
+	}
+	// }
+	$plugins=array_merge($tmp, $tmp_hidden);
+	$plugins=Core_adminPluginsDependenciesGet($plugins);
+	if (is_array($plugins)) {
+	  $GLOBALS['DBVARS']['plugins']=$plugins;
+	  Core_configRewrite();
+		return array('ok'=>1);
+	}
+	return array('ok'=>0);
+}
+
+// }
+// { Core_adminSaveJSVar
+
 /**
 	* save a session variable
 	*
@@ -850,6 +922,9 @@ function Core_adminSaveJSVar() {
 	return array('ok'=>1);
 }
 
+// }
+// { Core_adminStatsGetVisits
+
 /**
 	* get stats
 	*
@@ -863,6 +938,9 @@ function Core_adminStatsGetVisits() {
 		?$_REQUEST['to']
 		:date('Y-m-d', time()+3600*24);
 }
+
+// }
+// { Core_adminUserNamesGet
 
 /**
 	* get an array of names and emails of users
@@ -881,3 +959,5 @@ function Core_adminUserNamesGet() {
 	}
 	return $names;
 }
+
+// }
