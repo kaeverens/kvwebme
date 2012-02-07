@@ -47,7 +47,7 @@ class Page{
 			$r=Core_cacheLoad('pages', $fname, -1);
 			if ($r===-1) {
 				$r=dbRow(
-					"select * from pages where link like '".addslashes($name)
+					"select * from pages where alias like '".addslashes($name)
 					."' limit 1"
 				);
 				if (count($r)) {
@@ -104,7 +104,7 @@ class Page{
 		if (!isset($r['alias'])) {
 			$r['alias']=$r['name'];
 		}
-		$this->urlname=$r['name'];
+		$this->urlname=$r['alias'];
 		$this->dbVals=$r;
 		self::$instances[$this->id] =& $this;
 		self::$instancesByName[preg_replace(
