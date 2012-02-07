@@ -1,4 +1,25 @@
 <?php
+/**
+	* image transition front-end
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+// { ImageTransition_show
+
+/**
+	* show the image transition
+	*
+	* @param array $vars array of variables
+	*
+	* @return HTML of the widget
+	*/
 function ImageTransition_show($vars) {
 	if (!is_array($vars) && isset($vars->id) && $vars->id) {
 		$r=Core_cacheLoad('image-transitions', 'id'.$vars->id);
@@ -61,9 +82,11 @@ function ImageTransition_show($vars) {
 					'/ww.plugins/image-transition/frontend/k3dCarousel/'
 					.'jquery.k3dCarousel.js'
 				);
-				WW_addInlineScript('$(window).load(function(){
-					$("#k3dCarousel'.$vars->id.'").k3dCarousel();
-				});');
+				WW_addInlineScript(
+					'$(window).load(function(){'
+					.'$("#k3dCarousel'.$vars->id.'").k3dCarousel();'
+					.'});'
+				);
 			}
 			else {
 				if ($r['url']) {
@@ -90,9 +113,11 @@ function ImageTransition_show($vars) {
 					$html.='</div>';
 				}
 				WW_addScript('/j/jquery.cycle.all.js');
-				WW_addInlineScript('$(window).load(function(){$("#image_transitions_'
+				WW_addInlineScript(
+					'$(window).load(function(){$("#image_transitions_'
 					.$vars->id.'").cycle({fx:"'.$r['trans_type'].'",speed:'
-					.$r['pause'].'})});');
+					.$r['pause'].'})});'
+				);
 			}
 			return $html;
 		}

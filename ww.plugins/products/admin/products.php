@@ -1,4 +1,15 @@
 <?php
+/**
+	* Products admin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 if (!Core_isAdmin()) {
 	exit;
 }
@@ -12,7 +23,6 @@ echo '<a href="plugin.php?_plugin=products">List all products</a> | '
 	.'<a href="plugin.php?_plugin=products&amp;_page=import-json">JSON</a>'
 	;
 // }
-
 if (isset($_REQUEST['delete']) && is_numeric($_REQUEST['delete'])) {
 	if (isset($_REQUEST['delete-images'])&&($_REQUEST['delete-images']==1)) {
 		$imagesDir
@@ -34,15 +44,17 @@ if (isset($_REQUEST['delete']) && is_numeric($_REQUEST['delete'])) {
 	echo '<em>Product deleted.</em>';
 	Core_cacheClear();
 }
-
-if (!dbOne('select id from products_types limit 1','id')) {
+if (!dbOne('select id from products_types limit 1', 'id')) {
 	echo '<em>You can\'t create a product until you have created a type. '
 		.'<a href="javascript:Core_screen(\'products\',\'js:Types\');">Click '
 		.'here to create one</a></em>';
 	return;
 }
-$rs=dbAll('select id,user_id,images_directory,name,stock_number,enabled,stockcontrol_total from products order by name');
-if(!count($rs)){
+$rs=dbAll(
+	'select id,user_id,images_directory,name,stock_number,enabled,'
+	.'stockcontrol_total from products order by name'
+);
+if (!count($rs)) {
 	echo '<em>No existing products. <a href="plugin.php?_plugin=products&amp;'
 		.'_page=products-edit">Click here to create one</a>.'
 		.' or import from '
@@ -50,9 +62,11 @@ if(!count($rs)){
 		.'<a href="plugin.php?_plugin=products&amp;_page=import-json">JSON</a>';
 	return;
 }
-
 // { products list
-$useStockControl=(int)dbOne('select stockcontrol_total from products where stockcontrol_total!=0', 'stockcontrol_total');
+$useStockControl=(int)dbOne(
+	'select stockcontrol_total from products where stockcontrol_total!=0',
+	'stockcontrol_total'
+);
 echo '<div><table class="datatable"><thead><tr><th>&nbsp;</th><th>Name</th>'
 	.'<th>Stock Number</th>';
 if ($useStockControl) {
@@ -60,7 +74,7 @@ if ($useStockControl) {
 }
 echo '<th>Owner</th><th>ID</th><th>Enabled</th>'
 	.'<th>&nbsp;</th></tr></thead><tbody>';
-foreach($rs as $r){
+foreach ($rs as $r) {
 	$link='plugin.php?_plugin=products&amp;_page=products-edit&amp;id='.$r['id'];
 	// { has images
 	$has_images=0;
@@ -96,5 +110,4 @@ foreach($rs as $r){
 }
 echo '</tbody></table></div>';
 // }
-
 WW_addScript('/ww.plugins/products/admin/products.js');

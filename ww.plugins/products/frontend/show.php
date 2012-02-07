@@ -23,6 +23,8 @@ if (!file_exists(USERBASE.'/ww.cache/products/templates')) {
 	mkdir(USERBASE.'/ww.cache/products/templates_c');
 }
 
+// { Products_categories
+
 /**
 	* get a list of product categories
 	*
@@ -31,7 +33,7 @@ if (!file_exists(USERBASE.'/ww.cache/products/templates')) {
 	*
 	* @return string the list
 	*/
-function products_categories ($params, $smarty) {
+function Products_categories ($params, $smarty) {
 	$product = $smarty->_tpl_vars['product'];
 	$productID = $product->id;
 	$categoryIDs=dbAll(
@@ -112,6 +114,8 @@ function products_categories ($params, $smarty) {
 	$c.= '</ul>';
 	return $c;
 }
+
+// }
 
 /**
 	* display a table in simple table format
@@ -388,9 +392,9 @@ function Products_getAddManyToCartWidget($params, $smarty) {
 /**
 	* create an "add to cart" button
 	*
-	* @params string $text      what to show on the button
-	* @params float  $price     base price of the product
-	* @params float  $saleprice sale price of the product
+	* @param string $text      what to show on the button
+	* @param float  $baseprice base price of the product
+	* @param float  $saleprice sale price of the product
 	*
 	* @return string html of the button
 	*/
@@ -400,7 +404,8 @@ function Products_getAddToCartButton($text, $baseprice=0, $saleprice=0) {
 		$price=$saleprice;
 	}
 	$price=$_SESSION['currency']['symbol'].$price;
-	return '<button class="submit-button __" lang-context="core" price="'.$price.'" baseprice="'.$baseprice
+	return '<button class="submit-button __" lang-context="core" price="'
+		.$price.'" baseprice="'.$baseprice
 		.'" saleprice="'.$saleprice.'">'.$text.'</button>';
 }
 
@@ -501,7 +506,8 @@ function Products_images($params, $smarty) {
 	}
 	// }
 	$carousel=count($images['files'])>1?' carousel jcarousel-skin-bland':'';
-	$html='<ul class="products-images'.$carousel.'" thumbsize="'.$params['thumbsize'].'">';
+	$html='<ul class="products-images'.$carousel.'" thumbsize="'
+		.$params['thumbsize'].'">';
 	foreach ($images['files'] as $image) {
 		$html.='<li><img src="/i/blank.gif" width="'.$params['thumbsize'].'"'
 			.' height="'.$params['thumbsize'].'" style="width:'.$params['thumbsize'].'px;'
@@ -529,6 +535,8 @@ function Products_link($params, $smarty) {
 	return $smarty->_tpl_vars['product']->getRelativeURL();
 }
 
+// { Products_listCategories2
+
 /**
 	* list all categories contained within a parent category
 	*
@@ -537,7 +545,7 @@ function Products_link($params, $smarty) {
 	*
 	* @return string the categories
 	*/
-function _Products_listCategories($params, $smarty) {
+function Products_listCategories2($params, $smarty) {
 	if (!isset($params['parent'])) {
 		$parent=0;
 	}
@@ -555,6 +563,9 @@ function _Products_listCategories($params, $smarty) {
 	return $html;
 }
 
+// }
+// { Products_listCategoryContents
+
 /**
 	* display the contents of a product category
 	*
@@ -563,7 +574,7 @@ function _Products_listCategories($params, $smarty) {
 	*
 	* @return string the contents
 	*/
-function _Products_listCategoryContents ($params, $smarty) {
+function Products_listCategoryContents2($params, $smarty) {
 	if (!isset($params['category'])) {
 		$products=Products::getAll();
 	}
@@ -579,6 +590,8 @@ function _Products_listCategoryContents ($params, $smarty) {
 	$html.='</ul>';
 	return $html;
 }
+
+// }
 
 /**
 	* if VAT applies to the product, return '+ VAT'

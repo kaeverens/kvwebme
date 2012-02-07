@@ -37,8 +37,16 @@ function Menu_getChildren(
 		return $cache;
 	}
 	$pageParentFound=0;
-	$PARENTDATA=Page::getInstance($parentid);
-	$PARENTDATA->initValues();
+	if ($parentid) {
+		$PARENTDATA=Page::getInstance($parentid);
+		$PARENTDATA->initValues();
+	}
+	else {
+		$PARENTDATA=array(
+			'order_of_sub_pages'=>'ord',
+			'order_of_sub_pages_dir'=>'asc'
+		);
+	}
 	$filter=$isadmin?'':'&& !(special&2)';
 	// { menu order
 	$order='ord,name';

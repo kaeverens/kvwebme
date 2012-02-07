@@ -2,8 +2,14 @@
 class Polls{
 	static $instancesByFilter = array();
 	static $instances = array();
-	function __construct() {
-	}
+
+	/**
+		* get all polls
+		*
+		* @param boolean $enabled only return enabled polls
+		*
+		* @return object
+		*/
 	static function getAll($enabled=true) {
 		if (count(self::$instances)) {
 			return self::$instances;
@@ -15,6 +21,14 @@ class Polls{
 		}
 		return self::$instances;
 	}
+
+	/**
+		* get a number of polls by filter
+		*
+		* @param string $filter the search string
+		*
+		* @return object
+		*/
 	static function getByFilter($filter='') {
 		if (array_key_exists($filter, self::$instancesByFilter)) {
 			return self::$instancesByFilter[$filter];
@@ -26,6 +40,14 @@ class Polls{
 		}
 		return self::$instancesByFilter[$filter];
 	}
+
+	/**
+		* get a number of polls by their IDs
+		*
+		* @param array $ids array of IDs
+		*
+		* @return object
+		*/
 	static function getByIds($ids=array()) {
 		$ids=addslashes(join(',', $ids));
 		if (array_key_exists($ids, self::$instancesByIds)) {

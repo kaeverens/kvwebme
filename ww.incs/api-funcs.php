@@ -218,10 +218,10 @@ function Core_getMenu() {
 	return array(
 		$_REQUEST['pid'],
 		Menu_getChildren(
-			$_REQUEST['pid'],
-			$_REQUEST['id'],
+			@$_REQUEST['pid'],
+			@$_REQUEST['id'],
 			0,
-			$_REQUEST['top_id'],
+			@$_REQUEST['top_id'],
 			0
 		)
 	);

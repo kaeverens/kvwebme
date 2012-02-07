@@ -43,7 +43,7 @@ $plugin=array(
 				'function' => 'Products_getAddManyToCartWidget'
 			),
 			'PRODUCTS_CATEGORIES' => array(
-				'function' => 'products_categories'
+				'function' => 'Products_categories'
 			),
 			'PRODUCTS_DATATABLE' => array(
 				'function' => 'Products_datatable'
@@ -1220,7 +1220,7 @@ function Products_imageSlider($params) {
   */
 function Products_listCategories($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/show.php';
-	return _Products_listCategories($params, $smarty);
+	return Products_listCategories2($params, $smarty);
 }
 
 // }
@@ -1236,7 +1236,7 @@ function Products_listCategories($params, $smarty) {
   */
 function Products_listCategoryContents($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/show.php';
-	return _Products_listCategoryContents($params, $smarty);
+	return Products_listCategoryContents2($params, $smarty);
 }
 
 // }
