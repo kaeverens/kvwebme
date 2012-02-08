@@ -17,7 +17,7 @@ $allowed=false;
 
 // if user is not logged in and "privacy_require_login" is set, return false
 if (!isset($_SESSION['userdata'])
-	&& isset($pagedata->vars['privacy_require_login'])
+	&& @$pagedata->vars['privacy_require_login']
 ) {
 	$allowed=false;
 	return;
