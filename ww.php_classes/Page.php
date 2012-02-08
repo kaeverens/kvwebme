@@ -38,7 +38,7 @@ class Page{
 				}
 			}
 		}
-		elseif ($byField == 1) { // by link (name)
+		elseif ($byField == 1) { // by alias (name)
 			if (preg_match('/[^a-zA-Z0-9 \-_]/', $v)) {
 				return false;
 			}
@@ -227,7 +227,7 @@ class Page{
 			$r=Core_cacheLoad('pages', md5($parent.'|'.$name));
 			if ($r===false) {
 				$r=dbRow(
-					"SELECT * FROM pages WHERE parent=$parent AND link LIKE '"
+					"SELECT * FROM pages WHERE parent=$parent AND alias LIKE '"
 					.addslashes($name)."'"
 				);
 				if ($r===false) {
