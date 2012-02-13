@@ -679,10 +679,6 @@ function Privacy_profileGet() {
 				. htmlspecialchars($user[ 'email' ]) . '</td>
 		</tr>
 		<tr>
-			<th class="__" lang-context="core">Group(s)</th><td>'
-				. htmlspecialchars($groups) . '</td>
-		</tr>
-		<tr>
 			<th class="__" lang-context="core">Phone</th><td>' . $phone . '</td>
 		</tr>';
 

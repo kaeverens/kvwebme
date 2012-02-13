@@ -87,16 +87,18 @@ $(function(){
 				$('input[name="Phone"],input[name="Billing_Phone"]').val(userdata.phone);
 				$('input[name="Email"],input[name="Billing_Email"]').val(userdata.email);
 				populate_delivery(null,'');
-				var html='<tr><td>Address</td><td><select name="address">';
-				for(var i in userdata.address){
-					var def=(userdata.address[i].default=='yes')?' selected="selected"':'';
-					html+='<option'+def+' value="'+i+'">'+i.replace('-',' ')+'</option>';
-				}	
-				html+='</select></td></tr>';
-				$('.shoppingcartCheckout tr:first').before(html);
-				$('.shoppingcartCheckout_billing tr:first').before(html);
-				$('.shoppingcartCheckout_billing select[name="address"]').addClass('billing');
-
+				if (1 || userdata.address.length) {
+					var html='<tr><td class="__" lang-context="core">Address</td><td><select name="address">';
+					for(var i in userdata.address){
+						var def=(userdata.address[i].default=='yes')?' selected="selected"':'';
+						html+='<option'+def+' value="'+i+'">'+i.replace('-',' ')+'</option>';
+					}	
+					html+='</select></td></tr>';
+					$('.shoppingcartCheckout tr:first').before(html);
+					$('.shoppingcartCheckout_billing tr:first').before(html);
+					$('.shoppingcartCheckout_billing select[name="address"]').addClass('billing');
+					window.__langInit && __langInit();
+				}
 				populate_delivery(null,'Billing_');
 			},
 			'json'

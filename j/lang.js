@@ -1,5 +1,14 @@
 $(function() {
 	__langInit();
+	$('ul.languages a').click(function() {
+		var lang=$(this).attr('href').replace(/#/, '');
+		$.post('/a/f=nothing', {
+			'__LANG':lang
+		}, function() {
+			document.location=document.location.toString().replace(/#.*/, '');
+		});
+		return false;
+	});
 });
 function __(el) {
 	var context=$(el).attr('lang-context')||'unknown';

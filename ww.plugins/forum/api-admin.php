@@ -1,4 +1,3 @@
-
 <?php
 /**
   * forum admin api

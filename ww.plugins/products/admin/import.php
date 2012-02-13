@@ -159,7 +159,7 @@ if (isset($_POST['import'])) {
 				$ptid=dbOne('select id from products_types', 'id');
 			}
 			for ($i=0; $i<$numRows; $i++) {
-				if (!isset($name[$i]) || $name[$i]=='') {
+				if (!@$name[$i]) {
 					continue;
 					$name[$i]='NO NAME SUPPLIED';
 				}
@@ -181,14 +181,14 @@ if (isset($_POST['import'])) {
 					elseif (is_numeric($id[$i])) {
 						dbQuery(
 							'insert into products set'
-							' id='.(int)$id[$i]
-							',name="'.addslashes($name[$i]).'"'
-							',product_type_id='.$ptid
-							',enabled=1'
-							',image_default="'.addslashes($image_default[$i]).'"'
-							',date_created="'.addslashes($date_created[$i]).'"'
-							',data_fields="'.addslashes($data_fields[$i]).'"'
-							',images_directory="'.addslashes($images_directory[$i]).'"'
+							.' id='.(int)$id[$i]
+							.',name="'.addslashes($name[$i]).'"'
+							.',product_type_id='.$ptid
+							.',enabled=1'
+							.',image_default="'.addslashes($image_default[$i]).'"'
+							.',date_created="'.addslashes($date_created[$i]).'"'
+							.',data_fields="'.addslashes($data_fields[$i]).'"'
+							.',images_directory="'.addslashes($images_directory[$i]).'"'
 						);
 					}
 					elseif ($id[$i]==null) {
@@ -308,7 +308,7 @@ echo '<tr><th>Delete empty categories on import?</th>'
 foreach ($cats as $cat) {
 	echo '<option value="'.$cat['id'].'">'.$cat['name'].'</option>';
 }
-echo '</select></td></tr>';
+echo '</select></td></tr>'
 	.'<tr><th>Create pages for imported categories?</th>'
 	.'<td><input type="checkbox" name="create_page" /></td></tr>'
 	.'<tr><th>Hide created pages?</th>'

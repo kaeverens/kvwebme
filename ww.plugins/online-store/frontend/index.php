@@ -22,8 +22,8 @@
 function OnlineStore_getCountriesSelectbox($params, &$smarty) {
 	$page=Page::getInstance($_SESSION['onlinestore_checkout_page']);
 	$cjson=$page->vars['online-store-countries'];
-	$countries='<select name="'.(@$params['prefix']).'Country">'
-		.'<option values="" class="__" lang-context="core"> -- choose -- </option>';
+	$countries='<select name="'.(@$params['prefix']).'Country" required="required">'
+		.'<option value="" class="__" lang-context="core"> -- choose -- </option>';
 	if ($cjson) {
 		$cjson=json_decode($cjson);
 		foreach ($cjson as $country=>$val) {
@@ -500,6 +500,7 @@ if (!$submitted) {
 		if ($pviewtype==1&&$viewtype==1 || !$pviewtype) {
 			$c.='<form method="post">'
 				.$PAGEDATA->render()
+				.'<input type="hidden" name="viewtype" value="1"/>'
 				.'<input type="hidden" name="action" value="Proceed to Payment" />'
 				.'<button class="__" lang-context="core">Proceed to Payment</button>'
 				.'</form>';
@@ -508,7 +509,7 @@ if (!$submitted) {
 			$c.='<div id="online-store-wrapper" class="online-store"></div>';
 		}
 		else {
-			$c.='<form method="post"><input type="hidden" name="viewtype" value="1"/>'
+			$c.='<form method="post" action="'.$PAGEDATA->getRelativeUrl().'"><input type="hidden" name="viewtype" value="1"/>'
 				.'<button class="onlinestore-view-checkout __" lang-context="core">'
 				.'Checkout</button></form>';
 		}

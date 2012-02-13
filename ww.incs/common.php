@@ -57,13 +57,14 @@ function Core_languagesGetUi($params=null) {
 			$ui='<h2 class="__">Languages</h2><ul class="languages">';
 			$url=preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI']);
 			foreach ($languages as $language) {
-				$ui.='<li><a href="'.$url.'?__LANG='.$language['code'].'"';
+				$ui.='<li><a href="#'.$language['code'].'"';
 				if ($language['code']==@$_SESSION['language']) {
 					$ui.=' class="selected"';
 				}
 				$ui.='>'.htmlspecialchars($language['name']).'</a></li>';
 			}
 			$ui.='</ul>';
+			WW_addScript('/j/lang.js');
 		// }
 	}
 	return $ui;

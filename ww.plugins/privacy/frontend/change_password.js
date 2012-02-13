@@ -75,7 +75,7 @@ function validate_passwords( ){
 $(function(){
 	$.get('/a/f=getUserData',
 		function(user){
-			$.extend(userdata,user);
+			$.extend(userdata, user);
 		},
 		'json'
 	);

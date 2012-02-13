@@ -11,6 +11,10 @@
 	* @link     http://kvsites.ie/
 	*/
 
+if (!@$vars->id) {
+	$c.='<em>error: no user authentication page chosen for this widget</em>';
+	return;
+}
 $c='<div id="userauthentication-widget" widget-id="'
 	.$widget_id.'-'.$vars->id.'"><ul>'
 	.'<li>Hi, Guest</li>'

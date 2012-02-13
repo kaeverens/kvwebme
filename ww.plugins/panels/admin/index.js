@@ -190,6 +190,7 @@ function panel_visibility(id){
 function panels_init(panel_column){
 	for(var i=0;i<ww.panels.length;++i){
 		var p=ww.panels[i];
+		console.log(ww.panels[i]);
 		$('<div class="panel-wrapper '+(p.disabled?'disabled':'enabled')+'" id="panel'+p.id+'">'
 				+'<h4><span class="name">'+p.name+'</span></h4>'
 				+'<div class="controls" style="display:none;text-align:right">'

@@ -1,12 +1,12 @@
-#userauthentication-widget button, #userauthentication-widget img{
+div.panel-widget-privacy button, div.panel-widget-privacy img{
 	cursor: pointer;
 }
-#userauthentication-widget ul{
+div.panel-widget-privacy ul{
 	padding:0;
 	margin:0;
 	list-style:none;
 }
-#userauthentication-widget li{
+div.panel-widget-privacy li{
 	list-style:none;
 	float:left;
 }
