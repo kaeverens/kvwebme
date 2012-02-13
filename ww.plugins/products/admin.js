@@ -187,7 +187,7 @@ function Products_typeEdit(id) {
 								.appendTo('#pfp-type-specific');
 							// }
 						case 'selectbox': // {
-							return showExtrasSelectbox(field.e);
+							return showExtrasSelectbox(field.e, field.tr);
 							// }
 						default: // { text
 							// }
@@ -214,7 +214,7 @@ function Products_typeEdit(id) {
 			})
 			.appendTo(panel);
 	}
-	function showExtrasSelectbox(e) {
+	function showExtrasSelectbox(e, tr) {
 		function addRow(opt, val) {
 			var $row=$('<tr/>').appendTo('#pfp-type-specific-table');
 			var bits=rows[i]?rows[i].split('|'):['', 0],
@@ -234,17 +234,21 @@ function Products_typeEdit(id) {
 				addRow('', 0);
 			}
 		}
+		var $td=$('#pfp-type-specific');
 		$(
 			'<table id="pfp-type-specific-table" class="wide tight">'
 			+'<tr><th>Option</th>'
 			+'<th title="how much this adds to the price of a product">$£€</th>'
 			+'</tr></table>'
-		).appendTo('#pfp-type-specific');
+		).appendTo($td);
 		var rows=e.split("\n");
 		for (var i=0;i<rows.length;++i) {
 			var bits=rows[i].split('|');
 			addRow(bits[0], +bits[1]||0);
 		}
+		var $tr=$('<input type="checkbox" id="pfp-type-specific-tr"/>')
+			.attr('checked', tr || false);
+		$td.append($tr, 'are these options translateable words?');
 		checkRows();
 	}
 	function showMain(panel) {
@@ -429,6 +433,7 @@ function Products_typeEdit(id) {
 					}
 				});
 				tdata.data_fields[index].e=e.join("\n");
+				tdata.data_fields[index].tr=$('#pfp-type-specific-tr').attr('checked');
 				break; // }
 		}
 		tdata.data_fields[index].t=$('.pfp-type select').val();

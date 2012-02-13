@@ -35,10 +35,11 @@ function OnlineStore_processOrder($id, $order=false) {
 	$form_vals=json_decode($order['form_vals']);
 	$items=json_decode($order['items']);
 	// { send emails
+	$short_domain=str_replace('www.', '', $_SERVER['HTTP_HOST']);
 	// { work out from/to
 	$page=Page::getInstanceByType('online-store');
 	$page->initValues();
-	$from='noreply@'.str_replace('www.', '', $_SERVER['HTTP_HOST']);
+	$from='noreply@'.$short_domain;
 	$bcc='';
 	if ( $page
 		&& isset($page->vars['online_stores_admin_email'])
@@ -64,7 +65,7 @@ function OnlineStore_processOrder($id, $order=false) {
 	// { invoice
 	mail(
 		$form_vals->Email,
-		'['.str_replace('www.', '', $_SERVER['HTTP_HOST']).'] invoice #'. $id,
+		'['.$short_domain.'] invoice #'. $id,
 		$order['invoice'],
 		$headers
 	);
@@ -112,12 +113,7 @@ function OnlineStore_processOrder($id, $order=false) {
 					$html
 				);
 			}
-			mail(
-				$form_vals->Email,
-				'['.str_replace('www.', '', $_SERVER['HTTP_HOST']).'] voucher',
-				$html,
-				$headers
-			);
+			mail($form_vals->Email, '['.$short_domain.'] voucher', $html, $headers);
 		}
 		// { stock control
 		$valsOS=$p->vals['online-store'];
