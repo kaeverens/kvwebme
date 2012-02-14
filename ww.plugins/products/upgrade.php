@@ -267,3 +267,19 @@ if ($version==35) { // fix a bug that has popped up again
 	);
 	$version=36;
 }
+if ($version==36) { // change default image to text
+	dbQuery('alter table products change image_default image_default text');
+	$rs=dbAll('select id from products');
+	foreach ($rs as $r) {
+		$product=Product::getInstance($r['id']);
+		$url=$product->getDefaultImage();
+		if (!$url) {
+			$url='';
+		}
+		dbQuery(
+			'update products set image_default="'.addslashes($url).'" where id='
+			.$r['id']
+		);
+	}
+	$version=37;
+}

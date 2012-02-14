@@ -432,12 +432,11 @@ function Products_image($params, $smarty) {
 	}
 	list($link1, $link2)=@$params['nolink']
 		?array('', '')
-		:array('<a href="/kfmget/'.$iid.'" target="popup">', '</a>');
-	return '<div class="products-image" width="'.$params['width'].'" '
-		.'height="'.$params['height'].'" style="width:'.$params['width']
+		:array('<a href="/a/f=getImg/'.$iid.'" target="popup">', '</a>');
+	return '<div class="products-image" style="width:'.$params['width']
 		.'px;height:'.$params['height']
-		.'px">'.$link1.'<img src="/kfmget/'.$iid
-		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'"/>'
+		.'px">'.$link1.'<img src="/a/f=getImg/w='.$params['width'].'/h='
+		.$params['height'].'/'.$iid.'"/>'
 		.$link2.'</div>';
 }
 

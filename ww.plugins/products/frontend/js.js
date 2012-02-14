@@ -322,13 +322,16 @@ $(function(){
 	});
 });
 function Products_showMap() {
+	var $mapview=$('#products-mapview');
+	if (!$mapview.length) {
+		return;
+	}
 	if (!window.google || !google.maps) {
 		$('<script src="http://maps.googleapis.com/maps/api/js?sensor=true&c'
 			+'allback=Products_showMap"></script>')
 			.appendTo(document.body);
 		return;
 	}
-	var $mapview=$('#products-mapview');
 	if ($mapview.length) {
 		var width=$mapview.width(), height=$mapview.height();
 		if (height<100) {

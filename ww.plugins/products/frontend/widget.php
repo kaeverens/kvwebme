@@ -71,8 +71,8 @@ switch ($widget_type) {
 			$product=Product::getInstance($pid);
 			$iid=$product->getDefaultImage();
 			$img=$iid
-				?'<a href="'.$product->getRelativeURL().'"><img src="/kfmget/'
-				.$iid.'&amp;width=100&amp;height=100"/></a>'
+				?'<a href="'.$product->getRelativeURL().'"><img src="/a/w=100/h=100/'
+				.'/f=getImg/'.$iid.'"/></a>'
 				:'';
 			$html.='<table class="product"><tr><td rowspan="2">'.$img
 				.'</td><td><strong>'.htmlspecialchars($product->name).'</strong>'

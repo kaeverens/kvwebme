@@ -6,7 +6,7 @@ class kfmSession extends kfmObject{
 	function __construct($key=''){
 		parent::__construct();
 		$create=1;
-		if(isset($GLOBALS['kfm_do_not_save_session']) && $GLOBALS['kfm_do_not_save_session']){
+		if (@$GLOBALS['kfm_do_not_save_session'] || (!@$GLOBALS['kfm_api_auth_override'])){
 			$this->key='fake';
 			$this->vars=array();
 			return;

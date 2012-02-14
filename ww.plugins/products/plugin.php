@@ -107,7 +107,7 @@ $plugin=array(
 	'triggers' => array(
 		'initialisation-completed' => 'Products_addToCart'
 	),
-	'version' => '36'
+	'version' => '37'
 );
 // }
 
@@ -335,34 +335,26 @@ class Product{
 		}
 		$vals=$this->vals;
 		if (!$vals['images_directory']) {
-			$this->default_image=0;
-			return 0;
+			$this->default_image=false;
+			return false;
 		}
-		$iid=0;
-		$kfm_do_not_save_session=true;
-		require_once KFM_BASE_PATH.'/api/api.php';
-		require_once KFM_BASE_PATH.'/initialise.php';
-		if ($vals['image_default']) {
-			$image=kfmImage::getInstance($vals['image_default']);
-			if ($image && $image->exists()) {
-				$this->default_image=$vals['image_default'];
-				return $vals['image_default'];
-			}
+		$iid=false;
+		if ($vals['image_default']
+			&& file_exists(USERBASE.'/f/'.$vals['image_default'])
+		) {
+			return $vals['image_default'];
 		}
 		$directory = $vals['images_directory'];
-		$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//', '', $directory));
-		if (!$dir_id) {
-			$this->default_image=0;
-			return 0;
+		$files=new DirectoryIterator(USERBASE.'/f/'.$directory);
+		foreach ($files as $file) {
+			if ($file->isDot()) {
+				continue;
+			}
+			$this->default_image=$directory.'/'.$file->getFilename();
+			return $this->default_image;
 		}
-		$images=kfm_loadFiles($dir_id);
-		if (count($images['files'])) {
-			$image=$images['files'][0];
-			$this->default_image=$image['id'];
-			return $image['id'];
-		}
-		$this->default_image=0;
-		return 0;
+		$this->default_image=false;
+		return false;
 	}
 
 	/**
