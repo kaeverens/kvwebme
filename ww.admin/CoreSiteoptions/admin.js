@@ -421,7 +421,6 @@ function CoreSiteoptions_screenLocations() {
 function CoreSiteoptions_screenStats() {
 	var $content=$('#content').empty();
 	$.post('/a/f=adminStatsGet', function(ret) {
-		console.log(ret);
 	});
 }
 $(document).on('click', '.map-opener', function() {

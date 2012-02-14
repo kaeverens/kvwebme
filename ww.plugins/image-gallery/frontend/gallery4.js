@@ -176,7 +176,6 @@ var Gallery={
 			.load(function() { // center images vertically
 				var $this=$(this);
 				var $span=$this.closest('span');
-				console.log($span.height(), $this.height());
 				if ($span.height()<$this.height()) {
 					$span.css('height', $this.height()+'px');
 				}

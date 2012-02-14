@@ -57,7 +57,6 @@ function Mailinglists_editList(ret) {
 			}
 		};
 	}
-	console.log(ret);
 	var engines=['MailChimp'];
 	var $form=$('<div><input type="hidden" id="mailinglist-id" value="'+ret.id+'"/><table>'
 		+'<tr><th>List Name</th><td><input id="mailinglist-name"/></td></tr>'

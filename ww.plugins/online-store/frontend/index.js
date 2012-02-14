@@ -88,15 +88,11 @@ $(function(){
 				$('input[name="Email"],input[name="Billing_Email"]').val(userdata.email);
 				populate_delivery(null,'');
 				if (1 || userdata.address.length) {
-					var html='<tr><td class="__" lang-context="core">Address</td><td><select name="address">';
-					for(var i in userdata.address){
-						var def=(userdata.address[i].default=='yes')?' selected="selected"':'';
-						html+='<option'+def+' value="'+i+'">'+i.replace('-',' ')+'</option>';
-					}	
-					html+='</select></td></tr>';
+					var addressButton='<a class="__ ui-button address-picker" '
+						+'lang-context="core" href="#">Choose Address</a>';
+					html+='<tr><td colspan="2">'+addressButton+'</td></tr>';
 					$('.shoppingcartCheckout tr:first').before(html);
-					$('.shoppingcartCheckout_billing tr:first').before(html);
-					$('.shoppingcartCheckout_billing select[name="address"]').addClass('billing');
+					$('.address-picker').click(addressPicker);
 					window.__langInit && __langInit();
 				}
 				populate_delivery(null,'Billing_');
@@ -363,63 +359,7 @@ $(function(){
 									$('input[name='+name+']').val($this.val());
 								});
 						});
-						$('#online-store-delivery .address-picker').click(function() {
-							var tables='<div id="addresses-picker" class="align-left">'
-								+'<table style="width:100%">';
-							for (var i=0;i<userdata.address.length;++i) {
-								var addr=userdata.address[i];
-								if (i) {
-									tables+='<tr><td colspan="4"><hr /></td></tr>';
-								}
-								tables+='<tr><th>Street</th><td>'
-									+htmlspecialchars(addr.street)+'</td>'
-									+'<th>Postcode</th><td>'+htmlspecialchars(addr.postcode)
-									+'</td></tr>'
-									+'<tr><th>Street 2</th><td>'+htmlspecialchars(addr.street2)
-									+'</td>'
-									+'<th>County</th><td>'+htmlspecialchars(addr.county)
-									+'</td></tr>'
-									+'<tr><th>Town</th><td>'+htmlspecialchars(addr.town)
-									+'</td>'
-									+'<th>Country</th><td>'+htmlspecialchars(addr.country)
-									+'</td></tr>'
-									+'<tr><th colspan="2"><input type="checkbox" aid="'+i+'"'
-									+(addr.default=='yes'?' checked="checked"':'')
-									+'/>'
-									+'<span class="__" lang-context="core">default address</span>'
-									+'</th><th colspan="2"><button aid="'+i+'" class="__"'
-									+' lang-context="core">Choose Address</button></th></tr>'
-							}
-							tables+='</table></div>';
-							var $table=$(tables).dialog({
-								modal:true,
-								width:400,
-								close:function() {
-									$(this).destroy();
-								}
-							});
-							$table.find('input').change(function() {
-								var $this=$(this);
-								if (!$this.attr('checked')) {
-									$this.attr('checked', true);
-									return;
-								}
-								$table.find('input').attr('checked', false);
-								$this.attr('checked', true);
-								$.post('/a/f=userSetDefaultAddress/aid='+$this.attr('aid'));
-							});
-							$table.find('button').click(function() {
-								var addr=userdata.address[+$(this).attr('aid')];
-								$('#online-store-Street').val(addr.street||'');
-								$('#online-store-Street2').val(addr.street2||'');
-								$('#online-store-Town').val(addr.town||'');
-								$('#online-store-Postcode').val(addr.postcode||'');
-								$('#online-store-County').val(addr.county||'');
-								$('#online-store-Country').val(addr.country||'');
-								$table.remove();
-							});
-							return false;
-						});
+						$('#online-store-delivery .address-picker').click(addressPicker);
 						$.get('/a/p=online-store/f=getCountries/page_id='+pagedata.id,
 							function(ret) {
 								var $this=$('#online-store-Country');
@@ -691,4 +631,62 @@ $(function(){
 			.appendTo($form);
 		$form.submit();
 	}
+	function addressPicker() {
+		var tables='<div id="addresses-picker" class="align-left">'
+			+'<table style="width:100%">';
+		for (var i=0;i<userdata.address.length;++i) {
+			var addr=userdata.address[i];
+			if (i) {
+				tables+='<tr><td colspan="4"><hr /></td></tr>';
+			}
+			tables+='<tr><th>Street</th><td>'
+				+htmlspecialchars(addr.street)+'</td>'
+				+'<th>Postcode</th><td>'+htmlspecialchars(addr.postcode)
+				+'</td></tr>'
+				+'<tr><th>Street 2</th><td>'+htmlspecialchars(addr.street2)
+				+'</td>'
+				+'<th>County</th><td>'+htmlspecialchars(addr.county)
+				+'</td></tr>'
+				+'<tr><th>Town</th><td>'+htmlspecialchars(addr.town)
+				+'</td>'
+				+'<th>Country</th><td>'+htmlspecialchars(addr.country)
+				+'</td></tr>'
+				+'<tr><th colspan="2"><input type="checkbox" aid="'+i+'"'
+				+(addr.default=='yes'?' checked="checked"':'')
+				+'/>'
+				+'<span class="__" lang-context="core">default address</span>'
+				+'</th><th colspan="2"><button aid="'+i+'" class="__"'
+				+' lang-context="core">Choose Address</button></th></tr>'
+		}
+		tables+='</table></div>';
+		var $table=$(tables).dialog({
+			modal:true,
+			width:400,
+			close:function() {
+				$(this).destroy();
+			}
+		});
+		$table.find('input').change(function() {
+			var $this=$(this);
+			if (!$this.attr('checked')) {
+				$this.attr('checked', true);
+				return;
+			}
+			$table.find('input').attr('checked', false);
+			$this.attr('checked', true);
+			$.post('/a/f=userSetDefaultAddress/aid='+$this.attr('aid'));
+		});
+		$table.find('button').click(function() {
+			var addr=userdata.address[+$(this).attr('aid')];
+			$('#online-store-Street,input[name="Street"]').val(addr.street||'');
+			$('#online-store-Street2,input[name="Street2"]').val(addr.street2||'');
+			$('#online-store-Town,input[name="Town"]').val(addr.town||'');
+			$('#online-store-Postcode,input[name="Postcode"]')
+				.val(addr.postcode||'');
+			$('#online-store-County,input[name="County"]').val(addr.county||'');
+			$('#online-store-Country,select[name="Country"]').val(addr.country||'');
+			$table.remove();
+		});
+		return false;
+	};
 });

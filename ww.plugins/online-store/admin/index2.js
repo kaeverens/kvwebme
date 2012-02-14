@@ -200,7 +200,6 @@ function pandp_rebuild_constraints(prefix){
 			case 'total_weight_more_than_or_equal_to':
 			case 'is_in_country': // {
 				cstr.value=document.getElementById('pandp_constraint_value_'+prefix+i).value;
-				console.log(cstr.value);
 			break; // }
 		}
 		if (cstr.type!='set_value') {

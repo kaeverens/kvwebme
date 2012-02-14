@@ -165,7 +165,6 @@ function os_setup_basket_events(){
 				.show($wrapper.attr('slidedown')||'blind');
 			if (opts && opts.slideup) {
 				var timeout=+$wrapper.attr('slideup');
-				console.log(timeout);
 				if (!timeout) {
 					return;
 				}
