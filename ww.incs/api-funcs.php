@@ -355,6 +355,35 @@ function Core_nothing() {
 }
 
 // }
+// { Core_qrCode
+
+/**
+	* create a QR code
+	*
+	* @return null
+	*/
+function Core_qrCode() {
+	$id=(int)@$_REQUEST['id'];
+	$fname=USERBASE.'/ww.cache/pages/qrcode'.$id;
+	if (!file_exists($fname)) {
+		$page=Page::getInstance($id);
+		require_once 'phpqrcode.php';
+		QRcode::png(
+			$page->getAbsoluteUrl(),
+			$fname
+		);
+	}
+	header('Content-type: image/png');
+	header('Cache-Control: max-age=2592000, public');
+	header('Expires-Active: On');
+	header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
+	header('Pragma:');
+	header('Content-Length: ' . filesize($fname));
+	readfile($fname);
+	exit;
+}
+
+// }
 // { Core_register
 
 /**

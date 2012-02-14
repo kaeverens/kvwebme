@@ -2,6 +2,8 @@
 require_once dirname(__FILE__).'/basics.php';
 require_once SCRIPTBASE . 'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
 
+// { Core_getJQueryScripts
+
 /**
 	* link to current jQuery/jQuery-UI scripts
 	*
@@ -30,6 +32,9 @@ function Core_getJQueryScripts() {
 		.'<script src="'.$jurls[0].'"></script>'
 		.'<script src="'.$jurls[1].'"></script>';
 }
+
+// }
+// { Core_languagesGetUi
 
 /**
 	* show list of languages
@@ -70,6 +75,9 @@ function Core_languagesGetUi($params=null) {
 	return $ui;
 }
 
+// }
+// { Core_locationsGetUi
+
 /**
 	* show list of locations
 	*
@@ -91,6 +99,9 @@ function Core_locationsGetUi($params=null) {
 	$ui.='</select>';
 	return $ui;
 }
+
+// }
+// { date_m2h
 
 /**
 	* convert a MySQL date to a human-readable one
@@ -117,6 +128,10 @@ function date_m2h($d, $type = 'date') {
 	}
 	return date(DATE_RFC822, $utime);
 }
+
+// }
+// { menu_build_fg
+
 /**
 	* get recursive details of pages to build a menu
 	*
@@ -212,6 +227,10 @@ function menu_build_fg($parentid, $depth, $options) {
 	$c.='</ul></td></tr></table>';
 	return $c;
 }
+
+// }
+// { menu_show_fg
+
 /**
 	* get HTML for building a hierarchical menu
 	*
@@ -294,6 +313,10 @@ function menu_show_fg ($opts) {
 	}
 	return $c;
 }
+
+// }
+// { menuDisplay
+
 /**
 	* smarty function for setting up a menu
 	*
@@ -305,6 +328,10 @@ function menuDisplay($a=0) {
 	require_once SCRIPTBASE . 'ww.incs/menus.php';
 	return Menu_show($a);
 }
+
+// }
+// { redirect
+
 /**
 	* redirect the browser to a different URL using a 301 redirect
 	*
@@ -319,6 +346,10 @@ function redirect($addr) {
 		.'cument.location="'.$addr.'";},10);</script></head><body></body></html>';
 	exit;
 }
+
+// }
+// { smarty_setup
+
 /**
 	* set up Smarty with common functions
 	*
@@ -327,7 +358,7 @@ function redirect($addr) {
 	* @return object the Smarty object
 	*/
 function smarty_setup($compile_dir) {
-	global $DBVARS, $PLUGINS;
+	global $DBVARS, $PLUGINS, $PAGEDATA;
 	$smarty = new Smarty;
 	$smarty->left_delimiter = '{{';
 	$smarty->right_delimiter = '}}';
@@ -347,6 +378,7 @@ function smarty_setup($compile_dir) {
 	$smarty->register_function('LOCATIONSELECTOR', 'Core_locationsGetUi');
 	$smarty->register_function('LOGO', 'Template_logoDisplay');
 	$smarty->register_function('MENU', 'menuDisplay');
+	$smarty->assign('QRCODE', '/a/f=qrCode/id='.$PAGEDATA->id);
 	$smarty->register_function('nuMENU', 'menu_show_fg');
 	foreach ($PLUGINS as $pname=>$plugin) {
 		if (isset($plugin['frontend']['template_functions'])) {
@@ -358,6 +390,10 @@ function smarty_setup($compile_dir) {
 	$smarty->compile_dir=$compile_dir;
 	return $smarty;
 }
+
+// }
+// { Template_breadcrumbs
+
 /**
 	*  return a HTML string with "breadcrumb" links to the current page
 	*
@@ -382,6 +418,10 @@ function Template_breadcrumbs($id=0, $top=1) {
 		. htmlspecialchars($page->title) . '">' 
 		. htmlspecialchars($page->alias) . '</a>'.$suf;
 }
+
+// }
+// { Template_logoDisplay
+
 /**
 	* return a logo HTML string if the admin uploaded one
 	*
@@ -409,6 +449,10 @@ function Template_logoDisplay($vars) {
 		.'background:url(/f/skin_files/logo-'.$geometry.'.png) no-repeat;'
 		.'width:'.$size[0].'px;height:'.$size[1].'px;" />';
 }
+
+// }
+// { webmeMail
+
 /**
 	* send an email in HTML and text format. optionally with attached files
 	*
@@ -424,6 +468,9 @@ function webmeMail($from, $to, $subject, $message, $files = false) {
 	require_once dirname(__FILE__).'/mail.php';
 	send_mail($from, $to, $subject, $message, $files);
 }
+
+// }
+
 $Core_isAdmin = 0;
 $sitedomain=str_replace('www.', '', $_SERVER['HTTP_HOST']);
 if (strpos($_SERVER['REQUEST_URI'], 'ww.admin/')!==false) {

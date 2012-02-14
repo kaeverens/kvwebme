@@ -111,7 +111,7 @@ function OnlineStore_getCountries() {
 	* @return null
 	*/
 function OnlineStore_getQrCode() {
-	require_once dirname(__FILE__).'/../products/phpqrcode.php';
+	require_once SCRIPTBASE.'/ww.incs/phpqrcode.php';
 	$url=base64_decode($_REQUEST['b64']);
 	$fname=USERBASE.'/ww.cache/online-store/qr'.md5($url);
 	if (!file_exists($fname)) {

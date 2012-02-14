@@ -225,9 +225,9 @@ function Products_showQrCode() {
 	if (!$product) {
 		redirect('/i/blank.gif');
 	}
-	require_once 'phpqrcode.php';
 	$fname=USERBASE.'/ww.cache/products/qr'.$pid;
-	if (1 || !file_exists($fname)) {
+	if (!file_exists($fname)) {
+		require_once SCRIPTBASE.'/ww.incs/phpqrcode.php';
 		@mkdir(USERBASE.'/ww.cache/products');
 		QRcode::png(
 			'http://'.$_SERVER['HTTP_HOST'].$product->getRelativeUrl(),
