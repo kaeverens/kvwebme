@@ -41,7 +41,7 @@ function __(el) {
 	}
 	else if (!__lang[context][str]) {
 		__lang[context][str]=str;
-		if (userdata.wasAdmin) {
+		if (window.userdata && userdata.wasAdmin) {
 			__langUnknown.push([str, context]);
 			window.__reportTimer=setTimeout(__report, 1000);
 		}

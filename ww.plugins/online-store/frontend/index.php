@@ -136,15 +136,16 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 	}
 	// }
 	// { check if new address was entered
-	if (isset($_SESSION['userdata'])&&isset($_POST['save-address'])) {
+	if (@$_POST['save-address']) {
 		$_user=dbRow(
 			'select address from user_accounts where id='.$_SESSION['userdata']['id']
 		);
 		$address=json_decode($_user['address'], true);
-		$address[$_POST['save-address']]=array(
+		$address[]=array(
 			'street'=>$_POST['Street'],
 			'street2'=>$_POST['Street2'],
 			'town'=>$_POST['Town'],
+			'postcode'=>$_POST['Postcode'],
 			'county'=>$_POST['County'],
 			'country'=>$_POST['Country'],
 		);

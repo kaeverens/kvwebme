@@ -491,6 +491,24 @@ if ($version==45) { // named locations
 	);
 	$version=46;
 }
+if ($version==46) { // remove names from addresses. was causing confusion
+	$users=dbAll('select id,address from user_accounts');
+	foreach ($users as $u) {
+		if (!$u['address']) {
+			$u['address']='{}';
+		}
+		$as=json_decode($u['address']);
+		$addresses=array();
+		foreach ($as as $k=>$v) {
+			$addresses[]=$v;
+		}
+		dbQuery(
+			'update user_accounts set address="'
+			.addslashes(json_encode($addresses)).'" where id='.$u['id']
+		);
+	}
+	$version=47;
+}
 
 $DBVARS['version']=$version;
 Core_cacheClear();

@@ -12,3 +12,6 @@
 	padding:5px;
 	margin:0;
 }
+.align-left,.align-left *{
+	text-align:left;
+}

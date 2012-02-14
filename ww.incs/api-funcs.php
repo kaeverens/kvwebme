@@ -12,47 +12,6 @@
 	* @link     http://kvsites.ie/
 	*/
 
-// { Core_nothing
-
-/**
-	* does nothing... :-)
-	*
-	* @return null
-	*/
-function Core_nothing() {
-	return array();
-}
-
-// }
-// { Core_languagesGet
-
-/**
-	* return a list of the site's languages
-	*
-	* @return array the list of languages
-	*/
-function Core_languagesGet() {
-	return dbAll('select * from language_names order by is_default desc, name');
-}
-
-// }
-// { Core_locationsGet
-
-/**
-	* return a list of locations recorded by the CMS
-	*
-	* @return array the list of locations
-	*/
-function Core_locationsGet() {
-	$locs=Core_cacheLoad('core', 'locations', -1);
-	if ($locs == -1) {
-		$locs=dbAll('select * from locations order by is_default desc, name');
-		Core_cacheSave('core', 'locations', $locs);
-	}
-	return $locs;
-}
-
-// }
 // { Core_directoryCheckName
 
 /**
@@ -129,6 +88,7 @@ function Core_getFileList() {
 }
 
 // }
+// { Core_getFileInfo
 
 /**
 	* get mime data about a file
@@ -149,6 +109,9 @@ function Core_getFileInfo() {
 		'mime'=>$mime
 	);
 }
+
+// }
+// { Core_getImg
 
 /**
 	* retrieve an image
@@ -223,6 +186,9 @@ function Core_getImg() {
 	exit;
 }
 
+// }
+// { Core_getMenu
+
 /**
 	* retrieve list of pages for a menu
 	*
@@ -245,6 +211,9 @@ function Core_getMenu() {
 		)
 	);
 }
+
+// }
+// { Core_getUserData
 
 /**
 	* get details of the logged-in user
@@ -276,6 +245,9 @@ function Core_getUserData() {
 	return $user;
 }
 
+// }
+// { Core_languagesAddStrings
+
 /**
 	* add a number of strings to the languages table
 	*
@@ -295,6 +267,38 @@ function Core_languagesAddStrings() {
 		);
 	}
 }
+
+// }
+// { Core_languagesGet
+
+/**
+	* return a list of the site's languages
+	*
+	* @return array the list of languages
+	*/
+function Core_languagesGet() {
+	return dbAll('select * from language_names order by is_default desc, name');
+}
+
+// }
+// { Core_locationsGet
+
+/**
+	* return a list of locations recorded by the CMS
+	*
+	* @return array the list of locations
+	*/
+function Core_locationsGet() {
+	$locs=Core_cacheLoad('core', 'locations', -1);
+	if ($locs == -1) {
+		$locs=dbAll('select * from locations order by is_default desc, name');
+		Core_cacheSave('core', 'locations', $locs);
+	}
+	return $locs;
+}
+
+// }
+// { Core_login
 
 /**
 	* log in
@@ -326,6 +330,9 @@ function Core_login() {
 	exit('{"error":"either the email address or the password are incorrect"}');
 }
 
+// }
+// { Core_logout
+
 /**
 	* log out
 	*
@@ -335,129 +342,20 @@ function Core_logout() {
 	unset($_SESSION['userdata']);
 }
 
+// }
+// { Core_nothing
+
 /**
-	* request a login token to be sent out to your email address
+	* does nothing... :-)
 	*
 	* @return null
 	*/
-function Core_sendLoginToken() {
-	$email=$_REQUEST['email'];
-	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-		exit('{"error":"please enter a properly formatted email address"}');
-	}
-	$u=dbRow("SELECT * FROM user_accounts WHERE email='$email'");
-	if ($u && count($u)) {
-		$token=md5(time().'|'.rand());
-		dbQuery(
-			"UPDATE user_accounts SET verification_hash='$token' "
-			."WHERE email='$email'"
-		);
-		mail(
-			$email, '['.$_SERVER['HTTP_HOST'].'] user password token',
-			'Your token is: '.$token,
-			"Reply-to: $email\nFrom: $email"
-		);
-		exit('{"ok":1}');
-	}
-	exit('{"error":"that email address not found in the users table"}');
+function Core_nothing() {
+	return array();
 }
 
-/**
-	* update a password, using a verification code
-	*
-	* @return null
-	*/
-function Core_updateUserPasswordUsingToken() {
-	$email=$_REQUEST['email'];
-	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-		exit('{"error":"please enter a properly formatted email address"}');
-	}
-	$token=addslashes($_REQUEST['token']);
-	if ($token=='') {
-		exit('{"error":"no token entered"}');
-	}
-	$password=$_REQUEST['password'];
-	if ($password=='') {
-		exit('{"error":"no new password entered"}');
-	}
-	$u=dbRow(
-		"SELECT * FROM user_accounts WHERE email='$email' "
-		."and verification_hash='$token'"
-	);
-	if ($u && count($u)) {
-		$password=md5($password);
-		dbQuery(
-			"UPDATE user_accounts SET password='$password',"
-			."verification_hash='' WHERE email='$email'"
-		);
-		exit('{"ok":1}');
-	}
-	exit('{"error":"user not found, or verification token is out of date"}');
-}
-
-/**
-	* get all available translations for a particular context
-	*
-	* @return array of tanslations
-	*/
-function Core_translationsGet() {
-	global $_languages;
-	$context=$_REQUEST['context'];
-	$md5=md5(join('|', $_languages).'|'.$context);
-	$strings=Core_cacheLoad('core-translation', $md5);
-	if (1 || $strings==false) {
-		$strings=array();
-		for ($i=count($_languages)-1;$i>=0;--$i) {
-			$rs=dbAll(
-				'select * from languages where lang="'.$_languages[$i]
-				.'" and context="'.addslashes($context).'"'
-			);
-			foreach ($rs as $r) {
-				$strings[$r['str']]=$r['trstr'];
-			}
-		}
-		Core_cacheSave('core-translation', $md5, $strings);
-	}
-	return array(
-		'context'=>$context,
-		'strings'=>$strings
-	);
-}
-
-/**
-	* send registration token
-	*
-	* @return array status
-	*/
-function Core_sendRegistrationToken() {
-	$email=@$_REQUEST['email'];
-	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-		return array('error'=>'invalid email address');
-	}
-	$sql='select id from user_accounts where email="'.addslashes($email).'"';
-	if (dbOne($sql, 'id')) {
-		return array('error'=>'already registered');
-	}
-	if (!isset($_SESSION['privacy'])) {
-		$_SESSION['privacy']=array();
-	}
-	$_SESSION['privacy']['registration']=array(
-		'token'         => rand(10000, 99999),
-		'custom'        => array(),
-		'email'         => $email
-	);
-	if (@$_REQUEST['custom'] && is_array($_REQUEST['custom'])) {
-		$_SESSION['privacy']['registration']['custom']=$_REQUEST['custom'];
-	}
-	$emaildomain=str_replace('www.', '', $_SERVER['HTTP_HOST']);
-	mail(
-		$email,
-		'['.$_SERVER['HTTP_HOST'].'] user registration',
-		'Your token is: '.$_SESSION['privacy']['registration']['token'],
-		"Reply-to: info@".$emaildomain."\nFrom: info@".$emaildomain
-	);
-	return array('ok'=>1);
-}
+// }
+// { Core_register
 
 /**
 	* register, and login
@@ -498,3 +396,175 @@ function Core_register() {
 		return array('error'=>'token does not match');
 	}
 }
+
+// }
+// { Core_sendLoginToken
+
+/**
+	* request a login token to be sent out to your email address
+	*
+	* @return null
+	*/
+function Core_sendLoginToken() {
+	$email=$_REQUEST['email'];
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		exit('{"error":"please enter a properly formatted email address"}');
+	}
+	$u=dbRow("SELECT * FROM user_accounts WHERE email='$email'");
+	if ($u && count($u)) {
+		$token=md5(time().'|'.rand());
+		dbQuery(
+			"UPDATE user_accounts SET verification_hash='$token' "
+			."WHERE email='$email'"
+		);
+		mail(
+			$email, '['.$_SERVER['HTTP_HOST'].'] user password token',
+			'Your token is: '.$token,
+			"Reply-to: $email\nFrom: $email"
+		);
+		exit('{"ok":1}');
+	}
+	exit('{"error":"that email address not found in the users table"}');
+}
+
+// }
+// { Core_sendRegistrationToken
+
+/**
+	* send registration token
+	*
+	* @return array status
+	*/
+function Core_sendRegistrationToken() {
+	$email=@$_REQUEST['email'];
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		return array('error'=>'invalid email address');
+	}
+	$sql='select id from user_accounts where email="'.addslashes($email).'"';
+	if (dbOne($sql, 'id')) {
+		return array('error'=>'already registered');
+	}
+	if (!isset($_SESSION['privacy'])) {
+		$_SESSION['privacy']=array();
+	}
+	$_SESSION['privacy']['registration']=array(
+		'token'         => rand(10000, 99999),
+		'custom'        => array(),
+		'email'         => $email
+	);
+	if (@$_REQUEST['custom'] && is_array($_REQUEST['custom'])) {
+		$_SESSION['privacy']['registration']['custom']=$_REQUEST['custom'];
+	}
+	$emaildomain=str_replace('www.', '', $_SERVER['HTTP_HOST']);
+	mail(
+		$email,
+		'['.$_SERVER['HTTP_HOST'].'] user registration',
+		'Your token is: '.$_SESSION['privacy']['registration']['token'],
+		"Reply-to: info@".$emaildomain."\nFrom: info@".$emaildomain
+	);
+	return array('ok'=>1);
+}
+
+// }
+// { Core_updateUserPasswordUsingToken
+
+/**
+	* update a password, using a verification code
+	*
+	* @return null
+	*/
+function Core_updateUserPasswordUsingToken() {
+	$email=$_REQUEST['email'];
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		exit('{"error":"please enter a properly formatted email address"}');
+	}
+	$token=addslashes($_REQUEST['token']);
+	if ($token=='') {
+		exit('{"error":"no token entered"}');
+	}
+	$password=$_REQUEST['password'];
+	if ($password=='') {
+		exit('{"error":"no new password entered"}');
+	}
+	$u=dbRow(
+		"SELECT * FROM user_accounts WHERE email='$email' "
+		."and verification_hash='$token'"
+	);
+	if ($u && count($u)) {
+		$password=md5($password);
+		dbQuery(
+			"UPDATE user_accounts SET password='$password',"
+			."verification_hash='' WHERE email='$email'"
+		);
+		exit('{"ok":1}');
+	}
+	exit('{"error":"user not found, or verification token is out of date"}');
+}
+
+// }
+// { Core_userSetDefaultAddress
+
+/**
+	* update the default address of a user
+	*/
+function Core_userSetDefaultAddress() {
+	$aid=(int)@$_REQUEST['aid'];
+	if (!isset($_SESSION['userdata'])) { // not logged in
+		return array('error'=>'you are not logged in');
+	}
+	$addresses=dbOne(
+		'select id,address from user_accounts where id='
+		.$_SESSION['userdata']['id'].' limit 1',
+		'address'
+	);
+	if (!$addresses) {
+		$addresses='[]';
+	}
+	$addresses=json_decode($addresses);
+	foreach ($addresses as $k=>$v) {
+		if ($k==$aid) {
+			$addresses[$k]->default='yes';
+			continue;
+		}
+		$addresses[$k]->default='no';
+	}
+	dbQuery(
+		'update user_accounts set address="'.addslashes(json_encode($addresses))
+		.'" where id='.$_SESSION['userdata']['id'].' limit 1'
+	);
+	return true;
+}
+
+// }
+// { Core_translationsGet
+
+/**
+	* get all available translations for a particular context
+	*
+	* @return array of tanslations
+	*/
+function Core_translationsGet() {
+	global $_languages;
+	$context=$_REQUEST['context'];
+	$md5=md5(join('|', $_languages).'|'.$context);
+	$strings=Core_cacheLoad('core-translation', $md5);
+	if (1 || $strings==false) {
+		$strings=array();
+		for ($i=count($_languages)-1;$i>=0;--$i) {
+			$rs=dbAll(
+				'select * from languages where lang="'.$_languages[$i]
+				.'" and context="'.addslashes($context).'"'
+			);
+			foreach ($rs as $r) {
+				$strings[$r['str']]=$r['trstr'];
+			}
+		}
+		Core_cacheSave('core-translation', $md5, $strings);
+	}
+	return array(
+		'context'=>$context,
+		'strings'=>$strings
+	);
+}
+
+// }
