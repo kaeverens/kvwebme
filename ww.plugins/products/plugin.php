@@ -772,6 +772,7 @@ class ProductType{
 							$valid_entries=explode("\n", $f->e);
 						}
 						$h='<select name="products_values_'.$f->n.'" class="'.$required.'">';
+						$translateable=@$f->tr&&1;
 						foreach ($valid_entries as $e) {
 							$e=trim($e);
 							if ($e=='' || !in_array($e, $valid_entries)) {
@@ -784,8 +785,11 @@ class ProductType{
 								$e=$bits[0];
 								$p='price="'.(int)$bits[1].'"';
 							}
-							$h.='<option '.$p.' value="'.htmlspecialchars($o).'">'
-								.htmlspecialchars($e).'</option>';
+							$h.='<option '.$p.' value="'.htmlspecialchars($o).'"';
+							if ($translateable) {
+								$h.=' class="__"';
+							}
+							$h.='>'.htmlspecialchars($e).'</option>';
 						}
 						$h.='</select>';
 					}

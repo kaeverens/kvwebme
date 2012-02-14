@@ -22,7 +22,8 @@
 function OnlineStore_getCountriesSelectbox($params, &$smarty) {
 	$page=Page::getInstance($_SESSION['onlinestore_checkout_page']);
 	$cjson=$page->vars['online-store-countries'];
-	$countries='<select name="'.(@$params['prefix']).'Country" required="required">'
+	$required=@$params['prefix']?'':' required="required"';
+	$countries='<select name="'.(@$params['prefix']).'Country"'.$required.'>'
 		.'<option value="" class="__" lang-context="core"> -- choose -- </option>';
 	if ($cjson) {
 		$cjson=json_decode($cjson);
