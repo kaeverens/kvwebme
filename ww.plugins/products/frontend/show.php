@@ -489,6 +489,7 @@ function Products_images($params, $smarty) {
 	$iid=0;
 	if ($vals['image_default']) {
 		$iid=$vals['image_default'];
+		return '';
 		$image=kfmImage::getInstance($iid);
 		if (!$image->exists()) {
 			$iid=0;
