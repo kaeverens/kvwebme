@@ -476,44 +476,28 @@ function Products_images($params, $smarty) {
 	);
 	// { make sure there is at least one image
 	$product=$smarty->_tpl_vars['product'];
+	$defaultImage=$product->getDefaultImage();
+	if (!$defaultImage) {
+		return Products_imageNotFound($params, $smarty);
+	}
+	// }
 	$vals=$product->vals;
 	if (!$vals['images_directory']) {
 		return Products_imageNotFound($params, $smarty);
 	}
 	$directory = $vals['images_directory'];
-	$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//', '', $directory));
-	if (!$dir_id) {
-		return Products_imageNotFound($params, $smarty);
-	}
-	$images=kfm_loadFiles($dir_id);
-	$iid=0;
-	if ($vals['image_default']) {
-		$iid=$vals['image_default'];
-		return '';
-		$image=kfmImage::getInstance($iid);
-		if (!$image->exists()) {
-			$iid=0;
-		}
-	}
-	if (!$iid) {
-		if (count($images['files'])) {
-			$image=$images['files'][0];
-			$iid=$image['id'];
-		}
-	}
-	if (!$iid) {
-		return Products_imageNotFound($params, $smarty);
-	}
-	// }
 	$carousel=count($images['files'])>1?' carousel jcarousel-skin-bland':'';
 	$html='<ul class="products-images'.$carousel.'" thumbsize="'
 		.$params['thumbsize'].'">';
-	foreach ($images['files'] as $image) {
-		$html.='<li><img src="/i/blank.gif" width="'.$params['thumbsize'].'"'
-			.' height="'.$params['thumbsize'].'" style="width:'.$params['thumbsize'].'px;'
+	$files=new DirectoryIterator(USERBASE.'/f/'.$directory);
+	foreach ($files as $image) {
+		if ($image->isDot()) {
+			continue;
+		}
+		$html.='<li><img src="/i/blank.gif" style="width:'.$params['thumbsize'].'px;'
 			.'height:'.$params['thumbsize'].'px;background:url(\'/a/f=getImg/w='
-			.$params['thumbsize'].'/h='.$params['thumbsize'].'/'.$image['dir'].'/'
-			.urlencode($image['name']).'\') no-repeat center center"/></li>';
+			.$params['thumbsize'].'/h='.$params['thumbsize'].'/'.$directory.'/'
+			.urlencode($image->getFilename()).'\') no-repeat center center"/></li>';
 	}
 	$html.='</ul>';
 	if ($carousel) {
