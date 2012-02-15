@@ -1,0 +1,1 @@
+$('#user-options-wrapper').accordion();
