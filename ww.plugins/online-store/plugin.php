@@ -391,7 +391,7 @@ function OnlineStore_getPostageAndPackagingSubtotal(
 				$cstr->constraints, $total, $country, $weight
 			);
 		}
-		if ($cstr->type=='is_in_country'
+		if (@$_REQUEST['Country'] && $cstr->type=='is_in_country'
 			&& in_array($_REQUEST['Country'], explode('|', $cstr->value))
 		) {
 			return OnlineStore_getPostageAndPackagingSubtotal(
