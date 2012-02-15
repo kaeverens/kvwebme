@@ -653,8 +653,8 @@ class ProductType{
 	  * @return string html of the image 
 	  */
 	function getMissingImage($maxsize) {
-		return '<img src="/kfmgetfull/products/types/'.$this->id
-			.'/image-not-found.png,width='.$maxsize.',height='.$maxsize.'" />';
+		return '<img src="/a/f=getImg/w='.$maxsize.'/h='.$maxsize
+			.'/products/types/'.$this->id.'/image-not-found.png" />';
 	}
 	/**
 	  * produce a HTML version of the product

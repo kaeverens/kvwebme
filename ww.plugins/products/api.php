@@ -13,7 +13,7 @@ function Products_showDefaultImg() {
 	if ($product) {
 		$iid=$product->getDefaultImage();
 		if ($iid) {
-			header('Location: /kfmget/'.$iid.'&width='.$w.'&height='.$h);
+			header('Location: /a/f=getImg/w='.$w.'/h='.$h.'/'.$iid);
 			exit;
 		}
 	}

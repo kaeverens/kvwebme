@@ -11,10 +11,6 @@
 	* @link     http://kvsites.ie/
 	*/
 
-$kfm_do_not_save_session=true;
-require_once KFM_BASE_PATH.'/api/api.php';
-require_once KFM_BASE_PATH.'/initialise.php';
-
 if (!file_exists(USERBASE.'/ww.cache/products')) {
 	mkdir(USERBASE.'/ww.cache/products');
 }
@@ -937,29 +933,12 @@ function Products_showRelatedProducts($params, $smarty) {
 				$h.=htmlspecialchars($p->name).'</a>';
 				continue;
 			}
-			$iid=0;
-			if ($vals['image_default']) {
-				$iid=$vals['image_default'];
-				$image=kfmImage::getInstance($iid);
-				if (!$image->exists()) {
-					$iid=0;
-				}
-			}
-			if (!$iid) {
-				$directory = $vals['images_directory'];
-				$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//', '', $directory));
-				if ($dir_id) {
-					$images=kfm_loadFiles($dir_id);
-					if (count($images['files'])) {
-						$iid=$images['files'][0]['id'];
-					}
-				}
-			}
+			$iid=$p->getDefaultImage();
 			if (!$iid) {
 				$h.=htmlspecialchars($p->name).'</a>';
 				continue;
 			}
-			$h.='<img src="/kfmget/'.$iid.'&amp;width=150&amp;height=150" /><br />'
+			$h.='<img src="/a/w=150/p=150/'.$iid.'" /><br />'
 				.htmlspecialchars($p->name).'</a>';
 		}
 		return '<div class="product_list products_'

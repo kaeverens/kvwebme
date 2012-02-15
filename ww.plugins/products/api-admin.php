@@ -444,8 +444,7 @@ function Products_adminTypeUploadMissingImage() {
 	$to=USERBASE.'/f/products/types/'.$id.'/image-not-found.png';
 	move_uploaded_file($from, $to);
 	Core_cacheClear();
-	echo '/kfmgetfull/products/types/'.$id
-		.'/image-not-found.png,width=64,height=64';
+	echo '/a/f=getImg/w=64/h=64/products/types/'.$id.'/image-not-found.png'
 	exit;
 }
 /**

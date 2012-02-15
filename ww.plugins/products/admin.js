@@ -332,8 +332,7 @@ function Products_typeEdit(id) {
 			});
 		// }
 		var src=id
-			?'/kfmgetfull/products/types/'+id
-			+'/image-not-found.png,width=64,height=64'
+			?'/a/f=getImg/w=64/h=64/products/types/'+id+'/image-not-found.png'
 			:'/ww.plugins/products/i/not-found-64.png';
 		$('<img id="pte3-img" src="'+src+'?'+Math.random()+'"/>'
 			+'<input name="image_not_found" id="pte3-inp"/>'
