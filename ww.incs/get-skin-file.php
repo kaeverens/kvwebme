@@ -66,20 +66,25 @@ if ($mimetype=='text/css') {
 							.'endColorstr=\'#'.$colours[1].'\',GradientType=1 );';
 					}
 					else {
-						$css='background: -moz-linear-gradient(top, #'.$colours[0].' 0%,'
-							.'#'.$colours[1].' 100%);'
-							.'background: -webkit-gradient(linear, left top, left bottom, '
-							.'color-stop(0%,#'.$colours[0].'), color-stop(100%,#'.$colours[1].'));'
-							.'background: -webkit-linear-gradient(top, #'.$colours[0].' 0%,#'
-							.$colours[1].' 100%);'
-							.'background: -o-linear-gradient(top, #'.$colours[0].' 0%,#'
-							.$colours[1].' 100%);'
-							.'background: -ms-linear-gradient(top, #'.$colours[0].' 0%,#'
-							.$colours[1].' 100%);'
-							.'background: linear-gradient(top, #'.$colours[0].' 0%,#'
-							.$colours[1].' 100%);'
-							.'filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#'
-							.$colours[0].'\', endColorstr=\'#'.$colours[1].'\',GradientType=0 );';
+						if (count($colours)<2) {
+							$css='background: #'.$colours[0].';';
+						}
+						else {
+							$css='background: -moz-linear-gradient(top, #'.$colours[0].' 0%,'
+								.'#'.$colours[1].' 100%);'
+								.'background: -webkit-gradient(linear, left top, left bottom, '
+								.'color-stop(0%,#'.$colours[0].'), color-stop(100%,#'.$colours[1].'));'
+								.'background: -webkit-linear-gradient(top, #'.$colours[0].' 0%,#'
+								.$colours[1].' 100%);'
+								.'background: -o-linear-gradient(top, #'.$colours[0].' 0%,#'
+								.$colours[1].' 100%);'
+								.'background: -ms-linear-gradient(top, #'.$colours[0].' 0%,#'
+								.$colours[1].' 100%);'
+								.'background: linear-gradient(top, #'.$colours[0].' 0%,#'
+								.$colours[1].' 100%);'
+								.'filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#'
+								.$colours[0].'\', endColorstr=\'#'.$colours[1].'\',GradientType=0 );';
+						}
 					}
 				break; // }
 				case 'border-radius': // {
