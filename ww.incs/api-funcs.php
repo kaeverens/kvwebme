@@ -406,6 +406,11 @@ function Core_register() {
 	}
 	if ($token && $token==@$reg['token']) {
 		$latlngsql='';
+		if ($_REQUEST['custom']) {
+			foreach ($_REQUEST['custom'] as $k=>$v) {
+				$custom[$k]=$v;
+			}
+		}
 		if (@$custom['_location']) {
 			$latlng=dbRow(
 				'select lat,lng from locations where id='.((int)$custom['_location'])
@@ -415,7 +420,8 @@ function Core_register() {
 					.$latlng['lng'];
 			}
 		}
-		$sql='insert into user_accounts set email="'.addslashes($email).'",'
+		$name=@$_REQUEST['name']?' name="'.addslashes($_REQUEST['name']).'",':'';
+		$sql='insert into user_accounts set '.$name.'email="'.addslashes($email).'",'
 			.'password=md5("'.addslashes($password).'"),active=1,date_created=now(),'
 			.'extras="'.addslashes(json_encode($custom)).'"'.$latlngsql;
 		dbQuery($sql);
@@ -485,11 +491,16 @@ function Core_sendRegistrationToken() {
 		$_SESSION['privacy']['registration']['custom']=$_REQUEST['custom'];
 	}
 	$emaildomain=str_replace('www.', '', $_SERVER['HTTP_HOST']);
+	$from=Core_siteVar('useraccounts_registrationtokenemail_from');
 	mail(
 		$email,
-		'['.$_SERVER['HTTP_HOST'].'] user registration',
-		'Your token is: '.$_SESSION['privacy']['registration']['token'],
-		"Reply-to: info@".$emaildomain."\nFrom: info@".$emaildomain
+		Core_siteVar('useraccounts_registrationtokenemail_subject'),
+		str_replace(
+			'%token%',
+			$_SESSION['privacy']['registration']['token'],
+			Core_siteVar('useraccounts_registrationtokenemail_message')
+		),
+		"Reply-to: $from\nFrom: $from"
 	);
 	return array('ok'=>1);
 }

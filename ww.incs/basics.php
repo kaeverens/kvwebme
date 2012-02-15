@@ -26,6 +26,8 @@ $scripts=array();
 $scripts_inline=array();
 // }
 
+// { __
+
 /**
 	* translate a string
 	*
@@ -86,6 +88,18 @@ function __($str, $context='core', $params=array()) {
 	return $str;
 }
 
+// }
+// { __FromJson
+
+/**
+	* retieve a string from a JSON array of translations
+	*
+	* @param $str           string  the JSON string
+	* @param $first_result  boolean retrieve just the first available string
+	* @param $specific_lang mixed   false, or the language to retrieve
+	*
+	* @return string
+	*/
 function __FromJson($str, $first_result=false, $specific_lang=false) {
 	global $_languages;
 	$s=json_decode($str, true);
@@ -111,6 +125,9 @@ function __FromJson($str, $first_result=false, $specific_lang=false) {
 		return $r;
 	}
 }
+
+// }
+// { Core_cacheClear
 
 /**
   * clear a cache or all caches
@@ -146,6 +163,9 @@ function Core_cacheClear($type='') {
 	}
 }
 
+// }
+// { Core_cacheLoad
+
 /**
   * retrieve a cached variable if it exists
   *
@@ -167,6 +187,9 @@ function Core_cacheLoad($type, $id, $fail=false) {
 	}
 	return $fail;
 }
+
+// }
+// { Core_cacheSave
 
 /**
   * cache a variable
@@ -190,6 +213,9 @@ function Core_cacheSave($type, $md5, $vals) {
 	);
 }
 
+// }
+// { Core_configRewrite
+
 /**
   * rewrite the config file
   *
@@ -206,6 +232,9 @@ function Core_configRewrite() {
 	$config="<?php\n\$DBVARS=array(\n	".join(",\n	", $tmparr2)."\n);";
 	file_put_contents(CONFIG_FILE, $config);
 }
+
+// }
+// { Core_flushBuffer
 
 /**
   * log the request and send the buffer to the browser
@@ -252,6 +281,9 @@ function Core_flushBuffer($type, $header='') {
 	ob_flush();
 }
 
+// }
+// { Core_isAdmin
+
 /**
   * is the viewer an admin?
   *
@@ -266,6 +298,9 @@ function Core_isAdmin() {
 	}
 	return isset($_SESSION['userdata']['groups']['administrators']);
 }
+
+// }
+// { Core_shutdown
 
 /**
 	* shutdown script
@@ -300,6 +335,46 @@ function Core_shutdown() {
 	}
 }
 
+// }
+// { Core_siteVar
+
+/**
+	* retrieve a site_var variable
+	*
+	* @param $name string the name of the variable
+	*
+	* @return string
+	*/
+function Core_siteVar($name, $value=null) {
+	if ($value!==null) { // set
+		dbQuery('delete from site_vars where name="'.$name.'"');
+		dbQuery(
+			'insert into site_vars set name="'.$name.'", value="'
+			.addslashes($value).'"'
+		);
+		Core_cacheSave('site_vars', $name, $value);
+		return $value;
+	}
+	// { or get
+	$value=Core_cacheLoad('site_vars', $name, null);
+	if ($value!==null) {
+		return $value;
+	}
+	$value=dbOne('select value from site_vars where name="'.$name.'"', 'value');
+	if ($value) {
+		return $value;
+	}
+	if (file_exists(dirname(__FILE__).'/site_vars/'.$name.'.php')) {
+		require_once dirname(__FILE__).'/site_vars/'.$name.'.php';
+		return $value;
+	}
+	return '';
+	// }
+}
+
+// }
+// { Core_trigger
+
 /**
   * trigger an event
   *
@@ -333,6 +408,9 @@ function Core_trigger($trigger_name, $params = null) {
 	return $c;
 }
 
+// }
+// { dbAll
+
 /**
   * run a database query and return all resulting rows
   *
@@ -360,6 +438,9 @@ function dbAll($query, $key='') {
 	return $arr;
 }
 
+// }
+// { dbInit
+
 /**
   * initialise the database
   *
@@ -381,6 +462,9 @@ function dbInit() {
 	return $db;
 }
 
+// }
+// { dbLastInsertId
+
 /**
   * get the id from the last database insert query
   *
@@ -389,6 +473,9 @@ function dbInit() {
 function dbLastInsertId() {
 	return (int)dbOne('select last_insert_id() as id', 'id');
 }
+
+// }
+// { dbOne
 
 /**
   * run a database query and return a single field
@@ -405,6 +492,9 @@ function dbOne($query, $field='') {
 	}
 	return $r[$field];
 }
+
+// }
+// { dbQuery
 
 /**
   * run a database query
@@ -423,6 +513,9 @@ function dbQuery($query) {
 	return $q;
 }
 
+// }
+// { dbRow
+
 /**
   * run a database query and return a single row
   *
@@ -438,6 +531,9 @@ function dbRow($query) {
 	return $q->fetch(PDO::FETCH_ASSOC);
 }
 
+// }
+// { WebME_autoload
+
 /**
   * autoloader for classes
   *
@@ -448,6 +544,9 @@ function dbRow($query) {
 function WebME_autoload($name) {
 	require $name . '.php';
 }
+
+// }
+// { WW_addCSS
 
 /**
   * add a CSS file to be shown in the page
@@ -463,6 +562,9 @@ function WW_addCSS($url) {
 	}
 	$css_urls[]=$url;
 }
+
+// }
+// { WW_addInlineScript
 
 /**
   * add a JS script to be shown inline at the bottom of the page
@@ -484,6 +586,9 @@ function WW_addInlineScript($script) {
 	$scripts_inline[]=$script;
 }
 
+// }
+// { WW_addScript
+
 /**
   * add a JS script to be externally linked and shrunk
   *
@@ -499,6 +604,7 @@ function WW_addScript($url) {
 	$scripts[]=$url;
 }
 
+// }
 // { set up language
 $_languages=array();
 if (isset($_REQUEST['__LANG'])) {
