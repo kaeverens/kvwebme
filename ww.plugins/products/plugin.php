@@ -345,13 +345,15 @@ class Product{
 			return $vals['image_default'];
 		}
 		$directory = $vals['images_directory'];
-		$files=new DirectoryIterator(USERBASE.'/f/'.$directory);
-		foreach ($files as $file) {
-			if ($file->isDot()) {
-				continue;
+		if (file_exists(USERBASE.'/f/'.$directory)) {
+			$files=new DirectoryIterator(USERBASE.'/f/'.$directory);
+			foreach ($files as $file) {
+				if ($file->isDot()) {
+					continue;
+				}
+				$this->default_image=$directory.'/'.$file->getFilename();
+				return $this->default_image;
 			}
-			$this->default_image=$directory.'/'.$file->getFilename();
-			return $this->default_image;
 		}
 		$this->default_image=false;
 		return false;
