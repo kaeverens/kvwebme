@@ -482,7 +482,18 @@ function Products_images($params, $smarty) {
 		return Products_imageNotFound($params, $smarty);
 	}
 	$directory = $vals['images_directory'];
-	$carousel=count($images['files'])>1?' carousel jcarousel-skin-bland':'';
+	$numfiles=0;
+	$files=new DirectoryIterator(USERBASE.'/f/'.$directory);
+	foreach ($files as $f) {
+		if ($f->isDot()) {
+			continue;
+		}
+		$numfiles++;
+		if ($numfiles>1) {
+			break;
+		}
+	}
+	$carousel=$numfiles>1?' carousel jcarousel-skin-bland':'';
 	$html='<ul class="products-images'.$carousel.'" thumbsize="'
 		.$params['thumbsize'].'">';
 	$files=new DirectoryIterator(USERBASE.'/f/'.$directory);

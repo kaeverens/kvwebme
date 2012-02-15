@@ -79,6 +79,9 @@ function ImageGallery_show($PAGEDATA) {
 
 function GalleryWidget_show($vars){
 	$id=$vars->id;
+	if (!$vars->id) {
+		return '';
+	}
 	// { get data from widget db
 	$vars=dbRow('select * from image_gallery_widget where id="'.$id.'"');
 	// }
@@ -93,21 +96,23 @@ function GalleryWidget_show($vars){
 		$template=USERBASE.'/ww.cache/image-gallery-widget/';
 		@mkdir($template, 0777, true);
 		$template.=$id;
-		if (!$vars['gallery_type']) {
-			$vars['gallery_type']='grid';
+		if (!file_exists($template)) {
+			if (!$vars['gallery_type']) {
+				$vars['gallery_type']='grid';
+			}
+			$thtml=file_get_contents(
+				SCRIPTBASE.'ww.plugins/image-gallery/admin/types/'.
+					strtolower($vars['gallery_type'])
+				.'.tpl'
+			);
+			if (!$thtml) {
+				$thtml=file_get_contents(dirname(__FILE__).'/../admin/types/list.tpl');
+			}
+			file_put_contents(
+				$template,
+				$thtml
+			);
 		}
-		$thtml=file_get_contents(
-			SCRIPTBASE.'ww.plugins/image-gallery/admin/types/'.
-				strtolower($vars['gallery_type'])
-			.'.tpl'
-		);
-		if (!$thtml) {
-			$thtml=file_get_contents(dirname(__FILE__).'/../admin/types/list.tpl');
-		}
-		file_put_contents(
-			$template,
-			$thtml
-		);
 		// }
 		// { display the template
 		require_once SCRIPTBASE.'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
@@ -120,9 +125,7 @@ function GalleryWidget_show($vars){
 		$smarty->register_function('GALLERY_IMAGES', 'ImageGallery_templateImages');
 		$smarty->left_delimiter='{{';
 		$smarty->right_delimiter='}}';
-		$c.=$smarty->fetch(
-			USERBASE.'/ww.cache/image-gallery-widget/'.$id
-		);
+		$c.=$smarty->fetch($template);
 		// { quick hack to add the options rather than
 		// writing a whole new function in php
 		$script='

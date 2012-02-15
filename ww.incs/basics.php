@@ -89,7 +89,7 @@ function __($str, $context='core', $params=array()) {
 function __FromJson($str, $first_result=false, $specific_lang=false) {
 	global $_languages;
 	$s=json_decode($str, true);
-	if ($s===null) {
+	if ($s===null || !is_array($s)) {
 		return $str;
 	}
 	else {
