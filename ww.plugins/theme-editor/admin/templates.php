@@ -49,7 +49,9 @@ $(function(){
 			"/j/CodeMirror-0.93/css/xmlcolors.css",
 			"/j/CodeMirror-0.93/css/jscolors.css",
 			"/j/CodeMirror-0.93/css/csscolors.css"
-		]
+		],
+		lineNumbers:true,
+		lineWrapping:true
 	});
 });
 </script>
