@@ -340,7 +340,8 @@ $product_type=dbRow($sql);
 
 // { start form and tabs
 echo '<form novalidate="novalidate" id="products-form" action="'.$_url
-	.'&amp;id='.$id.'" method="post" onsubmit="products_getData();">'
+	.'" method="post" onsubmit="products_getData();">'
+	.'<input type="hidden" name="id" value="'.$id.'"/>'
 	.'<input type="hidden" name="action" value="save" />'
 	.'<div id="tabs">';
 // }
@@ -550,7 +551,9 @@ if ($n) {
 			.'<a class="caption" href="javascript:;" id="products-cbtn-'
 			.$images[$i]['id'].'">edit caption</a><br />'
 			.'<a class="mark-as-default" href="javascript:;" '
-			.'id="products-dfbtn-'.$images[$i]['id'].'">set default</a></div>';
+			.'id="products-dfbtn-'.$images[$i]['id'].'" imgsrc="'
+			.$images[$i]['dir'].'/'.$images[$i]['name'].'"'
+			.'>set default</a></div>';
 	}
 	echo '</div>';
 } 

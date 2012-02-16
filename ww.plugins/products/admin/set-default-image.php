@@ -6,8 +6,9 @@ if (!Core_isAdmin()) {
 }
 
 $product_id=(int)$_REQUEST['product_id'];
-$image_id=(int)$_REQUEST['id'];
+$imgsrc='/'.$_REQUEST['imgsrc'];
 
-dbQuery('update products set image_default='.$image_id.' where id='.$product_id);
+dbQuery('update products set image_default="'.addslashes($imgsrc).'" where id='.$product_id);
+echo 'update products set image_default="'.addslashes($imgsrc).'" where id='.$product_id;
 
 echo 'ok';

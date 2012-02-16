@@ -164,8 +164,11 @@ function products_getData () {
 $(function(){
 	$('#product-images-wrapper a.mark-as-default').bind('click',function(){
 		var $this=$(this);
-		var id=$this[0].id.replace('products-dfbtn-','');
-		$.get('/ww.plugins/products/admin/set-default-image.php?product_id='+product_id+'&id='+id,function(ret){
+		var imgsrc=$this.attr('imgsrc');
+		$.post('/ww.plugins/products/admin/set-default-image.php', {
+			'product_id':$('input[name=id]').val(),
+			'imgsrc':imgsrc
+		}, function(ret){
 			$('div.default').removeClass('default');
 			$this.closest('div').addClass('default');
 		});
