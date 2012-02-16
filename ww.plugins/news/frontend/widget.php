@@ -38,17 +38,32 @@ if (!count($rs)) {
 $links=array();
 foreach ($rs as $r) {
 	$page=Page::getInstance($r['id']);
+	$thumb='';
+	if ($vars->thumbnail || $vars->characters_shown) {
+		$pagerendered=$page->render();
+	}
+	if ($vars->thumbnail) {
+		$img=preg_replace('/.*<img/', '<img', str_replace(array("\n", "\r"), ' ', $pagerendered));
+		if (strpos($img, '<img')===0) {
+			$img=preg_replace('/>.*/', '', $img);
+			$img=preg_replace('/.*src="([^"]*)".*/', '\1', $img);
+			$img=preg_replace('#^/f/#', '', $img);
+			$thumb='<img src="/a/f=getImg/w='.$vars->thumbnailw
+				.'/h='.$vars->thumbnailh.'/'.$img.'" style="float:left;"/>';
+		}
+	}
 	$body='';
 	if ($vars->characters_shown) {
-		$body=preg_replace('#<h1[^<]*</h1>#', '', $page->render());
+		$body=preg_replace('#<h1[^<]*</h1>#', '', $pagerendered);
 		$body=str_replace(array("\n", "\r"), ' ', $body);
 		$body=preg_replace('/<script[^>]*>.*?<\/script>/', '', $body);
 		$body=preg_replace('/<[^>]*>/', '', $body);
 		$body='<br /><i>'.substr($body, 0, $vars->characters_shown).'...</i>';
 	}
 	$links[]='<a href="'.$page->getRelativeURL().'"><strong>'
-		.htmlspecialchars($page->name).'</strong><div class="date">'
-		.date_m2h($page->associated_date).'</div>'.$body.'</a>';
+		.htmlspecialchars(__FromJson($page->name)).'</strong><div class="date">'
+		.date_m2h($page->associated_date).'</div><span class="news-body">'
+		.$thumb.$body.'</span></a>';
 }
 $html.='<div id="news-wrapper-'.$vars->id
 	.'" class="news_excerpts_wrapper"><ul class="news_excerpts"><li>'

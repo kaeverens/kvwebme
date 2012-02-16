@@ -71,5 +71,26 @@ if (!$i) {
 	$i=10;
 }
 echo '<strong>Stories to show</strong><br />';
-echo '<input class="small" name="stories_to_show" value="'.$i.'" />';
+echo '<input class="small" name="stories_to_show" value="'.$i.'" /><br/>';
+// }
+// { thumbnail
+echo '<strong>Show Thumbnail</strong><br /><select name="thumbnail">';
+echo '<option value="0">No</option>';
+echo '<option value="1"';
+if ($_REQUEST['thumbnail']==1) {
+	echo ' selected="selected"';
+}
+echo '>Yes</option></select><br />';
+// }
+// { thumbnail width/height
+$maxw=(int)$_REQUEST['thumbnailw'];
+$maxh=(int)$_REQUEST['thumbnailh'];
+if ($maxw<1) {
+	$maxw=80;
+}
+if ($maxh<1) {
+	$maxh=80;
+}
+echo '<input class="small" name="thumbnailw" value="'.$maxw.'"/> max width<br />';
+echo '<input class="small" name="thumbnailh" value="'.$maxh.'"/> max height<br />';
 // }
