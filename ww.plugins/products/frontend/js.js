@@ -181,7 +181,7 @@ $(function(){
 		$this.jcarousel();
 		var sequence=[];
 		var $wrap=$this.closest('.products-product').find('.products-image');
-		var bigw=$wrap.attr('width'), bigh=$wrap.attr('height');
+		var bigw=$wrap.width(), bigh=$wrap.height();
 		$this.find('img').each(function() {
 			var src=$(this).css('background-image')
 				.replace(/^url\("?|w=[0-9]*\/h=[0-9]*\/|"?\)$/g, '');
