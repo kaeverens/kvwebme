@@ -24,7 +24,18 @@
 function Core_adminMenuShow($items, $name=false, $prefix='', $depth=0) {
 	$target=(isset($items['_target']))?' target="'.$items['_target'].'"':'';
 	if (isset($items['_link'])) {
-		echo '<a href="'.$items['_link'].'"'.$target.'>'.__($name, 'menu').'</a>';
+		if (strpos($items['_link'], 'javascript:')===0) {
+			$link='href="#" onclick="'.str_replace(
+				'javascript:',
+				'',
+				$items['_link']
+			)
+			.';return false"';
+		}
+		else {
+			$link='href="'.$items['_link'].'"';
+		}
+		echo '<a '.$link.$target.'>'.__($name, 'menu').'</a>';
 	}
 	elseif ($name!='top') {
 		echo '<a href="#'.$prefix.'-'.urlencode($name).'">'.__($name, 'menu')
@@ -164,6 +175,10 @@ $menus['Site Options']['Stats']=array('_link'=>'/ww.admin/stats.php');
 $menus['View Site']=array( '_link'=>'/', '_target'=>'_blank');
 $menus['Help']=array( '_link'=>'http://kvweb.me/', '_target'=>'_blank');
 $menus['Log Out']=  array('_link'=>'/?logout=1');
+$menus['Misc']['File Manager']=array(
+	'_link'=>'javascript:return window.open(\'/j/kfm/\', \'kfm\', '
+	.'\'modal,width=800,height=640\')'
+);
 // }
 // { display menu as UL list
 Core_adminMenuShow($menus, 'top', 'menu');
