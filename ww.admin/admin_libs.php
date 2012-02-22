@@ -597,24 +597,3 @@ function Core_getExternalFile($url) {
 	curl_close($ch);
 	return $response;
 }
-
-/**
- * transcribe
- *
- * replaces accented characters with their
- * non-accented equivellants
- *
- * @param string $string the string to transcribe
- *
- * @return string the transcribed string
- */
-function transcribe($string) {
-    $a = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞ
-ßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿŔŕ';
-    $b = 'aaaaaaaceeeeiiiidnoooooouuuuy
-bsaaaaaaaceeeeiiiidnoooooouuuyybyRr';
-    $string = utf8_decode($string);    
-    $string = strtr($string, utf8_decode($a), $b);
-    $string = strtolower($string);
-    return utf8_encode($string);
-} 
