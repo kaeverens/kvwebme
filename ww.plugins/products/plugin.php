@@ -445,7 +445,7 @@ class Product{
 		}
 		$product_type=ProductType::getInstance($this->vals['product_type_id']);
 		foreach ($product_type->data_fields as $data_field) {
-			if ($data_field->s
+			if (@$data_field->s
 				&& strpos(strtolower($this->get($data_field->n)), $search)!==false
 			) {
 				return true;

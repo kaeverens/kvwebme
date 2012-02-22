@@ -14,7 +14,7 @@
 echo '<h2>Privacy</h2>';
 
 echo '<table id="privacy-options">';
-// { restrict access to members of these group
+// { page is visible only by logged-in users
 echo '<tr><th>Page is viewable only by logged-in users:</th><td>';
 echo '<select name="page_vars[privacy_require_login]">'
 	.'<option value="">No</option><option value="1"';

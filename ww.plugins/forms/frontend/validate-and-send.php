@@ -425,7 +425,7 @@ function Form_readonly($page_id, &$vars, &$form_fields) {
 				$d=date_m2h($_REQUEST[$name]);
 			break; // }
 			case 'file': // {
-				$d='files attached';
+				$d='if there are any files, they are attached to this email';
 			break; // }
 			case 'hidden': // {
 				$d=htmlspecialchars($r2['extra']);
