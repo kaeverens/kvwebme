@@ -367,6 +367,84 @@ function Products_adminExport() {
 }
 
 // }
+// { Products_adminImportFile
+
+/**
+	* import from an uploaded file
+	*
+	* @return status
+	*/
+function Products_adminImportFile() {
+	// { get import vals
+	$vars=(object)dbAll(
+		'select varname,varvalue from admin_vars where admin_id='
+		.$_SESSION['userdata']['id'].' and varname like "productsImport%"',
+		'varname'
+	);
+	if (!@$vars->productsImportDeleteAfter['varvalue']) {
+		$vars->productsImportDeleteAfter=array(
+			'varvalue'=>false
+		);
+	}
+	if (!@$vars->productsImportDelimiter['varvalue']) {
+		$vars->productsImportDelimiter=array(
+			'varvalue'=>','
+		);
+	}
+	if (!@$vars->productsImportFileUrl['varvalue']) {
+		$vars->productsImportFileUrl=array(
+			'varvalue'=>'ww.cache/products/import.csv'
+		);
+	}
+	if (!@$vars->productsImportImagesDir['varvalue']) {
+		$vars->productsImportImagesDir=array(
+			'varvalue'=>'ww.cache/products/images'
+		);
+	}
+	// }
+	$fname=USERBASE.$vars->productsImportFileUrl['varvalue'];
+	if (strpos($fname, '..')!==false) {
+		return array('message'=>'invalid file url');
+	}
+	if (!file_exists($fname)) {
+		return array('message'=>'file not uploaded');
+	}
+	$handle=fopen($fname, 'r');
+	$headers=fgetcsv($handle, 1000, $vars->productsImportDelimiter['varvalue']);
+	return $headers;
+	return array('message'=>'ok');
+}
+
+// }
+// { Products_adminImportFileUpload
+
+/**
+	* handle an uploaded file for import
+	*
+	* @return status
+	*/
+function Products_adminImportFileUpload() {
+	$vars=(object)dbAll(
+		'select varname,varvalue from admin_vars where admin_id='
+		.$_SESSION['userdata']['id'].' and varname like "productsImport%"',
+		'varname'
+	);
+	if (!@$vars->productsImportFileUrl['varvalue']) {
+		$vars->productsImportFileUrl=array(
+			'varvalue'=>'ww.cache/products/import.csv'
+		);
+	}
+	$fname=USERBASE.$vars->productsImportFileUrl['varvalue'];
+	if (strpos($fname, '..')!==false) {
+		return array('message'=>'invalid file url');
+	}
+	@mkdir(dirname($fname), 0777, true);
+	$from=$_FILES['Filedata']['tmp_name'];
+	move_uploaded_file($from, $fname);
+	return array('ok'=>1);
+}
+
+// }
 // { Products_adminPageDelete
 
 /**
@@ -589,3 +667,55 @@ function Products_adminTypeUploadMissingImage() {
 }
 
 // }
+// { Products_adminTypesGetSampleImport
+
+/**
+	* download a CSV version of a product type in importable format
+	*
+	* @return null
+	*/
+function Products_adminTypesGetSampleImport() {
+	$ptypeid=(int)$_REQUEST['ptypeid'];
+	if ($ptypeid) {
+		$ptypes=dbAll('select * from products_types where id='.$ptypeid);
+	}
+	else {
+		$ptypes=dbAll('select * from products_types');
+	}
+	$are_any_for_sale=0;
+	// { get list of data field names
+	$names=array();
+	foreach ($ptypes as $p) {
+		if ($p['is_for_sale']) {
+			$are_any_for_sale=1;
+		}
+		$dfs=json_decode($p['data_fields']);
+		foreach ($dfs as $df) {
+			if (!in_array($df->n, $names)) {
+				$names[]=$df->n;
+			}
+		}
+	}
+	// }
+	// { header
+	$row=array(
+		'_stocknumber',
+		'_name'
+	);
+	if ($are_any_for_sale) {
+		$row[]='_price';
+		$row[]='_sale_price';
+		$row[]='_bulk_price';
+		$row[]='_bulk_amount';
+	}
+	foreach ($names as $n) {
+		$row[]=$n;
+	}
+	$row[]='_type';
+	$row[]='_categories';
+	header('Content-type: text/csv; Charset=utf-8');
+	header(
+		'Content-Disposition: attachment; filename="product-types-'.$ptypeid.'.csv"'
+	);
+	
+}

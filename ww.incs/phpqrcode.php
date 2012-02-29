@@ -933,7 +933,7 @@ class QRspec {
 
 	//----------------------------------------------------------------------
 	public static function rsBlockNum($spec) {
-		return $spec[0] $spec[3];
+		return $spec[0] + $spec[3];
 	}
 	public static function rsBlockNum1($spec) {
 		return $spec[0];
@@ -954,10 +954,10 @@ class QRspec {
 		return $spec[2];
 	}
 	public static function rsDataLength($spec) {
-		return ($spec[0] * $spec[1]) ($spec[3] * $spec[4]);
+		return ($spec[0] * $spec[1]) + ($spec[3] * $spec[4]);
 	}
 	public static function rsEccLength($spec) {
-		return ($spec[0] $spec[3]) * $spec[2];
+		return ($spec[0] + $spec[3]) * $spec[2];
 	}
 
 }

@@ -81,6 +81,6 @@ function send_mail(
 	 
 	// SEND THE EMAIL
 	ini_set('sendmail_from', $fromaddress);
-	mail($emailaddress, $emailsubject, $msg, $headers);
+	mail($emailaddress, $emailsubject, $msg, $headers, '-f'.$fromaddress);
 	ini_restore('sendmail_from');
 }

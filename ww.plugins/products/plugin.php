@@ -21,6 +21,7 @@ $plugin=array(
 			'Products>Categories' => 'categories',
 			'Products>Types'=>'js:Types',
 			'Products>Relation Types'=> 'relation-types',
+			'Products>Import'=>'js:Import',
 			'Products>Export Data' => 'js:ExportData'
 		),
 		'page_type' => 'Products_adminPage',

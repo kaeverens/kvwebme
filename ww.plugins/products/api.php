@@ -1,24 +1,51 @@
 <?php
+/**
+	* API for Products plugin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+// { Products_arrayToCSV
 
 /**
-	* show the default image of a product
+	* convert an array to a CSV row
 	*
-	* @return null
+	* @param array  $row       row data
+	* @param string $delimiter what to separate the fields by
+	* @param string $enclosure how should strings be enclosed
+	* @param string $eol       what end-of-line character to use
+	*
+	* @return string the CSV row
 	*/
-function Products_showDefaultImg() {
-	$id=(int)$_REQUEST['id'];
-	$product=Product::getInstance($id);
-	$w=(int)@$_REQUEST['w'];
-	$h=(int)@$_REQUEST['h'];
-	if ($product) {
-		$iid=$product->getDefaultImage();
-		if ($iid) {
-			header('Location: /a/f=getImg/w='.$w.'/h='.$h.'/'.$iid);
-			exit;
-		}
+function Products_arrayToCSV(
+	$row, $delimiter = ',', $enclosure = '"', $eol = "\n"
+) {
+	static $fp = false;
+	if ($fp === false) {
+		$fp = fopen('php://temp', 'r+');
 	}
-	header('Location: /i/blank.gif');
+	else {
+		rewind($fp);
+	}
+	if (fputcsv($fp, $row, $delimiter, $enclosure) === false) {
+		return false;
+	}
+	rewind($fp);
+	$csv = fgets($fp);
+	if ($eol != PHP_EOL) {
+		$csv = substr($csv, 0, (0 - strlen(PHP_EOL))) . $eol;
+	}
+	return $csv;
 }
+
+// }
+// { Products_categoriesOptionsGet
 
 /**
 	* show a list of categories
@@ -35,49 +62,33 @@ function Products_categoriesOptionsGet() {
 	return $arr;
 }
 
+// }
+// { Products_getImgs
 /**
-	* remove a review
+	* get a list of images
 	*
-	* @return null
+	* @return list of images
 	*/
-function Products_reviewDelete() {
-	$id = (int)$_REQUEST['id'];
-	$productid= (int)$_REQUEST['productid'];
-	$userid = (int)dbOne(
-		'select user_id from products_reviews where id='.$id, 
-		'user_id'
-	);
-	$user= $_SESSION['userdata']['id'];
-	if (!Core_isAdmin() || $user!=$userid) {
-		die('You do not have permission to delete this review');
+
+function Products_getImgs() {
+	$pid=(int)$_REQUEST['id'];
+	$product=Product::getInstance($pid);
+	$dir=USERBASE.'/f'.$product->vals['images_directory'];
+	$imgs=array();
+	if (file_exists($dir)) {
+		$dir=new DirectoryIterator($dir);
+		foreach ($dir as $file) {
+			if ($file->isDot()) {
+				continue;
+			}
+			$imgs[]='/f'.$product->vals['images_directory'].'/'.$file->getFilename();
+		}
 	}
-	dbQuery('delete from products_reviews where id='.$id);
-	if (dbOne('select id from products_reviews where id='.$id, 'id')) {
-		return array('status'=>0);
-	}
-	$numReviews= (int) dbOne(
-		'select count(id) 
-		from products_reviews 
-		where product_id='.$productid, 
-		'count(id)'
-	);
-	$average = (int) dbOne(
-		'select avg(rating)
-		from products_reviews
-		where product_id='.$productid
-		.' group by product_id',
-		'avg(rating)'
-	);
-	return array(
-		'status'=>1,
-		'id'=>$id,
-		'user'=>$user,
-		'userid'=>$userid,
-		'num'=>$numReviews,
-		'avg'=>$average,
-		'product'=>$productid
-	);
+	return $imgs;
 }
+
+// }
+// { Products_getProductOwnersByCoords
 
 /**
 	* get a list of users with active products using map coordinates
@@ -123,6 +134,9 @@ function Products_getProductOwnersByCoords() {
 	// }
 }
 
+// }
+// { Products_getProductsByUser
+
 /**
 	* get a list of products (id, name, relativeUrl) owned by a user
 	*
@@ -142,6 +156,56 @@ function Products_getProductsByUser() {
 	}
 	return $products;
 }
+
+// }
+// { Products_reviewDelete
+
+/**
+	* remove a review
+	*
+	* @return null
+	*/
+function Products_reviewDelete() {
+	$id = (int)$_REQUEST['id'];
+	$productid= (int)$_REQUEST['productid'];
+	$userid = (int)dbOne(
+		'select user_id from products_reviews where id='.$id, 
+		'user_id'
+	);
+	$user= $_SESSION['userdata']['id'];
+	if (!Core_isAdmin() || $user!=$userid) {
+		die('You do not have permission to delete this review');
+	}
+	dbQuery('delete from products_reviews where id='.$id);
+	if (dbOne('select id from products_reviews where id='.$id, 'id')) {
+		return array('status'=>0);
+	}
+	$numReviews= (int) dbOne(
+		'select count(id) 
+		from products_reviews 
+		where product_id='.$productid, 
+		'count(id)'
+	);
+	$average = (int) dbOne(
+		'select avg(rating)
+		from products_reviews
+		where product_id='.$productid
+		.' group by product_id',
+		'avg(rating)'
+	);
+	return array(
+		'status'=>1,
+		'id'=>$id,
+		'user'=>$user,
+		'userid'=>$userid,
+		'num'=>$numReviews,
+		'avg'=>$average,
+		'product'=>$productid
+	);
+}
+
+// }
+// { Products_reviewUpdate
 
 /**
 	* Updates a review, calculates the new total and average
@@ -214,6 +278,32 @@ function Products_reviewUpdate() {
 	);
 }
 
+// }
+// { Products_showDefaultImg
+
+/**
+	* show the default image of a product
+	*
+	* @return null
+	*/
+function Products_showDefaultImg() {
+	$id=(int)$_REQUEST['id'];
+	$product=Product::getInstance($id);
+	$w=(int)@$_REQUEST['w'];
+	$h=(int)@$_REQUEST['h'];
+	if ($product) {
+		$iid=$product->getDefaultImage();
+		if ($iid) {
+			header('Location: /a/f=getImg/w='.$w.'/h='.$h.'/'.$iid);
+			exit;
+		}
+	}
+	header('Location: /i/blank.gif');
+}
+
+// }
+// { Products_showQrCode
+
 /**
 	* show an image of a QR code leading to a product
 	*
@@ -244,6 +334,9 @@ function Products_showQrCode() {
 	exit;
 }
 
+// }
+// { Products_typeGet
+
 /**
 	* get details about a specific product type
 	*
@@ -263,6 +356,10 @@ function Products_typeGet() {
 	}
 	return $r;
 }
+
+// }
+// { Products_typesGet
+
 /**
 	* get a list of product types
 	*
@@ -286,6 +383,10 @@ function Products_typesGet() {
 	}
 	return $result;
 }
+
+// }
+// { Products_typesTemplatesGet
+
 /**
 	* get a list of pre-created product type templates
 	*
@@ -303,19 +404,4 @@ function Products_typesTemplatesGet() {
 	return $templates;
 }
 
-function Products_getImgs() {
-	$pid=(int)$_REQUEST['id'];
-	$product=Product::getInstance($pid);
-	$dir=USERBASE.'/f'.$product->vals['images_directory'];
-	$imgs=array();
-	if (file_exists($dir)) {
-		$dir=new DirectoryIterator($dir);
-		foreach ($dir as $file) {
-			if ($file->isDot()) {
-				continue;
-			}
-			$imgs[]='/f'.$product->vals['images_directory'].'/'.$file->getFilename();
-		}
-	}
-	return $imgs;
-}
+// }

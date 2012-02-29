@@ -67,7 +67,8 @@ function OnlineStore_processOrder($id, $order=false) {
 		$form_vals->Email,
 		'['.$short_domain.'] invoice #'. $id,
 		$order['invoice'],
-		$headers
+		$headers,
+		"-f$from"
 	);
 	// }
 	// { handle item-specific stuff (vouchers, stock control)
@@ -113,7 +114,13 @@ function OnlineStore_processOrder($id, $order=false) {
 					$html
 				);
 			}
-			mail($form_vals->Email, '['.$short_domain.'] voucher', $html, $headers);
+			mail(
+				$form_vals->Email,
+				'['.$short_domain.'] voucher',
+				$html,
+				$headers,
+				"-f$from"
+			);
 		}
 		// { stock control
 		$valsOS=$p->vals['online-store'];

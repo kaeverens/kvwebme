@@ -49,7 +49,7 @@ function Forms_verificationSend() {
 		$_SESSION['emails']=array();
 	}
 	if (!isset($_SESSION['emails'][$email])) {
-		$pid=(int)$_REQUEST['page'];
+		$pid=(int)@$_REQUEST['page'];
 		if ($pid) {
 			$page=Page::getInstance($pid);
 			if (!$page) {

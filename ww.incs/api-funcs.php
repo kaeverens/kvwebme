@@ -455,7 +455,8 @@ function Core_sendLoginToken() {
 		mail(
 			$email, '['.$_SERVER['HTTP_HOST'].'] user password token',
 			'Your token is: '.$token,
-			"Reply-to: $email\nFrom: $email"
+			"Reply-to: $email\nFrom: $email",
+			'-f'.$email
 		);
 		exit('{"ok":1}');
 	}
@@ -500,7 +501,8 @@ function Core_sendRegistrationToken() {
 			$_SESSION['privacy']['registration']['token'],
 			Core_siteVar('useraccounts_registrationtokenemail_message')
 		),
-		"Reply-to: $from\nFrom: $from"
+		"Reply-to: $from\nFrom: $from",
+		'-f'.$from
 	);
 	return array('ok'=>1);
 }

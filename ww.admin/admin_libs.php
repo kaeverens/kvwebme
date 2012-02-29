@@ -175,9 +175,24 @@ function WW_getScripts() {
 	if (!count($scripts)) {
 		return '';
 	}
-	$inline=count($scripts_inline)
-		?'<script>'.join('', $scripts_inline).'</script>'
-		:'';
+	// { set up inline scripts
+	// { set up admin vars
+	$adminVars=(object)null;
+	$rs=dbAll(
+		'select * from admin_vars where admin_id='.((int)$_SESSION['userdata']['id'])
+	);
+	if ($rs) {
+		foreach ($rs as $r) {
+			$adminVars->{$r['varname']}=$r['varvalue'];
+		}
+	}
+	$scripts_inline[]='window.adminVars='.json_encode(
+		$adminVars
+	);
+	// }
+	$inline='<script>'.join(';', $scripts_inline).';</script>';
+	// }
+	// { set up external scripts
 	$external=array();
 	$local=array();
 	$latest=0;
@@ -206,6 +221,7 @@ function WW_getScripts() {
 	$external=count($external)
 		?'<script src="'.join('"></script><script src="', $external).'"></script>'
 		:'';
+	// }
 	return $external
 		.'<script src="/ww.admin/js.php/'.$md5.'"></script>'
 		.$inline;

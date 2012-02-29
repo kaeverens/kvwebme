@@ -18,9 +18,9 @@ if (!Core_isAdmin()) {
 echo '<a href="plugin.php?_plugin=products">List all products</a> | '
 	.'<a href="plugin.php?_plugin=products&amp;_page=products-edit">'
 	.'Add a Product</a> | '
-	.'Import Products: '
-	.'<a href="plugin.php?_plugin=products&amp;_page=import">CSV</a> / '
-	.'<a href="plugin.php?_plugin=products&amp;_page=import-json">JSON</a>'
+	.'<a href="javascript:Core_screen(\'products\', \'js:Import\');"'
+	.' class="__" lang-context="core">'
+	.'Import</a>'
 	;
 // }
 if (isset($_REQUEST['delete']) && is_numeric($_REQUEST['delete'])) {
@@ -57,9 +57,8 @@ $rs=dbAll(
 if (!count($rs)) {
 	echo '<em>No existing products. <a href="plugin.php?_plugin=products&amp;'
 		.'_page=products-edit">Click here to create one</a>.'
-		.' or import from '
-		.'<a href="plugin.php?_plugin=products&amp;_page=import">CSV</a> or '
-		.'<a href="plugin.php?_plugin=products&amp;_page=import-json">JSON</a>';
+		.' or <a href="javascript:Core_screen(\'products\', \'js:Import\');"'
+	  .' class="__" lang-context="core">import</a> a list of them';
 	return;
 }
 // { products list

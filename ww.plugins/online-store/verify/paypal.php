@@ -47,10 +47,13 @@ if (!$fp) {
 				foreach ($_POST as $key => $value) {
 					$str.=$key." = ". $value."\n";
 				}
+				$eml='info@'.preg_replace('/^www\./', '', $_SERVER['HTTP_HOST']);
 				mail(
-					'info@'.preg_replace('/^www\./', '', $_SERVER['HTTP_HOST']), 
+					$eml,
 					$_SERVER['HTTP_HOST'].' paypal hack',
-					$str
+					$str,
+					"From: $eml\nReply-to: $eml",
+					"-f$eml"
 				);
 				exit;
 			}

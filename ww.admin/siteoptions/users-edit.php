@@ -107,7 +107,8 @@ if (isset($_REQUEST['action'])) {
 				$_REQUEST['email'],
 				'['.$site.'] user status update',
 				$_REQUEST['email-to-send'],
-				'Reply-to: no-reply@'.$site."\nFrom: no-reply@".$site
+				'Reply-to: no-reply@'.$site."\nFrom: no-reply@".$site,
+				"-fno-reply@".$site
 			);
 		}
 		Core_cacheSave('user-session-resets', $id, true);

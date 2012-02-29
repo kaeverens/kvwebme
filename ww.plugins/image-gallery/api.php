@@ -172,6 +172,10 @@ function ImageGallery_frameGet() {
 	if (!file_exists($frame)) {
 		@mkdir(USERBASE.'/ww.cache/image-gallery-frames');
 		$imgO=imagecreatefrompng($file);
+		if ($img0===false) { // not a PNG
+			header('Location: /i/blank.gif');
+			exit;
+		}
 		$imgOsize=getimagesize($file);
 		$imgN=imagecreatetruecolor($width, $height);
 		$black = imagecolorallocate($imgN, 0, 0, 0);

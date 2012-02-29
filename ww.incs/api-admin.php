@@ -11,6 +11,28 @@
 	* @link     http://kvsites.ie/
 	*/
 
+// { Core_adminAdminVarsSave
+
+/**
+	* save variables of an admin
+	*
+	* @return status of the save
+	*/
+function Core_adminAdminVarsSave() {
+	$name=$_REQUEST['name'];
+	$val=$_REQUEST['val'];
+	dbQuery(
+		'delete from admin_vars where admin_id='.$_SESSION['userdata']['id']
+		.' and varname="'.addslashes($name).'"'
+	);
+	dbQuery(
+		'insert into admin_vars set admin_id='.$_SESSION['userdata']['id']
+		.',varname="'.addslashes($name).'",varvalue="'.addslashes($val).'"'
+	);
+	return array('ok'=>1);
+}
+
+// }
 // { Core_adminCronGet
 
 /**

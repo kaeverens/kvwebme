@@ -26,6 +26,15 @@ function convert_date_to_human_readable(){
 			'setDate', new Date(dparts[0],dparts[1]-1,dparts[2])
 		);
 }
+function Core_saveAdminVars(name, val) {
+	adminVars[name]=val;
+	$.post('/a/f=adminAdminVarsSave', {
+		'name':name,
+		'val':val
+	}, function(ret) {
+		console.log(ret);
+	});
+}
 function Core_sidemenu(links, plugin, currentpage) {
 	var html='<ul>';
 	for (var i=0;i<links.length;++i) {

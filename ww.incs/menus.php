@@ -100,6 +100,7 @@ function Menu_getChildren(
 		if (!$i++) {
 			$c[]='first';
 		}
+		$c[]='c'.$i;
 		if ($r['numchildren']) {
 			$c[]='ajaxmenu_hasChildren';
 		}

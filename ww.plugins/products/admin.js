@@ -1,16 +1,146 @@
 function Products_screen(page) {
 	Core_sidemenu(
-		[ 'Products', 'Categories', 'Types', 'Relation Types', 'Export Data' ],
+		[
+			'Products', 'Categories', 'Types',
+			'Relation Types', 'Import', 'Export Data'
+		],
 		'products',
 		page
 	);
 	window['Products_screen'+page]();
 }
+function Products_screenCategories() {
+	document.location="/ww.admin/plugin.php?_plugin=products&_page=categories";
+}
+function Products_screenExportData() {
+	$('#content')
+		.html('<p>Your export should start downloading in a moment.</p>');
+	document.location='/a/p=products/f=adminExport';
+}
+function Products_screenImport() {
+	var $content=$('#content').empty();
+	var table='<table id="import-table">'
+		// { example file
+		+'<tr id="product-types-example"><th>Download CSV Example</th>'
+		+'<td><select><option value="0"> -- all product types --'
+		+' </option></select></th>'
+		+'<td><a href="#" class="__ ui-button" lang-context="core">Download</a>'
+		+'</td></tr>'
+		// }
+		// { ___ 
+		+'<tr><td colspan="3"><hr/></td></tr>'
+		// }
+		// { delimiter character
+		+'<tr><th>Delimiter character</th>'
+		+'<td><select id="product-types-delimiter"><option>,</option>'
+		+'<option>;</option></select></td>'
+		+'<td>The character used to separate values in the CSV file.</td>'
+		+'</tr>'
+		// }
+		// { delete file after import
+		+'<tr><th>Delete CSV file after import</th>'
+		+'<td><input id="product-types-delete-after" type="checkbox"/></td>'
+		+'<td>Delete the uploaded CSV file after import.</td>'
+		+'</tr>'
+		// }
+		// { file url
+		+'<tr id="product-types-upload"><th>Upload Products File</th>'
+		+'<td><input id="product-types-file-url"'
+		+' placeholder="leave blank for default"/></td>'
+		+'<td><input type="button" class="upload"'
+		+' id="product-types-upload-button" value="Select and Upload"/>'
+		+'<span id="product-types-upload-button-uploaded"></span></td>'
+		+'</tr>'
+		// }
+		// { images directory
+		+'<tr><th>Images Directory</th>'
+		+'<td><input id="product-types-images-dir"'
+		+' placeholder="leave blank for default"/></td>'
+		+'<td>Directory where images are placed. Images should be .jpg or .png'
+		+' files with the stock number as the first part of the file name.</td>'
+		+'</tr>'
+		// }
+		// { ___ 
+		+'<tr><td colspan="3"><hr/></td></tr>'
+		// }
+		+'<tr><td><button>Import</td></tr>'
+		+'</table>';
+	$(table).appendTo($content);
+	// { populate fields
+	$('#product-types-delimiter')
+		.change(function() {
+			Core_saveAdminVars('productsImportDelimiter', $(this).val());
+		})
+		.val(adminVars.productsImportDelimiter);
+	$('#product-types-delete-after')
+		.change(function() {
+			Core_saveAdminVars('productsImportDeleteAfter', $(this).is(':checked'));
+		})
+		.attr('checked', adminVars.productsImportDeleteAfter);
+	$('#product-types-file-url')
+		.change(function() {
+			Core_saveAdminVars('productsImportFileUrl', $(this).val());
+		})
+		.val(adminVars.productsImportFileUrl);
+	$('#product-types-images-dir')
+		.change(function() {
+			Core_saveAdminVars('productsImportImagesDir', $(this).val());
+		})
+		.val(adminVars.productsImportImagesDir);
+	var $select=$('#product-types-example select');
+	$.post('/a/p=products/f=typesGet', function(ret) {
+		for (var i=0;i<ret.iTotalRecords;++i) {
+			$select.append('<option value="'+ret.aaData[i][1]+'">'
+				+ret.aaData[i][0]+'</option>');
+		}
+	});
+	$('#import-table a').click(function() {
+		var ptype=+$select.val();
+		document.location='/a/p=products/f=adminTypesGetSampleImport/ptypeid='
+			+ptype;
+	});
+	// }
+	// { setup upload button
+	$('#product-types-upload-button')
+		.css('height',20)
+		.uploadify({
+			'swf':'/j/jquery.uploadify/uploadify.swf',
+			'auto':'true',
+			'checkExisting':false,
+			'cancelImage':'/i/blank.gif',
+			'buttonImage':'/i/choose-file.png',
+			'height':20,
+			'width':81,
+			'uploader':'/a/p=products/f=adminImportFileUpload',
+			'postData':{
+				'PHPSESSID':sessid
+			},
+			'upload_success_handler':function(file, data, response){
+				ret=eval('('+data+')');
+				if (ret.ok) {
+					$('#product-types-upload-button-uploaded').text('file uploaded');
+				}
+			}
+		});
+	// }
+	// { setup import button
+	$('#content button').click(function() {
+		$.post('/a/p=products/f=adminImportFile', function(ret) {
+			var $dialog=$('<p>'+ret.message+'</p>').dialog({
+				'modal':true,
+				'close':function() {
+					$dialog.remove();
+				}
+			});
+		});
+	});
+	// }
+}
 function Products_screenProducts() {
 	document.location="/ww.admin/plugin.php?_plugin=products&_page=products";
 }
-function Products_screenCategories() {
-	document.location="/ww.admin/plugin.php?_plugin=products&_page=categories";
+function Products_screenRelationTypes() {
+	document.location="/ww.admin/plugin.php?_plugin=products&_page=relation-types";
 }
 function Products_screenTypes() {
 	$('#content')
@@ -85,14 +215,6 @@ function Products_screenTypes() {
 	}
 	window.openDataTable=$('#product-types-list')
 		.dataTable(params);
-}
-function Products_screenRelationTypes() {
-	document.location="/ww.admin/plugin.php?_plugin=products&_page=relation-types";
-}
-function Products_screenExportData() {
-	$('#content')
-		.html('<p>Your export should start downloading in a moment.</p>');
-	document.location='/a/p=products/f=adminExport';
 }
 
 function Products_typeDelete(id) {
@@ -344,6 +466,8 @@ function Products_typeEdit(id) {
 				'auto':'true',
 				'checkExisting':false,
 				'cancelImage':'/i/blank.gif',
+				'height':20,
+				'width':81,
 				'buttonImage':'/i/choose-file.png',
 				'uploader':'/a/p=products/f=adminTypeUploadMissingImage/id='+id,
 				'postData':{
