@@ -483,6 +483,7 @@ function Core_sendRegistrationToken() {
 	if (!isset($_SESSION['privacy'])) {
 		$_SESSION['privacy']=array();
 	}
+	Core_trigger('user-registration-token-sent');
 	$_SESSION['privacy']['registration']=array(
 		'token'         => rand(10000, 99999),
 		'custom'        => array(),

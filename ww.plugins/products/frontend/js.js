@@ -342,7 +342,7 @@ function Products_showMap() {
 		?[window.userdata.lat, window.userdata.lng]
 		:[54.78310263573059,-6.278343984374946]
 	var myOptions={
-		zoom:8,
+		zoom:10,
 		center:new google.maps.LatLng(latlng[0], latlng[1]),
 		mapTypeId:google.maps.MapTypeId.ROADMAP
 	};
