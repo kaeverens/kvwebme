@@ -17,6 +17,7 @@
   * @return string HTML list of search results
   */
 function Search_showResults() {
+	global $PLUGINS;
 	// { variables
 	global $PAGEDATA;
 	$start=(int)@$_REQUEST['start'];
@@ -24,7 +25,6 @@ function Search_showResults() {
 	if (!$search) {
 		return '<em id="searchResultsTitle">no search text entered</em>';
 	}
-	$totalfound=0;
 	$c='';
 	// }
 	// { pages
@@ -34,7 +34,6 @@ function Search_showResults() {
 	);
 	$n=count($q);
 	if ($n>0) {
-		$totalfound+=$n;
 		foreach ($q as $p) {
 			Page::getInstance($p['id'], $p);
 		}
@@ -66,8 +65,16 @@ function Search_showResults() {
 		$c.='</ol></div>';
 	}
 	// }
-	if (!$totalfound) {
-		$c.='<em id="searchResultsTitle">no results found</em>';
+	// { others
+	foreach ($PLUGINS as $plugin) {
+		if ($plugin['search']) {
+			$c.=$plugin['search']();
+		}
+	}
+	// }
+	if (!$c) {
+		return '<em id="searchResultsTitle" class="__" lang-context="core">'
+			.'no results found</em>';
 	}
 	return $c;
 }

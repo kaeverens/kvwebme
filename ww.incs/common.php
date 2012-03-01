@@ -414,9 +414,8 @@ function Template_breadcrumbs($id=0, $top=1) {
 		: '';
 	$pre=$top?'<div class="breadcrumbs">':'';
 	$suf=$top?'</div>':'';
-	return $pre.$c.'<a href="' . $page->getRelativeURL() . '" title="' 
-		. htmlspecialchars($page->title) . '">' 
-		. htmlspecialchars($page->alias) . '</a>'.$suf;
+	return $pre.$c.'<a href="' . $page->getRelativeURL() . '">' 
+		. htmlspecialchars(__fromJSON($page->name)) . '</a>'.$suf;
 }
 
 // }

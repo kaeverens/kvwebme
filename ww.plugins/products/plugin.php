@@ -13,9 +13,7 @@
 
 // { plugin declaration
 $plugin=array(
-	'name' => 'Products',
-	'dependencies'=>'image-gallery',
-	'admin' => array(
+	'admin' => array( // {
 		'menu' => array(
 			'Products>Products'   => 'products',
 			'Products>Categories' => 'categories',
@@ -31,9 +29,10 @@ $plugin=array(
 				'/ww.plugins/products/admin/widget.js'
 			),
 		)
-	),
+	), // }
+	'dependencies'=>'image-gallery',
 	'description' => 'Product catalogue.',
-	'frontend' => array(
+	'frontend' => array( // {
 		'page_type' => 'Products_frontend',
 		'widget' => 'Products_widget',
 		'template_functions' => array(
@@ -104,10 +103,12 @@ $plugin=array(
 				'function' => 'Products_qrCode'
 			)
 		)
-	),
-	'triggers' => array(
+	), // }
+	'name' => 'Products',
+	'search' => 'Products_search',
+	'triggers' => array( // {
 		'initialisation-completed' => 'Products_addToCart'
-	),
+	), // }
 	'version' => '37'
 );
 // }
@@ -1332,6 +1333,32 @@ function Products_priceSale($params, $smarty) {
 function Products_qrCode($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
 	return Products_qrCode2($params, $smarty);
+}
+
+// }
+// { Products_search
+
+/**
+	* provide search results
+	*
+	* @return string results
+	*/
+function Products_search() {
+	$keyword=addslashes(@$_REQUEST['search']);
+	$rs=dbAll(
+		'select * from products where data_fields like "%'.$keyword.'%"'
+		.' or name like "%'.$keyword.'"'
+	);
+	if (!count($rs)) {
+		return '';
+	}
+	$c='<ul class="results products">';
+	foreach ($rs as $r) {
+		$product=Product::getInstance($r['id'], $r);
+		$c.='<li><a href="'.$product->getRelativeUrl().'">'.__fromJSON($product->name).'</a></li>';
+	}
+	$c.='</ul>';
+	return $c;
 }
 
 // }
