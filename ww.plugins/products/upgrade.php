@@ -283,3 +283,7 @@ if ($version==36) { // change default image to text
 	}
 	$version=37;
 }
+if ($version==37) { // add EAN number to products
+	dbQuery('alter table products add ean char(13) default ""');
+	$version=38;
+}

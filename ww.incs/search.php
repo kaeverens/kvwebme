@@ -67,7 +67,7 @@ function Search_showResults() {
 	// }
 	// { others
 	foreach ($PLUGINS as $plugin) {
-		if ($plugin['search']) {
+		if (@$plugin['search']) {
 			$c.=$plugin['search']();
 		}
 	}

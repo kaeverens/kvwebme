@@ -697,11 +697,12 @@ function Products_adminTypesGetSampleImport() {
 		}
 	}
 	// }
-	// { header
-	$row=array(
-		'_stocknumber',
-		'_name'
+	header('Content-type: text/csv; Charset=utf-8');
+	header(
+		'Content-Disposition: attachment; filename="product-types-'.$ptypeid.'.csv"'
 	);
+	// { header
+	$row=array('_stocknumber', '_name', '_ean');
 	if ($are_any_for_sale) {
 		$row[]='_price';
 		$row[]='_sale_price';
@@ -713,9 +714,26 @@ function Products_adminTypesGetSampleImport() {
 	}
 	$row[]='_type';
 	$row[]='_categories';
-	header('Content-type: text/csv; Charset=utf-8');
-	header(
-		'Content-Disposition: attachment; filename="product-types-'.$ptypeid.'.csv"'
-	);
-	
+	echo Products_arrayToCSV($row);
+	// }
+	// { sample rows
+	foreach ($ptypes as $p) {
+		$row=array('stock_number', 'name', 'barcode');
+		if ($are_any_for_sale) {
+			$row[]='0.00';
+			$row[]='0.00';
+			$row[]='0.00';
+			$row[]='0';
+		}
+		foreach ($names as $n) {
+			$row[]='';
+		}
+		$row[]=$p['name'];
+		$row[]='';
+		echo Products_arrayToCSV($row);
+	}
+	// }
+	exit;
 }
+
+// }

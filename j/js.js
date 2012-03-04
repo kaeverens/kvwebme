@@ -81,8 +81,15 @@ function lightbox_show(src, sequence, seq_num) {
 	$('#lightbox-image').load(function(){
 		var $this=$(this);
 		while ($this[0].offsetWidth>max_width || $this[0].offsetHeight>max_height) {
-			$this[0].width*=.9;
-			$this[0].height*=.9;
+			var r=max_width/$this[0].offsetWidth;
+			var r2=max_height/$this[0].offsetHeight;
+			if (r>r2) {
+				r=r2;
+			}
+			$($this[0]).css({
+				'width':$this[0].offsetWidth*r,
+				'height':$this[0].offsetHeight*r
+			});
 		}
 		$this.closest('table').dialog({
 			width:$this[0].offsetWidth+width_to_add

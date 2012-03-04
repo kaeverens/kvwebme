@@ -12,20 +12,21 @@ function menu_edit(ev){
 		+'<div id="menu_main"><table>'
 		+'<tr><th>Parent Page</th><td><select id="menu_parent"></select></td></tr>'
 		+'<tr><th>Direction</th><td><select id="menu_direction">'
-			+'<option value="1">Vertical</option>'
-			+'<option value="0">Horizontal</option>'
+		+'<option value="1">Vertical</option>'
+		+'<option value="0">Horizontal</option>'
 		+'</select></td></tr>'
 		+'<tr id="row-menu-type"style="display:none"><th>Type</th><td>'
 		+'<select name="menu_type_v">'
-			+'<option value="0">Drop-down</option>'
-			+'<option value="1">Accordion</option>'
+		+'<option value="0">Drop-down</option>'
+		+'<option value="1">Accordion</option>'
+		+'<option value="2">Tree-list</option>'
 		+'</select></td></tr>'
 		+'<tr id="row-menu-state" style="display:none"><th>Initial State</th><td>'
 		+'<select name="menu_state_a" id="menu_state">'
-                        +'<option value="0">Contract All</option>'
-                        +'<option value="1">Expand All</option>'
-			+'<option value="2">Expand Current Page</option>'
-                +'</select></td></tr>'
+		+'<option value="0">Contract All</option>'
+		+'<option value="1">Expand All</option>'
+		+'<option value="2">Expand Current Page</option>'
+		+'</select></td></tr>'
 		+'<tr><th>Columns</th><td><input id="menu_columns" class="small" /></td></tr>'
 		+'</table></div>'
 		// }
@@ -103,10 +104,7 @@ function menu_edit(ev){
 			.val(+res.type)
 			.change( function( ){
 				var val= +$(this).val();
-				$('#row-menu-state').css(
-					'display',
-					val?'table-row':'none'
-				);
+				$('#row-menu-state').css('display', val==1?'table-row':'none');
 			} );
 		if (res.state!=0) {
 			$('#row-menu-state').css('display','table-row');

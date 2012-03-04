@@ -144,8 +144,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 		echo '<em>'.join('<br />', $errors).'</em>';
 	}
 	else {
-		// { Recreate the directory because for some reason it was looking
-		//   in the old directory for the image files
+		// { make sure image directory exists
 		if (!is_dir(USERBASE.'/f'.$_REQUEST['images_directory'])) {    
 			if (!is_dir(USERBASE.'/f/products/product-images')) {
 				if (!is_dir(USERBASE.'/f/products')) {
@@ -175,6 +174,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 		// { save main data and data fields
 		$sql='set name="'.addslashes($_REQUEST['name']).'"'
 			.',link="'.addslashes(transcribe(__FromJson($_REQUEST['name'], true))).'"'
+			.',ean="'.addslashes(@$_REQUEST['ean']).'"'
 			.',user_id='.((int)@$_REQUEST['user_id'])
 			.',stock_number="'.addslashes($_REQUEST['stock_number']).'"'
 			.',activates_on="'.addslashes($_REQUEST['activates_on']).'"'
@@ -488,6 +488,11 @@ $user_name=dbOne(
 );
 echo '<td><strong>Owner:</strong> <select name="user_id"><option value="'
 	.$user_id.'">'.$user_name.'</option></select></td>';
+// }
+echo '</tr><tr>';
+// { EAN
+echo '<th>EAN-13 barcode</th><td><input name="ean" value="'
+	.htmlspecialchars(@$pdata['ean']).'" /></td>';
 // }
 echo '</tr>';
 // { images

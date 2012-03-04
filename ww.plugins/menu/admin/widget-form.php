@@ -26,7 +26,7 @@ if (isset($_REQUEST['get_menu'])) {
 		);
 	}
 	if ($r['parent']>0) {
-		$r['parent_name']=Page::getInstance($r['parent'])->name;
+		$r['parent_name']=__FromJson(Page::getInstance($r['parent'])->name);
 	}
 	else {
 		if ($r['parent']==0) {

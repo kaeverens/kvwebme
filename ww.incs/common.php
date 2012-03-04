@@ -248,7 +248,7 @@ function menu_show_fg ($opts) {
 		'background'=> '', // sub-menu background colour
 		'columns'   => 1,  // for wide drop-down sub-menus
 		'opacity'   => 0,  // opacity of the sub-menu
-		'type'      => 0,  // 0=drop-down, 1=accordion
+		'type'      => 0,  // 0=drop-down, 1=accordion, 3=tree list
 		'style_from'=> 1,   // inherit sub-menu style from CSS (0) or options (1)
 		'state'	    => 0,  // 2=expand current page,1=expand all,0=contract all
 	);
@@ -282,34 +282,39 @@ function menu_show_fg ($opts) {
 		$html=menu_build_fg($options['parent'], 0, $options);
 		Core_cacheSave('pages', 'fgmenu-'.$md5, $html);
 	}
-	if ($options['type']) {
-		WW_addScript('/j/menu-accordion/menu.js');
-		WW_addCSS('/j/menu-accordion/menu.css');
-		$class = ( $options[ 'state' ] == 0 )
-			? ' contracted'
-			: (( $options[ 'state' ] == 1 ) ? ' expanded' : ' expand-selected') ;
-		$c.= '<div class="menu-accordion'.$class.'">'.$html.'</div>';
-	}
-	else {
-		WW_addScript('/j/fg.menu/fg.menu.js');
-		WW_addCSS('/j/fg.menu/fg.menu.css');
-		$c.='<div class="menu-fg menu-fg-'.$options['direction'].'" id="menu-fg-'
-			.$menuid.'">'.$html.'</div>';
-		if ($options['direction']=='vertical') {
-			$posopts="positionOpts: { posX: 'left', posY: 'top',"
-				."offsetX: 40, offsetY: 10, directionH: 'right', directionV: 'down',"
-				."detectH: true, detectV: true, linkToFront: false },";
-		}
-		else {
-			$posopts='';
-		}
-		WW_addInlineScript(
-			"$(function(){ $('#menu-fg-$menuid>ul>li>a').each(function(){ $(this)"
-			.".fgmenu({ content:$(this).next().outerHTML(), choose:function(ev,ui"
-			."){ document.location=ui.item[0].childNodes(0).href; }, $posopts fly"
-			."Out:true }); }); $('.menu-fg>ul>li').addClass('fg-menu-top-level');"
-			."});"
-		);
+	switch ($options['type']) {
+		case 2: // {
+			$c.='<div class="menu-tree'.$class.'">'.$html.'</div>';
+		break; // }
+		case 1: // {
+			WW_addScript('/j/menu-accordion/menu.js');
+			WW_addCSS('/j/menu-accordion/menu.css');
+			$class = ( $options[ 'state' ] == 0 )
+				? ' contracted'
+				: (( $options[ 'state' ] == 1 ) ? ' expanded' : ' expand-selected') ;
+			$c.= '<div class="menu-accordion'.$class.'">'.$html.'</div>';
+		break; // }
+		default: // {
+			WW_addScript('/j/fg.menu/fg.menu.js');
+			WW_addCSS('/j/fg.menu/fg.menu.css');
+			$c.='<div class="menu-fg menu-fg-'.$options['direction'].'" id="menu-fg-'
+				.$menuid.'">'.$html.'</div>';
+			if ($options['direction']=='vertical') {
+				$posopts="positionOpts: { posX: 'left', posY: 'top',"
+					."offsetX: 40, offsetY: 10, directionH: 'right', directionV: 'down',"
+					."detectH: true, detectV: true, linkToFront: false },";
+			}
+			else {
+				$posopts='';
+			}
+			WW_addInlineScript(
+				"$(function(){ $('#menu-fg-$menuid>ul>li>a').each(function(){ $(this)"
+				.".fgmenu({ content:$(this).next().outerHTML(), choose:function(ev,ui"
+				."){ document.location=ui.item[0].childNodes(0).href; }, $posopts fly"
+				."Out:true }); }); $('.menu-fg>ul>li').addClass('fg-menu-top-level');"
+				."});"
+			);
+		break; // }
 	}
 	return $c;
 }
