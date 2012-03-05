@@ -1,8 +1,8 @@
 @import "/css";
 *{font:13px tahoma,sans-serif;color:#666}
 a img{border:0}
-a:hover{color:#900}
-a{color:#369;text-decoration:underline;cursor:pointer}
+a:hover,.link:hover{color:#900}
+a,.link{color:#369;text-decoration:underline;cursor:pointer}
 body.noheader{margin:0;padding:1px 0 0 0;background:#fff}
 body{margin:0;padding:100px 0 20px 0;background:url(/ww.admin/theme/bnner-bg.jpg) repeat-x left top}
 em strong{color:red;font-style:italic}

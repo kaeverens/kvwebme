@@ -25,7 +25,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 		$udir=USERBASE;
 
 		echo 'extracting files...<br />';
-		`cd $udir && unzip -o $tmpdir/site/files.zip`;
+		`cd $udir && rm -rf f && unzip -o $tmpdir/site/files.zip`;
 
 		echo 'extracting themes...<br />';
 		`cd $udir && unzip -o $tmpdir/site/theme.zip`;

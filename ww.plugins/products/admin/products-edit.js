@@ -180,7 +180,11 @@ $(function(){
 			alert('you must tick the box before deleting');
 			return;
 		}
-		$.get('/j/kfm/rpc.php?action=delete_file&id='+id,function(ret){
+		var fname=$this.closest('div').find('img').attr('src')
+			.replace(/.*\/\//, '');
+		$.post('/a/f=adminFileDelete', {
+			'fname':fname
+		}, function() {
 			$this.closest('div').remove();
 		});
 	});

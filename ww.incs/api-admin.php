@@ -107,6 +107,23 @@ function Core_adminDirectoriesGet() {
 }
 
 // }
+// { Core_adminFileDelete
+
+/**
+	* delete a file
+	*
+	* @return array status
+	*/
+function Core_adminFileDelete() {
+	$fname=$_REQUEST['fname'];
+	if (strpos($fname, '..')!==false) {
+		return array('error'=>'no hacking please');
+	}
+	unlink(USERBASE.'/f/'.$fname);
+	return array('ok'=>1);
+}
+
+// }
 // { Core_adminLanguagesAdd
 
 /**

@@ -964,3 +964,82 @@ function Products_adminTypesGetSampleImport() {
 }
 
 // }
+// { Products_adminProductsListDT
+
+/**
+	* get a list of products in datatables format
+	*
+	* @return array products list
+	*/
+function Products_adminProductsListDT() {
+#print_r($_REQUEST); exit;
+	$start=(int)$_REQUEST['iDisplayStart'];
+	$length=(int)$_REQUEST['iDisplayLength'];
+	$search=$_REQUEST['sSearch'];
+	$filters=array();
+	if ($search) {
+		$filters[]='name like "%'.addslashes($search).'%"';
+	}
+	$filter='';
+	if (count($filters)) {
+		$filter='where '.join(' and ', $filters);
+	}
+	$rs=dbAll(
+		'select id,user_id,images_directory,name,stock_number,enabled,'
+		.'stockcontrol_total from products '.$filter.' order by name'
+		.' limit '.$start.','.$length
+	);
+	$result=array();
+	$result['sEcho']=intval($_GET['sEcho']);
+	$result['iTotalRecords']=dbOne(
+		'select count(id) as ids from products', 'ids'
+	);
+	$result['iTotalDisplayRecords']=dbOne(
+		'select count(id) as ids from products '.$filter,
+		'ids'
+	);
+	$arr=array();
+	foreach ($rs as $r) {
+		$row=array();
+		// { has images
+		$has_images=0;
+		if (@is_dir(USERBASE.'/f/'.$r['images_directory'])) {
+			$dir=new DirectoryIterator(USERBASE.'/f/'.$r['images_directory']);
+			foreach ($dir as $f) {
+				if ($f->isDot()) {
+					continue;
+				}
+				if ($f->isFile()) {
+					$has_images++;
+				}
+			}
+		}
+		$row[]=$has_images;
+		// }
+		// { name
+		$row[]=__FromJson($r['name']);
+		// }
+		// { stock_number
+		$row[]=$r['stock_number'];
+		// }
+		// { stock_control
+		$row[]=$r['stockcontrol_total'];
+		// }
+		// { owner
+		$user=User::getInstance($r['user_id'], false, false);
+		$row[]=$user?$user->get('name'):'unknown owner';
+		// }
+		// { id
+		$row[]=$r['id'];
+		// }
+		// { enabled
+		$row[]=$r['enabled']=='1'?'Yes':'No';
+		// }
+		$row[]='';
+		$arr[]=$row;
+	}
+	$result['aaData']=$arr;
+	return $result;
+}
+
+// }

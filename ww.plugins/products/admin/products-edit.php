@@ -525,12 +525,17 @@ if (!is_dir(USERBASE.'/f'.$pdata['images_directory'])) {
 echo '<tr><th><input type="hidden" name="images_directory" value="'
 	.$pdata['images_directory'].'" /><div class="help products/images"></div>'
 	.'Images</th><td colspan="4">';
-$dir_id=kfm_api_getDirectoryId(
-	preg_replace('/^\//', '', $pdata['images_directory'])
-);
-$images=kfm_loadFiles($dir_id);
-$images=$images['files'];
-$n=count($images);
+$image_directory=USERBASE.'/f/'.$pdata['images_directory'];
+$dir=new DirectoryIterator($image_directory);
+$n=0;
+$images=array();
+foreach ($dir as $f) {
+	if ($f->isDot()) {
+		continue;
+	}
+	$images[]=$f->getFilename();
+	++$n;
+}
 echo '<iframe src="/ww.plugins/products/admin/uploader.php?images_directory='
 	.urlencode($pdata['images_directory'])
 	.'" style="width:400px;height:50px;border:0;overflow:hidden"></iframe>';
@@ -541,30 +546,28 @@ echo '<script>window.kfm={alert:function(){}};window.kfm_vars={};'
 if ($n) {
 	echo '<div id="product-images-wrapper">';
 	for ($i=0;$i<$n;$i++) {
-		if (!isset($images[$i]['caption'])) {
-			$images[$i]['caption']='';
-		}
-		$default=($images[$i]['id']==$pdata['image_default'])?' class="default"':'';
+		$default=$images[$i]==basename($pdata['image_default'])
+			?' class="default"'
+			:'';
 		echo '<div'.$default.'>';
-		echo '<img id="products-img-'.$images[$i]['id']
-			.'" src="/kfmget/'.$images[$i]['id']
-			.',width=64,height=64" title="'
-			.str_replace('\\\\n', '<br />', $images[$i]['caption'])
-			.'" /><br /><input type="checkbox" id="products-dchk-'
-			.$images[$i]['id'].'" />'
+		echo '<img id="products-img-'.$n
+			.'" src="/a/f=getImg/w=64/h=64/'.$pdata['images_directory'].'/'
+			.$images[$i].'"/><br /><input type="checkbox" id="products-dchk-'
+			.$n.'" />'
 			.'<a class="delete" href="javascript:;" id="products-dbtn-'
-			.$images[$i]['id'].'">delete</a><br />'
+			.$n.'">delete</a><br />'
 			.'<a class="caption" href="javascript:;" id="products-cbtn-'
-			.$images[$i]['id'].'">edit caption</a><br />'
+			.$n.'">edit caption</a><br />'
 			.'<a class="mark-as-default" href="javascript:;" '
-			.'id="products-dfbtn-'.$images[$i]['id'].'" imgsrc="'
-			.$images[$i]['dir'].'/'.$images[$i]['name'].'"'
+			.'id="products-dfbtn-'.$n.'" imgsrc="'
+			.$pdata['images_directory'].'/'.$images[$i].'"'
 			.'>set default</a></div>';
 	}
 	echo '</div>';
 } 
 else {
-	echo '<em>no images yet. please upload some.</em>';
+	echo '<em>no images yet. please upload some.</em><!-- '
+		.$pdata['images_directory'].' -->';
 }
 echo '<a style="background:#ff0;font-weight:bold;color:red;display:block;'
 	.'text-align:center;" href="#page_vars[images_directory]" '

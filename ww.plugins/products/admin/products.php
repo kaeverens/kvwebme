@@ -50,10 +50,7 @@ if (!dbOne('select id from products_types limit 1', 'id')) {
 		.'here to create one</a></em>';
 	return;
 }
-$rs=dbAll(
-	'select id,user_id,images_directory,name,stock_number,enabled,'
-	.'stockcontrol_total from products order by name'
-);
+$rs=dbAll('select id from products limit 1');
 if (!count($rs)) {
 	echo '<em>No existing products. <a href="plugin.php?_plugin=products&amp;'
 		.'_page=products-edit">Click here to create one</a>.'
@@ -62,51 +59,10 @@ if (!count($rs)) {
 	return;
 }
 // { products list
-$useStockControl=(int)dbOne(
-	'select stockcontrol_total from products where stockcontrol_total!=0',
-	'stockcontrol_total'
-);
-echo '<div><table class="datatable"><thead><tr><th>&nbsp;</th><th>Name</th>'
-	.'<th>Stock Number</th>';
-if ($useStockControl) {
-	echo '<th title="in stock">#</th>';
-}
-echo '<th>Owner</th><th>ID</th><th>Enabled</th>'
-	.'<th>&nbsp;</th></tr></thead><tbody>';
-foreach ($rs as $r) {
-	$link='plugin.php?_plugin=products&amp;_page=products-edit&amp;id='.$r['id'];
-	// { has images
-	$has_images=0;
-	$dir_id=kfm_api_getDirectoryId(
-		preg_replace('/^\//', '', $r['images_directory'])
-	);
-	if ($dir_id) {
-		$images=kfm_loadFiles($dir_id);
-		$images=$images['files'];
-		$has_images=count($images);
-	}
-	$img=$has_images
-		?'<!-- '.$has_images.' --><div title="has images" '
-		.'class="ui-icon ui-icon-image"></div>'
-		:'';
-	// }
-	$user=User::getInstance($r['user_id'], false, false);
-	$username=$user?$user->get('name'):'unknown owner';
-	echo '<tr id="product-row-'.$r['id'].'">'
-		.'<td>'.$img.'</td>'
-		.'<td class="edit-link"><!-- '.htmlspecialchars($r['name']).' -->'
-		.'<a href="'.$link.'">'.htmlspecialchars(__FromJson($r['name'])).'</td>'
-		.'<td class="edit-link"><!-- '.htmlspecialchars($r['stock_number']).' -->'
-		.'<a href="'.$link.'">'.htmlspecialchars($r['stock_number']).'</td>';
-	if ($useStockControl) {
-		echo '<td>'.$r['stockcontrol_total'].'</td>';
-	}
-	echo '<td>'.$username.'</td>'
-		.'<td>'.$r['id'].'</td>'
-		.'<td>'.($r['enabled']=='1'?'Yes':'No').'</td>'
-		.'<td><a class="delete-product" href="javascript:;" title="delete">[x]</a>'
-		.'</td></tr>';
-}
-echo '</tbody></table></div>';
+echo '<div><table id="products-list"><thead>'
+	.'<tr><th>&nbsp;</th><th>Name</th>'
+	.'<th>Stock Number</th><th title="in stock">#</th><th>Owner</th>'
+	.'<th>ID</th><th>Enabled</th><th>&nbsp;</th></tr></thead><tbody>'
+	.'</tbody></table></div>';
 // }
 WW_addScript('/ww.plugins/products/admin/products.js');
