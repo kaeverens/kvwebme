@@ -568,66 +568,94 @@ function Products_adminImportFileUpload() {
 function Products_adminImportDataFromAmazon() {
 	$pid=(int)$_REQUEST['id'];
 	$ean=$_REQUEST['ean'];
+	if (strlen($ean)!=13) {
+		return array('message'=>'EAN too short');
+	}
 	$access_key=$_REQUEST['access_key'];
 	$private_key=$_REQUEST['secret_key'];
 	$associate_tag=$_REQUEST['associate_key'];
+	$pdata=Product::getInstance($pid);
+	// { image
+	if (!isset($pdata->images_directory) 
+		|| !$pdata->images_directory
+		|| $pdata->images_directory=='/'
+		|| !is_dir(USERBASE.'/f/'.$pdata->images_directory)
+	) {
+		if (!is_dir(USERBASE.'/f/products/product-images')) {
+			mkdir(USERBASE.'/f/products/product-images', 0777, true);
+		}
+		$pdata->images_directory='/products/product-images/'
+			.md5(rand().microtime());
+		mkdir(USERBASE.'/f'.$pdata->images_directory);
+		dbQuery(
+			'update products set images_directory="'.$pdata->images_directory
+			.'" where id='.$pid
+		);
+	}
+	$image_exists=0;
+	$dir=new DirectoryIterator(USERBASE.'/f'.$pdata->images_directory);
+	foreach ($dir as $f) {
+		if ($f->isDot()) {
+			continue;
+		}
+		$image_exists++;
+	}
+	// }
+	if ($image_exists) {
+		return array('message'=>'already_exists');
+	}
 	$obj=new AmazonProductAPI($access_key, $private_key, $associate_tag);
 	try{
 		$result=$obj->getItemByEan($ean, '');
 		if (!@$result->Items->Item) {
-			return array('found'=>0);
+			return array('message'=>'not found');
 		}
 		// { description
 		$description=(array)$result->Items->Item->EditorialReviews->EditorialReview->Content;
 		$description=$description[0];
+		$do_description=1;
 		if ($description) {
 			$meta=json_decode(dbOne(
 				'select data_fields from products where id='.$pid,
 				'data_fields'
 			), true);
 			foreach ($meta as $k=>$v) {
-				if (!isset($v['n']) || $v['n']=='description') {
+				if (!isset($v['n'])) {
 					unset($meta[$k]);
+					continue;
+				}
+				if ($v['n']=='description') {
+					if ($v['v']) {
+						$do_description=0;
+					}
+					else {
+						unset($meta[$k]);
+					}
 				}
 			}
-			$meta[]=array(
-				'n'=>'description',
-				'v'=>$description
-			);
+			if ($do_description) {
+				$meta[]=array(
+					'n'=>'description',
+					'v'=>$description
+				);
+			}
 			dbQuery(
 				'update products set data_fields="'.addslashes(json_encode($meta))
 				.'" where id='.$pid
 			);
-			echo 'update products set data_fields="'.addslashes(json_encode($meta))
-			        .'" where id='.$pid;
 		}
 		// }
 		// { image
 		$img=(array)$result->Items->Item->LargeImage->URL;
 		$img=$img[0];
-		$pdata=Product::getInstance($pid);
-		if (!isset($pdata->images_directory) 
-			|| !$pdata->images_directory
-			|| $pdata->images_directory=='/'
-			|| !is_dir(USERBASE.'/f/'.$pdata->images_directory)
-		) {
-			if (!is_dir(USERBASE.'/f/products/product-images')) {
-				mkdir(USERBASE.'/f/products/product-images', 0777, true);
-			}
-			$pdata->images_directory='/products/product-images/'
-				.md5(rand().microtime());
-			mkdir(USERBASE.'/f'.$pdata->images_directory);
-			dbQuery(
-				'update products set images_directory="'.$pdata->images_directory
-				.'" where id='.$pid
-			);
+		if (!$image_exists) {
+			copy($img, USERBASE.'/f/'.$pdata->images_directory.'/default.jpg');
 		}
-		copy($img, USERBASE.'/f/'.$pdata->images_directory.'/default.jpg');
 		// }
-		return array('found'=>1, 'pid'=>$pid, 'url'=>$img);
+		return array('message'=>'found and imported');
 	}
 	catch(Exception $e) {
-		return array('found'=>0);
+		return array('message'=>'error... '.$e->getMessage());
 	}
 }
 

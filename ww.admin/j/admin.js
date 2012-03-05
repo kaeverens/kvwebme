@@ -31,8 +31,6 @@ function Core_saveAdminVars(name, val) {
 	$.post('/a/f=adminAdminVarsSave', {
 		'name':name,
 		'val':val
-	}, function(ret) {
-		console.log(ret);
 	});
 }
 function Core_sidemenu(links, plugin, currentpage) {

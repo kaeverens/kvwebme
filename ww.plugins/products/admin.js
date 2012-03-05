@@ -204,6 +204,8 @@ function Products_screenImport() {
 		var import_type=$('#import-images-from').val();
 		switch(import_type) {
 			case 'Amazon API': // {
+				var $this=$(this);
+				$this.attr('disabled', true);
 				var $status=$('#import-images-status');
 				$status.html('retrieving list of product EANs');
 				$.post('/a/p=products/f=adminGetProductsWithEan', function(ret) {
@@ -211,6 +213,15 @@ function Products_screenImport() {
 					var products=ret;
 					function importImage() {
 						var product=products[i];
+						if (product.ean.length!=13
+							|| product.ean.replace(/[0-9]*/, '')!=''
+						) {
+							i++;
+							if (i<=products.length) {
+								setTimeout(importImage, 1);
+							}
+							return;
+						}
 						$.post('/a/p=products/f=adminImportDataFromAmazon', {
 							'id':product.id,
 							'ean':product.ean,
@@ -219,7 +230,10 @@ function Products_screenImport() {
 							'associate_key':adminVars.productsImportAmazonAssociateTag
 						}, function(ret) {
 							i++;
-							$status.html('completed: '+parseInt((i/products.length)*100)+'%');
+							$status.html(
+								'completed: '+parseInt((i/products.length)*100)+'%, '
+								+product.ean+': '+ret.message
+							);
 							if (i<=products.length) {
 								setTimeout(importImage, 1);
 							}
