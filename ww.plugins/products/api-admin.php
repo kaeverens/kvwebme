@@ -558,6 +558,92 @@ function Products_adminImportFileUpload() {
 }
 
 // }
+// { Products_adminImportDataFromAmazon
+
+/**
+	* retrieve an image from amazon for a product
+	*
+	* @return array array of products
+	*/
+function Products_adminImportDataFromAmazon() {
+	$pid=(int)$_REQUEST['id'];
+	$ean=$_REQUEST['ean'];
+	$access_key=$_REQUEST['access_key'];
+	$private_key=$_REQUEST['secret_key'];
+	$associate_tag=$_REQUEST['associate_key'];
+	$obj=new AmazonProductAPI($access_key, $private_key, $associate_tag);
+	try{
+		$result=$obj->getItemByEan($ean, '');
+		if (!@$result->Items->Item) {
+			return array('found'=>0);
+		}
+		// { description
+		$description=(array)$result->Items->Item->EditorialReviews->EditorialReview->Content;
+		$description=$description[0];
+		if ($description) {
+			$meta=json_decode(dbOne(
+				'select data_fields from products where id='.$pid,
+				'data_fields'
+			), true);
+			foreach ($meta as $k=>$v) {
+				if (!isset($v['n']) || $v['n']=='description') {
+					unset($meta[$k]);
+				}
+			}
+			$meta[]=array(
+				'n'=>'description',
+				'v'=>$description
+			);
+			dbQuery(
+				'update products set data_fields="'.addslashes(json_encode($meta))
+				.'" where id='.$pid
+			);
+			echo 'update products set data_fields="'.addslashes(json_encode($meta))
+			        .'" where id='.$pid;
+		}
+		// }
+		// { image
+		$img=(array)$result->Items->Item->LargeImage->URL;
+		$img=$img[0];
+		$pdata=Product::getInstance($pid);
+		if (!isset($pdata->images_directory) 
+			|| !$pdata->images_directory
+			|| $pdata->images_directory=='/'
+			|| !is_dir(USERBASE.'/f/'.$pdata->images_directory)
+		) {
+			if (!is_dir(USERBASE.'/f/products/product-images')) {
+				mkdir(USERBASE.'/f/products/product-images', 0777, true);
+			}
+			$pdata->images_directory='/products/product-images/'
+				.md5(rand().microtime());
+			mkdir(USERBASE.'/f'.$pdata->images_directory);
+			dbQuery(
+				'update products set images_directory="'.$pdata->images_directory
+				.'" where id='.$pid
+			);
+		}
+		copy($img, USERBASE.'/f/'.$pdata->images_directory.'/default.jpg');
+		// }
+		return array('found'=>1, 'pid'=>$pid, 'url'=>$img);
+	}
+	catch(Exception $e) {
+		return array('found'=>0);
+	}
+}
+
+// }
+// { Products_adminGetProductsWithEan
+
+/**
+	* get a list of all products that have an EAN
+	*
+	* @return array array of products
+	*/
+function Products_adminGetProductsWithEan() {
+	return dbAll('select id,ean from products where ean');
+}
+
+// }
 // { Products_adminPageDelete
 
 /**

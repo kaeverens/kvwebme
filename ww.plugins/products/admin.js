@@ -18,8 +18,17 @@ function Products_screenExportData() {
 	document.location='/a/p=products/f=adminExport';
 }
 function Products_screenImport() {
-	var $content=$('#content').empty();
-	var table='<table id="import-table">'
+	var $content=$('#content').empty(), $wrapper, html;
+	// { wrapper
+	var html='<div id="import-wrapper"><ul>'
+		+'<li><a href="#import-file">Import File</a></li>'
+		+'<li><a href="#import-images">Import Images</a></li>'
+		+'</ul></div>';
+	$wrapper=$(html).appendTo($content);
+	// }
+	// { import file
+	var table='<div id="import-file">'
+		+'<table id="import-table">'
 		// { example file
 		+'<tr id="product-types-example"><th>Download CSV Example</th>'
 		+'<td><select><option value="0"> -- all product types --'
@@ -64,8 +73,8 @@ function Products_screenImport() {
 		+'<tr><td colspan="3"><hr/></td></tr>'
 		// }
 		+'<tr><td><button>Import</td></tr>'
-		+'</table>';
-	$(table).appendTo($content);
+		+'</table></div>';
+	$(table).appendTo($wrapper);
 	// { populate fields
 	$('#product-types-delimiter')
 		.change(function() {
@@ -135,6 +144,97 @@ function Products_screenImport() {
 		});
 	});
 	// }
+	// }
+	// { import images
+	html='<div id="import-images"><table>'
+		// { from
+		+'<tr><th>Import from</th><td><select id="import-images-from">'
+		+'<option value="local directory">Local Directory</option>'
+		+'<option value="Amazon API">Amazon API</option>'
+		+'</select></td></tr>'
+		// }
+		// { options
+		+'<tr><th>Options</th><td id="import-images-options">&nbsp;</td></tr>'
+		// }
+		+'</table><hr/><button id="import-images-button">import</button>'
+		+'<div id="import-images-status"/></div>';
+	$(html).appendTo($wrapper);
+	function updateImportImageOptions() {
+		var $wrapper=$('#import-images-options').empty(),
+			val=$('#import-images-from').val();
+		switch (val) {
+			case 'Amazon API': // {
+				var html='<p>This option will import from products found in Amazon'
+					+' which have the same EAN code.</p>'
+					+'<table><tr><th>Access Key</th><td><input'
+					+' id="import-amazon-public-key"/></td></tr>'
+					+'<tr><th>Secret Key</th><td><input type="password"'
+					+' id="import-amazon-private-key"/></td></tr>'
+					+'<tr><th>Associate Tag</th><td><input'
+					+' id="import-amazon-associate-tag"/></td></tr>'
+					+'</table>';
+				$(html).appendTo($wrapper);
+				$('#import-amazon-private-key')
+					.change(function() {
+						Core_saveAdminVars('productsImportAmazonPrivateKey', $(this).val());
+					})
+					.val(adminVars.productsImportAmazonPrivateKey);
+				$('#import-amazon-public-key')
+					.change(function() {
+						Core_saveAdminVars('productsImportAmazonPublicKey', $(this).val());
+					})
+					.val(adminVars.productsImportAmazonPublicKey);
+				$('#import-amazon-associate-tag')
+					.change(function() {
+						Core_saveAdminVars(
+							'productsImportAmazonAssociateTag',
+							$(this).val()
+						);
+					})
+					.val(adminVars.productsImportAmazonAssociateTag);
+			break; // }
+			default: // {
+				$wrapper.append('todo');
+			break; // }
+		}
+	}
+	updateImportImageOptions();
+	$('#import-images-from').change(updateImportImageOptions);
+	$('#import-images-button').click(function() {
+		var import_type=$('#import-images-from').val();
+		switch(import_type) {
+			case 'Amazon API': // {
+				var $status=$('#import-images-status');
+				$status.html('retrieving list of product EANs');
+				$.post('/a/p=products/f=adminGetProductsWithEan', function(ret) {
+					var i=0;
+					var products=ret;
+					function importImage() {
+						var product=products[i];
+						$.post('/a/p=products/f=adminImportDataFromAmazon', {
+							'id':product.id,
+							'ean':product.ean,
+							'access_key':adminVars.productsImportAmazonPublicKey,
+							'secret_key':adminVars.productsImportAmazonPrivateKey,
+							'associate_key':adminVars.productsImportAmazonAssociateTag
+						}, function(ret) {
+							i++;
+							$status.html('completed: '+parseInt((i/products.length)*100)+'%');
+							if (i<=products.length) {
+								setTimeout(importImage, 1);
+							}
+						});
+					}
+					importImage();
+				});
+			break; // }
+			default: // {
+				return alert('todo');
+			break; // }
+		}
+	});
+	// }
+	$wrapper.tabs();
 }
 function Products_screenProducts() {
 	document.location="/ww.admin/plugin.php?_plugin=products&_page=products";
@@ -144,7 +244,8 @@ function Products_screenRelationTypes() {
 }
 function Products_screenTypes() {
 	$('#content')
-		.html('<button>add new product type</button><table id="product-types-list"><thead>'
+		.html('<button>add new product type</button>'
+			+'<table id="product-types-list"><thead>'
 			+'<tr><th>Name</th><th>edit</th><th>&nbsp;</th></tr>'
 			+'</thead><tbody></tbody></table>');
 	$('#content button').click(function() {
@@ -216,7 +317,6 @@ function Products_screenTypes() {
 	window.openDataTable=$('#product-types-list')
 		.dataTable(params);
 }
-
 function Products_typeDelete(id) {
 	var name=$('#product-types-list-row'+id).find('td:first-child').text();
 	if (!confirm('Are you sure you want to remove the product type named "'
