@@ -217,6 +217,10 @@ function Products_screenImport() {
 							|| product.ean.replace(/[0-9]*/, '')!=''
 						) {
 							i++;
+							$status.html(
+								'completed: '+parseInt((i/products.length)*100)+'%, '
+								+product.ean+': invalid EAN'
+							);
 							if (i<=products.length) {
 								setTimeout(importImage, 1);
 							}
