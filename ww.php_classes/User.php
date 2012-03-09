@@ -78,7 +78,30 @@ class User{
 			$this->vals['email']=$this->dbVals['email'];
 			$this->vals['name']=$this->dbVals['name'];
 			$this->vals['phone']=$this->dbVals['phone'];
-			$this->vals['address']=$this->dbVals['address'];
+			// { address
+			$address=$this->dbVals['address'];
+			if ($address=='') {
+				$address=array(array());
+			}
+			else {
+				$address=json_decode($address, true);
+			}
+			foreach ($address as $ad) {
+				$main=$ad;
+				if (@$add['default']=='yes') {
+					break;
+				}
+			}
+			$address=@$main['street'].'|'.@$main['street2'].'|'.@$main['town']
+				.'|'.@$main['county'].'|'.@$main['country'];
+			$address=preg_replace('/\|+/', '<br/>', $address);
+			$this->vals['address']=$address;
+			// }
+			$this->vals['location_lat']=(float)$this->dbVals['location_lat'];
+			$this->vals['location_lng']=(float)$this->dbVals['location_lng'];
+		}
+		if (!isset($this->vals[$name])) {
+			$this->vals[$name]='';
 		}
 		return @$this->vals[$name];
 	}

@@ -326,10 +326,13 @@ function Product_datatableMultiple ($products, $direction) {
 	* @return string the HTML
 	*/
 function Products_getAddToCartWidget($params, $smarty) {
-	$text=@$params['text'];
-	if (!$text) {
-		$text='Add to Cart';
-	}
+	$params=array_merge(
+		array(
+			'text'=>'Add to Cart',
+			'redirect'=>'same',
+		),
+		$params
+	);
 	$instock=(int)@$smarty->_tpl_vars['product']->vals['stockcontrol_total'];
 	$stockcontrol=$instock
 		?'<input type="hidden" class="stock-control-total" value="'
@@ -338,11 +341,15 @@ function Products_getAddToCartWidget($params, $smarty) {
 			@$smarty->_tpl_vars['product']->vals['stockcontrol_details']
 		).'"/>'
 		:'';
+	$redirect=$params['redirect']=='checkout'
+		?'<input type="hidden" name="products_redirect" value="checkout"/>'
+		:'';
 	return '<form method="POST" class="products-addtocart">'
 		.'<input type="hidden" name="products_action" value="add_to_cart" />'
+		.$redirect
 		.$stockcontrol
 		.Products_getAddToCartButton(
-			$text,
+			$params['text'],
 			(float)$smarty->_tpl_vars['product']->vals['online-store']['_price'],
 			(float)$smarty->_tpl_vars['product']->vals['online-store']['_sale_price']
 		)
@@ -359,10 +366,13 @@ function Products_getAddToCartWidget($params, $smarty) {
 	* @return string the HTML
 	*/
 function Products_getAddManyToCartWidget($params, $smarty) {
-	$text=@$params['text'];
-	if (!$text) {
-		$text='Add to Cart';
-	}
+	$params=array_merge(
+		array(
+			'text'=>'Add to Cart',
+			'redirect'=>'same',
+		),
+		$params
+	);
 	$instock=(int)@$smarty->_tpl_vars['product']->vals['stockcontrol_total'];
 	$stockcontrol=$instock
 		?'<input type="hidden" class="stock-control-total" value="'
@@ -371,13 +381,17 @@ function Products_getAddManyToCartWidget($params, $smarty) {
 			@$smarty->_tpl_vars['product']->vals['stockcontrol_details']
 		).'"/>'
 		:'';
+	$redirect=$params['redirect']=='checkout'
+		?'<input type="hidden" name="products_redirect" value="checkout"/>'
+		:'';
 	return '<form method="POST" class="products-addmanytocart">'
+		.$redirect
 		.'<input type="hidden" name="products_action" value="add_to_cart"/>'
 		.'<input name="products-howmany" value="1" '
 		.'class="add_multiple_widget_amount" style="width:50px"/>'
 		.$stockcontrol
 		.Products_getAddToCartButton(
-			$text,
+			$params['text'],
 			(float)$smarty->_tpl_vars['product']->vals['online-store']['_price'],
 			(float)$smarty->_tpl_vars['product']->vals['online-store']['_sale_price']
 		)

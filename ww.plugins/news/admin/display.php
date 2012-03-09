@@ -21,14 +21,14 @@ $c = '<div class="tabs">'
 	.'</ul>';
 // { main tab
 $c.='<div id="news-main">';
-$c.='<p>Click <a href="javascript:;" onclick="window.parent.pages_new('
-	.$page['id'].');">here</a> to create a new news item.</p>'
+$c.='<p>To create a new news item, right-click on this page\'s name in the left menu, and add a new "Normal" page under it. You can edit the item\'s date and time using "Associated Date" in the misc. tab once it has been created.</p>'
+	.'<hr/>'
 	.'<p>This page should be displayed in <select name="page_vars[news_type]">'
 	.'<option value="0">headline</option><option value="1"';
 if (isset($vars['news_type']) && $vars['news_type']=='1') {
 	$c.=' selected="selected"';
 }
-$c.='>calendar</option></select> mode.</p>.';
+$c.='>calendar</option></select> mode.</p>';
 $opts=array('summaries'=>'Summaries','full'=>'Full');
 $c.='<p>Display news items in <select name="page_vars[news_display]">';
 foreach ($opts as $val=>$name) {

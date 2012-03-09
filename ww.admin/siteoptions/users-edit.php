@@ -137,8 +137,11 @@ if (!is_array($r) || !count($r)) {
 		'parent'=>$_SESSION['userdata']['id']
 	);
 }
-echo '<div id="tabs"> <ul> <li><a href="#details">User Details</a></li> <'
-	.'li><a href="#locations">Locations</a></li> </ul> <form action="siteoption'
+echo '<div id="tabs"><ul>'
+	.'<li><a href="#details">User Details</a></li>'
+	.'<li><a href="#locations">Locations</a></li>'
+	.'<li><a href="#custom">Custom Data</a></li>'
+	.'</ul> <form action="siteoption'
 	.'s.php?page=users&amp;id='.$id.'" method="post">';
 echo '<input type="hidden" name="id" value="'.$id.'" />';
 if (!isset($r['extras'])) {
@@ -147,9 +150,7 @@ if (!isset($r['extras'])) {
 // { user details
 echo '<div id="details"><table><tr><th>Name</th><td><input name="name" va'
 	.'lue="'.htmlspecialchars($r['name']).'" /></td><th>Password</th><td><i'
-	.'nput name="password" type="password" /></td>'
-	.'<td rowspan="6" id="extras-wrapper"><input type="hidden" value="'
-	.htmlspecialchars($r['extras'], ENT_QUOTES).'" /></td></tr>';
+	.'nput name="password" type="password" /></td></tr>';
 echo '<tr><th>Email</th><td><input name="email" value="'
 	.htmlspecialchars($r['email']).'" /></td><th>(repeat)</th><td><input na'
 	.'me="password2" type="password" /></td></tr>';
@@ -185,7 +186,7 @@ echo '<tr style="display:none" id="users-email-to-send"><th>Email to send'
 echo '</table>';
 echo '</div>';
 // }
-// {locations 
+// { locations 
 echo '<div id="locations">';
 // { physical location
 echo '<h2>Currently located</h2>'
@@ -223,6 +224,10 @@ foreach ($r['address'] as $name=>$address) {
 echo '</div><br style="clear:both"/>';
 // }
 echo '</div>';
+// }
+// { custom data
+echo '<div id="custom"><input type="hidden" value="'
+	.htmlspecialchars($r['extras'], ENT_QUOTES).'" /></div>';
 // }
 echo '<input type="submit" name="action" value="Save" />';
 echo '</form></div>';

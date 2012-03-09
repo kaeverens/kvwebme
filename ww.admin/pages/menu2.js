@@ -14,7 +14,7 @@ $(function(){
 							}
 							return TREE_OBJ.check("creatable", NODE); 
 						}, 
-						'action':addNew,
+						'action':pages_new,
 						'separator_after' : true
 					},
 					'remove' : {
@@ -86,7 +86,7 @@ $(function(){
 		});
 	var div=$('<div><i>right-click for options</i><br /><br /></div>');
 	$('<button>add main page</button>')
-		.click(addNew)
+		.click(pages_new)
 		.appendTo(div);
 	div.appendTo('div.left-menu');
 	$('#pages-wrapper a').live('click',function(e){
@@ -119,45 +119,45 @@ $(function(){
 			}
 		})
 		.appendTo('div.left-menu');
-	function addNew(node) {
-		var pid=node[0]?node[0].id.replace(/.*_/,''):0;
-		$('<table id="newpage-dialog">'
-			+'<tr><th>Name</th><td><input name="name"/></td></tr>'
-			+'<tr><th>Page Type</th><td><select name="type">'
-			+'<option value="0">normal</option></select></td></tr>'
-			+'</table>'
-		).dialog({
-			modal:true,
-			close:function(){
-				$('#newpage-dialog').remove();
-			},
-			buttons:{
-				'Create Page': function() {
-					var name=$('#newpage-dialog input[name="name"]').val();
-					if (name=='') {
-						return alert('Name must be provided');
-					}
-					$.post('/a/f=adminPageEdit', {
-						'parent':pid,
-						'name':name,
-						'type':$('#newpage-dialog select[name="type"]').val()
-					}, function(ret) {
-						pages_add_node(ret.alias, ret.id, ret.pid);
-						$('#page-form-wrapper').attr('src', 'pages/form.php?id='+ret.id);
-					});
-					$(this).dialog('close');
-				},
-				'Cancel': function() {
-					$(this).dialog('close');
-				}
-			}
-		});
-		$('#newpage-dialog select[name=type]')
-			.remoteselectoptions({url:'/a/f=adminPageTypesList'});
-		return false;
-	}
 });
 
+function pages_new(node) {
+	var pid=node[0]?node[0].id.replace(/.*_/,''):0;
+	$('<table id="newpage-dialog">'
+		+'<tr><th>Name</th><td><input name="name"/></td></tr>'
+		+'<tr><th>Page Type</th><td><select name="type">'
+		+'<option value="0">normal</option></select></td></tr>'
+		+'</table>'
+	).dialog({
+		modal:true,
+		close:function(){
+			$('#newpage-dialog').remove();
+		},
+		buttons:{
+			'Create Page': function() {
+				var name=$('#newpage-dialog input[name="name"]').val();
+				if (name=='') {
+					return alert('Name must be provided');
+				}
+				$.post('/a/f=adminPageEdit', {
+					'parent':pid,
+					'name':name,
+					'type':$('#newpage-dialog select[name="type"]').val()
+				}, function(ret) {
+					pages_add_node(ret.alias, ret.id, ret.pid);
+					$('#page-form-wrapper').attr('src', 'pages/form.php?id='+ret.id);
+				});
+				$(this).dialog('close');
+			},
+			'Cancel': function() {
+				$(this).dialog('close');
+			}
+		}
+	});
+	$('#newpage-dialog select[name=type]')
+		.remoteselectoptions({url:'/a/f=adminPageTypesList'});
+	return false;
+}
 function pages_copy(node, tree) {
 	$.post('/a/f=adminPageCopy', {
 		'id':node[0].id.replace(/.*_/,'')

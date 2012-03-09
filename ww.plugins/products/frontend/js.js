@@ -92,6 +92,7 @@ $(function(){
 	$('form.products-addtocart,form.products-addmanytocart').submit(function(){
 		var $this=$(this);
 		var found=0;
+		var redirect=$this.find('input[name=products_redirect]').val();
 		$this.find('input.required').each(function(){
 			if (!$(this).val()) {
 				found=1;
@@ -104,8 +105,9 @@ $(function(){
 		$.post('/a/f=nothing',
 			$this.serializeArray(),
 			function(){
-				document.location=document.location.toString()
-					.replace('/showcart', '')+'/showcart';
+				document.location=redirect=='checkout'
+					?'/_r?type=online-store'
+					:document.location.toString().replace('/showcart', '')+'/showcart';
 			}
 		);
 		return false;

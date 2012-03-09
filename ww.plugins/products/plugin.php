@@ -36,72 +36,78 @@ $plugin=array(
 		'page_type' => 'Products_frontend',
 		'widget' => 'Products_widget',
 		'template_functions' => array(
-			'PRODUCTS_BUTTON_ADD_TO_CART' => array(
-				'function' => 'Products_getAddToCartWidget'
-			),
-			'PRODUCTS_BUTTON_ADD_MANY_TO_CART' => array(
-				'function' => 'Products_getAddManyToCartWidget'
-			),
-			'PRODUCTS_CATEGORIES' => array(
-				'function' => 'Products_categories'
-			),
-			'PRODUCTS_DATATABLE' => array(
-				'function' => 'Products_datatable'
-			),
-			'PRODUCTS_EXPIRY_CLOCK' => array(
-				'function' => 'Products_expiryClock'
-			),
-			'PRODUCTS_IMAGE' => array(
-				'function' => 'Products_image'
-			),
-			'PRODUCTS_IMAGES' => array(
-				'function' => 'Products_images'
-			),
-			'PRODUCTS_LINK' => array (
-				'function' => 'Products_link'
-			),
-			'PRODUCTS_LIST_CATEGORIES' => array(
-				'function' => 'Products_listCategories'
-			),
-			'PRODUCTS_LIST_CATEGORY_CONTENTS' => array(
-				'function' => 'Products_listCategoryContents'
-			),
-			'PRODUCTS_OWNER' => array(
-				'function' => 'Products_owner'
-			),
-			'PRODUCTS_PLUS_VAT' => array (
-				'function' => 'Products_plusVat'
-			),
-			'PRODUCTS_PRICE_BASE' => array (
-				'function' => 'Products_priceBase'
-			),
-			'PRODUCTS_PRICE_DISCOUNT' => array (
-				'function' => 'Products_priceDiscount'
-			),
-			'PRODUCTS_PRICE_DISCOUNT_PERCENT' => array (
-				'function' => 'Products_priceDiscountPercent'
-			),
-			'PRODUCTS_PRICE_SALE' => array (
-				'function' => 'Products_priceSale'
-			),
-			'PRODUCTS_RELATED' => array (
-				'function' => 'Products_showRelatedProducts'
-			),
-			'PRODUCTS_REVIEWS' => array (
-				'function' => 'Products_reviews'
-			),
-			'PRODUCTS_IMAGES_SLIDER' => array (
-				'function' => 'Products_imageSlider'
-			),
-			'PRODUCTS_AMOUNT_IN_STOCK' => array(
+			'PRODUCTS_AMOUNT_IN_STOCK' => array( // {
 				'function' => 'Products_amountInStock'
-			),
-			'PRODUCTS_AMOUNT_SOLD' => array(
+			), // }
+			'PRODUCTS_AMOUNT_SOLD' => array( // {
 				'function' => 'Products_soldAmount'
-			),
-			'PRODUCTS_QRCODE' => array(
+			), // }
+			'PRODUCTS_BUTTON_ADD_TO_CART' => array( // {
+				'function' => 'Products_getAddToCartWidget'
+			), // }
+			'PRODUCTS_BUTTON_ADD_MANY_TO_CART' => array( // {
+				'function' => 'Products_getAddManyToCartWidget'
+			), // }
+			'PRODUCTS_CATEGORIES' => array( // {
+				'function' => 'Products_categories'
+			), // }
+			'PRODUCTS_DATATABLE' => array( // {
+				'function' => 'Products_datatable'
+			), // }
+			'PRODUCTS_EXPIRY_CLOCK' => array( // {
+				'function' => 'Products_expiryClock'
+			), // }
+			'PRODUCTS_IMAGE' => array( // {
+				'function' => 'Products_image'
+			), // }
+			'PRODUCTS_IMAGES' => array( // {
+				'function' => 'Products_images'
+			), // }
+			'PRODUCTS_IMAGES_SLIDER' => array( // {
+				'function' => 'Products_imageSlider'
+			), // }
+			'PRODUCTS_LINK' => array( // {
+				'function' => 'Products_link'
+			), // }
+			'PRODUCTS_LIST_CATEGORIES' => array( // {
+				'function' => 'Products_listCategories'
+			), // }
+			'PRODUCTS_LIST_CATEGORY_CONTENTS' => array( // {
+				'function' => 'Products_listCategoryContents'
+			), // }
+			'PRODUCTS_MAP' => array( // {
+				'function' => 'Products_map'
+			), // }
+			'PRODUCTS_OWNER' => array( // {
+				'function' => 'Products_owner'
+			), // }
+			'PRODUCTS_PLUS_VAT' => array( // {
+				'function' => 'Products_plusVat'
+			), // }
+			'PRODUCTS_PRICE_BASE' => array( // {
+				'function' => 'Products_priceBase'
+			), // }
+			'PRODUCTS_PRICE_BULK' => array( // {
+				'function' => 'Products_priceBulk'
+			), // }
+			'PRODUCTS_PRICE_DISCOUNT' => array( // {
+				'function' => 'Products_priceDiscount'
+			), // }
+			'PRODUCTS_PRICE_DISCOUNT_PERCENT' => array( // {
+				'function' => 'Products_priceDiscountPercent'
+			), // }
+			'PRODUCTS_PRICE_SALE' => array( // {
+				'function' => 'Products_priceSale'
+			), // }
+			'PRODUCTS_QRCODE' => array( // {
 				'function' => 'Products_qrCode'
-			)
+			), // }
+			'PRODUCTS_RELATED' => array( // {
+				'function' => 'Products_showRelatedProducts'
+			), // }
+			'PRODUCTS_REVIEWS' => array( // {
+				'function' => 'Products_reviews'
+			) // }
 		)
 	), // }
 	'name' => 'Products',
@@ -1240,6 +1246,19 @@ function Products_listCategoryContents($params, $smarty) {
 }
 
 // }
+// { Products_map
+
+/**
+	* get a map centered on the product
+	*
+	* @return html of the map
+	*/
+function Products_map($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_map2($params, $smarty);
+}
+
+// }
 // { Products_owner
 
 /**
@@ -1269,6 +1288,22 @@ function Products_owner($params, $smarty) {
 function Products_priceBase($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
 	return Products_priceBase2($params, $smarty);
+}
+
+// }
+// { Products_priceBulk
+
+/**
+	* show the bulk price, or base price if not found
+	*
+	* @param array  $params parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string the bulk price
+	*/
+function Products_priceBulk($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_priceBulk2($params, $smarty);
 }
 
 // }

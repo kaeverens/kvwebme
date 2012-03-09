@@ -11,6 +11,8 @@
 	* @link     http://kvsites.ie/
 	*/
 
+// { Products_amountInStock2
+
 /**
 	* get amount of product in stock (simple)
 	*
@@ -22,6 +24,46 @@ function Products_amountInStock2($params, $smarty) {
 	return (int)$product->vals['stockcontrol_total'];
 }
 
+// }
+// { Products_map2
+
+/**
+	* get a map centered on the product
+	*
+	* @return html of the map
+	*/
+function Products_map2($params, $smarty) {
+	$params=array_merge(
+		array(
+			'width'=>160,
+			'height'=>'120'
+		),
+		$params
+	);
+	$pid=$smarty->_tpl_vars['product']->id;
+	$product=Product::getInstance($pid);
+	$uid=(int)$product->vals['user_id'];
+	if (!$uid) {
+		return 'unknown location';
+	}
+	$user=User::getInstance($uid);
+	if (!$user) {
+		return 'unknown location';
+	}
+	$lat=(float)$user->get('location_lat');
+	$lng=(float)$user->get('location_lng');
+	WW_addScript('/ww.plugins/products/j/maps.js');
+	return '<div class="products-map"'
+		.' data-lat="'.$lat.'"'
+		.' data-lng="'.$lng.'"'
+		.' data-pid="'.$pid.'"'
+		.' style="width:'.((int)$params['width']).'px;'
+		.'height:'.((int)$params['height']).'px"></div>';
+}
+
+// }
+// { Products_owner2
+
 /**
 	* return data about the product owner
 	*
@@ -31,6 +73,13 @@ function Products_amountInStock2($params, $smarty) {
 	* @return string owner variables
 	*/
 function Products_owner2($params, $smarty) {
+	$params=array_merge(
+		array(
+			'field'=>'name',
+		),
+		$params
+	);
+	// { set up user object
 	$pid=$smarty->_tpl_vars['product']->id;
 	$product=Product::getInstance($pid);
 	$uid=(int)$product->vals['user_id'];
@@ -41,8 +90,12 @@ function Products_owner2($params, $smarty) {
 	if (!$user) {
 		return 'unknown';
 	}
-	return $user->name;
+	// }
+	return $user->get($params['field']);
 }
+
+// }
+// { Products_priceBase2
 
 /**
 	* return the base price for the product
@@ -64,6 +117,34 @@ function Products_priceBase2($params, $smarty) {
 		:1;
 	return OnlineStore_numToPrice($p['_price']*$vat, true, (int)@$params['round']);
 }
+
+// }
+// { Products_priceBulk2
+
+/**
+	* return the bulk price for the product
+	*
+	* @param array  $params parameters
+	* @param object $smarty Smarty object
+	*
+	* @return string the price
+	*/
+function Products_priceBulk2($params, $smarty) {
+	$pid=$smarty->_tpl_vars['product']->id;
+	$product=Product::getInstance($pid);
+	if (!isset($product->vals['online-store'])) {
+		return '0';
+	}
+	$p=$product->vals['online-store'];
+	$vat=isset($params['vat']) && $params['vat']
+		?(100+$_SESSION['onlinestore_vat_percent'])/100
+		:1;
+	$price=$p['_bluk_price']?$p['_bluk_price']:$p['_price'];
+	return OnlineStore_numToPrice($price*$vat, true, (int)@$params['round']);
+}
+
+// }
+// { Products_priceDiscount2
 
 /**
 	* show the difference between base and sale price
@@ -87,6 +168,9 @@ function Products_priceDiscount2($params, $smarty) {
 	return OnlineStore_numToPrice($discount*$vat, true, (int)@$params['round']);
 }
 
+// }
+// { Products_priceDiscountPercent2
+
 /**
 	* show the percentage of the discount
 	*
@@ -107,6 +191,9 @@ function Products_priceDiscountPercent2($params, $smarty) {
 	return '--';
 }
 
+// }
+// { Products_priceSale2
+
 /**
 	* return the sale price for the product
 	*
@@ -126,6 +213,28 @@ function Products_priceSale2($params, $smarty) {
 		:1;
 	return OnlineStore_numToPrice($product->getPrice('sale')*$vat, true, (int)@$params['round']);
 }
+
+// }
+// { Products_qrCode2
+
+/**
+	* return a QR code for the product
+	*
+	* @param array  $params parameters
+	* @param object $smarty Smarty object
+	*
+	* @return string image
+	*/
+function Products_qrCode2($params, $smarty) {
+	if (@$smarty->_tpl_vars['isvoucher']!=1) {
+		return '<img src="/a/p=products/f=showQrCode/pid='
+			.$smarty->_tpl_vars['product']->id.'"/>';
+	}
+	return 'test';
+}
+
+// }
+// { Products_soldAmount2
 
 /**
 	* show how many have been sold
@@ -159,18 +268,4 @@ function Products_soldAmount2($params, $smarty) {
 	return str_replace('%d', $sold, $params['many']);
 }
 
-/**
-	* return a QR code for the product
-	*
-	* @param array  $params parameters
-	* @param object $smarty Smarty object
-	*
-	* @return string image
-	*/
-function Products_qrCode2($params, $smarty) {
-	if (@$smarty->_tpl_vars['isvoucher']!=1) {
-		return '<img src="/a/p=products/f=showQrCode/pid='
-			.$smarty->_tpl_vars['product']->id.'"/>';
-	}
-	return 'test';
-}
+// }
