@@ -30,7 +30,7 @@ function Core_getJQueryScripts() {
 		:($uicssbits&1 ? '':'<link href="'.$jurls[2].'" rel="stylesheet" />');
 	return $uicss
 		.'<script src="'.$jurls[0].'"></script>'
-		.'<script src="'.$jurls[1].'" defer="defer"></script>';
+		.'<script src="'.$jurls[1].'"></script>';
 }
 
 // }

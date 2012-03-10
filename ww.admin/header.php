@@ -117,13 +117,14 @@ foreach ($PLUGINS as $pname=>$p) {
 }
 echo WW_getCSS();
 echo Core_getJQueryScripts()
-	.'<script defer="defer" src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>';
+	.'<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>';
 WW_addInlineScript('var sessid="'.session_id().'";');
+WW_addScript('/j/fg.menu/fg.menu.js');
 // { languages
 $langs=dbAll(
 	'select code,name from language_names order by is_default desc,code,name'
 );
-echo '<script defer="defer">var languages='.json_encode($langs).';</script>';
+echo '<script>var languages='.json_encode($langs).';</script>';
 // }
 echo '</head><body';
 echo '><div id="header">';

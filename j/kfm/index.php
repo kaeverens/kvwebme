@@ -3,10 +3,10 @@
  * KFM - Kae's File Manager - index page
  *
  * @category None
- * @package  None
- * @author   Kae Verens <kae@verens.com>
- * @author   Benjamin ter Kuile <bterkuile@gmail.com>
- * @license  docs/license.txt for licensing
+ * @package None
+ * @author Kae Verens <kae@verens.com>
+ * @author Benjamin ter Kuile <bterkuile@gmail.com>
+ * @license docs/license.txt for licensing
  * @link	 http://kfm.verens.com/
  */
 // { functions
@@ -38,7 +38,7 @@ $kfm_session->set('kfm_url',dirname((!empty($_SERVER['HTTPS'])) ?
 if($kfm->setting('root_folder_name')=='foldername')$kfm->setting('root_folder_name',$user_root_dir->name);
 elseif(strpos($kfm->setting('root_folder_name'), 'username') !== false){
 	if($kfm->user_id == 1) $kfm->setting('root_folder_name', 'root'); // Special default user case
-  else $kfm->setting('root_folder_name',str_replace('username',$kfm->setting('username'),$kfm->setting('root_folder_name')));
+ else $kfm->setting('root_folder_name',str_replace('username',$kfm->setting('username'),$kfm->setting('root_folder_name')));
 }
 // }
 // { startup folder
@@ -46,7 +46,7 @@ $kfm_startupfolder_id = $user_root_dir->id;
 $startup_sequence	 = '[]';
 if(isset($_GET['startup_folder']))$kfm->setting('startup_folder',$_GET['startup_folder']);
 if ($kfm->setting('startup_folder')) {
-	$dirs				   = explode(DIRECTORY_SEPARATOR, trim($kfm->setting('startup_folder'), ' '.DIRECTORY_SEPARATOR));
+	$dirs				 = explode(DIRECTORY_SEPARATOR, trim($kfm->setting('startup_folder'), ' '.DIRECTORY_SEPARATOR));
 	$subdir				 = $user_root_dir;
 	$startup_sequence_array = array();
 	foreach ($dirs as $dirname) {
@@ -81,18 +81,18 @@ $ass_str=rtrim($ass_str,', ').'}';
 if (isset($_GET['fid']) && $_GET['fid']) {/*{*/
 	$f = kfmFile::getInstance($_GET['fid']);/*}*/
 	if($f){
-		$_GET['cwd']			   = $f->parent;
+		$_GET['cwd']			 = $f->parent;
 		$kfm->setting('startup_selected_files', array($_GET['fid']));
 	}
 }
 // }
 //TODO:The next section should be reviewed (benjamin: I thing $_GET['startup_folder']) should be used in stead of this. (no directory id supported)
 if (isset($_GET['cwd']) && (int)$_GET['cwd']) {
-	$path   = kfm_getDirectoryParentsArr($_GET['cwd']);
+	$path = kfm_getDirectoryParentsArr($_GET['cwd']);
 	$path[] = $_GET['cwd'];
 	if(count($path)>1){
 		$startup_sequence_array = $path;
-		$kfm_startupfolder_id   = $_GET['cwd'];
+		$kfm_startupfolder_id = $_GET['cwd'];
 		$kfm_session->set('cwd_id', $kfm->setting('startupfolder_id'));
 		$startup_sequence = '['.implode(',', $startup_sequence_array).']';
 	}
@@ -123,7 +123,7 @@ if(!empty($_POST['kaejax']))kfm_kaejax_handle_client_request();
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 	<head>
-    <link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" />
+ <link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" />
 		<style type="text/css">@import "themes/<?php echo $kfm->setting('theme'); ?>/css.php"; </style>
 		<style type="text/css">@import "plugins/css.php"; </style>
 		<title>KFM - Kae's File Manager</title>
@@ -164,7 +164,7 @@ if ($last_registration!=$today) {
 // }
 ?>
 <?php // { set up JavaScript environment variables ?>
-		<script defer="defer" type="text/javascript">
+		<script type="text/javascript">
 			var kfm_vars={
 				files:{ name_length_displayed:<?php echo $kfm->setting('files_name_length_displayed'); ?>, name_length_in_list:<?php echo $kfm->setting('files_name_length_in_list'); ?>, return_id_to_cms:<?php echo $kfm->setting('return_file_id_to_cms')?'true':'false'; ?>, drags_move_or_copy:<?php echo $kfm->setting('folder_drag_action'); ?>, refresh_count:0 },
 				get_params:"<?php echo GET_PARAMS; ?>",
@@ -204,19 +204,19 @@ if ($last_registration!=$today) {
 			for(var i = 0;i<kfm_hidden_panels.length;++i)kfm_hidden_panels[i] = 'kfm_'+kfm_hidden_panels[i]+'_panel';
 		</script>
 <?php // } ?>
-		<script defer="defer" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-    <script defer="defer" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
-		<script defer="defer" type="text/javascript" src="third-party/swfupload/swfupload.js"></script>
-		<script defer="defer" type="text/javascript" src="j/all.php/can-minify"></script>
-		<script defer="defer" type="text/javascript" src="lang/<?php echo $kfm_language; ?>.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+ <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="third-party/swfupload/swfupload.js"></script>
+		<script type="text/javascript" src="j/all.php/can-minify"></script>
+		<script type="text/javascript" src="lang/<?php echo $kfm_language; ?>.js"></script>
 <?php // { widgets and plugins
 // { include widgets if they exist
-$h   = opendir(KFM_BASE_PATH.'widgets');
+$h = opendir(KFM_BASE_PATH.'widgets');
 $tmp = '';
 while (false!==($dir = readdir($h))) {
 	if ($dir[0]!='.'&&is_dir(KFM_BASE_PATH.'widgets/'.$dir)) $tmp .= file_get_contents('widgets/'.$dir.'/widget.js');
 }
-if($tmp != '')echo "<script defer="defer" type=\"text/javascript\"><!--\n$tmp\n--></script>";
+if($tmp != '')echo "<script type=\"text/javascript\"><!--\n$tmp\n--></script>";
 // }
 // { show plugins if they exist
 $pluginssrc='';
@@ -224,15 +224,15 @@ foreach ($kfm->plugins as $plugin) {
 	echo $plugin->getJavascriptFiles();
 	$pluginssrc.=$plugin->getJavascript();
 }
-if($pluginssrc!='')echo "<script defer="defer" type=\"text/javascript\"><!--\n$pluginssrc\n--></script>";
+if($pluginssrc!='')echo "<script type=\"text/javascript\"><!--\n$pluginssrc\n--></script>";
 // }
 if($templated) echo $template;
 // } ?>
 <?php // { more JavaScript environment variables. These should be merged into the above set whenever possible ?>
-		<script defer="defer" type="text/javascript">
-      $j(document).ready(function(){
-	      kfm.build();
-      });
+		<script type="text/javascript">
+ $j(document).ready(function(){
+	 kfm.build();
+ });
 			<?php echo kfm_kaejax_get_javascript(); ?>
 			<?php if(isset($_GET['kfm_caller_type']))echo 'window.kfm_caller_type="'.addslashes($_GET['kfm_caller_type']).'";'; ?>
 		</script>

@@ -190,7 +190,7 @@ function WW_getScripts() {
 		$adminVars
 	);
 	// }
-	$inline='<script defer="defer">'.join(';', $scripts_inline).';</script>';
+	$inline='<script>'.join(';', $scripts_inline).';</script>';
 	// }
 	// { set up external scripts
 	$external=array();
@@ -219,11 +219,12 @@ function WW_getScripts() {
 		}
 	}
 	$external=count($external)
-		?'<script src="'.join('"></script><script src="', $external).'"></script>'
+		?'<script src="'
+		.join('"></script><script src="', $external).'"></script>'
 		:'';
 	// }
 	return $external
-		.'<script defer="defer" src="/ww.admin/js.php/'.$md5.'"></script>'
+		.'<script src="/ww.admin/js.php/'.$md5.'"></script>'
 		.$inline;
 }
 
