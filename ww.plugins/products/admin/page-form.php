@@ -213,4 +213,4 @@ $c.= ckeditor(
 $c.= '</div>';
 // }
 $c.= '</div>';
-$c.= '<script src="/ww.plugins/products/admin/page-form.js"></script>';
+$c.= '<script defer="defer" src="/ww.plugins/products/admin/page-form.js"></script>';

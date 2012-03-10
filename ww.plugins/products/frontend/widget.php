@@ -56,10 +56,10 @@ switch ($widget_type) {
 		$id='products_categories_'.md5(rand());
 		$html.='<div id="'.$id.'" class="products-widget" style="width:'.$diameter
 			.'px;height:'.($diameter+30).'px">loading...</div>'
-			.'<script>$(function(){'
+			.'<script defer="defer">$(function(){'
 			.'products_widget("'.$id.'",'.json_encode($cats).');'
 			.'});</script>';
-		$html.='<!--[if IE]><script src="/ww.plugins/products/frontend/excanvas.js">'
+		$html.='<!--[if IE]><script defer="defer" src="/ww.plugins/products/frontend/excanvas.js">'
 			.'</script><![endif]-->';
 		WW_addScript('/ww.plugins/products/frontend/jquery.canvas.js');
 		WW_addScript('/ww.plugins/products/frontend/widget.js');

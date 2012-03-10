@@ -539,7 +539,7 @@ foreach ($dir as $f) {
 echo '<iframe src="/ww.plugins/products/admin/uploader.php?images_directory='
 	.urlencode($pdata['images_directory'])
 	.'" style="width:400px;height:50px;border:0;overflow:hidden"></iframe>';
-echo '<script>window.kfm={alert:function(){}};window.kfm_vars={};'
+echo '<script defer="defer">window.kfm={alert:function(){}};window.kfm_vars={};'
 	.'function x_kfm_loadFiles(){}'
 	.'function kfm_dir_openNode(){$("#products-form").submit();}'
 	.'var product_id='.$id.';</script>';
@@ -710,7 +710,7 @@ if (isset($PLUGINS['online-store'])) {
 			if (!$detail) {
 				$detail='[]';
 			}
-			echo '<table id="stockcontrol-complex"></table><script>'
+			echo '<table id="stockcontrol-complex"></table><script defer="defer">'
 				.'window.stockcontrol_detail='.$detail.';window.stockcontrol_options=["'
 				.join('", "', $options).'"];</script><a href="#" id="'
 				.'stockcontrol-addrow">add row</a>'

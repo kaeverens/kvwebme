@@ -164,7 +164,7 @@ if ($last_registration!=$today) {
 // }
 ?>
 <?php // { set up JavaScript environment variables ?>
-		<script type="text/javascript">
+		<script defer="defer" type="text/javascript">
 			var kfm_vars={
 				files:{ name_length_displayed:<?php echo $kfm->setting('files_name_length_displayed'); ?>, name_length_in_list:<?php echo $kfm->setting('files_name_length_in_list'); ?>, return_id_to_cms:<?php echo $kfm->setting('return_file_id_to_cms')?'true':'false'; ?>, drags_move_or_copy:<?php echo $kfm->setting('folder_drag_action'); ?>, refresh_count:0 },
 				get_params:"<?php echo GET_PARAMS; ?>",
@@ -204,11 +204,11 @@ if ($last_registration!=$today) {
 			for(var i = 0;i<kfm_hidden_panels.length;++i)kfm_hidden_panels[i] = 'kfm_'+kfm_hidden_panels[i]+'_panel';
 		</script>
 <?php // } ?>
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="third-party/swfupload/swfupload.js"></script>
-		<script type="text/javascript" src="j/all.php/can-minify"></script>
-		<script type="text/javascript" src="lang/<?php echo $kfm_language; ?>.js"></script>
+		<script defer="defer" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script defer="defer" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
+		<script defer="defer" type="text/javascript" src="third-party/swfupload/swfupload.js"></script>
+		<script defer="defer" type="text/javascript" src="j/all.php/can-minify"></script>
+		<script defer="defer" type="text/javascript" src="lang/<?php echo $kfm_language; ?>.js"></script>
 <?php // { widgets and plugins
 // { include widgets if they exist
 $h   = opendir(KFM_BASE_PATH.'widgets');
@@ -216,7 +216,7 @@ $tmp = '';
 while (false!==($dir = readdir($h))) {
 	if ($dir[0]!='.'&&is_dir(KFM_BASE_PATH.'widgets/'.$dir)) $tmp .= file_get_contents('widgets/'.$dir.'/widget.js');
 }
-if($tmp != '')echo "<script type=\"text/javascript\"><!--\n$tmp\n--></script>";
+if($tmp != '')echo "<script defer="defer" type=\"text/javascript\"><!--\n$tmp\n--></script>";
 // }
 // { show plugins if they exist
 $pluginssrc='';
@@ -224,12 +224,12 @@ foreach ($kfm->plugins as $plugin) {
 	echo $plugin->getJavascriptFiles();
 	$pluginssrc.=$plugin->getJavascript();
 }
-if($pluginssrc!='')echo "<script type=\"text/javascript\"><!--\n$pluginssrc\n--></script>";
+if($pluginssrc!='')echo "<script defer="defer" type=\"text/javascript\"><!--\n$pluginssrc\n--></script>";
 // }
 if($templated) echo $template;
 // } ?>
 <?php // { more JavaScript environment variables. These should be merged into the above set whenever possible ?>
-		<script type="text/javascript">
+		<script defer="defer" type="text/javascript">
       $j(document).ready(function(){
 	      kfm.build();
       });

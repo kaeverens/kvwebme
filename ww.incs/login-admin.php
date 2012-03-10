@@ -1,13 +1,13 @@
 <!doctype html>
 <html>
 	<head>
-		<script
+		<script defer="defer"
 			src="https://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js">
 		</script>
-		<script
+		<script defer="defer"
 			src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js">
 		</script>
-		<script src="/j/lang.js"></script>
+		<script defer="defer" src="/j/lang.js"></script>
 		<link
 			href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css"
 			rel="stylesheet"/>
@@ -67,7 +67,7 @@
 				</table>
 			</div>
 		</div>
-		<script>
+		<script defer="defer">
 			$(function(){
 				$('#tabs').tabs().find('#email').focus();
 				$('#login').click(function(){

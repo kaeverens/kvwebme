@@ -138,7 +138,7 @@ if (isset($_REQUEST['swf']) && $_REQUEST['swf']==1) {
 ?>
 <html>
 <head>
-<script type="text/javascript">
+<script defer="defer" type="text/javascript">
 <?php
 $js = isset($_REQUEST['js'])?$_REQUEST['js']:'';
 if (isset($_REQUEST['onload'])) echo $_REQUEST['onload'];

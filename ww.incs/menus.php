@@ -32,10 +32,6 @@ function Menu_getChildren(
 		$parentid.'|'.$currentpage.'|'.$isadmin.'|'.$topParent
 			.'|'.join(',', $_languages).'|'.@$_SESSION['language']
 	);
-	$cache=Core_cacheLoad('menus', $md5);
-	if (0 && $cache) {
-		return $cache;
-	}
 	$pageParentFound=0;
 	if ($parentid) {
 		$PARENTDATA=Page::getInstance($parentid);
@@ -123,10 +119,10 @@ function Menu_getChildren(
 		$rs[$k]['parent']=$parentid;
 		$menuitems[]=$rs[$k];
 	}
-	Core_cacheSave('menus', $md5, $menuitems);
 	return $menuitems;
 }
 function Menu_show($b) {
+	WW_addScript('/j/menu.js');
 	global $PAGEDATA, $_languages;
 	if (!$PAGEDATA->id) {
 		return '';

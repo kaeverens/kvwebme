@@ -118,7 +118,7 @@ function Comments_displayComments($page) {
 	}
 	$cbhtml=$allowComments=='on'?Comments_showCommentForm($page->id):'';
 	// }
-	return '<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.8/'
+	return '<script defer="defer" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.8/'
 		.'jquery.validate.min.js"></script>'
 		.($commentboxfirst?$cbhtml.$clist:$clist.$cbhtml);
 }
@@ -169,6 +169,6 @@ function Comments_showCommentForm($pageID) {
 	}
 	$display.='<tr class="comments-submit-comment"><th>&nbsp;</th><td>'
 		.'<input type="submit" id="submit" value="Submit Comment"  /></td></tr>'
-		.'</table></form><script>comments_noCaptchas='.$noCaptchas.';</script>';
+		.'</table></form><script defer="defer">comments_noCaptchas='.$noCaptchas.';</script>';
 	return $display;
 }

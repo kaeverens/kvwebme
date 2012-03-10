@@ -115,12 +115,12 @@ function Privacy_controller() {
 				'update user_accounts set password=md5("'.$p.'") where email="'
 				.$email.'"'
 			);
-			$c.='<script>$(function(){$("<strong>Please check your email for your'
+			$c.='<script defer="defer">$(function(){$("<strong>Please check your email for your'
 				.' new password.</strong>").dialog({modal:true,height:100,width:150'
 				.'});});</script>';
 		}
 		else {
-			$c.='<script>$(function(){$("<strong>No user account with that email '
+			$c.='<script defer="defer">$(function(){$("<strong>No user account with that email '
 				.'address exists.</strong>").dialog({modal:true,height:100,width:15'
 				.'0});});</script>';
 		}
@@ -397,7 +397,7 @@ function Privacy_registrationShowForm($error='', $alert='') {
 			.'<span class="__" lang-context="core">I agree to the '
 			.'<a href="javascript:userlogin_t_and_c()">terms and conditions</a>.'
 			.'</span><br />';
-		$c.='<script>function userlogin_t_and_c(){$("<div>'
+		$c.='<script defer="defer">function userlogin_t_and_c(){$("<div>'
 			.addslashes(
 				str_replace(
 					array("\n", "\r"), ' ',

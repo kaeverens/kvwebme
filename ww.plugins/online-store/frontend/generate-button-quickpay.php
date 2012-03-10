@@ -53,4 +53,4 @@ foreach ($fields as $k=>$v) {
 		.'value="'.htmlspecialchars($v).'"/>';
 }
 $html.='<input type="submit" value="Proceed to Payment"/></form>'
-	.'<script>$("#online-store-quickpay").submit()</script>';
+	.'<script defer="defer">$("#online-store-quickpay").submit()</script>';

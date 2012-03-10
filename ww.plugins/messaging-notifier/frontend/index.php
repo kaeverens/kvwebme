@@ -121,7 +121,7 @@ function Aggregator_parse($data, $vars) {
 		if (isset($vars->scrolling) && $vars->scrolling) {
 			WW_addScript('/j/jquery.vticker-min.js');
 			WW_addCSS('/ww.plugins/messaging-notifier/c/scroller.css');
-			$html.='<script>$(function(){
+			$html.='<script defer="defer">$(function(){
 					$("#messaging-notifier-'.$vars->id.'").vTicker({
 						speed: 4000,
 						pause: 5000,

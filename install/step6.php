@@ -81,19 +81,19 @@ if (isset($_POST[ 'install-theme' ])) { // install theme if selected
 	Core_configRewrite();
 	Core_cacheClear('pages');
 	$_SESSION[ 'theme_selected' ] = true;
-	echo '<script>document.location="/install/step7.php";</script>';
+	echo '<script defer="defer">document.location="/install/step7.php";</script>';
 	exit;
 }
 
 
 echo
-	'<script src="/ww.plugins/ratings/ratings.js"></script>'
-	.'<script src="/j/jquery.tooltip.min.js"></script>'
-	.'<script src="/ww.plugins/themes-api/carousel.js"></script>'
-	.'<script src="/install/themes.js"></script>'
+	'<script defer="defer" src="/ww.plugins/ratings/ratings.js"></script>'
+	.'<script defer="defer" src="/j/jquery.tooltip.min.js"></script>'
+	.'<script defer="defer" src="/ww.plugins/themes-api/carousel.js"></script>'
+	.'<script defer="defer" src="/install/themes.js"></script>'
 	.'<link rel="stylesheet" type="text/css" href="/ww.plugins/themes-api'
 	.'/api.css"/>'
-	.'<script>window.installed_themes=[];</script>'
+	.'<script defer="defer">window.installed_themes=[];</script>'
 	.'<h1>Select Themes</h1>'
 	.'<div id="themes-carousel">'
 	.'Loading.. If you have no internet connection, please <a href="/'

@@ -136,11 +136,6 @@ $(function(){
 			"log":function(v){}
 		};
 	}
-	var el=$('.ajaxmenu')[0];
-	if(!el)return;
-	var id=el.id.replace(/ajaxmenu/,'');
-	if(id && id=='am_top')return;
-	$.getScript('/j/menu.js');
 });	
 /*
  * jQuery Tiny Pub/Sub - v0.6 - 1/10/2011

@@ -45,7 +45,7 @@ function getPageHtml () {
 	WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
 	WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
 	// { The Script
-	$displayString= $displayString.'<script>';
+	$displayString= $displayString.'<script defer="defer">';
 	$displayString= $displayString.'$(function(){';
 	$displayString= $displayString.'$(\'#quizzesFrontend\').dataTable();';
 	$displayString= $displayString.'});';

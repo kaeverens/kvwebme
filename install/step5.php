@@ -54,4 +54,4 @@ if (!file_exists('../.private/config.php')) {
 
 $_SESSION[ 'config_written' ] = true;
 
-echo '<script>document.location="/install/step6.php";</script>';
+echo '<script defer="defer">document.location="/install/step6.php";</script>';

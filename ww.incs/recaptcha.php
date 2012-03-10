@@ -22,7 +22,7 @@ define('RECAPTCHA_PUBLIC', '6LffZAwAAAAAALA70eSDf73p4DTddBu0jgULjukb');
   * @return string HTML for the captcha
   */
 function Recaptcha_getHTML() {
-	return '<script>var RecaptchaOptions={theme:"custom",lang:"en",'
+	return '<script defer="defer">var RecaptchaOptions={theme:"custom",lang:"en",'
 		.'custom_theme_widget:"recaptcha_widget"};</script>'
 		.'<div id="recaptcha_widget" style="display:none">'
 		.'<div id="recaptcha_image"></div>'
@@ -32,6 +32,6 @@ function Recaptcha_getHTML() {
 		.'Enter the words above:</span>'
 		.'<input id="recaptcha_response_field" '
 		.'name="recaptcha_response_field" /></div>'
-		.'<script src="http://www.google.com/recaptcha/api/challenge?k='
+		.'<script defer="defer" src="http://www.google.com/recaptcha/api/challenge?k='
 		.RECAPTCHA_PUBLIC.'"></script>';
 }

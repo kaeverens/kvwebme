@@ -54,7 +54,7 @@ if (isset($_REQUEST['action'])) {
 		}
 		else {
 			$_SESSION['db_vars']['passed']=1;
-			echo '<script>document.location="/install/step2.php";</script>';
+			echo '<script defer="defer">document.location="/install/step2.php";</script>';
 			exit;
 		}
 	}
@@ -64,7 +64,7 @@ if (isset($_REQUEST['action'])) {
  * add form validation
  */
 echo '
-<script type="text/javascript">
+<script defer="defer" type="text/javascript">
 	$( function( ){
 		var options = { "username" : { "required" : true }, "hostname" : { "req'
 			.'uired" : true }, "db_name" : { "required" : true } };

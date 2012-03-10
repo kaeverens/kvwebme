@@ -58,7 +58,7 @@ if (isset($_REQUEST['action'])) {
 		mysql_query("insert into groups (id,name) values(1,'administrators')");
 		mysql_query("insert into users_groups values(1,1)");
 		$_SESSION['admin_created']=1;
-		echo '<script>document.location="/install/step4.php";</script>';
+		echo '<script defer="defer">document.location="/install/step4.php";</script>';
 		exit;
 	}
 }
@@ -70,7 +70,7 @@ if (!isset($_SESSION['user'])) {
  * add form validation
  */
 echo '
-<script type="text/javascript">
+<script defer="defer" type="text/javascript">
         $( function( ){
                 var options = { "name" : { "required" : true }, "email" : { '
 								.'"required" : true, "email" : true }, "password" : { "'

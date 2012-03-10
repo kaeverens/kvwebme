@@ -17,7 +17,7 @@ function User_getLocation_frontendShow() {
 		.'<input name="lat" value="'.$lat.'" type="hidden"/>'
 		.'<input name="lng" value="'.$lng.'" type="hidden"/>'
 		.'<input type="submit" value="Set Location"/></form>'
-		.'<script src="http://maps.google.com/maps/api/js?sensor=true"></script>'
-		.'<script src="http://code.google.com/apis/gears/gears_init.js"></script>'
-		.'<script src="/ww.plugins/user-location/frontend/page.js"></script>';
+		.'<script defer="defer" src="http://maps.google.com/maps/api/js?sensor=true"></script>'
+		.'<script defer="defer" src="http://code.google.com/apis/gears/gears_init.js"></script>'
+		.'<script defer="defer" src="/ww.plugins/user-location/frontend/page.js"></script>';
 }

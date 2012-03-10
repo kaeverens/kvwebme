@@ -65,6 +65,6 @@ if ($rid) {
 		$url.=$rp->getRelativeUrl();
 	}
 }
-echo '<script>document.location="'.addslashes($url).'?total='
+echo '<script defer="defer">document.location="'.addslashes($url).'?total='
 	.$order['total'].'";</script><p>Thank you!</p><p>Please <a href="'
 	.htmlspecialchars($url).'">click here</a> to continue.</p>';

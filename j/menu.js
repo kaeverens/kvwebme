@@ -232,35 +232,37 @@ function ajaxmenu_openSubMenus(i) {
 function ajaxmenu_queueClearMenus(){
 	_am.activeSetTimeout=setTimeout('ajaxmenu_removeInvalidMenus(_am.topMenu)',300);
 }
-// { variables
-	var m=$('.ajaxmenu')[0];
-	var _am={
-		'accordion':0,
-		'two_tier':0,
-		'click_required':0,
-		'menus':[],
-		'noclose':(m.className.indexOf('noclose')!=-1),
-		'preopen_menu':0,
-		'topMenu':m.id.replace(/ajaxmenu(.*)/,'$1')
+$(function() {
+	// { variables
+		window.m=$('.ajaxmenu')[0];
+		window._am={
+			'accordion':0,
+			'two_tier':0,
+			'click_required':0,
+			'menus':[],
+			'noclose':(m.className.indexOf('noclose')!=-1),
+			'preopen_menu':0,
+			'topMenu':m.id.replace(/ajaxmenu(.*)/,'$1')
+		};
+		if (document.location.toString().replace(/http:\/\/[^\/]*\//,'').substr(0,5)=='admin') {
+			_am.topMenu='am_top';
+		}
+		_am.align=m.className.indexOf('menuBarLeft')==-1?'horizontal':'vertical';
+		_am.activeMenu=_am.topMenu;
+		_am.activeSetTimeout=0;
+		if (m.className.indexOf('preopen_menu')!=-1) {
+			_am.preopen_menu= +(document.location.toString().replace(/.*#am_open=([0-9]*)$/,'$1'));
+		}
+		_am.openMenus=[_am.topMenu,''+pagedata.ctop];
+	// }
+	_am.onload=function(){
+		if (!_am.two_tier && !_am.preopen_menu) {
+			return false;
+		}
+		pagedata.id=_am.preopen_menu?_am.preopen_menu:pagedata.ctop;
+		return ajaxmenu_openSubMenus(pagedata.id);
 	};
-	if (document.location.toString().replace(/http:\/\/[^\/]*\//,'').substr(0,5)=='admin') {
-		_am.topMenu='am_top';
-	}
-	_am.align=m.className.indexOf('menuBarLeft')==-1?'horizontal':'vertical';
-	_am.activeMenu=_am.topMenu;
-	_am.activeSetTimeout=0;
-	if (m.className.indexOf('preopen_menu')!=-1) {
-		_am.preopen_menu= +(document.location.toString().replace(/.*#am_open=([0-9]*)$/,'$1'));
-	}
-	_am.openMenus=[_am.topMenu,''+pagedata.ctop];
-// }
-_am.onload=function(){
-	if (!_am.two_tier && !_am.preopen_menu) {
-		return false;
-	}
-	pagedata.id=_am.preopen_menu?_am.preopen_menu:pagedata.ctop;
-	return ajaxmenu_openSubMenus(pagedata.id);
-};
-
-var menu_cache=[];
-ajaxmenu_initialise(_am.topMenu);
+	
+	window.menu_cache=[];
+	ajaxmenu_initialise(_am.topMenu);
+});

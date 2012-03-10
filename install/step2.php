@@ -59,4 +59,4 @@ mysql_query(
 // }
 
 $_SESSION['db_vars']['db_installed']=1;
-echo '<script>document.location="/install/step3.php";</script>';
+echo '<script defer="defer">document.location="/install/step3.php";</script>';

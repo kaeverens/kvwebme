@@ -41,4 +41,4 @@ $html='<form id="online-store-realex" method="post" action="'
 	.'<input type="hidden" value="Purchase made from '.$_SERVER['HTTP_HOST']
 	.'" name="COMMENT1"/>'
 	.'<input type="submit" value="Proceed to Payment" /></form>'
-	.'<script>$("#online-store-realex").submit()</script>';
+	.'<script defer="defer">$("#online-store-realex").submit()</script>';

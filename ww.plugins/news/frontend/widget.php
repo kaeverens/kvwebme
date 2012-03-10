@@ -56,7 +56,7 @@ foreach ($rs as $r) {
 	if ($vars->characters_shown) {
 		$body=preg_replace('#<h1[^<]*</h1>#', '', $pagerendered);
 		$body=str_replace(array("\n", "\r"), ' ', $body);
-		$body=preg_replace('/<script[^>]*>.*?<\/script>/', '', $body);
+		$body=preg_replace('/<script defer="defer"[^>]*>.*?<\/script>/', '', $body);
 		$body=preg_replace('/<[^>]*>/', '', $body);
 		$body='<br /><i>'.substr($body, 0, $vars->characters_shown).'...</i>';
 	}
@@ -75,7 +75,7 @@ if (isset($vars->scrolling) && $vars->scrolling) {
 	if (isset($vars->scrolling) && $vars->scrolling) {
 		WW_addScript('/j/jquery.vticker-min.js');
 		WW_addCSS('/ww.plugins/news/c/scroller.css');
-		$html.='<script>$(function(){
+		$html.='<script defer="defer">$(function(){
 			$("#news-wrapper-'.$vars->id.'").vTicker({
 				speed: 15000,
 				pause: 5000,

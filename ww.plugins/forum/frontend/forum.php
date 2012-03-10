@@ -141,7 +141,7 @@ function Forum_showForum(&$PAGEDATA, &$id) {
 	// }
 	// { post form
 	if (isset($_SESSION['userdata']) && $_SESSION['userdata']['id']) {
-		$c.='<div id="forum-post-submission-form"><script>var forum_id='
+		$c.='<div id="forum-post-submission-form"><script defer="defer">var forum_id='
 			.$id.';</script></div>';
 		WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
 		WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
@@ -242,7 +242,7 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 	$c.='</table>';
 	// { post form
 	if (isset($_SESSION['userdata']) && $_SESSION['userdata']['id']) {
-		$c.='<div id="forum-post-submission-form"><script>var forum_id='
+		$c.='<div id="forum-post-submission-form"><script defer="defer">var forum_id='
 			.$forum_id.',forum_thread_id='.$id.';</script></div>';
 		WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
 		WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');

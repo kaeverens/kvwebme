@@ -351,7 +351,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 			.json_encode(Form_getValidationRules($vars, $form_fields)).';'
 		);
 		WW_addScript('forms/frontend/show.js');
-		$c.='<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/'
+		$c.='<script defer="defer" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/'
 			.'jquery.validate.min.js"></script>';
 	}
 	$helpType=(int)@$vars['forms_helpType'];
@@ -359,7 +359,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 	$verifiedEmails=isset($_SESSION['forms_verified_emails'])
 		?json_encode($_SESSION['forms_verified_emails']):
 		'[]';
-	$c.='<script>var forms_helpType='.$helpType.',forms_helpSelector="'
+	$c.='<script defer="defer">var forms_helpType='.$helpType.',forms_helpSelector="'
 		.$helpSelector.'",forms_verifiedEmails='.$verifiedEmails
 		.';</script></form>';
 	if ($has_ccdate) {

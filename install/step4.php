@@ -35,7 +35,7 @@ if (isset($_REQUEST['userbase']) && $_REQUEST['userbase']) {
 		}
 		else {
 			$_SESSION['userbase_created']=true;
-			echo '<script>document.location="/install/step5.php";</script>';
+			echo '<script defer="defer">document.location="/install/step5.php";</script>';
 			exit;
 		}
 	}
@@ -49,7 +49,7 @@ if (!isset($_SESSION['userbase']) || !$_SESSION['userbase']) {
  * add form validation
  */
 echo '
-<script type="text/javascript">
+<script defer="defer" type="text/javascript">
         $( document ).ready( function( ){
                 var options = { "userbase" : { "required" : true } };
                 $( "#files-form" ).validate( options, error_handler );

@@ -48,13 +48,13 @@ foreach ($rs as $r) {
 	$cats[$r['parent_id']][]=$r;
 }
 showCats(0);
-echo '<script>selected_cat='.(int)@$cats[0][0]['id'].';</script>';
+echo '<script defer="defer">selected_cat='.(int)@$cats[0][0]['id'].';</script>';
 echo '</div></td><td id="products-categories-attrs"></td></tr></table>';
 WW_addScript('/j/farbtastic-1.3u/farbtastic.js');
 WW_addScript('/j/jstree/jquery.jstree.js');
 WW_addScript('/j/jstree/_lib/jquery.cookie.js');
 WW_addScript('/j/jquery.inlinemultiselect.js');
-echo '<script src="/ww.plugins/products/admin/get-product-names-js.php">'
+echo '<script defer="defer" src="/ww.plugins/products/admin/get-product-names-js.php">'
 	.'</script>';
 WW_addScript('/ww.plugins/products/admin/categories.js');
 WW_addScript('/ww.plugins/products/admin/create-page.js');

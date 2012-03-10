@@ -19,7 +19,7 @@
 	* @return null
 	*/
 function Mailinglist_showAlert($text) {
-	return '<script>fAlert(\''.$text.'\');</script>';
+	return '<script defer="defer">fAlert(\''.$text.'\');</script>';
 }
 
 /**

@@ -104,7 +104,7 @@ function ContentSnippet_show2($vars) {
 			$html.=$content['html'].'</li>';
 			++$i;
 		}
-		$html.='</ul><script>$(function(){$("#'.$id.'").hrzAccordion({handlePos'
+		$html.='</ul><script defer="defer">$(function(){$("#'.$id.'").hrzAccordion({handlePos'
 			.'ition:"left",cycle:true,cycleInterval:4000});});</script>';
 		return $html;
 		return $data['accordion_direction'];

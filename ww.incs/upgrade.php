@@ -515,4 +515,4 @@ Core_cacheClear();
 Core_configRewrite();
 
 echo '<p>Site upgraded. Please <a href="/">click here</a> to return to the '
-	.'site.</p><script>document.location="/";</script>';
+	.'site.</p><script defer="defer">document.location="/";</script>';

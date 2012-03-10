@@ -39,7 +39,7 @@ function WW_getInlineScripts() {
 	if (!count($scripts_inline)) {
 		return '';
 	}
-	return '<script>'.join('', $scripts_inline).'</script>';
+	return '<script defer="defer">'.join('', $scripts_inline).'</script>';
 }
 
 /**
@@ -302,7 +302,7 @@ $c='<title>'.htmlspecialchars($title).'</title>';
 // { show stylesheet and javascript links
 $c.='WW_CSS_GOES_HERE';
 $c.=Core_getJQueryScripts();
-$c.='<script src="WW_SCRIPTS_GO_HERE"></script>';
+$c.='<script src="WW_SCRIPTS_GO_HERE" defer="defer"></script>';
 if (Core_isAdmin()) {
 	WW_addScript('/ww.admin/j/common.js');
 }

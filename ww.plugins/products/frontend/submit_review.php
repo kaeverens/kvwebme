@@ -27,7 +27,7 @@ if (($rating<1)||($rating>5)) {
 	$errors[]= 'Rating must be between 1 and 5';
 }
 if (!empty($errors)) {
-	echo '<script>';
+	echo '<script defer="defer">';
 	echo 'alert("There are errors in your form");';
 	echo 'history.go(-1);';
 	echo '</script>';
@@ -38,7 +38,7 @@ else {
 		(user_id, product_id, rating, body, cdate)
 		values ('$user_id', '$product_id', '$rating', '$text', now())"
 	);
-	echo '<script>';
+	echo '<script defer="defer">';
 	echo 'alert(
 			"Thank you for leaving a review for this product\n"
 			+"You can edit your review for 15 minutes"
