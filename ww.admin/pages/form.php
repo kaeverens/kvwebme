@@ -60,7 +60,7 @@ require_once 'pages.funcs.php';
 if ($action=='Update Page Details') {
 	require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/api-admin.php';
 	$arr=Core_adminPageEdit();
-	echo '<script>window.parent.document.getElementById("page_'.$id.'")'
+	echo '<script defer="defer">window.parent.document.getElementById("page_'.$id.'")'
 		.'.childNodes[1].innerHTML=\'<ins class="jstree-icon">&nbsp;</ins>'
 		.htmlspecialchars(__FromJson($_REQUEST['name'], true)).'\';</script>';
 }
@@ -70,28 +70,28 @@ $edit=($is_an_update || $action=='edit' || $id)?1:0;
 // { display header and link in scripts
 echo '<html><head>'
 	.Core_getJQueryScripts()
-	.'<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'
-	.'<script src="/j/ckeditor-3.6.2/ckeditor.js"></script>'
-	.'<script src="/j/ckeditor-3.6.2/adapters/jquery.js"></script>'
-	.'<script src="/ww.admin/j/admin.js"></script>'
-	.'<script src="/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js"></script>'
+	.'<script defer="defer" src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'
+	.'<script defer="defer" src="/j/ckeditor-3.6.2/ckeditor.js"></script>'
+	.'<script defer="defer" src="/j/ckeditor-3.6.2/adapters/jquery.js"></script>'
+	.'<script defer="defer" src="/ww.admin/j/admin.js"></script>'
+	.'<script defer="defer" src="/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js"></script>'
 	.'<link rel="stylesheet" href="/j/jquery.dataTables-1.7.5'
 	.'/jquery.dataTables.css" />'
-	.'<script src="/j/jquery.remoteselectoptions.js"></script>'
-	.'<script src="/j/cluetip/jquery.cluetip.js"></script>'
-	.'<script src="/j/jquery-ui-timepicker-addon.js"></script>'
-	.'<script src="form2.js"></script>'
+	.'<script defer="defer" src="/j/jquery.remoteselectoptions.js"></script>'
+	.'<script defer="defer" src="/j/cluetip/jquery.cluetip.js"></script>'
+	.'<script defer="defer" src="/j/jquery-ui-timepicker-addon.js"></script>'
+	.'<script defer="defer" src="form2.js"></script>'
 	.'<link rel="stylesheet" href="/j/cluetip/jquery.cluetip.'
 	.'css" />'
 	.'<link rel="stylesheet" href="/ww.admin/theme/admin.css" />'
 	.'<link rel="stylesheet" href="/ww.admin/pages/form.css" />'
-	.'<script src="/ww.admin/j/common.js"></script>'
+	.'<script defer="defer" src="/ww.admin/j/common.js"></script>'
 	.'<title>page form</title>';
 // { languages
 $langs=dbAll(
 	'select code,name from language_names order by is_default desc,code,name'
 );
-echo '<script>var languages='.json_encode($langs).';</script>';
+echo '<script defer="defer">var languages='.json_encode($langs).';</script>';
 // }
 echo '</head>'
 	.'<body class="noheader">';
@@ -315,7 +315,7 @@ switch ($form_type) {
 						'footer', 'google-site-verification', 'order_of_sub_pages',
 						'order_of_sub_pages_dir'
 					);
-					echo '<script>window.page_vars='.json_encode($page_vars).';</script>';
+					echo '<script defer="defer">window.page_vars='.json_encode($page_vars).';</script>';
 					echo '</td></tr>';
 				}
 				elseif (isset($plugin['admin']['page_type'][$form_type])
@@ -517,7 +517,7 @@ echo '</form>';
 // { page footer
 echo WW_getScripts();
 echo WW_getCss();
-echo '<script>//<![CDATA[
+echo '<script defer="defer">//<![CDATA[
 window.page_menu_currentpage='.$id.';window.sessid="'.session_id().'";
 //]]></script><div style="float:right">pageid: '.$id.'</div></body></html>';
 // }

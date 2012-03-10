@@ -80,7 +80,7 @@ function protectedFiles_check($vars) {
 								.'If it doesn\'t, please <a href="'
 								.$_SERVER['REQUEST_URI']
 								.'">click here</a></p>'
-								.'<script>setTimeout(function(){document.location="'
+								.'<script defer="defer">setTimeout(function(){document.location="'
 								.htmlspecialchars($_SERVER['REQUEST_URI'])
 								.'";},2000);</script><p>'
 								.'<a href="'.$_SESSION['referer']

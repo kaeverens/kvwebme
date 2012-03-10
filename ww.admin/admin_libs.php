@@ -190,7 +190,7 @@ function WW_getScripts() {
 		$adminVars
 	);
 	// }
-	$inline='<script>'.join(';', $scripts_inline).';</script>';
+	$inline='<script defer="defer">'.join(';', $scripts_inline).';</script>';
 	// }
 	// { set up external scripts
 	$external=array();
@@ -223,7 +223,7 @@ function WW_getScripts() {
 		:'';
 	// }
 	return $external
-		.'<script src="/ww.admin/js.php/'.$md5.'"></script>'
+		.'<script defer="defer" src="/ww.admin/js.php/'.$md5.'"></script>'
 		.$inline;
 }
 
