@@ -115,7 +115,7 @@ $plugin=array(
 	'triggers' => array( // {
 		'initialisation-completed' => 'Products_addToCart'
 	), // }
-	'version' => '38'
+	'version' => '39'
 );
 // }
 
@@ -1211,6 +1211,182 @@ function Products_imageSlider($params) {
 	}
 	return '<div class="products-image-slider" style="width:'.$width.';height:'
 		.$height.'"></div>';
+}
+
+// }
+// { Products_importFile
+
+/**
+	* import from an uploaded file
+	*
+	* @return status
+	*/
+function Products_importFile($vars=false) {
+	if ($vars===false) {
+		return false;
+	}
+	if (!@$vars->productsImportDeleteAfter['varvalue']) {
+		$vars->productsImportDeleteAfter=array(
+			'varvalue'=>false
+		);
+	}
+	if (!@$vars->productsImportDelimiter['varvalue']) {
+		$vars->productsImportDelimiter=array(
+			'varvalue'=>','
+		);
+	}
+	if (!@$vars->productsImportFileUrl['varvalue']) {
+		$vars->productsImportFileUrl=array(
+			'varvalue'=>'ww.cache/products/import.csv'
+		);
+	}
+	if (!@$vars->productsImportImagesDir['varvalue']) {
+		$vars->productsImportImagesDir=array(
+			'varvalue'=>'ww.cache/products/images'
+		);
+	}
+	$fname=USERBASE.'/'.$vars->productsImportFileUrl['varvalue'];
+	if (strpos($fname, '..')!==false) {
+		return array('message'=>'invalid file url');
+	}
+	if (!file_exists($fname)) {
+		return array('message'=>'file not uploaded');
+	}
+	$handle=fopen($fname, 'r');
+	$row=fgetcsv($handle, 1000, $vars->productsImportDelimiter['varvalue']);
+	$headers=array();
+	foreach ($row as $k=>$v) {
+		if ($v) {
+			$headers[$v]=$k;
+		}
+	}
+	if (!isset($headers['_name'])
+		|| !isset($headers['_ean'])
+		|| !isset($headers['_stocknumber'])
+		|| !isset($headers['_type'])
+		|| !isset($headers['_categories'])
+	) {
+		return array(
+			'message'=>'Missing required headers (_name, _ean, _stocknumber,'
+			.' _type, _categories). Please use the Download link'
+			.' to get a sample import file'
+		);
+	}
+	$product_types=array();
+	$imported=0;
+	while (
+		($data=fgetcsv(
+			$handle, 1000, $vars->productsImportDelimiter['varvalue']
+		))!==false
+	) {
+		$id=0;
+		$stocknumber=$data[$headers['_stocknumber']];
+		$type=$data[$headers['_type']];
+		if (!$type) {
+			$type='default';
+		}
+		if ($product_types[$type]) {
+			$type_id=$product_types[$type];
+		}
+		else {
+			$type_id=(int)dbOne(
+				'select id from products_types where name="'.addslashes($type).'"',
+				'id'
+			);
+			if (!$type_id) {
+				$type_id=(int)dbOne('select id from products_types limit 1', 'id');
+			}
+			$product_types[$type]=$type_id;
+		}
+		$name=$data[$headers['_name']];
+		$ean=$data[$headers['_ean']];
+		$categories=$data[$headers['_categories']];
+		if ($stocknumber) {
+			$id=(int)dbOne(
+				'select id from products where stock_number="'
+				.addslashes($stocknumber)
+				.'"', 'id'
+			);
+			if ($id) {
+				dbQuery(
+					'update products set ean="'.addslashes($ean).'"'
+					.',product_type_id='.$type_id
+					.',name="'.addslashes($name).'"'
+					.' where id='.$id
+				);
+			}
+		}
+		if (!$id) {
+			$sql='insert into products set '
+				.'stock_number="'.addslashes($stocknumber).'"'
+				.',product_type_id='.$type_id
+				.',name="'.addslashes($name).'"'
+				.',ean="'.addslashes($ean).'"'
+				.',date_created=now()'
+				.',enabled=1'
+				.',data_fields="{}"'
+				.',online_store_fields="{}"';
+			dbQuery($sql);
+			$id=dbLastInsertId();
+		}
+		$row=dbRow(
+			'select data_fields,online_store_fields from products where id='.$id
+		);
+		$data_fields=json_decode($row['data_fields'], true);
+		$os_fields=json_decode($row['online_store_fields'], true);
+		foreach ($headers as $k=>$v) {
+			if (preg_match('/^_/', $k)) {
+				continue;
+			}
+			foreach ($data_fields as $k2=>$v2) {
+				if ($v2['n']==$k) {
+					unset($data_fields[$k2]);
+				}
+			}
+			$data_fields[]=array(
+				'n'=>$k,
+				'v'=>$data[$v]
+			);
+		}
+		if (@$data[$headers['_price']]) {
+			$os_fields['_price']=(float)@$data[$headers['_price']];
+			$os_fields['_saleprice']=(float)@$data[$headers['_saleprice']];
+			$os_fields['_bulkprice']=(float)@$data[$headers['_bulkprice']];
+			$os_fields['_bulkamount']=(int)@$data[$headers['_bulkamount']];
+		}
+		else {
+			$os_fields=array();
+		}
+		dbQuery(
+			'update products set '
+			.'data_fields="'.addslashes(json_encode($data_fields)).'"'
+			.',online_store_fields="'.addslashes(json_encode($os_fields)).'"'
+			.' where id='.$id
+		);
+		$imported++;
+	}
+	Core_cacheClear('products');
+	if ($imported) {
+		return array('message'=>'Imported '.$imported.' products');
+	}
+	return array('message'=>'No products imported');
+}
+
+// }
+// { Products_importFromCron
+
+/**
+	* import via cron
+	*
+	* @return status
+	*/
+function Products_importFromCron() {
+	$vars=(object)dbAll(
+		'select varname,varvalue from admin_vars'
+		.' where varname like "productsImport%"',
+		'varname'
+	);
+	return Products_importFile($vars);
 }
 
 // }

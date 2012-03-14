@@ -35,7 +35,7 @@ function CoreSiteoptions_screenCron() {
 		switch ($tr.find('td').index($this)) {
 			case 1: // {
 				var parts=$this.text().split(' ');
-				var periods=['minute', 'hour', 'day', 'week', 'month', 'year'];
+				var periods=['never', 'minute', 'hour', 'day', 'week', 'month', 'year'];
 				var html='<select>';
 				for (var i=1;i<32;++i) {
 					html+='<option>'+i+'</option>';

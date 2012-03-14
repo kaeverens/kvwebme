@@ -23,6 +23,7 @@ function Products_screenImport() {
 	var html='<div id="import-wrapper"><ul>'
 		+'<li><a href="#import-file">Import File</a></li>'
 		+'<li><a href="#import-images">Import Images</a></li>'
+		+'<li><a href="#import-cron">Periodic Imports</a></li>'
 		+'</ul></div>';
 	$wrapper=$(html).appendTo($content);
 	// }
@@ -153,9 +154,6 @@ function Products_screenImport() {
 		+'<option value="Amazon API">Amazon API</option>'
 		+'</select></td></tr>'
 		// }
-		// { options
-		+'<tr><th>Options</th><td id="import-images-options">&nbsp;</td></tr>'
-		// }
 		+'</table><hr/><button id="import-images-button">import</button>'
 		+'<div id="import-images-status"/></div>';
 	$(html).appendTo($wrapper);
@@ -250,6 +248,52 @@ function Products_screenImport() {
 				return alert('todo');
 			break; // }
 		}
+	});
+	// }
+	// { periodic imports
+	var opts='';
+	for (var i=1;i<32;++i) {
+		opts+='<option>'+i+'</option>';
+	}
+	html='<div id="import-cron"><p>Use this section to set up periodic'
+		+' imports from a file uploaded in the Import File tab.</p>'
+		+'<table><tr><th>How often?</th><td><select id="import-cron-period-amt">'
+		+opts+'</select><select id="import-cron-period-type">';
+	var periods=['never', 'minute', 'hour', 'day', 'week', 'month', 'year'];
+	for (var i=0;i<periods.length;++i) {
+		html+='<option>'+periods[i]+'</option>';
+	}
+	html+='</select></td></tr>'
+		+'<tr><th>Next import</th><td><input id="import-cron-next"/></td></tr>'
+		+'<tr><th></th><td><button id="import-cron-set">Save</button></td></tr>'
+		+'</table>'
+		+'<p>Clicking Save will set the periodic import using your settings.</p>'
+		+'</div>';
+	$(html).appendTo($wrapper);
+	$.post('/a/f=adminCronGet', {
+		'name':'import products list'
+	}, function(ret) {
+		$('#import-cron-next')
+			.val(ret.next_date)
+			.datetimepicker({
+				dateFormat: 'yy-mm-dd',
+				timeFormat: 'hh:mm',
+				onClose: function(dateText, inst){
+				}
+			});
+		$('#import-cron-period-type').val('period');
+		$('#import-cron-period-amt').val('period_multipler');
+		var cron_id=ret.id;
+		$('#import-cron-set').click(function() {
+			var mult=$('#import-cron-period-amt').val(),
+				period=$('#import-cron-period-type').val(),
+				url='/a/f=adminCronSave/id='+cron_id+'/field=period';
+			$.post(url+'/value='+period);
+			$.post(url+'_multiplier/value='+mult);
+			url='/a/f=adminCronSave/id='+cron_id+'/field=next_date';
+			var dateText=$('#import-cron-next').val();
+			$.post(url+'/value='+dateText);
+		});
 	});
 	// }
 	$wrapper.tabs();

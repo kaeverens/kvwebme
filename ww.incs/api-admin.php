@@ -41,6 +41,11 @@ function Core_adminAdminVarsSave() {
 	* @return status
 	*/
 function Core_adminCronGet() {
+	if (@$_REQUEST['name']) {
+		return dbRow(
+			'select * from cron where name="'.addslashes($_REQUEST['name']).'"'
+		);
+	}
 	return dbAll('select * from cron');
 }
 

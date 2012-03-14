@@ -287,3 +287,13 @@ if ($version==37) { // add EAN number to products
 	dbQuery('alter table products add ean char(13) default ""');
 	$version=38;
 }
+if ($version==38) { // periodic imports
+	dbQuery(
+		'insert into cron set name="import products list"'
+		.',notes="Import from a CSV file of products. See Products section for'
+		.' details"'
+		.',period="never",period_multiplier=1,next_date="2100-01-01"'
+		.',func="Products_importFromCron"'
+	);
+	$version=39;
+}
