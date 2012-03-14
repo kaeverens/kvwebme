@@ -571,13 +571,13 @@ $c.='</div></div>';
 // }
 // { export
 $c.='<div id="online-store-export">'
-	.'<h3>Export Orders</h3>'
+	.'<!-- h3>Export Orders</h3>'
 	.'<table><tr><th>Export from</th><td><input id="online-store-export-from"'
 	.' value="'.date('Y-m-d').'"/>'
 	.'</td>'
 	.'<td><button id="online-store-export-button">Download</button>'
 	.'</td></tr>'
-	.'</table>'
+	.'</table -->'
 	.'<h3>Automated exports</h3>'
 	.'<p>Fill these in if you want paid orders to be automatically exported.</p>'
 	.'<table><tr><th>Directory</th>'
