@@ -39,11 +39,11 @@ function OnlineStore_processOrder($id, $order=false) {
 		'select value from page_vars where name="online_stores_exportdir"',
 		'value'
 	);
-	// }
 	$exportcsv=array(
 		'"Item ID","Customer Name","Address 1","Address 2","Postcode","Email",'
 		.'"Phone Number","Amt","Price"'
 	);
+	// }
 	// { send emails
 	$short_domain=str_replace('www.', '', $_SERVER['HTTP_HOST']);
 	// { work out from/to
@@ -158,10 +158,38 @@ function OnlineStore_processOrder($id, $order=false) {
 	Core_cacheClear('products');
 	// }
 	if ($export && strpos($export, '..')===false) {
-		$phone=preg_replace('/[^0-9\(\)\+]/', '', @$form_vals->Phone);
-		if ($phone) {
+		$customer=dbOne(
+			'select value from page_vars where name="online_stores_exportcustomers"',
+			'value'
+		);
+		if ($customer && strpos($customer, '..')===false) {
+			$customer_filename=dbOne(
+				'select value from page_vars'
+				.' where name="online_stores_exportcustomer_filename"',
+				'value'
+			);
+			if (!$customer_filename) {
+				$customer_filename='customer-{{$Email}}.csv';
+			}
+			$customer_filename=str_replace(array('/', '..'), '', $customer_filename);
+			$bits=preg_match_all(
+				'/{{\$([^}]*)}}/',
+				$customer_filename,
+				$matches,
+				PREG_SET_ORDER
+			);
+			foreach ($matches as $bit) {
+				$customer_filename=str_replace(
+					'{{$'.$bit[1].'}}',
+					@$form_vals->{$bit[1]},
+					$customer_filename
+				);
+			}
+			$customer_filename=str_replace(array('..', '/'), '', $customer_filename);
+			@mkdir(USERBASE.'/'.$customer, 0777, true);
+			$phone=preg_replace('/[^0-9\(\)\+]/', '', @$form_vals->Phone);
 			file_put_contents(
-				USERBASE.'/'.$export.'/'.$phone.'.csv',
+				USERBASE.'/'.$customer.'/'.$customer_filename,
 				'"Name","Street","Street 2","Postcode","Email","Phone"'."\n"
 				.'"'
 				.str_replace('"', '""', @$form_vals->FirstName.' '.@$form_vals->Surname)

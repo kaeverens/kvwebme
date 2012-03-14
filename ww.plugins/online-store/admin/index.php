@@ -571,6 +571,7 @@ $c.='</div></div>';
 // }
 // { export
 $c.='<div id="online-store-export">'
+	// { export orders as single file
 	.'<!-- h3>Export Orders</h3>'
 	.'<table><tr><th>Export from</th><td><input id="online-store-export-from"'
 	.' value="'.date('Y-m-d').'"/>'
@@ -578,13 +579,24 @@ $c.='<div id="online-store-export">'
 	.'<td><button id="online-store-export-button">Download</button>'
 	.'</td></tr>'
 	.'</table -->'
+	// }
+	// { automated exports
 	.'<h3>Automated exports</h3>'
 	.'<p>Fill these in if you want paid orders to be automatically exported.</p>'
-	.'<table><tr><th>Directory</th>'
+	.'<table><tr><th>Orders Directory</th>'
 	.'<td><input name="page_vars[online_stores_exportdir]" value="'
-	.htmlspecialchars($vars['online_stores_exportdir']).'" placeholder="'
+	.htmlspecialchars(@$vars['online_stores_exportdir']).'" placeholder="'
 	.'/f/orders"/></td></tr>'
+	.'<tr><th>Customers Directory</th><td>'
+	.'<input name="page_vars[online_stores_exportcustomers]" value="'
+	.htmlspecialchars(@$vars['online_stores_exportcustomers']).'" placeholder="'
+	.'/f/customers"/></td></td></tr>'
+	.'<tr><th>Customers Filename</th>'
+	.'<td><input name="page_vars[online_stores_exportcustomer_filename]" value="'
+	.htmlspecialchars(@$vars['online_stores_exportcustomer_filename']).'"'
+	.' placeholder="customer-{{$Email}}.csv"/></td></tr>'
 	.'</table>';
+	// }
 $c.='</div>';
 // }
 $c.='</div>';
