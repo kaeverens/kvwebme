@@ -88,17 +88,17 @@ function OnlineStore_processOrder($id, $order=false) {
 		}
 		$p=Product::getInstance($item->id);
 		$exportcsv[]=$item->id.',"'
-			.str_replace('"', '""', $form_vals->FirstName.' '.$form_vals->Surname)
+			.str_replace('"', '""', @$form_vals->FirstName.' '.@$form_vals->Surname)
 			.'","'
-			.str_replace('"', '""', $form_vals->Street)
+			.str_replace('"', '""', @$form_vals->Street)
 			.'","'
-			.str_replace('"', '""', $form_vals->Street2)
+			.str_replace('"', '""', @$form_vals->Street2)
 			.'","'
-			.str_replace('"', '""', $form_vals->Postcode)
+			.str_replace('"', '""', @$form_vals->Postcode)
 			.'","'
-			.str_replace('"', '""', $form_vals->Email)
+			.str_replace('"', '""', @$form_vals->Email)
 			.'","'
-			.str_replace('"', '""', $form_vals->Phone)
+			.str_replace('"', '""', @$form_vals->Phone)
 			.'",'.$item->amt.','.$item->cost;
 		$pt=ProductType::getInstance($p->vals['product_type_id']);
 		if ($pt->is_voucher) {
@@ -157,8 +157,26 @@ function OnlineStore_processOrder($id, $order=false) {
 	}
 	Core_cacheClear('products');
 	// }
-	mail('kae.verens@gmail.com', 'test', $export);
 	if ($export && strpos($export, '..')===false) {
+		if (@$form_vals->Phone) {
+			file_put_contents(
+				USERBASE.'/'.$export.'/'.$form_vals->Phone.'.csv',
+				'"Name","Street","Street 2","Postcode","Email","Phone"'."\n"
+				.'"'
+				.str_replace('"', '""', @$form_vals->FirstName.' '.@$form_vals->Surname)
+				.'","'
+				.str_replace('"', '""', @$form_vals->Street)
+				.'","'
+				.str_replace('"', '""', @$form_vals->Street2)
+				.'","'
+				.str_replace('"', '""', @$form_vals->Postcode)
+				.'","'
+				.str_replace('"', '""', @$form_vals->Email)
+				.'","'
+				.str_replace('"', '""', $form_vals->Phone)
+				.'"'
+			);
+		}
 		@mkdir(USERBASE.'/'.$export, 0777, true);
 		file_put_contents(
 			USERBASE.'/'.$export.'/order'.$id.'.csv',
