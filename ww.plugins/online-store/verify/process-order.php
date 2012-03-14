@@ -213,4 +213,5 @@ function OnlineStore_processOrder($id, $order=false) {
 		);
 	}
 	// }
+	Core_trigger('after-order-processed', array($order));
 }
