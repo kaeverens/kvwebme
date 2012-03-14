@@ -34,6 +34,16 @@ function OnlineStore_processOrder($id, $order=false) {
 	// }
 	$form_vals=json_decode($order['form_vals']);
 	$items=json_decode($order['items']);
+	// { start export
+	$export=dbOne(
+		'select value from page_vars where name="online_stores_exportdir"',
+		'value'
+	);
+	// }
+	$exportcsv=array(
+		'"Item ID","Customer Name","Address 1","Address 2","Postcode","Email",'
+		.'"Phone Number","Amt","Price"'
+	);
 	// { send emails
 	$short_domain=str_replace('www.', '', $_SERVER['HTTP_HOST']);
 	// { work out from/to
@@ -77,6 +87,19 @@ function OnlineStore_processOrder($id, $order=false) {
 			continue;
 		}
 		$p=Product::getInstance($item->id);
+		$exportcsv[]=$item->id.',"'
+			.str_replace('"', '""', $form_vals->FirstName.' '.$form_vals->Surname)
+			.'","'
+			.str_replace('"', '""', $form_vals->Street)
+			.'","'
+			.str_replace('"', '""', $form_vals->Street2)
+			.'","'
+			.str_replace('"', '""', $form_vals->Postcode)
+			.'","'
+			.str_replace('"', '""', $form_vals->Email)
+			.'","'
+			.str_replace('"', '""', $form_vals->Phone)
+			.'",'.$item->amt.','.$item->cost;
 		$pt=ProductType::getInstance($p->vals['product_type_id']);
 		if ($pt->is_voucher) {
 			$html=$pt->voucher_template;
@@ -134,5 +157,13 @@ function OnlineStore_processOrder($id, $order=false) {
 	}
 	Core_cacheClear('products');
 	// }
+	mail('kae.verens@gmail.com', 'test', $export);
+	if ($export && strpos($export, '..')===false) {
+		@mkdir(USERBASE.'/'.$export, 0777, true);
+		file_put_contents(
+			USERBASE.'/'.$export.'/order'.$id.'.csv',
+			join("\n", $exportcsv)
+		);
+	}
 	// }
 }

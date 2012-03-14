@@ -38,6 +38,7 @@ $c.='<li><a href="#online-store-form">Form</a></li>'
 	.'<li><a href="#online-store-payment">Payment Details</a></li>'
 	.'<li><a href="#online-store-delivery">Postage and Packaging</a></li>'
 	.'<li><a href="#online-store-countries">Countries</a></li>'
+	.'<li><a href="#online-store-export">Export</a></li>'
 	.'</ul>';
 // }
 // { orders
@@ -62,7 +63,7 @@ foreach ($statii as $k=>$v) {
 	}
 	$c.='">'.htmlspecialchars($v).'</option>';
 }
-$c.='</select>.</p>';
+$c.='</select></p>';
 // { filter for SQL
 if ($_SESSION['online-store']['status']==1) {
 	$filter='status=1 or authorised=1';
@@ -468,7 +469,7 @@ $c.='</div></td></tr>';
 // }
 $c.='</table></div>';
 // }
-// { countries todo
+// { countries
 // { list of countries
 $continents=array(
 	'Africa'=>array(
@@ -568,8 +569,26 @@ foreach ($continents as $continent=>$countries) {
 }
 $c.='</div></div>';
 // }
+// { export
+$c.='<div id="online-store-export">'
+	.'<h3>Export Orders</h3>'
+	.'<table><tr><th>Export from</th><td><input id="online-store-export-from"'
+	.' value="'.date('Y-m-d').'"/>'
+	.'</td>'
+	.'<td><button id="online-store-export-button">Download</button>'
+	.'</td></tr>'
+	.'</table>'
+	.'<h3>Automated exports</h3>'
+	.'<p>Fill these in if you want paid orders to be automatically exported.</p>'
+	.'<table><tr><th>Directory</th>'
+	.'<td><input name="page_vars[online_stores_exportdir]" value="'
+	.htmlspecialchars($vars['online_stores_exportdir']).'" placeholder="'
+	.'/f/orders"/></td></tr>'
+	.'</table>';
 $c.='</div>';
-WW_addScript('/ww.plugins/online-store/admin/index2.js');
+// }
+$c.='</div>';
+WW_addScript('/ww.plugins/online-store/admin/index.js');
 WW_addScript('/j/jquery.inlinemultiselect.js');
 
 if (!file_exists(USERBASE.'/ww.cache/online-store')) {

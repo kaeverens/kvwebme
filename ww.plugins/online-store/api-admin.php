@@ -1,4 +1,12 @@
 <?php
+
+// { OnlineStore_adminCapture
+
+/**
+	* capture a payment
+	*
+	* @return array status
+	*/
 function OnlineStore_adminCapture() {
 	$ids=explode(',', $_REQUEST['ids']);
 	$errors=array();
@@ -86,6 +94,32 @@ function OnlineStore_adminCapture() {
 		'ok'=>$ok
 	);
 }
+
+// }
+// { OnlineStore_adminChangeOrderStatus
+
+/**
+	* change the payment status of an Online-Store order
+	*
+	* @return array status
+	*/
+function OnlineStore_adminChangeOrderStatus() {
+	$id=(int)$_REQUEST['id'];
+	$status=(int)$_REQUEST['status'];
+	
+	if ($status==1) {
+		require dirname(__FILE__).'/verify/process-order.php';
+		OnlineStore_processOrder($id);
+	}
+	else {
+		dbQuery('update online_store_orders set status='.$status.' where id='.$id);
+	}
+	return array('ok'=>1);
+}
+
+// }
+// { OnlineStore_adminOrderItemsList
+
 /**
 	* retrieve a list of ordered items
 	*
@@ -108,24 +142,28 @@ function OnlineStore_adminOrderItemsList() {
 	return $items;
 }
 
+// }
+// { OnlineStore_adminOrdersExport
+
 /**
-	* change the payment status of an Online-Store order
+	* export CSV file of paid orders
 	*
-	* @return array status
+	* @return array
 	*/
-function OnlineStore_adminChangeOrderStatus() {
-	$id=(int)$_REQUEST['id'];
-	$status=(int)$_REQUEST['status'];
-	
-	if ($status==1) {
-		require dirname(__FILE__).'/verify/process-order.php';
-		OnlineStore_processOrder($id);
-	}
-	else {
-		dbQuery('update online_store_orders set status='.$status.' where id='.$id);
-	}
-	return array('ok'=>1);
+function OnlineStore_adminOrdersExport() {
+	$cdate=$_REQUEST['cdate'];
+	$sql='select id from online_store_orders where (status=1 or authorised=1)'
+		.' and date_created>"'.addslashes($cdate).'" order by date_created desc';
 }
+
+// }
+// { OnlineStore_adminRedeemVoucher
+
+/**
+	* mark a voucher as redeemed
+	*
+	* @return string
+	*/
 function OnlineStore_adminRedeemVoucher() {
 	$oid=(int)@$_REQUEST['oid'];
 	$pid=@$_REQUEST['pid'];
@@ -141,3 +179,5 @@ function OnlineStore_adminRedeemVoucher() {
 	echo '<p>This voucher has been marked as Redeemed.</p>';
 	exit;
 }
+
+// }

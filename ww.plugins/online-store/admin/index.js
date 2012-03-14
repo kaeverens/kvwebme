@@ -156,7 +156,17 @@ $(function(){
 			// }
 		}
 	}).change();
-
+	$('#online-store-export-button').click(function() {
+		var cdate=$('#online-store-export-from').val();
+		if (!cdate) {
+			return alert('You must enter a date');
+		}
+		document.location='/a/p=online-store/f=adminOrdersExport/cdate='+cdate;
+		return false;
+	});
+	$('#online-store-export-from').datepicker({
+		dateFormat: 'yy-mm-dd'
+	});
 });
 $('#online_stores_fields_table input').live('click',os_update_fields_value);
 
