@@ -158,9 +158,10 @@ function OnlineStore_processOrder($id, $order=false) {
 	Core_cacheClear('products');
 	// }
 	if ($export && strpos($export, '..')===false) {
-		if (@$form_vals->Phone) {
+		$phone=preg_replace('/[^0-9\(\)\+]/', '', @$form_vals->Phone);
+		if ($phone) {
 			file_put_contents(
-				USERBASE.'/'.$export.'/'.$form_vals->Phone.'.csv',
+				USERBASE.'/'.$export.'/'.$phone.'.csv',
 				'"Name","Street","Street 2","Postcode","Email","Phone"'."\n"
 				.'"'
 				.str_replace('"', '""', @$form_vals->FirstName.' '.@$form_vals->Surname)
