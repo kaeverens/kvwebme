@@ -212,7 +212,7 @@ class QRtools {
 	public static function buildCache()
 	{
 		QRtools::markTime('before_build_cache');
-			
+
 		$mask = new QRmask();
 		for ($a=1; $a <= QRSPEC_VERSION_MAX; $a++) {
 			$frame = QRspec::newFrame($a);
@@ -226,7 +226,7 @@ class QRtools {
 			for ($maskNo=0; $maskNo<8; $maskNo++)
 			$mask->makeMaskNo($maskNo, $width, $frame, $bitMask, true);
 		}
-			
+
 		QRtools::markTime('after_build_cache');
 	}
 
@@ -1407,13 +1407,13 @@ class QRinput{
 			return NULL;
 		}
 
-		$this->version = $version;
-		$this->level = $level;
+		$this->_version = $version;
+		$this->_level = $level;
 	}
 
 	//----------------------------------------------------------------------
 	public function getVersion() {
-		return $this->version;
+		return $this->_version;
 	}
 
 	//----------------------------------------------------------------------
@@ -1423,14 +1423,14 @@ class QRinput{
 			return -1;
 		}
 
-		$this->version = $version;
+		$this->_version = $version;
 
 		return 0;
 	}
 
 	//----------------------------------------------------------------------
 	public function getErrorCorrectionLevel() {
-		return $this->level;
+		return $this->_level;
 	}
 
 	//----------------------------------------------------------------------
@@ -1440,7 +1440,7 @@ class QRinput{
 			return -1;
 		}
 
-		$this->level = $level;
+		$this->_level = $level;
 
 		return 0;
 	}
@@ -1653,7 +1653,7 @@ class QRinput{
 			$bits = $this->estimateBitStreamSize($prev);
 			$version = QRspec::getMinimumVersion(
 				(int)(($bits + 7) / 8),
-				$this->level
+				$this->_level
 			);
 			if ($version < 0) {
 				return -1;
@@ -1716,7 +1716,7 @@ class QRinput{
 		$total = 0;
 
 		foreach ($this->items as $item) {
-			$bits = $item->encodeBitStream($this->version);
+			$bits = $item->encodeBitStream($this->_version);
 
 			if ($bits < 0) {
 				return -1;
@@ -1742,7 +1742,7 @@ class QRinput{
 				return -1;
 			}
 
-			$ver = QRspec::getMinimumVersion((int)(($bits + 7) / 8), $this->level);
+			$ver = QRspec::getMinimumVersion((int)(($bits + 7) / 8), $this->_level);
 			if ($ver < 0) {
 				throw new Exception('WRONG VERSION');
 				return -1;
@@ -1761,7 +1761,7 @@ class QRinput{
 	//----------------------------------------------------------------------
 	public function appendPaddingBit(&$bstream) {
 		$bits = $bstream->size();
-		$maxwords = QRspec::getDataLength($this->version, $this->level);
+		$maxwords = QRspec::getDataLength($this->_version, $this->_level);
 		$maxbits = $maxwords * 8;
 
 		if ($maxbits == $bits) {
@@ -3088,7 +3088,7 @@ class QRrawcode{
 			$spec
 		);
 
-		$this->version = $input->getVersion();
+		$this->_version = $input->getVersion();
 		$this->b1 = QRspec::rsBlockNum1($spec);
 		$this->dataLength = QRspec::rsDataLength($spec);
 		$this->eccLength = QRspec::rsEccLength($spec);
@@ -3117,15 +3117,10 @@ class QRrawcode{
 		for ($i=0; $i<QRspec::rsBlockNum1($spec); $i++) {
 			$ecc = array_slice($this->ecccode, $eccPos);
 			$this->rsblocks[$blockNo] = new QRrsblock(
-				$dl,
-				array_slice($this->datacode, $dataPos),
-				$el,
-				$ecc,
-				$rs
+				$dl, array_slice($this->datacode, $dataPos), $el, $ecc, $rs
 			);
 			$this->ecccode = array_merge(
-				array_slice($this->ecccode, 0, $eccPos),
-				$ecc
+				array_slice($this->ecccode, 0, $eccPos), $ecc
 			);
 
 			$dataPos += $dl;
@@ -3148,15 +3143,10 @@ class QRrawcode{
 		for ($i=0; $i<QRspec::rsBlockNum2($spec); $i++) {
 			$ecc = array_slice($this->ecccode, $eccPos);
 			$this->rsblocks[$blockNo] = new QRrsblock(
-				$dl,
-				array_slice($this->datacode, $dataPos),
-				$el,
-				$ecc,
-				$rs
+				$dl, array_slice($this->datacode, $dataPos), $el, $ecc, $rs
 			);
 			$this->ecccode = array_merge(
-				array_slice($this->ecccode, 0, $eccPos),
-				$ecc
+				array_slice($this->ecccode, 0, $eccPos), $ecc
 			);
 
 			$dataPos += $dl;
@@ -3193,15 +3183,29 @@ class QRrawcode{
 	}
 }
 
-//##########################################################################
-
+/**
+	* dummy comments
+	*
+	* @category Whatever
+	* @package  Whatever
+	* @author   Whatever Whatever <whatever@whatever.com>
+	* @license  whatever http://whatever.whatever/
+	* @link     whatever
+	*/
 class QRcode{
 
 	public $version;
 	public $width;
 	public $data;
 
-	//----------------------------------------------------------------------
+	/**
+		* whatever
+		*
+		* @param QRinput $input whatever
+		* @param string  $mask  whatever
+		*
+		* @return null
+		*/
 	public function encodeMask(QRinput $input, $mask) {
 		if ($input->getVersion() < 0 || $input->getVersion() > QRSPEC_VERSION_MAX) {
 			throw new Exception('wrong version');
@@ -3214,7 +3218,7 @@ class QRcode{
 
 		QRtools::markTime('after_raw');
 
-		$version = $raw->version;
+		$version = $raw->_version;
 		$width = QRspec::getWidth($version);
 		$frame = QRspec::newFrame($version);
 
@@ -3255,26 +3259,19 @@ class QRcode{
 
 			if (QR_FIND_BEST_MASK) {
 				$masked = $maskObj->mask(
-					$width,
-					$frame,
-					$input->getErrorCorrectionLevel()
+					$width, $frame, $input->getErrorCorrectionLevel()
 				);
 			}
 			else {
 				$masked = $maskObj->makeMask(
-					$width,
-					$frame,
-					(intval(QR_DEFAULT_MASK) % 8),
+					$width, $frame, (intval(QR_DEFAULT_MASK) % 8),
 					$input->getErrorCorrectionLevel()
 				);
 			}
 		}
 		else {
 			$masked = $maskObj->makeMask(
-				$width,
-				$frame,
-				$mask,
-				$input->getErrorCorrectionLevel()
+				$width, $frame, $mask, $input->getErrorCorrectionLevel()
 			);
 		}
 
@@ -3284,19 +3281,33 @@ class QRcode{
 
 		QRtools::markTime('after_mask');
 
-		$this->version = $version;
+		$this->_version = $version;
 		$this->width = $width;
 		$this->data = $masked;
 
 		return $this;
 	}
 
-	//----------------------------------------------------------------------
+	/**
+		* whatever
+		*
+		* @param QRinput $input whatever
+		*
+		* @return null
+		*/
 	public function encodeInput(QRinput $input) {
 		return $this->encodeMask($input, -1);
 	}
 
-	//----------------------------------------------------------------------
+	/**
+		* whatever
+		*
+		* @param string $string  whatever
+		* @param string $version whatever
+		* @param string $level   whatever
+		*
+		* @return null
+		*/
 	public function encodeString8bit($string, $version, $level) {
 		if (string == NULL) {
 			throw new Exception('empty string!');
@@ -3308,12 +3319,7 @@ class QRcode{
 			return NULL;
 		}
 
-		$ret = $input->append(
-			$input,
-			QR_MODE_8,
-			strlen($string),
-			str_split($string)
-		);
+		$ret = $input->append($input, QR_MODE_8, strlen($string), str_split($string));
 		if ($ret < 0) {
 			unset($input);
 			return NULL;
@@ -3321,14 +3327,18 @@ class QRcode{
 		return $this->encodeInput($input);
 	}
 
-	//----------------------------------------------------------------------
-	public function encodeString(
-		$string,
-		$version,
-		$level,
-		$hint,
-		$casesensitive
-	) {
+	/**
+		* whatever
+		*
+		* @param string $string        whatever
+		* @param string $version       whatever
+		* @param string $level         whatever
+		* @param string $hint          whatever
+		* @param string $casesensitive whatever
+		*
+		* @return null
+		*/
+	public function encodeString($string, $version, $level, $hint, $casesensitive) {
 
 		if ($hint != QR_MODE_8 && $hint != QR_MODE_KANJI) {
 			throw new Exception('bad hint');
@@ -3340,12 +3350,7 @@ class QRcode{
 			return NULL;
 		}
 
-		$ret = QRsplit::splitStringToQRinput(
-			$string,
-			$input,
-			$hint,
-			$casesensitive
-		);
+		$ret = QRsplit::splitStringToQRinput($string, $input, $hint, $casesensitive);
 		if ($ret < 0) {
 			return NULL;
 		}
@@ -3353,46 +3358,72 @@ class QRcode{
 		return $this->encodeInput($input);
 	}
 
-	//----------------------------------------------------------------------
+	/**
+		* whatever
+		*
+		* @param string $text         whatever
+		* @param string $outfile      whatever
+		* @param string $level        whatever
+		* @param string $size         whatever
+		* @param string $margin       whatever
+		* @param string $saveandprint whatever
+		*
+		* @return null
+		*/
 	public static function png(
-		$text,
-		$outfile = false,
-		$level = QR_ECLEVEL_L,
-		$size = 8,
-		$margin = 4,
+		$text, $outfile = false, $level = QR_ECLEVEL_L, $size = 8, $margin = 4,
 		$saveandprint=false
 	) {
 		$enc = QRencode::factory($level, $size, $margin);
 		return $enc->encodePNG($text, $outfile, $saveandprint = false);
 	}
 
-	//----------------------------------------------------------------------
+	/**
+		* whatever
+		*
+		* @param string $text    whatever
+		* @param string $outfile whatever
+		* @param string $level   whatever
+		* @param string $size    whatever
+		* @param string $margin  whatever
+		*
+		* @return null
+		*/
 	public static function text(
-		$text,
-		$outfile = false,
-		$level = QR_ECLEVEL_L,
-		$size = 3,
-		$margin = 4
+		$text, $outfile = false, $level = QR_ECLEVEL_L, $size = 3, $margin = 4
 	) {
 		$enc = QRencode::factory($level, $size, $margin);
 		return $enc->encode($text, $outfile);
 	}
 
-	//----------------------------------------------------------------------
+	/**
+		* whatever
+		*
+		* @param string $text    whatever
+		* @param string $outfile whatever
+		* @param string $level   whatever
+		* @param string $size    whatever
+		* @param string $margin  whatever
+		*
+		* @return null
+		*/
 	public static function raw(
-		$text,
-		$outfile = false,
-		$level = QR_ECLEVEL_L,
-		$size = 3,
-		$margin = 4
+		$text, $outfile = false, $level = QR_ECLEVEL_L, $size = 3, $margin = 4
 	) {
 		$enc = QRencode::factory($level, $size, $margin);
 		return $enc->encodeRAW($text, $outfile);
 	}
 }
 
-//##########################################################################
-
+/**
+	* dummy comments
+	*
+	* @category Whatever
+	* @package  Whatever
+	* @author   Whatever Whatever <whatever@whatever.com>
+	* @license  whatever http://whatever.whatever/
+	* @link     whatever
+	*/
 class FrameFiller{
 
 	public $width;
@@ -3402,7 +3433,14 @@ class FrameFiller{
 	public $dir;
 	public $bit;
 
-	//----------------------------------------------------------------------
+	/**
+		* whatever
+		*
+		* @param int $width  whatever
+		* @param int &$frame whatever
+		*
+		* @return array next
+		*/
 	public function __construct($width, &$frame) {
 		$this->width = $width;
 		$this->frame = $frame;
@@ -3412,17 +3450,34 @@ class FrameFiller{
 		$this->bit = -1;
 	}
 
-	//----------------------------------------------------------------------
+	/**
+		* whatever
+		*
+		* @param int $at  whatever
+		* @param int $val whatever
+		*
+		* @return array next
+		*/
 	public function setFrameAt($at, $val) {
 		$this->frame[$at['y']][$at['x']] = chr($val);
 	}
 
-	//----------------------------------------------------------------------
+	/**
+		* whatever
+		*
+		* @param int $at whatever
+		*
+		* @return array next
+		*/
 	public function getFrameAt($at) {
 		return ord($this->frame[$at['y']][$at['x']]);
 	}
 
-	//----------------------------------------------------------------------
+	/**
+		* whatever
+		*
+		* @return array next
+		*/
 	public function next() {
 		do {
 
@@ -3481,8 +3536,15 @@ class FrameFiller{
 
 } ;
 
-//##########################################################################
-
+/**
+	* dummy comments
+	*
+	* @category Whatever
+	* @package  Whatever
+	* @author   Whatever Whatever <whatever@whatever.com>
+	* @license  whatever http://whatever.whatever/
+	* @link     whatever
+	*/
 class QRencode{
 
 	public $casesensitive = true;
@@ -3497,8 +3559,16 @@ class QRencode{
 	public $level = QR_ECLEVEL_L;
 	public $hint = QR_MODE_8;
 
-	//----------------------------------------------------------------------
-	public static function factory($level = QR_ECLEVEL_L, $size = 3, $margin = 4) {
+	/**
+		* dummy function comments
+		*
+		* @param int $level  don't know
+		* @param int $size   don't know
+		* @param int $margin don't know
+		*
+		* @return null
+		*/
+	public static function factory($level=QR_ECLEVEL_L, $size=3, $margin=4) {
 		$enc = new QRencode();
 		$enc->size = $size;
 		$enc->margin = $margin;
@@ -3508,42 +3578,46 @@ class QRencode{
 			case '1':
 			case '2':
 			case '3':
-				$enc->level = $level;
+				$enc->_level = $level;
 			break;
 			case 'l':
 			case 'L':
-				$enc->level = QR_ECLEVEL_L;
+				$enc->_level = QR_ECLEVEL_L;
 			break;
 			case 'm':
 			case 'M':
-				$enc->level = QR_ECLEVEL_M;
+				$enc->_level = QR_ECLEVEL_M;
 			break;
 			case 'q':
 			case 'Q':
-				$enc->level = QR_ECLEVEL_Q;
+				$enc->_level = QR_ECLEVEL_Q;
 			break;
 			case 'h':
 			case 'H':
-				$enc->level = QR_ECLEVEL_H;
+				$enc->_level = QR_ECLEVEL_H;
 			break;
 		}
 
 		return $enc;
 	}
 
-	//----------------------------------------------------------------------
+	/**
+		* dummy function comments
+		*
+		* @param mixed  $intext  don't know
+		* @param string $outfile name of image file
+		*
+		* @return null
+		*/
 	public function encodeRAW($intext, $outfile = false) {
 		$code = new QRcode();
 
 		if ($this->eightbit) {
-			$code->encodeString8bit($intext, $this->version, $this->level);
+			$code->encodeString8bit($intext, $this->_version, $this->_level);
 		}
 		else {
 			$code->encodeString(
-				$intext,
-				$this->version,
-				$this->level,
-				$this->hint,
+				$intext, $this->_version, $this->_level, $this->hint,
 				$this->casesensitive
 			);
 		}
@@ -3551,23 +3625,26 @@ class QRencode{
 		return $code->data;
 	}
 
-	//----------------------------------------------------------------------
+	/**
+		* dummy function comments
+		*
+		* @param mixed  $intext  don't know
+		* @param string $outfile name of image file
+		*
+		* @return null
+		*/
 	public function encode($intext, $outfile = false) {
 		$code = new QRcode();
 
 		if ($this->eightbit) {
-			$code->encodeString8bit($intext, $this->version, $this->level);
+			$code->encodeString8bit($intext, $this->_version, $this->_level);
 		}
 		else {
 			$code->encodeString(
-				$intext,
-				$this->version,
-				$this->level,
-				$this->hint,
+				$intext, $this->_version, $this->_level, $this->hint,
 				$this->casesensitive
 			);
 		}
-
 		QRtools::markTime('after_encode');
 
 		if ($outfile!== false) {
@@ -3578,33 +3655,31 @@ class QRencode{
 		}
 	}
 
-	//----------------------------------------------------------------------
+	/**
+		* dummy function comments
+		*
+		* @param mixed   $intext       don't know
+		* @param string  $outfile      name of image file
+		* @param boolean $saveandprint blah
+		*
+		* @return null
+		*/
 	public function encodePNG($intext, $outfile = false, $saveandprint=false) {
 		try {
-
 			ob_start();
 			$tab = $this->encode($intext);
 			$err = ob_get_contents();
 			ob_end_clean();
-
 			if ($err != '') {
 				QRtools::log($outfile, $err);
 			}
-
 			$maxSize = (int)(QR_PNG_MAXIMUM_SIZE / (count($tab)+2*$this->margin));
-
 			QRimage::png(
-				$tab,
-				$outfile,
-				min(max(1, $this->size), $maxSize),
-				$this->margin,
+				$tab, $outfile, min(max(1, $this->size), $maxSize), $this->margin,
 				$saveandprint
 			);
-
 		} catch (Exception $e) {
-
 			QRtools::log($outfile, $e->getMessage());
-
 		}
 	}
 }
