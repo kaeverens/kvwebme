@@ -87,7 +87,7 @@ $(function(){
 				$('input[name="Phone"],input[name="Billing_Phone"]').val(userdata.phone);
 				$('input[name="Email"],input[name="Billing_Email"]').val(userdata.email);
 				populate_delivery(null,'');
-				if (1 || userdata.address.length) {
+				if (userdata.address && userdata.address.length) {
 					var addressButton='<a class="__ ui-button address-picker" '
 						+'lang-context="core" href="#">Choose Address</a>';
 					html+='<tr><td colspan="2">'+addressButton+'</td></tr>';
@@ -308,7 +308,7 @@ $(function(){
 					break; // }
 					case 'Delivery Address': // {
 						var addressButton='';
-						if (userdata.address.length>1) {
+						if (userdata.address && userdata.address.length>1) {
 							addressButton='<a class="__ ui-button address-picker" '
 								+'lang-context="core" href="#">Choose Address</a>';
 						}
@@ -425,9 +425,11 @@ $(function(){
 						content.html(html);
 						$('#online-store-billing input').each(function() {
 							var $this=$(this),
-								name='Billing_'+$this.attr('id').replace('online-store-', '');
+								postfix=$this.attr('id').replace('online-store-', ''),
+								name='Billing_'+postfix;
+							var newVal=$('input[name='+name+']').val() || $('input[name='+postfix+']').val();
 							$this
-								.val($('input[name='+name+']').val())
+								.val(newVal)
 								.change(function() {
 									$('input[name='+name+']').val($this.val());
 								});
