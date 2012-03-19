@@ -51,30 +51,40 @@ function findMatchingAddress(address){
 	}
 	return false;
 }
-function populate_delivery(address,bill){
+function populate_delivery(address, bill){
 	if (userdata.id==null) {
 		return;
 	}
-	for(var i in userdata.address){
-		if(userdata.address[i].default=="yes"&&address==null){
+	for (var i in userdata.address) {
+		if (userdata.address[i].default=="yes"&&address==null) {
 			var current=userdata.address[i];
 			break;
 		}
-		if(i==address){
+		if (i==address) {
 			var current=userdata.address[i];
 			break;
 		}
 	}
 	if(current!=null){
+		if (current.country=='' && os_post_vars.Country!='') {
+			current={
+				'street':os_post_vars.Street,
+				'street2':os_post_vars.Street2,
+				'postcode':os_post_vars.Postcode,
+				'town':os_post_vars.Town,
+				'county':os_post_vars.County,
+				'country':os_post_vars.Country
+			};
+		}
 		$('input[name="'+bill+'Street"]').val(current.street);
 		$('input[name="'+bill+'Street2"]').val(current.street2);
+		$('input[name="'+bill+'Postcode"]').val(current.postcode);
 		$('input[name="'+bill+'Town"]').val(current.town);
 		$('input[name="'+bill+'County"]').val(current.county);
 		$('input[name="'+bill+'Country"]').val(current.country);
 	}
 }
 $(function(){
-	// { populate delivery details
 	if(userdata.id!=null){
 		$.get('/a/f=getUserData',
 			function(user){
@@ -87,7 +97,7 @@ $(function(){
 				$('input[name="Phone"],input[name="Billing_Phone"]').val(userdata.phone);
 				$('input[name="Email"],input[name="Billing_Email"]').val(userdata.email);
 				populate_delivery(null,'');
-				if (userdata.address && userdata.address.length) {
+				if (1 || userdata.address.length) {
 					var addressButton='<a class="__ ui-button address-picker" '
 						+'lang-context="core" href="#">Choose Address</a>';
 					html+='<tr><td colspan="2">'+addressButton+'</td></tr>';
@@ -99,7 +109,6 @@ $(function(){
 			},
 			'json'
 		);
-		// }
 		$('input[name="action"]').click(function(){
 			var address={		
 				street:$('input[name="Street"]').val(),
@@ -388,6 +397,9 @@ $(function(){
 					case 'Billing Address': // {
 						var html=
 							'<div id="online-store-billing">'
+							+'<div style="display:block;">'
+							+'<input type="checkbox" id="badd-is-diff"/> Is billing address'
+							+' different from delivery address?</div>'
 							// { contact info
 							+'<div id="online-store-billing-personal">'
 							+'<label><span class="__" lang-context="core">First Name</span>'
@@ -423,17 +435,40 @@ $(function(){
 							// }
 							+'</div>';
 						content.html(html);
-						$('#online-store-billing input').each(function() {
+						var different=0;
+						$('#online-store-billing input[type!=checkbox]').each(function() {
 							var $this=$(this),
-								postfix=$this.attr('id').replace('online-store-', ''),
-								name='Billing_'+postfix;
-							var newVal=$('input[name='+name+']').val() || $('input[name='+postfix+']').val();
+								del_name=$this.attr('id').replace('online-store-', ''),
+								name='Billing_'+del_name,
+								del_val=$('input[name='+del_name+']').val(),
+								val=$('input[name='+name+']').val();
 							$this
-								.val(newVal)
+								.val(val)
 								.change(function() {
 									$('input[name='+name+']').val($this.val());
 								});
+							if (del_val!=val) {
+								different=1;
+							}
 						});
+						if (different) {
+							$('#badd-is-diff').attr('checked', true);
+						}
+						$('#badd-is-diff')
+							.change(function() {
+								var checked=$(this).is(':checked');
+								if (!checked) {
+									$('#online-store-billing input[type!=checkbox]').each(function() {
+										var $this=$(this),
+											del_name=$this.attr('id').replace('online-store-', ''),
+											del_val=$('input[name='+del_name+']').val();
+										$this.val(del_val);
+									});
+								}
+								$('#online-store-billing input[type!=checkbox],'
+									+'#online-store-billing select').attr('disabled', !checked);
+							})
+							.change();
 						$.get('/a/p=online-store/f=getCountries/page_id='+pagedata.id,
 							function(ret) {
 								var $this=$('#online-store-Country');

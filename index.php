@@ -332,10 +332,8 @@ else {
 array_unshift($scripts_inline, $tmp);
 // }
 if (Core_isAdmin()) {
-	WW_addScript('/ww.admin/j/admin-frontend.js');
 	WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
 	WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
-	WW_addCSS('/ww.admin/theme/admin-frontend.css');
 	foreach ($GLOBALS['PLUGINS'] as $p) {
 		if (isset($p['frontend']['admin-script'])) {
 			WW_addScript($p['frontend']['admin-script']);
