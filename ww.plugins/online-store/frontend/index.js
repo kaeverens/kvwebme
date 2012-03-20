@@ -141,7 +141,7 @@ $(function(){
 			tabs.push('Payment');
 			// }
 			// { setup
-			var html='<div id="online-store-checkout-accordion-wrapper">'
+			var html='<div id="online-store-checkout-accordion-wrapper">';
 			// { panels
 			for (var i=0;i<tabs.length;++i) {
 				html+='<h2 panel="'+tabs[i]+'" class="__" lang-context="core">'
@@ -238,7 +238,7 @@ $(function(){
 								return alert(ret.error);
 							}
 							reloadPage(0);
-						}
+						};
 						content.find('.user-login button').click(function() {
 							var $form=$('#online-store-wrapper .user-login');
 							var email=$form.find('.email input').val();
@@ -462,6 +462,12 @@ $(function(){
 										var $this=$(this),
 											del_name=$this.attr('id').replace('online-store-', ''),
 											del_val=$('input[name='+del_name+']').val();
+										$this.val(del_val);
+									});
+									$('#online-store-billing select').each(function() {
+										var $this=$(this),
+											del_name=$this.attr('id').replace('online-store-', ''),
+											del_val=$('select[name='+del_name+']').val();
 										$this.val(del_val);
 									});
 								}

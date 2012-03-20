@@ -68,30 +68,29 @@ $is_an_update=$action=='Insert Page Details'||$action=='Update Page Details';
 $edit=($is_an_update || $action=='edit' || $id)?1:0;
 // }
 // { display header and link in scripts
+WW_addScript('/j/js.js');
+WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
+WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
+WW_addScript('/ww.admin/j/admin.js');
+WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
+WW_addScript('/j/jquery.remoteselectoptions.js');
+WW_addScript('/j/cluetip/jquery.cluetip.js');
+WW_addScript('/j/jquery-ui-timepicker-addon.js');
+WW_addScript('/ww.admin/pages/form2.js');
 echo '<html><head>'
 	.Core_getJQueryScripts()
-	.'<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'
-	.'<script src="/j/ckeditor-3.6.2/ckeditor.js"></script>'
-	.'<script src="/j/ckeditor-3.6.2/adapters/jquery.js"></script>'
-	.'<script src="/ww.admin/j/admin.js"></script>'
-	.'<script src="/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js"></script>'
 	.'<link rel="stylesheet" href="/j/jquery.dataTables-1.7.5'
 	.'/jquery.dataTables.css" />'
-	.'<script src="/j/jquery.remoteselectoptions.js"></script>'
-	.'<script src="/j/cluetip/jquery.cluetip.js"></script>'
-	.'<script src="/j/jquery-ui-timepicker-addon.js"></script>'
-	.'<script src="form2.js"></script>'
 	.'<link rel="stylesheet" href="/j/cluetip/jquery.cluetip.'
 	.'css" />'
 	.'<link rel="stylesheet" href="/ww.admin/theme/admin.css" />'
 	.'<link rel="stylesheet" href="/ww.admin/pages/form.css" />'
-	.'<script src="/ww.admin/j/common.js"></script>'
 	.'<title>page form</title>';
 // { languages
 $langs=dbAll(
 	'select code,name from language_names order by is_default desc,code,name'
 );
-echo '<script>var languages='.json_encode($langs).';</script>';
+WW_addInlineScript('var languages='.json_encode($langs).';');
 // }
 echo '</head>'
 	.'<body class="noheader">';
@@ -515,9 +514,10 @@ echo '<div id="submit-row"><input id="pages-submit" type="submit" value="'
 echo '</form>';
 // }
 // { page footer
+WW_addInlineScript(
+	'window.page_menu_currentpage='.$id.';window.sessid="'.session_id().'";'
+);
 echo WW_getScripts();
 echo WW_getCss();
-echo '<script>//<![CDATA[
-window.page_menu_currentpage='.$id.';window.sessid="'.session_id().'";
-//]]></script><div style="float:right">pageid: '.$id.'</div></body></html>';
 // }
+echo '<div style="float:right">pageid: '.$id.'</div></body></html>';

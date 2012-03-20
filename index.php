@@ -303,9 +303,6 @@ $c='<title>'.htmlspecialchars($title).'</title>';
 $c.='WW_CSS_GOES_HERE';
 $c.=Core_getJQueryScripts();
 $c.='<script src="WW_SCRIPTS_GO_HERE" defer="defer"></script>';
-if (Core_isAdmin()) {
-	WW_addScript('/ww.admin/j/common.js');
-}
 // { generate inline javascript
 $tmp='var pagedata={id:'.$PAGEDATA->id
 	.Core_trigger('displaying-pagedata')

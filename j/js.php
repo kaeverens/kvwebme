@@ -31,7 +31,7 @@ if (isset($_REQUEST['extra'])) {
 		if (strpos($f, '..')!==false) {
 			continue;
 		}
-		if ($f{0}!='/') {
+		if ($f{0}!='/') { // {
 			$f='/ww.plugins/'.$f;
 		}
 		$fname=SCRIPTBASE.$f;
@@ -65,7 +65,12 @@ if (file_exists(USERBASE.'/ww.cache/j/js-'.$name)
 if (!file_exists(USERBASE.'/ww.cache/j/js-'.$name)) {
 	$js='';
 	foreach ($files as $f) {
-		$js.=file_get_contents($f).';';
+		if (file_exists($f.'.m')) {
+			$js.=file_get_contents($f.'.m').';';
+		}
+		else {
+			$js.=file_get_contents($f).';';
+		}
 	}
 	if (!file_exists(USERBASE.'/ww.cache/j')) {
 		mkdir(USERBASE.'/ww.cache/j');
