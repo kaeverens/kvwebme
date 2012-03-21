@@ -69,6 +69,7 @@ $edit=($is_an_update || $action=='edit' || $id)?1:0;
 // }
 // { display header and link in scripts
 WW_addScript('/j/js.js');
+WW_addScript('/j/jquery.json-2.2.min.js');
 WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
 WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
 WW_addScript('/ww.admin/j/admin.js');

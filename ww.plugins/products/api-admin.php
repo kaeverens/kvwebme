@@ -416,6 +416,77 @@ function Products_adminImportFileUpload() {
 }
 
 // }
+// { Products_adminImportImages
+
+/**
+	* import images into products
+	*
+	* @return status
+	*/
+function Products_adminImportImages() {
+	$directory=$_REQUEST['directory'];
+	$field=$_REQUEST['field'];
+	if (strpos($directory, '..')!==false) {
+		return array(
+			'error'=>'no hacking please'
+		);
+	}
+	$directory=USERBASE.'/'.$directory;
+	if (!file_exists($directory) || !is_dir($directory)) {
+		return array('error'=>'directory does not exist');
+	}
+	if ($field{0}=='_') { // {
+		$field=preg_replace('/^./', '', $field);
+		if (!in_array($field, array('stock_number', 'name', 'ean', 'id'))) {
+			return array('error'=>'no hacking please');
+		}
+		$files=new DirectoryIterator($directory);
+		$moved=0;
+		$failedmove=0;
+		$missingproduct=0;
+		foreach ($files as $file) {
+			if ($file->isDot()) {
+				continue;
+			}
+			$ext=strtolower($file->getExtension());
+			if (in_array($ext, array('jpg', 'jpeg', 'png', 'jpe'))) {
+				$name=preg_replace('/\.[^\.]*$/', '', $file->getFilename());
+				$r=dbRow(
+					'select id,images_directory from products where '
+					.$field.'="'.addslashes($name).'"'
+				);
+				if (!$r) {
+					$missingproduct++;
+					continue;
+				}
+				@mkdir(
+					USERBASE.'/f/'.$r['images_directory'],
+					0777,
+					true
+				);
+				$success=rename(
+					$directory.'/'.$file->getFilename(),
+					USERBASE.'/f/'.$r['images_directory'].'/'.$file->getFilename()
+				);
+				if ($success) {
+					$moved++;
+				}
+				else {
+					$failedmove++;
+				}
+			}
+		}
+		return array(
+			'ok'=>1,
+			'moved'=>$moved,
+			'failed_to_move'=>$failedmove,
+			'missing_product'=>$missingproduct
+		);
+	}
+	return array('error'=>'todo');
+}
+
+// }
 // { Products_adminImportDataFromAmazon
 
 /**
@@ -594,6 +665,27 @@ function Products_adminProductDatafieldsGet() {
 		$data['oldType'] = $oldType;
 	}
 	return $data;
+}
+
+// }
+// { Products_adminProductsDatafieldsGet
+
+/**
+	* get a list of all data fields
+	*
+	* @return array data fields
+	*/
+function Products_adminProductsDatafieldsGet() {
+	$data = array();
+	$typeDatas = dbAll('select data_fields from products_types');
+	foreach ($typeDatas as $typeData) {
+		$fields=json_decode($typeData['data_fields'], true);
+		foreach ($fields as $field) {
+			$data[$field['n']]=1;
+		}
+	}
+	ksort($data);
+	return array_keys($data);
 }
 
 // }

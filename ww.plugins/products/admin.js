@@ -154,6 +154,7 @@ function Products_screenImport() {
 		+'<option value="Amazon API">Amazon API</option>'
 		+'</select></td></tr>'
 		// }
+		+'<tr><th>Options</th><td id="import-images-options"></td></tr>'
 		+'</table><hr/><button id="import-images-button">import</button>'
 		+'<div id="import-images-status"/></div>';
 	$(html).appendTo($wrapper);
@@ -192,7 +193,36 @@ function Products_screenImport() {
 					.val(adminVars.productsImportAmazonAssociateTag);
 			break; // }
 			default: // {
-				$wrapper.append('todo');
+				var html='<table><tr>'
+					+'<th>Directory</th>'
+					+'<td><input id="import-local-directory"/></td>'
+					+'<td>Which directory holds the images you want to import.</td>'
+					+'</tr>'
+					+'<tr>'
+					+'<th>Field</th>'
+					+'<td><select id="import-local-fields"><option>_stock_number</option>'
+					+'<option>_name</option>'
+					+'<option>_id</option><option>_ean</option></select></td>'
+					+'<td>What Product field are the images named after?</td>'
+					+'</tr>'
+					+'</table>';
+				$wrapper.append(html);
+				$('#import-local-directory')
+					.change(function() {
+						Core_saveAdminVars('productsImportLocalDirectory', $(this).val());
+					})
+					.val(adminVars.productsImportLocalDirectory);
+				$.post('/a/p=products/f=adminProductsDatafieldsGet', function(ret) {
+					for (var i=0;i<ret.length;++i) {
+						ret[i]='<option>'+ret[i]+'</option>';
+					}
+					$('#import-local-fields')
+						.append(ret.join(''))
+						.change(function() {
+							Core_saveAdminVars('productsImportLocalFields', $(this).val());
+						})
+						.val(adminVars.productsImportLocalFields);
+				});
 			break; // }
 		}
 	}
@@ -245,7 +275,25 @@ function Products_screenImport() {
 				});
 			break; // }
 			default: // {
-				return alert('todo');
+				$.post('/a/p=products/f=adminImportImages', {
+					'directory': $('#import-local-directory').val(),
+					'field': $('#import-local-fields').val()
+				}, function(ret) {
+					if (ret.error) {
+						return alert(ret.error);
+					}
+					var msgs=[];
+					if (ret.moved) {
+						msgs.push('Successfully imported '+ret.moved+' files');
+					}
+					if (ret.failed_to_move) {
+						msgs.push('Failed to import '+ret.failed_to_move+' files');
+					}
+					if (ret.missing_product) {
+						msgs.push(ret.missing_product+' files did not correspond to a product');
+					}
+					return alert(msgs.join("\n\n"));
+				});
 			break; // }
 		}
 	});
