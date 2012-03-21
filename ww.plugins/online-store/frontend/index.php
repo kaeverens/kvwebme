@@ -62,6 +62,8 @@ global $DBVARS,$online_store_currencies;
 $submitted=0;
 if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 	$errors=array();
+	$uid=isset($_SESSION['userdata']) && $_SESSION['userdata']['id']
+		?(int)$_SESSION['userdata']['id']:0;
 	// { check for errors in form submission
 	$fields=$PAGEDATA->vars['online_stores_fields'];
 	if (!$fields) {
@@ -136,24 +138,42 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 	}
 	// }
 	// { check if new address was entered
-	if (@$_POST['save-address']) {
+	if ($uid) {
 		$_user=dbRow(
-			'select address from user_accounts where id='.$_SESSION['userdata']['id']
+			'select address from user_accounts where id='.$uid
 		);
-		$address=json_decode($_user['address'], true);
-		$address[]=array(
+		$addresses=(array)json_decode($_user['address'], true);
+		$newAddress=array(
 			'street'=>$_POST['Street'],
 			'street2'=>$_POST['Street2'],
 			'town'=>$_POST['Town'],
 			'postcode'=>$_POST['Postcode'],
 			'county'=>$_POST['County'],
 			'country'=>$_POST['Country'],
+			'phone'=>$_POST['Phone']
 		);
-		$address=addslashes(json_encode($address));
-		dbQuery(
-			'update user_accounts set address="'.$address.'" where id='
-			.$_SESSION['userdata']['id']
-		);
+		$found=0;
+		foreach ($addresses as $address) {
+			if ($address['street']==$newAddress['street']
+				&& $address['street2']==$newAddress['street2']
+				&& $address['town']==$newAddress['town']
+				&& $address['postcode']==$newAddress['postcode']
+				&& $address['county']==$newAddress['county']
+				&& $address['country']==$newAddress['country']
+				&& $address['phone']==$newAddress['phone']
+			) {
+				$found=1;
+				break;
+			}
+		}
+		if (!$found) {
+			$addresses[]=$newAddress;
+			$addresses=addslashes(json_encode($addresses));
+			$_SESSION['userdata']['address']=$addresses;
+			dbQuery(
+				'update user_accounts set address="'.$addresses.'" where id='.$uid
+			);
+		}
 	}
 	// }
 	unset($_REQUEST['action'], $_REQUEST['page']);
@@ -364,7 +384,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		}
 		// }
 		// { unset the shopping cart data
-		unset($_SESSION['online-store']);
+//		unset($_SESSION['online-store']);
 		// }
 		$submitted=1;
 	} 

@@ -321,6 +321,9 @@ if (isset($_SESSION['userdata'])) {
 	if (isset($_SESSION['userdata']['discount'])) {
 		$tmp.=',discount:'.(int)$_SESSION['userdata']['discount'];
 	}
+	if (isset($_SESSION['userdata']['address'])) {
+		$tmp.=',address:1';
+	}
 	$tmp.='};';
 }
 else {

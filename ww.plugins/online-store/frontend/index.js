@@ -1,17 +1,17 @@
 function compare(obj1, obj2) {
 	function size(obj) {
-		var size = 0;
-		for (var keyName in obj) {
+		var s=0, keyName;
+		for (keyName in obj) {
 			if (keyName != null) {
-				size++;
+				s++;
 			}
 		}
-		return size;
+		return s;
 	}
 	if (size(obj1) != size(obj2)) {
 		return false;
 	}
-	for(var keyName in obj1) {
+	for (var keyName in obj1) {
 		var value1 = obj1[keyName];
 		var value2 = obj2[keyName];
 
@@ -41,7 +41,7 @@ function findMatchingAddress(address){
 	if (userdata.id==null) {
 		return true;
 	}
-	for(var i in userdata.address){
+	for (var i in userdata.address){
 		if (userdata.address[i].default) {
 			address.default=userdata.address[i].default;
 		}
@@ -317,9 +317,9 @@ $(function(){
 					break; // }
 					case 'Delivery Address': // {
 						var addressButton='';
-						if (userdata.address && userdata.address.length>1) {
-							addressButton='<a class="__ ui-button address-picker" '
-								+'lang-context="core" href="#">Choose Address</a>';
+						if (userdata.address) {
+							addressButton='<button class="__ address-picker" '
+								+'lang-context="core">Choose Address</button>';
 						}
 						var html=
 							'<div id="online-store-delivery">'
@@ -354,7 +354,7 @@ $(function(){
 							// }
 							// { next
 							+'<div id="online-store-delivery-next">'
-							+'<button class="__" lang-context="core">Next</button>'
+							+'<button class="__ next" lang-context="core">Next</button>'
 							+'</div>'
 							// }
 							+'</div>';
@@ -385,7 +385,7 @@ $(function(){
 								});
 							}
 						);
-						$('#online-store-delivery button').click(function() {
+						$('#online-store-delivery button.next').click(function() {
 							if (checkDeliveryAddress()) {
 								$accordion.accordion(
 									'activate',
@@ -463,12 +463,14 @@ $(function(){
 											del_name=$this.attr('id').replace('online-store-', ''),
 											del_val=$('input[name='+del_name+']').val();
 										$this.val(del_val);
+										$('input[name=Billing_'+del_name+']').val(del_val);
 									});
 									$('#online-store-billing select').each(function() {
 										var $this=$(this),
 											del_name=$this.attr('id').replace('online-store-', ''),
 											del_val=$('select[name='+del_name+']').val();
 										$this.val(del_val);
+										$('input[name=Billing_'+del_name+']').val(del_val);
 									});
 								}
 								$('#online-store-billing input[type!=checkbox],'
@@ -492,9 +494,11 @@ $(function(){
 						);
 						$('#online-store-billing button').click(function() {
 							if (checkBillingAddress()) {
+								var next=$('h2[panel="Delivery Options"]').length
+									?'Delivery Options':'Payment';
 								$accordion.accordion(
 									'activate',
-									'h2[panel="Delivery Options"]'
+									'h2[panel="'+next+'"]'
 								);
 							}
 						});
@@ -729,6 +733,7 @@ $(function(){
 			$('#online-store-County,input[name="County"]').val(addr.county||'');
 			$('#online-store-Country,select[name="Country"]').val(addr.country||'');
 			$table.remove();
+			$('#online-store-Country').change();
 		});
 		return false;
 	};
