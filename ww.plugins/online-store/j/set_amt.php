@@ -23,9 +23,17 @@ $product=Product::getInstance($id);
 require_once '../libs.php';
 $amount=(int)$_REQUEST['amt']
 	-$_SESSION['online-store']['items']['products_'.$id.$md5]['amt'];
+// { does the amount requested bring it over the maximum allowed per purchase
+$max_allowed=isset($product->vals['online-store']['_max_allowed'])
+	?(int)$product->vals['online-store']['_max_allowed']
+	:0;
+// }
 list($price, $amount, $vat)=Products_getProductPrice(
 	$product, $amount, $md5, false
 );
+if ($max_allowed && $amount>$max_allowed) {
+	$amount=$max_allowed;
+}
 if ($amount<1) {
 	unset($_SESSION['online-store']['items']['products_'.$id.$md5]);
 }

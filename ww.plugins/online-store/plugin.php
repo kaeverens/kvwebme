@@ -57,8 +57,9 @@ $plugin=array(
 // }
 // { currency symbols
 $online_store_currencies=array(
-	'EUR'=>array('&euro;','Euro'),
-	'GBP'=>array('&pound;','Pound Sterling')
+	'EUR'=>array('&euro;', 'Euro'),
+	'GBP'=>array('&pound;', 'Pound Sterling'),
+	'USD'=>array('&dollar;', 'Dollar')
 );
 // }
 
@@ -77,12 +78,13 @@ $online_store_currencies=array(
 	* @param int     $id            the product's ID, if there is one
 	* @param boolean $delivery_free is this product's delivery free
 	* @param boolean $no_discount   does this product ignore discounts
+	* @param int     $max_allowed   max allowed per purchase
 	*
 	* @return null
 	*/
 function OnlineStore_addToCart(
 	$cost=0, $amt=0, $short_desc='', $long_desc='', $md5='', $url='',
-	$vat=true, $id=0, $delivery_free=false, $no_discount=false
+	$vat=true, $id=0, $delivery_free=false, $no_discount=false, $max_allowed=0
 ) {
 	// { add item to session
 	if (!isset($_SESSION['online-store'])) {
@@ -97,6 +99,9 @@ function OnlineStore_addToCart(
 		);
 	$item['cost']=$cost;
 	$item['amt']+=$amt;
+	if ($max_allowed && $item['amt']>$max_allowed) {
+		$item['amt']=$max_allowed;
+	}
 	$item['short_desc']=$short_desc;
 	$item['url']=$url;
 	$item['vat']=$vat;
@@ -638,7 +643,7 @@ function OnlineStore_startup() {
 				$GLOBALS['DBVARS']['online_store_currency']='EUR';
 			}
 			$currency=$GLOBALS['DBVARS']['online_store_currency'];
-			$currency_symbols=array('EUR'=>'€','GBP'=>'£');
+			$currency_symbols=array('EUR'=>'€', 'GBP'=>'£', 'USD'=>'$');
 			$_SESSION['currency']=array(
 				'name'   => $currency,
 				'symbol' => $currency_symbols[$currency],

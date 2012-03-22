@@ -137,7 +137,7 @@ function Mailinglist_createForm() {
 	*
 	* @return null
 	*/
-function Mailinglist_showForm() {
+function Mailinglist_showForm2() {
 	WW_addScript('/ww.plugins/mailing-list/files/impromptu.jquery.min.js');
 	WW_addScript('/ww.plugins/mailing-list/files/general.js');
 	WW_addCSS('/ww.plugins/mailing-list/files/mailing-list.css');

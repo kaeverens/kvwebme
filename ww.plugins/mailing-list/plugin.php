@@ -38,5 +38,5 @@ $plugin=array(
 
 function MailingList_showForm(){
 	require_once SCRIPTBASE.'ww.plugins/mailing-list/frontend/mailing-list.php';
-	return Mailinglist_showForm();
+	return Mailinglist_showForm2();
 }

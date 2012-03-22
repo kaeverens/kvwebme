@@ -643,7 +643,8 @@ if (isset($PLUGINS['online-store'])) {
 				'Not Discountable', 'Options'=>array('No', 'Yes')
 			),
 			'_sold_amt' => 'Amount Sold',
-			'_stock_amt' => 'Amount in Stock'
+			'_stock_amt' => 'Amount in Stock',
+			'_max_allowed' => 'Amount allowed per purchase'
 		);
 	$sql='select is_voucher from products_types where id='
 		.$pdata['product_type_id'];

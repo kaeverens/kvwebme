@@ -616,10 +616,10 @@ class ProductType{
 		}
 		unset($r['singleview_template']);
 		$this->id=$r['id'];
-		$this->is_for_sale=(int)$r['is_for_sale'];
-		$this->is_voucher=(int)$r['is_voucher'];
+		$this->is_for_sale=(int)@$r['is_for_sale'];
+		$this->is_voucher=(int)@$r['is_voucher'];
 		$this->stock_control=(int)@$r['stock_control'];
-		$this->voucher_template=$r['voucher_template'];
+		$this->voucher_template=@$r['voucher_template'];
 		self::$instances[$this->id] =& $this;
 		return $this;
 	}
@@ -945,6 +945,11 @@ function Products_addToCart() {
 	list($price, $amount, $vat)=Products_getProductPrice(
 		$product, $amount, $md5
 	);
+	// { does the amount requested bring it over the maximum allowed per purchase
+	$max_allowed=isset($product->vals['online-store']['_max_allowed'])
+		?(int)$product->vals['online-store']['_max_allowed']
+		:0;
+	// }
 	OnlineStore_addToCart(
 		$price+$price_amendments,
 		$amount,
@@ -955,7 +960,8 @@ function Products_addToCart() {
 		$vat,
 		$id,
 		(int)(@$product->vals['online-store']['_deliver_free']),
-		(int)(@$product->vals['online-store']['_not_discountable'])
+		(int)(@$product->vals['online-store']['_not_discountable']),
+		$max_allowed
 	);
 }
 
