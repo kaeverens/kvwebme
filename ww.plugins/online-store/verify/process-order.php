@@ -88,7 +88,7 @@ function OnlineStore_processOrder($id, $order=false) {
 		}
 		$p=Product::getInstance($item->id);
 		$exportcsv[]=
-			.'"'
+			'"'
 			.str_replace('"', '""', @$form_vals->Phone)
 			.'","'
 			.str_replace('"', '""', @$form_vals->FirstName.' '.@$form_vals->Surname)
@@ -109,7 +109,7 @@ function OnlineStore_processOrder($id, $order=false) {
 			.'","'
 			.$item->cost
 			.'","'
-			$item->id
+			.$item->id
 			.'"';
 		$pt=ProductType::getInstance($p->vals['product_type_id']);
 		if ($pt->is_voucher) {
