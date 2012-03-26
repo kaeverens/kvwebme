@@ -40,8 +40,8 @@ function OnlineStore_processOrder($id, $order=false) {
 		'value'
 	);
 	$exportcsv=array(
-		'"Item ID","Customer Name","Address 1","Address 2","Postcode","Email",'
-		.'"Phone Number","Amt","Price"'
+		'"Phone Number","Customer Name","Address 1","Address 2","Town","Postcode",'
+		.'"Email","Stock Number","Amt","Price","Item ID"'
 	);
 	// }
 	// { send emails
@@ -87,19 +87,30 @@ function OnlineStore_processOrder($id, $order=false) {
 			continue;
 		}
 		$p=Product::getInstance($item->id);
-		$exportcsv[]=$item->id.',"'
+		$exportcsv[]=
+			.'"'
+			.str_replace('"', '""', @$form_vals->Phone)
+			.'","'
 			.str_replace('"', '""', @$form_vals->FirstName.' '.@$form_vals->Surname)
 			.'","'
 			.str_replace('"', '""', @$form_vals->Street)
 			.'","'
 			.str_replace('"', '""', @$form_vals->Street2)
 			.'","'
+			.str_replace('"', '""', @$form_vals->Town)
+			.'","'
 			.str_replace('"', '""', @$form_vals->Postcode)
 			.'","'
 			.str_replace('"', '""', @$form_vals->Email)
 			.'","'
-			.str_replace('"', '""', @$form_vals->Phone)
-			.'",'.$item->amt.','.$item->cost;
+			.str_replace('"', '""', @$p->stock_number)
+			.'","'
+			.$item->amt
+			.'","'
+			.$item->cost
+			.'","'
+			$item->id
+			.'"';
 		$pt=ProductType::getInstance($p->vals['product_type_id']);
 		if ($pt->is_voucher) {
 			$html=$pt->voucher_template;
@@ -209,7 +220,7 @@ function OnlineStore_processOrder($id, $order=false) {
 		@mkdir(USERBASE.'/'.$export, 0777, true);
 		file_put_contents(
 			USERBASE.'/'.$export.'/order'.$id.'.csv',
-			join("\n", $exportcsv)
+			join("\n\r", $exportcsv)
 		);
 	}
 	// }
