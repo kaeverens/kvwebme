@@ -551,7 +551,7 @@ if (!$submitted) {
 		else {
 			$post['_pandp']=count(json_decode($postage));
 		}
-		$post['os_pandp']=(int)$_SESSION['os_pandp'];
+		$post['os_pandp']=isset($_SESSION['os_pandp'])?(int)$_SESSION['os_pandp']:0;
 		// }
 		WW_addInlineScript('var os_post_vars='.json_encode($post).';');
 		WW_addScript('/ww.plugins/online-store/frontend/index.js');
