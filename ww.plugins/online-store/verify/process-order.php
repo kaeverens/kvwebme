@@ -40,7 +40,7 @@ function OnlineStore_processOrder($id, $order=false) {
 		'value'
 	);
 	$exportcsv=array(
-		'"Phone Number","Customer Name","Address 1","Address 2","Town","Postcode",'
+		'"Phone Number","Customer Name","Address 1","Address 2","Postcode",'
 		.'"Email","Stock Number","Amt","Price","Item ID"'
 	);
 	// }
@@ -97,9 +97,8 @@ function OnlineStore_processOrder($id, $order=false) {
 			.'","'
 			.str_replace('"', '""', @$form_vals->Street2)
 			.'","'
-			.str_replace('"', '""', @$form_vals->Town)
-			.'","'
 			.str_replace('"', '""', @$form_vals->Postcode)
+			.' '.str_replace('"', '""', @$form_vals->Town)
 			.'","'
 			.str_replace('"', '""', @$form_vals->Email)
 			.'","'
