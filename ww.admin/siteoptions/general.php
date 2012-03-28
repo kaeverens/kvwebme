@@ -37,6 +37,8 @@ if ($action=='Save') {
 		unset($DBVARS['canonical_name']);
 	}
 	$DBVARS['site_subtitle']=$_REQUEST['site_subtitle'];
+	$DBVARS['site_thousands_sep']=$_REQUEST['site_thousands_sep'];
+	$DBVARS['site_dec_point']=$_REQUEST['site_dec_point'];
 	if (isset($_FILES['site_favicon'])
 		&& file_exists($_FILES['site_favicon']['tmp_name'])
 	) {
@@ -222,6 +224,16 @@ foreach ($values as $k=>$v) {
 	echo '>'.$v.'</option>';
 }
 echo '</select></td></tr>';
+// }
+// { number format
+echo '<tr><th>'.__('Number Format').'</th><td>'
+	.'999<input name="site_thousands_sep"'
+	.' value="'.htmlspecialchars($DBVARS['site_thousands_sep']).'"'
+	.' style="width:10px;height:1em;text-align:center" />'
+	.'999<input name="site_dec_point"'
+	.' value="'.htmlspecialchars($DBVARS['site_dec_point']).'"'
+	.' style="width:10px;height:1em;text-align:center" />'
+	.'99</td></tr>';
 // }
 echo '</table><input type="hidden" name="action" value="Save"/>'
 	.'<input type="submit" value="'.__('Save').'" /></form>';

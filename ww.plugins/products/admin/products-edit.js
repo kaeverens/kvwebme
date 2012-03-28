@@ -70,6 +70,7 @@ function update_data_fields(data) {
 		}
 		html+= '<tr><th>'+htmlspecialchars(data.type[i].n)+'</th><td>';
 		var name = 'data_fields['+htmlspecialchars(data.type[i].n)+']';
+		console.log(data.type[i].t);
 		switch(data.type[i].t) {
 			case 'checkbox': // {
 				html+= '<input name='+name+'" ';

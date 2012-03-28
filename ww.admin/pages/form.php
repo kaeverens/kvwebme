@@ -516,7 +516,8 @@ echo '</form>';
 // }
 // { page footer
 WW_addInlineScript(
-	'window.page_menu_currentpage='.$id.';window.sessid="'.session_id().'";'
+	'this.page_menu_currentpage='.$id.';this.sessid="'.session_id().'";'
+	.'this.user_id='.$_SESSION['userdata']['id']
 );
 echo WW_getScripts();
 echo WW_getCss();

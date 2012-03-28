@@ -191,9 +191,9 @@ echo '<div id="locations">';
 // { physical location
 echo '<h2>Currently located</h2>'
 	.'<p id="user-location">The user is recorded as being located at '
-	.'Lat:<input type="number" name="location_lat" value="'
+	.'Lat:<input name="location_lat" value="'
 	.((float)$r['location_lat']).'"/>, '
-	.'Long:<input type="number" name="location_lng" value="'
+	.'Long:<input name="location_lng" value="'
 	.((float)$r['location_lng']).'"/> <a href="#">edit</a></p>';
 // }
 // { addresses

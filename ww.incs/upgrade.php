@@ -509,6 +509,11 @@ if ($version==46) { // remove names from addresses. was causing confusion
 	}
 	$version=47;
 }
+if ($version==47) { // localised number formats
+	$DBVARS['site_thousands_sep']=',';
+	$DBVARS['site_dec_point']='.';
+	$version=48;
+}
 
 $DBVARS['version']=$version;
 Core_cacheClear();

@@ -489,6 +489,7 @@ function Products_typeEdit(id) {
 						+'<option>date</option><option>checkbox</option>'
 						+'<option>selectbox</option><option>selected-image</option>'
 						+'<option>hidden</option><option>colour</option>'
+						+'<option>user</option>'
 						+'</select>'
 					)
 						.val(field.t).appendTo('.pfp-type', $wrapper);

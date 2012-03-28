@@ -269,3 +269,24 @@ function Products_soldAmount2($params, $smarty) {
 }
 
 // }
+// { Products_user2
+
+/**
+	* show how many have been sold
+	*
+	* @param array  $params parameters
+	* @param object $smarty Smarty object
+	*
+	* @return string HTML
+	*/
+function Products_user2($params, $smarty) {
+	$pid=$smarty->_tpl_vars['product']->id;
+	$product=Product::getInstance($pid);
+	$uid=(int)$product->get($params['pfield']);
+	$user=User::getInstance($uid, false, false);
+	if ($user) {
+		return $user->get($params['ufield']);
+	}
+}
+
+// }

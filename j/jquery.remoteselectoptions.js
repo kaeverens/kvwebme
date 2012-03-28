@@ -27,7 +27,10 @@
 				var other=$.isFunction(o.other_GET_params)
 					?o.other_GET_params()
 					:o.other_GET_params;
-				$.get(o.url,{'selected':v,'other_GET_params':other},function(res){
+				function doIt(res) {
+					if (o.cache_id) {
+						window[o.cache_id]=res;
+					}
 					if (res.error && o.errors) {
 						return o.errors(res);
 					}
@@ -40,9 +43,15 @@
 							.text(value));
 					});
 					$this.val(v);
-					$this.click();
-					$this.click();
-				});
+					$this.click().click();
+				}
+				if (!o.cache_id || !window[o.cache_id]) {
+					console.log(o.cache_id, window[o.cache_id]);
+					$.get(o.url, {'selected':v,'other_GET_params':other}, doIt);
+				}
+				else {
+					doIt(window[o.cache_id]);
+				}
 			});
 		});
 	};
@@ -50,6 +59,7 @@
 		'url':null,
 		'other_GET_params':{},
 		'always_retrieve':false,
+		'cache_id':null,
 		'load':false
 	};
 })(jQuery);

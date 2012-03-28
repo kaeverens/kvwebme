@@ -987,7 +987,7 @@ function Core_adminStatsGetVisits() {
 // { Core_adminUserNamesGet
 
 /**
-	* get an array of names and emails of users
+	* get an array of names OR emails of users
 	*
 	* @return array
 	*/
@@ -1000,6 +1000,31 @@ function Core_adminUserNamesGet() {
 			$r['name']=$r['email'];
 		}
 		$names[$r['id']]=$r['name'];
+	}
+	return $names;
+}
+
+// }
+// { Core_adminUserNamesEmailsGet
+
+/**
+	* get an array of names and emails of users
+	*
+	* @return array
+	*/
+function Core_adminUserNamesEmailsGet() {
+	$names=array();
+	foreach (
+		dbAll('select id,name,email from user_accounts order by name') as $r
+	) {
+		if (!$r['name']) {
+			$r['name']=$r['email'];
+		}
+		$names[]=array(
+			'id'=>$r['id'],
+			'name'=>$r['name'],
+			'email'=>$r['email']
+		);
 	}
 	return $names;
 }

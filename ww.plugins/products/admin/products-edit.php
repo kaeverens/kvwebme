@@ -84,6 +84,30 @@ function Products_showDataField($datafield, $def) {
 				true
 			);
 		break; // }
+		case 'user': // {
+			require_once SCRIPTBASE.'/ww.incs/api-admin.php';
+			echo '<select name="data_fields['.htmlspecialchars($def['n']).']">'
+				.'<option value="0"> -- please choose -- </option>';
+			$users=Core_adminUserNamesEmailsGet();
+			foreach ($users as $user) {
+				echo '<option value="'.$user['id'].'"';
+				if ($user['id']==$datafield['v']) {
+					echo ' selected="selected"';
+				}
+				$name=$user['name'];
+				$email=$user['email'];
+				if ($name) {
+					if ($email) {
+						$name.=' ('.$email.')';
+					}
+				}
+				else {
+					$name=$email;
+				}
+				echo '>'.htmlspecialchars($name).'</option>';
+			}
+			echo '</select>';
+		break; // }
 		default: // { inputbox
 			echo '<input name="data_fields['.htmlspecialchars($def['n']).']"';
 			if ($def['r'] && !(@$def['u'])) {
@@ -793,7 +817,7 @@ if (count($relations)) {
 	echo '</select></td>'
 		.'<td><select class="products-relations-product"'
 		.' name="products-relations-product[]">'
-		.'<option value=""> -- please choose -- </option>';
+		.'<option value=""> -- please choose -- </option></select>';
 	WW_addScript('/ww.plugins/products/admin/products-edit-related.js');
 	echo '</td></tr></table></div>';
 }

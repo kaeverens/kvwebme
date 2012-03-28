@@ -140,6 +140,7 @@ function OnlineStore_adminPageForm($page, $vars) {
 	* @return string
 	*/
 function OnlineStore_frontend($PAGEDATA) {
+	OnlineStore_setVat($PAGEDATA);
 	require dirname(__FILE__).'/frontend/index.php';
 	WW_addCss('/ww.plugins/online-store/frontend/index.css');
 	return $c;
@@ -427,11 +428,18 @@ function OnlineStore_getPostageAndPackagingSubtotal(
 	* @return string
 	*/
 function OnlineStore_numToPrice($val, $sym=true, $rounded=false) {
+	global $DBVARS;
 	$rate=$_SESSION['currency']['value'];
 	$sym=$_SESSION['currency']['symbol'];
-	return $sym.($rounded
-		?round($val*$rate)
-		:sprintf("%.2f", $val*$rate));
+	$points=$rounded?0:2;
+	return '<span class="currency">'.$sym.'</span><span class="number">'
+		.number_format(
+			$val*$rate,
+			$points,
+			$DBVARS['site_dec_point'],
+			$DBVARS['site_thousands_sep']
+		)
+		.'</span>';
 }
 
 // }
@@ -609,18 +617,32 @@ function OnlineStore_setCheckoutPage() {
 		$_SESSION['onlinestore_checkout_page']=$p;
 		$page=Page::getInstance($p);
 		if ($page) {
-			$page->initValues();
-			$vat=isset($page->vars['online_stores_vat_percent'])
-				?$page->vars['online_stores_vat_percent']
-				:0;
-			if ($vat=='') {
-				$vat=0;
-			}
-			$_SESSION['onlinestore_vat_percent']=(float)$vat;
+			OnlineStore_setVat($page);
 		}
 	}
 }
 
+// }
+// { OnlineStore_setVat
+
+/**
+	* set the VAT session variable
+	*
+	* @param object $page the page object
+	*
+	* @return null
+	*/
+
+function OnlineStore_setVat($page) {
+	$page->initValues();
+	$vat=isset($page->vars['online_stores_vat_percent'])
+		?$page->vars['online_stores_vat_percent']
+		:0;
+	if ($vat=='') {
+		$vat=0;
+	}
+	$_SESSION['onlinestore_vat_percent']=(float)$vat;
+}
 // }
 // { OnlineStore_startup
 

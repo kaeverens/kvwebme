@@ -16,12 +16,18 @@ $(function(){
 			.appendTo($tr.find('td')[0]);
 		$('<select name="products-relations-product[]"><option value="">'
 			+' -- please choose -- </option>')
-			.remoteselectoptions({url:'/a/p=products/f=adminProductsList'})
+			.remoteselectoptions({
+				'url':'/a/p=products/f=adminProductsList',
+				'cache_id':'product_names'
+			})
 			.appendTo($tr.find('td')[1]);
 		$tr.appendTo('#product-relations');
 	}
 	$('#product-relations select.products-relations-product')
-		.remoteselectoptions({url:'/a/p=products/f=adminProductsList'});
+		.remoteselectoptions({
+			'url':'/a/p=products/f=adminProductsList',
+			'cache_id':'product_names'
+		});
 	$('#product-relations select').live('change', function(){
 		$('#product-relations tr').each(function(){
 			var $selects=$(this).find('select');

@@ -894,6 +894,8 @@ function Products_showByType(
 	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
 
+// { Products_showAll
+
 /**
 	* display all products
 	*
@@ -921,6 +923,9 @@ function Products_showAll(
 	}
 	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
+
+// }
+// { Products_showRelatedProducts
 
 /**
 	* get a list of products that are related and show them
@@ -950,8 +955,13 @@ function Products_showRelatedProducts($params, $smarty) {
 	);
 	if (count($rs)) {
 		$h='';
+		$ids=array();
 		foreach ($rs as $r) {
-			$p=Product::getInstance($r['to_id']);
+			$ids[]=$r['to_id'];
+		}
+		$products=Products::getbyIds($ids);
+		foreach ($products->product_ids as $r) {
+			$p=Product::getInstance($r);
 			$h.='<a class="product_related" href="'.$p->getRelativeUrl().'">';
 			$vals=$p->vals;
 			if (!$vals['images_directory']) {
@@ -971,6 +981,8 @@ function Products_showRelatedProducts($params, $smarty) {
 	}
 	return 'none yet';
 }
+
+// }
 
 /**
 	* submit the form for submitting a review
@@ -1008,6 +1020,8 @@ function Products_submitReviewForm ($productid, $userid) {
 	$c.= '</form>';
 	return $c;
 }
+
+// { Products
 
 /**
 	* Products object
@@ -1405,4 +1419,37 @@ class Products{
 		}
 		return $categories.$prevnext.'<div class="products">'.$c.'</div>'.$prevnext;
 	}
+
+	// { getByIds
+
+	/**
+		* get a list of products by their IDs
+		*
+		* @param array  $ids        list of IDs
+		* @param string $sarch      search string
+		* @param array  $search_arr array of search strings to filter by
+		* @param string $sort_col   field to sort by
+		* @param string $sort_dir   sort direction
+		*
+		* @return object instance of Products object
+		*/
+	static function getByIds(
+		$ids, $search='', $search_arr=array(), $sort_col='name', $sort_dir='asc'
+	) {
+		if (!is_array($ids)) {
+			return false;
+		}
+		$md5=md5(
+			join(',',$ids).'|'.$search.'|'.print_r($search_arr, true).'|'
+			.$sort_col.'|'.$sort_dir
+		);
+		if (!array_key_exists($md5, self::$instances)) {
+			new Products($ids, $md5, $search, $search_arr, $sort_col, $sort_dir);
+		}
+		return self::$instances[$md5];
+	}
+
+	// }
 }
+
+// }

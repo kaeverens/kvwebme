@@ -107,6 +107,9 @@ $plugin=array(
 			), // }
 			'PRODUCTS_REVIEWS' => array( // {
 				'function' => 'Products_reviews'
+			), // }
+			'PRODUCTS_USER' => array( // {
+				'function' => 'Products_user'
 			) // }
 		)
 	), // }
@@ -132,6 +135,8 @@ $plugin=array(
 	*/
 class Product{
 	static $instances=array();
+
+	// { __construct
 
 	/**
 	  * constructor for product instances
@@ -189,14 +194,39 @@ class Product{
 		if ($this->link==null) {
 			$this->link=__FromJson($r['name'], true);
 		}
-		$this->default_category=(int)$r['default_category'];
+		$this->default_category=isset($r['default_category'])
+			?(int)$r['default_category']
+			:0;
 		if ($this->default_category==0) {
 			$this->default_category=1;
 		}
-		$this->stock_number=$r['stock_number'];
+		$this->stock_number=isset($r['stock_number'])?$r['stock_number']:'';
 		self::$instances[$this->id]=&$this;
 		return $this;
 	}
+
+	// }
+	// { get
+
+	/**
+	  * retrieve one of the product's values
+	  *
+	  * @param string $name the name of the field
+	  *
+	  * @return string the value
+	  */
+	function get($name) {
+		if (isset($this->vals[$name])) {
+			return $this->vals[$name];
+		}
+		if (strpos($name, '_')===0) {
+			return $this->{preg_replace('/^_/', '', $name)};
+		}
+		return false;
+	}
+
+	// }
+	// { getInstance
 
 	/**
 	  * retrieves a product instance
@@ -217,8 +247,11 @@ class Product{
 		return self::$instances[$id];
 	}
 
+	// }
+	// { getRelativeUrl
+
 	/**
-	  * get teh relative URL of a page for showing this product
+	  * get the relative URL of a page for showing this product
 	  *
 	  * @return string URL of the product's page
 	  */
@@ -315,22 +348,7 @@ class Product{
 		return $this->relativeUrl;
 	}
 
-	/**
-	  * retrieve one of the product's values
-	  *
-	  * @param string $name the name of the field
-	  *
-	  * @return string the value
-	  */
-	function get($name) {
-		if (isset($this->vals[$name])) {
-			return $this->vals[$name];
-		}
-		if (strpos($name, '_')===0) {
-			return $this->{preg_replace('/^_/', '', $name)};
-		}
-		return false;
-	}
+	// }
 
 	/**
 		* get KFM ID for default image
@@ -1592,6 +1610,22 @@ function Products_search() {
 function Products_soldAmount($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
 	return Products_soldAmount2($params, $smarty);
+}
+
+// }
+// { Products_user
+
+/**
+	* show the poduct's user field
+	*
+	* @param array  $params parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string html of the selected variable
+	*/
+function Products_user($params, $smarty) {
+	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	return Products_user2($params, $smarty);
 }
 
 // }

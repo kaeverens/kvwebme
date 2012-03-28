@@ -13,6 +13,9 @@
 
 class User{
 	static $instances=array();
+
+	// { __construct
+
 	/**
 		* instantiate a User object
 		*
@@ -43,6 +46,10 @@ class User{
 		$this->dbVals=$r;
 		self::$instances[$this->id] =& $this;
 	}
+
+	// }
+	// { getInstance
+
 	/**
 		* get a user instance by ID
 		*
@@ -64,6 +71,9 @@ class User{
 		}
 		return self::$instances[$id];
 	}
+
+	// }
+
 	/**
 		* retrieve a value
 		*
