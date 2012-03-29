@@ -127,12 +127,12 @@ var Gallery={
 				+'"ad-thumb-list" style="width:'+(this.width+400)+'px">'+list
 				+'</ul></div>'
 			);
-			this.height=this.options.thumbsizey+15;
+			this.height=this.options.thumbsizey;
 			$('.ad-thumb-list').css('height', this.height+'px');
 			this.addLinksToLargeImage();
 		}
 		this.gallery().css({'width':this.width+'px'});
-		this.height=(this.options.thumbsizey+15)*this.options.rows;
+		this.height=(this.options.thumbsizey)*this.options.rows;
 		var actualHeight=$('#slider>table').outerHeight();
 		if (actualHeight>this.height) {
 			this.height=actualHeight;
@@ -305,6 +305,9 @@ var Gallery={
 				$.getScript('/ww.plugins/image-gallery/frontend/jwplayer.js',function() {
 					var width=Gallery.options.imageWidth;
 					var height=Gallery.options.imageHeight;
+					if (!$imgwrap.is('.wholepage')) {
+						$imgwrap=$imgwrap.find('.wholepage');
+					}
 					$imgwrap.css({'width':width+'px','height':height+'px'});
 					$img
 						.hide()
@@ -371,7 +374,7 @@ var Gallery={
 				return i==els[0]?false:html;
 			}
 			file=Gallery.images[i];
-			html+='<li style="width:'+sizex+'px;">'
+			html+='<li style="width:'+sizex+'px;height:'+sizex+'px">'
 				+Gallery.mediaDisplay(file)
 				+ '</li>';
 			++Gallery.position;
@@ -534,6 +537,11 @@ var Gallery={
 		$.post('/a/p=image-gallery/f=galleryGet/id='+pagedata.id, {
 				'image_gallery_directory':Gallery.options.directory
 			}, function(ret) {
+				// { cleanup
+				for (var i=ret.items.length;i--;) {
+					ret.items[i].url=ret.items[i].url.replace(/https?:\/\/[^\/]*\/f/, '');
+				}
+				// }
 				Gallery.images=ret.items;
 				Gallery.frame=ret.frame;
 				Gallery.caption_in_slider=+ret['caption-in-slider'];

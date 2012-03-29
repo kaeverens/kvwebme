@@ -32,6 +32,7 @@
 	background: url('/ww.plugins/image-gallery/frontend/arrow-left.png') center no-repeat;
 	opacity:.7;
 	left:-35px;
+	z-index:2;
 }
 #big-prev-link:hover,#prev-link:hover{
 	opacity:1;
@@ -40,6 +41,7 @@
 	background: url('/ww.plugins/image-gallery/frontend/arrow-right.png') center no-repeat;
 	opacity:.7;
 	right:-35px;
+	z-index:2;
 }
 #next-link:hover,#big-next-link:hover{
 	opacity:1;

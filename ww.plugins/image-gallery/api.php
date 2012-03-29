@@ -97,7 +97,7 @@ function ImageGallery_galleryGet() {
 						array(
 							'id'=>$file['id'],
 							'media'=>'video',
-							'image'=>'/a/f=getImg/'.$image,
+							'url'=>'/a/f=getImg/'.$image,
 							'href'=>$meta['href']
 						)
 					);
