@@ -129,7 +129,7 @@ function Forum_showForum(&$PAGEDATA, &$id) {
 				.htmlspecialchars($thread['name']).'</td><td>'
 				.($thread['num_posts']-1).'</td>'
 				.'<td>'.htmlspecialchars($user_name).'</td><td>'
-				.date_m2h($thread['last_post_date'], 'datetime').', by '
+				.Core_dateM2H($thread['last_post_date'], 'datetime').', by '
 				.htmlspecialchars($last_user_name).'</td></tr>';
 		}
 		$c.='</table>';
@@ -222,7 +222,7 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 			.'<td class="user-details"><a name="forum-c-'.$post['id']
 			.'"></a>'.htmlspecialchars($user_name).'</td>'
 			.'<td><div class="post-header">Posted: '
-			.date_m2h($post['created_date'], 'datetime')
+			.Core_dateM2H($post['created_date'], 'datetime')
 			.'</div></td></tr>';
 		$count_posts=$user_id
 			?dbOne(

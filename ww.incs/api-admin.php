@@ -225,8 +225,15 @@ function Core_adminLanguagesEditString() {
 	$trstr=$_REQUEST['trstr'];
 	$lang=$_REQUEST['lang'];
 	$context=$_REQUEST['context'];
-	dbQuery('delete from languages where str="'.addslashes($str).'" and lang="'.addslashes($lang).'" and context="'.addslashes($context).'"');
-	dbQuery('insert into languages set str="'.addslashes($str).'", lang="'.addslashes($lang).'", context="'.addslashes($context).'", trstr="'.addslashes($trstr).'"');
+	dbQuery(
+		'delete from languages where str="'.addslashes($str).'" and lang="'
+		.addslashes($lang).'" and context="'.addslashes($context).'"'
+	);
+	dbQuery(
+		'insert into languages set str="'.addslashes($str).'", lang="'
+		.addslashes($lang).'", context="'.addslashes($context).'", trstr="'
+		.addslashes($trstr).'"'
+	);
 	Core_cacheClear('core');
 	return array('ok'=>1);
 }
@@ -253,7 +260,10 @@ function Core_adminLanguagesGetStrings() {
 	*/
 function Core_adminLanguagesGetTrStrings() {
 	$lang=$_REQUEST['lang'];
-	return dbAll('select str,context,trstr from languages where lang="'.addslashes($lang).'"');
+	return dbAll(
+		'select str,context,trstr from languages where lang="'
+		.addslashes($lang).'"'
+	);
 }
 
 // }
@@ -687,7 +697,7 @@ function Core_adminPageEdit() {
 	}
 	// { clean up and return
 	dbQuery('update page_summaries set rss=""');
-	if(@$GLOBALS['DBVARS']['cron-next']) {
+	if (@$GLOBALS['DBVARS']['cron-next']) {
 		unset($GLOBALS['DBVARS']['cron-next']);	
 	}
 	Core_cacheClear();
@@ -977,7 +987,7 @@ function Core_adminSaveJSVar() {
 function Core_adminStatsGetVisits() {
 	$from=isset($_REQUEST['from'])
 		?$_REQUEST['from']
-		:date('Y-m-d',time()-3600*24*7);
+		:date('Y-m-d', time()-3600*24*7);
 	$to=isset($_REQUEST['to'])
 		?$_REQUEST['to']
 		:date('Y-m-d', time()+3600*24);

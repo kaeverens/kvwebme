@@ -107,7 +107,7 @@ function Comments_rssHandler($PAGEDATA) {
 			'link'=>'http://'.$_SERVER['HTTP_HOST'].$PAGEDATA->getRelativeURL()
 				.'#comments-'.$comment['id'],
 			'guid'=>'comment-'.$comment['id'],
-			'pubDate'=>date_m2h($comment['cdate'], 'rfc822')
+			'pubDate'=>Core_dateM2H($comment['cdate'], 'rfc822')
 		);
 	}
 	return array(

@@ -4,13 +4,20 @@
 	*
 	* PHP Version 5.3
 	*
-	* @category   None
-	* @package    None
-	* @author     Kae Verens <kae@kvsites.ie>
-	* @license    GPL Version 2
-	* @link       http://webme.kvsites.ie/
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL Version 2
+	* @link     http://webme.kvsites.ie/
 	*/
 
+// { ThemeEditor_adminTemplateCopy
+
+/**
+	* copy a template file
+	*
+	* @return status
+	*/
 function ThemeEditor_adminTemplateCopy() {
 	$from=$_REQUEST['from'];
 	$to  =$_REQUEST['to'];
@@ -53,6 +60,15 @@ function ThemeEditor_adminTemplateCopy() {
 	}
 	return array('success'=>1);
 }
+
+// }
+// { ThemeEditor_adminCssCopy
+
+/**
+	* copy a CSS file
+	*
+	* @return status
+	*/
 function ThemeEditor_adminCssCopy() {
 	$from=$_REQUEST['from'];
 	$to  =$_REQUEST['to'];
@@ -95,3 +111,7 @@ function ThemeEditor_adminCssCopy() {
 	}
 	return array('success'=>1);
 }
+
+*/
+
+//}

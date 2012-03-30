@@ -16,6 +16,10 @@
 /**
 	* get a recursive list of all categories
 	*
+	* @param array $params parameters
+	* @param int   $pid    parent ID
+	* @param int   $level  current level of the tree
+	*
 	* @return array categories
 	*/
 function Products_adminCategoriesGetRecursiveList(
@@ -540,14 +544,18 @@ function Products_adminImportDataFromAmazon() {
 			return array('message'=>'not found');
 		}
 		// { description
-		$description=(array)$result->Items->Item->EditorialReviews->EditorialReview->Content;
+		$description=(array)$result->Items->Item->EditorialReviews
+						->EditorialReview->Content;
 		$description=$description[0];
 		$do_description=1;
 		if ($description) {
-			$meta=json_decode(dbOne(
-				'select data_fields from products where id='.$pid,
-				'data_fields'
-			), true);
+			$meta=json_decode(
+				dbOne(
+					'select data_fields from products where id='.$pid,
+					'data_fields'
+				),
+				true
+			);
 			foreach ($meta as $k=>$v) {
 				if (!isset($v['n'])) {
 					unset($meta[$k]);
@@ -922,7 +930,6 @@ function Products_adminTypesGetSampleImport() {
 	* @return array products list
 	*/
 function Products_adminProductsListDT() {
-#print_r($_REQUEST); exit;
 	$start=(int)$_REQUEST['iDisplayStart'];
 	$length=(int)$_REQUEST['iDisplayLength'];
 	$search=$_REQUEST['sSearch'];

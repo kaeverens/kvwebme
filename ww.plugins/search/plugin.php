@@ -13,7 +13,7 @@ $plugin=array(
 	'version'=>0
 );
 
-function search_displayInputBox($vars){
+function search_displayInputBox($vars) {
 	require SCRIPTBASE.'ww.plugins/search/frontend/widget.php';
 	return $html;
 }

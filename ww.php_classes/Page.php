@@ -1,4 +1,27 @@
 <?php
+/**
+	* the Page object
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+// { class Page
+
+/**
+	* Page object
+	*
+	*	@category WebME
+	* @package  WebME
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvweb.me/
+	*/
 class Page{
 	static $instances			  = array();
 	static $instancesByName		= array();
@@ -7,6 +30,8 @@ class Page{
 	static $instancesBySpecial	 = array();
 	static $instancesByType		= array();
 	public $vals;
+
+	// { __construct
 	/**
 		* instantiate a Page object
 		*
@@ -127,6 +152,10 @@ class Page{
 		}
 		// }
 	}
+
+	// }
+	// { getInstance
+
 	/**
 		* get an instance of a page by its ID
 		*
@@ -145,6 +174,10 @@ class Page{
 		}
 		return self::$instances[$id];
 	}
+
+	// }
+	// { getInstanceByName
+
 	/**
 		* get an instance of a page by name
 		*
@@ -178,6 +211,10 @@ class Page{
 		}
 		return self::$instancesByName[$nameIndex];
 	}
+
+	// }
+	// { getInstanceBySpecial
+
 	/**
 		* get an instance of a page by its special attribute
 		*
@@ -194,6 +231,10 @@ class Page{
 		}
 		return self::$instancesBySpecial[$sp];
 	}
+
+	// }
+	// { getInstanceByType
+
 	/**
 		* get an instance of a page by its type
 		*
@@ -210,6 +251,10 @@ class Page{
 		}
 		return self::$instancesByType[$type];
 	}
+
+	// }
+	// { getInstanceByNameAndParent
+
 	/**
 		* get an instance of a page by name and parent
 		*
@@ -242,6 +287,10 @@ class Page{
 		}
 		return self::$instancesByNAndP[$name.'/'.$parent];
 	}
+
+	// }
+	// { getAbsoluteURL
+
 	/**
 		* get an absolute URL for the page, starting from http/https
 		*
@@ -252,6 +301,10 @@ class Page{
 		$url.='://'.$_SERVER['HTTP_HOST'];
 		return $url.$this->getRelativeURL();
 	}
+
+	// }
+	// { getRelativeURL
+
 	/**
 		* get a relative URL for this page, starting from /
 		*
@@ -279,6 +332,10 @@ class Page{
 		}
 		return $this->relativeURL;
 	}
+
+	// }
+	// { getTopParentId
+
 	/**
 		* get the ID of the top-level parent of this page
 		*
@@ -291,6 +348,10 @@ class Page{
 		$p=Page::getInstance($this->parent);
 		return $p->getTopParentId();
 	}
+
+	// }
+	// { getURLSafeName
+
 	/**
 		* get a version of the page's name which is safe for use in URLs
 		*
@@ -305,6 +366,10 @@ class Page{
 		$this->getURLSafeName=$r;
 		return $r;
 	}
+
+	// }
+	// { initValues
+
 	/**
 		* load up a page's meta values
 		*
@@ -327,6 +392,10 @@ class Page{
 		}
 		return $this;
 	}
+
+	// }
+	// { render
+	
 	/**
 		* render a page template
 		*
@@ -350,4 +419,8 @@ class Page{
 		}
 		return $smarty->fetch($fname);
 	}
+
+	// }
 }
+
+// }

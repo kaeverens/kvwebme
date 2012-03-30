@@ -94,9 +94,9 @@ function __($str, $context='core', $params=array()) {
 /**
 	* retieve a string from a JSON array of translations
 	*
-	* @param $str           string  the JSON string
-	* @param $first_result  boolean retrieve just the first available string
-	* @param $specific_lang mixed   false, or the language to retrieve
+	* @param string  $str           the JSON string
+	* @param boolean $first_result  retrieve just the first available string
+	* @param mixed   $specific_lang false, or the language to retrieve
 	*
 	* @return string
 	*/
@@ -341,7 +341,8 @@ function Core_shutdown() {
 /**
 	* retrieve a site_var variable
 	*
-	* @param $name string the name of the variable
+	* @param string $name  the name of the variable
+	* @param string $value what to set it to
 	*
 	* @return string
 	*/

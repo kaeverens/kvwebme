@@ -17,7 +17,7 @@ if ($rs && count($rs)) {
 	echo '<table><tr><th>Date</th><th>Description</th><th>Amt</th><th>Total'
 		.'</th></tr>';
 	foreach ($rs as $r) {
-		echo '<tr><td>'.date_m2h($r['cdate']).'</td>'
+		echo '<tr><td>'.Core_dateM2H($r['cdate']).'</td>'
 			.'<td>'.htmlspecialchars($r['description']).'</td>'
 			.'<td>'.$r['amt'].'</td><td>'.$r['total'].'</td></tr>';
 	}

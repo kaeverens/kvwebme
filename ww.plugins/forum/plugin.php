@@ -92,7 +92,7 @@ function Forum_rssHandler($PAGEDATA) {
 				.'&amp;forum-t='.$post['thread_id']
 				.'#forum-c-'.$post['id'],
 			'guid'=>'post-'.$post['id'],
-			'pubDate'=>date_m2h($post['created_date'], 'rfc822')
+			'pubDate'=>Core_dateM2H($post['created_date'], 'rfc822')
 		);
 	}
 	return array(
@@ -200,7 +200,7 @@ function forum_user_profile($PAGEDATA, $user) {
 		$link = '/_r?type=forum&forum-f=' . $forum . '&forum-t=' . $thread_id;
 		$html .= '<tr>
 			<td><a href="' . $link . '">' . $name . '</a></td>
-			<td>' . date_m2h($post[ 'created_date' ]) . '</td>
+			<td>' . Core_dateM2H($post[ 'created_date' ]) . '</td>
 			<td>' . substr($post[ 'body' ], 0, 40) . ' [...]</td>
 		</tr>';
 	}

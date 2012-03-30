@@ -62,7 +62,7 @@ foreach ($rs as $r) {
 	}
 	$links[]='<a href="'.$page->getRelativeURL().'"><strong>'
 		.htmlspecialchars(__FromJson($page->name)).'</strong><div class="date">'
-		.date_m2h($page->associated_date).'</div><span class="news-body">'
+		.Core_dateM2H($page->associated_date).'</div><span class="news-body">'
 		.$thumb.$body.'</span></a>';
 }
 $html.='<div id="news-wrapper-'.$vars->id

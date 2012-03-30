@@ -142,7 +142,7 @@ function Products_datatable ($params, $smarty) {
 			$c.= '</th><td>';
 			switch($data->t) {
 				case 'date': // {
-					$c.= date_m2h($product->vals[$data->n]);
+					$c.= Core_dateM2H($product->vals[$data->n]);
 				break; // }
 				case 'checkbox': // {
 					if (isset($product->vals[$data->n])) {
@@ -184,7 +184,7 @@ function Products_datatable ($params, $smarty) {
 			$c.= '<td>';
 			switch ($data->t) {
 				case 'date' : // {
-					$c.= date_m2h($product->vals[$data->n]);
+					$c.= Core_dateM2H($product->vals[$data->n]);
 				break; // }
 				case 'checkbox': // {
 					if (isset($product->vals[$data->n])) {
@@ -247,7 +247,7 @@ function Product_datatableMultiple ($products, $direction) {
 						:'No';
 				break; // }
 				case 'date': // {
-					$row[$df->n] = date_m2h($product->vals[$df->n]);
+					$row[$df->n] = Core_dateM2H($product->vals[$df->n]);
 				break; // }
 				case 'textarea' : // {
 					$row[$df->n] = $product->vals[$df->n];

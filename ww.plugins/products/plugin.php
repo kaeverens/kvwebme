@@ -428,7 +428,7 @@ class Product{
 			if ($data->n==$name) {
 				switch($data->t) {
 					case 'date': // {
-						return date_m2h($this->vals[$data->n]);
+						return Core_dateM2H($this->vals[$data->n]);
 					break; // }
 					case 'checkbox': // {
 						if (isset($this->vals[$data->n]) && $this->vals[$data->n]) {
@@ -765,7 +765,7 @@ class ProductType{
 					else {
 						$smarty->assign(
 							$f->n,
-							date_m2h($val)
+							Core_dateM2H($val)
 						);
 					}
 				break; // }

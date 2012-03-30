@@ -45,7 +45,9 @@ function RecommendThisSite_adminPageForm($page, $vars) {
   */
 function RecommendThisSite_frontend($PAGEDATA) {
 	require dirname(__FILE__).'/frontend/show.php';
-	if(!isset($PAGEDATA->vars['footer']))$PAGEDATA->vars['footer']='';
+	if (!isset($PAGEDATA->vars['footer'])) {
+		$PAGEDATA->vars['footer']='';
+	}
 	return $PAGEDATA->render()
 		.RecommendThisSite_show($PAGEDATA->dbVals, $PAGEDATA->vars)
 		.$PAGEDATA->vars['footer'];

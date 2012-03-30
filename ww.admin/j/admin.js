@@ -15,7 +15,7 @@ function convert_date_to_human_readable(){
 			}
 		});
 	var $wrapper=$this.wrap('<div style="position:relative" />');
-	var $input=$('<input id="'+id+'" class="date-human-readable" value="'+date_m2h($this.val())+'" />');
+	var $input=$('<input id="'+id+'" class="date-human-readable" value="'+Core_dateM2H($this.val())+'" />');
 	$input.insertAfter($this);
 	$this.css({
 		'position':'absolute',

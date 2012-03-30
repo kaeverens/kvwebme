@@ -193,7 +193,10 @@ if ($version==25) { // remove some silly ideas that are better done differently
 	$version=26;
 }
 if ($version==26) { // update expiry dates
-	dbQuery('update products set expires_on="2100-01-01 00:00:00" where expires_on="0000-00-00 00:00:00"');
+	dbQuery(
+		'update products set expires_on="2100-01-01 00:00:00"'
+		.' where expires_on="0000-00-00 00:00:00"'
+	);
 	$version=27;
 }
 if ($version==27) { // clear cron

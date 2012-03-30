@@ -105,7 +105,7 @@ function News_displayHeadlines($PAGEDATA) {
 		)
 			?'<h2 class="news-header"><a href="'.$page->getRelativeURL().'">'
 			.htmlspecialchars($page->name).'</a></h2>'.'<a class="news-date" href="'
-			.$page->getRelativeURL().'">posted on '.date_m2h($page->associated_date)
+			.$page->getRelativeURL().'">posted on '.Core_dateM2H($page->associated_date)
 			.'</a>'
 			:'';
 		if (!isset($page->associated_date)

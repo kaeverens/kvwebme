@@ -15,7 +15,7 @@ if(count($rs)){ // show addressbooks
 		$ss=json_decode($r['subscribers']);
 		echo '<tr id="sms_row_'.$r['id'].'">'
 			.'<td>'.htmlspecialchars($r['name']).'</td>'
-			.'<td>'.date_m2h($r['date_created']).'</td>'
+			.'<td>'.Core_dateM2H($r['date_created']).'</td>'
 			.'<td>'.count($ss).'</td>'
 			.'<td><a href="javascript:sms_edit('.$r['id'].')">edit</a></td>'
 			.'<td><a href="javascript:sms_delete('.$r['id'].')">[x]</a></td>'

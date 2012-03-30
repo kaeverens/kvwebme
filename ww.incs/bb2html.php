@@ -9,8 +9,7 @@
 // date: 2004/Apr/18
 
 
-function bb2html($text)
-{
+function bb2html($text) {
 	$text=preg_replace(
 		'#\[url\]([^\[]*)\[/url]#',
 		'<a href="\1">\1</a>',

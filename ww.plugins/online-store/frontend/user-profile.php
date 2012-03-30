@@ -43,7 +43,7 @@ $html .= '<table id="online_store_orders" style="border:1px solid #ccc;'
 foreach ($history as $order) {
 	$status = ( $order[ 'status' ] == 1 ) ? 'Paid' : 'Unpaid';
 	$html .= '<tr>
-		<td>' . date_m2h($order[ 'date_created' ]) . '</td>
+		<td>' . Core_dateM2H($order[ 'date_created' ]) . '</td>
 		<td>' . $order[ 'total' ] . '</td>
 		<td>' . $status . '</td>
 		<td>

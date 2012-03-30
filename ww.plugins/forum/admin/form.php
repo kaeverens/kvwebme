@@ -47,7 +47,7 @@ $c.='<th>Moderation</th>';
 $c.='</tr></thead><tbody>';
 foreach ($posts as $post) {
 	$c.='<tr id="post-for-moderation-'.$post['id'].'">';
-	$c.='<td>'.date_m2h($post['date']).'</td>';
+	$c.='<td>'.Core_dateM2H($post['date']).'</td>';
 	$c.='<td>'.htmlspecialchars($post['user']).'</td>';
 	$c.='<td>'.htmlspecialchars($post['forum']).'</td>';
 	$c.='<td>'.htmlspecialchars($post['thread']).'</td>';

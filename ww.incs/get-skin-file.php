@@ -98,7 +98,7 @@ if ($mimetype=='text/css') {
 					$css='box-shadow:'.$rules.';'
 						.'-moz-box-shadow:'.$rules.';'
 						.'-webkit-box-shadow:'.$rules.';';
-					break; // }
+				break; // }
 				default:
 					$css=$matches[0][$i];
 			}

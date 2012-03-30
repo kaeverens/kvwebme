@@ -15,7 +15,8 @@
 $plugin=array(
 	'name' => 'SiteCredits',
 	'hide_from_admin'=>	true,
-	'description' => 'admins can pay for credits, which are used to manage site subscriptions',
+	'description' => 'admins can pay for credits, which are used to'
+		.' manage site subscriptions',
 	'admin' => array(
 		'menu' => array(
 			'Credits' => 'overview'

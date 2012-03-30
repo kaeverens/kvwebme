@@ -96,7 +96,7 @@ function Comments_displayComments($page) {
 			else {
 				$clist.= htmlspecialchars($comment['name']);
 			}
-			$clist.= ' on '.date_m2h($datetime).'</div>'
+			$clist.= ' on '.Core_dateM2H($datetime).'</div>'
 				.'<div id="comment-'.$id.'" class="comments-comment">'
 				.htmlspecialchars($comment['comment'])
 				.'</div></div>';

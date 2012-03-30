@@ -177,7 +177,7 @@ function Form_send($page, $vars, &$form_fields) {
 				}
 			break; // }
 			case 'date':case 'ccdate': // {
-				$val=date_m2h(@$_REQUEST[$name]);
+				$val=Core_dateM2H(@$_REQUEST[$name]);
 				if ($r2['type']=='ccdate') {
 					$val=preg_replace('#.* ([a-zA-Z]*, [0-9]+)#', "$1", $val);
 				}
@@ -415,14 +415,14 @@ function Form_readonly($page_id, &$vars, &$form_fields) {
 				$d=preg_replace(
 					'#.* ([a-zA-Z]*, [0-9]+)#',
 					"$1",
-					date_m2h($_REQUEST[$name])
+					Core_dateM2H($_REQUEST[$name])
 				);
 			break; // }
 			case 'date': // {
 				if ($_REQUEST[$name]=='') {
 					$_REQUEST[$name]=date('Y-m-d');
 				}
-				$d=date_m2h($_REQUEST[$name]);
+				$d=Core_dateM2H($_REQUEST[$name]);
 			break; // }
 			case 'file': // {
 				$d='if there are any files, they are attached to this email';

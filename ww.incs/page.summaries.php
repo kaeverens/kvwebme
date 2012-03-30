@@ -76,7 +76,7 @@ function PageSummaries_getHtml($id) {
 				$r2['title']=$r2['name'];
 			}
 			$rss.='<title>'.htmlspecialchars($r2['title']).'</title>';
-			$rss.='<pubDate>'.date_m2h($r2['edate']).'</pubDate>';
+			$rss.='<pubDate>'.Core_dateM2H($r2['edate']).'</pubDate>';
 			// { build body
 			if ($r['amount_to_show']==0 || $r['amount_to_show']==1) {
 				$length=$r['amount_to_show']==0?300:600;

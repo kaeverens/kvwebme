@@ -91,7 +91,7 @@ if (is_array($rs) && count($rs)) {
 		$c.='<tr>'
 			.'<td>'.$r['id'].'</td>'
 			.'<td><span style="display:none">'.$r['date_created'].'</span>'
-			.date_m2h($r['date_created']).'</td><td>'
+			.Core_dateM2H($r['date_created']).'</td><td>'
 			.$csym.sprintf('%.2f', $r['total'])
 			.'</td>'
 			.'<td><a href="javascript:os_listItems('.$r['id'].')">items</a></td>'
@@ -123,7 +123,7 @@ if ($has_authrs) { // authorised payments
 	foreach ($authrs as $r) {
 		$c.='<tr id="capture'.$r['id'].'"><td><input type="checkbox" id="auth'
 			.$r['id'].'"/></td>'
-			.'<td>'.$r['id'].'</td><td>'.date_m2h($r['date_created']).'</td>'
+			.'<td>'.$r['id'].'</td><td>'.Core_dateM2H($r['date_created']).'</td>'
 			.'<td>'.$r['total'].'</td><td>'.$statii[(int)$r['status']].'</td></tr>';
 	}
 	$c.='</table><input type="button" value="capture selected transactions"/>';

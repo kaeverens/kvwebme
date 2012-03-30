@@ -30,7 +30,7 @@ function Menu_getChildren(
 	global $_languages;
 	$md5=md5(
 		$parentid.'|'.$currentpage.'|'.$isadmin.'|'.$topParent
-			.'|'.join(',', $_languages).'|'.@$_SESSION['language']
+		.'|'.join(',', $_languages).'|'.@$_SESSION['language']
 	);
 	$pageParentFound=0;
 	if ($parentid) {
@@ -127,7 +127,10 @@ function Menu_show($b) {
 	if (!$PAGEDATA->id) {
 		return '';
 	}
-	$md5=md5('ww_menudisplay|'.print_r($b, true).'|'.join(',', $_languages).'|'.@$_SESSION['language']);
+	$md5=md5(
+		'ww_menudisplay|'.print_r($b, true).'|'.join(',', $_languages)
+		.'|'.@$_SESSION['language']
+	);
 	$cache=Core_cacheLoad('menus', $md5);
 	if ($cache) {
 		return $cache;

@@ -1,5 +1,4 @@
 <?php
-$count = 0;
 $plugin=array(
 	'name'=>'protected files',
 	'description'=>'Protect files by requiring either a login or an email address',
@@ -9,11 +8,11 @@ $plugin=array(
 		)
 	),
 	'frontend'=>array(
-		'file_hook'=>'protectedFiles_check'
+		'file_hook'=>'ProtectedFiles_check'
 	),
 	'version'=>6
 );
-function protectedFiles_log($fname, $success, $email='', $pf_id=0) {
+function ProtectedFiles_log($fname, $success, $email='', $pf_id=0) {
 	$i=$_SERVER['REMOTE_ADDR'];
 	if (!isset($_SESSION['session_md5'])) {
 		$_SESSION['session_md5']=md5($i.$_SERVER['REQUEST_TIME']);
@@ -29,7 +28,7 @@ function protectedFiles_log($fname, $success, $email='', $pf_id=0) {
 		."),success=$success,email='$e',session_md5='$m',pf_id=$pf_id"
 	);
 }
-function protectedFiles_check($vars) {
+function ProtectedFiles_check($vars) {
 	global $PAGEDATA;
 	$fname=$vars['requested_file'];
 	$protected_files=Core_cacheLoad('protected_files', 'all');
@@ -70,7 +69,7 @@ function protectedFiles_check($vars) {
 							$_SESSION['protected_files_stage2']=1;
 							$PAGEDATA=Page::getInstance(0);
 							$PAGEDATA->title='File Download';
-							list($smarty, $template)=protectedFiles_getTemplate(
+							list($smarty, $template)=ProtectedFiles_getTemplate(
 								$pr['template']
 							);
 							$smarty->assign('METADATA', '<title>File Download</title>');
@@ -96,7 +95,7 @@ function protectedFiles_check($vars) {
 								'protected file "'.addslashes($fname)
 								.'" was downloaded by "'.addslashes($email).'"'
 							); 
-							protectedFiles_log($fname, 1, $email, $pr['id']);
+							ProtectedFiles_log($fname, 1, $email, $pr['id']);
 							unset($_SESSION['referer']);
 						}
 					}
@@ -107,10 +106,10 @@ function protectedFiles_check($vars) {
 								?$_SERVER['HTTP_REFERER']
 								:'';
 						}
-						protectedFiles_log($fname, 0, '', $pr['id']);
+						ProtectedFiles_log($fname, 0, '', $pr['id']);
 						$PAGEDATA=Page::getInstance(0);
 						$PAGEDATA->title='File Download';
-						list($smarty, $template)=protectedFiles_getTemplate(
+						list($smarty, $template)=ProtectedFiles_getTemplate(
 							$pr['template']
 						);
 						$smarty->assign('METADATA', '<title>File Download</title>');
@@ -136,7 +135,7 @@ function protectedFiles_check($vars) {
 					}
 					$PAGEDATA=Page::getInstance(0);
 					$PAGEDATA->title='File Download';
-					list($smarty, $template)=protectedFiles_getTemplate($pr['template']);
+					list($smarty, $template)=ProtectedFiles_getTemplate($pr['template']);
 					$smarty->assign('METADATA', '<title>File Download</title>');
 					$smarty->assign(
 						'PAGECONTENT',
@@ -150,7 +149,7 @@ function protectedFiles_check($vars) {
 		}
 	}
 }
-function protectedFiles_getTemplate($templateString) {
+function ProtectedFiles_getTemplate($templateString) {
 	if (file_exists(THEME_DIR.'/'.THEME.'/h/'.$templateString.'.html')) {
 		$template=THEME_DIR.'/'.THEME.'/h/'.$templateString.'.html';
 	}

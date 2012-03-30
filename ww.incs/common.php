@@ -70,9 +70,38 @@ function Core_languagesGetUi($params=null) {
 			}
 			$ui.='</ul>';
 			WW_addScript('/j/lang.js');
-		// }
+			// }
 	}
 	return $ui;
+}
+
+// }
+// { Core_dateM2H
+
+/**
+	* convert a MySQL date to a human-readable one
+	*
+	* @param string $d    the date to convert
+	* @param string $type the type of date to return
+	*
+	* @return string the transformed date
+	*/
+function Core_dateM2H($d, $type = 'date') {
+	$date = preg_replace('/[- :]/', ' ', $d);
+	$date = explode(' ', $date);
+	if (count($date)<4) {
+		$date[3]='00';
+		$date[4]='00';
+		$date[5]='00';
+	}
+	$utime=@mktime($date[3], $date[4], $date[5], $date[1], $date[2], $date[0]);
+	if ($type == 'date') {
+		return date('l jS F, Y', $utime);
+	}
+	if ($type == 'datetime') {
+		return date('D jS M, Y h:iA', $utime);
+	}
+	return date(DATE_RFC822, $utime);
 }
 
 // }
@@ -98,35 +127,6 @@ function Core_locationsGetUi($params=null) {
 	}
 	$ui.='</select>';
 	return $ui;
-}
-
-// }
-// { date_m2h
-
-/**
-	* convert a MySQL date to a human-readable one
-	*
-	* @param string $d    the date to convert
-	* @param string $type the type of date to return
-	*
-	* @return string the transformed date
-	*/
-function date_m2h($d, $type = 'date') {
-	$date = preg_replace('/[- :]/', ' ', $d);
-	$date = explode(' ', $date);
-	if (count($date)<4) {
-		$date[3]='00';
-		$date[4]='00';
-		$date[5]='00';
-	}
-	$utime=@mktime($date[3], $date[4], $date[5], $date[1], $date[2], $date[0]);
-	if ($type == 'date') {
-		return date('l jS F, Y', $utime);
-	}
-	if ($type == 'datetime') {
-		return date('D jS M, Y h:iA', $utime);
-	}
-	return date(DATE_RFC822, $utime);
 }
 
 // }
@@ -347,8 +347,9 @@ function menuDisplay($a=0) {
 function redirect($addr) {
 	header('HTTP/1.1 301 Moved Permanently');
 	header('Location: '.$addr);
-	echo '<html><head><script defer="defer" type="text/javascript">setTimeout(function(){do'
-		.'cument.location="'.$addr.'";},10);</script></head><body></body></html>';
+	echo '<html><head><script defer="defer" type="text/javascript">'
+		.'setTimeout(function(){document.location="'.$addr.'";},10);</script>'
+		.'</head><body></body></html>';
 	exit;
 }
 

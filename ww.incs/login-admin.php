@@ -9,7 +9,7 @@
 		</script>
 		<script defer="defer" src="/j/lang.js"></script>
 		<link
-			href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css"
+		href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css"
 			rel="stylesheet"/>
 		<link href="/ww.admin/theme/admin.css" rel="stylesheet"/>
 	</head>
@@ -96,7 +96,12 @@
 						if (ret.error) {
 							return alert(ret.error);
 						}
-						alert('<?php echo __('please check your email, then use the form below to reset your password'); ?>');
+						alert('<?php
+echo __(
+	'please check your email, then use the form below to reset '
+	.'your password'
+);
+					?>');
 					});
 				});
 				$('#change-password').click(function(){

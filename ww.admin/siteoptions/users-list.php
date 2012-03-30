@@ -46,7 +46,7 @@ foreach ($users as $user) {
 		echo '<td>never</td>';
 	}
 	else {
-		echo '<td>'.date_m2h($user['last_login']).'</td>';
+		echo '<td>'.Core_dateM2H($user['last_login']).'</td>';
 	}
 	// }
 	// { last view
@@ -54,7 +54,7 @@ foreach ($users as $user) {
 		echo '<td>never</td>';
 	}
 	else {
-		echo '<td>'.date_m2h($user['last_view']).'</td>';
+		echo '<td>'.Core_dateM2H($user['last_view']).'</td>';
 	}
 	// }
 	echo '<td><a href="siteoptions.php?page=users&amp;id='.$user['id'].'">edi'

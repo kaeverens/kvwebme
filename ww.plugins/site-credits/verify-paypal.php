@@ -26,7 +26,8 @@ if (!$fp) {
 			if ($paid<0) {
 				exit;
 			}
-			$GLOBALS['DBVARS']['sitecredits-credits']=((float)$GLOBALS['DBVARS']['sitecredits-credits'])+$paid;
+			$GLOBALS['DBVARS']['sitecredits-credits']
+				=((float)$GLOBALS['DBVARS']['sitecredits-credits'])+$paid;
 			Core_configRewrite();
 			SiteCredits_recordTransaction('credits purchased', $paid);
 		}

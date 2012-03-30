@@ -124,14 +124,16 @@ function Core_getImg() {
 	if (isset($_REQUEST['base64'])) {
 		$f=base64_decode($_REQUEST['base64']);
 		if (@fopen($f, 'r')!=true) {
-			echo 'file "'.$f.'" does not exist';
+			header("HTTP/1.0 404 Not Found");
+			echo 'file does not exist';
 			exit;
 		}
 	}
 	else {
 		$f=USERBASE.'/f/'.$_REQUEST['_remainder'];
-		if (!file_exists($f)) {
-			echo 'file "'.$f.'" does not exist';
+		if (!file_exists($f)) { 
+			header("HTTP/1.0 404 Not Found");
+			echo 'file does not exist';
 			exit;
 		}
 	}
