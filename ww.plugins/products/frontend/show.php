@@ -1248,37 +1248,53 @@ class Products{
 	function render($PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0) {
 		$c='';
 		// { sort based on $order_by
-		if ($order_by!='') {
-			$tmpprods1=array();
-			$prods=$this->product_ids;
-			foreach ($prods as $key=>$pid) {
-				$prod=$product=Product::getInstance($pid);
-				if ($product->get($order_by)) {
-					if (!isset($tmpprods1[$product->get($order_by)])) {
-						$tmpprods1[$product->get($order_by)]=array();
+		$md5=md5(
+			'ps-sorted-'.join(',', $this->product_ids).'|'.$order_by.'|'.$order_dir
+		);
+		$tmpprods=Core_cacheLoad(
+			'products',
+			$md5,
+			-1
+		);
+		if ($tmpprods==-1) {
+			if ($order_by!='') {
+				$tmpprods1=array();
+				$prods=$this->product_ids;
+				foreach ($prods as $key=>$pid) {
+					$prod=$product=Product::getInstance($pid);
+					if ($product->get($order_by)) {
+						$key=__FromJSON($product->get($order_by));
+						if (!isset($tmpprods1[$key])) {
+							$tmpprods1[$key]=array();
+						}
+						$tmpprods1[$key][]=$pid;
+						unset($prods[$key]);
 					}
-					$tmpprods1[$product->get($order_by)][]=$pid;
-					unset($prods[$key]);
 				}
-			}
-			if ($order_dir) {
-				krsort($tmpprods1);
-			}
-			else {
-				ksort($tmpprods1);
-			}
-			$tmpprods=array();
-			foreach ($tmpprods1 as $pids) {
-				foreach ($pids as $pid) {
+				if ($order_dir) {
+					krsort($tmpprods1);
+				}
+				else {
+					ksort($tmpprods1);
+				}
+				$tmpprods=array();
+				foreach ($tmpprods1 as $pids) {
+					foreach ($pids as $pid) {
+						$tmpprods[]=$pid;
+					}
+				}
+				foreach ($prods as $key=>$pid) {
 					$tmpprods[]=$pid;
 				}
 			}
-			foreach ($prods as $key=>$pid) {
-				$tmpprods[]=$pid;
+			else {
+				$tmpprods=&$this->product_ids;
 			}
-		}
-		else {
-			$tmpprods=&$this->product_ids;
+			Core_cacheSave(
+				'products',
+				$md5,
+				$tmpprods
+			);
 		}
 		// }
 		// { sanitise the limits
