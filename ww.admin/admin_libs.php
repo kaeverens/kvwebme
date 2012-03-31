@@ -186,9 +186,12 @@ function WW_getScripts() {
 			$adminVars->{$r['varname']}=$r['varvalue'];
 		}
 	}
-	$scripts_inline[]='window.adminVars='.json_encode(
+	$scripts_inline[]='this.adminVars='.json_encode(
 		$adminVars
 	);
+	// }
+	// { list plugins
+	$scripts_inline[]='this.webmePlugins='.json_encode(array_keys($GLOBALS['PLUGINS']));
 	// }
 	$inline='<script>'.join(';', $scripts_inline).';</script>';
 	// }

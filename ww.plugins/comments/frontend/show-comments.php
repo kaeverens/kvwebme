@@ -27,8 +27,6 @@ function Comments_displayComments($page) {
 	if (!$GLOBALS['access_allowed']) {
 		return '';
 	}
-	WW_addScript('/ww.plugins/comments/frontend/comments-frontend.js');
-	WW_addCSS('/ww.plugins/comments/frontend/comments.css');
 	// { order of display
 	$commentboxfirst=isset($page->vars['comments_show_box_at_top'])
 		&& $page->vars['comments_show_box_at_top'];
@@ -117,10 +115,14 @@ function Comments_displayComments($page) {
 		Core_cacheSave('comments', 'allow-'.$page->id, $allowComments);
 	}
 	$cbhtml=$allowComments=='on'?Comments_showCommentForm($page->id):'';
+	if ($allowComments=='on') {
+		WW_addScript('/ww.plugins/comments/frontend/comments-frontend.js');
+		$cbhtml.='<script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.9/'
+			.'jquery.validate.min.js"></script>';
+	}
+	WW_addCSS('/ww.plugins/comments/frontend/comments.css');
 	// }
-	return '<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.8/'
-		.'jquery.validate.min.js"></script>'
-		.($commentboxfirst?$cbhtml.$clist:$clist.$cbhtml);
+	return $commentboxfirst?$cbhtml.$clist:$clist.$cbhtml;
 }
 
 /**

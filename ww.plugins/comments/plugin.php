@@ -104,7 +104,7 @@ function Comments_rssHandler($PAGEDATA) {
 		$items[]=array(
 			'title'=>'comment by '.$comment['name'],
 			'description'=>$comment['comment'],
-			'link'=>'http://'.$_SERVER['HTTP_HOST'].$PAGEDATA->getRelativeURL()
+			'link'=>'//'.$_SERVER['HTTP_HOST'].$PAGEDATA->getRelativeURL()
 				.'#comments-'.$comment['id'],
 			'guid'=>'comment-'.$comment['id'],
 			'pubDate'=>Core_dateM2H($comment['cdate'], 'rfc822')
@@ -112,7 +112,7 @@ function Comments_rssHandler($PAGEDATA) {
 	}
 	return array(
 		'title'       => 'Comments for '.$PAGEDATA->getRelativeURL(),
-		'link'        => 'http://'.$_SERVER['HTTP_HOST'].$PAGEDATA->getRelativeURL()
+		'link'        => '//'.$_SERVER['HTTP_HOST'].$PAGEDATA->getRelativeURL()
 			.'#comments',
 		'description' => 'Comments for '.$PAGEDATA->getRelativeURL(),
 		'generator'   => 'WebME CMS',

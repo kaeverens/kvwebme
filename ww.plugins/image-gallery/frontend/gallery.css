@@ -31,7 +31,7 @@
 #big-prev-link, #prev-link{
 	background: url('/ww.plugins/image-gallery/frontend/arrow-left.png') center no-repeat;
 	opacity:.7;
-	left:-35px;
+	left:0;
 	z-index:2;
 }
 #big-prev-link:hover,#prev-link:hover{
@@ -40,7 +40,7 @@
 #next-link,#big-next-link{
 	background: url('/ww.plugins/image-gallery/frontend/arrow-right.png') center no-repeat;
 	opacity:.7;
-	right:-35px;
+	right:0;
 	z-index:2;
 }
 #next-link:hover,#big-next-link:hover{

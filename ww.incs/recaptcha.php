@@ -35,6 +35,6 @@ function Recaptcha_getHTML() {
 		.'Enter the words above:</span>'
 		.'<input id="recaptcha_response_field" '
 		.'name="recaptcha_response_field" /></div>'
-		.'<script src="http://www.google.com/recaptcha/api/challenge?k='
+		.'<script src="//www.google.com/recaptcha/api/challenge?k='
 		.RECAPTCHA_PUBLIC.'"></script>';
 }

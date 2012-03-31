@@ -11,6 +11,8 @@
 	* @link     http://kvsites.ie/
 	*/
 
+// { TableOfContents_getContent
+
 /**
   * get table of contents for a given page
   *
@@ -28,7 +30,7 @@ function TableOfContents_getContent(&$PAGEDATA) {
 		$c.='<ul class="subpages">';
 		foreach ($kids->pages as $kid) {
 			$c.='<li><a href="'.$kid->getRelativeURL().'">'
-				.htmlspecialchars($kid->name).'</a></li>';
+				.htmlspecialchars(__fromJSON($kid->name)).'</a></li>';
 		}
 		$c.='</ul>';
 	}
@@ -37,3 +39,5 @@ function TableOfContents_getContent(&$PAGEDATA) {
 	}
 	return $c;
 }
+
+// }

@@ -238,7 +238,7 @@ function menu_build_fg($parentid, $depth, $options) {
 	*
 	* @return string the html
 	*/
-function menu_show_fg ($opts) {
+function menu_show_fg ($opts=array()) {
 	global $_languages;
 	$c='';
 	$md5_1=md5('menu_fg|'.print_r($opts, true).'|'.join(', ', $_languages));
