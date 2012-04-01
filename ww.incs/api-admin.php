@@ -956,6 +956,82 @@ function Core_adminPluginsSetInstalled() {
 }
 
 // }
+// { Core_adminPluginsInstallOne
+
+/**
+	* install one plugin
+	*
+	* @return array status
+	*/
+function Core_adminPluginsInstallOne() {
+	$to_install=$_REQUEST['name'];
+	// { is it already installed?
+	$installed=Core_adminPluginsGetInstalled();
+	foreach ($installed as $key=>$p) {
+		if ($key==$to_install) {
+			return array('ok'=>1, 'message'=>'already installed');
+		}
+	}
+	// }
+	// { does it exist?
+	$available=Core_adminPluginsGetAvailable();
+	$found=0;
+	foreach ($available as $key=>$p) {
+		if ($key==$to_install) {
+			$found=1;
+		}
+	}
+	if ($found==0) {
+		return array('ok'=>0, 'message'=>'plugin not found');
+	}
+	// }
+	// { install it
+	$plugins=array();
+	foreach ($installed as $key=>$p) {
+		$plugins[$key]=1;
+	}
+	$plugins[$to_install]=1;
+	$_REQUEST['plugins']=$plugins;
+	return Core_adminPluginsSetInstalled();
+	// }
+}
+
+// }
+// { Core_adminPluginsRemoveOne
+
+/**
+	* remove one plugin
+	*
+	* @return array status
+	*/
+function Core_adminPluginsRemoveOne() {
+	$to_remove=$_REQUEST['name'];
+	// { is it already removed?
+	$installed=Core_adminPluginsGetInstalled();
+	$found=0;
+	foreach ($installed as $key=>$p) {
+		if ($key==$to_remove) {
+			$found=1;
+		}
+	}
+	if ($found==0) {
+		return array('ok'=>1, 'message'=>'already removed');
+	}
+	// }
+	// { remove it
+	$plugins=array();
+	foreach ($installed as $key=>$p) {
+		if ($key==$to_remove) {
+			continue;
+		}
+		$plugins[$key]=1;
+	}
+	$_REQUEST['plugins']=$plugins;
+	return Core_adminPluginsSetInstalled();
+	// }
+}
+
+// }
 // { Core_adminSaveJSVar
 
 /**
