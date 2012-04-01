@@ -1263,11 +1263,11 @@ class Products{
 				foreach ($prods as $key=>$pid) {
 					$prod=$product=Product::getInstance($pid);
 					if ($product->get($order_by)) {
-						$key=__FromJSON($product->get($order_by));
-						if (!isset($tmpprods1[$key])) {
-							$tmpprods1[$key]=array();
+						$key2=__FromJSON($product->get($order_by));
+						if (!isset($tmpprods1[$key2])) {
+							$tmpprods1[$key2]=array();
 						}
-						$tmpprods1[$key][]=$pid;
+						$tmpprods1[$key2][]=$pid;
 						unset($prods[$key]);
 					}
 				}
