@@ -1,18 +1,24 @@
-
 <?php
 /**
-  * forum api
-  *
-  * PHP Version 5
-  *
-  * @category   Whatever
-  * @package    WebworksWebme
-  * @subpackage Forum
-  * @author     Kae Verens <kae@kvsites.ie>
-  * @license    GPL Version 2
-  * @link       www.kvweb.me
- */
+	* forum api
+	*
+	* PHP Version 5
+	*
+	* @category   Whatever
+	* @package    WebworksWebme
+	* @subpackage Forum
+	* @author     Kae Verens <kae@kvsites.ie>
+	* @license    GPL Version 2
+	* @link       www.kvweb.me
+	*/
 
+// { Forum_post
+
+/**
+	* submit a post to a forum
+	*
+	* @return status of the forum
+	*/
 function Forum_post() {
 	if (!isset($_SESSION['userdata']) || !$_SESSION['userdata']['id']) {
 		exit;
@@ -127,6 +133,10 @@ function Forum_post() {
 		'post_id'=>$post_id
 	);
 }
+
+// }
+// { Forum_delete
+
 /**
   * delete a message from a forum
   *
@@ -141,11 +151,9 @@ function Forum_delete() {
 	if (!$post_id) {
 		$errs[]='no post selected';
 	}
+	$sql='select author_id from forums_posts where id='.$post_id;
 	if (!Core_isAdmin()
-		&& dbOne(
-			'select author_id from forums_posts where id='.$post_id,
-			'author_id'
-		) != $_SESSION['userdata']['id']
+		&& dbOne($sql, 'author_id') != $_SESSION['userdata']['id']
 	) {
 		$errs[]='this is not your post, or post does not exist';
 	}
@@ -163,3 +171,5 @@ function Forum_delete() {
 		'ok'=>1
 	);
 }
+
+// }

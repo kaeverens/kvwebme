@@ -1,6 +1,25 @@
 <?php
-if(!function_exists('mime_content_type')) {
+/**
+  * scripts for validating and sending forms
+  *
+  * PHP Version 5
+  *
+  * @category   None
+  * @package    None
+  * @subpackage None
+  * @author     Kae Verens <kae@kvsites.ie>
+  * @license    GPL Version 2
+  * @link       www.kvweb.me
+ */
 
+if (!function_exists('mime_content_type')) {
+	/**
+		* create function mime_content_type if it's not already there
+		*
+		* @param string $filename the filename to test
+		*
+		* @return string the mime type
+		*/
 	function mime_content_type($filename) {
 
 		$mime_types = array(
@@ -59,7 +78,7 @@ if(!function_exists('mime_content_type')) {
 			'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
 		);
 
-		$ext = strtolower(array_pop(explode('.',$filename)));
+		$ext = strtolower(array_pop(explode('.', $filename)));
 		if (array_key_exists($ext, $mime_types)) {
 			return $mime_types[$ext];
 		}
@@ -74,18 +93,8 @@ if(!function_exists('mime_content_type')) {
 		}
 	}
 }
-/**
-  * scripts for validating and sending forms
-  *
-  * PHP Version 5
-  *
-  * @category   None
-  * @package    None
-  * @subpackage None
-  * @author     Kae Verens <kae@kvsites.ie>
-  * @license    GPL Version 2
-  * @link       www.kvweb.me
- */
+
+// { Form_validate
 
 /**
   * validate the inputs for a form
@@ -149,6 +158,9 @@ function Form_validate(&$vars, &$form_fields) {
 	return $errors;
 }
 
+// }
+// { Form_send
+
 /**
   * sends a form, or displays the form instead with errors on top
   *
@@ -158,7 +170,7 @@ function Form_validate(&$vars, &$form_fields) {
   *
   * @return HTML of either the result, or the form with errors on top
   */
-function Form_send($page, $vars, &$form_fields) {
+function Form_send($page, $vars, $form_fields) {
 	$c='';
 	$plaintext='';
 	$values=array();
@@ -303,6 +315,9 @@ function Form_send($page, $vars, &$form_fields) {
 	return $c;
 }
 
+// }
+// { Form_saveValues
+
 /**
   * save submitted form values
   *
@@ -331,6 +346,9 @@ function Form_saveValues($formid, &$form_fields) {
 		);
 	}
 }
+
+// }
+// { Form_readonly
 
 /**
   * get a readonly version of the form (for sending as email)
@@ -464,3 +482,5 @@ function Form_readonly($page_id, &$vars, &$form_fields) {
 	}
 	return $c;
 }
+
+// }

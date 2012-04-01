@@ -16,6 +16,9 @@
 /**
 	* get amount of product in stock (simple)
 	*
+	* @param array  $params parameters
+	* @param object $smarty Smarty object
+	*
 	* @return int number in stock
 	*/
 function Products_amountInStock2($params, $smarty) {
@@ -29,6 +32,9 @@ function Products_amountInStock2($params, $smarty) {
 
 /**
 	* get a map centered on the product
+	*
+	* @param array  $params parameters
+	* @param object $smarty Smarty object
 	*
 	* @return html of the map
 	*/
@@ -186,7 +192,8 @@ function Products_priceDiscountPercent2($params, $smarty) {
 		return '0';
 	}
 	if ($product->getPrice()) {
-		return (int)(100* (($product->getPrice()-$product->getPrice('sale'))/$product->getPrice()));
+		$p=$product->getPrice();
+		return (int)(100* (($p-$product->getPrice('sale'))/$p));
 	}
 	return '--';
 }
@@ -211,7 +218,11 @@ function Products_priceSale2($params, $smarty) {
 	$vat=isset($params['vat']) && $params['vat']
 		?(100+$_SESSION['onlinestore_vat_percent'])/100
 		:1;
-	return OnlineStore_numToPrice($product->getPrice('sale')*$vat, true, (int)@$params['round']);
+	return OnlineStore_numToPrice(
+		$product->getPrice('sale')*$vat,
+		true,
+		(int)@$params['round']
+	);
 }
 
 // }

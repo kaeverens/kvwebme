@@ -20,7 +20,7 @@
   *
   * @return HTML of either the form
   */
-function RecommendThisSite_send(&$page, &$vars) {
+function RecommendThisSite_send($page, $vars) {
 	$yname=$_REQUEST['rts_yname'];
 	$yemail=$_REQUEST['rts_yemail'];
 	$fname=$_REQUEST['rts_fname'];
@@ -72,7 +72,7 @@ function RecommendThisSite_send(&$page, &$vars) {
   *
   * @return HTML of either the form, or the result of sending
   */
-function RecommendThisSite_show(&$page, &$vars) {
+function RecommendThisSite_show($page, $vars) {
 	$html='';
 	if (isset($_REQUEST['action']) 
 		&& $_REQUEST['action']=='Send Recommendation'
@@ -115,7 +115,7 @@ function RecommendThisSite_show(&$page, &$vars) {
   *
   * @return HTML of either the form
   */
-function RecommendThisSite_showForm(&$page, &$vars) {
+function RecommendThisSite_showForm($page, $vars) {
 	$html='<form method="post"><table>'
 		.'<tr><th>Your Name</th><td><input name="rts_yname" /></td></tr>'
 		.'<tr><th>Your Email</th><td><input type="email" name="rts_yemail" />'
