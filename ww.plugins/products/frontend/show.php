@@ -735,8 +735,8 @@ function Products_show($PAGEDATA) {
 	if (!isset($PAGEDATA->vars['products_what_to_show'])) {
 		$PAGEDATA->vars['products_what_to_show']='0';
 	}
-	WW_addScript('/ww.plugins/products/j/jquery.lightbox/jquery.lightbox-0.5.min.js');
-	WW_addCSS('/ww.plugins/products/j/jquery.lightbox/jquery.lightbox-0.5.css');
+	WW_addScript('/j/jquery.lightbox/jquery.lightbox-0.5.min.js');
+	WW_addCSS('/j/jquery.lightbox/jquery.lightbox-0.5.css');
 	WW_addScript('/ww.plugins/products/frontend/js.js');
 	$c='';
 	// { search

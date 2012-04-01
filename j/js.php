@@ -21,6 +21,7 @@ header('Pragma:');
 header('Content-type: text/javascript;');
 
 $files=array(
+	'requirejs-1.0.7',
 	'jquery.json-2.2.min.js',
 	'js.js'
 );
