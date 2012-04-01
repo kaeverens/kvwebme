@@ -23,7 +23,7 @@ window.ww={
 	CKEDITOR:'ckeditor'
 };
 // { variables
-var function_urls=[],months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var CKEDITOR_BASEPATH='/j/ckeditor-3.6.2/';
 // }
 var Json = {
@@ -76,7 +76,7 @@ $.cachedScript=function(url) {
 		'url':url
 	};
 	return $.ajax(options);
-}
+};
 for (var i=stubs.length;i--;) {
 	var n=stubs[i];
 	var s="function "+n+"(){var args=arguments;$.cachedScript('/j/funcs/"+n
