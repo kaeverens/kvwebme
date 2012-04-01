@@ -24,7 +24,7 @@ $(function(){
 	$('div.product-images img').click(function(){
 		var src=$('a.products-lightbox img').attr('src'),
 			id=this.src.replace(/.*kfmget\/([0-9]*)[^0-9].*/,'$1'),
-			$wrapper=$(this).closest('.products-product')
+			$wrapper=$(this).closest('.products-product');
 			caption=this.title;
 		$wrapper
 			.find('a.products-lightbox').attr('href','/kfmget/'+id)
@@ -342,7 +342,7 @@ function Products_showMap() {
 	}
 	var latlng=window.userdata&&window.userdata.lat&&window.userdata.lng
 		?[window.userdata.lat, window.userdata.lng]
-		:[54.78310263573059,-6.278343984374946]
+		:[54.78310263573059,-6.278343984374946];
 	var myOptions={
 		zoom:10,
 		center:new google.maps.LatLng(latlng[0], latlng[1]),
