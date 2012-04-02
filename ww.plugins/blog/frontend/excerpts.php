@@ -24,7 +24,7 @@ foreach ($rs as $r) {
 	$user=User::getInstance($r['user_id']);
 	$name=$user?$user->name:'unknown';
 	$c.='<span class="blog-author">'.$name.'</span> ~ '
-		.'<span class="blog-date-created">'.date_m2h($r['cdate']).'</span>';
+		.'<span class="blog-date-created">'.Core_dateM2H($r['cdate']).'</span>';
 	$excerpt=$r['excerpt']
 		?$r['excerpt']
 		:substr(preg_replace('/<[^>]*>/', ' ', $r['body']), 0, $excerpt_length).'...';
