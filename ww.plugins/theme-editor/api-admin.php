@@ -112,6 +112,4 @@ function ThemeEditor_adminCssCopy() {
 	return array('success'=>1);
 }
 
-*/
-
-//}
+// }
