@@ -696,6 +696,28 @@ function Products_adminProductDelete() {
 }
 
 // }
+// { Products_adminProductEdit
+
+/**
+	* delete a product
+	*
+	* @return array status
+	*/
+function Products_adminProductEditVal() {
+	$id=(int)$_REQUEST['id'];
+	$name=$_REQUEST['name'];
+	$value=$_REQUEST['val'];
+	if (!in_array($name, array('stock_number', 'stockcontrol_total', 'enabled'))) {
+		return array('error'=>'field not allowed');
+	}
+	dbQuery(
+		'update products set '.$name.'="'.addslashes($value).'" where id='.$id
+	);
+	Core_cacheClear();
+	return array('ok'=>1);
+}
+
+// }
 // { Products_adminProductsDatafieldsGet
 
 /**

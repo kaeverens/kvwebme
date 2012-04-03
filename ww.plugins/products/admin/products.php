@@ -44,4 +44,5 @@ echo '<div><table id="products-list"><thead>'
 	.'<th>ID</th><th>Enabled</th><th>&nbsp;</th></tr></thead><tbody>'
 	.'</tbody></table></div>';
 // }
+WW_addScript('/j/jquery.jeditable.mini.js');
 WW_addScript('/ww.plugins/products/admin/products.js');
