@@ -1377,9 +1377,15 @@ function Products_importFile($vars=false) {
 			);
 		}
 		if (@$data[$headers['_price']]) {
-			$os_fields['_price']=(float)@$data[$headers['_price']];
-			$os_fields['_saleprice']=(float)@$data[$headers['_saleprice']];
-			$os_fields['_bulkprice']=(float)@$data[$headers['_bulkprice']];
+			$os_fields['_price']=Products_importParseNumber(
+				@$data[$headers['_price']]
+			);
+			$os_fields['_saleprice']=Products_importParseNumber(
+				@$data[$headers['_saleprice']]
+			);
+			$os_fields['_bulkprice']=Products_importParseNumber(
+				@$data[$headers['_bulkprice']]
+			);
 			$os_fields['_bulkamount']=(int)@$data[$headers['_bulkamount']];
 		}
 		else {
@@ -1401,6 +1407,14 @@ function Products_importFile($vars=false) {
 }
 
 // }
+function Products_importParseNumber($num) {
+	global $DBVARS;
+	return (float)str_replace(
+		$DBVARS['site_dec_point'],
+		'.',
+		str_replace($DBVARS['site_thousands_sep'], '', $num)
+	);
+}
 // { Products_importFromCron
 
 /**
