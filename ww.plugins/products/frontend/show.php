@@ -432,9 +432,19 @@ function Products_image($params, $smarty) {
 		array(
 			'width'=>128,
 			'height'=>128,
+			'zoom'=>0,
+			'zoompos'=>'right'
 		),
 		$params
 	);
+	$imgclasses=array();
+	// { zoom
+	if ($params['zoom']) {
+		WW_addScript('/ww.plugins/products/zoom.js');
+		$imgclasses[]='zoom';
+		$imgclasses[]='zoom-pos-'.$params['zoompos'];
+	}
+	// }
 	$product=$smarty->_tpl_vars['product'];
 	$iid=$product->getDefaultImage();
 	if (!$iid) {
@@ -443,9 +453,11 @@ function Products_image($params, $smarty) {
 	list($link1, $link2)=@$params['nolink']
 		?array('', '')
 		:array('<a href="/a/f=getImg/'.$iid.'" target="popup">', '</a>');
+	$imgclasses=count($imgclasses)?' class="'.join(' ', $imgclasses).'"':'';
 	return '<div class="products-image" style="width:'.$params['width']
 		.'px;height:'.$params['height']
-		.'px">'.$link1.'<img src="/a/f=getImg/w='.$params['width'].'/h='
+		.'px">'.$link1.'<img '.$imgclasses.'src="/a/f=getImg/w='
+		.$params['width'].'/h='
 		.$params['height'].'/'.$iid.'"/>'
 		.$link2.'</div>';
 }

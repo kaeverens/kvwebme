@@ -11,6 +11,8 @@
 	* @link     None
 	*/
 
+// { OnlineStore_getCountriesSelectbox
+
 /**
   * function for showing list of countries selected
   *
@@ -34,6 +36,9 @@ function OnlineStore_getCountriesSelectbox($params, &$smarty) {
 	return $countries.'</select>';
 }
 
+// }
+// { OnlineStore_showVoucherInput
+
 /**
   * function for showing HTML of a voucher input
   *
@@ -44,6 +49,8 @@ function OnlineStore_showVoucherInput() {
 	return '<div id="os-voucher"><span class="__">Voucher Code:</span> '
 		.'<input name="os_voucher" value="'.htmlspecialchars($code).'"/></div>';
 }
+
+// }
 
 if (isset($PAGEDATA->vars['online_stores_requires_login'])
 	&& $PAGEDATA->vars['online_stores_requires_login']
@@ -259,7 +266,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$code=$_REQUEST['os_voucher'];
 			$voucher_amount=OnlineStore_voucherAmount($code, $email, $grandTotal);
 			if ($voucher_amount) {
-				$table.='<tr><td colspan="2" class="nobord">&nbsp;</td>'
+				$table.='<tr class="os_basket_totals"><td colspan="2" class="nobord">&nbsp;</td>'
 					.'<td class="voucher" style="text-align: right;">'
 					.'<span class="__" lang-context="core">Voucher</span> '
 					.'('.htmlspecialchars($code).')</td><td class="totals amountcell">-'
@@ -270,7 +277,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		}
 		if ($group_discount) { // group discount
 			$discount_amount=$grandTotal*($group_discount/100);
-			$table.='<tr><td colspan="2" class="nobord">&nbsp;</td><td class="gro'
+			$table.='<tr class="os_basket_totals"><td colspan="2" class="nobord">&nbsp;</td><td class="gro'
 				.'up-discount" style="text-align:right;"><span class="__" lang-context="core">'
 				.'Group Discount</span> ('.$group_discount.'%)</td><td class="totals">-'
 				.OnlineStore_numToPrice($discount_amount).'</td></tr>';
@@ -280,14 +287,14 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		$postage=OnlineStore_getPostageAndPackaging($deliveryTotal, '', 0);
 		if ($postage['total']) {
 			$grandTotal+=$postage['total'];
-			$table.='<tr><td colspan="2" class="nobord">&nbsp;</td><td class="p_a'
+			$table.='<tr class="os_basket_totals"><td colspan="2" class="nobord">&nbsp;</td><td class="p_a'
 				.'nd_p __" lang-context="core" style="text-align: right;">'
 				.'Postage and Packaging (P&amp;P)</td><td class="amountcell">'
 				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
 		}
 		// }
 		if ($vattable && $_SESSION['onlinestore_vat_percent']) {
-			$table.='<tr><td colspan="2" class="nobord">&nbsp;</td>'
+			$table.='<tr class="os_basket_totals"><td colspan="2" class="nobord">&nbsp;</td>'
 				.'<td style="text-align:right" class="vat">'
 				.'<span class="__" lang-context="core">VAT</span> '
 				.'('.$_SESSION['onlinestore_vat_percent'].'% on '
@@ -296,7 +303,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$table.=OnlineStore_numToPrice($vat).'</td></tr>';
 			$grandTotal+=$vat;
 		}
-		$table.='<tr class="os_basket_amountcell"><td colspan="2" class="nobord">'
+		$table.='<tr class="os_basket_totals os_basket_amountcell"><td colspan="2" class="nobord">'
 			.'&nbsp;</td><td class="totalcell __" lang-context="core" '
 			.'style="text-align: right;">Total Due</td>'
 			.'<td class="amountcell">'.OnlineStore_numToPrice($grandTotal)
@@ -419,6 +426,16 @@ if (!$submitted) {
 			$c.='<tr product="'.$md5.'" class="os_item_numbers '.$md5.'">';
 			// { item name and details
 			$c.='<td class="products-itemname">';
+			if (isset($item['id']) && $item['id']) {
+				$p=Product::getInstance($item['id']);
+				if ($p) {
+					$img=$p->getDefaultImage();
+					$c.='<a href="/f/'.$img.'" target="popup" '
+						.'class="online-store-thumb-wrapper">'
+						.'<img src="/a/f=getImg/w=32/h=32/'.$img.'"/>'
+						.'</a>';
+				}
+			}
 			if (isset($item['url'])&&!empty($item['url'])) {
 				$c.='<a href="'.$item['url'].'">';
 			}
@@ -470,7 +487,7 @@ if (!$submitted) {
 			$code=$_REQUEST['os_voucher'];
 			$voucher_amount=OnlineStore_voucherAmount($code, $email, $grandTotal);
 			if ($voucher_amount) {
-				$c.='<tr><td class="voucher" style="text-align: right;" colspan="3">'
+				$c.='<tr class="os_basket_totals"><td class="voucher" style="text-align: right;" colspan="3">'
 					.'<span class="__" lang-context="core">Voucher</span> ('
 					.htmlspecialchars($code).')</td><td class="totals">-'
 					.OnlineStore_numToPrice($voucher_amount).'</td></tr>';
@@ -479,7 +496,7 @@ if (!$submitted) {
 		}
 		if ($group_discount && $discountableTotal) { // group discount
 			$discount_amount=$discountableTotal*($group_discount/100);
-			$c.='<tr><td class="group-discount" style="text-align:right;" '
+			$c.='<tr class="os_basket_totals"><td class="group-discount" style="text-align:right;" '
 				.'colspan="3"><span class="__" lang-context="core">Group Discount'
 				.'</span> ('.$group_discount.'%)</td><td class="totals">-'
 				.OnlineStore_numToPrice($discount_amount).'</td></tr>';
@@ -493,14 +510,14 @@ if (!$submitted) {
 		);
 		if ($postage['total']) {
 			$grandTotal+=$postage['total'];
-			$c.='<tr><td class="p_and_p __" lang-context="core" '
+			$c.='<tr class="os_basket_totals"><td class="p_and_p __" lang-context="core" '
 				.'style="text-align: right;" colspan="3">'
 				.'Postage and Packaging (P&amp;P)</td><td class="totals">'
 				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
 		}
 		// }
 		if ($vattable && $_SESSION['onlinestore_vat_percent']) {
-			$c.='<tr><td style="text-align:right" class="vat" colspan="3">'
+			$c.='<tr class="os_basket_totals"><td style="text-align:right" class="vat" colspan="3">'
 				.'<span class="__" lang-context="core">VAT</span> ('
 				.$_SESSION['onlinestore_vat_percent'].'% on '
 				.OnlineStore_numToPrice($vattable).')</td><td class="totals">';
@@ -527,7 +544,7 @@ if (!$submitted) {
 				.'<button class="__" lang-context="core">Proceed to Payment</button>'
 				.'</form>';
 		}
-		else if ($pviewtype==2) {
+		else if ($pviewtype==2 || $pviewtype==3) {
 			$c.='<div id="online-store-wrapper" class="online-store"></div>';
 		}
 		else {
@@ -554,7 +571,7 @@ if (!$submitted) {
 		$post['os_pandp']=isset($_SESSION['os_pandp'])?(int)$_SESSION['os_pandp']:0;
 		// }
 		WW_addInlineScript('var os_post_vars='.json_encode($post).';');
-		WW_addScript('/ww.plugins/online-store/frontend/index.js');
+		WW_addScript('/ww.plugins/online-store/js.js');
 		// }
 	}
 	else {

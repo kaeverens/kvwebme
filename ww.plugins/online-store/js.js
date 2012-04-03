@@ -1,90 +1,156 @@
-function compare(obj1, obj2) {
-	function size(obj) {
-		var s=0, keyName;
-		for (keyName in obj) {
-			if (keyName != null) {
-				s++;
+$(function(){
+	function addressPicker() {
+		var tables='<div id="addresses-picker" class="align-left">'
+			+'<table style="width:100%">';
+		for (var i=0;i<userdata.address.length;++i) {
+			var addr=userdata.address[i];
+			if (i) {
+				tables+='<tr><td colspan="4"><hr /></td></tr>';
 			}
+			tables+='<tr><th>Street</th><td>'
+				+htmlspecialchars(addr.street)+'</td>'
+				+'<th>Postcode</th><td>'+htmlspecialchars(addr.postcode)
+				+'</td></tr>'
+				+'<tr><th>Street 2</th><td>'+htmlspecialchars(addr.street2)
+				+'</td>'
+				+'<th>County</th><td>'+htmlspecialchars(addr.county)
+				+'</td></tr>'
+				+'<tr><th>Town</th><td>'+htmlspecialchars(addr.town)
+				+'</td>'
+				+'<th>Country</th><td>'+htmlspecialchars(addr.country)
+				+'</td></tr>'
+				+'<tr><th colspan="2"><input type="checkbox" aid="'+i+'"'
+				+(addr.default=='yes'?' checked="checked"':'')
+				+'/>'
+				+'<span class="__" lang-context="core">default address</span>'
+				+'</th><th colspan="2"><button aid="'+i+'" class="__"'
+				+' lang-context="core">Choose Address</button></th></tr>'
 		}
-		return s;
-	}
-	if (size(obj1) != size(obj2)) {
+		tables+='</table></div>';
+		var $table=$(tables).dialog({
+			modal:true,
+			width:400,
+			close:function() {
+				$(this).destroy();
+			}
+		});
+		$table.find('input').change(function() {
+			var $this=$(this);
+			if (!$this.attr('checked')) {
+				$this.attr('checked', true);
+				return;
+			}
+			$table.find('input').attr('checked', false);
+			$this.attr('checked', true);
+			$.post('/a/f=userSetDefaultAddress/aid='+$this.attr('aid'));
+		});
+		$table.find('button').click(function() {
+			var addr=userdata.address[+$(this).attr('aid')];
+			$('#online-store-Street,input[name="Street"]').val(addr.street||'');
+			$('#online-store-Street2,input[name="Street2"]').val(addr.street2||'');
+			$('#online-store-Town,input[name="Town"]').val(addr.town||'');
+			$('#online-store-Postcode,input[name="Postcode"]')
+				.val(addr.postcode||'');
+			$('#online-store-County,input[name="County"]').val(addr.county||'');
+			$('#online-store-Country,select[name="Country"]').val(addr.country||'');
+			$table.remove();
+			$('#online-store-Country').change();
+		});
 		return false;
-	}
-	for (var keyName in obj1) {
-		var value1 = obj1[keyName];
-		var value2 = obj2[keyName];
-
-		if (typeof value1 != typeof value2) {
-			return false;
-		}
-
-		// For jQuery objects:
-		if (value1 && value1.length && (value1[0] !== undefined && value1[0].tagName)) {
-			if(!value2 || value2.length != value1.length || !value2[0].tagName || value2[0].tagName != value1[0].tagName) {
+	};
+	function findMatchingAddress(address){
+		function compare(obj1, obj2) {
+			function size(obj) {
+				var s=0, keyName;
+				for (keyName in obj) {
+					if (keyName != null) {
+						s++;
+					}
+				}
+				return s;
+			}
+			if (size(obj1) != size(obj2)) {
 				return false;
 			}
-		}
-		else if (typeof value1 == 'function' || typeof value1 == 'object') {
-			var equal = compare(value1, value2);
-			if (!equal) {
-				return equal;
+			for (var keyName in obj1) {
+				var value1 = obj1[keyName];
+				var value2 = obj2[keyName];
+		
+				if (typeof value1 != typeof value2) {
+					return false;
+				}
+		
+				// For jQuery objects:
+				if (value1 && value1.length && (value1[0] !== undefined && value1[0].tagName)) {
+					if(!value2 || value2.length != value1.length || !value2[0].tagName || value2[0].tagName != value1[0].tagName) {
+						return false;
+					}
+				}
+				else if (typeof value1 == 'function' || typeof value1 == 'object') {
+					var equal = compare(value1, value2);
+					if (!equal) {
+						return equal;
+					}
+				}
+				else if (value1 != value2) {
+					return false;
+				}
 			}
-		}
-		else if (value1 != value2) {
-			return false;
-		}
-	}
-	return true;
-}
-function findMatchingAddress(address){
-	if (userdata.id==null) {
-		return true;
-	}
-	for (var i in userdata.address){
-		if (userdata.address[i].default) {
-			address.default=userdata.address[i].default;
-		}
-		if (compare(userdata.address[i],address)) {
 			return true;
 		}
-	}
-	return false;
-}
-function populate_delivery(address, bill){
-	if (userdata.id==null) {
-		return;
-	}
-	for (var i in userdata.address) {
-		if (userdata.address[i].default=="yes"&&address==null) {
-			var current=userdata.address[i];
-			break;
+		if (userdata.id==null) {
+			return true;
 		}
-		if (i==address) {
-			var current=userdata.address[i];
-			break;
+		for (var i in userdata.address){
+			if (userdata.address[i].default) {
+				address.default=userdata.address[i].default;
+			}
+			if (compare(userdata.address[i],address)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	function populate_delivery(address, bill){
+		if (userdata.id==null) {
+			return;
+		}
+		for (var i in userdata.address) {
+			if (userdata.address[i].default=="yes"&&address==null) {
+				var current=userdata.address[i];
+				break;
+			}
+			if (i==address) {
+				var current=userdata.address[i];
+				break;
+			}
+		}
+		if(current!=null){
+			if (current.country=='' && os_post_vars.Country!='') {
+				current={
+					'street':os_post_vars.Street,
+					'street2':os_post_vars.Street2,
+					'postcode':os_post_vars.Postcode,
+					'town':os_post_vars.Town,
+					'county':os_post_vars.County,
+					'country':os_post_vars.Country
+				};
+			}
+			$('input[name="'+bill+'Street"]').val(current.street);
+			$('input[name="'+bill+'Street2"]').val(current.street2);
+			$('input[name="'+bill+'Postcode"]').val(current.postcode);
+			$('input[name="'+bill+'Town"]').val(current.town);
+			$('input[name="'+bill+'County"]').val(current.county);
+			$('input[name="'+bill+'Country"]').val(current.country);
 		}
 	}
-	if(current!=null){
-		if (current.country=='' && os_post_vars.Country!='') {
-			current={
-				'street':os_post_vars.Street,
-				'street2':os_post_vars.Street2,
-				'postcode':os_post_vars.Postcode,
-				'town':os_post_vars.Town,
-				'county':os_post_vars.County,
-				'country':os_post_vars.Country
-			};
-		}
-		$('input[name="'+bill+'Street"]').val(current.street);
-		$('input[name="'+bill+'Street2"]').val(current.street2);
-		$('input[name="'+bill+'Postcode"]').val(current.postcode);
-		$('input[name="'+bill+'Town"]').val(current.town);
-		$('input[name="'+bill+'County"]').val(current.county);
-		$('input[name="'+bill+'Country"]').val(current.country);
+	function reloadPage(tabNum) {
+		var $form=$('#online-store-form');
+		$('<input type="hidden" name="tabNum" value="'+tabNum+'"/>')
+			.appendTo($form);
+		$form.submit();
 	}
-}
-$(function(){
+
 	if(userdata.id!=null){
 		$.get('/a/f=getUserData',
 			function(user){
@@ -129,7 +195,7 @@ $(function(){
 		});
 	}
 	switch(+os_post_vars._viewtype) {
-		case 2: // { 5-step
+		case 2: case 3: // { 5-step
 			// { list of panels
 			var tabs=[];
 			tabs.push('Login');
@@ -537,6 +603,12 @@ $(function(){
 							+'<button class="__" lang-context="core">Proceed to Payment'
 							+'</button></div>'
 						);
+						if (+os_post_vars._viewtype==3 && os_post_vars._hidebasket) {
+							var $basket=$('#onlinestore-checkout');
+							var $table=$('<table class="online-store-payment-due"/>')
+								.append($basket.find('.os_basket_totals'))
+								.insertBefore('#online-store-payment-method');
+						}
 						$.get('/a/p=online-store/f=paymentTypesList/page_id='+pagedata.id,
 							function(ret) {
 								if (ret.error) {
@@ -633,6 +705,30 @@ $(function(){
 				$accordion.accordion('activate', tabNum);
 			}, 1);
 			// }
+			if (+os_post_vars._viewtype==3) {
+				var $form=$('#online-store-form');
+				if (os_post_vars._hidebasket) {
+					$('#onlinestore-checkout').css('display', 'none');
+					$('#online-store-wrapper').css('display', 'block');
+					$('<input type="hidden" name="_hidebasket" value="1"/>')
+						.appendTo($form);
+				}
+				else {
+					$('#onlinestore-checkout').css('display', 'block');
+					$('<button id="online-store-gotocheckout">Checkout</button>')
+						.click(function() {
+							$('<input type="hidden" name="_hidebasket" value="1"/>')
+								.appendTo($form);
+							$('<input type="hidden" name="os_no_submit" value="1"/>')
+								.appendTo($form);
+							$form.submit();
+						})
+						.insertAfter('#onlinestore-checkout');
+					$('#online-store-wrapper').css({
+						'display':'none'
+					});
+				}
+			}
 		break; // }
 		default: // {
 			$('input[name=os_voucher]').change(function() {
@@ -672,69 +768,4 @@ $(function(){
 				.val(os_post_vars[i]);
 		}
 	}
-	function reloadPage(tabNum) {
-		var $form=$('#online-store-form');
-		$('<input type="hidden" name="tabNum" value="'+tabNum+'"/>')
-			.appendTo($form);
-		$form.submit();
-	}
-	function addressPicker() {
-		var tables='<div id="addresses-picker" class="align-left">'
-			+'<table style="width:100%">';
-		for (var i=0;i<userdata.address.length;++i) {
-			var addr=userdata.address[i];
-			if (i) {
-				tables+='<tr><td colspan="4"><hr /></td></tr>';
-			}
-			tables+='<tr><th>Street</th><td>'
-				+htmlspecialchars(addr.street)+'</td>'
-				+'<th>Postcode</th><td>'+htmlspecialchars(addr.postcode)
-				+'</td></tr>'
-				+'<tr><th>Street 2</th><td>'+htmlspecialchars(addr.street2)
-				+'</td>'
-				+'<th>County</th><td>'+htmlspecialchars(addr.county)
-				+'</td></tr>'
-				+'<tr><th>Town</th><td>'+htmlspecialchars(addr.town)
-				+'</td>'
-				+'<th>Country</th><td>'+htmlspecialchars(addr.country)
-				+'</td></tr>'
-				+'<tr><th colspan="2"><input type="checkbox" aid="'+i+'"'
-				+(addr.default=='yes'?' checked="checked"':'')
-				+'/>'
-				+'<span class="__" lang-context="core">default address</span>'
-				+'</th><th colspan="2"><button aid="'+i+'" class="__"'
-				+' lang-context="core">Choose Address</button></th></tr>'
-		}
-		tables+='</table></div>';
-		var $table=$(tables).dialog({
-			modal:true,
-			width:400,
-			close:function() {
-				$(this).destroy();
-			}
-		});
-		$table.find('input').change(function() {
-			var $this=$(this);
-			if (!$this.attr('checked')) {
-				$this.attr('checked', true);
-				return;
-			}
-			$table.find('input').attr('checked', false);
-			$this.attr('checked', true);
-			$.post('/a/f=userSetDefaultAddress/aid='+$this.attr('aid'));
-		});
-		$table.find('button').click(function() {
-			var addr=userdata.address[+$(this).attr('aid')];
-			$('#online-store-Street,input[name="Street"]').val(addr.street||'');
-			$('#online-store-Street2,input[name="Street2"]').val(addr.street2||'');
-			$('#online-store-Town,input[name="Town"]').val(addr.town||'');
-			$('#online-store-Postcode,input[name="Postcode"]')
-				.val(addr.postcode||'');
-			$('#online-store-County,input[name="County"]').val(addr.county||'');
-			$('#online-store-Country,select[name="Country"]').val(addr.country||'');
-			$table.remove();
-			$('#online-store-Country').change();
-		});
-		return false;
-	};
 });

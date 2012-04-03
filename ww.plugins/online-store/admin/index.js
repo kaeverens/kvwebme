@@ -148,7 +148,7 @@ $(function(){
 	var $checkout_type=$('select[name="page_vars[onlinestore_viewtype]"]');
 	$checkout_type.change(function() {
 		switch(+$(this).val()) {
-			case 2: // {
+			case 2: case 3: // {
 				$('.online-store-checkout-form').css('display', 'none');
 			break; // }
 			default: // {

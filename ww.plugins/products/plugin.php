@@ -350,8 +350,10 @@ class Product{
 
 	// }
 
+	// {
+
 	/**
-		* get KFM ID for default image
+		* get default image
 		*
 		* @return int ID of the image
 		*/
@@ -384,6 +386,8 @@ class Product{
 		$this->default_image=false;
 		return false;
 	}
+
+	// }
 
 	/**
 		* get price

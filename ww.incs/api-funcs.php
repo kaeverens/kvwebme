@@ -323,6 +323,7 @@ function Core_login() {
 		'select * from user_accounts where email="'.addslashes($email)
 		.'" and password=md5("'.$password.'")'
 	);
+	mail('kae@localhost', 'test', print_r($_REQUEST, true));
 	if ($r && count($r)) {
 		$r['password']=$password;
 		$_SESSION['userdata'] = $r;
@@ -342,6 +343,9 @@ function Core_login() {
 	*/
 function Core_logout() {
 	unset($_SESSION['userdata']);
+	return array(
+		'ok'=>1
+	);
 }
 
 // }

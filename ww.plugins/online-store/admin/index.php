@@ -148,7 +148,8 @@ $c.='<strong>View Type</strong>'
 $types=array(
 	'All-in-one view',
 	'Basket, then All-in-one',
-	'5-step'
+	'5-step',
+	'Basket, then 5-step'
 );
 foreach ($types as $k=>$v) {
 	$c.='<option value="'.$k.'"';
