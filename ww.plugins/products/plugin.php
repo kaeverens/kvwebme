@@ -11,6 +11,7 @@
 	* @link     None
 	*/
 
+
 // { plugin declaration
 $plugin=array(
 	'admin' => array( // {
@@ -1250,6 +1251,35 @@ function Products_imageSlider($params) {
 	* @return status
 	*/
 function Products_importFile($vars=false) {
+	/**
+		* filter for making sure imported file is UTF8
+		*
+		*	@category WebME
+		* @package  WebME
+		* @author   Kae Verens <kae@kvsites.ie>
+		* @license  GPL 2.0
+		* @link     http://kvweb.me/
+		*/
+	class utf8encode_filter extends php_user_filter{ 
+		/**
+			* whatever
+			*
+			* @param string $in        stuff
+			* @param string $out       stuff
+			* @param string &$consumed stuff
+			* @param string $closing   stuff
+			*
+			* @return int
+			*/
+		function filter($in, $out, &$consumed, $closing) { 
+			while ($bucket = stream_bucket_make_writeable($in)) { 
+				$bucket->data = utf8_encode($bucket->data); 
+				$consumed += $bucket->datalen; 
+				stream_bucket_append($out, $bucket); 
+			} 
+			return PSFS_PASS_ON; 
+		} 
+	}
 	if ($vars===false) {
 		return false;
 	}
@@ -1280,7 +1310,13 @@ function Products_importFile($vars=false) {
 	if (!file_exists($fname)) {
 		return array('message'=>'file not uploaded');
 	}
+	$charset=mb_detect_encoding(file_get_contents($fname));
 	$handle=fopen($fname, 'r');
+	if ($charset!='UTF-8') {
+		stream_filter_register("utf8encode", "utf8encode_filter")
+			or die("Failed to register filter");
+		stream_filter_prepend($handle, "utf8encode");
+	}
 	$row=fgetcsv($handle, 1000, $vars->productsImportDelimiter['varvalue']);
 	$headers=array();
 	foreach ($row as $k=>$v) {
@@ -1313,7 +1349,7 @@ function Products_importFile($vars=false) {
 		if (!$type) {
 			$type='default';
 		}
-		if ($product_types[$type]) {
+		if (isset($product_types[$type]) && $product_types[$type]) {
 			$type_id=$product_types[$type];
 		}
 		else {
@@ -1407,6 +1443,15 @@ function Products_importFile($vars=false) {
 }
 
 // }
+// { Products_importParseNumber
+
+/**
+	* parse a number, taking localisation into account
+	*
+	* @param string $num the number to parse
+	*
+	* @return float parsed number
+	*/
 function Products_importParseNumber($num) {
 	global $DBVARS;
 	return (float)str_replace(
@@ -1415,6 +1460,8 @@ function Products_importParseNumber($num) {
 		str_replace($DBVARS['site_thousands_sep'], '', $num)
 	);
 }
+
+// }
 // { Products_importFromCron
 
 /**
@@ -1468,6 +1515,9 @@ function Products_listCategoryContents($params, $smarty) {
 
 /**
 	* get a map centered on the product
+	*
+	* @param array  $params parameters
+	* @param object $smarty the Smarty object
 	*
 	* @return html of the map
 	*/
@@ -1608,7 +1658,8 @@ function Products_search() {
 	$c='<ul class="results products">';
 	foreach ($rs as $r) {
 		$product=Product::getInstance($r['id'], $r);
-		$c.='<li><a href="'.$product->getRelativeUrl().'">'.__fromJSON($product->name).'</a></li>';
+		$c.='<li><a href="'.$product->getRelativeUrl().'">'
+			.__fromJSON($product->name).'</a></li>';
 	}
 	$c.='</ul>';
 	return $c;
