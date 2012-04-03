@@ -725,6 +725,24 @@ function Products_adminProductsListDT() {
 	$start=(int)$_REQUEST['iDisplayStart'];
 	$length=(int)$_REQUEST['iDisplayLength'];
 	$search=$_REQUEST['sSearch'];
+	$orderby=(int)$_REQUEST['iSortCol_0'];
+	$orderdesc=$_REQUEST['sSortDir_0']=='desc'?'desc':'asc';
+	switch ($orderby) {
+		case 1:
+			$orderby='name';
+		break;
+		case 2:
+			$orderby='stock_number';
+		break;
+		case 5:
+			$orderby='id';
+		break;
+		case 6:
+			$orderby='enabled';
+		break;
+		default:
+			$orderby='name';
+	}
 	$filters=array();
 	if ($search) {
 		$filters[]='name like "%'.addslashes($search).'%"'
@@ -736,7 +754,8 @@ function Products_adminProductsListDT() {
 	}
 	$rs=dbAll(
 		'select id,user_id,images_directory,name,stock_number,enabled,'
-		.'stockcontrol_total from products '.$filter.' order by name'
+		.'stockcontrol_total from products '.$filter
+		.' order by '.$orderby.' '.$orderdesc
 		.' limit '.$start.','.$length
 	);
 	$result=array();
