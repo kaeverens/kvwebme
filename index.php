@@ -332,8 +332,6 @@ else {
 array_unshift($scripts_inline, $tmp);
 // }
 if (Core_isAdmin()) {
-	WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
-	WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
 	foreach ($GLOBALS['PLUGINS'] as $p) {
 		if (isset($p['frontend']['admin-script'])) {
 			WW_addScript($p['frontend']['admin-script']);
