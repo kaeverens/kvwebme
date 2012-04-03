@@ -23,27 +23,6 @@ echo '<a href="plugin.php?_plugin=products">List all products</a> | '
 	.'Import</a>'
 	;
 // }
-if (isset($_REQUEST['delete']) && is_numeric($_REQUEST['delete'])) {
-	if (isset($_REQUEST['delete-images'])&&($_REQUEST['delete-images']==1)) {
-		$imagesDir
-			= dbOne(
-				'select images_directory
-				from products
-				where id='.$_REQUEST['delete'],
-				'images_directory'
-			);
-		$id = kfm_api_getDirectoryId($imagesDir);
-		if ($id) {
-			$dir = kfmDirectory::getInstance($id);
-			if ($dir) {
-				$dir->delete();
-			}
-		}
-	}
-	dbQuery('delete from products where id='.$_REQUEST['delete']);
-	echo '<em>Product deleted.</em>';
-	Core_cacheClear();
-}
 if (!dbOne('select id from products_types limit 1', 'id')) {
 	echo '<em>You can\'t create a product until you have created a type. '
 		.'<a href="javascript:Core_screen(\'products\',\'js:Types\');">Click '

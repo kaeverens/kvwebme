@@ -676,6 +676,26 @@ function Products_adminProductDatafieldsGet() {
 }
 
 // }
+// { Products_adminProductDelete
+
+/**
+	* delete a product
+	*
+	* @return array status
+	*/
+function Products_adminProductDelete() {
+	$pid=(int)$_REQUEST['id'];
+	dbQuery('delete from products where id='.$pid);
+	dbQuery('delete from products_categories_products where product_id='.$pid);
+	dbQuery(
+		'delete from products_relations where from_id='.$pid.' or to_id='.$pid
+	);
+	dbQuery('delete from products_reviews where product_id='.$pid);
+	Core_cacheClear();
+	return array('ok'=>1);
+}
+
+// }
 // { Products_adminProductsDatafieldsGet
 
 /**

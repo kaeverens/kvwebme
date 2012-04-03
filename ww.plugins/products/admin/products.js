@@ -1,5 +1,5 @@
 $(function() {
-	$('#products-list').dataTable({
+	var $table=$('#products-list').dataTable({
 		"iDisplayLength":10,
 		"bProcessing": true,
 		"bJQueryUI": true,
@@ -36,11 +36,12 @@ $(function() {
 		var id=$tr[0].id.replace(/product-row-/, '');
 		var name=$tr.find('td.link').text();
 		if (confirm(
-			'are you want to delete the product "'+name+'"?'
+			'are you sure you want to delete the product "'+name+'"?'
 		)) {
+			$.post('/a/p=products/f=adminProductDelete/id='+id, function() {
+				$table.fnDraw();
+			});
 		};
 		return false;
-		document.location='/ww.admin/plugin.php?_plugin=products&_page=products'
-			+'&delete='+id;
 	});
 });
