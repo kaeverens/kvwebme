@@ -554,6 +554,16 @@ function OnlineStore_showBasketWidget($vars=null) {
 				// { name
 				$html.='<tr class="os_basket_itemTitle" product="'.$md5.'">'
 					.'<th colspan="3">';
+				if (isset($item['id']) && $item['id']) {
+					$p=Product::getInstance($item['id']);
+					if ($p) {
+						$img=$p->getDefaultImage();
+						$html.='<a href="/f/'.$img.'" target="popup" '
+							.'class="online-store-thumb-wrapper">'
+							.'<img src="/a/f=getImg/w=16/h=16/'.$img.'"/>'
+							.'</a>';
+					}
+				}
 				if ($item['url']) {
 					$html.='<a href="'.$item['url'].'">';
 				}
