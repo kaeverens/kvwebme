@@ -19,7 +19,7 @@
 				<li><a href="#admin-login">Login</a></li>
 				<li><a href="#admin-forgotten-password">Forgotten Password</a></li>
 			</ul>
-			<div id="admin-login">
+			<form id="admin-login" action="./" method="post">
 				<table>
 					<tr>
 						<th class="__">Email</th>
@@ -35,8 +35,8 @@
 						</th>
 					</tr>
 				</table>
-			</div>
-			<div id="admin-forgotten-password">
+			</form>
+			<form id="admin-forgotten-password" action="./" method="post">
 				<table>
 					<tr>
 						<th class="__">Email</th>
@@ -65,11 +65,15 @@
 						<button id="change-password" class="__">Change Password</button>
 					</th></tr>
 				</table>
-			</div>
+			</form>
 		</div>
 		<script defer="defer">
 			$(function(){
 				$('#tabs').tabs().find('#email').focus();
+				$('#admin-login').submit(function() {
+					$('#login').click();
+					return false;
+				});
 				$('#login').click(function(){
 					var email=$('#email').val(), pass=$('#password').val();
 					if (email=='' || pass=='') {
@@ -84,6 +88,10 @@
 						}
 						document.location=document.location;
 					});
+				});
+				$('#admin-forgotten-password').submit(function() {
+					$('#send-token').click();
+					return false;
 				});
 				$('#send-token').click(function(){
 					var email=$('#email-r').val();
