@@ -456,7 +456,7 @@ function Products_image($params, $smarty) {
 	$imgclasses=count($imgclasses)?' class="'.join(' ', $imgclasses).'"':'';
 	return '<div class="products-image" style="width:'.$params['width']
 		.'px;height:'.$params['height']
-		.'px">'.$link1.'<img '.$imgclasses.'src="/a/f=getImg/w='
+		.'px">'.$link1.'<img'.$imgclasses.' src="/a/f=getImg/w='
 		.$params['width'].'/h='
 		.$params['height'].'/'.$iid.'"/>'
 		.$link2.'</div>';
