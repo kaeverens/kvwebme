@@ -3840,7 +3840,7 @@ class QRrawcode{
 			$spec
 		);
 
-		$this->_version = $input->getVersion();
+		$this->version = $input->getVersion();
 		$this->b1 = QRspec::rsBlockNum1($spec);
 		$this->dataLength = QRspec::rsDataLength($spec);
 		$this->eccLength = QRspec::rsEccLength($spec);
@@ -3980,7 +3980,7 @@ class QRcode{
 
 		QRtools::markTime('after_raw');
 
-		$version = $raw->_version;
+		$version = $raw->version;
 		$width = QRspec::getWidth($version);
 		$frame = QRspec::newFrame($version);
 
@@ -4043,7 +4043,7 @@ class QRcode{
 
 		QRtools::markTime('after_mask');
 
-		$this->_version = $version;
+		$this->version = $version;
 		$this->width = $width;
 		$this->data = $masked;
 
@@ -4375,11 +4375,11 @@ class QRencode{
 		$code = new QRcode();
 
 		if ($this->eightbit) {
-			$code->encodeString8bit($intext, $this->_version, $this->_level);
+			$code->encodeString8bit($intext, $this->version, $this->_level);
 		}
 		else {
 			$code->encodeString(
-				$intext, $this->_version, $this->_level, $this->hint,
+				$intext, $this->version, $this->_level, $this->hint,
 				$this->casesensitive
 			);
 		}
@@ -4399,11 +4399,11 @@ class QRencode{
 		$code = new QRcode();
 
 		if ($this->eightbit) {
-			$code->encodeString8bit($intext, $this->_version, $this->_level);
+			$code->encodeString8bit($intext, $this->version, $this->level);
 		}
 		else {
 			$code->encodeString(
-				$intext, $this->_version, $this->_level, $this->hint,
+				$intext, $this->version, $this->level, $this->hint,
 				$this->casesensitive
 			);
 		}
