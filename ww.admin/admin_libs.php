@@ -200,10 +200,16 @@ function WW_getScripts() {
 	$local=array();
 	$latest=0;
 	foreach ($scripts as $script) {
-		if (strpos($script, '/')!==0) {
+		if (strpos($script, '//')!==false) {
 			$external[]=$script;
 		}
 		else {
+			if (strpos($script, '/')===false) {
+				$script='/ww.plugins/'.$script.'/js.js';
+			}
+			elseif ($script{0}!='/') { // {
+				$script='/ww.plugins/'.$script;
+			}
 			$local[]=$script;
 			if (filemtime($_SERVER['DOCUMENT_ROOT'].$script)>$latest) {
 				$latest=filemtime($_SERVER['DOCUMENT_ROOT'].$script);

@@ -46,7 +46,6 @@
 					$this.click().click();
 				}
 				if (!o.cache_id || !window[o.cache_id]) {
-					console.log(o.cache_id, window[o.cache_id]);
 					$.get(o.url, {'selected':v,'other_GET_params':other}, doIt);
 				}
 				else {

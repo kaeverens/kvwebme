@@ -95,16 +95,17 @@ function Blog_postEdit() {
 	$excerpt_image=@$_REQUEST['blog_excerpt_image'];
 	$tags=@$_REQUEST['blog_tags'];
 	$pdate=@$_REQUEST['blog_pdate'];
-	$cdate=@$_REQUEST['blog_cdate'];
 	$user_id=(int)@$_REQUEST['blog_user_id'];
 	$id=(int)@$_REQUEST['blog_id'];
+	$status=(int)@$_REQUEST['blog_status'];
 
 	$sql='title="'.addslashes($title).'",'
 		.'body="'.addslashes($body).'",'
 		.'excerpt="'.addslashes($excerpt).'",'
-		.'excerpt_image="'.addslashes($excert_image).'",'
+		.'excerpt_image="'.addslashes($excerpt_image).'",'
 		.'tags="'.addslashes($tags).'",'
 		.'pdate="'.addslashes($pdate).'",'
+		.'status="'.$status.'",'
 		.'udate=now()';
 	if ($id) {
 		$sql='update blog_entry set '.$sql.' where id='.$id;
@@ -118,3 +119,21 @@ function Blog_postEdit() {
 		return array('ok'=>dbLastInsertId());
 	}
 }
+
+// }
+// { Blog_postGet
+
+function Blog_postGet() {
+	$id=(int)$_REQUEST['id'];
+	if (Core_isAdmin()) {
+		return dbRow('select * from blog_entry where id='.$id);
+	}
+	if (isset($_SESSION['userdata']['id'])) {
+		return dbRow(
+			'select * from blog_entry where id='.$id
+			.' and userid='.$_SESSION['userdata']['id']
+		);
+	}
+}
+
+// }

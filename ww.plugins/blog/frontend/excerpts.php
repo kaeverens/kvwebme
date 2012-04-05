@@ -12,19 +12,33 @@
   * @link       www.kvweb.me
  */
 
-$rs=dbAll('select * from blog_entry order by cdate desc limit '.$excerpts_offset.','.$excerpts_per_page);
+$constraints=array(1);
+if (!Core_isAdmin()) {
+	if (isset($_SESSION['userdata']) && $_SESSION['userdata']['id']) {
+		$constraints[]='(status or user_id='.$_SESSION['userdata']['id'].')';
+	}
+}
+if ($blog_author) {
+	$constraints[]='user_id='.$blog_author;
+}
+
+$constraints=' where '.join(' and ', $constraints);
+$sql='select * from blog_entry'.$constraints.' order by status,cdate desc'
+	.' limit '.$excerpts_offset.','.$excerpts_per_page;
+$rs=dbAll($sql);
 $c='<div class="blog-main-wrapper">';
 $excerpt_length=(int)$PAGEDATA->vars['blog_excerpt_length'];
 if (!$excerpt_length) {
 	$excerpt_length=200;
 }
 foreach ($rs as $r) {
-	$c.='<div class="blog-excerpt-wrapper">';
+	$sclass=$r['status']=='1'?'blog-published':'blog-unpublished';
+	$c.='<div class="blog-excerpt-wrapper '.$sclass.'" id="blog-entry-'.$r['id'].'">';
 	$c.='<h2 class="blog-header">'.htmlspecialchars($r['title']).'</h2>';
 	$user=User::getInstance($r['user_id']);
 	$name=$user?$user->name:'unknown';
-	$c.='<span class="blog-author">'.$name.'</span> ~ '
-		.'<span class="blog-date-created">'.Core_dateM2H($r['cdate']).'</span>';
+	$c.='<span class="blog-author" data-uid="'.$r['user_id'].'">'.$name.'</span> ~ '
+		.'<span class="blog-date-published">'.Core_dateM2H($r['pdate']).'</span>';
 	$excerpt=$r['excerpt']
 		?$r['excerpt']
 		:substr(preg_replace('/<[^>]*>/', ' ', $r['body']), 0, $excerpt_length).'...';

@@ -9,17 +9,24 @@ function Forms_Pagetype_forms() {
 		switch(activeTab) {
 			case 0: // { main
 				page_vars.forms_successmsg=CKEDITOR.instances['tc20'].getData();
-				return;
-				// }
+			break; // }
 			case 1: // { form fields
-				return updateFormFields();
-				// }
+				updateFormFields();
+			break; // }
 			case 2: // { header/footer
-				return updateHeaderFooter(true);
-				// }
+				updateHeaderFooter(true);
+			break; // }
 			case 3: // { template
-				return updateTemplate();
-				// }
+				updateTemplate();
+			break; // }
+		}
+		if (CKEDITOR.instances['tc20'] && !$('#tc20').length) {
+			try {
+				CKEDITOR.remove(CKEDITOR.instances['tc20']);
+			}
+			catch(e) {
+				delete CKEDITOR.instances['tc20'];
+			}
 		}
 	}
 	function showAdvanced(panel) {
@@ -37,7 +44,7 @@ function Forms_Pagetype_forms() {
 			+'<option value="1">Yes</option></select></td></tr>'
 			+'<tr><th>Prevent registered users from submitting a form</th>'
 			+'<td>'
-			+'<select id="tc20"><option value="0">No</option>'
+			+'<select id="tc30"><option value="0">No</option>'
 			+'<option value="1">Yes</option><option value="2">Unless</option>'
 			+'<option value="3">If</option>'
 			+'</select><span id="tc25"/><span id="tc22"/></td></tr>'
@@ -107,9 +114,9 @@ function Forms_Pagetype_forms() {
 		tc17Change();
 		// }
 		// { prevent user from submitting forms
-		function tc20Change() {
+		function tc30Change() {
 			function record() {
-				var t=$('#tc20').val();
+				var t=$('#tc30').val();
 				page_vars.forms_preventUserFromSubmitting=t;
 				t=+t;
 				if (t && $('#tc21').length) {
@@ -120,7 +127,7 @@ function Forms_Pagetype_forms() {
 					page_vars.forms_preventUserFromSubmittingCondVal=$('#tc24').val();
 				}
 			}
-			var f=+$('#tc20').val();
+			var f=+$('#tc30').val();
 			record();
 			$('#tc22,#tc25').empty();
 			if (f) {
@@ -144,10 +151,10 @@ function Forms_Pagetype_forms() {
 					.appendTo($('#tc22').html('<p>What message should be shown to users that try to send forms. Please make sure the Email field is set to be verified.</p>'));
 			}
 		}
-		$('#tc20')
+		$('#tc30')
 			.val(''+page_vars.forms_preventUserFromSubmitting)
-			.change(tc20Change);
-		tc20Change();
+			.change(tc30Change);
+		tc30Change();
 		// }
 	}
 	function showMain(panel) {
@@ -160,7 +167,7 @@ function Forms_Pagetype_forms() {
 			+'<option value="0">No</option><option value="1">Yes</option>'
 			+'</select></td></tr>'
 			+'<tr><th>Thank you message<br />(shown after submission)</th><td>'
-			+'<textarea id="tc20"></textarea></td></tr>'
+			+'<textarea id="tc20" name="tc20"></textarea></td></tr>'
 			+'</table>')
 			.appendTo($('#t0').empty());
 		// }
@@ -322,7 +329,7 @@ function Forms_Pagetype_forms() {
 		var html='<div id="df1">';
 		for (var i=0;i<fields.length;++i) {
 			html+='<h3 id="f'+i+'"><a href="#">'+htmlspecialchars(fields[i].name)
-				+'</a></h3><div/>';
+				+'</a></h3><div id="fd'+i+'"/>';
 		}
 		var types={'email':'email', 'input box':'single line of text',
 			'textarea':'multiple lines of text', 'date': 'date',
@@ -404,6 +411,21 @@ function Forms_Pagetype_forms() {
 					if (index) {
 						$('#df1').accordion('activate', index);
 					}
+				}
+			})
+			.sortable({
+				stop:function() {
+					var $h3s=$('#df1').find('>h3');
+					var newFields=[],i=0;
+					$h3s.each(function() {
+						var $this=$(this);
+						var index=+$this.attr('id').replace('f', '');
+						newFields[i]=page_vars.forms_fields[index]
+						$('#fd'+index).insertAfter($this);
+						i++;
+					});
+					page_vars.forms_fields=newFields;
+					showFormFields(panel, -1); // page_vars.forms_fields.length-1);
 				}
 			});
 		$('<button>add field</button>')

@@ -24,11 +24,11 @@ if (!$r) {
 	$c='<div class="blog-article-error">Error: article not found.</div>';
 	return;
 }
-$c='<div class="blog-article-wrapper">';
+$c='<div class="blog-article-wrapper" id="blog-entry-'.$r['id'].'">';
 $c.='<h1 class="blog-header">'.htmlspecialchars($r['title']).'</h1>';
 $user=User::getInstance($r['user_id']);
 $name=$user?$user->name:'unknown';
-$c.='<span class="blog-author">'.$name.'</span> ~ '
+$c.='<span class="blog-author" data-uid="'.$r['user_id'].'">'.$name.'</span> ~ '
 	.'<span class="blog-date-created">'.Core_dateM2H($r['cdate']).'</span>';
 $c.='<div class="blog-body">'.$r['body'].'</div>';
 $date=preg_replace('/ .*/', '', $r['cdate']);

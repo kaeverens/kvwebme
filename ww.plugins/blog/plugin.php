@@ -12,6 +12,7 @@
   * @link       www.kvweb.me
  */
 
+// { config
 $plugin=array(
 	'name' => 'Blog',
 	'description' => 'Add a blog page-type to your site',
@@ -21,9 +22,9 @@ $plugin=array(
 	'frontend' => array(
 		'page_type' => 'Blog_frontend'
 	),
-	'version'=>6
+	'version'=>7
 );
-
+// }
 // { Blog_admin
 
 /**
@@ -36,6 +37,7 @@ $plugin=array(
 	*/
 function Blog_admin($page, $vars) {
 	require_once dirname(__FILE__).'/admin/page-type.php';
+	WW_addScript('blog');
 	return $c;
 }
 
@@ -57,11 +59,18 @@ function Blog_frontend($PAGEDATA) {
 		$excerpts_per_page=10;
 	}
 	// }
+	$excerpts_offset=0;
+	$blog_author=0;
+	WW_addScript('blog');
+	WW_addInlineScript(
+		'var blog_groups='
+		.$PAGEDATA->vars['blog_groupsAllowedToPost'].';'
+	);
 	if ($unused_uri) {
 		// show article if specified
 		if (preg_match('#^[0-9]+/[0-9]+-[0-9]+-[0-9]+/[^/]+#', $unused_uri)) {
 			require_once dirname(__FILE__).'/frontend/show-article.php';
-			return $c;
+			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
 		}
 		// show a page of excerpts if specified
 		if (preg_match('#page[0-9]+#', $unused_uri)) {
@@ -69,13 +78,18 @@ function Blog_frontend($PAGEDATA) {
 				'#page([0-9]+).*#', '\1', $unused_uri
 			));
 			require_once dirname(__FILE__).'/frontend/excerpts.php';
-			return $c;
+			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
 		}
-		return $unused_uri;
+		// show list of a specific user's excerpts
+		if (preg_match('#^[0-9]+#', $unused_uri)) {
+			$blog_author=preg_replace('/^([0-9]+).*/', '\1', $unused_uri);
+			require_once dirname(__FILE__).'/frontend/excerpts.php';
+			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
+		}
+		return $PAGEDATA->render().$unused_uri.@$PAGEDATA->vars['footer'];
 	}
-	$excerpts_offset=0;
 	require_once dirname(__FILE__).'/frontend/excerpts.php';
-	return $c;
+	return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
 }
 
 // }

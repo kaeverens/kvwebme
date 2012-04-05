@@ -44,3 +44,7 @@ if ($version==5) {
 	dbQuery('alter table blog_entry add allow_comments smallint default 1');
 	$version=6;
 }
+if ($version==6) {
+	dbQuery('alter table blog_entry add status smallint default 1');
+	$version=7;
+}

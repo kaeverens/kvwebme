@@ -324,6 +324,9 @@ if (isset($_SESSION['userdata'])) {
 	if (isset($_SESSION['userdata']['address'])) {
 		$tmp.=',address:1';
 	}
+	if ($_SESSION['userdata']['id']) {
+		$tmp.=',groups:['.join(',', User::getInstance($_SESSION['userdata']['id'])->getGroups()).']';
+	}
 	$tmp.='};';
 }
 else {
