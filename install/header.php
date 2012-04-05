@@ -34,11 +34,11 @@ echo '
 		.'/1.8.14/themes/base/jquery-ui.css" />
 
 	<!-- Installer specific javascript -->
-	<script defer="defer" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min'
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min'
 		.'.js"></script>
- 	<script defer="defer" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-'
+ 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-'
 		.'ui.min.js"></script>
-	<script defer="defer" src="/j/validate.jquery.min.js"></script>
+	<script src="/j/validate.jquery.min.js"></script>
 
 	<script defer="defer" type="text/javascript">
         function error_handler( msg ){

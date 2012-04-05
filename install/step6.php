@@ -37,6 +37,73 @@ if (!$_SESSION['userbase_created']) { // user shouldn't be here
 $ignore_webme_plugins=1;
 require '../ww.incs/basics.php';
 
+
+//Here starts the actual content of the page
+?>
+<script>
+$(function() {
+  $("#tabs").tabs();
+});
+</script>
+<div id="tabs">
+	<ul>
+		<li><a href="#tabs-1">Download</a></li>
+		<li><a href="#tabs-2">Upload</a></li>		
+	</ul>
+	<div id="tabs-1">
+
+		<?php
+		echo '<div id="themes-carousel">'
+		.'Loading.. If you have no internet connection, please <a href="/'
+		.'install/step7.php?theme=skipped">click here to proceed.</a>'
+		.'</div>';
+		?>		
+	</div>
+
+	<div id="tabs-2">
+		
+		<?php
+		echo '
+		<script type="text/javascript">
+		$(function( ){
+
+			/**
+			 * make sure its a zip file
+			 */
+			$( "#theme-zip" ).change( function( ){
+				var filename = $( this ).val( ).split( "." );
+				var extention = filename[ filename.length - 1 ];
+				if( extention != "zip" ){
+					alert( "must be a zip file!" );
+					$( this ).attr( "value", "" );
+					return false;
+				}
+			});
+
+		});
+		</script>
+
+		<h2>Theme Upload</h2>
+		<p>This uploader can be used to upload themes from your local computer.</p>
+		<form id="themes-upload-form" enctype="multipart/form-data" action="/instal'
+		.'l/theme-upload.php" method="post" target="upload-ifra'
+		.'me">
+		<table id="theme-upload">
+			<tr>
+				<td><input type="file" name="theme-zip" id="theme-zip"/></td>
+				<td><input type="submit" name="install-theme" value="Upload & Install"/'
+				.'></td>
+			</tr>
+		</table>	
+		</form>
+		<iframe name="upload-iframe" style="display:none" href="javascript:;"></ifr'
+		.'ame>';
+		?>
+	</div>
+	
+</div>
+
+<?php
 if (isset($_POST[ 'install-theme' ])) { // install theme if selected
 
 	// get id
@@ -85,7 +152,6 @@ if (isset($_POST[ 'install-theme' ])) { // install theme if selected
 	exit;
 }
 
-
 echo
 	'<script defer="defer" src="/ww.plugins/ratings/ratings.js"></script>'
 	.'<script defer="defer" src="/j/jquery.tooltip.min.js"></script>'
@@ -94,11 +160,7 @@ echo
 	.'<link rel="stylesheet" type="text/css" href="/ww.plugins/themes-api'
 	.'/api.css"/>'
 	.'<script defer="defer">window.installed_themes=[];</script>'
-	.'<h1>Select Themes</h1>'
-	.'<div id="themes-carousel">'
-	.'Loading.. If you have no internet connection, please <a href="/'
-	.'install/step7.php?theme=skipped">click here to proceed.</a>'
-	.'</div>'
+	.'<h1>Select Themes</h1>'	
 	.'<div id="preview-dialog" style="display:none">'
 	.'<iframe src="javascript:;" id="preview-frame"></iframe>'
 	.'</div>';
