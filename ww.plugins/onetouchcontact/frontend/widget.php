@@ -29,6 +29,6 @@ function Onetouchcontact_widgetShow($vars) {
 		.'<input type="hidden" name="mid" value="'.$vars->mid.'"/>'
 		.'<div class="onetouchcontact-msg"></div>'
 		.'<input class="submit" type="submit" value="subscribe"/></form>';
-	WW_addScript('/ww.plugins/onetouchcontact/frontend/js.js');
+	WW_addScript('onetouchcontact/frontend/js.js');
 	return $form;
 }

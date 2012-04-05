@@ -29,7 +29,7 @@ if (count($history) == 0) {
 	return $html .= '<p><i>No recent orders</i></p>';
 }
 
-WW_addScript('/ww.plugins/online-store/frontend/user-profile.js');
+WW_addScript('online-store/frontend/user-profile.js');
 
 $html .= '<table id="online_store_orders" style="border:1px solid #ccc;'
 	.'margin:10px">

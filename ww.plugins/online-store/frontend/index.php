@@ -63,7 +63,7 @@ if (isset($PAGEDATA->vars['online_stores_requires_login'])
 		.'</p>';
 	return;
 }
-WW_addScript('/ww.plugins/online-store/j/basket.js');
+WW_addScript('online-store/j/basket.js');
 $c='';
 global $DBVARS,$online_store_currencies;
 $submitted=0;
@@ -571,7 +571,7 @@ if (!$submitted) {
 		$post['os_pandp']=isset($_SESSION['os_pandp'])?(int)$_SESSION['os_pandp']:0;
 		// }
 		WW_addInlineScript('var os_post_vars='.json_encode($post).';');
-		WW_addScript('/ww.plugins/online-store/js.js');
+		WW_addScript('online-store');
 		// }
 	}
 	else {

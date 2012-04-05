@@ -116,5 +116,5 @@ else{
 }
 echo '</div>';
 // }
-WW_addScript('/ww.plugins/theme-editor/admin/menu.js');
+WW_addScript('theme-editor/admin/menu.js');
 ww_addCSS('/ww.plugins/theme-editor/admin/menu.css');

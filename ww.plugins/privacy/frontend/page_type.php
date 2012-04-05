@@ -704,8 +704,8 @@ function Privacy_profileGet() {
 	}
 	$html.='</table></div><br style="clear:both"/></div>
 	</div>';
-	WW_addScript('/ww.plugins/privacy/js.js');
-	WW_addScript('/ww.plugins/privacy/frontend/change_password.js');
+	WW_addScript('privacy/js.js');
+	WW_addScript('privacy/frontend/change_password.js');
 	$html .= Core_trigger('privacy_user_profile', array($user));
 	return $html;
 }

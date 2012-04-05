@@ -58,7 +58,7 @@ function Products_map2($params, $smarty) {
 	}
 	$lat=(float)$user->get('location_lat');
 	$lng=(float)$user->get('location_lng');
-	WW_addScript('/ww.plugins/products/j/maps.js');
+	WW_addScript('products/j/maps.js');
 	return '<div class="products-map"'
 		.' data-lat="'.$lat.'"'
 		.' data-lng="'.$lng.'"'

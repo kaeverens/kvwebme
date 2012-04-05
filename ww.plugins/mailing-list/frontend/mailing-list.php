@@ -138,8 +138,8 @@ function Mailinglist_createForm() {
 	* @return null
 	*/
 function Mailinglist_showForm2() {
-	WW_addScript('/ww.plugins/mailing-list/files/impromptu.jquery.min.js');
-	WW_addScript('/ww.plugins/mailing-list/files/general.js');
+	WW_addScript('mailing-list/files/impromptu.jquery.min.js');
+	WW_addScript('mailing-list/files/general.js');
 	WW_addCSS('/ww.plugins/mailing-list/files/mailing-list.css');
 	$html=Mailinglist_createForm();
 	if (isset($_GET['mailing_list_hash'])) {

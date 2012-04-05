@@ -57,8 +57,8 @@ function MP3_frontendWidget($vars=null) {
 	$html=$smarty->fetch(
 		USERBASE.'/ww.cache/mp3/'.$vars->id
 	);
-	WW_addScript('/ww.plugins/mp3/frontend/jwplayer.js');
-	WW_addScript('/ww.plugins/mp3/frontend/widget.js');
+	WW_addScript('mp3/frontend/jwplayer.js');
+	WW_addScript('mp3/frontend/widget.js');
 	// }
 	return $html;
 }

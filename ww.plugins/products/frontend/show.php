@@ -272,7 +272,7 @@ function Product_datatableMultiple ($products, $direction) {
 		case 'horizontal': // {
 			WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
 			WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
-			WW_addScript('/ww.plugins/products/frontend/show-horizontal.js');
+			WW_addScript('products/frontend/show-horizontal.js');
 			WW_addCSS('/ww.plugins/products/frontend/show-horizontal.css');
 			$html='<table class="product-horizontal">';
 			$html.='<thead><tr>';
@@ -440,7 +440,7 @@ function Products_image($params, $smarty) {
 	$imgclasses=array();
 	// { zoom
 	if ($params['zoom']) {
-		WW_addScript('/ww.plugins/products/zoom.js');
+		WW_addScript('products/zoom.js');
 		$imgclasses[]='zoom';
 		$imgclasses[]='zoom-pos-'.$params['zoompos'];
 	}
@@ -636,8 +636,8 @@ function Products_plusVat($params, $smarty) {
 	* @return string the list of reviews
 	*/
 function Products_reviews($params, $smarty) {
-	WW_addScript('/ww.plugins/products/frontend/delete.js');
-	WW_addScript('/ww.plugins/products/frontend/products-edit-review.js');
+	WW_addScript('products/frontend/delete.js');
+	WW_addScript('products/frontend/products-edit-review.js');
 	$userid = (int)$_SESSION['userdata']['id'];
 	$product = $smarty->_tpl_vars['product'];
 	$productid = (int)$product->id;
@@ -747,7 +747,7 @@ function Products_show($PAGEDATA) {
 	if (!isset($PAGEDATA->vars['products_what_to_show'])) {
 		$PAGEDATA->vars['products_what_to_show']='0';
 	}
-	WW_addScript('/ww.plugins/products/frontend/js.js');
+	WW_addScript('products');
 	$c='';
 	// { search
 	$search=isset($_REQUEST['products-search'])
@@ -1367,12 +1367,12 @@ class Products{
 				$c.=Product_datatableMultiple($prods, 'vertical');
 			break; // }
 			case 3: // { map view
-				WW_addScript('/ww.plugins/products/frontend/js.js');
+				WW_addScript('products');
 				WW_addCSS('/ww.plugins/products/products.css');
 				return '<div id="products-mapview"></div>';
 				// }
 			case 4: // { carousel
-				WW_addScript('/ww.plugins/products/frontend/js.js');
+				WW_addScript('products');
 				$c='<div id="products-carousel"><ul id="products-carousel-slider">';
 				foreach ($prods as $pid) {
 					$product=Product::getInstance($pid);

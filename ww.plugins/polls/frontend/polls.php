@@ -1,6 +1,6 @@
 <?php
 function poll_display() {
-	WW_addScript('/ww.plugins/polls/js.js');
+	WW_addScript('polls');
 	$poll=dbRow('select * from poll where enabled limit 1');
 	if (!count($poll)) {
 		return '<div class="polls-wrapper"><em>No polls available.</em></div>';

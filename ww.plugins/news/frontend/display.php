@@ -21,7 +21,7 @@
   * @return string HTML of the news
   */
 function News_displayCalendar($PAGEDATA) {
-	WW_addScript('/ww.plugins/news/frontend/calendar.js');
+	WW_addScript('news/frontend/calendar.js');
 	return '<table id="events_wrapper"><tr>'
 		.'<td><div id="events_calendar"></div></td>'
 		.'<td id="events_list">&nbsp;</td>'

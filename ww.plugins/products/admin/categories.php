@@ -56,8 +56,8 @@ WW_addScript('/j/jstree/_lib/jquery.cookie.js');
 WW_addScript('/j/jquery.inlinemultiselect.js');
 echo '<script defer="defer" src="/ww.plugins/products/admin/get-product-names-js.php">'
 	.'</script>';
-WW_addScript('/ww.plugins/products/admin/categories.js');
-WW_addScript('/ww.plugins/products/admin/create-page.js');
-WW_addScript('/ww.plugins/image-gallery/files/swfobject.js');
-WW_addScript('/ww.plugins/image-gallery/files/uploadify.jquery.min.js');
+WW_addScript('products/admin/categories.js');
+WW_addScript('products/admin/create-page.js');
+WW_addScript('image-gallery/files/swfobject.js');
+WW_addScript('image-gallery/files/uploadify.jquery.min.js');
 WW_addCSS('/ww.plugins/image-gallery/files/uploadify.css');

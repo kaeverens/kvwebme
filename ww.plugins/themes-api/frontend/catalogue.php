@@ -17,7 +17,7 @@ if (!defined('SCRIPTBASE')) { // don't access directly
 }
 require_once SCRIPTBASE.'/ww.plugins/themes-api/api/funcs.php';
 
-WW_addScript('/ww.plugins/themes-api/carousel.js');
+WW_addScript('themes-api/carousel.js');
 WW_addCSS('/ww.plugins/themes-api/api.css');
 
 $script = '

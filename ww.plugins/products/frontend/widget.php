@@ -61,8 +61,8 @@ switch ($widget_type) {
 			.'});</script>';
 		$html.='<!--[if IE]><script defer="defer" src="/ww.plugins/products/frontend/excanvas.js">'
 			.'</script><![endif]-->';
-		WW_addScript('/ww.plugins/products/frontend/jquery.canvas.js');
-		WW_addScript('/ww.plugins/products/frontend/widget.js');
+		WW_addScript('products/frontend/jquery.canvas.js');
+		WW_addScript('products/frontend/widget.js');
 	break; // }
 	case 'Products': // { Products
 		$html='<div class="products-widget-products">';
@@ -99,7 +99,7 @@ switch ($widget_type) {
 		}
 		$html.='</ul></div>';
 		WW_addScript('/j/jstree/jquery.jstree.js');
-		WW_addScript('/ww.plugins/products/j/categories-tree.js');
+		WW_addScript('products/j/categories-tree.js');
 	break; // }
 	default: // { List Categories
 		$html='<ul>';

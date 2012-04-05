@@ -116,7 +116,7 @@ function Comments_displayComments($page) {
 	}
 	$cbhtml=$allowComments=='on'?Comments_showCommentForm($page->id):'';
 	if ($allowComments=='on') {
-		WW_addScript('/ww.plugins/comments/frontend/comments-frontend.js');
+		WW_addScript('comments/frontend/comments-frontend.js');
 		$cbhtml.='<script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.9/'
 			.'jquery.validate.min.js"></script>';
 	}

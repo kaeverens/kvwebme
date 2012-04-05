@@ -38,4 +38,4 @@ else {
 $body.='</select></td></tr></table></div>';
 // }
 $body.='</div>';
-WW_addScript('/ww.plugins/ab-testing/admin/body-override.js');
+WW_addScript('ab-testing/admin/body-override.js');

@@ -51,7 +51,7 @@ function WW_getScripts() {
 	global $scripts;
 	$url='/js/'.filemtime(SCRIPTBASE.'j/js.js');
 	foreach ($scripts as $s) {
-		$url.='|'.$s;
+		$url.='*'.$s;
 	}
 	return $url;
 }

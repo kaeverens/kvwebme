@@ -41,5 +41,5 @@ else {
 		.'<tr><th colspan="2"><button>Subscribe</button></th></tr>'
 		.'</table>'
 		.'</div>';
-	WW_addScript('/ww.plugins/sms/frontend/widget.js');
+	WW_addScript('sms/frontend/widget.js');
 }

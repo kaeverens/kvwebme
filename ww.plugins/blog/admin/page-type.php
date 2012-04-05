@@ -86,4 +86,4 @@ $c.='</div>';
 // }
 $c.='</div>';
 WW_addCss('/ww.plugins/blog/admin/admin.css');
-WW_addScript('/ww.plugins/blog/admin/admin.js');
+WW_addScript('blog/admin/admin.js');

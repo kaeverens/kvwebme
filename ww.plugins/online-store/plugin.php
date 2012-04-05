@@ -609,7 +609,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 		$html.='</div>';
 	}
 	$html.='</div>';
-	WW_addScript('/ww.plugins/online-store/j/basket.js');
+	WW_addScript('online-store/j/basket.js');
 	return $html;
 }
 

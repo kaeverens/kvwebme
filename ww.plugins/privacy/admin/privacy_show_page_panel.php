@@ -53,4 +53,4 @@ echo '<tr><th>Allow non-logged-in readers to view the page if they enter '
 	.'" /></td></tr>';
 // }
 echo '</table>';
-WW_addScript('/ww.plugins/privacy/admin/privacy_show_page_panel.js');
+WW_addScript('privacy/admin/privacy_show_page_panel.js');

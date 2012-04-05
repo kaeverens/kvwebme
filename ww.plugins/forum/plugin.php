@@ -125,7 +125,7 @@ function forum_user_profile($PAGEDATA, $user) {
 	$script = '$(function(){$(".rating").ratings();});
 	';
 
-	WW_addScript('/ww.plugins/ratings/ratings.js');
+	WW_addScript('ratings/ratings.js');
 	WW_addInlineScript($script);
 
 	$threads = dbOne(

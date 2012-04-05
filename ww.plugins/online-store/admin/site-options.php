@@ -80,6 +80,6 @@ foreach ($groups as $group) {
 echo '</table>';
 // }
 echo '<input type="submit" name="action" value="Save" /></form>';
-WW_addScript('/ww.plugins/online-store/admin/site-options.js');
+WW_addScript('online-store/admin/site-options.js');
 WW_addInlineScript('window.os_currencies='.$os_currencies.';');
 WW_addCSS('/ww.plugins/online-store/admin/site-options.css');

@@ -12,7 +12,7 @@
   * @link       www.kvweb.me
  */
 
-WW_addScript('/ww.plugins/forum/admin/form.js');
+WW_addScript('forum/admin/form.js');
 $c='<link rel="stylesheet" type="text/css" '
 	.'href="/ww.plugins/forum/admin/forum-admin.css"></link>';
 // { tabs nav

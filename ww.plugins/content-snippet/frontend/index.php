@@ -71,7 +71,7 @@ function ContentSnippet_show2($vars) {
 		}
 		// }
 		// { horizontal accordion
-		WW_addScript('/ww.plugins/content-snippet/frontend/jquery.hrzAccordion.js');
+		WW_addScript('content-snippet/frontend/jquery.hrzAccordion.js');
 		WW_addCss(
 			'/ww.plugins/content-snippet/frontend/jquery.hrzAccordion.defaults.css'
 		);

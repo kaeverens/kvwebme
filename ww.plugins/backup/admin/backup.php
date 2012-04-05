@@ -20,4 +20,4 @@ echo '<p>Backing up your site may use a lot of resources and take a while '
 	.'<tr><th colspan="3">'
 	.'<input type="submit" name="action" value="Create Backup" />'
 	.'</th></tr></table></form>';
-WW_addScript('/ww.plugins/backup/admin/backup.js');
+WW_addScript('backup/admin/backup.js');

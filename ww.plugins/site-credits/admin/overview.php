@@ -6,7 +6,7 @@ if (!Core_isAdmin()) {
 
 echo '<h2>Credits</h2><p>You have <strong>'.((int)$GLOBALS['DBVARS']['sitecredits-credits'])
 	.'</strong> credits.</p><button id="buy-credits">Buy Credits</button>';
-WW_addScript('/ww.plugins/site-credits/admin/overview.js');
+WW_addScript('site-credits/admin/overview.js');
 
 echo '<h2>Account history</h2>';
 $rs=dbAll(

@@ -818,12 +818,12 @@ if (count($relations)) {
 		.'<td><select class="products-relations-product"'
 		.' name="products-relations-product[]">'
 		.'<option value=""> -- please choose -- </option></select>';
-	WW_addScript('/ww.plugins/products/admin/products-edit-related.js');
+	WW_addScript('products/admin/products-edit-related.js');
 	echo '</td></tr></table></div>';
 }
 // }
 // { end form and tabs
 echo '</div><input type="submit" value="Save" /></form>';
 // }
-WW_addScript('/ww.plugins/products/admin/products-edit.js');
-WW_addScript('/ww.plugins/products/admin/create-page.js');
+WW_addScript('products/admin/products-edit.js');
+WW_addScript('products/admin/create-page.js');

@@ -723,9 +723,7 @@ class ProductType{
 				break; // }
 				case 'colour': // {
 					if (@$f->u) { // user-definable
-						WW_addScript(
-							'/j/mColorPicker/mColorPicker.js'
-						);
+						WW_addScript('/j/mColorPicker/mColorPicker.js');
 						$h='<input class="color-picker" '
 							.'name="products_values_'.$f->n.'" '
 							.'style="height:20px;width:20px;" '

@@ -145,7 +145,7 @@ function Forum_showForum(&$PAGEDATA, &$id) {
 			.$id.';</script></div>';
 		WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
 		WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
-		WW_addScript('/ww.plugins/forum/frontend/forum.js');
+		WW_addScript('forum/frontend/forum.js');
 	}
 	else {
 		$c.='<div class="forum-not-logged-in">In order to post to this forum,'
@@ -189,7 +189,7 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 	WW_addCSS('/ww.plugins/forum/frontend/forum.css');
 	$script='$(function(){$(".ratings").ratings();});';
 	WW_addScript('/j/jquery.tooltip.min.js');
-	WW_addScript('/ww.plugins/ratings/ratings.js');
+	WW_addScript('ratings/ratings.js');
 	WW_addInlineScript($script);
 	$thread=dbRow('select * from forums_threads where id='.$id);
 	$forum_id=$thread['forum_id'];
@@ -246,7 +246,7 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 			.$forum_id.',forum_thread_id='.$id.';</script></div>';
 		WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
 		WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
-		WW_addScript('/ww.plugins/forum/frontend/forum.js');
+		WW_addScript('forum/frontend/forum.js');
 	}
 	else {
 		$c.='<div class="forum-not-logged-in">In order to post to this thread,'

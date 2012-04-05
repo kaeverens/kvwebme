@@ -141,4 +141,4 @@ else {
 		.'<tbody></tbody></table></div>';
 	echo '<a href="'.$_url.'&amp;voucher_id=0">create a voucher</a>';
 }
-WW_addScript('/ww.plugins/online-store/admin/vouchers.js');
+WW_addScript('online-store/admin/vouchers.js');

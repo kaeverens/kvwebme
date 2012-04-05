@@ -19,7 +19,7 @@ if (@count($p->pages)) {
 		.'products-edit">add a new product</a> instead?</p>';
 }
 
-WW_addScript('/ww.plugins/online-store/admin/wizard.js');
+WW_addScript('online-store/admin/wizard.js');
 echo '<h1>Online Store Wizard</h1>
 <div id="preview-dialog"></div>
 <ul class="left-menu" id="register-progress" style="list-style-type:none">

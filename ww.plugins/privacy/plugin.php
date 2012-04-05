@@ -95,7 +95,7 @@ function UserAuthentication_showWidget($vars=null, $widget_id=0) {
 	WW_addCSS('/ww.plugins/privacy/widget.css');
 	if (!isset($_SESSION['userdata']) || !$_SESSION['userdata']['id']) {
 		require_once SCRIPTBASE.'ww.plugins/privacy/frontend/widget-login.php';
-		WW_addScript('/ww.plugins/privacy/frontend/widget-login.js');
+		WW_addScript('privacy/frontend/widget-login.js');
 		return $c;
 	}
 	return '<div id="userauthentication-widget"><ul>'

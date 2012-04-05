@@ -601,7 +601,7 @@ $c.='<div id="online-store-export">'
 $c.='</div>';
 // }
 $c.='</div>';
-WW_addScript('/ww.plugins/online-store/admin/index.js');
+WW_addScript('online-store/admin/index.js');
 WW_addScript('/j/jquery.inlinemultiselect.js');
 
 if (!file_exists(USERBASE.'/ww.cache/online-store')) {

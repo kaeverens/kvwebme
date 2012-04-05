@@ -60,4 +60,4 @@ $c.='<p>To force a re-translation, clear the box below and update.</p>';
 $c.=ckeditor('body', $page['body'], false);
 $c.='</td></tr>';
 // }
-WW_addScript('/ww.plugins/translate/admin/form.js');
+WW_addScript('translate/admin/form.js');

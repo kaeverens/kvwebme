@@ -6,7 +6,7 @@
 	Report Bugs: <conor@macaoidh.name>
 */
 
-WW_addScript('/ww.plugins/dynamic-search/files/general.js');
+WW_addScript('dynamic-search/files/general.js');
 WW_addCSS('/ww.plugins/dynamic-search/files/style.css');
 $html='
 <h1>Search</h1>

@@ -33,5 +33,5 @@ $c.='<span class="blog-author">'.$name.'</span> ~ '
 $c.='<div class="blog-body">'.$r['body'].'</div>';
 $date=preg_replace('/ .*/', '', $r['cdate']);
 $c.='</div>';
-WW_addScript('/ww.plugins/blog/js.js');
+WW_addScript('blog');
 WW_addInlineScript('this.webmeComments={"show":1}');

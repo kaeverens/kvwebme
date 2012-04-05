@@ -66,7 +66,7 @@ function ImageGallery_show($PAGEDATA) {
 		$c.=$smarty->fetch(
 			USERBASE.'/ww.cache/image-gallery/'.$PAGEDATA->id
 		);
-		WW_addScript('/ww.plugins/image-gallery/frontend/gallery4.js');
+		WW_addScript('image-gallery/frontend/gallery4.js');
 		WW_addCSS('/ww.plugins/image-gallery/frontend/gallery.css');
 		// }
 		return $c.$vars['footer'];
@@ -138,7 +138,7 @@ function GalleryWidget_show($vars){
 			.attr("rows","'.$vars['rows'].'");
 		';
 		// }
-		WW_addScript('/ww.plugins/image-gallery/frontend/gallery.js');
+		WW_addScript('image-gallery/frontend/gallery.js');
 		WW_addInlineScript($script);
 		WW_addCSS('/ww.plugins/image-gallery/frontend/gallery.css');
 		// }

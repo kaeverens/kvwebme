@@ -12,5 +12,5 @@ function SendAsEmail_showWidget($vars) {
 	echo '<div class="sendasemail-print"><a href="'.$url.'">Print Version</a></div>';
 	echo '<div class="sendasemail-sendasemail">'
 		.'<a href="javascript:;" onclick="sendasemail_send(\''.$template.'\')">Send as Email</a></div>';
-	WW_addScript('/ww.plugins/send-as-email/frontend/widget.js');
+	WW_addScript('send-as-email/frontend/widget.js');
 }
