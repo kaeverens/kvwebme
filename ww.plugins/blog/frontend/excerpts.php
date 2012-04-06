@@ -17,12 +17,18 @@ if (!Core_isAdmin()) {
 	if (isset($_SESSION['userdata']) && $_SESSION['userdata']['id']) {
 		$constraints[]='(status or user_id='.$_SESSION['userdata']['id'].')';
 	}
+	else {
+		$constraints[]='status';
+	}
 }
 if ($blog_author) {
 	$constraints[]='user_id='.$blog_author;
 }
 
 $constraints=' where '.join(' and ', $constraints);
+$num_of_entries=dbOne(
+	'select count(id) ids from blog_entry'.$constraints, 'ids'
+);
 $sql='select * from blog_entry'.$constraints.' order by status,cdate desc'
 	.' limit '.$excerpts_offset.','.$excerpts_per_page;
 $rs=dbAll($sql);
@@ -51,11 +57,19 @@ foreach ($rs as $r) {
 	$c.='</div>';
 }
 $this_page=(int)($excerpts_offset/$excerpts_per_page);
-$c.='<a class="blog-link-to-older-entries" href="'
-	.$PAGEDATA->getRelativeURL().'/page'.($this_page+1).'">'.'older entries</a>';
+$bottom_links=array();
+if ($num_of_entries>$excerpts_offset+$excerpts_per_page) {
+	$bottom_links[]='<a class="blog-link-to-older-entries" href="'
+		.$PAGEDATA->getRelativeURL().'/page'.($this_page+1).'">'
+		.'older entries</a>';
+}
 if ($this_page) {
-	$c.='<a class="blog-link-to-newers-entries" href="'
+	$bottom_links[]='<a class="blog-link-to-newers-entries" href="'
 		.$PAGEDATA->getRelativeURL().'/page'.($this_page-1).'">'
 		.'newer entries</a>';
-	}
+}
+$bottom_links[]='<a class="blog-link-to-all-authors" href="'
+	.$PAGEDATA->getRelativeURL().'/authors">'
+	.'list of authors</a>';
+$c.='<div class="blog-bottom-links">'.join(' | ', $bottom_links).'</div>';
 $c.='</div>';

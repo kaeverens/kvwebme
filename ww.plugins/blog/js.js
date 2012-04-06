@@ -2,7 +2,29 @@ $(function() {
 	$('.blog-excerpt-wrapper,.blog-article-wrapper').each(function() {
 		var $this=$(this);
 		var id=+$this.attr('id').replace('blog-entry-', '');
-		if (userdata.isAdmin
+		// { add comments box
+		if ($this.is('.blog-article-wrapper')) {
+			var show_comments=0;
+			if (blog_comments) {
+				var html='<div id="blog-comment-wrapper"><h2>Leave a Comment</h2>'
+					+'<table><tr><th>Name</th><td><input class="blog-comment-name"/></td></tr>'
+					+'<tr><th>Email</th><td><input type="email" class="blog-comment-email"/></td></tr>'
+					+'<tr><th>Website</th><td><input class="blog-comment-url"/></td></tr>'
+					+'<tr><td colspan="2"><textarea class="blog-comment" style="width:100%;"></textarea></td></tr>'
+					+'<tr><td colspan="2"><button class="blog-comment-submit">Submit Comment</button></td></tr>'
+					+'</table>';
+				var $comments=$(html).appendTo($this);
+				$comments.find('button').click(function() {
+					
+				});
+			}
+		}
+		// }
+		if (!window.userdata) {
+			return;
+		}
+		// { add "edit post" button
+		if ((userdata.isAdmin)
 			|| (userdata.id && userdata.id==$(this).find('blog-author').data('uid'))
 		) {
 			var $link=$('<a href="#" class="blog-edit">edit post</a>')
@@ -11,7 +33,11 @@ $(function() {
 				})
 				.insertAfter($this.find('.blog-date-published'));
 		}
+		// }
 	});
+	if (!window.userdata) {
+		return;
+	}
 	var showNewPost=userdata.isAdmin;
 	if (userdata.groups && userdata.groups.length) {
 		for (var i=userdata.groups.length;i--;) {

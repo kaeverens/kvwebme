@@ -14,23 +14,40 @@ function Blog_editPost(pdata) {
 	var $main=$('#blog-main').empty();
 	$main=$('#blog-main,.blog-main-wrapper,.blog-article-wrapper').empty();
 	var html='<form action="#"><table>'
-		+'<tr><th>Title</th><td><input id="blog-title"/></td>'
-		+'<td><button class="save">Save</button></td></tr>'
-		+'<tr><th>Post</th><td colspan="2"><textarea id="blog-body"/></td></tr>'
-		+'<tr><th>Excerpt</th><td colspan="2"><textarea id="blog-excerpt"'
-		+' style="height:80px"/></td></tr>'
-		+'<tr><th>Excerpt Image</th><td colspan="2" id="blog-excerpt_image"/></tr>'
-		+'<tr><th>Tags</th><td colspan="2"><input id="blog-tags"/></td></tr>'
-		+'<tr><th>Published</th><td colspan="2"><input class="datetime" id="blog-pdate"/></td></tr>'
-		+'<tr><th>Created</th><td colspan="2"><input disabled="disabled" class="datetime" id="blog-cdate"/></td></tr>'
-		+'<tr><th>Last Update</th><td colspan="2"><input disabled="disabled" class="datetime" id="blog-udate"/></td></tr>'
-		+'<tr><td/><th colspan="2"><input id="blog-user_id" type="hidden"/>'
+		// { title
+		+'<tr><th style="width:10%">Title</th>'
+		+'<td colspan="4" style="width:70%"><input id="blog-title"  style="width:100%"/></td>'
+		+'<td style="width:30%"><button class="save">Save</button></td></tr>'
+		// }
+		// { post
+		+'<tr><th>Post</th><td colspan="5"><textarea id="blog-body"/></td></tr>'
+		// }
+		// { excerpt
+		+'<tr><th>Excerpt</th><td colspan="5"><textarea id="blog-excerpt"'
+		+' style="height:40px;width:100%"/></td></tr>'
+		// }
+		// { tags
+		+'<tr><th>Tags</th><td colspan="5"><input id="blog-tags" style="width:100%"/></td></tr>'
+		// }
+		// { dates
+		+'<tr>'
+		+'<th>Published</th><td><input class="datetime" id="blog-pdate"/></td>'
+		+'<th>Created</th><td><input disabled="disabled" class="datetime" id="blog-cdate"/></td>'
+		+'<th>Last Update</th><td><input disabled="disabled" class="datetime" id="blog-udate"/></td></tr>'
+		// }
+		// { comments
+		+'<tr><th>Comments</th><td colspan="4"><select id="blog-allow_comments">'
+		+'<option value="0">Do not allow any comments</option>'
+		+'<option value="1">Allow comments from verified email addresses</option>'
+		+'</select></td>'
+		+'<th><input id="blog-user_id" type="hidden"/>'
 		+'<input id="blog-id" type="hidden"/>'
 		+'<input id="blog-status" type="hidden"/>'
 		+'<button class="save">Save</button></th></tr>'
+		// }
 		+'</table></form>';
 	$main.append(html);
-	$('input,textarea', $main).each(function() {
+	$('input,textarea,select', $main).each(function() {
 		var $this=$(this);
 		var id=$this.attr('id')||'';
 		var key=$this.attr('id').replace(/blog-/, '');
@@ -46,22 +63,22 @@ function Blog_editPost(pdata) {
 	}
 	$('#blog-body')
 		.ckeditor(CKEditor_config);
-	if (pdata.status=='0') {
-		$('<button class="publish">Save and Publish</button>')
+	if (pdata.status=='1') {
+		$('<button class="unpublish">Unpublish</button>')
 			.click(function() {
-				$('input#blog-pdate')
-					.datepicker('setDate', new Date, true)
-					.datepicker('setTime', new Date, true);
-				$('input#blog-status').val(1);
+				$('input#blog-status').val(0);
 				$('button.save').click();
 				return false;
 			})
 			.insertAfter('button.save');
 	}
 	else {
-		$('<button class="unpublish">Save and Unpublish</button>')
+		$('<button class="publish">Publish</button>')
 			.click(function() {
-				$('input#blog-status').val(0);
+				$('input#blog-pdate')
+					.datepicker('setDate', new Date, true)
+					.datepicker('setTime', new Date, true);
+				$('input#blog-status').val(1);
 				$('button.save').click();
 				return false;
 			})

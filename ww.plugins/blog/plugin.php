@@ -61,18 +61,20 @@ function Blog_frontend($PAGEDATA) {
 	// }
 	$excerpts_offset=0;
 	$blog_author=0;
+	$authors_per_page=10;
 	WW_addScript('blog');
 	WW_addInlineScript(
 		'var blog_groups='
 		.$PAGEDATA->vars['blog_groupsAllowedToPost'].';'
 	);
 	if ($unused_uri) {
-		// show article if specified
+		// { show specific article
 		if (preg_match('#^[0-9]+/[0-9]+-[0-9]+-[0-9]+/[^/]+#', $unused_uri)) {
 			require_once dirname(__FILE__).'/frontend/show-article.php';
 			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
 		}
-		// show a page of excerpts if specified
+		// }
+		// { show a page of excerpts
 		if (preg_match('#page[0-9]+#', $unused_uri)) {
 			$excerpts_offset=$excerpts_per_page*((int)preg_replace(
 				'#page([0-9]+).*#', '\1', $unused_uri
@@ -80,12 +82,20 @@ function Blog_frontend($PAGEDATA) {
 			require_once dirname(__FILE__).'/frontend/excerpts.php';
 			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
 		}
-		// show list of a specific user's excerpts
+		// }
+		// { show list of a specific user's excerpts
 		if (preg_match('#^[0-9]+#', $unused_uri)) {
 			$blog_author=preg_replace('/^([0-9]+).*/', '\1', $unused_uri);
 			require_once dirname(__FILE__).'/frontend/excerpts.php';
 			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
 		}
+		// }
+		// { show list of authors
+		if ($unused_uri=='authors/') {
+			require_once dirname(__FILE__).'/frontend/authors.php';
+			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
+		}
+		// }
 		return $PAGEDATA->render().$unused_uri.@$PAGEDATA->vars['footer'];
 	}
 	require_once dirname(__FILE__).'/frontend/excerpts.php';

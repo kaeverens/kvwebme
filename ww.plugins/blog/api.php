@@ -98,6 +98,9 @@ function Blog_postEdit() {
 	$user_id=(int)@$_REQUEST['blog_user_id'];
 	$id=(int)@$_REQUEST['blog_id'];
 	$status=(int)@$_REQUEST['blog_status'];
+	$allow_comments=(int)@$_REQUEST['blog_allow_comments'];
+
+	// TODO: make sure only verified users are allowed edit or create an entry
 
 	$sql='title="'.addslashes($title).'",'
 		.'body="'.addslashes($body).'",'
@@ -106,6 +109,7 @@ function Blog_postEdit() {
 		.'tags="'.addslashes($tags).'",'
 		.'pdate="'.addslashes($pdate).'",'
 		.'status="'.$status.'",'
+		.'allow_comments="'.$allow_comments.'",'
 		.'udate=now()';
 	if ($id) {
 		$sql='update blog_entry set '.$sql.' where id='.$id;

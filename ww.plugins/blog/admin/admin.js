@@ -6,9 +6,6 @@ $(function() {
 });
 function Blog_showContents() {
 	var $main=$('#blog-main').empty();
-	if ($.inArray('comments', webmePlugins)==-1) {
-		$main.append('<em>The Comments plugin is not installed.</em>');
-	}
 	if ($.inArray('rss', webmePlugins)==-1) {
 		$main.append('<em>The RSS plugin is not installed.</em>');
 	}
