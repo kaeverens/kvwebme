@@ -14,11 +14,15 @@
 		$el.data('menu',null);
 		return;
 	}
-	function menuToggle(el,config){
+	function menuToggle(el, config){
+		stopClearAll();
 		var $el=$(el);
 		// { if this is a second click, then close the sub-menu and return
 		if($el.data('menu')){
 			hideSubMenus(el);
+			if ($el.is('.saorfm-button')) {
+				$(document).off('click', clearAll);
+			}
 			return;
 		}
 		// }
@@ -42,7 +46,7 @@
 				var offset=$parent.offset();
 				// { check is this a top-level menu
 				if ($el.is('.saorfm-button')) {
-					$wrapper[0].id='saorfm-menu-$wrapper-'+(saorfm_id++);
+					$wrapper[0].id='saorfm-menu-wrapper-'+(saorfm_id++);
 					$wrapper
 						.css({
 							"top":  offset.top+$parent.outerHeight(),
@@ -58,6 +62,7 @@
 									+'">download file</li>'
 								)
 									.click(function(){
+										stopClearAll();
 										$(
 											'<iframe src="'+config.rpc+'?action=get&file='+fname
 											+'&forcedownload" '
@@ -74,6 +79,7 @@
 									+'">delete file</li>'
 								)
 									.click(function(){
+										stopClearAll();
 										if (!confirm('Are you sure you want to delete the selected file?')) {
 											return;
 										}
@@ -140,9 +146,10 @@
 						if (config.select&1) {
 							$li
 								.click(function(){
+									stopClearAll();
 									var $input=$($el.data('input'));
 									var url=$el.data('directory')+$(this).text();
-									$input.val(url);
+									$input.val(config.prefix+url);
 									hideSubMenus($input.next());
 								})
 								.attr('id',$wrapper[0].id+'-'+i)
@@ -198,6 +205,7 @@
 						+'">select directory</li>'
 					)
 						.click(function(){
+							stopClearAll();
 							var $input=$($el.data('input'));
 							var url=$el.data('directory');
 							$input.val(url);
@@ -213,10 +221,11 @@
 		);
 		// }
 	}
-	$.fn.saorfm= function(settings) {
+	$.fn.saorfm=function(settings) {
 		var config = {
 			'download' : true,
-			'upload'   : true
+			'upload'   : true,
+			'prefix'   : ''
 		};
 		if (settings) {
 			$.extend(config, settings);
@@ -246,7 +255,7 @@
 			$this
 				.wrap('<div class="saorfm"></div>')
 				.css({
-					'height':(height-4)+'px'
+					'height':height+'px'
 				});
 			var $wrapper=$this.closest('.saorfm');
 			$wrapper.css({
@@ -254,17 +263,39 @@
 				'height':height+'px'
 			});
 			var button=$(
-				'<div class="saorfm-button">'
-				+'<span class="ui-icon ui-icon-triangle-1-s">&nbsp;</span>'
-				+'</div>'
-			)
+					'<button class="saorfm-button">'
+					+'<span class="ui-icon ui-icon-triangle-1-s">&nbsp;</span>'
+					+'</button>'
+				)
+				.css({
+					'height':(height+2)+'px'
+				})
 				.insertAfter(this)
 				.click(function(){
+					stopClearAll();
+					$(document).on('click', clearAll);
 					menuToggle(this,config);
+					return false;
 				})
 				.data('directory','/')
 				.data('input',this);
 		});
 		return this;
 	};
+	function clearAll() {
+		window.saorfm_hideTimeout=setTimeout(function() {
+			var $els=$('button.saorfm-button');
+			$els.each(function() {
+				var $this=$(this);
+				if ($this.data('menu')) {
+					menuToggle(this);
+				}
+			});
+		}, 2);
+	}
+	function stopClearAll() {
+		setTimeout(function() {
+			clearTimeout(window.saorfm_hideTimeout);
+		}, 1);
+	}
 })(jQuery);

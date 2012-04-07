@@ -1,29 +1,33 @@
 div.saorfm {
 	position:relative;
 	display:inline-block;
+	border:1px solid #ccc;
+	background:#fff;
+	border-radius:5px;
 }
 div.saorfm input{
-	margin:0;
 	position:absolute;
 	left:0;
 	top:0;
 	bottom:0;
+	margin:0;
+	padding:0;
 	right:19px;
-	border:1px solid #ccc;
-	background:#fff;
 	border-radius:5px 0 0 5px;
+	border:0;
 }
-div.saorfm-button{
+button.saorfm-button{
 	position:absolute;
-	top:0;
-	right:0;
-	bottom:0;
-	width:18px;
+	top:-1px;
+	right:-1px;
+	bottom:-1px;
+	width:24px;
 	background:#eee;
 	border-radius:0 5px 5px 0;
 	text-align: center;
-	line-height:100%;
 	border:1px solid #ccc;
+	padding:0;
+	margin:0;
 }
 ul.saorfm-menu {
 	position:absolute;

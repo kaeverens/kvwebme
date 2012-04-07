@@ -1,5 +1,19 @@
 <?php
-if(!Core_isAdmin())exit;
+/**
+	* SMS addressbooks admin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+if (!Core_isAdmin()) {
+	exit;
+}
 require SCRIPTBASE.'ww.plugins/sms/admin/libs.php';
 
 echo '<div id="sms_wrapper">';
@@ -8,10 +22,12 @@ $clink='<a href="javascript:sms_edit(0);">Create Addressbook</a>';
 echo $clink;
 
 $rs=dbAll('select * from sms_addressbooks order by name');
-if(count($rs)){ // show addressbooks
+if (count($rs)) { // show addressbooks
 	echo '<table><tr><th>Name</th><td>Created Date</td><td>Subscribers</td></tr>';
-	foreach($rs as $r){
-		if($r['subscribers']=='')$r['subscribers']='[]';
+	foreach ($rs as $r) {
+		if ($r['subscribers']=='') {
+			$r['subscribers']='[]';
+		}
 		$ss=json_decode($r['subscribers']);
 		echo '<tr id="sms_row_'.$r['id'].'">'
 			.'<td>'.htmlspecialchars($r['name']).'</td>'

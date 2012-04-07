@@ -409,7 +409,7 @@ class SaorFM{
 		}
 		if (!file_exists(SAORFM_FILES.$directory)) {
 			// directory does not exist
-			return '{"error":12}'.SAORFM_FILES.$directory;
+			return '{"error":12}';
 		}
 		if (!is_dir(SAORFM_FILES.$directory)) {
 			// is not a directory

@@ -277,8 +277,9 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		}
 		if ($group_discount) { // group discount
 			$discount_amount=$grandTotal*($group_discount/100);
-			$table.='<tr class="os_basket_totals"><td colspan="2" class="nobord">&nbsp;</td><td class="gro'
-				.'up-discount" style="text-align:right;"><span class="__" lang-context="core">'
+			$table.='<tr class="os_basket_totals"><td colspan="2" class="nobord">'
+				.'&nbsp;</td><td class="group-discount" style="text-align:right;">'
+				.'<span class="__" lang-context="core">'
 				.'Group Discount</span> ('.$group_discount.'%)</td><td class="totals">-'
 				.OnlineStore_numToPrice($discount_amount).'</td></tr>';
 			$grandTotal-=$discount_amount;
@@ -287,7 +288,8 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		$postage=OnlineStore_getPostageAndPackaging($deliveryTotal, '', 0);
 		if ($postage['total']) {
 			$grandTotal+=$postage['total'];
-			$table.='<tr class="os_basket_totals"><td colspan="2" class="nobord">&nbsp;</td><td class="p_a'
+			$table.='<tr class="os_basket_totals"><td colspan="2" class="nobord">'
+				.'&nbsp;</td><td class="p_a'
 				.'nd_p __" lang-context="core" style="text-align: right;">'
 				.'Postage and Packaging (P&amp;P)</td><td class="amountcell">'
 				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
@@ -303,8 +305,9 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$table.=OnlineStore_numToPrice($vat).'</td></tr>';
 			$grandTotal+=$vat;
 		}
-		$table.='<tr class="os_basket_totals os_basket_amountcell"><td colspan="2" class="nobord">'
-			.'&nbsp;</td><td class="totalcell __" lang-context="core" '
+		$table.='<tr class="os_basket_totals os_basket_amountcell">'
+			.'<td colspan="2" class="nobord">&nbsp;</td>'
+			.'<td class="totalcell __" lang-context="core" '
 			.'style="text-align: right;">Total Due</td>'
 			.'<td class="amountcell">'.OnlineStore_numToPrice($grandTotal)
 			.'</td></tr>';
@@ -487,7 +490,8 @@ if (!$submitted) {
 			$code=$_REQUEST['os_voucher'];
 			$voucher_amount=OnlineStore_voucherAmount($code, $email, $grandTotal);
 			if ($voucher_amount) {
-				$c.='<tr class="os_basket_totals"><td class="voucher" style="text-align: right;" colspan="3">'
+				$c.='<tr class="os_basket_totals">'
+					.'<td class="voucher" style="text-align: right;" colspan="3">'
 					.'<span class="__" lang-context="core">Voucher</span> ('
 					.htmlspecialchars($code).')</td><td class="totals">-'
 					.OnlineStore_numToPrice($voucher_amount).'</td></tr>';
@@ -496,8 +500,9 @@ if (!$submitted) {
 		}
 		if ($group_discount && $discountableTotal) { // group discount
 			$discount_amount=$discountableTotal*($group_discount/100);
-			$c.='<tr class="os_basket_totals"><td class="group-discount" style="text-align:right;" '
-				.'colspan="3"><span class="__" lang-context="core">Group Discount'
+			$c.='<tr class="os_basket_totals">'
+				.'<td class="group-discount" style="text-align:right;" colspan="3">'
+				.'<span class="__" lang-context="core">Group Discount'
 				.'</span> ('.$group_discount.'%)</td><td class="totals">-'
 				.OnlineStore_numToPrice($discount_amount).'</td></tr>';
 			$grandTotal-=$discount_amount;
@@ -517,7 +522,8 @@ if (!$submitted) {
 		}
 		// }
 		if ($vattable && $_SESSION['onlinestore_vat_percent']) {
-			$c.='<tr class="os_basket_totals"><td style="text-align:right" class="vat" colspan="3">'
+			$c.='<tr class="os_basket_totals">'
+				.'<td style="text-align:right" class="vat" colspan="3">'
 				.'<span class="__" lang-context="core">VAT</span> ('
 				.$_SESSION['onlinestore_vat_percent'].'% on '
 				.OnlineStore_numToPrice($vattable).')</td><td class="totals">';
@@ -548,7 +554,8 @@ if (!$submitted) {
 			$c.='<div id="online-store-wrapper" class="online-store"></div>';
 		}
 		else {
-			$c.='<form method="post" action="'.$PAGEDATA->getRelativeUrl().'"><input type="hidden" name="viewtype" value="1"/>'
+			$c.='<form method="post" action="'.$PAGEDATA->getRelativeUrl().'">'
+				.'<input type="hidden" name="viewtype" value="1"/>'
 				.'<button class="onlinestore-view-checkout __" lang-context="core">'
 				.'Checkout</button></form>';
 		}
