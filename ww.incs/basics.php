@@ -452,12 +452,17 @@ function dbInit() {
 		return $GLOBALS['db'];
 	}
 	global $DBVARS;
-	$db=new PDO(
-		'mysql:host='.$DBVARS['hostname'].';dbname='.$DBVARS['db_name'],
-		$DBVARS['username'],
-		$DBVARS['password'],
-		array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")
-	);
+	try {
+		$db=new PDO(
+			'mysql:host='.$DBVARS['hostname'].';dbname='.$DBVARS['db_name'],
+			$DBVARS['username'],
+			$DBVARS['password'],
+			array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")
+		);
+	}
+	catch (Exception $e) {
+		die($e->getMessage());
+	}
 	$db->num_queries=0;
 	$GLOBALS['db']=$db;
 	return $db;

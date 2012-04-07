@@ -11,6 +11,14 @@ function Blog_editPost(pdata) {
 			});
 		});
 	}
+	if (!$.fn.saorfm) {
+		$('head').append(
+			'<link type="text/css" href="/j/jquery.saorfm/jquery.saorfm.css" rel="stylesheet"/>'
+		);
+		return $.cachedScript('/j/jquery.saorfm/jquery.saorfm.js').done(function() {
+			Blog_editPost(pdata)
+		});
+	}
 	var $main=$('#blog-main').empty();
 	$main=$('#blog-main,.blog-main-wrapper,.blog-article-wrapper').empty();
 	var html='<form action="#"><table>'
@@ -21,6 +29,9 @@ function Blog_editPost(pdata) {
 		// }
 		// { post
 		+'<tr><th>Post</th><td colspan="5"><textarea id="blog-body"/></td></tr>'
+		// }
+		// { featured image
+		+'<tr><th>Featured Image</th><td colspan="5"><input id="blog-featured-image"/></td></tr>'
 		// }
 		// { excerpt
 		+'<tr><th>Excerpt</th><td colspan="5"><textarea id="blog-excerpt"'
@@ -96,6 +107,11 @@ function Blog_editPost(pdata) {
 			}
 		);
 		return false;
+	});
+	$('#blog-featured-image').saorfm({
+		'rpc':'/ww.incs/saorfm/rpc.php',
+		'select':'file',
+		'prefix':userdata.isAdmin?'':'/users/'+userdata.id
 	});
 	$('.shade').remove();
 }

@@ -63,10 +63,12 @@ function Blog_frontend($PAGEDATA) {
 	$blog_author=0;
 	$authors_per_page=10;
 	WW_addScript('blog');
-	WW_addInlineScript(
-		'var blog_groups='
-		.$PAGEDATA->vars['blog_groupsAllowedToPost'].';'
-	);
+	if ($PAGEDATA->vars['blog_groupsAllowedToPost']) {
+		WW_addInlineScript(
+			'var blog_groups='
+			.$PAGEDATA->vars['blog_groupsAllowedToPost'].';'
+		);
+	}
 	if ($unused_uri) {
 		// { show specific article
 		if (preg_match('#^[0-9]+/[0-9]+-[0-9]+-[0-9]+/[^/]+#', $unused_uri)) {

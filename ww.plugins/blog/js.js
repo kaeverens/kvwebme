@@ -25,9 +25,9 @@ $(function() {
 		}
 		// { add "edit post" button
 		if ((userdata.isAdmin)
-			|| (userdata.id && userdata.id==$(this).find('blog-author').data('uid'))
+			|| (userdata.id && userdata.id==$(this).find('.blog-author').data('uid'))
 		) {
-			var $link=$('<a href="#" class="blog-edit">edit post</a>')
+			$('<a href="javascript:" class="blog-edit">edit post</a>')
 				.click(function() {
 					$.post('/a/p=blog/f=postGet/id='+id, Blog_editPost);
 				})
@@ -39,7 +39,7 @@ $(function() {
 		return;
 	}
 	var showNewPost=userdata.isAdmin;
-	if (userdata.groups && userdata.groups.length) {
+	if (window.blog_groups && userdata.groups && userdata.groups.length) {
 		for (var i=userdata.groups.length;i--;) {
 			if (blog_groups[userdata.groups[i]]) {
 				showNewPost=1;

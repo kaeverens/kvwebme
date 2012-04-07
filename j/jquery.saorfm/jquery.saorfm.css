@@ -1,0 +1,64 @@
+div.saorfm {
+	position:relative;
+	display:inline-block;
+}
+div.saorfm input{
+	margin:0;
+	position:absolute;
+	left:0;
+	top:0;
+	bottom:0;
+	right:19px;
+	border:1px solid #ccc;
+	background:#fff;
+	border-radius:5px 0 0 5px;
+}
+div.saorfm-button{
+	position:absolute;
+	top:0;
+	right:0;
+	bottom:0;
+	width:18px;
+	background:#eee;
+	border-radius:0 5px 5px 0;
+	text-align: center;
+	line-height:100%;
+	border:1px solid #ccc;
+}
+ul.saorfm-menu {
+	position:absolute;
+	z-index:9999;
+	background:#fff;
+	border:1px solid #ccc;
+	border-radius:5px;
+	margin:0;
+	list-style:none;
+	padding:0;
+}
+ul.saorfm-menu li{
+	
+}
+ul.saorfm-menu li.separator hr {
+	margin: 0;
+}
+ul.saorfm-menu li.saorfm-directory {
+	font-style    : italic;
+	cursor        : pointer;
+	position      : relative;
+	padding-right : 20px;
+}
+ul.saorfm-menu li.saorfm-clickable{
+	cursor:pointer;
+	color:#999;
+}
+ul.saorfm-menu li.saorfm-clickable:hover{
+	font-style:italic;
+}
+ul.saorfm-menu span.saorfm-directory-icon {
+	position : absolute;
+	right    : 0;
+	top      : 0
+}
+li.saorfm-file:hover{
+	background:#eee;
+}
