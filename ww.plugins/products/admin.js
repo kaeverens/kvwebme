@@ -45,6 +45,8 @@ function Products_screenBrandsandProducers() {
 				$('td:nth-child(2)', nRow).addClass('editable');
 				$('td:nth-child(3)', nRow).addClass('editable');
 				$('td:nth-child(4)', nRow).addClass('editable');
+				$('td:nth-child(7)', nRow)
+					.html('<a href="./siteoptions.php?page=users&id='+id+'">edit</a>');
 				return nRow;
 			},
 			"fnServerData":function(sSource, aoData, fnCallback) {

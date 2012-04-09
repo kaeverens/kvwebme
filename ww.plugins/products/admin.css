@@ -4,3 +4,6 @@
 #users-group-filter{
 	float:right;
 }
+td.editable{
+	cursor:pointer;
+}
