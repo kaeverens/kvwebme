@@ -88,7 +88,24 @@ function Products_showDataField($datafield, $def) {
 			require_once SCRIPTBASE.'/ww.incs/api-admin.php';
 			echo '<select name="data_fields['.htmlspecialchars($def['n']).']">'
 				.'<option value="0"> -- please choose -- </option>';
-			$users=Core_adminUserNamesEmailsGet();
+			$groups=explode("\n", $def['e']);
+			foreach ($groups as $k=>$v) {
+				if ($v=='') {
+					unset($groups[$k]);
+				}
+				else {
+					$groups[$k]=addslashes($v);
+				}
+			}
+			$gids=dbAll(
+				'select id from groups where name in ("'.join('", "', $groups).'")',
+				'id'
+			);
+			$users=dbAll(
+				'select distinct id,name,email from user_accounts,users_groups'
+				.' where groups_id in ('.join(',', array_keys($gids)).')'
+				.' and user_accounts_id=id order by name,email'
+			);
 			foreach ($users as $user) {
 				echo '<option value="'.$user['id'].'"';
 				if ($user['id']==$datafield['v']) {

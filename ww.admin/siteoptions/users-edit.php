@@ -89,17 +89,6 @@ if (isset($_REQUEST['action'])) {
 				dbQuery("insert into users_groups set user_accounts_id=$id,groups_id=".(int)$k);
 			}
 		}
-		// { now remove any groups other than Administrator that are not used at all
-		$rs=dbAll(
-			'select id from (select groups.id,groups_id from groups left join use'
-			.'rs_groups on groups.id=groups_id) as derived where groups_id is null'
-		);
-		foreach ($rs as $r) {
-			if ($r['id']!='1') {
-				dbRow('delete from groups where id='.$r['id']);
-			}
-		}
-		// }
 		echo '<em>users updated</em>';
 		if (isset($_REQUEST['email-to-send'])) {
 			$site=preg_replace('/www\./', '', $_SERVER['HTTP_HOST']);

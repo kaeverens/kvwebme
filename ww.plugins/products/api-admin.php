@@ -696,10 +696,10 @@ function Products_adminProductDelete() {
 }
 
 // }
-// { Products_adminProductEdit
+// { Products_adminProductEditVal
 
 /**
-	* delete a product
+	* edit a single value of aa product
 	*
 	* @return array status
 	*/
@@ -1059,6 +1059,41 @@ function Products_adminTypesGetSampleImport() {
 	}
 	// }
 	exit;
+}
+
+// }
+// { Products_adminUserGroupsGet
+
+/**
+	* get an array of user groups used in product types
+	*
+	* @return array
+	*/
+function Products_adminUserGroupsGet() {
+	$gnames=array();
+	$types=dbAll('select data_fields from products_types');
+	foreach ($types as $type) {
+		$fs=json_decode($type['data_fields']);
+		foreach ($fs as $f) {
+			if ($f->t!='user') {
+				continue;
+			}
+			$names=explode("\n", $f->e);
+			foreach ($names as $name) {
+				if ($name=='') {
+					continue;
+				}
+				$name=addslashes($name);
+				if (!in_array($name, $gnames)) {
+					$gnames[]=$name;
+				}
+			}
+		}
+	}
+	return dbAll(
+		'select id,name from groups where name in ("'.join('", "', $gnames).'")'
+		.' order by name'
+	);
 }
 
 // }

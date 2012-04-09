@@ -1070,24 +1070,62 @@ function Core_adminStatsGetVisits() {
 }
 
 // }
-// { Core_adminUserNamesGet
+// { Core_adminUserEditVal
 
 /**
-	* get an array of names OR emails of users
+	* edit a single value of a user
+	*
+	* @return array status
+	*/
+function Core_adminUserEditVal() {
+	$id=(int)$_REQUEST['id'];
+	$name=$_REQUEST['name'];
+	$value=$_REQUEST['val'];
+	if (!in_array($name, array('name', 'email', 'phone'))) {
+		return array('error'=>'field not allowed');
+	}
+	dbQuery(
+		'update user_accounts set '.$name.'="'.addslashes($value).'" where id='.$id
+	);
+	Core_cacheClear();
+	return array('ok'=>1);
+}
+
+// }
+// { Core_adminUserGroupsCreate
+
+/**
+	* create user groups if they don't exist
+	*
+	* @return status
+	*/
+function Core_adminUserGroupsCreate() {
+	$groups=$_REQUEST['groups'];
+	foreach ($groups as $group) {
+		if ($group=='') {
+			continue;
+		}
+		$id=dbOne(
+			'select id from groups where name="'.addslashes($group).'"',
+			'id'
+		);
+		if (!$id) {
+			dbQuery('insert into groups set name="'.addslashes($group).'"');
+		}
+	}
+	return array('ok'=>1);
+}
+
+// }
+// { Core_adminUserGroupsGet
+
+/**
+	* get an array of user groups
 	*
 	* @return array
 	*/
-function Core_adminUserNamesGet() {
-	$names=array();
-	foreach (
-		dbAll('select id,name,email from user_accounts order by name') as $r
-	) {
-		if (!$r['name']) {
-			$r['name']=$r['email'];
-		}
-		$names[$r['id']]=$r['name'];
-	}
-	return $names;
+function Core_adminUserGroupsGet() {
+	return dbAll('select id,name from groups order by name');
 }
 
 // }
@@ -1113,6 +1151,121 @@ function Core_adminUserNamesEmailsGet() {
 		);
 	}
 	return $names;
+}
+
+// }
+// { Core_adminUserNamesGet
+
+/**
+	* get an array of names OR emails of users
+	*
+	* @return array
+	*/
+function Core_adminUserNamesGet() {
+	$names=array();
+	foreach (
+		dbAll('select id,name,email from user_accounts order by name') as $r
+	) {
+		if (!$r['name']) {
+			$r['name']=$r['email'];
+		}
+		$names[$r['id']]=$r['name'];
+	}
+	return $names;
+}
+
+// }
+// { Core_adminUsersGetDT
+
+/**
+	* get overview data of a list of users in datatable format
+	*
+	* @return array
+	*/
+function Core_adminUsersGetDT() {
+	$start=(int)$_REQUEST['iDisplayStart'];
+	$length=(int)$_REQUEST['iDisplayLength'];
+	$search=$_REQUEST['sSearch'];
+	$orderby=(int)$_REQUEST['iSortCol_0'];
+	$orderdesc=$_REQUEST['sSortDir_0']=='desc'?'desc':'asc';
+	switch ($orderby) {
+		case 2:
+			$orderby='name';
+		break;
+		case 3:
+			$orderby='email';
+		break;
+		case 4:
+			$orderby='phone';
+		break;
+		case 5:
+			$orderby='date_created';
+		break;
+		default:
+			$orderby='name';
+	}
+	$filters=array();
+	if ($search) {
+		$filters[]='name like "%'.addslashes($search).'%"'
+			.' or email like "%'.addslashes($search).'%"'
+			.' or phone like "%'.addslashes($search).'%"'
+			.' or date_created like "%'.addslashes($search).'%"';
+	}
+	if (isset($_REQUEST['filter-groups'])) {
+		$gids=array();
+		$bits=explode(',', $_REQUEST['filter-groups']);
+		foreach ($bits as $bit) {
+			$gids[]=(int)$bit;
+		}
+		$rs=dbAll(
+			'select distinct user_accounts_id from users_groups'
+			.' where groups_id in ('.join(', ', $gids).')'
+		);
+		$uids=array(0);
+		foreach ($rs as $r) {
+			$uids[]=$r['user_accounts_id'];
+		}
+		$filters[]='id in ('.join(',', $uids).')';
+	}
+	$filter='';
+	if (count($filters)) {
+		$filter='where '.join(' and ', $filters);
+	}
+	$sql='select id,name,email,phone,date_created from user_accounts '.$filter
+		.' order by '.$orderby.' '.$orderdesc
+		.' limit '.$start.','.$length;
+	$rs=dbAll($sql);
+	$result=array();
+	$result['sEcho']=intval($_GET['sEcho']);
+	$result['iTotalRecords']=dbOne(
+		'select count(id) as ids from user_accounts', 'ids'
+	);
+	$result['iTotalDisplayRecords']=dbOne(
+		'select count(id) as ids from user_accounts '.$filter,
+		'ids'
+	);
+	$arr=array();
+	foreach ($rs as $r) {
+		$row=array();
+		$row[]=$r['id'];
+		$row[]=$r['name'];
+		$row[]=$r['email'];
+		$row[]=$r['phone'];
+		$row[]=$r['date_created'];
+		$rs2=dbAll(
+			'select name from groups,users_groups where user_accounts_id='.$r['id']
+			.' and groups_id=groups.id'
+		);
+		$groups=array();
+		foreach ($rs2 as $r2) {
+			$groups[]=$r2['name'];
+		}
+		$row[]=join(', ', $groups);
+		$row[]='';
+		$arr[]=$row;
+	}
+	$result['aaData']=$arr;
+	return $result;
 }
 
 // }

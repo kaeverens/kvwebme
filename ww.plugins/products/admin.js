@@ -2,12 +2,127 @@ function Products_screen(page) {
 	Core_sidemenu(
 		[
 			'Products', 'Categories', 'Types',
-			'Relation Types', 'Import', 'Export Data'
+			'Relation Types', 'Import', 'Export Data',
+			'Brands and Producers'
 		],
 		'products',
 		page
 	);
 	window['Products_screen'+page]();
+}
+function Products_screenBrandsandProducers() {
+	$('#content')
+		.html('<select id="users-group-filter"/><button>add new user</button>'
+			+'<table id="users-list"><thead>'
+			+'<tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th>'
+			+'<th>Date Created</th><th>Groups</th><th>&nbsp;</th></tr>'
+			+'</thead><tbody></tbody></table>');
+	$('#content button').click(function() {
+		document.location="./siteoptions.php?page=users&id=-1";
+	});
+	$.post('/a/p=products/f=adminUserGroupsGet', function(ret) {
+		var all=[], gopts=[];
+		for (var i=0;i<ret.length;++i) {
+			var g=ret[i];
+			gopts.push('<option value="'+g.id+'">'+g.name+'</option>');
+			all.push(g.id);
+		}
+		$('#users-group-filter')
+			.html(
+				'<option value="'+all+'"> -- filter by group -- </option>'
+				+gopts.join('')
+			)
+			.change(function() {
+				window.openDataTable.fnDraw();
+			});
+		var params={
+			"sAjaxSource": '/a/f=adminUsersGetDT',
+			"bProcessing": true,
+			"bServerSide": true,
+			"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+				var id=+aData[0];
+				nRow.id='users-list-row-'+id;
+				$('td:nth-child(2)', nRow).addClass('editable');
+				$('td:nth-child(3)', nRow).addClass('editable');
+				$('td:nth-child(4)', nRow).addClass('editable');
+				return nRow;
+			},
+			"fnServerData":function(sSource, aoData, fnCallback) {
+				aoData.push({
+					"name":"filter-groups",
+					"value":$('#users-group-filter').val()
+				});
+				$.getJSON(sSource,aoData,fnCallback);
+			}
+		};
+		window.openDataTable=$('#users-list')
+			.dataTable(params);
+		$('#users-list').on('click', 'td.editable', function() {
+			var $this=$(this),$tr=$this.closest('tr');
+			if ($this.attr('in-edit')) {
+				return false;
+			}
+			$this.attr('in-edit', true);
+			var id=+$tr.attr('id').replace('users-list-row-', '');
+			switch($tr.find('td').index($this)) {
+				case 1: // { name
+					var oldVal=$this.text();
+					var $inp=$('<input style="width:100%;height:100%;"/>')
+						.val(oldVal)
+						.blur(function() {
+							var newVal=$inp.val();
+							$this.text(newVal).attr('in-edit', null);
+							if (newVal!=oldVal) {
+								$.post('/a/f=adminUserEditVal', {
+									'name': 'name',
+									'val': newVal,
+									'id': id
+								});
+							}
+						})
+						.appendTo($this.empty())
+						.focus();
+				break; // }
+				case 2: // { email
+					var oldVal=$this.text();
+					var $inp=$('<input type="email" style="width:100%;height:100%;"/>')
+						.val(oldVal)
+						.blur(function() {
+							var newVal=$inp.val();
+							$this.text(newVal).attr('in-edit', null);
+							if (newVal!=oldVal) {
+								$.post('/a/f=adminUserEditVal', {
+									'name': 'email',
+									'val': newVal,
+									'id': id
+								});
+							}
+						})
+						.appendTo($this.empty())
+						.focus();
+				break; // }
+				case 3: // { phone
+					var oldVal=$this.text();
+					var $inp=$('<input style="width:100%;height:100%;"/>')
+						.val(oldVal)
+						.blur(function() {
+							var newVal=$inp.val();
+							$this.text(newVal).attr('in-edit', null);
+							if (newVal!=oldVal) {
+								$.post('/a/f=adminUserEditVal', {
+									'name': 'phone',
+									'val': newVal,
+									'id': id
+								});
+							}
+						})
+						.appendTo($this.empty())
+						.focus();
+				break; // }
+			}
+			return false;
+		});
+	});
 }
 function Products_screenCategories() {
 	document.location="/ww.admin/plugin.php?_plugin=products&_page=categories";
@@ -522,6 +637,9 @@ function Products_typeEdit(id) {
 						case 'selectbox': // {
 							return showExtrasSelectbox(field.e, field.tr);
 							// }
+						case 'user': // {
+							return showExtrasUser(field.e, field.tr);
+							// }
 						default: // { text
 							// }
 					}
@@ -583,6 +701,36 @@ function Products_typeEdit(id) {
 			.attr('checked', tr || false);
 		$td.append($tr, 'are these options translateable words?');
 		checkRows();
+	}
+	function showExtrasUser(e, tr) {
+		var $td=$('#pfp-type-specific');
+		var $textarea=$('<textarea id="pfp-type-specific-groups"/>');
+		var $a=$('<a href="javascript:">reset groups</a>')
+			.click(reset);
+		$td.append(
+			'<p>List the user groups that this user should be selected from</p>',
+			$textarea,
+			$a
+		);
+		function reset() {
+			$.post('/a/f=adminUserGroupsGet', function(ret) {
+				var groups=['Product Manufacturer', 'Product Designer',
+					'Product Supplier', 'Product Marketer'];
+				for (var i in ret) {
+					var group=ret[i]['name'];
+					if ($.inArray(group, groups)==-1) {
+						groups.push(group);
+					}
+				}
+				$textarea.val(groups.join("\n"));
+			});
+		}
+		if (e=='') {
+			reset();
+		}
+		else {
+			$textarea.val(e);
+		}
 	}
 	function showMain(panel) {
 		$('<table class="wide">'
@@ -769,6 +917,12 @@ function Products_typeEdit(id) {
 				tdata.data_fields[index].e=e.join("\n");
 				tdata.data_fields[index].tr=$('#pfp-type-specific-tr').attr('checked');
 				break; // }
+			case 'user': // {
+				tdata.data_fields[index].e=$('#pfp-type-specific-groups').val();
+				$.post('/a/f=adminUserGroupsCreate', {
+					'groups':tdata.data_fields[index].e.split("\n")
+				});
+				break; // }
 		}
 		tdata.data_fields[index].t=$('.pfp-type select').val();
 	}
@@ -850,3 +1004,5 @@ function Products_typeEdit(id) {
 			.appendTo($content);
 	});
 }
+
+
