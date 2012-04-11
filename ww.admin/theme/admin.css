@@ -200,3 +200,8 @@ div.mini-tabs .ui-tabs-nav li a{
 div.mini-tabs .ui-tabs-nav{
 	height:1.7em;
 }
+
+#menu-top .icon{
+	float:left;
+	margin-right:3px;
+}

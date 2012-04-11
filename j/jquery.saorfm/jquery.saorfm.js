@@ -151,6 +151,7 @@
 									var url=$el.data('directory')+$(this).text();
 									$input.val(config.prefix+url);
 									hideSubMenus($input.next());
+									$input.change();
 								})
 								.attr('id',$wrapper[0].id+'-'+i)
 								.css('cursor','pointer');

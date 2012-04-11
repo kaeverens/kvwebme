@@ -418,6 +418,363 @@ function CoreSiteoptions_screenLocations() {
 		});
 	});
 }
+function CoreSiteoptions_screenMenus() {
+	if (!$.fn.saorfm) {
+		$('head').append(
+			'<link type="text/css" href="/j/jquery.saorfm/jquery.saorfm.css" rel="stylesheet"/>'
+		);
+		return $.cachedScript('/j/jquery.saorfm/jquery.saorfm.js').done(function() {
+			CoreSiteoptions_screenMenus();
+		});
+	}
+	function save(callback) {
+		$.post('/a/f=adminAdminVarsSave/name=admin_menu', {
+			'val':$.toJSON(menus)
+		}, function() {
+			Core_menuShow(menus);
+			callback && callback();
+		});
+	}
+	function hasSubItems(obj) {
+		var subitems=0;
+		$.each(obj, function(key, val) {
+			if (typeof key == 'number') {
+				return;
+			}
+			subitems+=typeof val!='string' && !/^_/.test(key);
+		});
+		return subitems;
+	}
+	function showMenuNames(path, nodetailschange, select) {
+		if (!path) {
+			path='';
+		}
+		var $menuCurrentTop=$('#menu-current-top').empty();
+		var currentTop=menus;
+		var links=['<a href="#" data-path="">top</a>'];
+		if (path) {
+			var bits=path.split('|');
+			var tmpPath='';
+			for (var i=0;i<bits.length;++i) {
+				var name=bits[i];
+				currentTop=currentTop[name];
+				tmpPath=tmpPath+name;
+				links.push('<a href="#" data-path="'+tmpPath+'">'+name+'</a>');
+				tmpPath+='|';
+			}
+		}
+		$menuCurrentTop.html(links.join(' &raquo; '));
+		var $wrapper=$('#menu-items');
+		// { draw menu items
+		var menuItems=[], menuOrds=[];
+		if (path!='') {
+			path+='|';
+		}
+		$.each(currentTop, function(key, val) {
+			if (/^_/.test(key)) {
+				return;
+			}
+			var ord=val._ord||0;
+			var cols=[
+				'',
+				'<a class="menuname" href="#" data-ord="'+ord+'"'
+				+' data-path="'+path+key+'">'+key+'</a>',
+				''
+			];
+			if (val._icon) {
+				cols[0]='<img src="/a/f=getImg/w=20/h=20/'+val._icon+'"/>';
+			}
+			else {
+				cols[0]='<img style="width:20px;height:20px" src="/i/blank.gif"/>';
+			}
+			if (hasSubItems(val)) {
+				cols[2]='<a class="subitems" href="#" data-path="'+path+key+'">'
+					+'&raquo;</a>'
+			}
+			else {
+				cols[2]='<a class="subitems faded" href="#" data-path="'+path+key+'">'
+					+'&raquo;</a>'
+			}
+			menuItems.push(
+				'<tr>'
+				+'<td style="width:20px">'+cols[0]+'</td>'
+				+'<td>'+cols[1]+'</td>'
+				+'<td style="width:20px">'+cols[2]+'</td>'
+				+'</tr>'
+			);
+			menuOrds.push(ord);
+		});
+		for (var i=0;i<menuOrds.length-1;++i) {
+			for (var j=i+1;j<menuOrds.length;++j) {
+				if (menuOrds[j]<menuOrds[i]) {
+					var tmp=menuOrds[i];
+					menuOrds[i]=menuOrds[j];
+					menuOrds[j]=tmp;
+					tmp=menuItems[i];
+					menuItems[i]=menuItems[j];
+					menuItems[j]=tmp;
+				}
+			}
+		}
+		$wrapper.html('<table>'+menuItems.join('')+'</table>');
+		// }
+		if (!nodetailschange) {
+			showDetails('');
+		}
+		$('#menu-items tbody').sortable({
+			'update':function() {
+				var $links=$('#menu-items a.menuname');
+				$links.each(function(key) {
+					var $this=$(this);
+					var name=$this.text();
+					currentTop[name]._ord=key;
+					$this.data('_ord', key);
+				});
+				save();
+			}
+		});
+		$wrapper.append(
+			$('<a class="add-new" href="#">add new item</a>')
+				.click(function() {
+					var names=[];
+					$('#menu-items a.menuname').each(function() {
+						names.push($(this).text());
+					});
+					var newName='New Item ', i=1;
+					while($.inArray(newName+i, names)!=-1) {
+						++i;
+					}
+					newName+=i;
+					currentTop[newName]={'_link':'#','_ord':999};
+					save(function() {
+						showMenuNames(path, false, newName);
+					});
+				})
+		);
+		if (select) {
+			$('#menu-items a:contains('+select+')').click();
+		}
+	}
+	function showDetails(path) {
+		if (path=='') {
+			$('#menu-details').html(
+				'<div><h3>no menu item selected</h3>'
+				+'<p>Click an item in the left menu to select it.</p></div>'
+			);
+			$list=$('<ul>');
+			$list.append(
+				$('<li><a href="#">Set this menu as the default admin menu.</a></li>')
+					.click(function() {
+						if (!confirm(
+							'This will set the default admin menu to this one.'
+							+' Are you sure?'
+						)) {
+							return;
+						}
+						$.post('/a/f=adminMenuSetMineAsDefault', function() {
+							return alert('Saved');
+						});
+					}),
+				$('<li><a href="#">Reset my menu to the default admin menu.</a></li>')
+					.click(function() {
+						if (!confirm(
+							'This will remove any changes you have made, and reset your'
+							+' menu to the default admin menu. Are you sure?'
+						)) {
+							return;
+						}
+						$.post('/a/f=adminMenuClearMine', function() {
+							CoreSiteoptions_screenMenus();
+							return alert('Saved');
+						});
+					}),
+				$('<li><a href="#">Reset all admin menus to the default admin menu.</a></li>')
+					.click(function() {
+						if (!confirm(
+							'This will clear all admin\'s menus and set them'
+							+' to the default admin menu. Are you sure?'
+						)) {
+							return;
+						}
+						$.post('/a/f=adminMenuClearAllAdmins', function() {
+							CoreSiteoptions_screenMenus();
+							return alert('Saved');
+						});
+					}),
+				$('<li><a href="#">Reset all admin menus to "factory default"</a></li>')
+					.click(function() {
+						if (!confirm(
+							'This will reset all menus to the factory default. You probably'
+							+' DON\'T want to do this. Are you sure?'
+						)) {
+							return;
+						}
+						$.post('/a/f=adminMenuClearAll', function() {
+							CoreSiteoptions_screenMenus();
+							return alert('Saved');
+						});
+					})
+			);
+			$list.appendTo('#menu-details>div');
+			return;
+		}
+		var currentTop=menus;
+		var currentParent=menus;
+		var name='';
+		var bits=path.split('|');
+		for (var i=0;i<bits.length;++i) {
+			name=bits[i];
+			currentParent=currentTop;
+			currentTop=currentTop[name];
+		}
+		// { details table
+		var deleteLink=hasSubItems(currentTop)
+			?'':'<a href="#" class="delete">[x]</a>';
+		var imgSrc=currentTop._icon
+			?'/a/f=getImg/w=20/h=20/'+currentTop._icon
+			:'/i/blank.gif';
+		var table='<div>'+deleteLink+'<table>'
+			+'<tr><th>Name</th><td><input name="_name"/></td></tr>'
+			+'<tr><th>Link</th><td><input name="_link"/></td></tr>'
+			+'<tr><th>Icon</th><td><img class="menu-icon"'
+			+' src="'+imgSrc+'"/>'
+			+'<input class="_icon" name="_icon"/></td></tr>'
+			+'<tr><th>Target</th><td><select name="_target"><option></option>'
+			+'<option value="_blank">new page</option></select></td></tr>'
+			+'</table></div>';
+		// }
+		var $details=$('#menu-details');
+		$details.html(table);
+		$.each(currentTop, function(key, val) {
+			if (typeof key == 'number' || !/^_/.test(key)) {
+				return;
+			}
+			var $inp=$(
+				'input[name="'+key+'"],select[name="'+key+'"]',
+				'#menu-details'
+			);
+			if (!$inp.length && key!='_ord') {
+				console.log('unknown key: '+key);
+				return;
+			}
+			$inp.val(val);
+		});
+		$('._icon', $details).saorfm({
+			'rpc':'/ww.incs/saorfm/rpc.php',
+			'select':'file'
+		});
+		$('input[name="_name"]', $details).val(name);
+		$('select,input', '#menu-details').change(function() {
+			var $this=$(this),key=$this.attr('name'), val=$this.val();
+			if (key=='_name') {
+				currentParent[val]=currentTop;
+				delete currentParent[name];
+				var ppath=/\|/.test(path)?path.replace(/\|[^|]*/, ''):'';
+				showMenuNames(ppath, true);
+			}
+			else {
+				currentTop[key]=val;
+			}
+			save();
+		});
+		$('._icon', $details).change(function() {
+			var src='/i/blank.gif', $this=$(this);
+			if ($this.val()) {
+				src='/a/f=getImg/w=20/h=20/'+$this.val();
+			}
+			$('.menu-icon', $details).attr('src', src);
+		});
+		$('a.delete', $details).click(function() {
+			if (!confirm('Are you sure you want to delete this menu item?')) {
+				return;
+			}
+			delete currentParent[name];
+			var ppath=/\|/.test(path)?path.replace(/\|[^|]*/, ''):'';
+			showMenuNames(ppath);
+			save();
+		});
+		// { "copy details from"
+		var $copy=$(
+			'<select class="menu-copy"><option value="">copy details from...'
+			+'</option></select>'
+		).appendTo($details);
+		function getOpts(menuItems, path, depth) {
+			var html='';
+			if (path) {
+				path+='|';
+			}
+			$.each(menuItems, function(key, val) {
+				if (/^_/.test(key)) {
+					return;
+				}
+				html+='<option value="'+path+key+'">'
+					+(new Array(depth+1)).join(' > ')+key
+					+'</option>';
+				html+=getOpts(menuItems[key], path+key, depth+1);
+			});
+			return html;
+		}
+		$copy
+			.append(getOpts(menusDefault, '', 0))
+			.change(function() {
+				var val=$(this).val();
+				if (val==''
+					|| !confirm('Are you sure you want to over-write this item?')
+				) {
+					return;
+				}
+				$.each(currentTop, function(key, val) {
+					if (!/^_/.test(key) || key=='_ord' || key=='_name') {
+						return;
+					}
+					delete currentTop[key];
+				});
+				var bits=val.split('|');
+				var obj=menusDefault;
+				for (var i=0;i<bits.length;++i) {
+					obj=obj[bits[i]];
+				}
+				$.each(obj, function(key, val) {
+					if (!/^_/.test(key) || key=='_ord' || key=='_name') {
+						return;
+					}
+					currentTop[key]=obj[key];
+				});
+				save(function() {
+					showDetails(path);
+				});
+			});
+		// }
+	}
+	// { initialise
+	var $content=$('#content').empty();
+	var menus, menusDefault;
+	$.post('/a/f=adminMenusGet', function(ret) {
+		menus=ret;
+		Core_menuShow(menus);
+		$.post('/a/f=adminMenusGetDefault', function(ret) {
+			menusDefault=ret;
+			showMenuNames()
+		});
+	});
+	var html='<table id="menus-wrapper">'
+		+'<tr style="height:20px;"><td id="menu-current-top" colspan="2"></td></tr>'
+		+'<tr><td id="menu-items"></td><td id="menu-details"></td></tr></table>';
+	var $wrapper=$(html).appendTo($content);
+	$('#menu-current-top').on('click', 'a', function() {
+		var path=$(this).data('path');
+		showMenuNames(path);
+	});
+	$('#menu-items').on('click', 'a.subitems', function() {
+		var path=$(this).data('path');
+		showMenuNames(path);
+	});
+	$('#menu-items').on('click', 'a.menuname', function() {
+		var path=$(this).data('path');
+		showDetails(path);
+	});
+	// }
+}
 function CoreSiteoptions_screenStats() {
 	var $content=$('#content').empty();
 	$.post('/a/f=adminStatsGet', function(ret) {

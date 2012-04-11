@@ -29,6 +29,7 @@ function Core_adminAdminVarsSave() {
 		'insert into admin_vars set admin_id='.$_SESSION['userdata']['id']
 		.',varname="'.addslashes($name).'",varvalue="'.addslashes($val).'"'
 	);
+	Core_cacheClear('admin');
 	return array('ok'=>1);
 }
 
@@ -270,9 +271,9 @@ function Core_adminLanguagesGetTrStrings() {
 // { Core_adminLoadJSVars
 
 /**
-	* save a session variable
+	* load session variables
 	*
-	* @return array status of save
+	* @return array session vars
 	*/
 function Core_adminLoadJSVars() {
 	if (!isset($_SESSION['js'])) {
@@ -365,6 +366,261 @@ function Core_adminLocationsEdit() {
 	);
 	Core_cacheClear('core');
 	return array('ok'=>1);
+}
+
+// }
+// { Core_adminMenusGet
+
+/**
+	* get menus for admin
+	*
+	* @return menu
+	*/
+function Core_adminMenusGet() {
+	$menus=Core_cacheLoad('admin', 'menus-'.$_SESSION['userdata']['id']);
+	if (!$menus) {
+		$menus=dbOne(
+			'select varvalue from admin_vars where admin_id='
+			.$_SESSION['userdata']['id'].' and varname="admin_menu"',
+			'varvalue'
+		);
+		if ($menus) {
+			$menus=json_decode($menus);
+		}
+		else {
+			$menus=dbOne(
+				'select varvalue from admin_vars where admin_id=0'
+				.' and varname="admin_menu"',
+				'varvalue'
+			);
+			if ($menus) {
+				$menus=json_decode($menus);
+			}
+			else {
+				global $PLUGINS;
+				// { setup standard menu items
+				$menus=array(
+					'Pages'=>array(
+						'_link'=>'pages.php'
+					),
+					'Site Options'=>array(
+						'General'=> array('_link'=>'siteoptions.php'),
+						'Languages'=>array(
+							'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Languages\')'
+						),
+						'Locations'=>array(
+							'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Locations\')'
+						),
+						'Menus' => array(
+							'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Menus\')'
+						),
+						'Users' => array('_link'=>'siteoptions.php?page=users'),
+						'Plugins'=> array('_link'=>'siteoptions.php?page=plugins'),
+						'Themes' => array('_link'=>'siteoptions.php?page=themes'),
+						'Timed Events'=>array(
+							'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Cron\')'
+						)
+					)
+				);
+				// }
+				// { add custom items (from plugins)
+				foreach ($PLUGINS as $pname=>$p) {
+					if (!isset($p['admin']) || !isset($p['admin']['menu'])) {
+						continue;
+					}
+					foreach ($p['admin']['menu'] as $name=>$page) {
+						if (preg_match('/[^a-zA-Z0-9 >]/', $name)) {
+							continue; // illegal characters in name
+						}
+						$link=strpos($page, 'js:')===false
+							?'plugin.php?_plugin='.$pname.'&amp;_page='.$page
+							:'javascript:Core_screen(\''.$pname.'\', \''.$page.'\');';
+						$json='{"'.str_replace('>', '":{"', $name).'":{"_link":"'.$link.'"}}'
+							.str_repeat('}', substr_count($name, '>'));
+						$menus=array_merge_recursive($menus, json_decode($json, true));
+					}
+				}
+				// }
+				// { add final items
+				$menus['Site Options']['Stats']=array('_link'=>'/ww.admin/stats.php');
+				$menus['View Site']=array( '_link'=>'/', '_target'=>'_blank');
+				$menus['Help']=array( '_link'=>'http://kvweb.me/', '_target'=>'_blank');
+				$menus['Log Out']=  array('_link'=>'/?logout=1');
+				$menus['Misc']['File Manager']=array(
+					'_link'=>'javascript:return window.open(\'/j/kfm/\', \'kfm\', '
+					.'\'modal,width=800,height=640\')'
+				);
+				// }
+				dbQuery(
+					'insert into admin_vars set admin_id='.$_SESSION['userdata']['id']
+					.', varname="admin_menu", varvalue="'
+					.addslashes(json_encode($menus)).'"'
+				);
+			}
+		}
+		Core_cacheSave('admin', 'menus-'.$_SESSION['userdata']['id'], $menus);
+	}
+	return $menus;
+}
+
+// }
+// { Core_adminMenusGetDefault
+
+/**
+	* get default menu set for admin
+	*
+	* @return menu
+	*/
+function Core_adminMenusGetDefault() {
+	$menus=Core_cacheLoad('admin', 'menus-0');
+	if (!$menus) {
+		$menus=dbOne(
+			'select varvalue from admin_vars where admin_id=0'
+			.' and varname="admin_menu"',
+			'varvalue'
+		);
+		if ($menus) {
+			$menus=json_decode($menus);
+		}
+		else {
+			global $PLUGINS;
+			// { setup standard menu items
+			$menus=array(
+				'Pages'=>array(
+					'_link'=>'pages.php'
+				),
+				'Site Options'=>array(
+					'General'=> array('_link'=>'siteoptions.php'),
+					'Languages'=>array(
+						'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Languages\')'
+					),
+					'Locations'=>array(
+						'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Locations\')'
+					),
+					'Menus' => array(
+						'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Menus\')'
+					),
+					'Users' => array('_link'=>'siteoptions.php?page=users'),
+					'Plugins'=> array('_link'=>'siteoptions.php?page=plugins'),
+					'Themes' => array('_link'=>'siteoptions.php?page=themes'),
+					'Timed Events'=>array(
+						'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Cron\')'
+					)
+				)
+			);
+			// }
+			// { add custom items (from plugins)
+			foreach ($PLUGINS as $pname=>$p) {
+				if (!isset($p['admin']) || !isset($p['admin']['menu'])) {
+					continue;
+				}
+				foreach ($p['admin']['menu'] as $name=>$page) {
+					if (preg_match('/[^a-zA-Z0-9 >]/', $name)) {
+						continue; // illegal characters in name
+					}
+					$link=strpos($page, 'js:')===false
+						?'plugin.php?_plugin='.$pname.'&amp;_page='.$page
+						:'javascript:Core_screen(\''.$pname.'\', \''.$page.'\');';
+					$json='{"'.str_replace('>', '":{"', $name).'":{"_link":"'.$link.'"}}'
+						.str_repeat('}', substr_count($name, '>'));
+					$menus=array_merge_recursive($menus, json_decode($json, true));
+				}
+			}
+			// }
+			// { add final items
+			$menus['Site Options']['Stats']=array('_link'=>'/ww.admin/stats.php');
+			$menus['View Site']=array( '_link'=>'/', '_target'=>'_blank');
+			$menus['Help']=array( '_link'=>'http://kvweb.me/', '_target'=>'_blank');
+			$menus['Log Out']=  array('_link'=>'/?logout=1');
+			$menus['Misc']['File Manager']=array(
+				'_link'=>'javascript:return window.open(\'/j/kfm/\', \'kfm\', '
+				.'\'modal,width=800,height=640\')'
+			);
+			// }
+			dbQuery(
+				'insert into admin_vars set admin_id=0'
+				.', varname="admin_menu", varvalue="'
+				.addslashes(json_encode($menus)).'"'
+			);
+		}
+		Core_cacheSave('admin', 'menus-0', $menus);
+	}
+	return $menus;
+}
+
+// }
+// { Core_adminMenusSetMineAsDefault
+
+/**
+	* set the current admin's menu as the default admin menu
+	*
+	* @return menu
+	*/
+function Core_adminMenuSetMineAsDefault() {
+	$menus=dbOne(
+		'select varvalue from admin_vars where admin_id='
+		.$_SESSION['userdata']['id'].' and varname="admin_menu"',
+		'varvalue'
+	);
+	if (!$menus) {
+		return array('{"error":"admin does not have a custom menu"}');
+	}
+	dbQuery('delete from admin_vars where admin_id=0 and varname="admin_menu"');
+	dbQuery(
+		'insert into admin_vars set admin_id=0,varname="admin_menu"'
+		.',varvalue="'.addslashes($menus).'"'
+	);
+	Core_cacheClear('admin');
+	return array('{"ok":1}');
+}
+
+// }
+// { Core_adminMenusClearAll
+
+/**
+	* clear all menus
+	*
+	* @return menu
+	*/
+function Core_adminMenuClearAll() {
+	dbQuery(
+		'delete from admin_vars where varname="admin_menu"'
+	);
+	Core_cacheClear('admin');
+	return array('{"ok":1}');
+}
+
+// }
+// { Core_adminMenusClearAllAdmins
+
+/**
+	* clear all admin's menus
+	*
+	* @return menu
+	*/
+function Core_adminMenuClearAllAdmins() {
+	dbQuery(
+		'delete from admin_vars where admin_id and varname="admin_menu"'
+	);
+	Core_cacheClear('admin');
+	return array('{"ok":1}');
+}
+
+// }
+// { Core_adminMenusClearMine
+
+/**
+	* clear the current admin's menu
+	*
+	* @return menu
+	*/
+function Core_adminMenuClearMine() {
+	dbQuery(
+		'delete from admin_vars where admin_id='.$_SESSION['userdata']['id']
+		.' and varname="admin_menu"'
+	);
+	Core_cacheClear('admin');
+	return array('{"ok":1}');
 }
 
 // }
