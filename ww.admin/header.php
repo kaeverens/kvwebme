@@ -11,66 +11,6 @@
 	* @link     http://kvsites.ie/
 	*/
 
-/**
-	* function for showing the admin menu
-	*
-	* @param array  $items  array of menu items
-	* @param string $name   the name of the menu parent
-	* @param string $prefix id prefix for elements
-	* @param int    $depth  depth in the tree that these links are
-	*
-	* @return null
-	*/
-function Core_adminMenuShow($items, $name=false, $prefix='', $depth=0) {
-	$target=(isset($items['_target']))?' target="'.$items['_target'].'"':'';
-	if (isset($items['_link'])) {
-		if (strpos($items['_link'], 'javascript:')===0) {
-			$link='href="#" onclick="'.str_replace(
-				'javascript:',
-				'',
-				$items['_link']
-			)
-			.';return false"';
-		}
-		else {
-			$link='href="'.$items['_link'].'"';
-		}
-		echo '<a '.$link.$target.'>'.__($name, 'menu').'</a>';
-	}
-	elseif ($name!='top') {
-		echo '<a href="#'.$prefix.'-'.urlencode($name).'">'.__($name, 'menu')
-			.'</a>';
-	}
-	if (count($items)==1 && isset($items['_link'])) {
-		return;
-	}
-	$submenus=0;
-	foreach ($items as $subitems) {
-		if (is_array($subitems)) {
-			$submenus++;
-		}
-	}
-	if (!$submenus) {
-		return;
-	}
-	if ($depth<2) {
-		echo '<div id="'.$prefix.'-'.urlencode($name).'">';
-	}
-	echo '<ul>';
-	foreach ($items as $iname=>$subitems) {
-		if (!is_array($subitems)) {
-			continue;
-		}
-		echo '<li>';
-		Core_adminMenuShow($subitems, $iname, $prefix.'-'.$name, $depth+1);
-		echo '</li>';
-	}
-	echo '</ul>';
-	if ($depth<2) {
-		echo '</div>';
-	}
-}
-
 header('Content-type: text/html; Charset=utf-8');
 define('IN_ADMIN', 1);
 date_default_timezone_set('Eire');

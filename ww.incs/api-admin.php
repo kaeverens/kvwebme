@@ -1185,11 +1185,26 @@ function Core_adminPluginsGetInstalled() {
 	* @return array status
 	*/
 function Core_adminPluginsSetInstalled() {
+	global $PLUGINS;
 	// { get hidden plugins (those the admin installs manually)
 	$tmp_hidden=array();
-	foreach ($GLOBALS['PLUGINS'] as $name=>$plugin) {
+	foreach ($PLUGINS as $name=>$plugin) {
 		if (isset($plugin['hide_from_admin']) && $plugin['hide_from_admin']) {
 			$tmp_hidden[]=$name;
+		}
+	}
+	// }
+	// { see what was added or removed
+	$added=array();
+	foreach ($_REQUEST['plugins'] as $name=>$var) {
+		if (!isset($PLUGINS[$name])) {
+			$added[]=$name;
+		}
+	}
+	$removed=array();
+	foreach ($PLUGINS as $name=>$var) {
+		if (!isset($_REQUEST['plugins'][$name])) {
+			$removed[]=$name;
 		}
 	}
 	// }
@@ -1206,7 +1221,7 @@ function Core_adminPluginsSetInstalled() {
 	if (is_array($plugins)) {
 	  $GLOBALS['DBVARS']['plugins']=$plugins;
 	  Core_configRewrite();
-		return array('ok'=>1);
+		return array('ok'=>1, 'added'=>$added, 'removed'=>$removed);
 	}
 	return array('ok'=>0);
 }
