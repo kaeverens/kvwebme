@@ -71,6 +71,11 @@ class SaorFM{
 		if (!defined('SAORFM_FILES')) {
 			define('SAORFM_FILES', $this->_config->user_files_directory.'/');
 		}
+		if (isset($this->_config->plugins)) {
+			foreach ($this->_config->plugins as $name) {
+				require_once dirname(__FILE__).'/plugins/'.$name.'/functions.php';
+			}
+		}
 		$this->initErrors='{}';
 	}
 

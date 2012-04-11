@@ -52,8 +52,15 @@ $SaorFM_config=(object)array(
  * 
  */
 
-  'user_files_directory'=>$userdir
+  'user_files_directory'=>$userdir,
+	'hiddenfiles'=>'#^/?\.#',
+	'plugins'=>array(
+		'hidden-files'
+	),
+	'triggers'=>(object)array(
+		'checkfilename'=>array(
+			'HiddenFiles_checkFilename'
+		)
+	)
 
 );
-
-?>
