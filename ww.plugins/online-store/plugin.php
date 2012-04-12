@@ -511,7 +511,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 	$slidedown=@$vars->slidedown;
 	$slideup=(int)@$vars->slideup_delay;
 	$html='<div class="online-store-basket-widget'
-		.($slidedown?' slidedown':'').'"'
+		.($slidedown?' slidedown':'')
 		.'">';
 	if ($slidedown) {
 		$html.='<div class="slidedown-header">Your Items</div>'
