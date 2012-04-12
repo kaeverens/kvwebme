@@ -351,8 +351,7 @@ class Product{
 	}
 
 	// }
-
-	// {
+	// { getDefaultImage
 
 	/**
 		* get default image
@@ -390,6 +389,7 @@ class Product{
 	}
 
 	// }
+	// { getPrice
 
 	/**
 		* get price
@@ -419,6 +419,9 @@ class Product{
 				// }
 		}
 	}
+
+	// }
+	// { getString
 
 	/**
 	  * retrieve one of the product's values in human-readable form
@@ -455,6 +458,9 @@ class Product{
 		return '';
 	}
 
+	// }
+	// { search
+
 	/**
 	  * search the product to see if it matches a filter
 	  *
@@ -485,6 +491,8 @@ class Product{
 		}
 		return false;
 	}
+
+	// }
 }
 
 // }
@@ -596,6 +604,9 @@ class ProductCategory{
 	*/
 class ProductType{
 	static $instances=array();
+
+	// { __construct
+
 	/**
 	  * constructor for product type instances
 	  *
@@ -647,6 +658,10 @@ class ProductType{
 		self::$instances[$this->id] =& $this;
 		return $this;
 	}
+
+	// }
+	// { getInstance
+
 	/**
 	  * returns an instance of a product type
 	  *
@@ -664,6 +679,10 @@ class ProductType{
 		}
 		return self::$instances[$id];
 	}
+
+	// }
+	// { getField
+
 	/**
 	  * returns a data field's contents
 	  *
@@ -679,6 +698,10 @@ class ProductType{
 		}
 		return false;
 	}
+
+	// }
+	// { getMissingImage
+
 	/**
 	  * if the product has no associated images, show a "missing image" image
 	  *
@@ -690,6 +713,10 @@ class ProductType{
 		return '<img src="/a/f=getImg/w='.$maxsize.'/h='.$maxsize
 			.'/products/types/'.$this->id.'/image-not-found.png" />';
 	}
+
+	// }
+	// { render
+
 	/**
 	  * produce a HTML version of the product
 	  *
@@ -818,7 +845,7 @@ class ProductType{
 						$h.='</select>';
 					}
 					else {
-						$h=$val;
+						$h=preg_replace('/\|.*/', '', $val);
 					}
 					$smarty->assign(
 						$f->n,
@@ -886,6 +913,8 @@ class ProductType{
 		}
 		return $html;
 	}
+
+	// }
 }
 
 // }
