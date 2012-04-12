@@ -99,6 +99,13 @@ if ($mimetype=='text/css') {
 						.'-moz-box-shadow:'.$rules.';'
 						.'-webkit-box-shadow:'.$rules.';';
 				break; // }
+				case 'rotate': // {
+					$degs=$matches[2][$i];
+					$css='-moz-transform:rotate('.$degs.');'
+						.'-webkit-transform:rotate('.$degs.');'
+						.'-o-transform:rotate('.$degs.');'
+						.'-ms-transform:rotate('.$degs.');';
+				break;
 				default:
 					$css=$matches[0][$i];
 			}
