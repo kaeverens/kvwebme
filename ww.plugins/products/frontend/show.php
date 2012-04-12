@@ -964,7 +964,7 @@ function Products_showRelatedProducts($params, $smarty) {
 		'select to_id from products_relations where from_id='.$productID.$type
 	);
 	if (count($rs)) {
-		$h='';
+		$h=array();
 		$ids=array();
 		foreach ($rs as $r) {
 			$ids[]=$r['to_id'];
@@ -972,22 +972,27 @@ function Products_showRelatedProducts($params, $smarty) {
 		$products=Products::getbyIds($ids);
 		foreach ($products->product_ids as $r) {
 			$p=Product::getInstance($r);
-			$h.='<a class="product_related" href="'.$p->getRelativeUrl().'">';
+			if (!$p || !isset($p->id)) {
+				continue;
+			}
+			$h[]='<a class="product_related" href="'.$p->getRelativeUrl().'">';
 			$vals=$p->vals;
 			if (!$vals['images_directory']) {
-				$h.=htmlspecialchars($p->name).'</a>';
+				$h[]=htmlspecialchars($p->name).'</a>';
 				continue;
 			}
 			$iid=$p->getDefaultImage();
 			if (!$iid) {
-				$h.=htmlspecialchars($p->name).'</a>';
+				$h[]=htmlspecialchars($p->name).'</a>';
 				continue;
 			}
-			$h.='<img src="/a/w=150/p=150/'.$iid.'" /><br />'
+			$h[]='<img src="/a/w=150/p=150/'.$iid.'" /><br />'
 				.htmlspecialchars($p->name).'</a>';
 		}
-		return '<div class="product_list products_'
-			.htmlspecialchars($params['type']).'">'.$h.'</div>';
+	return count($h)
+		?'<div class="product_list products_'.htmlspecialchars($params['type'])
+		.'">'.join('', $h).'</div>'
+		:'none yet';
 	}
 	return 'none yet';
 }
