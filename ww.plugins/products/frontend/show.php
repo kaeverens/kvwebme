@@ -987,7 +987,7 @@ function Products_showRelatedProducts($params, $smarty) {
 				continue;
 			}
 			$h[]='<img src="/a/w=150/p=150/'.$iid.'" /><br />'
-				.htmlspecialchars($p->name).'</a>';
+				.htmlspecialchars(__fromJSON($p->name)).'</a>';
 		}
 	return count($h)
 		?'<div class="product_list products_'.htmlspecialchars($params['type'])
