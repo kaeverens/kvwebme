@@ -4,10 +4,10 @@
 		<script
 			src="https://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js">
 		</script>
-		<script defer="defer"
+		<script
 			src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js">
 		</script>
-		<script defer="defer" src="/j/lang.js"></script>
+		<script src="/j/lang.js"></script>
 		<link
 		href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css"
 			rel="stylesheet"/>

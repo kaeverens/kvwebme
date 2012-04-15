@@ -34,6 +34,23 @@ function Core_adminAdminVarsSave() {
 }
 
 // }
+// { Core_adminDBClearAutoincrement
+
+/**
+	* resets the auto_increment of a database table to 1
+	*
+	* return null
+	*/
+function Core_adminDBClearAutoincrement() {
+	$table=$_REQUEST['table'];
+	if (preg_match('/[^a-z_]/', $table)) {
+		return false;
+	}
+	dbQuery('alter table '.$table.' auto_increment=1');
+	return true;
+}
+
+// }
 // { Core_adminCronGet
 
 /**
@@ -794,6 +811,9 @@ function Core_adminPageEdit() {
 		?$_REQUEST['date_unpublish']
 		:'0000-00-00 00:00:00';
 	$importance=(float)@$_REQUEST['importance'];
+	if (!isset($_REQUEST['body'])) {
+		$_REQUEST['body']='';
+	}
 	if ($importance<0.1) {
 		$importance=0.5;
 	}

@@ -203,7 +203,7 @@ function Core_getMenu() {
 	header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
 	header('Pragma:');
 	return array(
-		$_REQUEST['pid'],
+		@$_REQUEST['pid'],
 		Menu_getChildren(
 			@$_REQUEST['pid'],
 			@$_REQUEST['id'],

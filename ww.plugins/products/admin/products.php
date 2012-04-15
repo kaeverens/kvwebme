@@ -15,7 +15,8 @@ if (!Core_isAdmin()) {
 }
 
 // { links: add product, import products
-echo '<a href="plugin.php?_plugin=products">List all products</a> | '
+echo '<a href="plugin.php?_plugin=products&amp;_page=products">'
+	.'List all products</a> | '
 	.'<a href="plugin.php?_plugin=products&amp;_page=products-edit">'
 	.'Add a Product</a> | '
 	.'<a href="javascript:Core_screen(\'products\', \'js:Import\');"'
@@ -39,10 +40,14 @@ if (!count($rs)) {
 }
 // { products list
 echo '<div><table id="products-list"><thead>'
-	.'<tr><th>&nbsp;</th><th>Name</th>'
+	.'<tr><th><input type="checkbox" id="products-selectall"/></th>'
+	.'<th>&nbsp;</th><th>Name</th>'
 	.'<th>Stock Number</th><th title="in stock">#</th><th>Owner</th>'
 	.'<th>ID</th><th>Enabled</th><th>&nbsp;</th></tr></thead><tbody>'
-	.'</tbody></table></div>';
+	.'</tbody></table></div>'
+	.'<select id="products-action"><option value="0"> -- </option>'
+	.'<option value="1">Delete Selected</option>'
+	.'</select>';
 // }
 WW_addScript('/j/jquery.jeditable.mini.js');
 WW_addScript('products/admin/products.js');

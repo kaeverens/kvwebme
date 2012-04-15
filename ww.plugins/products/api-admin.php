@@ -696,6 +696,39 @@ function Products_adminProductDelete() {
 }
 
 // }
+// { Products_adminProductsDelete
+
+/**
+	* delete a number of product
+	*
+	* @return array status
+	*/
+function Products_adminProductsDelete() {
+	$ids_to_check=explode(',', $_REQUEST['ids']);
+	if (!count($ids_to_check)) {
+		return array('error'=>'no ids');
+	}
+	$ids=array();
+	foreach ($ids_to_check as $id) {
+		$ids[]=(int)$id;
+	}
+	dbQuery('delete from products where id in ('.join(', ', $ids).')');
+	dbQuery(
+		'delete from products_categories_products where product_id in ('
+		.join(', ', $ids).')'
+	);
+	dbQuery(
+		'delete from products_relations where from_id in ('.join(', ', $ids).')'
+		.' or to_id in ('.join(', ', $ids).')'
+	);
+	dbQuery(
+		'delete from products_reviews where product_id in ('.join(', ', $ids).')'
+	);
+	Core_cacheClear();
+	return array('ok'=>1);
+}
+
+// }
 // { Products_adminProductEditVal
 
 /**
@@ -811,7 +844,7 @@ function Products_adminProductsListDT() {
 	);
 	$arr=array();
 	foreach ($rs as $r) {
-		$row=array();
+		$row=array(0);
 		// { has images
 		$has_images=0;
 		if (@is_dir(USERBASE.'/f/'.$r['images_directory'])) {
@@ -899,8 +932,8 @@ function Products_adminTypeCopy() {
 		.'data_fields="'.addslashes($r['data_fields']).'",'
 		.'is_for_sale='.((int)$r['is_for_sale']).','
 		.'is_voucher='.((int)$r['is_voucher']).','
-		.'default_category='.((int)$r['default_category']).','
-		.'voucher_template="'.addslashes($r['voucher_template']).'",'
+		.'default_category='.((int)@$r['default_category']).','
+		.'voucher_template="'.addslashes(@$r['voucher_template']).'",'
 		.'multiview_template_header="'.addslashes($r['multiview_template_header'])
 		.'",'
 		.'multiview_template_footer="'.addslashes($r['multiview_template_footer'])

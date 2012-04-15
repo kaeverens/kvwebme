@@ -588,7 +588,8 @@ function Products_typeEdit(id) {
 							+' title="delete">[x]</a></td></tr>'
 							+'</table>'
 						);
-					$('<input/>').val(field.n).appendTo('.pfp-name', $wrapper);
+					$('<input disabled="disabled" title="name cannot be changed"/>')
+						.val(field.n).appendTo('.pfp-name', $wrapper);
 					// { required
 					$('<select><option value="0">No</option>'
 						+'<option value="1">Yes</option></select>'
@@ -900,7 +901,6 @@ function Products_typeEdit(id) {
 		if (index<0) {
 			return;
 		}
-		tdata.data_fields[index].n=$('.pfp-name input').val();
 		tdata.data_fields[index].r=$('.pfp-required select').val();
 		tdata.data_fields[index].u=$('.pfp-user-entered select').val();
 		switch (tdata.data_fields[index].t) {
@@ -1006,5 +1006,3 @@ function Products_typeEdit(id) {
 			.appendTo($content);
 	});
 }
-
-
