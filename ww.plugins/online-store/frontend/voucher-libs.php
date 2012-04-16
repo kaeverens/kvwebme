@@ -114,10 +114,13 @@ function OnlineStore_voucherCheckValidity($code, $email) {
 function OnlineStore_voucherRecordUsage($order_id, $amount) {
 	global $OnlineStore_voucherInstance;
 	// { record total number of uses
-	if (!isset($OnlineStore_voucherInstance['users_list']['total_uses'])) {
-		$OnlineStore_voucherInstance['users_list']['total_uses']=0;
+	if (!isset($OnlineStore_voucherInstance['users_list'])
+		|| !is_array($OnlineStore_voucherInstance['users_list'])
+	) {
+		$OnlineStore_voucherInstance['users_list']=array();
 	}
-	$OnlineStore_voucherInstance['users_list']['total_uses']++;
+	$uses=(int)@$OnlineStore_voucherInstance['users_list']['total_uses'];
+	$OnlineStore_voucherInstance['users_list']['total_uses']=$uses+1;
 	// }
 	// { record number of uses by this email address
 	$email=$_REQUEST['Email'];

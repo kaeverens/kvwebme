@@ -16,7 +16,7 @@ $plugin=array(
 	'name' => 'Backup',
 	'admin' => array(
 			'menu'=>array(
-				'Site Options>Backup'=>'backup'
+				'Site Options>Backup'=>'plugin.php?_plugin=backup&amp;_page=backup'
 			),
 	),
 	'description' => 'backup your website, or replace with an old backup',

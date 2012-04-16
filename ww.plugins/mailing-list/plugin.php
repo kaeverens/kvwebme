@@ -17,7 +17,7 @@ $plugin=array(
 	'name' => 'Mailing List',
 	'admin' => array(
 		'menu' => array(
-			'Communication>Mailing List'=>'index'
+			'Communication>Mailing List'=>'plugin.php?_plugin=mailing-list&amp;_page=index'
 		),
 		'widget' => array(
 			'form_url' => '/ww.plugins/mailing-list/admin/widget-form.php'

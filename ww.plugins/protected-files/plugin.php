@@ -4,7 +4,7 @@ $plugin=array(
 	'description'=>'Protect files by requiring either a login or an email address',
 	'admin'=>array(
 		'menu'=>array(
-			'Site Options>Protected Files'=>'index'
+			'Site Options>Protected Files'=>'plugin.php?_plugin=protected-files&amp;_page=index'
 		)
 	),
 	'frontend'=>array(

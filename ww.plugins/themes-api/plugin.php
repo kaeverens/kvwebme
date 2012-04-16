@@ -23,7 +23,7 @@ $plugin = array(
 	'hide_from_admin'=>	true,
 	'admin'		=>	array(
 		'menu'	=>	array(
-			'Themes Repository'	=>	'index'
+			'Themes Repository'	=>	'plugin.php?_plugin=themees-api&amp;_page=index'
 		),
 		'page_type'	=>	array( 
 			'Themes Catalogue' => 'ThemesApi_catalogueAdmin',

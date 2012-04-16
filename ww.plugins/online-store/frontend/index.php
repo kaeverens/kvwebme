@@ -433,10 +433,12 @@ if (!$submitted) {
 				$p=Product::getInstance($item['id']);
 				if ($p) {
 					$img=$p->getDefaultImage();
-					$c.='<a href="/f/'.$img.'" target="popup" '
-						.'class="online-store-thumb-wrapper">'
-						.'<img src="/a/f=getImg/w=32/h=32/'.$img.'"/>'
-						.'</a>';
+					if ($img) {
+						$c.='<a href="/f/'.$img.'" target="popup" '
+							.'class="online-store-thumb-wrapper">'
+							.'<img src="/a/f=getImg/w=32/h=32/'.$img.'"/>'
+							.'</a>';
+					}
 				}
 			}
 			if (isset($item['url'])&&!empty($item['url'])) {

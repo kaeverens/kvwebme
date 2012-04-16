@@ -16,7 +16,7 @@ $plugin=array(
 	'name' => 'SMS',
 	'admin' => array(
 		'menu' => array(
-			'Communication>SMS'=> 'dashboard'
+			'Communication>SMS'=> 'plugin.php?_plugin=sms&amp;_page=dashboard'
 		),
 		'widget' => array(
 			'form_url' => '/ww.plugins/sms/admin/widget-form.php'

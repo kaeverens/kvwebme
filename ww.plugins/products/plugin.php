@@ -16,13 +16,13 @@
 $plugin=array(
 	'admin' => array( // {
 		'menu' => array(
-			'Products>Products'   => 'products',
-			'Products>Categories' => 'categories',
-			'Products>Types'=>'js:Types',
-			'Products>Relation Types'=> 'relation-types',
-			'Products>Import'=>'js:Import',
-			'Products>Export Data' => 'js:ExportData',
-			'Products>Brands and Producers' => 'js:BrandsandProducers'
+			'Products>Products'   => 'plugin.php?_plugin=products&amp;_page=products',
+			'Products>Categories' => 'plugin.php?_plugin=products&amp;_page=categories',
+			'Products>Types'=>'javascript:Core_screen(\'products\', \'Types\')',
+			'Products>Relation Types'=> 'plugin.php?_plugin=products&amp;_page=relation-types',
+			'Products>Import'=>'javascript:Core_screen(\'products\', \'Import\')',
+			'Products>Export Data' => 'javascript:Core_screen(\'products\', \'ExportData\')',
+			'Products>Brands and Producers' => 'javascript:Core_screen(\'products\', \'BrandsandProducers\')'
 		),
 		'page_type' => 'Products_adminPage',
 		'widget' => array(

@@ -15,7 +15,7 @@ $plugin=array(
 	'name' => 'Mailing Lists',
 	'admin' => array(
 		'menu' => array(
-			'Communication>Mailing Lists'=>'js:Dashboard'
+			'Communication>Mailing Lists'=>'javascript:Core_screen(\'mailinglists\',\'Dashboard\')'
 		)
 	),
 	'description' => 'Mailing lists',

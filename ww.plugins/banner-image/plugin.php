@@ -17,7 +17,7 @@ $plugin=array(
 	'name' => 'Banners',
 	'admin' => array(
 		'menu' => array(
-			'Misc>Banners'  => 'index'
+			'Misc>Banners'  => 'plugin.php?_plugin=banner-image&amp;_page=index'
 		),
 	),
 	'description' => 'HTML snippet or image.',

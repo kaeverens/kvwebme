@@ -5,7 +5,7 @@ $plugin=array(
 	'description'=>'Allows content sections to be displayed throughout the site.',
 	'admin'=>array(
 		'menu'=>array(
-			'Misc>Panels'=>'index'
+			'Misc>Panels'=>'plugin.php?_plugin=panels&amp;_page=index'
 		)
 	),
 	'frontend'=>array(

@@ -201,6 +201,25 @@ function Products_adminCategoryMove() {
 }
 
 // }
+// { Products_adminCategoryProductsList
+
+/**
+	* get full list of products in all categories
+	*
+	* return array
+	*/
+function Products_adminCategoryProductsList() {
+	$arr=array();
+	$rs=dbAll('select * from products_categories_products');
+	foreach ($rs as $r) {
+		$arr[]=array(
+			$r['category_id'],
+			$r['product_id']
+		);
+	}
+	return $arr;
+}
+// }
 // { Products_adminCategoryProductsEdit
 
 /**
@@ -751,6 +770,22 @@ function Products_adminProductEditVal() {
 }
 
 // }
+// { Products_adminProductGet
+
+/**
+	* get all details about a product by its ID
+	*
+	* return array the product
+	*/
+function Products_adminProductGet() {
+	$id=(int)$_REQUEST['id'];
+	$r=dbRow('select * from products where id='.$id);
+	$r['online_store_fields']=json_decode($r['online_store_fields']);
+	$r['data_fields']=json_decode($r['data_fields']);
+	return $r;
+}
+
+// }
 // { Products_adminProductsDatafieldsGet
 
 /**
@@ -769,6 +804,37 @@ function Products_adminProductsDatafieldsGet() {
 	}
 	ksort($data);
 	return array_keys($data);
+}
+
+// }
+// { Products_adminProductsListImages
+
+/**
+	* get list of all product images
+	*
+	* return array list of images
+	*/
+function Products_adminProductsListImages() {
+	$rs=dbAll('select id,images_directory from products');
+	$images=array();
+	foreach ($rs as $r) {
+		if (!$r['images_directory']
+			|| !file_exists(USERBASE.'/f/'.$r['images_directory'])
+		) {
+			continue;
+		}
+		$dir=new DirectoryIterator(USERBASE.'/f/'.$r['images_directory']);
+		foreach ($dir as $file) {
+			if ($file->isDot() || $file->isDir()) {
+				continue;
+			}
+			$images[]=array(
+				$r['id'],
+				$r['images_directory'].'/'.$file->getFilename()
+			);
+		}
+	}
+	return $images;
 }
 
 // }

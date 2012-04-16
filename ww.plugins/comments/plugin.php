@@ -21,7 +21,7 @@ $plugin = array(
 	'version'=>3,
 	'admin'=>array(
 		'menu'=>array(
-			'Communication>Comments'=>'comments'
+			'Communication>Comments'=>'plugin.php?_plugin=comments&amp;_page=comments'
 		),
 		'page_panel'=>array(
 			'name'=>'Comments', 

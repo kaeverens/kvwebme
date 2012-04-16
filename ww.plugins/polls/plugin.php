@@ -3,7 +3,7 @@ $plugin=array(
 	'name' => 'Polls',
 	'admin' => array(
 		'menu' => array(
-			'Communication>Polls'=>'index'
+			'Communication>Polls'=>'plugin.php?_plugin=polls&amp;_page=index'
 		)
 	),
 	'description' => 'Create your own polls with this plugin.',
