@@ -22,6 +22,7 @@ $(function(){
 				};
 			}
 			var user_checkboxes='';
+			/* TODO - translation /CB */
 			var table='<table><tr><th>Users</th><th>Email addresses</th>'
 				+'<td rowspan="2" style="width:100px">Select which users are allowed to use this '
 				+'voucher, and/or add a list of email addresses of people that'

@@ -17,6 +17,7 @@ if (!Core_isAdmin()) {
 }
 
 // { slide-down
+/* TODO - translation /CB */
 echo '<strong>Slide-down cart</strong><br/>'
 	.'<input type="checkbox" name="slidedown"';
 if (@$_REQUEST['slidedown']) {
@@ -28,8 +29,10 @@ if (!@$_REQUEST['slidedown']) {
 	echo ' style="display:none"';
 }
 echo '>';
+/* TODO - translation /CB */
 echo '<strong>Slide animation</strong><br />'
 	.'<select name="slidedown_animation">';
+/* TODO - translation /CB */
 $arr=array(
 	'blind', 'bounce', 'clip', 'drop', 'explode', 'fold', 'highlight',
 	'puff', 'pulsat', 'scale', 'shake', 'size', 'slide'
@@ -42,14 +45,17 @@ foreach ($arr as $v) {
 	echo '>'.$v.'</option>';
 }
 echo '</select><br />';
+/* TODO - translation /CB */
 echo '<strong>Slide up auto-slider (in seconds)</strong>';
 $s=(float)@$_REQUEST['slideup_delay'];
 echo '<input name="slideup_delay" value="'.$s.'"/><br />';
 echo '</div>';
 // }
+/* TODO - translation /CB */
 // { template
 echo '<strong>Template (leave blank to use a default one)</strong><br />'
 	.'<textarea class="small" name="template">'
 	.htmlspecialchars(@$_REQUEST['template']).'</textarea>'
+	/* TODO - translation /CB */
 	.'<a href="#" class="docs" page="/ww.plugins/online-store/docs/codes.html">codes</a>';
 // }

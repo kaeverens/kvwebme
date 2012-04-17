@@ -1,6 +1,7 @@
 $(function(){
 	var currencies_cell=$('#currencies');
 	var i=0,html='<table>'
+	/* TODO - translation /CB */
 		+'<tr><th>Name</th><th>ISO</th><th>Symbol</th><th>Value</th>'
 		+'<th>Delete</th></tr></table><ul id="os-currencies-ul">';
 	for (;i<os_currencies.length;++i) {
@@ -18,11 +19,13 @@ $(function(){
 			+cur.iso+'\')">[x]</a></td>'
 			+'</tr></table></li>';
 	}
-	html+='</ul><a href="javascript:os_addCurrency();">add a currency</a>';
+	/* TODO - translation /CB */
+	html+='</ul><a href="javascript:os_addCurrency();">Add a currency</a>';
 	$(html).appendTo(currencies_cell);
 	os_setSortable();
 });
 function os_addCurrency(){
+	/* TODO - more currencies please :-) /CB */
 	var currencies=[
 		['Euro','EUR','€',1],
 		['Sterling','GBP','£',1.14342],
@@ -44,11 +47,13 @@ function os_addCurrency(){
 	}
 	if (html=='') {
 		return alert(
-			"no more currencies installable.\nif the currency you "
+		/* TODO - translation /CB */
+			"No more currencies installable.\nIf the currency you "
 			+"wanted was not installable, please contact your administrator"
 		);
 	}
 	var $dialog=$(
+	/* TODO - translation /CB */
 		'<div><p>Please choose a currency from the list below.</p>'
 		+'<select id="os-currency-chooser">'+html+'</select>'
 	).dialog({
@@ -57,6 +62,7 @@ function os_addCurrency(){
 		},
 		"modal": true,
 		"buttons": {
+		/* TODO - translation /CB */
 			"Save": function() {
 				var cur=currencies[+$('#os-currency-chooser').val()];
 				cur={
@@ -88,7 +94,8 @@ function os_addCurrency(){
 }
 function os_deleteCurrency(iso) {
 	if($('#os-currencies-ul>li').length<2) {
-		return alert('cannot remove default currency');
+	/* TODO - translation /CB */
+		return alert('Cannot remove default currency');
 	}
 	$('#os-currency-'+iso)
 		.fadeOut(500,function(){

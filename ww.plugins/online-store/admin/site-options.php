@@ -47,6 +47,7 @@ if ( isset($_REQUEST['action']) && $_REQUEST['action']=='Save') {
 		}
 	}
 	// }
+	/* TODO - translation /CB */
 	echo '<em>Saved</em>';
 }
 
@@ -55,9 +56,11 @@ $os_currencies=dbOne(
 	'value'
 );
 if (!$os_currencies) {
+	/* TODO - translation + more currencies please /CB */
 	$os_currencies='[{"name":"Euro","iso":"Eur","symbol":"€","value":1}]';
 }
 echo '<form method="post" action="'.$_url.'" />'
+/* TODO - translation /CB */
 // { currencies
 	.'<h3>Currencies</h3>'
 	.'<div id="currencies">'
@@ -66,6 +69,7 @@ echo '<form method="post" action="'.$_url.'" />'
 	.'</div>';
 // }
 // { discounts
+/* TODO - translation /CB */
 echo '<h3>Group discounts</h3><table>';
 $groups=dbAll('select * from groups order by name');
 foreach ($groups as $group) {
@@ -79,6 +83,7 @@ foreach ($groups as $group) {
 }
 echo '</table>';
 // }
+/* TODO - translation /CB */
 echo '<input type="submit" name="action" value="Save" /></form>';
 WW_addScript('online-store/admin/site-options.js');
 WW_addInlineScript('window.os_currencies='.$os_currencies.';');

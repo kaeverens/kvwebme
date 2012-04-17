@@ -12,6 +12,7 @@
 	*/
 
 if (isset($_REQUEST['voucher_id'])) {
+	/* TODO - translation /CB */
 	echo '<a href="'.$_url.'">list all vouchers</a>'
 		.'<h3>Edit Voucher</h3>';
 	$v_id=(int)$_REQUEST['voucher_id'];
@@ -19,7 +20,8 @@ if (isset($_REQUEST['voucher_id'])) {
 		$r=dbRow("select * from online_store_vouchers where id=$v_id");
 		$name=$_REQUEST['name'];
 		if (!$name) {
-			$name='no name supplied';
+			/* TODO - translation /CB */
+			$name='No name supplied';
 		}
 		$users_list=json_decode($r['users_list'], true);
 		if ($_REQUEST['user_constraints']=='userlist') {
@@ -72,18 +74,22 @@ if (isset($_REQUEST['voucher_id'])) {
 	echo '<form method="post" action="'.$_url.'&amp;voucher_id='.$v_id.'">'
 		.'<table id="onlinestore-vouchers-table">'
 	// { name
+		/* TODO - translation /CB */
 		.'<tr><th>Name</th><td><input name="name" value="'
 		.htmlspecialchars($r['name']).'"/></td></tr>'
 	// }
 	// { code
+		/* TODO - translation /CB */
 		.'<tr><th>Code</th><td><input name="code" value="'
 		.htmlspecialchars($r['code']).'"/></td></tr>'
 	// }
 	// { user constraints
+		/* TODO - translation /CB */
 		.'<tr><th>Usable by</th><td><select name="user_constraints">';
 	$user_constraints=array(
-		'public'   => 'anyone can use this voucher',
-		'userlist' => 'only people on the following list'
+		/* TODO - translation /CB */
+		'public'   => 'Anyone can use this voucher',
+		'userlist' => 'Only people on the following list'
 	);
 	foreach ($user_constraints as $k=>$v) {
 		echo '<option value="'.$k.'"';
@@ -99,11 +105,13 @@ if (isset($_REQUEST['voucher_id'])) {
 		.htmlspecialchars($r['users_list']).'"></td></tr>';
 	// }
 	// { value, value type
+	/* TODO - translation /CB */
 	echo '<tr><th>Value</th><td><input name="value" value="'
 		.htmlspecialchars($r['value']).'"/> <select name="value_type">';
 	$value_types=array(
 		'percentage'=>'%',
-		'value' =>'cash in the checkout\'s currency'
+		/* TODO - translation /CB */
+		'value' =>'Cash in the checkout\'s currency'
 	);
 	foreach ($value_types as $k=>$v) {
 		echo '<option value="'.$k.'"';
@@ -115,21 +123,25 @@ if (isset($_REQUEST['voucher_id'])) {
 	echo '</select></td></tr>';
 	// }
 	// { usages per person
+	/* TODO - translation /CB */
 	echo '<tr><th>Uses allowed per person</th><td><input name="usages_per_user" '
 		.'value="'.htmlspecialchars($r['usages_per_user']).'"/> (leave at 0 '
 		.'for no limit)</td></tr>';
 	// }
 	// { usages in total
+	/* TODO - translation /CB */
 	echo '<tr><th>Uses allowed in total</th><td><input name="usages_in_total" '
 		.'value="'.htmlspecialchars($r['usages_in_total']).'"/> (leave at 0 '
 		.'for no limit)</td></tr>';
 	// }
 	// { date range
+	/* TODO - translation /CB */
 	echo '<tr><th>Valid Dates</th><td>Valid from the morning of <input class='
 		.'"date-human" name="start_date" value="'.$r['start_date'].'"/>'
 		.'Expiring the morning of <input class="date-human" '
 		.'name="end_date" value="'.$r['end_date'].'"/></td></tr>';
 	// }
+	/* TODO - translation /CB */
 	echo '<tr><th colspan="2"><input type="submit" name="action" value="Save"/>'
 		.'</th></tr>';
 	echo '</table></form>';
@@ -137,6 +149,7 @@ if (isset($_REQUEST['voucher_id'])) {
 else {
 	echo '<div style="width:400px">'
 		.'<table id="onlinestore-vouchers" style="width:100%">'
+		/* TODO - translation /CB */
 		.'<thead><tr><th>Name</th><th>Value</th><th>Expiry Date</th></tr></thead>'
 		.'<tbody></tbody></table></div>';
 	echo '<a href="'.$_url.'&amp;voucher_id=0">create a voucher</a>';

@@ -13,6 +13,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!Core_isAdmin()) {
+	/* TODO - translation /CB */
 	die('access denied');
 }
 

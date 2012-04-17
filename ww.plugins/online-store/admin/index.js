@@ -1,3 +1,4 @@
+/* TODO - translation /CB */
 window.os_statuses=['Unpaid','Paid','Paid and Delivered'];
 function os_invoice(id, print){
 	var w=$(window);
@@ -13,6 +14,7 @@ function os_invoice(id, print){
 	}).width(ww-130).height(wh-130);    
 }
 function os_listItems(id){
+	/* TODO - translation /CB */
 	var $d=$('<p>Getting list of ordered items - please wait...</p>').dialog({
 		"modal":true
 	});
@@ -21,6 +23,7 @@ function os_listItems(id){
 		if (ret.error) {
 			return alert(ret.error);
 		}
+		/* TODO - translation /CB */
 		var html='<table><tr><th>Name</th><th>Amount</th></tr>';
 		for (var i=0;i<ret.length;++i) {
 			html+='<tr><td>'+ret[i].name+'</td><td>'+ret[i].amt+'</td></tr>';
@@ -90,10 +93,12 @@ function os_update_fields(force){
 	}
 	$wrapper.empty();
 	if(!c){
-		$wrapper.append('<em>no fields defined. please create a form in the Form tab.</em>');
+	/* TODO - translation /CB */
+		$wrapper.append('<em>No fields defined. Please create a form in the Form tab.</em>');
 	}
 	else{
 		var table='<table id="online_stores_fields_table" style="width:100%">'
+			/* TODO - translation /CB */
 			+'<tr><th>Name</th><th>Required</th></tr>';
 		for(var i=0;i<c;++i){
 			table+='<tr><td></td><td></td><td></td></tr>';
@@ -159,6 +164,7 @@ $(function(){
 	$('#online-store-export-button').click(function() {
 		var cdate=$('#online-store-export-from').val();
 		if (!cdate) {
+			/* TODO - translation /CB */
 			return alert('You must enter a date');
 		}
 		document.location='/a/p=online-store/f=adminOrdersExport/cdate='+cdate;
@@ -173,16 +179,20 @@ $('#online_stores_fields_table input').live('click',os_update_fields_value);
 pandp=[];
 pandp_open=[];
 function pandp_add_top(i,data){
+	/* TODO - translation /CB */
 	var text='hide';
 	var name=$('<input id="pandp_name_'+i+'" />')
 		.val(data.name || '')
 	var constraint=$('<div class="pand-constraint" id="pandp_constraint_wrapper_'+i+'"></div>');
 	if(!pandp_open[i]){
+		/* TODO - translation /CB */
 		text='show';
 		constraint.css('display','none');
 	}
-	var users_only=$('<input type="checkbox" id="pandp_users_only_'+i+'"'+(data.users_only?' checked="checked"':'')+' title="tick if this postage method is only available to logged-in users" />');
+	/* TODO - translation /CB */
+	var users_only=$('<input type="checkbox" id="pandp_users_only_'+i+'"'+(data.users_only?' checked="checked"':'')+' title="Tick if this postage method is only available to logged-in users" />');
 	var opener=$('<a id="pandp_opener_'+i+'" href="javascript:pandp_showhide('+i+','+(pandp_open[i]?0:1)+')">'+text+'</a>');
+	/* TODO - translation /CB */
 	var row=$('<div class="pandp_row">Postage Name: </div>')
 		.append(name)
 		.append(users_only)
@@ -195,6 +205,7 @@ function pandp_showhide(i,v){
 	pandp_open[i]=v;
 	$('#pandp_constraint_wrapper_'+i).css('display',v?'block':'none');
 	$('#pandp_opener_'+i)
+	/* TODO - translation /CB */
 		.replaceWith('<a id="pandp_opener_'+i+'" href="javascript:pandp_showhide('+i+','+(pandp_open[i]?0:1)+')">'+(pandp_open[i]?'hide':'show')+'</a>');
 }
 function pandp_rebuild_constraints(prefix){
@@ -246,6 +257,7 @@ function pandp_rebuild_widget(){
 	
 	}
 	if(!has_blank)pandp_add_top(i,{});
+	/* TODO - translation /CB */
 	pandp_showhide(i,'show');
 }
 function pandp_show_constraints(i, cstrs_old){
@@ -262,6 +274,7 @@ function pandp_show_constraints(i, cstrs_old){
 			j=cstrs_old.length;
 		}
 	}
+	/* TODO - translation /CB */
 	var options=[
 		['set_value','set postage to'],
 		['total_less_than_or_equal_to','if total <='],
@@ -384,6 +397,7 @@ $(function(){
 				for (var i=0;i<ret.ok.length;++i) {
 					$('#capture'+ret.ok[i]).remove();
 				}
+				/* TODO - translation /CB */
 				alert(ret.ok.length+' transactions successfully captured');
 			}
 			if (ret.errors.length) {
