@@ -18,17 +18,6 @@ if (!Core_isAdmin()) {
 	exit;
 }
 // }
-// { actions
-if ((!isset($_REQUEST['id']) || $_REQUEST['id']==0)
-	&& (!isset($_REQUEST['action']) || $_REQUEST['action']!='Insert Page Details')
-) {
-	echo '<p>'.__(
-		'Please use the navigation menu on the left to choose a page or to crea'
-		.'te a new one.'
-	).'</p>';
-	exit;
-}
-// }
 // { functions
 
 /**
@@ -78,6 +67,7 @@ WW_addScript('/j/jquery.remoteselectoptions.js');
 WW_addScript('/j/cluetip/jquery.cluetip.js');
 WW_addScript('/j/jquery-ui-timepicker-addon.js');
 WW_addScript('/ww.admin/pages/form2.js');
+WW_addScript('/j/lang.js');
 echo '<html><head>'
 	.Core_getJQueryScripts()
 	.'<link rel="stylesheet" href="/j/jquery.dataTables-1.7.5'
@@ -95,6 +85,23 @@ WW_addInlineScript('var languages='.json_encode($langs).';');
 // }
 echo '</head>'
 	.'<body class="noheader">';
+// }
+// { no page selected?
+if ((!isset($_REQUEST['id']) || $_REQUEST['id']==0)
+	&& (!isset($_REQUEST['action']) || $_REQUEST['action']!='Insert Page Details')
+) {
+	echo '<p class="__" lang-context="core">Please use the navigation menu on'
+		.' the left to choose a page or to create a new one</p>';
+	WW_addInlineScript(
+		'this.page_menu_currentpage='.$id.';this.sessid="'.session_id().'";'
+		.'this.user_id='.$_SESSION['userdata']['id'].';'
+		.'this.userdata={wasAdmin:1}'
+	);
+	echo WW_getScripts();
+	echo WW_getCss();
+	echo '</body></html>';
+	exit;
+}
 // }
 // { page data
 if ($id && $edit) { // check that page exists
@@ -517,7 +524,8 @@ echo '</form>';
 // { page footer
 WW_addInlineScript(
 	'this.page_menu_currentpage='.$id.';this.sessid="'.session_id().'";'
-	.'this.user_id='.$_SESSION['userdata']['id']
+	.'this.user_id='.$_SESSION['userdata']['id'].';'
+	.'this.userdata={wasAdmin:1}'
 );
 echo WW_getScripts();
 echo WW_getCss();

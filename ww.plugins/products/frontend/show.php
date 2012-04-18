@@ -1271,6 +1271,11 @@ class Products{
 			$md5,
 			-1
 		);
+		
+		if ($order_dir==2) {
+			$tmpprods=-1;
+		}
+		
 		if ($tmpprods==-1) {
 			if ($order_by!='') {
 				$tmpprods1=array();
@@ -1286,12 +1291,16 @@ class Products{
 						unset($prods[$key]);
 					}
 				}
-				if ($order_dir) {
+				if ($order_dir==1) {
 					krsort($tmpprods1);
 				}
-				else {
+				else if ($order_dir==0) {
 					ksort($tmpprods1);
 				}
+				else if($order_dir==2) {
+					shuffle($tmpprods1);
+				}
+
 				$tmpprods=array();
 				foreach ($tmpprods1 as $pids) {
 					foreach ($pids as $pid) {

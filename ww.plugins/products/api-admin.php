@@ -718,6 +718,28 @@ function Products_adminProductDelete() {
 }
 
 // }
+// { Products_adminProductsDisable
+
+/**
+	* disable a number of product
+	*
+	* @return array status
+	*/
+function Products_adminProductsDisable() {
+	$ids_to_check=explode(',', $_REQUEST['ids']);
+	if (!count($ids_to_check)) {
+		return array('error'=>'no ids');
+	}
+	$ids=array();
+	foreach ($ids_to_check as $id) {
+		$ids[]=(int)$id;
+	}
+	dbQuery('update products set enabled=0 where id in ('.join(', ', $ids).')');
+	Core_cacheClear();
+	return array('ok'=>1);
+}
+
+// }
 // { Products_adminProductsDelete
 
 /**
@@ -746,6 +768,28 @@ function Products_adminProductsDelete() {
 	dbQuery(
 		'delete from products_reviews where product_id in ('.join(', ', $ids).')'
 	);
+	Core_cacheClear();
+	return array('ok'=>1);
+}
+
+// }
+// { Products_adminProductsEnable
+
+/**
+	* enable a number of product
+	*
+	* @return array status
+	*/
+function Products_adminProductsEnable() {
+	$ids_to_check=explode(',', $_REQUEST['ids']);
+	if (!count($ids_to_check)) {
+		return array('error'=>'no ids');
+	}
+	$ids=array();
+	foreach ($ids_to_check as $id) {
+		$ids[]=(int)$id;
+	}
+	dbQuery('update products set enabled=1 where id in ('.join(', ', $ids).')');
 	Core_cacheClear();
 	return array('ok'=>1);
 }
@@ -907,16 +951,16 @@ function Products_adminProductsListDT() {
 	$orderby=(int)$_REQUEST['iSortCol_0'];
 	$orderdesc=$_REQUEST['sSortDir_0']=='desc'?'desc':'asc';
 	switch ($orderby) {
-		case 1:
+		case 2:
 			$orderby='name';
 		break;
-		case 2:
+		case 3:
 			$orderby='stock_number';
 		break;
-		case 5:
+		case 6:
 			$orderby='id';
 		break;
-		case 6:
+		case 7:
 			$orderby='enabled';
 		break;
 		default:

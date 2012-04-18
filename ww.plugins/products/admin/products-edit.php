@@ -15,6 +15,8 @@ if (!Core_isAdmin()) {
 	exit;
 }
 
+// { Products_showDataField
+
 /**
 	* display a field
 	*
@@ -136,6 +138,9 @@ function Products_showDataField($datafield, $def) {
 	echo '</td></tr>';
 }
 
+// }
+// { showCats
+
 /**
 	* show categories and subcategories
 	*
@@ -162,6 +167,9 @@ function showCats($parent) {
 	}
 	return '<ul>'.join('', $found).'</ul>';
 }
+
+// }
+
 // { set up initial variables
 if (isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
 	$id=(int)$_REQUEST['id'];

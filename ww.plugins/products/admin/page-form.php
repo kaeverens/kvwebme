@@ -150,7 +150,13 @@ $c.='<option value="0">Ascending (A-Z)</option><option value="1"';
 if (@$vars['products_order_direction']=='1') {
 	$c.=' selected="selected"';
 }
-$c.='>Descending (Z-A)</option></select></td></tr>';
+$c.='>Descending (Z-A)</option>';
+$c.='<option value="2"';
+if (@$vars['products_order_direction']=='2') {
+	$c.=' selected="selected"';
+}
+$c.='>Random </option></select>';
+
 // }
 // { template to use for multiple products
 $c.= '<tr id="products-show-multiple-with-row">'

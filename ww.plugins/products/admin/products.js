@@ -125,21 +125,35 @@ $(function() {
 	});
 	$('#products-action').change(function() {
 		var val=+$(this).val();
+		var $inps=$('#products-list_wrapper tbody input[type="checkbox"]');
+		var ids=[];
+		$inps.each(function() {
+			if (!$(this).attr('checked')) {
+				return;
+			}
+			var id=+$(this).closest('tr').attr('id').replace('product-row-', '');
+			ids.push(id);
+		});
 		switch(val) {
 			case 1: // {
-				var $inps=$('#products-list_wrapper tbody input[type="checkbox"]');
-				var ids=[];
-				$inps.each(function() {
-					if (!$(this).attr('checked')) {
-						return;
-					}
-					var id=+$(this).closest('tr').attr('id').replace('product-row-', '');
-					ids.push(id);
-				});
 				if (!confirm('Are you sure you want to delete these products?')) {
 					return;
 				}
 				$.post('/a/p=products/f=adminProductsDelete/ids='+ids, function() {
+					$('#products-action').val('0');
+					$table.fnDraw(false);
+					$('#products-selectall').attr('checked', false);
+				});
+			break; // }
+			case 2: // {
+				$.post('/a/p=products/f=adminProductsDisable/ids='+ids, function() {
+					$('#products-action').val('0');
+					$table.fnDraw(false);
+					$('#products-selectall').attr('checked', false);
+				});
+			break; // }
+			case 3: // {
+				$.post('/a/p=products/f=adminProductsEnable/ids='+ids, function() {
 					$('#products-action').val('0');
 					$table.fnDraw(false);
 					$('#products-selectall').attr('checked', false);

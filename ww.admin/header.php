@@ -42,6 +42,7 @@ WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
 WW_addScript('/j/cluetip/jquery.cluetip.js');
 WW_addScript('/j/jquery.uploadify/jquery.uploadify.js');
 WW_addScript('/j/jquery-ui-timepicker-addon.js');
+WW_addScript('/j/lang.js');
 // }
 // { css
 WW_addCSS('/j/cluetip/jquery.cluetip.css');
@@ -68,6 +69,7 @@ echo '<script>var languages='.json_encode($langs).';</script>';
 // }
 echo '</head><body';
 echo '><div id="header"></div>';
+echo Core_languagesGetUi(array('type'=>'selectbox'));
 // { if maintenance mode is enabled show warning
 if (@$DBVARS['maintenance-mode']=='yes') {
 	echo '<div id="maintenance"><em>'.__(

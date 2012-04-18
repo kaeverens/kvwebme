@@ -193,6 +193,7 @@ function WW_getScripts() {
 	// { list plugins
 	$scripts_inline[]='this.webmePlugins='.json_encode(array_keys($GLOBALS['PLUGINS']));
 	// }
+	$scripts_inline[]='userdata={wasAdmin:1}'; // for translations
 	$inline='<script>'.join(';', $scripts_inline).';</script>';
 	// }
 	// { set up external scripts

@@ -193,6 +193,7 @@ div.fg-menu-container ul li a:hover,#sidebar1 a:hover,#menu-top ul li a:hover{
 
 div.mini-tabs .ui-tabs-panel{
 	padding:0;
+	margin-bottom:2px;
 }
 div.mini-tabs .ui-tabs-nav li a{
 	padding:.1em 2px;
@@ -204,4 +205,9 @@ div.mini-tabs .ui-tabs-nav{
 #menu-top .icon{
 	float:left;
 	margin-right:3px;
+}
+#core-language{
+	position:absolute;
+	right:20px;
+	top:67px;
 }

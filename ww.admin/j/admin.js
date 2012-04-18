@@ -123,11 +123,12 @@ function Core_sidemenu(links, plugin, currentpage) {
 	var html='<ul>';
 	for (var i=0;i<links.length;++i) {
 		html+='<li><a href="javascript:Core_screen(\''
-			+plugin+'\', \''+(links[i].replace(/[^a-zA-Z]/g, ''))+'\')"';
+			+plugin+'\', \''+(links[i].replace(/[^a-zA-Z]/g, ''))+'\')"'
+			+' lang-context="core" class="__';
 		if (links[i]==currentpage) {
-			html+=' class="current-page"';
+			html+=' current-page';
 		}
-		html+='>'+links[i]+'</a></li>';
+		html+='">'+links[i]+'</a></li>';
 	}
 	$('#sidebar1').html(html+'</ul>');
 }
@@ -185,10 +186,10 @@ function Core_menuShow2(items, name, prefix, depth) {
 		var icon=items._icon
 			?'<img class="icon" src="/a/f=getImg/w=20/h=20/'+items._icon+'"/>'
 			:'';
-		html+='<a '+link+target+'>'+icon+name+'</a>';
+		html+='<a '+link+target+' class="__" lang-context="core">'+icon+name+'</a>';
 	}
 	else if (name!='top') {
-		html+='<a href="#'+prefix+'-'+name+'">'+name+'</a>';
+		html+='<a href="#'+prefix+'-'+name+'" class="__" lang-context="core">'+name+'</a>';
 	}
 	$.each(items, function(key, val) {
 		numlinks++;
@@ -230,6 +231,7 @@ function Core_menuShow(items) {
 	var html=Core_menuShow2(items, 'top', 'menu', 0);
 	$('#header').html(html);
 	Core_menuShowInitEvents();
+	__langInit();
 }
 function Core_menuShowInitEvents() {
 	$('#menu-top>ul>li>a').each(function(){

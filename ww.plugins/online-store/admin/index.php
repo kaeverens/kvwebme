@@ -33,11 +33,11 @@ $c.= '<ul>'
 if ($has_authrs) { // show authorised payments (for retrieval)
 	$c.='<li><a href="#online-store-authorised">Authorised Payments</a></li>';
 }
-$c.='<li><a href="#online-store-form">Form</a></li>'
+$c.='<li><a href="#online-store-payment">Payment Details</a></li>'
+	.'<li><a href="#online-store-delivery">Postage and Packaging</a></li>'
+	.'<li><a href="#online-store-form">Form</a></li>'
 	.'<li><a href="#online-stores-fields">Fields</a></li>'
 	.'<li><a href="#online-store-invoice">Invoice</a></li>'
-	.'<li><a href="#online-store-payment">Payment Details</a></li>'
-	.'<li><a href="#online-store-delivery">Postage and Packaging</a></li>'
 	.'<li><a href="#online-store-countries">Countries</a></li>'
 	.'<li><a href="#online-store-export">Export</a></li>'
 	.'</ul>';
@@ -140,73 +140,10 @@ if ($has_authrs) { // authorised payments
 if (!isset($vars['online_stores_postage'])) {
 	$vars['online_stores_postage']='[]';
 }
-$c.='<div id="online-store-delivery">'
+$c.='<div id="online-store-delivery"><br/>'
 	.'<div id="postage_wrapper"></div>'
 	.'<input type="hidden" name="page_vars[online_stores_postage]" id="postage" value="'
 	.htmlspecialchars($vars['online_stores_postage']).'" />';
-$c.='</div>';
-// }
-// { form
-$c.='<div id="online-store-form">';
-/* TODO - translation /CB */
-$c.='<p>This is the form that will be presented as the checkout.</p>';
-// { checkout view type
-$c.='<strong>View Type</strong>'
-	.'<select name="page_vars[onlinestore_viewtype]">';
-/* TODO - translation /CB */	
-$types=array(
-	'All-in-one view',
-	'Basket, then All-in-one',
-	'5-step',
-	'Basket, then 5-step'
-);
-foreach ($types as $k=>$v) {
-	$c.='<option value="'.$k.'"';
-	if ($k==@$vars['onlinestore_viewtype']) {
-		$c.=' selected="selected"';
-	}
-	$c.='>'.__($v).'</option>';
-}
-$c.='</select>';
-// }
-// { checkout form
-$c.='<div class="online-store-checkout-form">';
-if ($page['body']==''
-	|| $page['body']=='<h1>'.htmlspecialchars($page['name']).'</h1><p>&nbsp;</p>'
-) {
-	$page['body']
-		=file_get_contents(dirname(__FILE__).'/body_template_sample.html');
-}
-/* TODO - translation /CB */
-$c.=ckeditor('body', $page['body'])
-	.'<a href="#" class="docs" page="/ww.plugins/online-store/docs/form.html">'
-	.'codes</a></div>';
-// }
-$c.='</div>';
-// }
-// { form fields
-if (!isset($vars['online_stores_fields'])
-	|| !$vars['online_stores_fields']
-) {
-	$vars['online_stores_fields']='{}';
-}
-$c.='<div id="online-stores-fields">'
-	.'<script>var os_fields='.$vars['online_stores_fields'].';</script>'
-	.'<input type="hidden" name="page_vars[online_stores_fields]" value="'
-	.htmlspecialchars($vars['online_stores_fields']).'" />'
-	.'</div>';
-// }
-// { invoice details
-$c.='<div id="online-store-invoice">';
-/* TODO - translation /CB */
-$c.='<p>This is what will be sent out to the buyer after the payment succeeds.'
-	.'</p>';
-if (!isset($vars['online_stores_invoice']) || $vars['online_stores_invoice']=='') {
-	$vars['online_stores_invoice']=file_get_contents(
-		dirname(__FILE__).'/invoice_template_sample.html'
-	);
-}
-$c.=ckeditor('page_vars[online_stores_invoice]', $vars['online_stores_invoice']);
 $c.='</div>';
 // }
 // { payment details
@@ -230,8 +167,7 @@ $c.='<th width="20%">Users must log in</th><td><input type="checkbox"'
 	.' /></td></tr>';
 // }
 // { currency
-/* TODO - translation /CB */
-$c.='<tr><th>Currency</th><td><select name="online_store_currency">';
+$c.='<tr><th class="__" lang-context="core">Currency</th><td><select name="online_store_currency">';
 foreach ($online_store_currencies as $key=>$val) {
 	$c.= '<option value="'.$key.'"';
 	if ($key==$DBVARS['online_store_currency']) {
@@ -242,7 +178,9 @@ foreach ($online_store_currencies as $key=>$val) {
 $c.= '</select></td>';
 // }
 // { VAT
-$vat=isset($vars['online_stores_vat_percent'])?$vars['online_stores_vat_percent']:'';
+$vat=isset($vars['online_stores_vat_percent'])?
+	$vars['online_stores_vat_percent']:
+	'';
 if ($vat=='') {
 	$vat=0;
 }
@@ -504,6 +442,69 @@ $c.=' </table></div>';
 $c.='</div></td></tr>';
 // }
 $c.='</table></div>';
+// }
+// { form
+$c.='<div id="online-store-form">';
+/* TODO - translation /CB */
+$c.='<p>This is the form that will be presented as the checkout.</p>';
+// { checkout view type
+$c.='<strong>View Type</strong>'
+	.'<select name="page_vars[onlinestore_viewtype]">';
+/* TODO - translation /CB */	
+$types=array(
+	'All-in-one view',
+	'Basket, then All-in-one',
+	'5-step',
+	'Basket, then 5-step'
+);
+foreach ($types as $k=>$v) {
+	$c.='<option value="'.$k.'"';
+	if ($k==@$vars['onlinestore_viewtype']) {
+		$c.=' selected="selected"';
+	}
+	$c.='>'.__($v).'</option>';
+}
+$c.='</select>';
+// }
+// { checkout form
+$c.='<div class="online-store-checkout-form">';
+if ($page['body']==''
+	|| $page['body']=='<h1>'.htmlspecialchars($page['name']).'</h1><p>&nbsp;</p>'
+) {
+	$page['body']
+		=file_get_contents(dirname(__FILE__).'/body_template_sample.html');
+}
+/* TODO - translation /CB */
+$c.=ckeditor('body', $page['body'])
+	.'<a href="#" class="docs" page="/ww.plugins/online-store/docs/form.html">'
+	.'codes</a></div>';
+// }
+$c.='</div>';
+// }
+// { form fields
+if (!isset($vars['online_stores_fields'])
+	|| !$vars['online_stores_fields']
+) {
+	$vars['online_stores_fields']='{}';
+}
+$c.='<div id="online-stores-fields">'
+	.'<script>var os_fields='.$vars['online_stores_fields'].';</script>'
+	.'<input type="hidden" name="page_vars[online_stores_fields]" value="'
+	.htmlspecialchars($vars['online_stores_fields']).'" />'
+	.'</div>';
+// }
+// { invoice details
+$c.='<div id="online-store-invoice">';
+/* TODO - translation /CB */
+$c.='<p>This is what will be sent out to the buyer after the payment succeeds.'
+	.'</p>';
+if (!isset($vars['online_stores_invoice']) || $vars['online_stores_invoice']=='') {
+	$vars['online_stores_invoice']=file_get_contents(
+		dirname(__FILE__).'/invoice_template_sample.html'
+	);
+}
+$c.=ckeditor('page_vars[online_stores_invoice]', $vars['online_stores_invoice']);
+$c.='</div>';
 // }
 // { countries
 // { list of countries

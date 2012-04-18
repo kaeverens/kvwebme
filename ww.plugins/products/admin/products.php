@@ -38,6 +38,7 @@ if (!count($rs)) {
 	  .' class="__" lang-context="core">import</a> a list of them';
 	return;
 }
+
 // { products list
 echo '<div><table id="products-list"><thead>'
 	.'<tr><th><input type="checkbox" id="products-selectall"/></th>'
@@ -47,6 +48,8 @@ echo '<div><table id="products-list"><thead>'
 	.'</tbody></table></div>'
 	.'<select id="products-action"><option value="0"> -- </option>'
 	.'<option value="1">Delete Selected</option>'
+	.'<option value="2">Set Disabled</option>'
+	.'<option value="3">Set Enabled</option>'
 	.'</select>';
 // }
 WW_addScript('/j/jquery.jeditable.mini.js');
