@@ -358,7 +358,7 @@ function Products_screenImport() {
 					var products=ret;
 					function importImage() {
 						var product=products[i];
-						if (product.ean.length!=13
+						if (product.ean.length<12 || product.ean.length>13
 							|| product.ean.replace(/[0-9]*/, '')!=''
 						) {
 							i++;

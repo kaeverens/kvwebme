@@ -120,7 +120,7 @@ $plugin=array(
 	'triggers' => array( // {
 		'initialisation-completed' => 'Products_addToCart'
 	), // }
-	'version' => '39'
+	'version' => '40'
 );
 // }
 
@@ -1060,11 +1060,11 @@ function Products_amountInStock($params, $smarty) {
 	*/
 function Products_cronHandle() {
 	dbQuery(
-		'update products set enabled=1 where !enabled and activates_on<now() '
+		'update products set enabled=1,date_edited=now() where !enabled and activates_on<now() '
 		.'and expires_on>now()'
 	);
 	dbQuery(
-		'update products set enabled=0 where enabled and expires_on<now()'
+		'update products set enabled=0,date_edited=now() where enabled and expires_on<now()'
 	);
 	Core_cacheClear('products');
 }
@@ -1338,7 +1338,12 @@ function Products_importFile($vars=false) {
 	if (!file_exists($fname)) {
 		return array('message'=>'file not uploaded');
 	}
-	$charset=mb_detect_encoding(file_get_contents($fname));
+	if (function_exists('mb_detect_encoding')) {
+		$charset=mb_detect_encoding(file_get_contents($fname));
+	}
+	else {
+		$charset='UTF-8';
+	}
 	$handle=fopen($fname, 'r');
 	if ($charset!='UTF-8') {
 		stream_filter_register("utf8encode", "utf8encode_filter")
@@ -1361,11 +1366,13 @@ function Products_importFile($vars=false) {
 		return array(
 			'message'=>'Missing required headers (_name, _ean, _stocknumber,'
 			.' _type, _categories). Please use the Download link'
-			.' to get a sample import file'
+			.' to get a sample import file',
+			'headers-found'=>$headers
 		);
 	}
 	$product_types=array();
 	$imported=0;
+	$categoriesByName=array();
 	while (
 		($data=fgetcsv(
 			$handle, 1000, $vars->productsImportDelimiter['varvalue']
@@ -1403,7 +1410,7 @@ function Products_importFile($vars=false) {
 				dbQuery(
 					'update products set ean="'.addslashes($ean).'"'
 					.',product_type_id='.$type_id
-					.',name="'.addslashes($name).'"'
+					.',name="'.addslashes($name).'",date_edited=now()'
 					.' where id='.$id
 				);
 			}
@@ -1415,6 +1422,7 @@ function Products_importFile($vars=false) {
 				.',name="'.addslashes($name).'"'
 				.',ean="'.addslashes($ean).'"'
 				.',date_created=now()'
+				.',date_edited=now()'
 				.',enabled=1'
 				.',data_fields="{}"'
 				.',online_store_fields="{}"';
@@ -1459,8 +1467,26 @@ function Products_importFile($vars=false) {
 			'update products set '
 			.'data_fields="'.addslashes(json_encode($data_fields)).'"'
 			.',online_store_fields="'.addslashes(json_encode($os_fields)).'"'
+			.',date_edited=now()'
 			.' where id='.$id
 		);
+		if (@$data[$headers['_categories']]) {
+			dbQuery('delete from products_categories_products where product_id='.$id);
+			$catname=$data[$headers['_categories']];
+			if (!isset($categoriesByName[$catname])) {
+				$categoriesByName[$catname]=(int)dbOne(
+					'select id from products_categories'
+					.' where name="'.addslashes($catname).'"',
+					'id'
+				);
+			}
+			dbQuery(
+				'insert into products_categories_products set'
+				.' category_id='.$categoriesByName[$catname].', product_id='.$id
+			);
+#			echo 'insert into products_categories_products set'
+#			  .' category_id='.$categoriesByName[$catname].', product_id='.$id."\n";
+		}
 		$imported++;
 	}
 	Core_cacheClear('products');

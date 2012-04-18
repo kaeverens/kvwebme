@@ -520,6 +520,9 @@ function Products_adminImportImages() {
 function Products_adminImportDataFromAmazon() {
 	$pid=(int)$_REQUEST['id'];
 	$ean=$_REQUEST['ean'];
+	if (strlen($ean)==12) {
+		$ean=ean13_check_digit($ean);
+	}
 	if (strlen($ean)!=13) {
 		return array('message'=>'EAN too short');
 	}
@@ -541,7 +544,7 @@ function Products_adminImportDataFromAmazon() {
 		mkdir(USERBASE.'/f'.$pdata->images_directory);
 		dbQuery(
 			'update products set images_directory="'.$pdata->images_directory
-			.'" where id='.$pid
+			.'",date_edited=now() where id='.$pid
 		);
 	}
 	$image_exists=0;
@@ -597,7 +600,7 @@ function Products_adminImportDataFromAmazon() {
 			}
 			dbQuery(
 				'update products set data_fields="'.addslashes(json_encode($meta))
-				.'" where id='.$pid
+				.'",date_edited=now() where id='.$pid
 			);
 		}
 		// }
@@ -763,7 +766,7 @@ function Products_adminProductEditVal() {
 		return array('error'=>'field not allowed');
 	}
 	dbQuery(
-		'update products set '.$name.'="'.addslashes($value).'" where id='.$id
+		'update products set '.$name.'="'.addslashes($value).'",date_edited=now() where id='.$id
 	);
 	Core_cacheClear();
 	return array('ok'=>1);
@@ -773,16 +776,51 @@ function Products_adminProductEditVal() {
 // { Products_adminProductGet
 
 /**
-	* get all details about a product by its ID
+	* get all details about a product or products by its ID
 	*
 	* return array the product
 	*/
 function Products_adminProductGet() {
-	$id=(int)$_REQUEST['id'];
-	$r=dbRow('select * from products where id='.$id);
-	$r['online_store_fields']=json_decode($r['online_store_fields']);
-	$r['data_fields']=json_decode($r['data_fields']);
-	return $r;
+	$ids=array();
+	if (isset($_REQUEST['ids'])) {
+		$idsToCheck=$_REQUEST['ids'];
+		$ids=array();
+		foreach ($idsToCheck as $id) {
+			$ids[]=(int)$id;
+		}
+	}
+	else {
+		$ids=array((int)$_REQUEST['id']);
+	}
+	$rs=dbAll('select * from products where id in ('.join(', ', $ids).')');
+	$arr=array();
+	foreach ($rs as $r) {
+		$r['online_store_fields']=json_decode($r['online_store_fields']);
+		$r['data_fields']=json_decode($r['data_fields']);
+		$arr[]=$r;
+	}
+	return $arr;
+}
+
+// }
+// { Products_adminProductsGetUpdates
+
+/**
+	* get details of all products updated since a date
+	*
+	* return array the product
+	*/
+function Products_adminProductsGetUpdates() {
+	$dateFrom=$_REQUEST['from'];
+	$rs=dbAll(
+		'select * from products where date_edited>"'.addslashes($dateFrom).'"'
+	);
+	foreach ($rs as $k=>$r) {
+		$r['online_store_fields']=json_decode($r['online_store_fields']);
+		$r['data_fields']=json_decode($r['data_fields']);
+		$rs[$k]=$r;
+	}
+	return $rs;
 }
 
 // }
@@ -1039,7 +1077,7 @@ function Products_adminTypeEdit() {
 	$data_fields=json_encode($d['data_fields']);
 	dbQuery(
 		'update products_types set name="'.addslashes($d['name'])
-		.'",multiview_template="'
+		.'",date_edited=now(),multiview_template="'
 		.addslashes(Core_sanitiseHtmlEssential($d['multiview_template']))
 		.'",singleview_template="'
 		.addslashes(Core_sanitiseHtmlEssential($d['singleview_template']))
@@ -1196,3 +1234,19 @@ function Products_adminUserGroupsGet() {
 }
 
 // }
+function ean13_check_digit($digits){
+	//first change digits to a string so that we can access individual numbers
+	$digits =(string)$digits;
+	// 1. Add the values of the digits in the even-numbered positions: 2, 4, 6, etc.
+	$even_sum = $digits{1} + $digits{3} + $digits{5} + $digits{7} + $digits{9} + $digits{11};
+	// 2. Multiply this result by 3.
+	$even_sum_three = $even_sum * 3;
+	// 3. Add the values of the digits in the odd-numbered positions: 1, 3, 5, etc.
+	$odd_sum = $digits{0} + $digits{2} + $digits{4} + $digits{6} + $digits{8} + $digits{10};
+	// 4. Sum the results of steps 2 and 3.
+	$total_sum = $even_sum_three + $odd_sum;
+	// 5. The check character is the smallest number which, when added to the result in step 4,  produces a multiple of 10.
+	$next_ten = (ceil($total_sum/10))*10;
+	$check_digit = $next_ten - $total_sum;
+	return $digits . $check_digit;
+}

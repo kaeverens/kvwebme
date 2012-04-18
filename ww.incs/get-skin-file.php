@@ -10,10 +10,13 @@ if (strpos($file, '..')!==false || strpos($file, '/.')!==false) {
 }
 
 if (!file_exists($file) || !is_file($file)) {
-	$file=$DBVARS['theme_dir'].'/'.$_REQUEST['filename'];
+	$file=$DBVARS['theme_dir_personal'].'/'.$_REQUEST['filename'];
 	if (!file_exists($file) || !is_file($file)) {
-		header("HTTP/1.0 404 Oh No!");
-		exit;
+		$file=$DBVARS['theme_dir_personal'].'/'.$DBVARS['theme'].'/'.$_REQUEST['filename'];
+		if (!file_exists($file) || !is_file($file)) {
+			header("HTTP/1.0 404 Oh No!");
+			exit;
+		}
 	}
 }
 

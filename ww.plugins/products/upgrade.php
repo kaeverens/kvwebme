@@ -300,3 +300,8 @@ if ($version==38) { // periodic imports
 	);
 	$version=39;
 }
+if ($version==39) { // add date_edited  field to products
+	dbQuery('alter table products add date_edited datetime');
+	dbQuery('update products set date_edited=date_created');
+	$version=40;
+}

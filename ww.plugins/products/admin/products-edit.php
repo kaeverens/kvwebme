@@ -223,6 +223,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 			.',product_type_id='.((int)$_REQUEST['product_type_id'])
 			.',default_category='.((int)$_REQUEST['products_default_category'])
 			.',enabled='.(int)$_REQUEST['enabled']
+			.',date_edited=now()'
 			.',images_directory="'.addslashes($_REQUEST['images_directory']).'"';
 		// { add data fields to SQL
 		$datafields=array();
