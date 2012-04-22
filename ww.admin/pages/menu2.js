@@ -319,7 +319,7 @@ function Reports_popularPages($el) {
 			+'<thead><tr>'
 			+'<th colspan="2" class="__" lang-context="core">Today</th>'
 			+'<th colspan="2" class="__" lang-context="core">7 Days</th>'
-			+'<th colspan="2" class="__" lang-context="core">31 Months</th>'
+			+'<th colspan="2" class="__" lang-context="core">31 Days</th>'
 			+'</tr></thead>'
 			+'<tbody>';
 		for (var i=0;i<50;++i) {
