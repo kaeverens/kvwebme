@@ -18,3 +18,21 @@ div#pages-wrapper li[type=news] a ins{
 div#pages-wrapper li[type=image-gallery] a ins{
 	background-position:-16px 0;
 }
+
+.report-two-column{
+	border-right:1px solid #333;
+	border-bottom:1px solid #333;
+}
+.report-two-column thead {
+	background:#333;
+}
+.report-two-column thead th{
+	color:#fff;
+}
+.report-two-column td.amt{
+	text-align:right;
+	border-left:1px solid #333;
+}
+.report-two-column td{
+	border:1px solid #eee;
+}

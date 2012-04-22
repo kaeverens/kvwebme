@@ -150,6 +150,8 @@ function Core_unfixImageResizes($src) {
 	return $src;
 }
 
+// { WW_getCSS
+
 /**
   * generate a list of external CSS scripts and build a <style> tag
   *
@@ -164,6 +166,9 @@ function WW_getCSS() {
 	$css_urls=array();
 	return '<link rel="stylesheet" href="'.htmlspecialchars($url).'" />';
 }
+
+// }
+// { WW_getScripts
 
 /**
   * generate a list of external JS scripts and build a <script> tag
@@ -237,6 +242,8 @@ function WW_getScripts() {
 		.'<script src="/ww.admin/js.php/'.$md5.'"></script>'
 		.$inline;
 }
+
+// }
 
 /**
   * output an RTE's HTML

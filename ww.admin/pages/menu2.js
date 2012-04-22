@@ -1,4 +1,106 @@
 $(function(){
+	function pageAddNode(name,id,pid){
+		var pel=null;
+		var $jstree=$('#pages-wrapper');
+		if (pid) {
+			pel='#page_'+pid;
+		}
+		else{
+			pel='#pages-wrapper';
+		}
+		var node=$jstree.jstree(
+			'create',
+			pel,
+			"last",
+			{'attr':{'id':'page_'+id},'data':name},
+			function(){
+				$jstree.jstree('deselect_all');
+				$jstree.jstree('select_node','#page_'+id);
+			},
+			true
+		);
+	}
+	function pageNew(node) {
+		var pid=node[0]?node[0].id.replace(/.*_/,''):0;
+		$('<table id="newpage-dialog">'
+			+'<tr><th>Name</th><td><input name="name"/></td></tr>'
+			+'<tr><th>Page Type</th><td><select name="type">'
+			+'<option value="0">normal</option></select></td></tr>'
+			+'</table>'
+		).dialog({
+			modal:true,
+			close:function(){
+				$('#newpage-dialog').remove();
+			},
+			buttons:{
+				'Create Page': function() {
+					var name=$('#newpage-dialog input[name="name"]').val();
+					if (name=='') {
+						return alert('Name must be provided');
+					}
+					$.post('/a/f=adminPageEdit', {
+						'parent':pid,
+						'name':name,
+						'type':$('#newpage-dialog select[name="type"]').val()
+					}, function(ret) {
+						pageAddNode(ret.alias, ret.id, ret.pid);
+						pageOpen(ret.id);
+					});
+					$(this).dialog('close');
+				},
+				'Cancel': function() {
+					$(this).dialog('close');
+				}
+			}
+		});
+		$('#newpage-dialog select[name=type]')
+			.remoteselectoptions({url:'/a/f=adminPageTypesList'});
+		return false;
+	}
+	function pageOpen(id) {
+		var $rw=$('#reports-wrapper');
+		var $pfw=$('#page-form-wrapper');
+		if (!$pfw.length) {
+			$pfw=$('<iframe id="page-form-wrapper" name="page-form-wrapper" '
+				+' src="about:blank"></iframe>')
+				.insertAfter($rw);
+		}
+		$pfw.attr('src', '/ww.admin/pages/form.php?id='+id);
+		$rw.css('display', 'none');
+	}
+	function reportsSave() {
+		clearTimeout(window.reportOrdTimer);
+		window.reportOrdTimer=setTimeout(function() {
+			var vis=[];
+			var $portlets=$('.portlet');
+			if (!$portlets.length) {
+				return;
+			}
+			$portlets.each(function() {
+				var $this=$(this);
+				var $content=$('.portlet-content', $this);
+				var func=$this.data('func'),
+					open=$content.css('display')=='block'?1:0,
+					width=$content.width(), height=$content.height();
+				vis.push([func, open, width, height]);
+			});
+			var visJSON=JSON.stringify(vis);
+			$.post('/a/f=adminAdminVarsSave', {
+				'name':'dashboardReportsOrder',
+				'val':visJSON
+			});
+			adminVars.dashboardReportsOrder=visJSON;
+		}, 1000);
+	}
+	function reportsShow(funcname, name, open, width, height) {
+		var $portlet=$(
+			'<div class="portlet" data-func="'+funcname+'" data-open="'+(open?1:0)+'">'
+			+'<div class="portlet-header">'+name+'</div>'
+			+'<div class="portlet-content"'
+			+' style="width:'+width+'px;height:'+height+'px"/>'
+			+'</div>'
+		).appendTo('#reports-wrapper');
+	}
 	$.jstree._themes='/j/jstree/themes/';
 	$('#pages-wrapper')
 		.jstree({
@@ -14,18 +116,30 @@ $(function(){
 							}
 							return TREE_OBJ.check("creatable", NODE); 
 						}, 
-						'action':pages_new,
+						'action':pageNew,
 						'separator_after' : true
 					},
 					'remove' : {
 						'label'	: "Delete Page", 
-						'visible'	: function (NODE, TREE_OBJ) { 
+						'visible':function (NODE, TREE_OBJ) { 
 							if (NODE.length != 1) {
 								return 0;
 							}
 							return TREE_OBJ.check("deletable", NODE); 
 						}, 
-						'action':pages_delete,
+						'action':function(node,tree){
+							if (!confirm("Are you sure you want to delete this page?")) {
+								return;
+							}
+							$.post('/a/f=adminPageDelete/id='+node[0].id.replace(/.*_/, ''), function(){
+								if (node.find('li').length) {
+									document.location=document.location.toString();
+								}
+								else {
+									$('#pages-wrapper').jstree('remove', node);
+								}
+							});
+						},
 						'separator_after' : true
 					},
 					'copy' : {
@@ -33,7 +147,14 @@ $(function(){
 						'visible'	: function (NODE, TREE_OBJ) { 
 							return true;
 						}, 
-						'action':pages_copy
+						'action':function(node, tree) {
+							$.post('/a/f=adminPageCopy', {
+								'id':node[0].id.replace(/.*_/,'')
+							}, function(ret){
+								pageAddNode(ret.name, ret.id, ret.pid);
+								pageOpen(ret.id);
+							}, 'json');
+						}
 					},
 					'view' : {
 						'label' : "View Page",
@@ -86,13 +207,12 @@ $(function(){
 		});
 	var div=$('<div><i>right-click for options</i><br /><br /></div>');
 	$('<button>add main page</button>')
-		.click(pages_new)
+		.click(pageNew)
 		.appendTo(div);
 	div.appendTo('div.left-menu');
 	$('#pages-wrapper a').live('click',function(e){
 		var node=e.target.parentNode;
-		document.getElementById('page-form-wrapper')
-			.src="pages/form.php?id="+node.id.replace(/.*_/,'');
+		pageOpen(node.id.replace(/.*_/,''));
 		$('#pages-wrapper').jstree('select_node',node);
 	});
 	$('<div class="resize-bar-w"/>')
@@ -119,85 +239,180 @@ $(function(){
 			}
 		})
 		.appendTo('div.left-menu');
-});
-
-function pages_new(node) {
-	var pid=node[0]?node[0].id.replace(/.*_/,''):0;
-	$('<table id="newpage-dialog">'
-		+'<tr><th>Name</th><td><input name="name"/></td></tr>'
-		+'<tr><th>Page Type</th><td><select name="type">'
-		+'<option value="0">normal</option></select></td></tr>'
-		+'</table>'
-	).dialog({
-		modal:true,
-		close:function(){
-			$('#newpage-dialog').remove();
-		},
-		buttons:{
-			'Create Page': function() {
-				var name=$('#newpage-dialog input[name="name"]').val();
-				if (name=='') {
-					return alert('Name must be provided');
+	if (/\?id=/.test(document.location.toString())) {
+		pageOpen(document.location.toString().replace(/.*\?id=/, ''));
+	}
+	else {
+		// { show list of reports
+		var reports_ordered=[];
+		if (adminVars.dashboardReportsOrder!=undefined) {
+			reports_ordered=eval('('+adminVars.dashboardReportsOrder+')');
+		}
+		var available_reports=[
+			['visitorStats', 'Visitor Stats'],
+			['popularPages', 'Popular Pages']
+		];
+		for (var i=0;i<reports_ordered.length;++i) {
+			var repOrd=reports_ordered[i];
+			for (var j=0;j<available_reports.length;++j) {
+				var repAvail=available_reports[j];
+				if (repAvail[0]==repOrd[0]) {
+					repAvail[2]=1;
+					reportsShow(repOrd[0], repAvail[1], repOrd[1], repOrd[2], repOrd[3]);
+					break;
 				}
-				$.post('/a/f=adminPageEdit', {
-					'parent':pid,
-					'name':name,
-					'type':$('#newpage-dialog select[name="type"]').val()
-				}, function(ret) {
-					pages_add_node(ret.alias, ret.id, ret.pid);
-					$('#page-form-wrapper').attr('src', 'pages/form.php?id='+ret.id);
-				});
-				$(this).dialog('close');
-			},
-			'Cancel': function() {
-				$(this).dialog('close');
 			}
 		}
-	});
-	$('#newpage-dialog select[name=type]')
-		.remoteselectoptions({url:'/a/f=adminPageTypesList'});
-	return false;
-}
-function pages_copy(node, tree) {
-	$.post('/a/f=adminPageCopy', {
-		'id':node[0].id.replace(/.*_/,'')
-	}, function(ret){
-		pages_add_node(ret.name, ret.id, ret.pid);
-		document.getElementById('page-form-wrapper')
-			.src="pages/form.php?id="+ret.id;
-	}, 'json');
-}
-function pages_delete(node,tree){
-	if (!confirm("Are you sure you want to delete this page?")) {
-		return;
-	}
-	$.post('/a/f=adminPageDelete/id='+node[0].id.replace(/.*_/, ''), function(){
-		if (node.find('li').length) {
-			document.location=document.location.toString();
+		for (var i=0;i<available_reports.length;++i) {
+			var repAvail=available_reports[i];
+			if (repAvail[2]==undefined) {
+				reportsShow(repAvail[0], repAvail[1], 0, 200, 200);
+			}
 		}
-		else {
-			$('#pages-wrapper').jstree('remove', node);
+		$('#reports-wrapper').sortable({
+			'update':reportsSave
+		});
+		$('.portlet')
+			.addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )
+			.find( ".portlet-header" )
+			.addClass( "ui-widget-header ui-corner-all" )
+			.prepend( "<span class='ui-icon ui-icon-minusthick'></span>")
+			.end()
+			.find( ".portlet-content" );
+		$( ".portlet-header .ui-icon" )
+			.click(function() {
+				var $this=$(this);
+				var $parent=$this.closest('.portlet');
+				var $content=$parent.find('.portlet-content');
+				$this
+					.toggleClass( "ui-icon-minusthick" )
+					.toggleClass( "ui-icon-plusthick" );
+				$content
+					.toggle();
+				if ($content.css('display')=='block') {
+					eval('Reports_'+$parent.data('func'))($content);
+				}
+				else {
+					$this.empty();
+				}
+				reportsSave();
+			});
+		$('.portlet[data-open=0] .portlet-header .ui-icon').click();
+		$('.portlet[data-open=1] .portlet-header .ui-icon').click().click();
+		$('.portlet-content').resizable({
+			'minWidth':200,
+			'minHeight':200,
+			'stop':function() {
+				reportsSave();
+				var $content=$(this);
+				var $parent=$content.closest('.portlet');
+				eval('Reports_'+$parent.data('func'))($content);
+			}
+		});
+		// }
+	}
+});
+
+function Reports_popularPages($el) {
+	$.post('/a/f=adminReportsPopularPages', function(ret) {
+		var table='<table style="width:100%" class="report-two-column">'
+			+'<thead><tr>'
+			+'<th colspan="2" class="__" lang-context="core">Today</th>'
+			+'<th colspan="2" class="__" lang-context="core">7 Days</th>'
+			+'<th colspan="2" class="__" lang-context="core">31 Months</th>'
+			+'</tr></thead>'
+			+'<tbody>';
+		for (var i=0;i<50;++i) {
+			var day=ret.day[i]||false, week=ret.week[i]||false,
+				month=ret.month[i]||false;
+			if (!day&&!week&&!month) {
+				continue;
+			}
+			table+='<tr>'
+				+'<td class="amt day">'+(day?day.amt:'')+'</td>'
+				+'<td class="page day">'+(day?day.page:'')+'</td>'
+				+'<td class="amt week">'+(week?week.amt:'')+'</td>'
+				+'<td class="page week">'+(week?week.page:'')+'</td>'
+				+'<td class="amt month">'+(month?month.amt:'')+'</td>'
+				+'<td class="page month">'+(month?month.page:'')+'</td>'
+				+'</tr>';
 		}
+		table+='</tbody></table>';
+		$el.find('>table').remove();
+		$el.append(table);
 	});
 }
-function pages_add_node(name,id,pid){
-	var pel=null;
-	var $jstree=$('#pages-wrapper');
-	if (pid) {
-		pel='#page_'+pid;
+function Reports_visitorStats($el) {
+	var $content=$el;
+	function update() {
+		var from=$('#reports-visitors-from').val(),
+			to=$('#reports-visitors-to').val();
+		if (!from) {
+			var d=new Date();
+			$('<table class="wide smalltext"><tr>'
+				+'<th class="__" lang-context="core">From</th>'
+				+'<td><input class="date" id="reports-visitors-from"/></td>'
+				+'<th class="__" lang-context="core">To</th>'
+				+'<td><input class="date" id="reports-visitors-to"/></td>'
+				+'</tr></table>'
+				+'<div id="reports-visitors-chart" style="position:absolute;left:0;'
+				+'bottom:0;right:0;top:25px"/>'
+			).appendTo($content);
+			to=$('#reports-visitors-to')
+				.val(d.toYMD())
+				.datepicker({
+					'dateFormat':'yy-mm-dd',
+					'onSelect':function() {
+						Reports_visitorStats($content);
+					}
+				})
+				.val();
+			d.setDate(d.getDate()-7);
+			from=$('#reports-visitors-from')
+				.val(d.toYMD())
+				.datepicker({
+					'dateFormat':'yy-mm-dd',
+					'onSelect':function() {
+						Reports_visitorStats($content);
+					}
+				})
+				.val();
+		}
+		$.post('/a/f=adminReportsVisitorStats', {
+			'from':from,
+			'to':to
+		}, function(ret) {
+			var line1=[];
+			$.each(ret, function(key, val) {
+				line1.push([key, val]);
+			});
+			$('#reports-visitors-chart').empty();
+			var plot1=$.jqplot('reports-visitors-chart', [line1], {
+				'axes':{
+					'xaxis': {
+						'renderer':$.jqplot.DateAxisRenderer
+					}
+				},
+				'series':[{
+					lineWidth:1
+				}]
+			});
+		});
 	}
-	else{
-		pel='#pages-wrapper';
+	if ($.jqplot) {
+		update();
 	}
-	var node=$jstree.jstree(
-		'create',
-		pel,
-		"last",
-		{'attr':{'id':'page_'+id},'data':name},
-		function(){
-			$jstree.jstree('deselect_all');
-			$jstree.jstree('select_node','#page_'+id);
-		},
-		true
-	);
+	else {
+		$.cachedScript(
+			'/j/jquery.jqplot/jquery.jqplot.min.js',
+			function() {
+				$.cachedScript(
+					'/j/jquery.jqplot/jqplot.dateAxisRenderer.min.js',
+					function() {
+						Reports_visitorStats($content);
+					}
+				);
+			}
+		);
+	}
 }

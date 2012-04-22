@@ -21,6 +21,9 @@
 function Core_adminAdminVarsSave() {
 	$name=$_REQUEST['name'];
 	$val=$_REQUEST['val'];
+	if ($name=='') {
+		return array('error'=>'missing name');
+	}
 	dbQuery(
 		'delete from admin_vars where admin_id='.$_SESSION['userdata']['id']
 		.' and varname="'.addslashes($name).'"'
@@ -1323,6 +1326,89 @@ function Core_adminPluginsRemoveOne() {
 }
 
 // }
+// { Core_adminReportsPopularPages
+
+/**
+	* get a list of popular pages from today, last week, last month
+	*
+	* @return array report data
+	*/
+function Core_adminReportsPopularPages() {
+	Core_statsUpdate();
+	return array(
+		'day'=>dbAll(
+			'select page,sum(amt) as amt from logs_pages'
+			.' where cdate=date(now())'
+			.' group by page'
+			.' order by amt desc'
+			.' limit 50'
+		),
+		'week'=>dbAll(
+			'select page,sum(amt) as amt from logs_pages'
+			.' where cdate>date_add(date(now()), interval -7 day)'
+			.' group by page'
+			.' order by amt desc'
+			.' limit 50'
+		),
+		'month'=>dbAll(
+			'select page,sum(amt) as amt from logs_pages'
+			.' where cdate>date_add(date(now()), interval -31 day)'
+			.' group by page'
+			.' order by amt desc'
+			.' limit 50'
+		)
+	);
+}
+
+// }
+// { Core_adminReportsVisitorStats
+
+/**
+	* get number of recent visitors
+	*
+	* @return array report data
+	*/
+function Core_adminReportsVisitorStats() {
+	Core_statsUpdate();
+	$from=$_REQUEST['from'];
+	$to=$_REQUEST['to'];
+	$rs=dbAll(
+		'select cdate,unique_visitors from logs_archive where cdate>="'
+		.addslashes($from).'" and cdate<"'.addslashes($to).' 25"'
+	);
+	$days=array();
+	$repeats=array();
+	foreach ($rs as $r) {
+		if (!isset($days[$r['cdate']])) {
+			$days[$r['cdate']]=(int)$r['unique_visitors'];
+		}
+		else {
+			$repeats[$r['cdate']]=1;
+			$days[$r['cdate']]+=$r['unique_visitors'];
+		}
+	}
+	foreach ($repeats as $key=>$val) {
+		$r=dbRow(
+			'select sum(unique_visitors) unique_visitors,sum(page_loads) page_loads'
+			.', sum(ram_used) ram_used, sum(bandwidth_used) bandwidth_used'
+			.', sum(render_time) render_time,sum(db_calls) db_calls'
+			.' from logs_archive where cdate="'.$key.'"'
+		);
+		dbQuery('delete from logs_archive where cdate="'.$key.'"');
+		dbQuery(
+			'insert into logs_archive set cdate="'.$key.'"'
+			.',unique_visitors='.$r['unique_visitors']
+			.',page_loads='.$r['page_loads']
+			.',ram_used='.$r['ram_used']
+			.',bandwidth_used='.$r['bandwidth_used']
+			.',render_time='.$r['render_time']
+			.',db_calls='.$r['db_calls']
+		);
+	}
+	return $days;
+}
+
+// }
 // { Core_adminSaveJSVar
 
 /**
@@ -1341,23 +1427,6 @@ function Core_adminSaveJSVar() {
 		$_SESSION['js'][$k]=$v;
 	}
 	return array('ok'=>1);
-}
-
-// }
-// { Core_adminStatsGetVisits
-
-/**
-	* get stats
-	*
-	* @return array details
-	*/
-function Core_adminStatsGetVisits() {
-	$from=isset($_REQUEST['from'])
-		?$_REQUEST['from']
-		:date('Y-m-d', time()-3600*24*7);
-	$to=isset($_REQUEST['to'])
-		?$_REQUEST['to']
-		:date('Y-m-d', time()+3600*24);
 }
 
 // }
@@ -1557,6 +1626,102 @@ function Core_adminUsersGetDT() {
 	}
 	$result['aaData']=$arr;
 	return $result;
+}
+
+// }
+// { Core_statsUpdate
+
+/**
+	* reads the site log file and updates the database with its contents.
+	* then clears the log file.
+	*
+	* @return void
+	*/
+function Core_statsUpdate() {
+	$time=time()+30;
+	$f=file(USERBASE.'/log.txt');
+	foreach ($f as $l) {
+		list(
+			$tmp,$type_data,$user_agent,$referer,
+			$ram_used,$bandwidth,$time_to_render,$db_calls
+		)=explode("	", $l);
+		$ram_used=(int)$ram_used;
+		$bandwidth=(int)$bandwidth;
+		$time_to_render=(float)$time_to_render;
+		$db_calls=(int)$db_calls;
+		$bits=explode(' ', $tmp);
+		list($log_date,$log_type,$ip_address)=array(
+			$bits[0].' '.$bits[1],$bits[2],$bits[4]
+		);
+		$sql="insert into logs values('$log_date','$log_type','$ip_address','"
+			.addslashes($type_data)."','".addslashes($user_agent)."','"
+			.addslashes($referer)
+			."',$ram_used,$bandwidth,$time_to_render,$db_calls)";
+		dbQuery($sql);
+	}
+	file_put_contents(USERBASE.'/log.txt', '');
+	do {
+		$cdate=dbOne(
+			'select date(log_date) as cdate from logs limit 1',
+			'cdate'
+		);
+		if ($cdate) {
+			// { logs archive
+			$unique_visitors=dbOne(
+				'select count(*) as visitors from (select distinct ip_address from'
+				.' logs where log_date>"'.$cdate.'" and log_date<"'.$cdate.' 25") as s1',
+				'visitors'
+			);
+			$page_views=dbOne(
+				'select count(type_data) as page_views from logs where log_type="page" and '
+				.'log_date>"'.$cdate.'" and log_date<"'.$cdate.' 25"',
+				'page_views'
+			);
+			$other=dbRow(
+				'select sum(ram_used) as ram,sum(bandwidth) as bandwidth,'
+				.'sum(time_to_render) as rendertime,sum(db_calls) as dbcalls '
+				.'from logs where log_type="page" and log_date>"'.$cdate.'" '
+				.'and log_date<"'.$cdate.' 25"'
+			);
+			$sql='insert into logs_archive set cdate="'.$cdate.'",'
+				.'unique_visitors='.$unique_visitors.',page_loads='.$page_views
+				.',ram_used='.$other['ram'].',bandwidth_used='.$other['bandwidth']
+				.',render_time='.$other['rendertime'].',db_calls='.$other['dbcalls'];
+			dbQuery($sql);
+			// }
+			// { popular pages
+			$pages=dbAll(
+				'select count(type_data) as amt,type_data from logs where '
+				.'log_type="page" and log_date>"'.$cdate.'" and log_date<"'
+				.$cdate.' 25" group by type_data order by amt desc limit 50'
+			);
+			foreach ($pages as $page) {
+				$url=preg_replace('/.*\|/', '', $page['type_data']);
+				$sql='insert into logs_pages set cdate="'.$cdate.'"'
+					.',page="'.addslashes($url).'",amt="'.$page['amt'].'"';
+				dbQuery($sql);
+			}
+			// }
+			// { referers
+			$notin='referer not like "%'
+				.str_replace('www.', '', $_SERVER['HTTP_HOST']).'%"';
+			$referers=dbAll(
+				'select count(referer) as amt,referer,type_data from logs where '
+				.'referer!="" and log_type="page" and log_date>"'.$cdate.'" and '
+				.'log_date<"'.$cdate.' 25" and '.$notin.' group by referer'
+				.',type_data order by amt desc limit 50'
+			);
+			foreach ($referers as $referer) {
+				$url=preg_replace('/.*\|/', '', $referer['type_data']);
+				$sql='insert into logs_referers set cdate="'.$cdate.'",referer="'
+					.addslashes($referer['referer']).'",page="'.addslashes($url).'"'
+					.',amt='.$referer['amt'];
+				dbQuery($sql);
+			}
+			// }
+			dbQuery('delete from logs where log_date like "'.$cdate.'%"');
+		}
+	} while ($cdate && time()<$time);
 }
 
 // }

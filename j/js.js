@@ -69,11 +69,12 @@ $(function(){
 });	
 // { stubs
 var stubs=['lightbox_show'];
-$.cachedScript=function(url) {
+$.cachedScript=function(url, callback) {
 	options={
 		'dataType':'script',
 		'cache':true,
-		'url':url
+		'url':url,
+		'complete':callback||null
 	};
 	return $.ajax(options);
 };
@@ -86,6 +87,19 @@ for (var i=stubs.length;i--;) {
 	eval(s);
 }
 // }
+Date.prototype.toYMD =function() {
+	var year, month, day;
+	year = String(this.getFullYear());
+	month = String(this.getMonth() + 1);
+	if (month.length == 1) {
+		month = "0" + month;
+	}
+	day = String(this.getDate());
+	if (day.length == 1) {
+		day = "0" + day;
+	}
+	return year + "-" + month + "-" + day;
+};
 /*
  * jQuery Tiny Pub/Sub - v0.6 - 1/10/2011
  * http://benalman.com/

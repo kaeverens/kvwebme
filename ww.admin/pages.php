@@ -11,22 +11,25 @@
   * @link     http://www.kvweb.me/
  */
 
-$dir=dirname(__FILE__);
-require $dir.'/header.php';
-if (isset($_REQUEST['id'])) {
-	$id=(int)$_REQUEST['id'];
-}
-else {
-	$id=0;
-}
+require_once 'header.php';
+
 echo '<h1>'.__('Pages').'</h1>';
-echo '<div class="left-menu">';
-require_once 'pages/menu.php';
-echo '</div>';
-echo '<div class="has-left-menu">'
-	,'<iframe id="page-form-wrapper" name="page-form-wrapper" '
-	,'src="/ww.admin/pages/form.php?id=',$id,'"></iframe>'
-	,'</div>';
+// { left side
+echo '<div class="left-menu">'
+	.'<div id="pages-wrapper"></div>'
+	.'</div>';
+// }
+// { right side
+echo '<div class="has-left-menu"><div id="reports-wrapper"></div></div>';
+// }
+// { scripts, etc
+WW_addScript('/j/jstree/_lib/jquery.cookie.js');
+WW_addScript('/j/jstree/jquery.jstree.js');
+WW_addScript('/j/jquery.remoteselectoptions.js');
+WW_addScript('/ww.admin/pages/menu2.js');
 WW_addInlineScript('window.page_menu_currentpage='.$id.';');
+WW_addCSS('/ww.admin/pages/menu.css');
 WW_addCSS('/ww.admin/pages/css.css');
-require 'footer.php';
+// }
+
+require_once 'footer.php';
