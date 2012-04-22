@@ -339,7 +339,7 @@ function Reports_popularPages($el) {
 		}
 		table+='</tbody></table>';
 		$el.find('>table').remove();
-		$el.append(table);
+		$el.css('overflow-y', 'auto').append(table);
 	});
 }
 function Reports_visitorStats($el) {
@@ -367,7 +367,7 @@ function Reports_visitorStats($el) {
 					}
 				})
 				.val();
-			d.setDate(d.getDate()-7);
+			d.setDate(d.getDate()-31);
 			from=$('#reports-visitors-from')
 				.val(d.toYMD())
 				.datepicker({
@@ -393,9 +393,15 @@ function Reports_visitorStats($el) {
 						'renderer':$.jqplot.DateAxisRenderer
 					}
 				},
-				'series':[{
-					lineWidth:1
-				}]
+				'series':[
+					{
+						'lineWidth':1,
+						'color':'#f00',
+						'markerOptions': {
+							show:false
+						}
+					}
+				]
 			});
 		});
 	}
