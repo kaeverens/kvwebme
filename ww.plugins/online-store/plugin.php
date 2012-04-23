@@ -662,32 +662,41 @@ function OnlineStore_setVat($page) {
   * @return null
   */
 function OnlineStore_startup() {
-	if (!isset($_SESSION['onlinestore_checkout_page'])) {
-		OnlineStore_setCheckoutPage();
+	$osvals=Core_cacheLoad('online-store', 'globals');
+	if ($osvals!=false) {
+		$_SESSION['onlinestore_checkout_page']=$osvals['onlinestore_checkout_page'];
+		$_SESSION['currency']=$osvals['currency'];
+		$_SESSION['onlinestore_vat_percent']=$osvals['onlinestore_vat_percent'];
+		return;
 	}
-	if (!isset($_SESSION['currency'])) {
-		$currencies=dbOne(
-			'select value from site_vars where name="currencies" limit 1',
-			'value'
+	OnlineStore_setCheckoutPage();
+	$currencies=dbOne(
+		'select value from site_vars where name="currencies" limit 1',
+		'value'
+	);
+	if ($currencies==false) {
+		if (!isset($GLOBALS['DBVARS']['online_store_currency'])) {
+			$GLOBALS['DBVARS']['online_store_currency']='EUR';
+		}
+		$currency=$GLOBALS['DBVARS']['online_store_currency'];
+		$currency_symbols=array('EUR'=>'€', 'GBP'=>'£', 'USD'=>'$');
+		$_SESSION['currency']=array(
+			'name'   => $currency,
+			'symbol' => $currency_symbols[$currency],
+			'iso'    => $currency,
+			'value'  => 1
 		);
-		if ($currencies==false) {
-			if (!isset($GLOBALS['DBVARS']['online_store_currency'])) {
-				$GLOBALS['DBVARS']['online_store_currency']='EUR';
-			}
-			$currency=$GLOBALS['DBVARS']['online_store_currency'];
-			$currency_symbols=array('EUR'=>'€', 'GBP'=>'£', 'USD'=>'$');
-			$_SESSION['currency']=array(
-				'name'   => $currency,
-				'symbol' => $currency_symbols[$currency],
-				'iso'    => $currency,
-				'value'  => 1
-			);
-		}
-		else {
-			$currencies=json_decode($currencies, true);
-			$_SESSION['currency']=$currencies[0];
-		}
 	}
+	else {
+		$currencies=json_decode($currencies, true);
+		$_SESSION['currency']=$currencies[0];
+	}
+	$osvals=array(
+		'onlinestore_checkout_page'=>$_SESSION['onlinestore_checkout_page'],
+		'currency'=>$_SESSION['currency'],
+		'onlinestore_vat_percent'=>$_SESSION['onlinestore_vat_percent']
+	);
+	Core_cacheSave('online-store', 'globals', $osvals);
 }
 
 // }

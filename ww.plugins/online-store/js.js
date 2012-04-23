@@ -438,6 +438,7 @@ $(function(){
 						$.get('/a/p=online-store/f=getCountries/page_id='+pagedata.id,
 							function(ret) {
 								var $this=$('#online-store-Country');
+								ret.sort();
 								for (var i=0;i<ret.length;++i) {
 									$('<option/>')
 										.text(ret[i])
@@ -534,7 +535,7 @@ $(function(){
 									$('#online-store-billing select').each(function() {
 										var $this=$(this),
 											del_name=$this.attr('id').replace('online-store-', ''),
-											del_val=$('select[name='+del_name+']').val();
+											del_val=$('input[name='+del_name+']').val();
 										$this.val(del_val);
 										$('input[name=Billing_'+del_name+']').val(del_val);
 									});
@@ -545,6 +546,7 @@ $(function(){
 							.change();
 						$.get('/a/p=online-store/f=getCountries/page_id='+pagedata.id,
 							function(ret) {
+								ret.sort();
 								var $this=$('#online-store-Country');
 								for (var i=0;i<ret.length;++i) {
 									$('<option/>')
@@ -568,6 +570,14 @@ $(function(){
 								);
 							}
 						});
+						if (!checkDeliveryAddress()) {
+							setTimeout(function() {
+								$accordion.accordion(
+									'activate',
+									'h2[panel="Delivery Address"]'
+								);
+							}, 500);
+						}
 					break; // }
 					case 'Delivery Options': // {
 						content.html(
@@ -596,6 +606,14 @@ $(function(){
 								'h2[panel="Payment"]'
 							);
 						});
+						if (!checkBillingAddress()) {
+							setTimeout(function() {
+								$accordion.accordion(
+									'activate',
+									'h2[panel="Billing Address"]'
+								);
+							}, 500);
+						}
 					break; // }
 					case 'Payment': // {
 						content.html(
@@ -636,6 +654,14 @@ $(function(){
 								});
 							}
 						);
+						if (!checkBillingAddress()) {
+							setTimeout(function() {
+								$accordion.accordion(
+									'activate',
+									'h2[panel="Billing Address"]'
+								);
+							}, 500);
+						}
 					break; // }
 				}
 			}
