@@ -1124,7 +1124,7 @@ function Products_adminTypeEdit() {
 		.addslashes(Core_sanitiseHtmlEssential($d['multiview_template']))
 		.'",singleview_template="'
 		.addslashes(Core_sanitiseHtmlEssential($d['singleview_template']))
-		.'",data_fields="'addslashes($data_fields).'",'
+		.'",data_fields="'.addslashes($data_fields).'",'
 		.'is_for_sale='.(int)$d['is_for_sale'].','
 		.'is_voucher='.(int)$d['is_voucher'].','
 		.'stock_control='.(int)$d['stock_control'].','
