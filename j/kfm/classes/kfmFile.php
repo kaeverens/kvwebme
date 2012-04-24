@@ -34,7 +34,8 @@ class kfmFile extends kfmObject{
 			$this->writable=$this->isWritable();
 			$this->ctime=filemtime($this->path)+$GLOBALS['kfm_server_hours_offset']*3600;
 			$this->modified=strftime($GLOBALS['kfm']->setting('date_format').' '.$GLOBALS['kfm']->setting('time_format'),filemtime($this->path));
-			$mimetype=Mimetype::get($this->path);
+			require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/Core_getMimeType.php';
+			$mimetype=Core_getMimeType($this->path);
 			$pos=strpos($mimetype,';');
 			$this->mimetype=($pos===false)?$mimetype:substr($mimetype,0,$pos);
 			$this->type=trim(substr(strstr($this->mimetype,'/'),1));

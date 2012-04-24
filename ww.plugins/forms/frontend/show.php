@@ -1,25 +1,65 @@
 <?php
 /**
-  * scripts for showing and sending forms on front-end
-  *
-  * PHP Version 5
-  *
-  * @category   Whatever
-  * @package    WebworksWebme
-  * @subpackage Form
-  * @author     Kae Verens <kae@kvsites.ie>
-  * @license    GPL Version 2
-  * @link       www.kvweb.me
+	* scripts for showing and sending forms on front-end
+	*
+	* PHP Version 5
+	*
+	* @category   Whatever
+	* @package    WebworksWebme
+	* @subpackage Form
+	* @author     Kae Verens <kae@kvsites.ie>
+	* @license    GPL Version 2
+	* @link       www.kvweb.me
  */
 
+// { Form_getValidationRules
+
 /**
-  * displays or sends a form, depending on whether data's been submitted
-  *
-  * @param array $page page db row
-  * @param array $vars page meta data
-  *
-  * @return HTML of either the form, or the result of sending
-  */
+	* get the validation rules for the form
+	*
+	* @param array $vars        page meta data
+	* @param array $form_fields array of fields
+	*
+	* @return an array of the errors
+	*/
+function Form_getValidationRules($vars, $form_fields=array()) {
+	global $recipientEmail;
+	$rulesCollection=array();
+	$from_field=preg_replace('/[^a-zA-Z]/', '', @$vars['forms_replyto']);
+	if (is_array($form_fields)) {
+		foreach ($form_fields as $r2) {
+			$rules=array();
+			$name=preg_replace('/[^a-zA-Z0-9_]/', '', $r2['name']);
+			if ($r2['isrequired'] || $name==$from_field) {
+				$rules['required']=true;
+			}
+			if ($r2['type']=='email') {
+				$rules['email']=true;
+			}
+			if (count($rules)) {
+				$rulesCollection[$name]=$rules;
+			}
+		}
+	}
+	// { check the captcha
+	if (@$vars['forms_captcha_required']) {
+		$rulesCollection['recaptcha_challenge_field']=array('required'=>true);
+	}
+	// }
+	return $rulesCollection;
+}
+
+// }
+// { Form_show
+
+/**
+	* displays or sends a form, depending on whether data's been submitted
+	*
+	* @param array $page page db row
+	* @param array $vars page meta data
+	*
+	* @return HTML of either the form, or the result of sending
+	*/
 function Form_show($page, $vars) {
 	$errors=array();
 	if (!isset($vars['forms_fields'])) {
@@ -36,16 +76,19 @@ function Form_show($page, $vars) {
 	return Form_showForm($page, $vars, $errors, $form_fields);
 }
 
+// }
+// { Form_showForm
+
 /**
-  * show the form to be submitted
-  *
-  * @param array $page       page db row
-  * @param array $vars       page meta data
-  * @param array $errors     any errors that need to be shown
+	* show the form to be submitted
+	*
+	* @param array $page       page db row
+	* @param array $vars       page meta data
+	* @param array $errors     any errors that need to be shown
 	* @param array form_fields list of fields in the form
-  *
-  * @return HTML of the form
-  */
+	*
+	* @return HTML of the form
+	*/
 function Form_showForm($page, $vars, $errors, $form_fields) {
 	if (!isset($_SESSION['forms'])) {
 		$_SESSION['forms']=array();
@@ -102,37 +145,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 		if (isset($_REQUEST[$name])) {
 			$_SESSION['forms'][$name]=$_REQUEST[$name];
 		}
-		$val=@$_REQUEST[$name];
-		if (!$val && isset($_SESSION['userdata']) && $_SESSION['userdata']) {
-			switch($name){
-				case 'Email': case '__ezine_subscribe': // {
-					if (isset($_SESSION['userdata']['email'])) {
-						$val=$_SESSION['userdata']['email'];
-					}
-				break;
-				// }
-				case 'FirstName': // {
-					$val=preg_replace('/ .*/', '', $_SESSION['userdata']['name']);
-				break;
-				// }
-				case 'Street': // {
-					$val=$_SESSION['userdata']['address1'];
-				break;
-				// }
-				case 'Street2': // {
-					$val=$_SESSION['userdata']['address2'];
-				break;
-				// }
-				case 'Surname': // {
-					$val=preg_replace('/.* /', '', $_SESSION['userdata']['name']);
-				break;
-				// }
-				case 'Town': // {
-					$val=$_SESSION['userdata']['address3'];
-				break;
-				// }
-			}
-		}
+		$val=Form_valueDefault($name);
 		if (!isset($_REQUEST[$name])) {
 			$_REQUEST[$name]='';
 		}
@@ -369,37 +382,47 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 	return $c;
 }
 
+// }
+// { Form_valueDefault
+
 /**
-  * get the validation rules for the form
-  *
-  * @param array $vars        page meta data
-	* @param array $form_fields array of fields
-  *
-  * @return an array of the errors
-  */
-function Form_getValidationRules($vars, $form_fields=array()) {
-	global $recipientEmail;
-	$rulesCollection=array();
-	$from_field=preg_replace('/[^a-zA-Z]/', '', @$vars['forms_replyto']);
-	if (is_array($form_fields)) {
-		foreach ($form_fields as $r2) {
-			$rules=array();
-			$name=preg_replace('/[^a-zA-Z0-9_]/', '', $r2['name']);
-			if ($r2['isrequired'] || $name==$from_field) {
-				$rules['required']=true;
-			}
-			if ($r2['type']=='email') {
-				$rules['email']=true;
-			}
-			if (count($rules)) {
-				$rulesCollection[$name]=$rules;
-			}
+	* get the default value for a form field
+	*
+	* @return array details
+	*/
+function Form_valueDefault($name) {
+	$val=@$_REQUEST[$name];
+	if (!$val && isset($_SESSION['userdata']) && $_SESSION['userdata']) {
+		switch($name){
+			case 'Email': case '__ezine_subscribe': // {
+				if (isset($_SESSION['userdata']['email'])) {
+					$val=$_SESSION['userdata']['email'];
+				}
+			break;
+			// }
+			case 'FirstName': // {
+				$val=preg_replace('/ .*/', '', $_SESSION['userdata']['name']);
+			break;
+			// }
+			case 'Street': // {
+				$val=$_SESSION['userdata']['address1'];
+			break;
+			// }
+			case 'Street2': // {
+				$val=$_SESSION['userdata']['address2'];
+			break;
+			// }
+			case 'Surname': // {
+				$val=preg_replace('/.* /', '', $_SESSION['userdata']['name']);
+			break;
+			// }
+			case 'Town': // {
+				$val=$_SESSION['userdata']['address3'];
+			break;
+			// }
 		}
 	}
-	// { check the captcha
-	if (@$vars['forms_captcha_required']) {
-		$rulesCollection['recaptcha_challenge_field']=array('required'=>true);
-	}
-	// }
-	return $rulesCollection;
+	return $val;
 }
+
+// }

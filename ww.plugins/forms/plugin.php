@@ -27,6 +27,8 @@ $plugin=array(
 );
 // }
 
+// { Form_adminPageForm
+
 /**
   * display the form-creation tool
   *
@@ -46,6 +48,9 @@ function Form_adminPageForm($page, $vars) {
 	return $c;
 }
 
+// }
+// { Form_frontend
+
 /**
   * display the page's form
   *
@@ -60,3 +65,5 @@ function Form_frontend($PAGEDATA) {
 		.Form_show($PAGEDATA->dbVals, $PAGEDATA->vars)
 		.@$PAGEDATA->vars['footer'];
 }
+
+// }

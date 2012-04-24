@@ -144,11 +144,11 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			// }
 	}
 	// }
-	// { check if new address was entered
-	if ($uid) {
+	if ($uid) { // user account stuff
 		$_user=dbRow(
-			'select address from user_accounts where id='.$uid
+			'select email,name,phone,address from user_accounts where id='.$uid
 		);
+		// { check if new address was entered
 		$addresses=(array)json_decode($_user['address'], true);
 		$newAddress=array(
 			'street'=>$_POST['Street'],
@@ -181,8 +181,24 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 				'update user_accounts set address="'.$addresses.'" where id='.$uid
 			);
 		}
+		// }
+		// { check if new name, surname, phone were entered
+		if (@$_POST['Email']==$_user['email']) {
+			if (isset($_POST['FirstName'])) {
+				$_user['name']=$_POST['FirstName'].' '.$_POST['Surname'];
+				$_SESSION['userdata']['name']=$_user['name'];
+			}
+			if (isset($_POST['Phone'])) {
+				$_user['phone']=$_POST['Phone'];
+				$_SESSION['userdata']['phone']=$_user['phone'];
+			}
+			dbQuery(
+				'update user_accounts set name="'.addslashes($_user['name']).'"'
+				.', phone="'.addslashes($_user['phone']).'" where id='.$uid
+			);
+		}
+		// }
 	}
-	// }
 	unset($_REQUEST['action'], $_REQUEST['page']);
 	if (count($errors)) {
 		$c.='<div class="errors"><em class="__" lang-context="core">'
@@ -394,7 +410,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		}
 		// }
 		// { unset the shopping cart data
-		unset($_SESSION['online-store']);
+//		unset($_SESSION['online-store']);
 		// }
 		$submitted=1;
 	} 

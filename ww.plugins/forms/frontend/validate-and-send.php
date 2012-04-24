@@ -94,70 +94,141 @@ if (!function_exists('mime_content_type')) {
 	}
 }
 
-// { Form_validate
+// { Form_readonly
 
 /**
-  * validate the inputs for a form
+  * get a readonly version of the form (for sending as email)
   *
+  * @param array $page_id      page db row
   * @param array &$vars        page meta data
 	* @param array &$form_fields array of fields
   *
-  * @return an array of the errors
+  * @return HTML of the form
   */
-function Form_validate(&$vars, &$form_fields) {
-	$errors=array();
+function Form_readonly($page_id, &$vars, &$form_fields) {
+	if (!isset($_SESSION['forms'])) {
+		$_SESSION['forms']=array();
+	}
+	$c='';
+	// { set up delimiters
+	$vals_wrapper_start='<table>';
+	$vals_field_start='<tr><th>';
+	$vals_field_middle='</th><td>';
+	$vals_field_end='</td></tr>';
+	$vals_2col_start='<tr><td colspan="2">';
+	$vals_2col_end='</td></tr>';
+	$vals_wrapper_end='</table>';
+	// }
+	if (@$vars['forms_template'] && @strpos($vars['forms_template'], '{{')===false) {
+		@$vars['forms_template']='';
+	} // }}
+	if (!@$vars['forms_template']||@$vars['forms_template']=='&nbsp;') {
+		$c.='<div>'.$vals_wrapper_start;
+	}
+	$required=array();
+	$cnt=0;
 	foreach ($form_fields as $r2) {
 		$name=preg_replace('/[^a-zA-Z0-9_]/', '', $r2['name']);
-		if ($r2['type']=='email' && $r2['extra']) {
-			if (!isset($_SESSION['emails'])
-				|| $_SESSION['emails'][@$_REQUEST[$name]]!==true
-			) {
-				$errors[]='Email validation code was not correct.';
-			}
+		$class='';
+		if ($r2['isrequired']) {
+			$required[]=$name.','.$r2['type'];
+			$class=' required';
 		}
-		if ($r2['isrequired'] && @$_REQUEST[$name]=='') {
-			$errors[]='You must fill in the <strong>' . $r2['name'] . '</strong> field.';
+		if (isset($_REQUEST[$name])) {
+			$_SESSION['forms'][$name]=$_REQUEST[$name];
 		}
-		if ($r2['type']=='email'
-			&& !filter_var(@$_REQUEST[$name], FILTER_VALIDATE_EMAIL)
-		) {
-			$errors[]='You must provide a valid email in the <strong>'
-				.$r2['name'] . '</strong> field.';
+		$val=Form_valueDefault($name);
+		if (!isset($_REQUEST[$name])) {
+			$_REQUEST[$name]='';
 		}
-	}
-	// { check the captcha
-	if (@$vars['forms_captcha_required']) {
-		require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/recaptcha.php';
-		if (!isset($_REQUEST['recaptcha_challenge_field'])) {
-			$errors[]='You must fill in the captcha (image text).';
-		}
-		else {
-			$result 
-				= recaptcha_check_answer(
-					RECAPTCHA_PRIVATE,
-					$_SERVER['REMOTE_ADDR'],
-					$_REQUEST['recaptcha_challenge_field'],
-					$_REQUEST['recaptcha_response_field']
+		switch ($r2['type']) {
+			case 'ccdate': // {
+				if ($_REQUEST[$name]=='') {
+					$_REQUEST[$name]=date('Y-m');
+				}
+				$d=preg_replace(
+					'#.* ([a-zA-Z]*, [0-9]+)#',
+					"$1",
+					Core_dateM2H($_REQUEST[$name])
 				);
-			if (!$result->is_valid) {
-				$errors[]='Invalid captcha. Please try again.';
-			}
+			break; // }
+			case 'date': // {
+				if ($_REQUEST[$name]=='') {
+					$_REQUEST[$name]=date('Y-m-d');
+				}
+				$d=Core_dateM2H($_REQUEST[$name]);
+			break; // }
+			case 'file': // {
+				$d='if there are any files, they are attached to this email';
+			break; // }
+			case 'hidden': // {
+				$d=htmlspecialchars($r2['extra']);
+			break; // }
+			case 'html-block': 
+			case 'page-next': case 'page-previous': case 'page-break': // {
+				$d='';
+			break; // }
+			default: // { # input boxes, and anything which was not handled already
+				$d=nl2br(htmlspecialchars($_REQUEST[$name]));
+				// }
 		}
+		if (@$vars['forms_template']&&@$vars['forms_template']!='&nbsp;') {
+			@$vars['forms_template']=str_replace(
+				'{{$'.$cnt.'}}',
+				$d,
+				@$vars['forms_template']
+			);
+			@$vars['forms_template']=str_replace(
+				'{{$'.htmlspecialchars($r2['name']).'}}',
+				$d,
+				$vars['forms_template']
+			);
+		}
+		elseif ($d!='') {
+			$c.=$vals_field_start.htmlspecialchars($r2['name']);
+			$c.=$vals_field_middle.$d.$vals_field_end;
+		}
+		$cnt++;
 	}
-	// }
-	// { check the From field
-	$from_field=preg_replace('/[^a-zA-Z]/', '', @$vars['forms_replyto']);
-	$from=isset($_REQUEST[$from_field])?$_REQUEST[$from_field]:'';
-	if ($from == '') {
-		if (!(@$vars['forms_replyto'])) {
-			$errors[]='no replyto field has been set up by the admin!';
+	if (@$vars['forms_template']&&@$vars['forms_template']!='&nbsp;') {
+		$c.=$vars['forms_template'];
+	}
+	else {
+		$c.=$vals_2col_start;
+	}
+	return $c;
+}
+
+// }
+// { Form_saveValues
+
+/**
+  * save submitted form values
+  *
+  * @param integer $formid       ID of the form being saved
+	* @param array   &$form_fields array of fields
+  *
+  * @return void
+  */
+function Form_saveValues($formid, &$form_fields) {
+	dbQuery(
+		"insert into forms_saved (forms_id,date_created) values($formid,now())"
+	);
+	$id=dbLastInsertId();
+	foreach ($form_fields as $r) {
+		$name=preg_replace('/[^a-zA-Z0-9_]/', '', $r['name']);
+		if (isset($_REQUEST[$name])) {
+			$val=addslashes($_REQUEST[$name]);
 		}
 		else {
-			$errors[]='please fill in the "'.$vars['forms_replyto'].'" field.';
+			$val='';
 		}
+		$key=addslashes($r['name']);
+		dbQuery(
+			'insert into forms_saved_values (forms_saved_id,name,value)'
+			." values($id,'$key','$val')"
+		);
 	}
-	// }
-	return $errors;
 }
 
 // }
@@ -318,171 +389,70 @@ function Form_send($page, $vars, $form_fields) {
 }
 
 // }
-// { Form_saveValues
+// { Form_validate
 
 /**
-  * save submitted form values
+  * validate the inputs for a form
   *
-  * @param integer $formid       ID of the form being saved
-	* @param array   &$form_fields array of fields
-  *
-  * @return void
-  */
-function Form_saveValues($formid, &$form_fields) {
-	dbQuery(
-		"insert into forms_saved (forms_id,date_created) values($formid,now())"
-	);
-	$id=dbLastInsertId();
-	foreach ($form_fields as $r) {
-		$name=preg_replace('/[^a-zA-Z0-9_]/', '', $r['name']);
-		if (isset($_REQUEST[$name])) {
-			$val=addslashes($_REQUEST[$name]);
-		}
-		else {
-			$val='';
-		}
-		$key=addslashes($r['name']);
-		dbQuery(
-			'insert into forms_saved_values (forms_saved_id,name,value)'
-			." values($id,'$key','$val')"
-		);
-	}
-}
-
-// }
-// { Form_readonly
-
-/**
-  * get a readonly version of the form (for sending as email)
-  *
-  * @param array $page_id      page db row
   * @param array &$vars        page meta data
 	* @param array &$form_fields array of fields
   *
-  * @return HTML of the form
+  * @return an array of the errors
   */
-function Form_readonly($page_id, &$vars, &$form_fields) {
-	if (!isset($_SESSION['forms'])) {
-		$_SESSION['forms']=array();
-	}
-	$c='';
-	// { set up delimiters
-	$vals_wrapper_start='<table>';
-	$vals_field_start='<tr><th>';
-	$vals_field_middle='</th><td>';
-	$vals_field_end='</td></tr>';
-	$vals_2col_start='<tr><td colspan="2">';
-	$vals_2col_end='</td></tr>';
-	$vals_wrapper_end='</table>';
-	// }
-	if (@$vars['forms_template'] && @strpos($vars['forms_template'], '{{')===false) {
-		@$vars['forms_template']='';
-	} // }}
-	if (!@$vars['forms_template']||@$vars['forms_template']=='&nbsp;') {
-		$c.='<div>'.$vals_wrapper_start;
-	}
-	$required=array();
-	$cnt=0;
+function Form_validate(&$vars, &$form_fields) {
+	$errors=array();
 	foreach ($form_fields as $r2) {
 		$name=preg_replace('/[^a-zA-Z0-9_]/', '', $r2['name']);
-		$class='';
-		if ($r2['isrequired']) {
-			$required[]=$name.','.$r2['type'];
-			$class=' required';
-		}
-		if (isset($_REQUEST[$name])) {
-			$_SESSION['forms'][$name]=$_REQUEST[$name];
-		}
-		$val=@$_REQUEST[$name];
-		if (!$val && isset($_SESSION['userdata']) && $_SESSION['userdata']) {
-			switch($name){
-				case 'Email': case '__ezine_subscribe': // {
-					if (isset($_SESSION['userdata']['email'])) {
-						$val=$_SESSION['userdata']['email'];
-					}
-				break;
-				// }
-				case 'FirstName': // {
-					$val=preg_replace('/ .*/', '', $_SESSION['userdata']['name']);
-				break;
-				// }
-				case 'Street': // {
-					$val=$_SESSION['userdata']['address1'];
-				break;
-				// }
-				case 'Street2': // {
-					$val=$_SESSION['userdata']['address2'];
-				break;
-				// }
-				case 'Surname': // {
-					$val=preg_replace('/.* /', '', $_SESSION['userdata']['name']);
-				break;
-				// }
-				case 'Town': // {
-					$val=$_SESSION['userdata']['address3'];
-				break;
-				// }
+		if ($r2['type']=='email' && $r2['extra']) {
+			if (!isset($_SESSION['emails'])
+				|| $_SESSION['emails'][@$_REQUEST[$name]]!==true
+			) {
+				$errors[]='Email validation code was not correct.';
 			}
 		}
-		if (!isset($_REQUEST[$name])) {
-			$_REQUEST[$name]='';
+		if ($r2['isrequired'] && @$_REQUEST[$name]=='') {
+			$errors[]='You must fill in the <strong>' . $r2['name'] . '</strong> field.';
 		}
-		switch ($r2['type']) {
-			case 'ccdate': // {
-				if ($_REQUEST[$name]=='') {
-					$_REQUEST[$name]=date('Y-m');
-				}
-				$d=preg_replace(
-					'#.* ([a-zA-Z]*, [0-9]+)#',
-					"$1",
-					Core_dateM2H($_REQUEST[$name])
+		if ($r2['type']=='email'
+			&& !filter_var(@$_REQUEST[$name], FILTER_VALIDATE_EMAIL)
+		) {
+			$errors[]='You must provide a valid email in the <strong>'
+				.$r2['name'] . '</strong> field.';
+		}
+	}
+	// { check the captcha
+	if (@$vars['forms_captcha_required']) {
+		require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/recaptcha.php';
+		if (!isset($_REQUEST['recaptcha_challenge_field'])) {
+			$errors[]='You must fill in the captcha (image text).';
+		}
+		else {
+			$result 
+				= recaptcha_check_answer(
+					RECAPTCHA_PRIVATE,
+					$_SERVER['REMOTE_ADDR'],
+					$_REQUEST['recaptcha_challenge_field'],
+					$_REQUEST['recaptcha_response_field']
 				);
-			break; // }
-			case 'date': // {
-				if ($_REQUEST[$name]=='') {
-					$_REQUEST[$name]=date('Y-m-d');
-				}
-				$d=Core_dateM2H($_REQUEST[$name]);
-			break; // }
-			case 'file': // {
-				$d='if there are any files, they are attached to this email';
-			break; // }
-			case 'hidden': // {
-				$d=htmlspecialchars($r2['extra']);
-			break; // }
-			case 'html-block': 
-			case 'page-next': case 'page-previous': case 'page-break': // {
-				$d='';
-			break; // }
-			default: // { # input boxes, and anything which was not handled already
-				$d=nl2br(htmlspecialchars($_REQUEST[$name]));
-				// }
+			if (!$result->is_valid) {
+				$errors[]='Invalid captcha. Please try again.';
+			}
 		}
-		if (@$vars['forms_template']&&@$vars['forms_template']!='&nbsp;') {
-			@$vars['forms_template']=str_replace(
-				'{{$'.$cnt.'}}',
-				$d,
-				@$vars['forms_template']
-			);
-			@$vars['forms_template']=str_replace(
-				'{{$'.htmlspecialchars($r2['name']).'}}',
-				$d,
-				$vars['forms_template']
-			);
+	}
+	// }
+	// { check the From field
+	$from_field=preg_replace('/[^a-zA-Z]/', '', @$vars['forms_replyto']);
+	$from=isset($_REQUEST[$from_field])?$_REQUEST[$from_field]:'';
+	if ($from == '') {
+		if (!(@$vars['forms_replyto'])) {
+			$errors[]='no replyto field has been set up by the admin!';
 		}
-		elseif ($d!='') {
-			$c.=$vals_field_start.htmlspecialchars($r2['name']);
-			$c.=$vals_field_middle.$d.$vals_field_end;
+		else {
+			$errors[]='please fill in the "'.$vars['forms_replyto'].'" field.';
 		}
-		$cnt++;
 	}
-	if (@$vars['forms_template']&&@$vars['forms_template']!='&nbsp;') {
-		$c.=$vars['forms_template'];
-	}
-	else {
-		$c.=$vals_2col_start;
-	}
-	return $c;
+	// }
+	return $errors;
 }
 
 // }

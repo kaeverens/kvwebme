@@ -155,15 +155,7 @@ $(function(){
 		$.get('/a/f=getUserData',
 			function(user){
 				$.extend(userdata, user);		
-				var components=userdata.name.split(' ');
-				var firstname=components.shift();
-				var lastname=components.join(' ');
-				$('input[name="FirstName"],input[name="Billing_FirstName"]').val(firstname);
-				$('input[name="Surname"],input[name="Billing_Surname"]').val(lastname);
-				$('input[name="Phone"],input[name="Billing_Phone"]').val(userdata.phone);
-				$('input[name="Email"],input[name="Billing_Email"]').val(userdata.email);
-				populate_delivery(null,'');
-				if (1 || userdata.address.length) {
+				if (userdata.address && userdata.address.length) {
 					var addressButton='<a class="__ ui-button address-picker" '
 						+'lang-context="core" href="#">Choose Address</a>';
 					html+='<tr><td colspan="2">'+addressButton+'</td></tr>';
@@ -171,7 +163,22 @@ $(function(){
 					$('.address-picker').click(addressPicker);
 					window.__langInit && __langInit();
 				}
-				populate_delivery(null,'Billing_');
+				var $email=$('input[name="Email"],input[name="Billing_Email"]'),
+					$firstName=$('input[name="FirstName"],input[name="Billing_FirstName"]'),
+					$lastName=$('input[name="Surname"],input[name="Billing_Surname"]');
+				if ($email.val() || $firstName.val() || $lastName.val()) {
+					return;
+				}
+				var name=userdata.name||' ';
+				var components=name.split(' ');
+				var firstname=components.shift();
+				var lastname=components.join(' ');
+				$firstName.val(firstname);
+				$lastName.val(lastname);
+				$('input[name="Phone"],input[name="Billing_Phone"]').val(userdata.phone);
+				$email.val(userdata.email);
+				populate_delivery(null, '');
+				populate_delivery(null, 'Billing_');
 			},
 			'json'
 		);

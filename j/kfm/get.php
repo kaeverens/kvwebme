@@ -116,7 +116,11 @@ header('Content-Length: '.(string)(filesize($path)));
 if (isset($_GET['forcedownload'])) {
     header('Content-Type: force/download');
     header('Content-Disposition: attachment; filename="'.$name.'"');
-} else header('Content-Type: '.Mimetype::get($extension));
+}
+else {
+	require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/Core_getMimeType.php';
+	header('Content-Type: '.Core_getMimeType($extension));
+}
 header('Content-Transfer-Encoding: binary');
 // }
 if (!file_exists($path)) {
