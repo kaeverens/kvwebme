@@ -387,6 +387,10 @@ function Reports_visitorStats($el) {
 				line1.push([key, val]);
 			});
 			$('#reports-visitors-chart').empty();
+			if (line1.length<2) {
+				return $('#reports-visitors-chart')
+					.html('not enough data to create a chart');
+			}
 			var plot1=$.jqplot('reports-visitors-chart', [line1], {
 				'axes':{
 					'xaxis': {
