@@ -3,6 +3,7 @@ $(function(){
 		var $wrapper=$(this).closest('.products-product');
 		var $price=$wrapper.find('strong.os_price');
 		var $submit=$wrapper.find('.submit-button');
+		var vat=+$submit.attr('vat');
 		var price=+$submit.attr('price').replace(/[^0-9\.]/g, '');
 		var currency=$submit.attr('price').replace(/[0-9\.]/g, '');
 		$wrapper.find('select').each(function() {
@@ -12,6 +13,9 @@ $(function(){
 			}
 			price+= +(val.split('|')[1]);
 		});
+		if ($price.hasClass('vat')) {
+			price*=1+(vat/100);
+		}
 		var n=Math.round(price*100)/100;
 		if (!/\./.test(n)) {
 			n+='.';

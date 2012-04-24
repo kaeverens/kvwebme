@@ -181,3 +181,23 @@ function OnlineStore_adminRedeemVoucher() {
 }
 
 // }
+// { OnlineStore_adminUserGroupsGet
+
+/**
+	* get an array of user groups for customers
+	*
+	* @return array
+	*/
+function OnlineStore_adminUserGroupsGet() {
+	$gname=addslashes(dbOne(
+		'select value from page_vars'
+		.' where name="online_stores_customers_usergroup"',
+		'value'
+	));
+	return dbAll(
+		'select id,name from groups where name in ("'.$gname.'")'
+		.' order by name'
+	);
+}
+
+// }

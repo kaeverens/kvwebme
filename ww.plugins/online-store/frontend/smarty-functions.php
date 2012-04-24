@@ -21,6 +21,12 @@
   * @return string HTML of the price
   */
 function OnlineStore_productPriceFull2($params, $smarty) {
+	$params=array_merge(
+		array(
+			'vat'=>0
+		),
+		$params
+	);
 	$pid=$smarty->_tpl_vars['product']->id;
 	$product=Product::getInstance($pid);
 	if (!isset($product->vals['online-store'])) {
@@ -37,19 +43,18 @@ function OnlineStore_productPriceFull2($params, $smarty) {
 		);
 	}
 	$p=$product->vals['online-store'];
-	$vat=isset($params['vat']) && $params['vat']
-		?(100+$_SESSION['onlinestore_vat_percent'])/100
-		:1;
+	$vat=$params['vat']?(100+$_SESSION['onlinestore_vat_percent'])/100:1;
+	$vatclass=$params['vat']?' vat':'';
 	foreach ($p as $k=>$v) {
 		$p[$k]=(float)$v;
 	}
 	if ($p['_sale_price']) {
 		$tmp='<strike class="os_price">'.OnlineStore_numToPrice($product->getPrice()*$vat)
-			.'</strike> <strong class="os_price with-sale-price">'
+			.'</strike> <strong class="os_price with-sale-price'.$vatclass.'">'
 			.OnlineStore_numToPrice($product->getPrice('sale')*$vat).'</strong>';
 	}
 	else {
-		$tmp='<strong class="os_price">'
+		$tmp='<strong class="os_price'.$vatclass.'">'
 			.OnlineStore_numToPrice($p['_price']*$vat).'</strong>';
 	}
 	if ($p['_bulk_price'] && $p['_bulk_amount']) {

@@ -203,7 +203,7 @@ $c.='<tr><th>Add logged-in customers to this user group:</th>'
 	.'<td><input id="onlinestore-customersUsergroup"'
 	.' name="page_vars[online_stores_customers_usergroup]"'
 	.' value="'.htmlspecialchars($vars['online_stores_customers_usergroup']).'"'
-	.' /></td></tr>';
+	.' /></td><td><a href="javascript:onlinestoreCustomers();">List Customers</a></td></tr>';
 // }
 /* TODO - translation /CB */
 // { payment types

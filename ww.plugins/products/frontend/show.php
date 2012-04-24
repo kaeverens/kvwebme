@@ -414,9 +414,11 @@ function Products_getAddToCartButton($text, $baseprice=0, $saleprice=0) {
 		$price=$saleprice;
 	}
 	$price=$_SESSION['currency']['symbol'].$price;
-	return '<button class="submit-button __" lang-context="core" price="'
-		.$price.'" baseprice="'.$baseprice
-		.'" saleprice="'.$saleprice.'">'.$text.'</button>';
+	return '<button class="submit-button __" lang-context="core"'
+		.' price="'.$price.'" baseprice="'.$baseprice.'"'
+		.' saleprice="'.$saleprice.'"'
+		.' vat="'.$_SESSION['onlinestore_vat_percent'].'"'
+		.'>'.$text.'</button>';
 }
 
 /**

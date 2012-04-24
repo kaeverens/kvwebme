@@ -37,8 +37,9 @@ function Products_screenBrandsandProducers() {
 			});
 		var params={
 			"sAjaxSource": '/a/f=adminUsersGetDT',
-			"bProcessing": true,
-			"bServerSide": true,
+			"bProcessing":true,
+			"bJQueryUI":true,
+			"bServerSide":true,
 			"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
 				var id=+aData[0];
 				nRow.id='users-list-row-'+id;

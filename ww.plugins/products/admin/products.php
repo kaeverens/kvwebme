@@ -52,5 +52,4 @@ echo '<div><table id="products-list"><thead>'
 	.'<option value="3">Set Enabled</option>'
 	.'</select>';
 // }
-WW_addScript('/j/jquery.jeditable.mini.js');
 WW_addScript('products/admin/products.js');
