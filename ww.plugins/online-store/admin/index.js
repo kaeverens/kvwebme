@@ -173,6 +173,18 @@ $(function(){
 	$('#online-store-export-from').datepicker({
 		dateFormat: 'yy-mm-dd'
 	});
+	$.post('/a/f=adminUserGroupsGet', function(ret) {
+		var names=[];
+		for (var i=0;i<ret.length;++i) {
+			names.push(ret[i].name);
+		}
+		$('#onlinestore-customersUsergroup').each(function() {
+		console.log(this);
+		})
+		.autocomplete({
+			'source': names
+		});
+	});
 });
 $('#online_stores_fields_table input').live('click',os_update_fields_value);
 

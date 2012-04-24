@@ -48,31 +48,32 @@ class User{
 	}
 
 	// }
-	// { getInstance
+	// { addToGroup
 
 	/**
-		* get a user instance by ID
+		* add the user to a specified group
 		*
-		* @param int     $id      the user id
-		* @param array   $r       a pre-defined array to fill in the values
-		* @param boolean $enabled whether to only instantiate users that are enabled
+		* @param string $group the group name
 		*
-		* @return object the User instance
+		* @return null
 		*/
-	static function getInstance($id=0, $r=false, $enabled=true) {
-		if (!is_numeric($id)) {
-			return false;
+	function addToGroup($group) {
+		$gid=dbOne(
+			'select id from groups where name="'.addslashes($group).'"',
+			'id'
+		);
+		if (!$gid) {
+			dbQuery('insert into groups set name="'.addslashes($group).'"');
+			$gid=dbLastInsertId();
 		}
-		if (!array_key_exists($id, self::$instances)) {
-			new User($id, $r, $enabled);
-		}
-		if (!isset(self::$instances[$id])) {
-			return false;
-		}
-		return self::$instances[$id];
+		dbQuery(
+			'insert into users_groups set groups_id='.$gid
+			.',user_accounts_id='.$this->id
+		);
 	}
 
 	// }
+	// { get
 
 	/**
 		* retrieve a value
@@ -115,6 +116,10 @@ class User{
 		}
 		return @$this->vals[$name];
 	}
+
+	// }
+	// { getGroupHighest
+
 	/**
 		* return the highest meta value of a specified name
 		* for example, a number of different groups may have a "discount" value
@@ -140,6 +145,10 @@ class User{
 		}
 		return (float)$highest;
 	}
+
+	// }
+	// { getGroups
+
 	/**
 		* get list of groups this user is in
 		*
@@ -160,6 +169,35 @@ class User{
 		$this->groups=$byid;
 		return $this->groups;
 	}
+
+	// }
+	// { getInstance
+
+	/**
+		* get a user instance by ID
+		*
+		* @param int     $id      the user id
+		* @param array   $r       a pre-defined array to fill in the values
+		* @param boolean $enabled whether to only instantiate users that are enabled
+		*
+		* @return object the User instance
+		*/
+	static function getInstance($id=0, $r=false, $enabled=true) {
+		if (!is_numeric($id)) {
+			return false;
+		}
+		if (!array_key_exists($id, self::$instances)) {
+			new User($id, $r, $enabled);
+		}
+		if (!isset(self::$instances[$id])) {
+			return false;
+		}
+		return self::$instances[$id];
+	}
+
+	// }
+	// { isInGroup
+
 	/**
 		* is this user in a specified group
 		*
@@ -189,6 +227,10 @@ class User{
 		);
 		return $this->groupsByName[$group];
 	}
+
+	// }
+	// { set
+
 	/**
 		* set a variable, save it to the database
 		*
@@ -204,4 +246,6 @@ class User{
 		);
 		$this->{$name}=$value;
 	}
+
+	// }
 }

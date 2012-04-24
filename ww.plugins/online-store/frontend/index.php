@@ -148,6 +148,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		$_user=dbRow(
 			'select email,name,phone,address from user_accounts where id='.$uid
 		);
+		$user=User::getInstance($uid);
 		// { check if new address was entered
 		$addresses=(array)json_decode($_user['address'], true);
 		$newAddress=array(
@@ -196,6 +197,15 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 				'update user_accounts set name="'.addslashes($_user['name']).'"'
 				.', phone="'.addslashes($_user['phone']).'" where id='.$uid
 			);
+		}
+		// }
+		// { add to user group if it's set
+		if (isset($PAGEDATA->vars['online_stores_customers_usergroup'])) {
+			if (!$user->isInGroup(
+				$PAGEDATA->vars['online_stores_customers_usergroup']
+			)) {
+				$user->addToGroup($PAGEDATA->vars['online_stores_customers_usergroup']);
+			}
 		}
 		// }
 	}

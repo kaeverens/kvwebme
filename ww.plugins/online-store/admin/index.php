@@ -188,6 +188,16 @@ if ($vat=='') {
 $c.='<th>VAT</th><td><input name="page_vars[online_stores_vat_percent]"'
 	.' value="'.((float)$vat).'" /></td></tr>';
 // }
+// { usergroup to add users to
+if (!isset($vars['online_stores_customers_usergroup'])) {
+	$vars['online_stores_customers_usergroup']='customers';
+}
+$c.='<tr><th>Add logged-in customers to this user group:</th>'
+	.'<td><input id="onlinestore-customersUsergroup"'
+	.' name="page_vars[online_stores_customers_usergroup]"'
+	.' value="'.htmlspecialchars($vars['online_stores_customers_usergroup']).'"'
+	.' /></td></tr>';
+// }
 /* TODO - translation /CB */
 // { payment types
 $c.='<tr><th>Payment Types</th><td colspan="3"><div class="tabs">';

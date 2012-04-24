@@ -31,7 +31,7 @@ $(function(){
 			modal:true,
 			width:400,
 			close:function() {
-				$(this).destroy();
+				$table.remove();
 			}
 		});
 		$table.find('input').change(function() {
