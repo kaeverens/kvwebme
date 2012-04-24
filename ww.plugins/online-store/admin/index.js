@@ -1,9 +1,7 @@
 /* TODO - translation /CB */
-window.os_statuses=['Unpaid','Paid','Paid and Delivered'];
+window.os_statuses=['Unpaid', 'Paid', 'Paid and Delivered'];
 function os_invoice(id, print){
-	var w=$(window);
-	var wh=w.height(),ww=w.width();
-	var p=print?'&print=1':'';
+	var w=$(window), wh=w.height(), ww=w.width(), p=print?'&print=1':'';
 	$('<iframe id="externalSite" class="externalSite" src="/ww.plugins/online-store/admin/show-invoice.php?id='+id+p+'" />').dialog({
 		autoOpen: true,
 		width: ww-100,
@@ -24,8 +22,8 @@ function os_listItems(id){
 			return alert(ret.error);
 		}
 		/* TODO - translation /CB */
-		var html='<table><tr><th>Name</th><th>Amount</th></tr>';
-		for (var i=0;i<ret.length;++i) {
+		var html='<table><tr><th>Name</th><th>Amount</th></tr>', i=0;
+		for (;i<ret.length;++i) {
 			html+='<tr><td>'+ret[i].name+'</td><td>'+ret[i].amt+'</td></tr>';
 		}
 		html+='</table>';
@@ -37,9 +35,8 @@ function os_listItems(id){
 		});
 	});
 }
-function os_form_vals(id){
-	var w=$(window);
-	var wh=w.height(),ww=w.width();
+function onlinestoreFormValues(id){
+	var w=$(window), wh=w.height(), ww=w.width();
 	$('<iframe id="externalSite" class="externalSite" src="/ww.plugins/online-store/admin/show-details.php?id='+id+'" />').dialog({
 		autoOpen: true,
 		width: ww-100,
@@ -49,39 +46,23 @@ function os_form_vals(id){
 		autoResize: true
 	}).width(ww-130).height(wh-130);    
 }
-function os_status(id,current_status){
-	var options=[];
-	for(var i=0;i<window.os_statuses.length;++i){
-		var html='<option value="'+i+'"';
-		if(i==current_status){
-			html+=' selected="selected"';
-		}
-		html+='>'+window.os_statuses[i]+'</option>';
-		options.push(html);
-	}
-	var target=$('#os_status_'+id);
-	$('<select id="os_status_select_'+id+'">'+options.join('')+'</select>')
-		.change(os_status_change)
-		.insertAfter(target);
-	target.remove();
-}
-function os_update_fields(force){
+function onlinestoreFields(force){
+	var i;
 	if (!$('#online-stores-fields').length
 		|| (!force && !window.ckeditor_body.checkDirty())
 	) {
 		return;
 	}
-	var $wrapper=$('#online-stores-fields').empty();
-	var $form=$('<div id="online-stores-tester" style="display:none">'+window.ckeditor_body.getData()+'</div>').appendTo($wrapper);
-	for(var i in os_fields){
+	var $wrapper=$('#online-stores-fields').empty(),
+		$form=$('<div id="online-stores-tester" style="display:none">'+window.ckeditor_body.getData()+'</div>').appendTo($wrapper);
+	for(i in os_fields){
 		if(typeof(os_fields[i])!="object"){
 			continue;
 		}
 		os_fields[i].show=0;
 	}
-	var $inputs=$form.find('input,select,textarea');
-	var c=0,to_show=[];
-	for(var i=0;i<$inputs.length;++i){
+	var $inputs=$form.find('input, select, textarea'), c=0, to_show=[];
+	for(i=0;i<$inputs.length;++i){
 		if(!os_fields[$inputs[i].name]){
 			os_fields[$inputs[i].name]={
 				required:$($inputs[i]).attr('required')
@@ -97,18 +78,19 @@ function os_update_fields(force){
 		$wrapper.append('<em>No fields defined. Please create a form in the Form tab.</em>');
 	}
 	else{
+		/* TODO - translation /CB */
 		var table='<table id="online_stores_fields_table" style="width:100%">'
-			/* TODO - translation /CB */
-			+'<tr><th>Name</th><th>Required</th></tr>';
-		for(var i=0;i<c;++i){
+			+'<tr><th>Name</th><th>Required</th></tr>',
+			$rows, $row, $cells;
+		for(i=0;i<c;++i){
 			table+='<tr><td></td><td></td><td></td></tr>';
 		}
 		$wrapper.append(table+'</table>');
-		var $rows=$wrapper.find('tr');
-		for(var i=0;i<c;++i){
-			var $row=$($rows[i+1]);
-			$row.data('os_name',to_show[i]);
-			var $cells=$row.find('td');
+		$rows=$wrapper.find('tr');
+		for(i=0;i<c;++i){
+			$row=$($rows[i+1]);
+			$row.data('os_name', to_show[i]);
+			$cells=$row.find('td');
 			$($cells[0]).text(to_show[i]);
 			$(
 				'<input class="is-required" type="checkbox"'
@@ -119,25 +101,233 @@ function os_update_fields(force){
 	}
 	$('<input id="online_stores_fields_input" type="hidden" name="page_vars[online_stores_fields]" />').val(Json.toString(os_fields)).appendTo($wrapper);
 }
-function os_update_fields_value(){
+function onlinestoreFieldsUpdate(){
 	var name=$(this).closest('tr').data('os_name');
 	if(this.className=='is-required'){
 		os_fields[name].required=this.checked?1:0;
 	}
 	$('#online_stores_fields_input').val(Json.toString(os_fields));
 }
-function os_status_change(ev){
-	var el=ev.target;
-	var id=el.id.replace(/os_status_select_/,''),val=+$(el).val();
-	$.post('/a/p=online-store/f=adminChangeOrderStatus/id='+id+'/status='+val, function(){
-		$('#os_status_select_'+id).replaceWith(
-			$('<a id="os_status_'+id+'" href="javascript:;">'+window.os_statuses[val]+'</a>')
-				.click(function(){
-					os_status(id,val);
-				})
-		);
-	});
+function onlinestoreStatus(id, current_status){
+	var options=[];
+	for(var i=0;i<window.os_statuses.length;++i){
+		var html='<option value="'+i+'"';
+		if(i==current_status){
+			html+=' selected="selected"';
+		}
+		html+='>'+window.os_statuses[i]+'</option>';
+		options.push(html);
+	}
+	var target=$('#os_status_'+id);
+	$('<select id="os_status_select_'+id+'">'+options.join('')+'</select>')
+		.change(function(){
+			var id=this.id.replace(/os_status_select_/, ''), val=+$(this).val();
+			$.post('/a/p=online-store/f=adminChangeOrderStatus/id='+id+'/status='+val, function(){
+				$('#os_status_select_'+id).replaceWith(
+					$('<a id="os_status_'+id+'" href="javascript:;">'+window.os_statuses[val]+'</a>')
+						.click(function(){
+							onlinestoreStatus(id, val);
+						})
+				);
+			});
+		})
+		.insertAfter(target);
+	target.remove();
 }
+function pandp_add_top(i, data){
+	/* TODO - translation /CB */
+	var text='hide';
+	var name=$('<input id="pandp_name_'+i+'" />')
+		.val(data.name || '')
+	var constraint=$('<div class="pand-constraint" id="pandp_constraint_wrapper_'+i+'"></div>');
+	if(!pandp_open[i]){
+		/* TODO - translation /CB */
+		text='show';
+		constraint.css('display', 'none');
+	}
+	/* TODO - translation /CB */
+	var users_only=$('<input type="checkbox" id="pandp_users_only_'+i+'"'+(data.users_only?' checked="checked"':'')+' title="Tick if this postage method is only available to logged-in users" />');
+	var opener=$('<a id="pandp_opener_'+i+'" href="javascript:pandp_showhide('+i+', '+(pandp_open[i]?0:1)+')">'+text+'</a>');
+	/* TODO - translation /CB */
+	var row=$('<div class="pandp_row">Postage Name: </div>')
+		.append(name)
+		.append(users_only)
+		.append(opener)
+		.append(constraint);
+	$('#postage_wrapper').append(row);
+	pandp_show_constraints(i, data.constraints || []);
+}
+function pandp_showhide(i, v){
+	pandp_open[i]=v;
+	$('#pandp_constraint_wrapper_'+i).css('display', v?'block':'none');
+	$('#pandp_opener_'+i)
+	/* TODO - translation /CB */
+		.replaceWith('<a id="pandp_opener_'+i+'" href="javascript:pandp_showhide('+i+', '+(pandp_open[i]?0:1)+')">'+(pandp_open[i]?'hide':'show')+'</a>');
+}
+function pandp_rebuild_constraints(prefix){
+	var constraints=[], el;
+	for(var i=0;el=document.getElementById('pandp_constraint_'+prefix+i);++i){
+		var constraint={};
+		constraint.type=el.value;
+		switch(constraint.type){
+			case 'set_value': case 'total_less_than_or_equal_to':
+			case 'total_more_than_or_equal_to':
+			case 'numitems_less_than_or_equal_to': case 'numitems_more_than_or_equal_to':
+			case 'total_weight_less_than_or_equal_to':
+			case 'total_weight_more_than_or_equal_to':
+			case 'is_in_country': // {
+				constraint.value=document.getElementById('pandp_constraint_value_'+prefix+i).value;
+			break; // }
+		}
+		if (constraint.type!='set_value') {
+			constraint.constraints=pandp_rebuild_constraints(prefix+i+'_');
+		}
+		constraints.push(constraint);
+	}
+	return constraints;
+}
+function pandp_rebuild_value_from_top(){
+	pandp=[];
+	for(var i=0;el=document.getElementById('pandp_constraint_wrapper_'+i);++i){
+		var constraint={};
+		constraint.name=document.getElementById('pandp_name_'+i).value;
+		if (!constraint.name) {
+			continue;
+		}
+		constraint.constraints=pandp_rebuild_constraints(i+'_');
+		constraint.users_only=$('#pandp_users_only_'+i).is(':checked');
+		pandp.push(constraint);
+	}
+	$('#postage').val(Json.toString(pandp));
+	pandp_rebuild_widget();
+}
+function pandp_rebuild_widget(){
+	$('#postage_wrapper').empty();
+	$('.selectWrapper').remove();
+	var has_blank=0;
+	for(var i=0;i<pandp.length;++i){
+		pandp_add_top(i, pandp[i]);
+		if (pandp[i].name=='') {
+			has_blank=1;
+		}
+	
+	}
+	if(!has_blank)pandp_add_top(i, {});
+	/* TODO - translation /CB */
+	pandp_showhide(i, 'show');
+}
+function pandp_show_constraints(i, constraints_old){
+	if (constraints_old.length==0
+		|| constraints_old[constraints_old.length-1].type!='set_value'
+	) {
+		constraints_old.push({
+			type:'set_value',
+			value:'0'
+		});
+	}
+	var constraints=[], j=0;
+	for (;j<constraints_old.length;j++) {
+		constraints.push(constraints_old[j]);
+		if (constraints_old[j].type=='set_value') {
+			j=constraints_old.length;
+		}
+	}
+	/* TODO - translation /CB */
+	var options=[
+		['set_value', 'set postage to'],
+		['total_less_than_or_equal_to', 'if total <='],
+		['total_more_than_or_equal_to', 'if total >='],
+		['total_weight_less_than_or_equal_to', 'if weight <='],
+		['total_weight_more_than_or_equal_to', 'if weight >='],
+		['numitems_less_than_or_equal_to', 'if num items <='],
+		['numitems_more_than_or_equal_to', 'if num items >='],
+		['is_in_country', 'is in country']
+	];
+	var wrapper=$('#pandp_constraint_wrapper_'+i);
+	for(j=0;j<constraints.length;++j){
+		var prefix=j?'else ' : '';
+		var constraint=constraints[j];
+		var opts=[], tmp;
+		for(k=0;k<options.length;++k){
+			tmp='<option value="'+options[k][0]+'"';
+			if (options[k][0]==constraint.type) {
+				tmp+=' selected="selected"';
+			}
+			tmp+='>'+prefix+options[k][1]+'</option>';
+			opts.push(tmp);
+		}
+		wrapper.append(
+			$('<select id="pandp_constraint_'+i+'_'+j+'">'+opts.join('')+'</select>')
+				.change(pandp_rebuild_value_from_top)
+		);
+		switch(constraint.type){
+			case 'set_value': // {
+				if (!constraint.value) {
+					constraint.value=0;
+				}
+				$('<input id="pandp_constraint_value_'+i+'_'+j+'">')
+					.val(constraint.value)
+					.appendTo(wrapper);
+			break; // }
+			case 'total_less_than_or_equal_to':
+			case 'total_more_than_or_equal_to':
+			case 'numitems_less_than_or_equal_to':
+			case 'numitems_more_than_or_equal_to':
+			case 'total_weight_less_than_or_equal_to':
+			case 'total_weight_more_than_or_equal_to': // {
+				if (!constraint.value) {
+					constraint.value=0;
+				}
+				$('<input id="pandp_constraint_value_'+i+'_'+j+'" class="small">')
+					.val(constraint.value)
+					.appendTo(wrapper);
+			break; // }
+			case 'is_in_country': // {
+				var scountries=constraint.value?constraint.value.split('|'):[];
+				$('<input id="pandp_constraint_value_'+i+'_'+j+'" type="hidden"/>')
+					.val(constraint.value)
+					.appendTo(wrapper);
+				var $select=$(
+					'<select multiple="multiple" name="pandp_constraint_select_'
+					+i+'_'+j+'"></select>'
+				);
+				var $countries=$('#online-store-countries input:checked');
+				$countries.each(function() {
+					$select.append(
+						'<option>'+$(this).attr('name')
+						.replace(/.*\[([^\]]*)\]$/, '$1')
+						+'</option>'
+					);
+				});
+				$select
+					.appendTo(wrapper)
+					.val(scountries)
+					.inlinemultiselect({
+						"endSeparator":", ",
+						"onClose":function(opts){
+							var id=opts[0].name.replace(/\[.*/, ''), selected=[];
+							$('#'+id+' input:checked').each(function(i, opt){
+						    selected.push($(opt).val());
+							});
+							$('#'+id.replace('select', 'value')).val(selected.join('|'));
+							pandp_rebuild_value_from_top();
+						}
+					});
+			break; // }
+		}
+		wrapper.append(
+			'<div class="pand-constraint" id="pandp_constraint_wrapper_'
+			+i+'_'+j+'"></div>'
+		);
+		if (constraint.type!='set_value') {
+			pandp_show_constraints(i+'_'+j, constraint.constraints || []);
+		}
+	}
+}
+$('#online_stores_fields_table input').live('click', onlinestoreFieldsUpdate);
+
+pandp=[];
+pandp_open=[];
 $(function(){
 	$('.tabs').tabs();
 	$('#online-store-status').change(function(ev){
@@ -145,10 +335,10 @@ $(function(){
 			+window.page_menu_currentpage+'&online-store-status='
 			+$(ev.target).val();
 	});
-	os_update_fields();
-	$('.ui-tabs-nav').live('mousedown',os_update_fields);
-	$('form').bind('submit',os_update_fields);
-	$("#online_store_redirect_to,#online_store_quickpay_redirect_to,#online_store_quickpay_redirect_failed")
+	onlinestoreFields();
+	$('.ui-tabs-nav').live('mousedown', onlinestoreFields);
+	$('form').bind('submit', onlinestoreFields);
+	$("#online_store_redirect_to, #online_store_quickpay_redirect_to, #online_store_quickpay_redirect_failed")
 		.remoteselectoptions({url:"/a/f=adminPageParentsList"});
 	var $checkout_type=$('select[name="page_vars[onlinestore_viewtype]"]');
 	$checkout_type.change(function() {
@@ -178,211 +368,40 @@ $(function(){
 		for (var i=0;i<ret.length;++i) {
 			names.push(ret[i].name);
 		}
-		$('#onlinestore-customersUsergroup').each(function() {
-		console.log(this);
-		})
-		.autocomplete({
+		$('#onlinestore-customersUsergroup').autocomplete({
 			'source': names
 		});
 	});
-});
-$('#online_stores_fields_table input').live('click',os_update_fields_value);
-
-pandp=[];
-pandp_open=[];
-function pandp_add_top(i,data){
-	/* TODO - translation /CB */
-	var text='hide';
-	var name=$('<input id="pandp_name_'+i+'" />')
-		.val(data.name || '')
-	var constraint=$('<div class="pand-constraint" id="pandp_constraint_wrapper_'+i+'"></div>');
-	if(!pandp_open[i]){
-		/* TODO - translation /CB */
-		text='show';
-		constraint.css('display','none');
-	}
-	/* TODO - translation /CB */
-	var users_only=$('<input type="checkbox" id="pandp_users_only_'+i+'"'+(data.users_only?' checked="checked"':'')+' title="Tick if this postage method is only available to logged-in users" />');
-	var opener=$('<a id="pandp_opener_'+i+'" href="javascript:pandp_showhide('+i+','+(pandp_open[i]?0:1)+')">'+text+'</a>');
-	/* TODO - translation /CB */
-	var row=$('<div class="pandp_row">Postage Name: </div>')
-		.append(name)
-		.append(users_only)
-		.append(opener)
-		.append(constraint);
-	$('#postage_wrapper').append(row);
-	pandp_show_constraints(i, data.constraints || []);
-}
-function pandp_showhide(i,v){
-	pandp_open[i]=v;
-	$('#pandp_constraint_wrapper_'+i).css('display',v?'block':'none');
-	$('#pandp_opener_'+i)
-	/* TODO - translation /CB */
-		.replaceWith('<a id="pandp_opener_'+i+'" href="javascript:pandp_showhide('+i+','+(pandp_open[i]?0:1)+')">'+(pandp_open[i]?'hide':'show')+'</a>');
-}
-function pandp_rebuild_constraints(prefix){
-	var cstrs=[],el;
-	for(var i=0;el=document.getElementById('pandp_constraint_'+prefix+i);++i){
-		var cstr={};
-		cstr.type=el.value;
-		switch(cstr.type){
-			case 'set_value': case 'total_less_than_or_equal_to':
-			case 'total_more_than_or_equal_to':
-			case 'numitems_less_than_or_equal_to': case 'numitems_more_than_or_equal_to':
-			case 'total_weight_less_than_or_equal_to':
-			case 'total_weight_more_than_or_equal_to':
-			case 'is_in_country': // {
-				cstr.value=document.getElementById('pandp_constraint_value_'+prefix+i).value;
-			break; // }
-		}
-		if (cstr.type!='set_value') {
-			cstr.constraints=pandp_rebuild_constraints(prefix+i+'_');
-		}
-		cstrs.push(cstr);
-	}
-	return cstrs;
-}
-function pandp_rebuild_value_from_top(){
-	pandp=[];
-	for(var i=0;el=document.getElementById('pandp_constraint_wrapper_'+i);++i){
-		var cstr={};
-		cstr.name=document.getElementById('pandp_name_'+i).value;
-		if (!cstr.name) {
-			continue;
-		}
-		cstr.constraints=pandp_rebuild_constraints(i+'_');
-		cstr.users_only=$('#pandp_users_only_'+i).is(':checked');
-		pandp.push(cstr);
-	}
-	$('#postage').val(Json.toString(pandp));
-	pandp_rebuild_widget();
-}
-function pandp_rebuild_widget(){
-	$('#postage_wrapper').empty();
-	$('.selectWrapper').remove();
-	var has_blank=0;
-	for(var i=0;i<pandp.length;++i){
-		pandp_add_top(i,pandp[i]);
-		if (pandp[i].name=='') {
-			has_blank=1;
-		}
-	
-	}
-	if(!has_blank)pandp_add_top(i,{});
-	/* TODO - translation /CB */
-	pandp_showhide(i,'show');
-}
-function pandp_show_constraints(i, cstrs_old){
-	if (cstrs_old.length==0 || cstrs_old[cstrs_old.length-1].type!='set_value') {
-		cstrs_old.push({
-			type:'set_value',
-			value:'0'
-		});
-	}
-	var cstrs=[];
-	for (var j=0;j<cstrs_old.length;j++) {
-		cstrs.push(cstrs_old[j]);
-		if (cstrs_old[j].type=='set_value') {
-			j=cstrs_old.length;
-		}
-	}
-	/* TODO - translation /CB */
-	var options=[
-		['set_value','set postage to'],
-		['total_less_than_or_equal_to','if total <='],
-		['total_more_than_or_equal_to','if total >='],
-		['total_weight_less_than_or_equal_to','if weight <='],
-		['total_weight_more_than_or_equal_to','if weight >='],
-		['numitems_less_than_or_equal_to','if num items <='],
-		['numitems_more_than_or_equal_to','if num items >='],
-		['is_in_country', 'is in country']
-	];
-	var wrapper=$('#pandp_constraint_wrapper_'+i);
-	for(var j=0;j<cstrs.length;++j){
-		var prefix=j?'else ' : '';
-		var cstr=cstrs[j];
-		var opts=[],tmp;
-		for(k=0;k<options.length;++k){
-			tmp='<option value="'+options[k][0]+'"';
-			if (options[k][0]==cstr.type) {
-				tmp+=' selected="selected"';
+	$('#onlinestore-orders-table').dataTable({
+		'bJQueryUI':true
+	});
+	$('#onlinestore-orders-action').change(function() {
+		var val=+$(this).val();
+		var $inps=$('#onlinestore-orders-table tbody input[type="checkbox"]');
+		var ids=[];
+		$inps.each(function() {
+			if (!$(this).attr('checked')) {
+				return;
 			}
-			tmp+='>'+prefix+options[k][1]+'</option>';
-			opts.push(tmp);
+			var id=+$(this).closest('tr').data('id');
+			ids.push(id);
+		});
+		if (val<4) {
+			for (var j=0;j<ids.length;++j) {
+				var id=ids[j];
+				onlinestoreStatus(id, val-1);
+				$('#os_status_select_'+id).change();
+			}
 		}
-		var selectbox=$(
-			'<select id="pandp_constraint_'+i+'_'+j+'">'+opts.join('')+'</select>'
-		)
-			.change(pandp_rebuild_value_from_top);
-		wrapper.append(selectbox);
-		switch(cstr.type){
-			case 'set_value': // {
-				if (!cstr.value) {
-					cstr.value=0;
-				}
-				$('<input id="pandp_constraint_value_'+i+'_'+j+'">')
-					.val(cstr.value)
-					.appendTo(wrapper);
-				break;
-			// }
-			case 'total_less_than_or_equal_to':
-			case 'total_more_than_or_equal_to':
-			case 'numitems_less_than_or_equal_to':
-			case 'numitems_more_than_or_equal_to':
-			case 'total_weight_less_than_or_equal_to':
-			case 'total_weight_more_than_or_equal_to': // {
-				if (!cstr.value) {
-					cstr.value=0;
-				}
-				$('<input id="pandp_constraint_value_'+i+'_'+j+'" class="small">')
-					.val(cstr.value)
-					.appendTo(wrapper);
-			break; // }
-			case 'is_in_country': // {
-				var scountries=cstr.value?cstr.value.split('|'):[];
-				$('<input id="pandp_constraint_value_'+i+'_'+j+'" type="hidden"/>')
-					.val(cstr.value)
-					.appendTo(wrapper);
-				var $select=$(
-					'<select multiple="multiple" name="pandp_constraint_select_'
-					+i+'_'+j+'"></select>'
-				);
-				var $countries=$('#online-store-countries input:checked');
-				$countries.each(function() {
-					$select.append(
-						'<option>'+$(this).attr('name')
-						.replace(/.*\[([^\]]*)\]$/, '$1')
-						+'</option>'
-					);
-				});
-				$select
-					.appendTo(wrapper)
-					.val(scountries)
-					.inlinemultiselect({
-						"endSeparator":", ",
-						"onClose":function(opts){
-							var id=opts[0].name.replace(/\[.*/, '');
-							var selected=[];
-							$('#'+id+' input:checked').each(function(i, opt){
-						    selected.push($(opt).val());
-							});
-							$('#'+id.replace('select', 'value')).val(selected.join('|'));
-							pandp_rebuild_value_from_top();
-						}
-					});
-			break; // }
-		}
-		wrapper.append(
-			'<div class="pand-constraint" id="pandp_constraint_wrapper_'
-			+i+'_'+j+'"></div>'
+		$(this).val(0);
+	});
+	$('#onlinestore-orders-selectall').click(function() {
+		$('#onlinestore-orders-table input[type=checkbox]').attr(
+			'checked',
+			$(this).attr('checked')?true:false
 		);
-		if (cstr.type!='set_value') {
-			pandp_show_constraints(i+'_'+j, cstr.constraints || []);
-		}
-	}
-}
-$(function(){
-	var p=document.getElementById('postage').value;
+	});
+	var p=$('#postage').val();
 	if (p) {
 		pandp=eval('{'+p+'}');
 	}
@@ -392,25 +411,28 @@ $(function(){
 	pandp_rebuild_widget();
 	$('#postage_wrapper').live('change', pandp_rebuild_value_from_top);
 	$('#action').mousedown(pandp_rebuild_value_from_top);
-	$('#online-store-authorised th input').change(function(){
-		$('#online-store-authorised td input')
+	var idOSAuthorised='#online-store-authorised ',
+		idOSCountries='#online-store-countries ';
+	$(idOSAuthorised+'th input').change(function(){
+		$(idOSAuthorised+'td input')
 			.attr('checked', $(this).is(':checked'));
 	});
-	$('#online-store-authorised input[type="button"]').click(function() {
+	$(idOSAuthorised+'input[type="button"]').click(function() {
 		var txns=[];
-		$('#online-store-authorised td input:checked').each(function() {
+		$(idOSAuthorised+'td input:checked').each(function() {
 			txns.push($(this).attr('id').replace(/auth/, ''));
 		});
 		if (!txns.length) {
 			return alert('no transactions selected');
 		}
 		$.post('/a/p=online-store/f=adminCapture/ids='+txns, function(ret) {
-			if (ret.ok.length) {
-				for (var i=0;i<ret.ok.length;++i) {
-					$('#capture'+ret.ok[i]).remove();
+			var i=0, ok=ret.ok;
+			if (ok.length) {
+				for (;i<ok.length;++i) {
+					$('#capture'+ok[i]).remove();
 				}
 				/* TODO - translation /CB */
-				alert(ret.ok.length+' transactions successfully captured');
+				alert(ok.length+' transactions successfully captured');
 			}
 			if (ret.errors.length) {
 				alert(ret.errors.join("\n\n"));
@@ -418,15 +440,13 @@ $(function(){
 			document.location="/ww.admin/pages/form.php?id="+$('input[name=id]').val();
 		});
 	});
-	$('#online-store-countries a.all').click(function() {
-		$(this).siblings('table').find('input').attr('checked', true);
-		return false;
-	});
-	$('#online-store-countries a.none').click(function() {
-		$(this).siblings('table').find('input').attr('checked', false);
-		return false;
-	});
-	if (!$('#online-store-countries input:checked').length) {
-		$('#online-store-countries input').attr('checked', true);
+	$(idOSCountries+'a.all,'+idOSCountries+'a.none')
+		.click(function() {
+			$(this).siblings('table').find('input')
+				.attr('checked', $(this).is('.all'));
+			return false;
+		});
+	if (!$(idOSCountries+'input:checked').length) {
+		$(idOSCountries+'input').attr('checked', true);
 	}
 });

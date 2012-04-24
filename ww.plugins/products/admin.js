@@ -525,10 +525,11 @@ function Products_screenTypes() {
 		}
 	});
 	var params={
-		"sAjaxSource": '/a/p=products/f=typesGet',
-		"bProcessing": true,
-		"bServerSide": true,
-		"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+		"sAjaxSource":'/a/p=products/f=typesGet',
+		"bProcessing":true,
+		"bJQueryUI":true,
+		"bServerSide":true,
+		"fnRowCallback":function( nRow, aData, iDisplayIndex ) {
 			var id=aData[1];
 			nRow.id='product-types-list-row'+id;
 			$('td:nth-child(2)', nRow)

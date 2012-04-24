@@ -261,7 +261,9 @@ $(function(){
 	$('.datatable').each(function(){
 		var $this=$(this);
 		var id=$this.attr('id')||false;
-		var params={};
+		var params={
+			'bJQueryUI':true
+		};
 		if ($this.hasClass('desc')) {
 			params["aaSorting"]=[[0,'desc']];
 		}

@@ -81,7 +81,8 @@ $rs=dbAll(
 if (is_array($rs) && count($rs)) {
 	$c.='<div style="margin:0 10%">'
 	/* TODO - translation /CB */
-		.'<table width="100%" class="datatable desc"><thead><tr>'
+		.'<table id="onlinestore-orders-table" width="100%" class="desc"><thead><tr>'
+		.'<th><input type="checkbox" id="onlinestore-orders-selectall"/></th>'
 		.'<th>ID</th>'
 		.'<th>Date</th>'
 		.'<th>Amount</th>'
@@ -91,7 +92,8 @@ if (is_array($rs) && count($rs)) {
 		.'<th>Status</th>'
 		.'</tr></thead><tbody>';
 	foreach ($rs as $r) {
-		$c.='<tr>'
+		$c.='<tr data-id="'.$r['id'].'">'
+			.'<td><input class="mass-actions" type="checkbox"/></td>'
 			.'<td>'.$r['id'].'</td>'
 			.'<td><span style="display:none">'.$r['date_created'].'</span>'
 			.Core_dateM2H($r['date_created']).'</td><td>'
@@ -102,9 +104,9 @@ if (is_array($rs) && count($rs)) {
 			.'<td><a href="javascript:os_invoice('.$r['id'].')">Invoice</a>'
 			.' (<a href="javascript:os_invoice('.$r['id'].',true)">Print</a>)</td>'
 			.'<td>'
-			.'<a href="javascript:os_form_vals('.$r['id'].')">Checkout Form</a>'
+			.'<a href="javascript:onlinestoreFormValues('.$r['id'].')">Checkout Form</a>'
 			.'</td>'
-			.'<td><a href="javascript:os_status('.$r['id'].','
+			.'<td><a href="javascript:onlinestoreStatus('.$r['id'].','
 			.(int)$r['status'].')" '
 			.'id="os_status_'.$r['id'].'">'
 			.htmlspecialchars($statii[(int)$r['status']]).'</a>';
@@ -113,7 +115,12 @@ if (is_array($rs) && count($rs)) {
 		}
 		$c.='</td></tr>';
 	}
-	$c.='</tbody></table></div>';
+	$c.='</tbody></table></div>'
+		.'<select id="onlinestore-orders-action"><option value="0"> -- </option>'
+		.'<option value="1">Mark as Unpaid</option>'
+		.'<option value="2">Mark as Paid or Authorised</option>'
+		.'<option value="3">Mark as Delivered</option>'
+		.'</select>';
 }
 /* TODO - translation /CB */
 else {

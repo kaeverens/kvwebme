@@ -134,7 +134,7 @@ div.help{width:11px;height:11px;background:url(icon-help-11.png);cursor:pointer;
 	text-shadow:1px 1px 1px #000;
 }
 #sidebar1 {
-	width:120px;
+	width:13%;
 	float:left;
 }
 #sidebar1 a{
@@ -155,7 +155,8 @@ div.fg-menu-container ul li a:hover,#sidebar1 a:hover,#menu-top ul li a:hover{
 	padding:0;
 }
 #content{
-	margin-left:130px;
+	float:right;
+	width:86%;
 }
 #content>*:first-child{
 	margin-top:0;
