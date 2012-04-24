@@ -1121,20 +1121,20 @@ function Products_adminTypeEdit() {
 	$data_fields=json_encode($d['data_fields']);
 	$sql='update products_types set name="'.addslashes($d['name'])
 		.'",multiview_template="'
-		addslashes(Core_sanitiseHtmlEssential($d['multiview_template']))
+		.addslashes(Core_sanitiseHtmlEssential($d['multiview_template']))
 		.'",singleview_template="'
-		addslashes(Core_sanitiseHtmlEssential($d['singleview_template']))
+		.addslashes(Core_sanitiseHtmlEssential($d['singleview_template']))
 		.'",data_fields="'addslashes($data_fields).'",'
 		.'is_for_sale='.(int)$d['is_for_sale'].','
 		.'is_voucher='.(int)$d['is_voucher'].','
 		.'stock_control='.(int)$d['stock_control'].','
 		.'default_category='.(int)$d['default_category'].','
 		.'voucher_template="'
-		addslashes(Core_sanitiseHtmlEssential($d['voucher_template'])).'",'
+		.addslashes(Core_sanitiseHtmlEssential($d['voucher_template'])).'",'
 		.'prices_based_on_usergroup="'
-		addslashes($d['prices_based_on_usergroup'])
+		.addslashes($d['prices_based_on_usergroup'])
 		.'",multiview_template_header="'
-		addslashes(Core_sanitiseHtmlEssential($d['multiview_template_header']))
+		.addslashes(Core_sanitiseHtmlEssential($d['multiview_template_header']))
 		.'",multiview_template_footer="'
 		.addslashes(Core_sanitiseHtmlEssential($d['multiview_template_footer']))
 		.'" where id='.(int)$d['id'];
