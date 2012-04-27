@@ -108,6 +108,9 @@ function UserAuthentication_pageTest($pagedata) {
 	*/
 function UserAuthentication_redirect(){	
 	global $PAGEDATA;
+	if (isset($_SESSION['userdata']['id'])) {
+		return;
+	}
 	if (isset($PAGEDATA->vars['non_logged_in_redirect_to'])
 		&& $PAGEDATA->vars['non_logged_in_redirect_to']
 	) {
