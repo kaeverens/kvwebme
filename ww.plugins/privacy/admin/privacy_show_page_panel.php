@@ -10,7 +10,6 @@
 	* @license  GPL 2.0
 	* @link     http://kvsites.ie/
 	*/
-
 echo '<h2>Privacy</h2>';
 
 echo '<table id="privacy-options">';
@@ -52,5 +51,28 @@ echo '<tr><th>Allow non-logged-in readers to view the page if they enter '
 	.htmlspecialchars($page_vars['privacy_password'])
 	.'" /></td></tr>';
 // }
+// { redirect to
+echo 	'<tr><th>If a visitor is not logged in, redirect them to:</th>'
+	.'<td><select id="page_vars_non_logged_in_redirect"'
+	.' name="page_vars[non_logged_in_redirect_to]">';
+if (@$page_vars['non_logged_in_redirect_to']) {
+	$redirect=Page::getInstance($page_vars['non_logged_in_redirect_to']);
+	if ($redirect->id) {
+		echo '<option value="'.$redirect->id.'">'.htmlspecialchars($redirect->name)
+			.'</option>';
+	}
+}
+echo '</td></tr>';
+WW_addInlineScript(
+	'$(function(){'
+	.'$("#page_vars_non_logged_in_redirect").remoteselectoptions({'
+	.'url:"/a/f=adminPageParentsList", other_GET_params:'.$page['id']
+	.'})'	
+	.'})'
+);
+// }
+
 echo '</table>';
+// }
 WW_addScript('privacy/admin/privacy_show_page_panel.js');
+

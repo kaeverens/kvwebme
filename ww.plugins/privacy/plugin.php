@@ -30,21 +30,13 @@ $plugin=array(
 		'page_display_test' => 'UserAuthentication_pageTest',
 		'widget' => 'UserAuthentication_showWidget'
 	),
+	'triggers' => array(
+		'page-object-loaded'	=>	'UserAuthentication_redirect'
+	),
 	'version'=>0
 );
 // }
-
-/**
-	* show registration or login page
-	*
-	* @param object $PAGEDATA the page object
-	*
-	* @return HTML of the page
-	*/
-function UserAuthentication_front($PAGEDATA) {
-	require SCRIPTBASE.'ww.plugins/privacy/frontend/page_type.php';
-	return $PAGEDATA->render().$html;
-}
+// { UserAuthentication_admin
 
 /**
 	* show the privacy admin
@@ -59,6 +51,24 @@ function UserAuthentication_admin($page, $page_vars) {
 	return $html;
 }
 
+// }
+// { UserAuthentication_front
+
+/**
+	* show registration or login page
+	*
+	* @param object $PAGEDATA the page object
+	*
+	* @return HTML of the page
+	*/
+function UserAuthentication_front($PAGEDATA) {
+	require SCRIPTBASE.'ww.plugins/privacy/frontend/page_type.php';
+	return $PAGEDATA->render().$html;
+}
+
+// }
+// { UserAuthentication_showPagePanel
+
 /**
 	* show page panel
 	*
@@ -71,6 +81,9 @@ function UserAuthentication_showPagePanel($page, $page_vars) {
 	require SCRIPTBASE.'ww.plugins/privacy/admin/privacy_show_page_panel.php';
 }
 
+// }
+// { UserAuthentication_pageTest
+
 /**
 	* is this page private? if so, check that the user is logged in
 	*
@@ -82,6 +95,29 @@ function UserAuthentication_pageTest($pagedata) {
 	require SCRIPTBASE.'ww.plugins/privacy/frontend/privacy_page_test.php';
 	return $allowed;
 }
+
+// }
+// { UserAuthentication_redirect
+
+/**
+	* redirect the user if the page requires so
+	*
+	* @param object $PAGEDATA the page object
+	*
+	* @return null
+	*/
+function UserAuthentication_redirect(){	
+	global $PAGEDATA;
+	if (isset($PAGEDATA->vars['non_logged_in_redirect_to'])
+		&& $PAGEDATA->vars['non_logged_in_redirect_to']
+	) {
+		$p=Page::getInstance($PAGEDATA->vars['non_logged_in_redirect_to']);
+		redirect($p->getAbsoluteUrl());
+	}
+}
+
+// }
+// { UserAuthentication_showWidget
 
 /**
 	* show the login widget
@@ -106,3 +142,5 @@ function UserAuthentication_showWidget($vars=null, $widget_id=0) {
 		.'<a href="/_r?type=loginpage" class="__" lang-context="core">my account'
 		.'</a></li></ul></div>';
 }
+
+// }
