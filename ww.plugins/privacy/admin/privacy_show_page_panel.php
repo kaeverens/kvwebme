@@ -62,11 +62,14 @@ if (@$page_vars['non_logged_in_redirect_to']) {
 			.'</option>';
 	}
 }
+else {
+	echo '<option value="0"> -- none -- </option>';
+}
 echo '</td></tr>';
 WW_addInlineScript(
 	'$(function(){'
 	.'$("#page_vars_non_logged_in_redirect").remoteselectoptions({'
-	.'url:"/a/f=adminPageParentsList", other_GET_params:'.$page['id']
+	.'url:"/a/f=adminPageParentsList"'
 	.'})'	
 	.'})'
 );
