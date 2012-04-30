@@ -154,7 +154,7 @@ div.fg-menu-container ul li a:hover,#sidebar1 a:hover,#menu-top ul li a:hover{
 	margin:0;
 	padding:0;
 }
-#content{
+#sidebar1+#content{
 	float:right;
 	width:86%;
 }

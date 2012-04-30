@@ -1,13 +1,4 @@
 function Products_screen(page) {
-	Core_sidemenu(
-		[
-			'Products', 'Categories', 'Types',
-			'Relation Types', 'Import', 'Export Data',
-			'Brands and Producers'
-		],
-		'products',
-		page
-	);
 	window['Products_screen'+page]();
 }
 function Products_screenBrandsandProducers() {
@@ -160,20 +151,33 @@ function Products_screenImport() {
 		// }
 		// { delimiter character
 		+'<tr><th>Delimiter character</th>'
-		+'<td><select id="product-types-delimiter"><option>,</option>'
+		+'<td><select id="product-import-delimiter"><option>,</option>'
 		+'<option>;</option></select></td>'
 		+'<td>The character used to separate values in the CSV file.</td>'
 		+'</tr>'
 		// }
 		// { delete file after import
 		+'<tr><th>Delete CSV file after import</th>'
-		+'<td><input id="product-types-delete-after" type="checkbox"/></td>'
+		+'<td><input id="product-import-delete-after" type="checkbox"/></td>'
 		+'<td>Delete the uploaded CSV file after import.</td>'
 		+'</tr>'
 		// }
+		// { what to do with already-existing products pre-upload
+		+'<tr><th>Before import, set existing products to</th>'
+		+'<td><select id="product-import-set-existing"><option value="0">'
+		+' -- no change -- </option><option value="1">Disabled</option>'
+		+'<option value="2">Enabled</option>'
+		+'</select></td></tr>'
+		// }
+		// { what to do with new imports
+		+'<tr><th>Imported products should be set to</th>'
+		+'<td><select id="product-import-set-imported"><option value="0">'
+		+'Disabled</option><option value="1">Enabled</option>'
+		+'</select></td></tr>'
+		// }
 		// { file url
 		+'<tr id="product-types-upload"><th>Upload Products File</th>'
-		+'<td><input id="product-types-file-url"'
+		+'<td><input id="product-import-file-url"'
 		+' placeholder="leave blank for default"/></td>'
 		+'<td><input type="button" class="upload"'
 		+' id="product-types-upload-button" value="Select and Upload"/>'
@@ -182,7 +186,7 @@ function Products_screenImport() {
 		// }
 		// { images directory
 		+'<tr><th>Images Directory</th>'
-		+'<td><input id="product-types-images-dir"'
+		+'<td><input id="product-import-images-dir"'
 		+' placeholder="leave blank for default"/></td>'
 		+'<td>Directory where images are placed. Images should be .jpg or .png'
 		+' files with the stock number as the first part of the file name.</td>'
@@ -195,26 +199,36 @@ function Products_screenImport() {
 		+'</table></div>';
 	$(table).appendTo($wrapper);
 	// { populate fields
-	$('#product-types-delimiter')
+	$('#product-import-delimiter')
 		.change(function() {
 			Core_saveAdminVars('productsImportDelimiter', $(this).val());
 		})
 		.val(adminVars.productsImportDelimiter);
-	$('#product-types-delete-after')
+	$('#product-import-delete-after')
 		.change(function() {
 			Core_saveAdminVars('productsImportDeleteAfter', $(this).is(':checked'));
 		})
 		.attr('checked', adminVars.productsImportDeleteAfter);
-	$('#product-types-file-url')
+	$('#product-import-file-url')
 		.change(function() {
 			Core_saveAdminVars('productsImportFileUrl', $(this).val());
 		})
 		.val(adminVars.productsImportFileUrl);
-	$('#product-types-images-dir')
+	$('#product-import-images-dir')
 		.change(function() {
 			Core_saveAdminVars('productsImportImagesDir', $(this).val());
 		})
 		.val(adminVars.productsImportImagesDir);
+	$('#product-import-set-existing')
+		.change(function() {
+			Core_saveAdminVars('productsImportSetExisting', $(this).val());
+		})
+		.val(adminVars.productsImportSetExisting);
+	$('#product-import-set-imported')
+		.change(function() {
+			Core_saveAdminVars('productsImportSetImported', $(this).val());
+		})
+		.val(adminVars.productsImportSetImported);
 	var $select=$('#product-types-example select');
 	$.post('/a/p=products/f=typesGet', function(ret) {
 		for (var i=0;i<ret.iTotalRecords;++i) {

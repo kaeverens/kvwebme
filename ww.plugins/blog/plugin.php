@@ -63,7 +63,9 @@ function Blog_frontend($PAGEDATA) {
 	$blog_author=0;
 	$authors_per_page=10;
 	WW_addScript('blog');
-	if ($PAGEDATA->vars['blog_groupsAllowedToPost']) {
+	if (isset($PAGEDATA->vars['blog_groupsAllowedToPost'])
+		&& $PAGEDATA->vars['blog_groupsAllowedToPost']
+	) {
 		WW_addInlineScript(
 			'var blog_groups='
 			.$PAGEDATA->vars['blog_groupsAllowedToPost'].';'

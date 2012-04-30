@@ -206,7 +206,7 @@ function Products_adminCategoryMove() {
 /**
 	* get full list of products in all categories
 	*
-	* return array
+	* @return array
 	*/
 function Products_adminCategoryProductsList() {
 	$arr=array();
@@ -510,6 +510,33 @@ function Products_adminImportImages() {
 }
 
 // }
+// { Products_adminImportDataFromAmazonGetEan13CheckNum
+
+/**
+	* get the chucksum for an EAN number
+	*
+	* @param string $str the string to check
+	*
+	* @return boolean is it valid
+	*/
+function Products_adminImportDataFromAmazonGetEan13CheckNum($str) {
+	//first change digits to a string then explode to an array
+	$digits=str_split((string)$str);
+	// 1. Add the values of the digits in the even-numbered positions: 2, 4, 6, etc.
+	$even_sum=$digits[1]+$digits[3]+$digits[5]+$digits[7]+$digits[9]+$digits[11];
+	// 2. Multiply this result by 3.
+	$even_sum_three = $even_sum * 3;
+	// 3. Add the values of the digits in the odd-numbered positions: 1, 3, 5, etc.
+	$odd_sum=$digits[0]+$digits[2]+$digits[4]+$digits[6]+$digits[8]+$digits[10];
+	// 4. Sum the results of steps 2 and 3.
+	$total_sum = $even_sum_three + $odd_sum;
+	// 5. find the check character
+	$next_ten = (ceil($total_sum/10))*10;
+	$check_digit = $next_ten - $total_sum;
+	return $str.$check_digit;
+}
+
+// }
 // { Products_adminImportDataFromAmazon
 
 /**
@@ -521,7 +548,7 @@ function Products_adminImportDataFromAmazon() {
 	$pid=(int)$_REQUEST['id'];
 	$ean=$_REQUEST['ean'];
 	if (strlen($ean)==12) {
-		$ean=ean13_check_digit($ean);
+		$ean=Products_adminImportDataFromAmazonGetEan13CheckNum($ean);
 	}
 	if (strlen($ean)!=13) {
 		return array('message'=>'EAN too short');
@@ -810,7 +837,8 @@ function Products_adminProductEditVal() {
 		return array('error'=>'field not allowed');
 	}
 	dbQuery(
-		'update products set '.$name.'="'.addslashes($value).'",date_edited=now() where id='.$id
+		'update products set '.$name.'="'.addslashes($value).'",date_edited=now()'
+		.' where id='.$id
 	);
 	Core_cacheClear();
 	return array('ok'=>1);
@@ -822,7 +850,7 @@ function Products_adminProductEditVal() {
 /**
 	* get all details about a product or products by its ID
 	*
-	* return array the product
+	* @return array the product
 	*/
 function Products_adminProductGet() {
 	$ids=array();
@@ -852,7 +880,7 @@ function Products_adminProductGet() {
 /**
 	* get details of all products updated since a date
 	*
-	* return array the product
+	* @return array the product
 	*/
 function Products_adminProductsGetUpdates() {
 	$dateFrom=$_REQUEST['from'];
@@ -894,7 +922,7 @@ function Products_adminProductsDatafieldsGet() {
 /**
 	* get list of all product images
 	*
-	* return array list of images
+	* @return array list of images
 	*/
 function Products_adminProductsListImages() {
 	$rs=dbAll('select id,images_directory from products');
@@ -1277,19 +1305,3 @@ function Products_adminUserGroupsGet() {
 }
 
 // }
-function ean13_check_digit($digits){
-	//first change digits to a string so that we can access individual numbers
-	$digits =(string)$digits;
-	// 1. Add the values of the digits in the even-numbered positions: 2, 4, 6, etc.
-	$even_sum = $digits{1} + $digits{3} + $digits{5} + $digits{7} + $digits{9} + $digits{11};
-	// 2. Multiply this result by 3.
-	$even_sum_three = $even_sum * 3;
-	// 3. Add the values of the digits in the odd-numbered positions: 1, 3, 5, etc.
-	$odd_sum = $digits{0} + $digits{2} + $digits{4} + $digits{6} + $digits{8} + $digits{10};
-	// 4. Sum the results of steps 2 and 3.
-	$total_sum = $even_sum_three + $odd_sum;
-	// 5. The check character is the smallest number which, when added to the result in step 4,  produces a multiple of 10.
-	$next_ten = (ceil($total_sum/10))*10;
-	$check_digit = $next_ten - $total_sum;
-	return $digits . $check_digit;
-}

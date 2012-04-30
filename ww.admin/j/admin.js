@@ -135,9 +135,7 @@ function Core_sidemenu(links, plugin, currentpage) {
 function Core_screen(plugin, page) {
 	var fname=plugin.charAt(0).toUpperCase()+plugin.slice(1)+'_screen';
 	if (window[fname]) {
-		if (!$('#sidebar1').length) {
-			$('#wrapper').html('<div id="sidebar1"/><div id="content"/>');
-		}
+		$('#wrapper').html('<div id="content"/>');
 		window.current_screen=plugin+'|'+page;
 		return window[fname](page.replace(/^js:/, ''));
 	}

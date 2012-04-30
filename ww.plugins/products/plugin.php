@@ -16,13 +16,17 @@
 $plugin=array(
 	'admin' => array( // {
 		'menu' => array(
-			'Products>Products'   => 'plugin.php?_plugin=products&amp;_page=products',
-			'Products>Categories' => 'plugin.php?_plugin=products&amp;_page=categories',
+			'Products>Products'=>'plugin.php?_plugin=products&amp;_page=products',
+			'Products>Categories'=>
+				'plugin.php?_plugin=products&amp;_page=categories',
 			'Products>Types'=>'javascript:Core_screen(\'products\', \'Types\')',
-			'Products>Relation Types'=> 'plugin.php?_plugin=products&amp;_page=relation-types',
+			'Products>Relation Types'=>
+				'plugin.php?_plugin=products&amp;_page=relation-types',
 			'Products>Import'=>'javascript:Core_screen(\'products\', \'Import\')',
-			'Products>Export Data' => 'javascript:Core_screen(\'products\', \'ExportData\')',
-			'Products>Brands and Producers' => 'javascript:Core_screen(\'products\', \'BrandsandProducers\')'
+			'Products>Export Data'=>
+				'javascript:Core_screen(\'products\', \'ExportData\')',
+			'Products>Brands and Producers' =>
+				'javascript:Core_screen(\'products\', \'BrandsandProducers\')'
 		),
 		'page_type' => 'Products_adminPage',
 		'widget' => array(
@@ -1060,11 +1064,13 @@ function Products_amountInStock($params, $smarty) {
 	*/
 function Products_cronHandle() {
 	dbQuery(
-		'update products set enabled=1,date_edited=now() where !enabled and activates_on<now() '
-		.'and expires_on>now()'
+		'update products set enabled=1,date_edited=now()'
+		.' where !enabled and activates_on<now()'
+		.' and expires_on>now()'
 	);
 	dbQuery(
-		'update products set enabled=0,date_edited=now() where enabled and expires_on<now()'
+		'update products set enabled=0,date_edited=now()'
+		.' where enabled and expires_on<now()'
 	);
 	Core_cacheClear('products');
 }
@@ -1276,6 +1282,8 @@ function Products_imageSlider($params) {
 /**
 	* import from an uploaded file
 	*
+	* @param array $vars array of parameters
+	*
 	* @return status
 	*/
 function Products_importFile($vars=false) {
@@ -1288,7 +1296,7 @@ function Products_importFile($vars=false) {
 		* @license  GPL 2.0
 		* @link     http://kvweb.me/
 		*/
-	class utf8encode_filter extends php_user_filter{ 
+	class Utf8encode_Filter extends php_user_filter{
 		/**
 			* whatever
 			*
@@ -1346,7 +1354,7 @@ function Products_importFile($vars=false) {
 	}
 	$handle=fopen($fname, 'r');
 	if ($charset!='UTF-8') {
-		stream_filter_register("utf8encode", "utf8encode_filter")
+		stream_filter_register("utf8encode", "Utf8encode_Filter")
 			or die("Failed to register filter");
 		stream_filter_prepend($handle, "utf8encode");
 	}
@@ -1373,6 +1381,11 @@ function Products_importFile($vars=false) {
 	$product_types=array();
 	$imported=0;
 	$categoriesByName=array();
+	$preUpload=(int)@$vars->productsImportSetExisting['varvalue'];
+	$postUpload=(int)@$vars->productsImportSetImported['varvalue'];
+	if ($preUpload) {
+		dbQuery('update products set enabled='.($preUpload-1));
+	}
 	while (
 		($data=fgetcsv(
 			$handle, 1000, $vars->productsImportDelimiter['varvalue']
@@ -1468,6 +1481,7 @@ function Products_importFile($vars=false) {
 			.'data_fields="'.addslashes(json_encode($data_fields)).'"'
 			.',online_store_fields="'.addslashes(json_encode($os_fields)).'"'
 			.',date_edited=now()'
+			.',enabled='.$postUpload
 			.' where id='.$id
 		);
 		if (@$data[$headers['_categories']]) {
@@ -1484,8 +1498,6 @@ function Products_importFile($vars=false) {
 				'insert into products_categories_products set'
 				.' category_id='.$categoriesByName[$catname].', product_id='.$id
 			);
-#			echo 'insert into products_categories_products set'
-#			  .' category_id='.$categoriesByName[$catname].', product_id='.$id."\n";
 		}
 		$imported++;
 	}
