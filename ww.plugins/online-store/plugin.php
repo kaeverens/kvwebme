@@ -696,9 +696,9 @@ function OnlineStore_startup() {
 		$_SESSION['currency']=$currencies[0];
 	}
 	$osvals=array(
-		'onlinestore_checkout_page'=>$_SESSION['onlinestore_checkout_page'],
+		'onlinestore_checkout_page'=>@$_SESSION['onlinestore_checkout_page'],
 		'currency'=>$_SESSION['currency'],
-		'onlinestore_vat_percent'=>$_SESSION['onlinestore_vat_percent']
+		'onlinestore_vat_percent'=>@$_SESSION['onlinestore_vat_percent']
 	);
 	Core_cacheSave('online-store', 'globals', $osvals);
 }

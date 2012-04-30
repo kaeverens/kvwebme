@@ -514,6 +514,10 @@ if ($version==47) { // localised number formats
 	$DBVARS['site_dec_point']='.';
 	$version=48;
 }
+if ($version==48) { // add user avatar
+	dbQuery('alter table user_accounts add avatar text');
+	$version=49;
+}
 
 $DBVARS['version']=$version;
 Core_cacheClear();

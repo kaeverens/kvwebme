@@ -34,7 +34,7 @@ if ($SaorFM->initErrors != '{}') {
 	echo $SaorFM->initErrors;
 	exit;
 }
-
+mail('kae.verens@gmail.com', 'test5', print_r($_REQUEST, true));
 /**
 	* switch according to the desired action
 	*/

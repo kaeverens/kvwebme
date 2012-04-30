@@ -53,6 +53,10 @@ function Blog_admin($page, $vars) {
 	*/
 function Blog_frontend($PAGEDATA) {
 	global $unused_uri;
+	if (isset($_SESSION['userdata']['id'])) { // load SaorFM
+		WW_addCSS('/j/jquery.saorfm/jquery.saorfm.css');
+		WW_addScript('/j/jquery.saorfm/jquery.saorfm.js');
+	}
 	// { parameters
 	$excerpts_per_page=(int)$PAGEDATA->vars['blog_excerpts_per_page'];
 	if (!$excerpts_per_page) {

@@ -1,4 +1,5 @@
 $(function() {
+	var showNewPost=userdata.isAdmin, authorIds=[], authors=[];
 	$('.blog-excerpt-wrapper,.blog-article-wrapper').each(function() {
 		var $this=$(this);
 		var id=+$this.attr('id').replace('blog-entry-', '');
@@ -38,7 +39,6 @@ $(function() {
 	if (!window.userdata) {
 		return;
 	}
-	var showNewPost=userdata.isAdmin;
 	if (window.blog_groups && userdata.groups && userdata.groups.length) {
 		for (var i=userdata.groups.length;i--;) {
 			if (blog_groups[userdata.groups[i]]) {
@@ -69,6 +69,87 @@ $(function() {
 			})
 			.prependTo('.blog-main-wrapper');
 	}
+	// { author images
+	function updateAuthorIcons() {
+		$('.blog-author-img').each(function() {
+			var $this=$(this);
+			var uid=+$this.data('uid');
+			if (!authors[uid].avatar) {
+				return;
+			}
+			$this
+				.css({
+					'width':'auto',
+					'height':'auto'
+				})
+				.attr('src', '/a/f=getImg/w=24/h=24/'+authors[uid].avatar);
+		});
+	}
+	$('.blog-author').each(function() { // get author images
+		var $this=$(this);
+		var uid=+$this.data('uid');
+		if ($.inArray(uid, authorIds)==-1) {
+			authorIds.push(uid);
+			authors[uid]={
+				'avatar':false,
+				'name':$this.text()
+			};
+		}
+		$('<span class="blog-author-img-wrapper">'
+			+'<img style="width:24px;height:24px;display:inline-block"'
+			+' src="/i/silhouette-24x24.png" class="blog-author-img"'
+			+' data-uid="'+uid+'"/></span>')
+			.prependTo(this)
+			.css('cursor', 'pointer')
+			.click(function() {
+				var uid=+$(this).find('img').data('uid');
+				var editThis=userdata.id && uid==userdata.id;
+				var author=authors[uid];
+				var avatar=author.avatar
+					?'/a/f=getImg/w=256/h=256/'+author.avatar
+					:'/i/silhouette-256x256.png';
+				var avatarEdit=editThis
+					?'<br/><table><tr><th>Image</th>'
+					+'<input class="saorfm user-avatar"/></td></tr></table>'
+					:'';
+				var $dialog=$('<div><h1>'+author.name+'</h1>'
+					+'<img src="'+avatar+'" id="dialog-author-img"/>'
+					+avatarEdit
+					+'</div>').dialog({
+						'modal':true
+					});
+				if (editThis) {
+					$dialog.find('.user-avatar')
+						.val(avatar)
+						.change(function() {
+							var $this=$(this);
+							var src=$this.val();
+							authors[uid].avatar=src;
+							$.post('/a/f=userSetAvatar', {
+								'src': src
+							});
+							$dialog.find('#dialog-author-img')
+								.replaceWith('<img src="/a/f=getImg/w=256/h=256/'
+									+src+'"/>');
+							updateAuthorIcons();
+						})
+						.saorfm({
+							'rpc':'/ww.incs/saorfm/rpc.php',
+							'select':'file',
+							'prefix':userdata.isAdmin?'':'/users/'+userdata.id
+						});
+				}
+			});
+	});
+	$.get('/a/f=usersAvatarsGet', {
+		ids: authorIds
+	}, function(ret) {
+		for (var i=0;i<ret.length;++i) {
+			authors[+ret[i].id].avatar=ret[i].avatar;
+		}
+		updateAuthorIcons();
+	}, 'json');
+	// }
 });
 function Blog_editPost(pdata) {
 	$('<div class="shade" style="position:fixed;left:0;top:0;right:0;bottom:0;background:#000;opacity:.1;z-index:9999"/>').appendTo(document.body);

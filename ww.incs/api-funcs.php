@@ -550,6 +550,43 @@ function Core_updateUserPasswordUsingToken() {
 }
 
 // }
+// { Core_usersAvatarsGet
+
+/**
+	* get a list of users' avatars
+	*/
+function Core_usersAvatarsGet() {
+	$ids=$_REQUEST['ids'];
+	if (!is_array($ids)) {
+		$ids=array($ids);
+	}
+	foreach ($ids as $k=>$v) {
+		$ids[$k]=(int)$v;
+	}
+	$sql='select id,avatar from user_accounts where id in ('.join(', ', $ids).')'
+		.' and avatar is not null';
+	return dbAll($sql);
+}
+
+// }
+// { Core_userSetAvatar
+
+/**
+	* update the user's avatar
+	*/
+function Core_userSetAvatar() {
+	$src=$_REQUEST['src'];
+	if (!isset($_SESSION['userdata'])) { // not logged in
+		return array('error'=>'you are not logged in');
+	}
+	dbQuery(
+		'update user_accounts set avatar="'.addslashes($src)
+		.'" where id='.$_SESSION['userdata']['id']
+	);
+	return true;
+}
+
+// }
 // { Core_userSetDefaultAddress
 
 /**

@@ -177,8 +177,11 @@
 					)
 					$(
 						'<input type="file" style="position:absolute;left:0;'
-						+'top:0;right:0;bottom:0;opacity:0;" name="file" />'
+						+'top:0;right:0;bottom:0;opacity:0;" name="file" value="" />'
 					)
+						.click(function() {
+							stopClearAll();
+						})
 						.change(function(){
 							var $form=$(this).closest('form');
 							$form.closest('li').find('iframe')[0].onload=function(){
@@ -186,8 +189,8 @@
 									return function(){
 										menuToggle($parent,config);
 									};
-								})($parent,config),1);
-								menuToggle($parent,config);
+								})($parent,config), 1);
+								menuToggle($parent, config);
 							};
 							$form
 								.css('text-decoration','blink')
