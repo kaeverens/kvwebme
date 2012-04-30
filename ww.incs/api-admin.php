@@ -475,9 +475,14 @@ function Core_adminMenusGetDefault() {
 					if (preg_match('/[^a-zA-Z0-9 >]/', $name)) {
 						continue; // illegal characters in name
 					}
-					$link=strpos($page, 'js:')===false
-						?'plugin.php?_plugin='.$pname.'&amp;_page='.$page
-						:'javascript:Core_screen(\''.$pname.'\', \''.$page.'\');';
+					if (strpos($page, 'javascript:')===0) {
+						$link=$page;
+					}
+					else {
+						$link=strpos($page, 'js:')===false
+							?'plugin.php?_plugin='.$pname.'&amp;_page='.$page
+							:'javascript:Core_screen(\''.$pname.'\', \''.$page.'\');';
+					}
 					$json='{"'.str_replace('>', '":{"', $name).'":{"_link":"'.$link.'"}}'
 						.str_repeat('}', substr_count($name, '>'));
 					$menus=array_merge_recursive($menus, json_decode($json, true));
