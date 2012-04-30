@@ -18,7 +18,7 @@ function Blog_showContents() {
 		+'<tbody></tbody>'
 		+'</table>');
 	$main.append('<br style="clear:both"/>');
-	$('#blogs-contents-table').dataTable({
+	window.datatable=$('#blogs-contents-table').dataTable({
 		"bProcessing": true,
 		"bServerSide": true,
 		"bJQueryUI": true,
@@ -32,6 +32,10 @@ function Blog_showContents() {
 				.html(aData[1]);
 			$('td:nth-child(2)', nRow).empty().append($link);
 			$('td:nth-child(5)', nRow).addClass('author');
+			$('td:nth-child(6)', nRow).html(
+				'[<a href="javascript:Blog_deleteEntry('+aData[0]+')"'
+				+' title="delete">x</a>]'
+			);
 			return nRow;
 		},
 		'fnDrawCallback': function() {
@@ -79,5 +83,13 @@ function Blog_showContents() {
 			'pdate':'0000-00-00 00:00:00'
 		});
 		return false;
+	});
+}
+function Blog_deleteEntry(id) {
+	if (!confirm('are you sure you want to delete this entry?')) {
+		return;
+	}
+	$.post('/a/p=blog/f=postDelete/blog_id='+id, function() {
+		window.datatable.fnDraw(false);
 	});
 }

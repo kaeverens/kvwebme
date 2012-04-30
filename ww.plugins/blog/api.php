@@ -81,6 +81,27 @@ function Blog_getUserName() {
 }
 
 // }
+// { Blog_postDelete
+
+/**
+	* delete a post (must be an admin or the article's owner)
+	*
+	* @return status
+	*/
+function Blog_postDelete() {
+	$id=(int)@$_REQUEST['blog_id'];
+
+	$constraints=' where id='.$id;
+	if (!Core_isAdmin()) {
+		$constraints.=' and user_id='.((int)$_SESSION['userdata']['id']);
+	}
+
+	$sql='delete from blog_entry'.$constraints;
+	dbQuery($sql);
+	return true;
+}
+
+// }
 // { Blog_postEdit
 
 /**
