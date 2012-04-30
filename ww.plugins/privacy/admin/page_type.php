@@ -84,12 +84,13 @@ $html.='>Email-verified</option>';
 $html.='</select></td></tr>';
 // }
 // { redirect on login
-$html.='<tr><th>redirect on login:</th><td>';
+$html.='<tr><th>Redirect on login:</th><td>';
 $html.='<select id="page_vars_userlogin_redirect_to" name="'
 	.'page_vars[userlogin_redirect_to]">';
 if (@$page_vars['userlogin_redirect_to']) {
 	$parent=Page::getInstance($page_vars['userlogin_redirect_to']);
-	$html.='<option value="'.$parent->id.'">'.htmlspecialchars($parent->name)
+	$html.='<option value="'.$parent->id.'">'
+		.htmlspecialchars(__FromJSON($parent->name))
 		.'</option>';
 }
 else {
