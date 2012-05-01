@@ -133,11 +133,12 @@ function Core_sidemenu(links, plugin, currentpage) {
 	$('#sidebar1').html(html+'</ul>');
 }
 function Core_screen(plugin, page) {
-	var bits=plugin.split(/[^a-z]/);
+	var bits=plugin.split(/[^a-zA-Z]/);
 	for (var fname='', i=0;i<bits.length;++i) {
 		fname+=bits[i].charAt(0).toUpperCase()+bits[i].slice(1);
 	}
 	fname+='_screen';
+	console.log(fname, plugin, page);
 	if (window[fname]) {
 		$('#wrapper').html('<div id="content"/>');
 		window.current_screen=plugin+'|'+page;
