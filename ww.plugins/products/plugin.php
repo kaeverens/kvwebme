@@ -524,7 +524,11 @@ class ProductCategory{
 		*/
 	function __construct($id) {
 		$id=(int)$id;
-		$r=dbRow('select * from products_categories where id='.$id);
+		$r=Core_cacheLoad('products', 'category-'.$id, -1);
+		if ($r===-1) {
+			$r=dbRow('select * from products_categories where id='.$id);
+			Core_cacheSave('products', 'category-'.$id, $r);
+		}
 		if (!count($r)) {
 			return false;
 		}
@@ -584,13 +588,21 @@ class ProductCategory{
 		}
 		// }
 		// { or get at least any product page
-		$pid=dbOne('select id from pages where type like "products%" limit 1', 'id');
-		if ($pid) {
-			$page=Page::getInstance($pid);
-			return $page->getRelativeUrl().'/'.urlencode($this->vals['link']);
+		$url=Core_cacheLoad('products', 'products-page', -1);
+		if ($url==-1) {
+			$pid=dbOne(
+				'select id from pages where type like "products%" limit 1', 'id'
+			);
+			if ($pid) {
+				$page=Page::getInstance($pid);
+			}
+			$url=$pid?$page->getRelativeUrl().'/':'/#no-url-available';
+			Core_cacheSave('products', 'products-page', $url);
 		}
+		return $url=='/#no-url-available'
+			?'/#no-url-available'
+			:$url.urlencode($this->vals['link']);
 		// }
-		return '/#no-url-available';
 	}
 }
 

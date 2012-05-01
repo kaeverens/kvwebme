@@ -230,7 +230,8 @@ $(function(){
 				'Billing_Street', 'Billing_Street2', 'Billing_Surname',
 				'Billing_Town', 'Country', 'County', 'Email', 'FirstName', 'Phone',
 				'Postcode', 'Street', 'Street2', 'Surname', 'Town',
-				'_payment_method_type', 'action', 'os_no_submit', 'os_pandp'
+				'_payment_method_type', 'action', 'os_no_submit', 'os_pandp',
+				'os_voucher'
 			];
 			html+='<form id="online-store-form" method="post" action="'
 				+document.location.toString().replace(/\?.*/, '')
@@ -764,29 +765,6 @@ $(function(){
 			}
 		break; // }
 		default: // {
-			$('input[name=os_voucher]').change(function() {
-				var $this=$(this);
-				var code=$this.val();
-				if (!code) {
-					return;
-				}
-				var email=$('#ww-pagecontent input[name=Email]').val();
-				$.post('/a/p=online-store/f=checkVoucher', {
-					"email": email,
-					"code" : code
-				}, function(ret) {
-					if (ret.error) {
-						$('<em>'+ret.error+'</em>').dialog({
-							"modal": true
-						});
-						$this.val('');
-						return;
-					}
-					$('<input type="hidden" name="os_no_submit" value="1"/>')
-						.insertAfter($this);
-					$this.closest('form').submit();
-				}, 'json');
-			});
 			$('select[name=Country]').change(function() {
 				var $this=$(this);
 				$('<input type="hidden" name="os_no_submit" value="1"/>')
@@ -795,6 +773,59 @@ $(function(){
 			});
 		// }
 	}
+	// { voucher handlers
+	$('input[name=os_voucher]').change(function() {
+		var $this=$(this);
+		var code=$this.val();
+		if (!code) {
+			return;
+		}
+		var email=$('#ww-pagecontent input[name=Email]').val();
+		$.post('/a/p=online-store/f=checkVoucher', {
+			"email": email,
+			"code" : code
+		}, function(ret) {
+			if (ret.error) {
+				if (ret.error=='your email address is not associated with this voucher') {
+					var $dialog=$('<div><p class="__" lang-context="core">'
+						+'This voucher is for a specific email address.'
+						+' Please enter the correct email address below.'
+						+'<br/><input id="dialog-email"/></div>')
+						.dialog({
+							'modal':true,
+							'buttons':{
+								'Check':function() {
+									$('#ww-pagecontent input[name=Email]')
+										.val($('#dialog-email').val())
+										.change();
+									$('input[name=os_voucher]').change();
+									$dialog.remove();
+								}
+							}
+						});
+					return;
+				}
+				$('<em>'+ret.error+'</em>').dialog({
+					"modal": true
+				});
+				$this.val('');
+				return;
+			}
+			var $form=$('#online-store-form');
+			$this.appendTo($form);
+			$('<input type="hidden" name="os_no_submit" value="1"/>')
+				.insertAfter($this);
+			$form.submit();
+		}, 'json');
+	});
+	$('.online-store-voucher-remove')
+		.css('cursor', 'pointer')
+		.click(function() {
+			var form=$('#online-store-form');
+			$form.find('input[name="os_voucher"]').val('');
+			$form.submit();
+		});
+	// }
 	if (os_post_vars) {
 		for (var i in os_post_vars) {
 			$('input[name="'+i+'"],select[name="'+i+'"],textarea[name="'+i+'"]')

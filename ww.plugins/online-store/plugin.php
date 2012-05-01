@@ -19,6 +19,8 @@ $plugin=array(
 		'menu' => array(
 			'Online Store>Orders'=>
 				'plugin.php?_plugin=online-store&amp;_page=orders',
+			'Online Store>Customer List'=>
+				'javascript:Core_screen(\'online-store\', \'CustomerList\')',
 			'Online Store>Vouchers'=>
 				'plugin.php?_plugin=online-store&amp;_page=vouchers',
 			'Online Store>Options'=>

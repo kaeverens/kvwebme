@@ -2,6 +2,7 @@ $(function(){
 	var params={
 		"bProcessing": true,
 		"bServerSide": true,
+		"bJQueryUI": true,
 		"sAjaxSource": "/ww.plugins/online-store/admin/vouchers-ajax.php"
 	};
 	if (jsvars.datatables['onlinestore-vouchers']) {

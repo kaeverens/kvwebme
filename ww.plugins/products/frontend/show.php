@@ -1127,10 +1127,14 @@ class Products{
 	static function getAll($search='') {
 		$id=md5('all|'.$search);
 		if (!array_key_exists($id, self::$instances)) {
-			$product_ids=array();
-			$rs=dbAll('select id from products where enabled');
-			foreach ($rs as $r) {
-				$product_ids[]=$r['id'];
+			$product_ids=Core_cacheLoad('products', 'all-enabled-product-ids', -1);
+			if ($product_ids===-1) {
+				$product_ids=array();
+				$rs=dbAll('select id from products where enabled');
+				foreach ($rs as $r) {
+					$product_ids[]=$r['id'];
+				}
+				Core_cacheSave('products', 'all-enabled-product-ids', $product_ids);
 			}
 			new Products($product_ids, $id, $search);
 		}

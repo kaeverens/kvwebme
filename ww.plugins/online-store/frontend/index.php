@@ -52,6 +52,7 @@ function OnlineStore_showVoucherInput() {
 
 // }
 
+// { setup
 if (isset($PAGEDATA->vars['online_stores_requires_login'])
 	&& $PAGEDATA->vars['online_stores_requires_login']
 	&& !isset($_SESSION['userdata'])
@@ -67,6 +68,8 @@ WW_addScript('online-store/j/basket.js');
 $c='';
 global $DBVARS,$online_store_currencies;
 $submitted=0;
+// }
+// { handle a submitted checkout
 if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 	$errors=array();
 	$uid=isset($_SESSION['userdata']) && $_SESSION['userdata']['id']
@@ -287,7 +290,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			.'Subtotal</td><td class="totals amountcell">'
 			.OnlineStore_numToPrice($grandTotal)
 			.'</td></tr>';
-		if (@$_REQUEST['os_voucher']) {
+		if (isset($_REQUEST['os_voucher']) && $_REQUEST['os_voucher']) {
 			$email=$_REQUEST['Email'];
 			$code=$_REQUEST['os_voucher'];
 			$voucher_amount=OnlineStore_voucherAmount($code, $email, $grandTotal);
@@ -425,7 +428,8 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		$submitted=1;
 	} 
 }
-
+// }
+// { else show the checkout
 if (!$submitted) {
 	if (@$_SESSION['online-store']['items']
 		&& count($_SESSION['online-store']['items'])>0
@@ -434,23 +438,29 @@ if (!$submitted) {
 		$pviewtype=(int)@$PAGEDATA->vars['onlinestore_viewtype'];
 		// { show basket contents
 		$user_is_vat_free=0;
+		// { get user data
 		$group_discount=0;
 		if (@$_SESSION['userdata']['id']) {
 			$user=User::getInstance($_SESSION['userdata']['id']);
 			$user_is_vat_free=$user->isInGroup('_vatfree');
 			$group_discount=$user->getGroupHighest('discount');
 		}
+		// }
+		// { show headers
 		$c.='<table id="onlinestore-checkout" width="100%"><tr>';
 		$c.='<th style="width:60%" class="__" lang-context="core">Item</th>';
 		$c.='<th class="__" lang-context="core">Price</th>';
 		$c.='<th class="__" lang-context="core">Amount</th>';
 		$c.='<th class="totals __" lang-context="core">Total</th>';
 		$c.='</tr>';
+		// }
+		// { set up variables
 		$grandTotal = 0;
 		$deliveryTotal=0;
 		$discountableTotal=0;
 		$vattable=0;
 		$has_vatfree=false;
+		// }
 		foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
 			$c.='<tr product="'.$md5.'" class="os_item_numbers '.$md5.'">';
 			// { item name and details
@@ -512,7 +522,10 @@ if (!$submitted) {
 		$c.='<tr class="os_basket_totals"><td style="text-align: right;" colspa'
 			.'n="3" class="__" lang-context="core">Subtotal</td>'
 			.'<td class="totals">'.OnlineStore_numToPrice($grandTotal).'</td></tr>';
-		if (@$_REQUEST['os_voucher']) {
+		if (isset($_REQUEST['os_voucher']) && $_REQUEST['os_voucher']=='') {
+			unset($_REQUEST['os_voucher']);
+		}
+		if (isset($_REQUEST['os_voucher']) && $_REQUEST['os_voucher']) {
 			require_once dirname(__FILE__).'/voucher-libs.php';
 			$email=$_REQUEST['Email'];
 			$code=$_REQUEST['os_voucher'];
@@ -521,9 +534,36 @@ if (!$submitted) {
 				$c.='<tr class="os_basket_totals">'
 					.'<td class="voucher" style="text-align: right;" colspan="3">'
 					.'<span class="__" lang-context="core">Voucher</span> ('
-					.htmlspecialchars($code).')</td><td class="totals">-'
-					.OnlineStore_numToPrice($voucher_amount).'</td></tr>';
+					.htmlspecialchars($code)
+					.'<span style="display:inline-block;"'
+					.' class="ui-icon ui-icon-circle-close online-store-voucher-remove">'
+					.'</span>'
+					.')</td><td class="totals">-'
+					.OnlineStore_numToPrice($voucher_amount)
+					.'</td></tr>';
 				$grandTotal-=$voucher_amount;
+			}
+			else {
+				$c.='<tr class="os_basket_totals">'
+					.'<td class="voucher" style="text-align: right;" colspan="4">'
+					.'<span class="__" lang-context="core">Voucher has no effect on'
+					.' cart. Removed from cart.</span></td></tr>';
+				unset($_REQUEST['os_voucher']);
+			}
+		}
+		if (!isset($_REQUEST['os_voucher']) || !$_REQUEST['os_voucher']) {
+			$siteHasVouchers=Core_cacheLoad('online-store', 'site-has-vouchers', -1);
+			if ($siteHasVouchers===-1) {
+				$siteHasVouchers=dbOne(
+					'select count(id) ids from online_store_vouchers', 'ids'
+				);
+				Core_cacheSave('online-store', 'site-has-vouchers', $siteHasVouchers);
+			}
+			if ($siteHasVouchers) {
+				$c.='<tr class="os_basket_totals online-store-vouchers">'
+					.'<td class="voucher" style="text-align: right;" colspan="4">'
+					.OnlineStore_showVoucherInput()
+					.'</td></tr>';
 			}
 		}
 		if ($group_discount && $discountableTotal) { // group discount
@@ -613,3 +653,4 @@ if (!$submitted) {
 		$c.='<em class="__" lang-context="core">No items in your basket</em>';
 	}
 }
+// }

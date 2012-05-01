@@ -147,11 +147,11 @@ if (isset($_REQUEST['voucher_id'])) {
 	echo '</table></form>';
 }
 else {
-	echo '<div style="width:400px">'
+	echo '<div style="width:400px;">'
 		.'<table id="onlinestore-vouchers" style="width:100%">'
 		/* TODO - translation /CB */
 		.'<thead><tr><th>Name</th><th>Value</th><th>Expiry Date</th></tr></thead>'
-		.'<tbody></tbody></table></div>';
-	echo '<a href="'.$_url.'&amp;voucher_id=0">create a voucher</a>';
+		.'<tbody></tbody></table>'
+		.'<a href="'.$_url.'&amp;voucher_id=0">create a voucher</a></div>';
 }
 WW_addScript('online-store/admin/vouchers.js');
