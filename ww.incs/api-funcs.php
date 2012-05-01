@@ -556,10 +556,10 @@ function Core_updateUserPasswordUsingToken() {
 	* get a list of users' avatars
 	*/
 function Core_usersAvatarsGet() {
-	$ids=$_REQUEST['ids'];
-	if (!is_array($ids)) {
-		$ids=array($ids);
+	if (!isset($_REQUEST['ids']) || !is_array($_REQUEST['ids'])) {
+		return array();
 	}
+	$ids=$_REQUEST['ids'];
 	foreach ($ids as $k=>$v) {
 		$ids[$k]=(int)$v;
 	}
