@@ -345,6 +345,11 @@ function Core_mail(
 		$headers,
 		"-f$from"
 	);
+	dbQuery(
+		'insert into emails_sent set to_email="'.addslashes($to).'"'
+		.', body="'.addslashes($html).'", headers="'.addslashes($headers).'"'
+		.', cdate=now()'
+	);
 }
 
 // }

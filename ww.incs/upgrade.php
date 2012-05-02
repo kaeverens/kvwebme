@@ -555,6 +555,14 @@ if ($version==51) { // add table for email templates
 	);
 	$version=52;
 }
+if ($version==52) { // record sent emails
+	dbQuery(
+		'create table emails_sent( id int auto_increment not null primary key,'
+		.'to_email text, body text, headers text, cdate datetime )'
+		.'default charset=utf8;'
+	);
+	$version=53;
+}
 
 $DBVARS['version']=$version;
 Core_configRewrite();
