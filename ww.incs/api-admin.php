@@ -575,6 +575,19 @@ function Core_adminMenuClearAllAdmins() {
 }
 
 // }
+// { Core_adminEmailTemplatesList
+
+/**
+	* get a list of existing email templates
+	*
+	* @return array list
+	*/
+function Core_adminEmailTemplatesList() {
+	$rs=dbAll('select name from email_templates order by name');
+	return $rs;
+}
+
+// }
 // { Core_adminMenusClearMine
 
 /**
@@ -603,7 +616,6 @@ function Core_adminMenuClearMine() {
 	* @return null
 	*/
 function Core_adminMenusAdd($name, $link) {
-	Core_adminMenusRemove($name);
 	$json='{"'.str_replace('>', '":{"', $name)
 		.'":{"_link":"'.$link.'"}}'
 		.str_repeat('}', substr_count($name, '>'));
