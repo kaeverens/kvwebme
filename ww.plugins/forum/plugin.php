@@ -176,7 +176,7 @@ function forum_user_profile($PAGEDATA, $user) {
 		. implode(' or id=', $ids)
 	);
 
-	$html .= '<h1>Forum - You Recent Posts</h1>
+	$html .= '<h1>Forum - Your Recent Posts</h1>
 	<table style="border:1px solid #ccc;margin:10px">
 		<tr>
 			<th>Thread</th>

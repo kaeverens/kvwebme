@@ -143,7 +143,7 @@ function UserAuthentication_showWidget($vars=null, $widget_id=0) {
 		.'<a href="/?logout" class="__" lang-context="core">log out</a></li>'
 		.'<li class="userauthentication-edit-profile">'
 		.'<a href="/_r?type=loginpage" class="__" lang-context="core">my account'
-		.'</a></li></ul></div>';
+		.'</a></li></ul><br class="clear"/></div>';
 }
 
 // }

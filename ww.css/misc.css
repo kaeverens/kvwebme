@@ -15,3 +15,6 @@
 .align-left,.align-left *{
 	text-align:left;
 }
+.clear{
+	clear:both;
+}

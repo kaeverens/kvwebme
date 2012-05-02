@@ -656,6 +656,9 @@ function Core_adminMenusRemove($path) {
 	* @return modified menu
 	*/
 function Core_adminMenusRemoveRecurse($menus, $bits, $name) {
+	if (!isset($menus[$name])) {
+		return;
+	}
 	$thismenu=$menus[$name];
 	$submenus=0;
 	foreach ($menus as $key=>$val) {

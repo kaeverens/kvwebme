@@ -9,4 +9,5 @@ div.panel-widget-privacy ul{
 div.panel-widget-privacy li{
 	list-style:none;
 	float:left;
+	padding-left:10px;
 }

@@ -20,7 +20,7 @@ $c='<div id="userauthentication-widget" widget-id="'
 	.'<li>Hi, Guest</li>'
 	.'<li class="userauthentication-login"><button>Login</button></li>'
 	.'<li class="userauthentication-register"><button href="'
-	.Page::getinstance($vars->id)->getRelativeUrl().'">Register</button></li>';
+	.Page::getInstance($vars->id)->getRelativeUrl().'">Register</button></li>';
 if (isset($vars->external_login)
 	&& $vars->external_login=='1'
 ) {
@@ -28,4 +28,4 @@ if (isset($vars->external_login)
 		.'<img src="/ww.plugins/privacy/i/facebook.png" appid="'.$vars->fbappid
 		.'" class="facebook" alt="Facebook"/></li>';
 }
-$c.='</ul></div>';
+$c.='</ul><br class="clear"/></div>';
