@@ -563,6 +563,12 @@ if ($version==52) { // record sent emails
 	);
 	$version=53;
 }
+if ($version==53) { // forgot to add subject
+	dbQuery(
+		'alter table emails_sent add subject text'
+	);
+	$version=54;
+}
 
 $DBVARS['version']=$version;
 Core_configRewrite();

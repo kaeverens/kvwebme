@@ -348,7 +348,7 @@ function Core_mail(
 	dbQuery(
 		'insert into emails_sent set to_email="'.addslashes($to).'"'
 		.', body="'.addslashes($html).'", headers="'.addslashes($headers).'"'
-		.', cdate=now()'
+		.', cdate=now(), subject="'.addslashes($subject).'"'
 	);
 }
 

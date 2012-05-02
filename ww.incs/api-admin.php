@@ -133,6 +133,118 @@ function Core_adminDirectoriesGet() {
 }
 
 // }
+// { Core_adminEmailsSentDT
+
+/**
+	* get list of sent emails in datatable format
+	*
+	* @return array
+	*/
+function Core_adminEmailsSentDT() {
+	$start=(int)$_REQUEST['iDisplayStart'];
+	$length=(int)$_REQUEST['iDisplayLength'];
+	$search=$_REQUEST['sSearch'];
+	$orderby=(int)$_REQUEST['iSortCol_0'];
+	$orderdesc=$_REQUEST['sSortDir_0']=='desc'?'desc':'asc';
+	switch ($orderby) {
+		case 1:
+			$orderby='to_email';
+		break;
+		case 2:
+			$orderby='subject';
+		break;
+		case 3:
+			$orderby='cdate';
+		break;
+		default:
+			$orderby='to_email';
+	}
+	$filters=array();
+	if ($search) {
+		$filters[]='to_email like "%'.addslashes($search).'%"'
+			.' or subject like "%'.addslashes($search).'%"'
+			.' or cdate like "%'.addslashes($search).'%"';
+	}
+	$filter='';
+	if (count($filters)) {
+		$filter='where '.join(' and ', $filters);
+	}
+	$sql='select id,to_email,subject,cdate from emails_sent '.$filter
+		.' order by '.$orderby.' '.$orderdesc
+		.' limit '.$start.','.$length;
+	$rs=dbAll($sql);
+	$result=array();
+	$result['sEcho']=intval($_GET['sEcho']);
+	$result['iTotalRecords']=dbOne(
+		'select count(id) as ids from emails_sent', 'ids'
+	);
+	$result['iTotalDisplayRecords']=dbOne(
+		'select count(id) as ids from emails_sent '.$filter,
+		'ids'
+	);
+	$arr=array();
+	foreach ($rs as $r) {
+		$row=array();
+		$row[]=$r['cdate'];
+		$row[]=$r['to_email'];
+		$row[]=$r['subject'];
+		$row[]=$r['id'];
+		$arr[]=$row;
+	}
+	$result['aaData']=$arr;
+	return $result;
+}
+
+// }
+// { Core_adminEmailTemplateGet
+
+/**
+	* get a list of existing email templates
+	*
+	* @return array list
+	*/
+function Core_adminEmailTemplateGet() {
+	$name=$_REQUEST['name'];
+	return dbOne(
+		'select body from email_templates where name="'.addslashes($name).'"',
+		'body'
+	);
+}
+
+// }
+// { Core_adminEmailTemplateSet
+
+/**
+	* get a list of existing email templates
+	*
+	* @return array list
+	*/
+function Core_adminEmailTemplateSet() {
+	$name=$_REQUEST['name'];
+	$body=$_REQUEST['body'];
+	dbQuery('delete from email_templates where name="'.addslashes($name).'"');
+	dbQuery(
+		'insert into email_templates set name="'.addslashes($name).'"'
+		.',body="'.addslashes($body).'"'
+	);
+	Core_cacheClear('email-templates');
+	return true;
+}
+
+// }
+// { Core_adminEmailTemplatesList
+
+/**
+	* get a list of existing email templates
+	*
+	* @return array list
+	*/
+function Core_adminEmailTemplatesList() {
+	$rs=dbAll('select name from email_templates order by name');
+	return $rs;
+}
+
+// }
 // { Core_adminFileDelete
 
 /**
@@ -572,55 +684,6 @@ function Core_adminMenuClearAllAdmins() {
 	);
 	Core_cacheClear('admin');
 	return array('{"ok":1}');
-}
-
-// }
-// { Core_adminEmailTemplateGet
-
-/**
-	* get a list of existing email templates
-	*
-	* @return array list
-	*/
-function Core_adminEmailTemplateGet() {
-	$name=$_REQUEST['name'];
-	return dbOne(
-		'select body from email_templates where name="'.addslashes($name).'"',
-		'body'
-	);
-}
-
-// }
-// { Core_adminEmailTemplateSet
-
-/**
-	* get a list of existing email templates
-	*
-	* @return array list
-	*/
-function Core_adminEmailTemplateSet() {
-	$name=$_REQUEST['name'];
-	$body=$_REQUEST['body'];
-	dbQuery('delete from email_templates where name="'.addslashes($name).'"');
-	dbQuery(
-		'insert into email_templates set name="'.addslashes($name).'"'
-		.',body="'.addslashes($body).'"'
-	);
-	Core_cacheClear('email-templates');
-	return true;
-}
-
-// }
-// { Core_adminEmailTemplatesList
-
-/**
-	* get a list of existing email templates
-	*
-	* @return array list
-	*/
-function Core_adminEmailTemplatesList() {
-	$rs=dbAll('select name from email_templates order by name');
-	return $rs;
 }
 
 // }
