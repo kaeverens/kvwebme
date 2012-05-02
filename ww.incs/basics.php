@@ -300,6 +300,54 @@ function Core_isAdmin() {
 }
 
 // }
+// { Core_mail
+
+/**
+	* send an email
+	*
+	* @param string $to      email address to send to
+	* @param string $subject title of the email
+	* @param string $body    HTML of the email body
+	* @param string $from    who the email comes from
+	*
+	* @return null
+	*/
+function Core_mail(
+	$to, $subject, $body, $from, $template='_body', $additional_headers=''
+) {
+	$dirname=USERBASE.'/ww.cache/email-templates';
+	if (!file_exists($dirname)) {
+		$rs=dbAll('select * from email_templates');
+		mkdir($dirname);
+		foreach ($rs as $r) {
+			file_put_contents($dirname.'/'.$r['name'].'.tpl', $r['body']);
+		}
+	}
+	$smarty=new Smarty;
+	$smarty->left_delimiter = '{{';
+	$smarty->right_delimiter = '}}';
+	$smarty->template_dir=$dirname;
+	$smarty->compile_dir=$dirname;
+	$smarty->assign(
+		'email_body', $body
+	);
+	$html=$smarty->fetch($dirname.'/'.$template.'.tpl'); 
+	$headers ='MIME-Version: 1.0' . "\r\n";
+	$headers.='Content-type: text/html; charset=utf-8' . "\r\n";
+	$headers.='Reply-to: '.$from."\r\n";
+	$headers.='From-to: '.$from."\r\n";
+	$headers.='X-Mailer: PHP/'.phpversion();
+	$headers.=$additional_headers;
+	mail(
+		$to,
+		$subject,
+		$html,
+		$headers,
+		"-f$from"
+	);
+}
+
+// }
 // { Core_shutdown
 
 /**

@@ -48,12 +48,11 @@ if (!$fp) {
 					$str.=$key." = ". $value."\n";
 				}
 				$eml='info@'.preg_replace('/^www\./', '', $_SERVER['HTTP_HOST']);
-				mail(
+				Core_mail(
 					$eml,
 					$_SERVER['HTTP_HOST'].' paypal hack',
 					$str,
-					"From: $eml\nReply-to: $eml",
-					"-f$eml"
+					$eml
 				);
 				exit;
 			}

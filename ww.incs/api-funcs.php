@@ -457,11 +457,10 @@ function Core_sendLoginToken() {
 			"UPDATE user_accounts SET verification_hash='$token' "
 			."WHERE email='$email'"
 		);
-		mail(
+		Core_mail(
 			$email, '['.$_SERVER['HTTP_HOST'].'] user password token',
 			'Your token is: '.$token,
-			"Reply-to: $email\nFrom: $email",
-			'-f'.$email
+			$email
 		);
 		exit('{"ok":1}');
 	}
@@ -499,7 +498,7 @@ function Core_sendRegistrationToken() {
 	}
 	$emaildomain=str_replace('www.', '', $_SERVER['HTTP_HOST']);
 	$from=Core_siteVar('useraccounts_registrationtokenemail_from');
-	mail(
+	Core_mail(
 		$email,
 		Core_siteVar('useraccounts_registrationtokenemail_subject'),
 		str_replace(
@@ -507,8 +506,7 @@ function Core_sendRegistrationToken() {
 			$_SESSION['privacy']['registration']['token'],
 			Core_siteVar('useraccounts_registrationtokenemail_message')
 		),
-		"Reply-to: $from\nFrom: $from",
-		'-f'.$from
+		$from
 	);
 	return array('ok'=>1);
 }

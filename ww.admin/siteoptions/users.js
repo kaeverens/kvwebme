@@ -28,7 +28,9 @@ $(function(){
 			return;
 		}
 		var name=$('input[name=name]').val(),email=$('input[name=email]').val(),password=$('input[name=password]').val();
-		msg='Dear '+name+',\n\nWe have activated your account.\n\nYou can log in using your email address "'+email+'" and the password you chose when registering.\n\nThank you.'
+		msg='Dear '+name+',<br/>\n<br/>\nWe have activated your account.'
+			+'<br/>\n<br/>\nYou can log in using your email address "'+email+'"'
+			+' and the password you chose when registering.<br/>\n<br/>\nThank you.'
 		$('<textarea name="email-to-send">'+msg+'</textarea>')
 			.appendTo('#users-email-to-send-holder');
 		$('#users-email-to-send')

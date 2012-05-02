@@ -101,12 +101,11 @@ if (isset($_REQUEST['action'])) {
 		echo '<em>users updated</em>';
 		if (isset($_REQUEST['email-to-send'])) {
 			$site=preg_replace('/www\./', '', $_SERVER['HTTP_HOST']);
-			mail(
+			Core_mail(
 				$_REQUEST['email'],
 				'['.$site.'] user status update',
 				$_REQUEST['email-to-send'],
-				'Reply-to: no-reply@'.$site."\nFrom: no-reply@".$site,
-				"-fno-reply@".$site
+				'no-reply@'.$site
 			);
 		}
 		Core_cacheSave('user-session-resets', $id, true);

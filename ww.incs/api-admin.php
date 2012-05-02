@@ -606,6 +606,7 @@ function Core_adminEmailTemplateSet() {
 		'insert into email_templates set name="'.addslashes($name).'"'
 		.',body="'.addslashes($body).'"'
 	);
+	Core_cacheClear('email-templates');
 	return true;
 }
 

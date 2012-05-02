@@ -35,12 +35,12 @@ function Privacy_controller() {
 			."il='".addslashes($_GET['email'])."' and verification_hash='"
 			.addslashes($_GET['hash'])."'"
 		);
-		mail(
+		Core_mail(
 			$_GET['email'],
 			'['.$sitedomain.'] user verified',
-			"Thank you,\n\nyour user account with us has now been verified. You"
+			"Thank you,<br/><br/>your user account with us has now been verified. You"
 			." can login now using your email address and password.",
-			"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain"
+			"noreply@$sitedomain"
 		);
 		return '<p>Thank you for registering.</p><p>Your account has now been'
 			.' verified.</p><p>Please <a href="/_r?type=privacy">click here</a>'
@@ -105,10 +105,10 @@ function Privacy_controller() {
 		$r=dbOne('select id from user_accounts where email="'.$email.'"', 'id');
 		if ($r) {
 			$p=Password::getNew();
-			mail(
+			Core_mail(
 				$email,
 				'['.$sitedomain.'] user password changed',
-				"Your new password:\n\n".$p,
+				"Your new password:<br/><br/>".$p,
 				"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain"
 			);
 			dbQuery(
@@ -566,17 +566,17 @@ function Privacy_registrationRegister() {
 		.addslashes($long_url).'",short_url="'.$short_url.'"'
 	);
 	if (@$page->vars['userlogin_registration_type']=='Email-verified') {
-		mail(
+		Core_mail(
 			$email,
 			'['.$sitedomain.'] user registration',
-			"Hello!\n\nThis message is to verify your email address, which has "
+			"Hello!<br/><br/>This message is to verify your email address, which has "
 			."been used to register a user-account on the $sitedomain website."
-			."\n\nAfter clicking the link below, you will be logged into the se"
-			."rver.\n\nIf you did not register this account, then please delete"
+			."<br/><br/>After clicking the link below, you will be logged into the se"
+			."rver.<br/><br/>If you did not register this account, then please delete"
 			." this email. Otherwise, please click the following URL to verify "
-			."your email address with us. Thank you.\n\nhttp://$sitedomain/_s/"
+			."your email address with us. Thank you.<br/><br/>http://$sitedomain/_s/"
 			.$sesc,
-			"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain"
+			"noreply@$sitedomain"
 		);
 		if (1 || $page->vars['userlogin_send_admin_emails']) {
 			$admins=dbAll(
@@ -584,15 +584,15 @@ function Privacy_registrationRegister() {
 				.'& user_accounts_id=user_accounts.id'
 			);
 			foreach ($admins as $admin) {
-				mail(
+				Core_mail(
 					$admin['email'],
 					'['.$sitedomain.'] user registration',
-					"Hello!\n\nThis message is to alert you that a user ($email) ha"
+					"Hello!<br/><br/>This message is to alert you that a user ($email) ha"
 					."s been created on your site, http://$sitedomain/ - the user h"
 					."as not yet been activated, so please log into the admin area "
 					."of the site (http://$sitedomain/ww.admin/ - under Site Option"
 					."s then Users) and verify that the user details are correct.",
-					"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain"
+					"noreply@$sitedomain"
 				);
 			}
 		}
@@ -609,15 +609,15 @@ function Privacy_registrationRegister() {
 			.'user_accounts_id=user_accounts.id'
 		);
 		foreach ($admins as $admin) {
-			mail(
+			Core_mail(
 				$admin['email'],
 				'['.$sitedomain.'] user registration',
-				"Hello!\n\nThis message is to alert you that a user ($email) has "
+				"Hello!<br/><br/>This message is to alert you that a user ($email) has "
 				."been created on your site, http://$sitedomain/ - the user has n"
 				."ot yet been activated, so please log into the admin area of the"
 				." site (http://$sitedomain/ww.admin/ - under Site Options then U"
 				."sers) and verify that the user details are correct.",
-				"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain"
+				"noreply@$sitedomain"
 			);
 		}
 		return Privacy_registrationShowForm(

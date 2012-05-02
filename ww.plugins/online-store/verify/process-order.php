@@ -64,21 +64,19 @@ function OnlineStore_processOrder($id, $order=false) {
 	if (!isset($form_vals->Email)) {
 		$form_vals->Email='no-email-supplied@example.com';
 	}
-	$headers = "From: $from\r\nReply-To: $from\r\nX-Mailer: PHP/" . phpversion();
-	$headers.='MIME-Version: 1.0' . "\r\n";
-	$headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-	$headers .= 'To: '.$form_vals->Email. "\r\n";
+	$headers='';
 	if ($bcc) {
 		$headers.='BCC: '.$bcc."\r\n";
 	}
 	// }
 	// { invoice
-	mail(
+	Core_mail(
 		$form_vals->Email,
 		'['.$short_domain.'] invoice #'. $id,
 		$order['invoice'],
-		$headers,
-		"-f$from"
+		$from,
+		'_body',
+		$headers
 	);
 	// }
 	// { handle item-specific stuff (vouchers, stock control)
@@ -147,12 +145,13 @@ function OnlineStore_processOrder($id, $order=false) {
 					$html
 				);
 			}
-			mail(
+			Core_mail(
 				$form_vals->Email,
 				'['.$short_domain.'] voucher',
 				$html,
-				$headers,
-				"-f$from"
+				$from,
+				'_body',
+				$headers
 			);
 		}
 		// { stock control

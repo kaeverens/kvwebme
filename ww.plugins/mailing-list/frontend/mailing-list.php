@@ -87,12 +87,11 @@ function Mailinglist_sendConfirmation($email, $hash) {
 		$url.'?mailing_list_hash='.$hash,
 		$EMAIL['body']
 	);
-	$EMAIL['headers']='From: '.$EMAIL['from'];
-	mail(
+	Core_mail(
 		$email,
-		htmlspecialchars($EMAIL['subject']),
-		htmlspecialchars($EMAIL['body']),
-		$EMAIL['headers']
+		$EMAIL['subject'],
+		$EMAIL['body'],
+		$EMAIL['from']
 	);
 }
 

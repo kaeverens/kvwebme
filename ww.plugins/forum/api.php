@@ -114,16 +114,14 @@ function Forum_post() {
 		if (!$user) {
 			continue;
 		}
-		mail(
+		Core_mail(
 			$user->get('email'),
 			'['.$_SERVER['HTTP_HOST'].'] '.$row['name'],
 			"A new post has been added to this forum thread which you are subscribed"
-			." to.\n\n"
-			.'http://www.'.$_SERVER['HTTP_HOST'].$url."\n\n"
-			.$post_author->get('name')." said:\n".str_repeat('=', 80)."\n".$body."\n"
-			.str_repeat('=', 80),
-			'From: no-reply@'.$_SERVER['HTTP_HOST']."\nReply-to: no-reply@"
-			.$_SERVER['HTTP_HOST']
+			." to.<br/>\n<br/>\n"
+			.'http://www.'.$_SERVER['HTTP_HOST'].$url."<br/>\n<br/>\n"
+			.$post_author->get('name')." said:<hr/>".$body.'<hr/>',
+			'no-reply@'.$_SERVER['HTTP_HOST']
 		);
 	}
 	// }
