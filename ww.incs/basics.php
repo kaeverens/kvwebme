@@ -316,9 +316,9 @@ function Core_mail(
 	$to, $subject, $body, $from, $template='_body', $additional_headers=''
 ) {
 	$dirname=USERBASE.'/ww.cache/email-templates';
-	if (!file_exists($dirname)) {
+	if (!file_exists($dirname.'/'.$template.'.tpl')) {
 		$rs=dbAll('select * from email_templates');
-		mkdir($dirname);
+		@mkdir($dirname);
 		foreach ($rs as $r) {
 			file_put_contents($dirname.'/'.$r['name'].'.tpl', $r['body']);
 		}
