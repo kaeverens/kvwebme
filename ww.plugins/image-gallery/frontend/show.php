@@ -11,9 +11,8 @@
   * @license    GPL Version 2
   * @link       www.kvweb.me
  */
-$kfm_do_not_save_session=true;
-require_once KFM_BASE_PATH.'/api/api.php';
-require_once KFM_BASE_PATH.'/initialise.php';
+
+// { ImageGallery_show
 
 /**
   * function for generating and returning a gallery's HTML
@@ -25,16 +24,24 @@ require_once KFM_BASE_PATH.'/initialise.php';
 function ImageGallery_show($PAGEDATA) {
 	$vars=$PAGEDATA->vars;
 	$c=$PAGEDATA->render();
-	$dir_id=kfm_api_getDirectoryId(
-		preg_replace('/^\//', '', $vars['image_gallery_directory'])
-	);
-	$images=kfm_loadFiles($dir_id);
-	$images=$images['files'];
-	$n=count($images);
+	// { check to see if there are files in the directory
+	$hasImages=false;
+	$dirname=USERBASE.'/f/'.$vars['image_gallery_directory'];
+	if (file_exists($dirname)) {
+		$dir=new DirectoryIterator($dirname);
+		foreach ($dir as $file) {
+			if ($file->isDot()) {
+				continue;
+			}
+			$hasImages=true;
+			break;
+		}
+	}
+	// }
 	if (!isset($vars['footer'])) {
 		$vars['footer']='';
 	}
-	if ($n) {
+	if ($hasImages) {
 		// { if template doesn't exist, create it
 		$template=USERBASE.'/ww.cache/image-gallery/';
 		@mkdir($template);
@@ -77,6 +84,16 @@ function ImageGallery_show($PAGEDATA) {
 	}
 }
 
+// }
+// { GalleryWidget_show
+
+/**
+	* show the ImageGallery widget
+	*
+	* @param array $vars parameters
+	*
+	* @return html
+	*/
 function GalleryWidget_show($vars){
 	$id=$vars->id;
 	if (!$vars->id) {
@@ -85,13 +102,21 @@ function GalleryWidget_show($vars){
 	// { get data from widget db
 	$vars=dbRow('select * from image_gallery_widget where id="'.$id.'"');
 	// }
-	$dir_id=kfm_api_getDirectoryId(
-		preg_replace('/^\//', '', $vars['directory'])
-	);
-	$images=kfm_loadFiles($dir_id);
-	$images=$images['files'];
-	$n=count($images);
-	if ($n) {
+	// { check to see if there are files in the directory
+	$hasImages=false;
+	$dirname=USERBASE.'/f/'.$vars['directory'];
+	if (file_exists($dirname)) {
+		$dir=new DirectoryIterator($dirname);
+		foreach ($dir as $file) {
+			if ($file->isDot()) {
+				continue;
+			}
+			$hasImages=true;
+			break;
+		}
+	}
+	// }
+	if ($hasImages) {
 		// { if template doesn't exist, create it
 		$template=USERBASE.'/ww.cache/image-gallery-widget/';
 		@mkdir($template, 0777, true);
@@ -149,3 +174,5 @@ function GalleryWidget_show($vars){
 			.'" not found or empty.</em>';
 	}
 }
+
+// }

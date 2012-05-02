@@ -149,7 +149,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 	// }
 	if ($uid) { // user account stuff
 		$_user=dbRow(
-			'select email,name,phone,address from user_accounts where id='.$uid
+			'select email,name,contact,address from user_accounts where id='.$uid
 		);
 		$user=User::getInstance($uid);
 		// { check if new address was entered
@@ -188,17 +188,19 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		// }
 		// { check if new name, surname, phone were entered
 		if (@$_POST['Email']==$_user['email']) {
+			$contact=json_decode($_user['contact'], true);
 			if (isset($_POST['FirstName'])) {
 				$_user['name']=$_POST['FirstName'].' '.$_POST['Surname'];
 				$_SESSION['userdata']['name']=$_user['name'];
 			}
 			if (isset($_POST['Phone'])) {
-				$_user['phone']=$_POST['Phone'];
-				$_SESSION['userdata']['phone']=$_user['phone'];
+				$contact['phone']=$_POST['Phone'];
+				$_SESSION['userdata']['phone']=$contact['phone'];
 			}
+			$contact=json_encode($contact);
 			dbQuery(
 				'update user_accounts set name="'.addslashes($_user['name']).'"'
-				.', phone="'.addslashes($_user['phone']).'" where id='.$uid
+				.', contact="'.addslashes($contact).'" where id='.$uid
 			);
 		}
 		// }

@@ -1,9 +1,4 @@
 function CoreSiteoptions_screen(page) {
-	Core_sidemenu(
-		[ 'General', 'Users', 'Themes', 'Plugins', 'Cron', 'Languages' ],
-		'CoreSiteoptions',
-		page
-	);
 	window['CoreSiteoptions_screen'+page]();
 }
 function CoreSiteoptions_screenCron() {
@@ -419,14 +414,6 @@ function CoreSiteoptions_screenLocations() {
 	});
 }
 function CoreSiteoptions_screenMenus() {
-	if (!$.fn.saorfm) {
-		$('head').append(
-			'<link type="text/css" href="/j/jquery.saorfm/jquery.saorfm.css" rel="stylesheet"/>'
-		);
-		return $.cachedScript('/j/jquery.saorfm/jquery.saorfm.js').done(function() {
-			CoreSiteoptions_screenMenus();
-		});
-	}
 	function save(callback) {
 		$.post('/a/f=adminAdminVarsSave/name=admin_menu', {
 			'val':$.toJSON(menus)
@@ -775,10 +762,8 @@ function CoreSiteoptions_screenMenus() {
 	});
 	// }
 }
-function CoreSiteoptions_screenStats() {
-	var $content=$('#content').empty();
-	$.post('/a/f=adminStatsGet', function(ret) {
-	});
+function CoreSiteoptions_screenEmails() {
+	var $content=$('#content').empty().append('<h1>Emails</h1>');
 }
 $(document).on('click', '.map-opener', function() {
 	var $this=$(this);

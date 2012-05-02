@@ -126,7 +126,6 @@ if ($version==12) { // add authorised, for delayed credit card payments
 }
 if ($version==13) { // change menus for new separated pages
 	require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/api-admin.php';
-	Core_adminMenusRemove('Online Store>Orders');
 	Core_adminMenusAdd(
 		'Online Store>Orders', 'plugin.php?_plugin=online-store&amp;_page=orders'
 	);

@@ -42,7 +42,7 @@ function Core_adminAdminVarsSave() {
 /**
 	* resets the auto_increment of a database table to 1
 	*
-	* return null
+	* @return null
 	*/
 function Core_adminDBClearAutoincrement() {
 	$table=$_REQUEST['table'];
@@ -449,13 +449,19 @@ function Core_adminMenusGetDefault() {
 				'Site Options'=>array(
 					'General'=> array('_link'=>'siteoptions.php'),
 					'Languages'=>array(
-						'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Languages\')'
+						'_link'=>
+							'javascript:Core_screen(\'CoreSiteoptions\', \'js:Languages\')'
 					),
 					'Locations'=>array(
-						'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Locations\')'
+						'_link'=>
+							'javascript:Core_screen(\'CoreSiteoptions\', \'js:Locations\')'
 					),
 					'Menus' => array(
 						'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Menus\')'
+					),
+					'Emails' => array(
+						'_link'=>
+							'javascript:Core_screen(\'CoreSiteoptions\', \'js:Emails\')'
 					),
 					'Users' => array('_link'=>'siteoptions.php?page=users'),
 					'Plugins'=> array('_link'=>'siteoptions.php?page=plugins'),
@@ -586,7 +592,18 @@ function Core_adminMenuClearMine() {
 }
 
 // }
+// { Core_adminMenusAdd
+
+/**
+	* add an item to a menu
+	*
+	* @param string $name path to the item
+	* @param string $link the link of the menu item
+	*
+	* @return null
+	*/
 function Core_adminMenusAdd($name, $link) {
+	Core_adminMenusRemove($name);
 	$json='{"'.str_replace('>', '":{"', $name)
 		.'":{"_link":"'.$link.'"}}'
 		.str_repeat('}', substr_count($name, '>'));
@@ -601,6 +618,17 @@ function Core_adminMenusAdd($name, $link) {
 		dbQuery($sql);
 	}
 }
+
+// }
+// { Core_adminMenusRemove
+
+/**
+	* remove a menu item
+	*
+	* @param string $path the item to remove
+	*
+	* @return null
+	*/
 function Core_adminMenusRemove($path) {
 	$bits=explode('>', $path);
 	$name=array_shift($bits);
@@ -614,6 +642,19 @@ function Core_adminMenusRemove($path) {
 		dbQuery($sql);
 	}
 }
+
+// }
+// { Core_adminMenusRemoveRecurse
+
+/**
+	* helper function for Core_adminMenusRemove
+	*
+	* @param array $menus list of menu items
+	* @param array $bits  path to item to remove
+	* @param array $name  name of the item to remove
+	*
+	* @return modified menu
+	*/
 function Core_adminMenusRemoveRecurse($menus, $bits, $name) {
 	$thismenu=$menus[$name];
 	$submenus=0;
@@ -638,6 +679,8 @@ function Core_adminMenusRemoveRecurse($menus, $bits, $name) {
 	}
 	return $menus;
 }
+
+// }
 // { Core_adminPageChildnodes
 
 /**
@@ -1435,12 +1478,26 @@ function Core_adminUserEditVal() {
 	$id=(int)$_REQUEST['id'];
 	$name=$_REQUEST['name'];
 	$value=$_REQUEST['val'];
-	if (!in_array($name, array('name', 'email', 'phone'))) {
-		return array('error'=>'field not allowed');
-	}
-	dbQuery(
-		'update user_accounts set '.$name.'="'.addslashes($value).'" where id='.$id
+	$contact_fields=array(
+		'contact_name', 'business_phone', 'business_email', 'phone', 'website',
+		'mobile', 'skype', 'facebook', 'twitter', 'linkedin', 'blog'
 	);
+	if (in_array($name, array('name', 'email'))) {
+		dbQuery(
+			'update user_accounts set '.$name.'="'.addslashes($value).'" where id='.$id
+		);
+	}
+	elseif (in_array($name, $contact_fields)) {
+		$c=json_decode(
+			dbOne('select contact from user_accounts where id='.$id, 'contact'),
+			true
+		);
+		$c[$name]=$value;
+		dbQuery(
+			'update user_accounts set contact="'.addslashes(json_encode($c)).'"'
+			.' where id='.$id
+		);
+	}
 	Core_cacheClear();
 	return array('ok'=>1);
 }
@@ -1549,9 +1606,6 @@ function Core_adminUsersGetDT() {
 		case 3:
 			$orderby='email';
 		break;
-		case 4:
-			$orderby='phone';
-		break;
 		case 5:
 			$orderby='date_created';
 		break;
@@ -1585,7 +1639,7 @@ function Core_adminUsersGetDT() {
 	if (count($filters)) {
 		$filter='where '.join(' and ', $filters);
 	}
-	$sql='select id,name,email,phone,date_created from user_accounts '.$filter
+	$sql='select id,name,email,contact,date_created from user_accounts '.$filter
 		.' order by '.$orderby.' '.$orderdesc
 		.' limit '.$start.','.$length;
 	$rs=dbAll($sql);
@@ -1604,7 +1658,8 @@ function Core_adminUsersGetDT() {
 		$row[]=$r['id'];
 		$row[]=$r['name'];
 		$row[]=$r['email'];
-		$row[]=$r['phone'];
+		$c=json_decode($r['contact'], true);
+		$row[]=$c['phone'];
 		$row[]=$r['date_created'];
 		$rs2=dbAll(
 			'select name from groups,users_groups where user_accounts_id='.$r['id']

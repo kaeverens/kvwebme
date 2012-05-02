@@ -14,7 +14,7 @@
 
 require_once '../../../ww.incs/basics.php';
 
-$id = addslashes(@$_SESSION[ 'userdata' ][ 'id' ]);
+$id = (int)@$_SESSION[ 'userdata' ][ 'id' ];
 $name = addslashes(@$_POST[ 'name' ]);
 $phone = addslashes(@$_POST[ 'phone' ]);
 $address = addslashes(@$_GET[ 'address' ]);
@@ -23,9 +23,9 @@ if ($id == 0) {
 	exit;
 }
 
+$userdata=dbRow('select * from user_accounts where id='.$id);
 if ($action=='delete') {
-	$_user=dbRow('select address from user_accounts where id='.$id);
-	$add=json_decode($_user['address'], true);
+	$add=json_decode($userdata['address'], true);
 	if (isset($add[$address])) {
 		unset($add[$address]);
 	}
@@ -34,8 +34,7 @@ if ($action=='delete') {
 	exit;
 }
 if ($action=='update') {
-	$user=dbRow('select address from user_accounts where id='.$id);
-	$address=json_decode($user['address'], true);
+	$address=json_decode($userdata['address'], true);
 	$address[$name]=array(
 		'street'=>$_POST['street'],
 		'street2'=>$_POST['street2'],
@@ -49,8 +48,7 @@ if ($action=='update') {
 }
 if ($action=='default') {
 	$name=@$_GET['name'];	
-	$user=dbRow('select address from user_accounts where id='.$id);
-	$address=json_decode($user['address'], true);
+	$address=json_decode($userdata['address'], true);
 	foreach ($address as $n=>$add) {
 		$address[$n]['default']='no';
 		if ($n==$name) {
@@ -62,10 +60,13 @@ if ($action=='default') {
 	exit;
 }
 
+$c=json_decode($userdata['contact'], true);
+$c['phone']=$phone;
+
 dbQuery(
 	'update user_accounts set '
 	. 'name="' . $name . '",'
-	. 'phone="' . $phone . '",'
+	. 'contact="'.addslashes(json_encode($c)).'",'
 	. 'address="' . nl2br($address) . '" '
 	. 'where id=' . $id
 );

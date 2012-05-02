@@ -443,7 +443,6 @@ function Privacy_registrationRegister() {
 	// { variables
 	$name=@$_REQUEST['name'];
 	$email=@$_REQUEST['email'];
-	$phone=@$_REQUEST['phone'];
 	$usertype=@$_REQUEST['usertype'];
 	$address1=@$_REQUEST['address1'];
 	$address2=@$_REQUEST['address2'];
@@ -639,11 +638,12 @@ function Privacy_registrationRegister() {
 function Privacy_profileGet() {
 	$uid = addslashes($_SESSION['userdata'][ 'id' ]);
 	$user = dbRow('select * from user_accounts where id=' . $uid);
+	$contact=json_decode($user['contact'], true);
 
-	$phone = ($user[ 'phone' ] == '')
+	$phone = ($contact['phone'] == '')
 		?'<a href="javascript:edit_user_dialog('.$user['id']
 		.');" class="__" lang-context="core">Add</a>'
-		:htmlspecialchars($user[ 'phone' ]);
+		:htmlspecialchars($contact['phone']);
 
 	// get array of groups the user is a member of
 	$groups = array();

@@ -31,6 +31,8 @@ $plugin=array(
 );
 // }
 
+// { ImageGallery_adminPageForm
+
 /**
   * administration area for the image gallery
   *
@@ -44,6 +46,9 @@ function ImageGallery_adminPageForm($page, $vars) {
 	return $c;
 }
 
+// }
+// { ImageGallery_frontend
+
 /**
   * show the image gallery
   *
@@ -56,7 +61,19 @@ function ImageGallery_frontend($PAGEDATA) {
 	return ImageGallery_show($PAGEDATA);
 }
 
+// }
+// { ImageGallery_widget
+
+/**
+	* image gallery widget
+	*
+	* @param array $vars parameters
+	*
+	* @return html
+	*/
 function ImageGallery_widget($vars=null) {
 	require_once dirname(__FILE__).'/frontend/show.php';
 	return GalleryWidget_show($vars);
 }
+
+// }

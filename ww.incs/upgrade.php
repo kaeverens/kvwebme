@@ -518,10 +518,32 @@ if ($version==48) { // add user avatar
 	dbQuery('alter table user_accounts add avatar text');
 	$version=49;
 }
+if ($version==49) { // add emails admin area
+	require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/api-admin.php';
+	Core_adminMenusAdd(
+		'Site Options>Emails',
+		'javascript:Core_screen(\'CoreSiteoptions\', \'js:Emails\')'
+	);
+	$version=50;
+}
+if ($version==50) { // change user_accounts phone into a contact field
+	dbQuery('alter table user_accounts change phone contact text');
+	$rs=dbAll('select id,contact from user_accounts');
+	foreach ($rs as $r) {
+		$c=array(
+			'phone'=>$r['contact']
+		);
+		dbQuery(
+			'update user_accounts set contact="'.addslashes(json_encode($c)).'"'
+			.' where id='.$r['id']
+		);
+	}
+	$version=51;
+}
 
 $DBVARS['version']=$version;
-Core_cacheClear();
 Core_configRewrite();
+Core_cacheClear();
 
 echo '<p>Site upgraded. Please <a href="/">click here</a> to return to the '
-	.'site.</p><script defer="defer">document.location="/";</script>';
+	.'site.</p><script>document.location="/";</script>';

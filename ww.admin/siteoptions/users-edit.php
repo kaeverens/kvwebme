@@ -23,8 +23,8 @@ if (isset($_REQUEST['action'])) {
 		redirect('/ww.admin/siteoptions.php?page=users');
 	}
 	if ($action=='Save') {
-		$addresses=array();
 		// { address
+		$addresses=array();
 		if (!isset($_POST['address'])) {
 			$_POST['address']=array();
 		}
@@ -42,11 +42,20 @@ if (isset($_REQUEST['action'])) {
 		}
 		$addresses=json_encode($addresses);
 		// }
+		// { contact
+		$contact=array();
+		foreach ($_REQUEST['contact'] as $k=>$v) {
+			if ($v!='') {
+				$contact[$k]=$v;
+			}
+		}
+		$contact=json_encode($contact);
+		// }
 		$sql='set email="'.addslashes($_REQUEST['email']).'",'
 			.'name="'.addslashes($_REQUEST['name']).'",'
 			.'location_lat='.((float)$_REQUEST['location_lat']).','
 			.'location_lng='.((float)$_REQUEST['location_lng']).','
-			.'phone="'.addslashes($_REQUEST['phone']).'",'
+			.'contact="'.addslashes($contact).'",'
 			.'active="'.(int)$_REQUEST['active'].'",'
 			.'address="'.addslashes($addresses).'"';
 		if (isset($_REQUEST['extras'])) {
@@ -111,21 +120,13 @@ if (!is_array($r) || !count($r)) {
 		'id'=>-1,
 		'email'=>'',
 		'name'=>'',
-		'phone'=>'',
+		'contact'=>'{}',
 		'active'=>0,
-		'address'=>array(
-			'default'=>array(
-				'street'=>'',
-				'street2'=>'',
-				'town'=>'',
-				'county'=>'',
-				'country'=>'',
-				'default'=>'yes'
-			)
-		),
+		'address'=>'[]',
 		'parent'=>$_SESSION['userdata']['id']
 	);
 }
+// { table of contents
 echo '<div id="tabs"><ul>'
 	.'<li><a href="#details">User Details</a></li>'
 	.'<li><a href="#locations">Locations</a></li>'
@@ -136,16 +137,26 @@ echo '<input type="hidden" name="id" value="'.$id.'" />';
 if (!isset($r['extras'])) {
 	$r['extras']='';
 }
+// }
 // { user details
-echo '<div id="details"><table><tr><th>Name</th><td><input name="name" va'
-	.'lue="'.htmlspecialchars($r['name']).'" /></td><th>Password</th><td><i'
-	.'nput name="password" type="password" /></td></tr>';
+echo '<div id="details"><table class="wide">'
+	.'<tr><th>Main</th><th>Contact Details</th></tr>'
+	.'<tr>';
+// { main details
+echo '<td><table>';
+// { name
+echo '<tr><th>Name</th><td><input name="name"'
+	.' value="'.htmlspecialchars($r['name']).'" /></td></tr>';
+// }
+// { password
+echo '<tr><th>Password</th><td><input name="password" type="password" />'
+	.'</td></tr>';
+echo '<tr><th>(repeat)</th><td><input name="password2" type="password" />'
+	.'</td></tr>';
+// }
+// { email
 echo '<tr><th>Email</th><td><input name="email" value="'
-	.htmlspecialchars($r['email']).'" /></td><th>(repeat)</th><td><input na'
-	.'me="password2" type="password" /></td></tr>';
-// { phone
-echo '<th>Phone</th><td><input name="phone" value="'
-	.htmlspecialchars($r['phone']).'" /></td></tr>';
+	.htmlspecialchars($r['email']).'" /></td></tr>';
 // }
 // { groups
 echo '<tr><th>Groups</th><td class="groups">';
@@ -167,13 +178,45 @@ foreach ($groups as $k=>$g) {
 }
 echo '</td></tr>';
 // }
+// { is active
 echo '<tr><th>Active</th><td><select name="active"><option value="0">No</'
 	.'option><option value="1"'.($r['active']?' selected="selected"':'')
 	.'>Yes</option></select></td></tr>';
-echo '<tr style="display:none" id="users-email-to-send"><th>Email to send'
-	.' to user</th><td colspan="3" id="users-email-to-send-holder"></td></tr>';
-echo '</table>';
-echo '</div>';
+// }
+echo '</table></td>';
+// }
+// { contact details
+echo '<td><table>';
+$contact=json_decode($r['contact'], true);
+echo '<tr><th>Contact Name</th><td><input name="contact[contact_name]" value="'
+	.htmlspecialchars(@$contact['contact_name']).'" title="if the user is'
+	.' a company, then enter a contact name here"/></td></tr>';
+echo '<tr><th>Business Phone</th><td><input name="contact[business_phone]" value="'
+	.htmlspecialchars(@$contact['business_phone']).'"/></td></tr>';
+echo '<tr><th>Business Email</th><td><input name="contact[business_email]" value="'
+	.htmlspecialchars(@$contact['business_email']).'"/></td></tr>';
+echo '<tr><th>Phone</th><td><input name="contact[phone]" value="'
+	.htmlspecialchars(@$contact['phone']).'"/></td></tr>';
+echo '<tr><th>Website</th><td><input name="contact[website]" value="'
+	.htmlspecialchars(@$contact['website']).'"/></td></tr>';
+echo '<tr><th>Mobile</th><td><input name="contact[mobile]" value="'
+	.htmlspecialchars(@$contact['mobile']).'"/></td></tr>';
+echo '<tr><th>Skype</th><td><input name="contact[skype]" value="'
+	.htmlspecialchars(@$contact['skype']).'"/></td></tr>';
+echo '<tr><th>Facebook</th><td><input name="contact[facebook]" value="'
+	.htmlspecialchars(@$contact['facebook']).'"/></td></tr>';
+echo '<tr><th>Twitter</th><td><input name="contact[twitter]" value="'
+	.htmlspecialchars(@$contact['twitter']).'"/></td></tr>';
+echo '<tr><th>LinkedIn</th><td><input name="contact[linkedin]" value="'
+	.htmlspecialchars(@$contact['linkedin']).'"/></td></tr>';
+echo '<tr><th>Blog</th><td><input name="contact[blog]" value="'
+	.htmlspecialchars(@$contact['blog']).'"/></td></tr>';
+echo '</table></td>';
+// }
+echo '</tr>'
+	.'<tr style="display:none" id="users-email-to-send"><th>Email to send'
+	.' to user</th><td colspan="3" id="users-email-to-send-holder"></td></tr>'
+	.'</table></div>';
 // }
 // { locations 
 echo '<div id="locations">';
@@ -218,6 +261,7 @@ echo '</div>';
 echo '<div id="custom"><input type="hidden" value="'
 	.htmlspecialchars($r['extras'], ENT_QUOTES).'" /></div>';
 // }
+
 echo '<input type="submit" name="action" value="Save" />';
 echo '</form></div>';
 WW_addScript('/ww.admin/siteoptions/users.js');

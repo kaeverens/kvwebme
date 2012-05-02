@@ -40,13 +40,15 @@ WW_addScript('/j/fg.menu/fg.menu.js');
 WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
 WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
 WW_addScript('/j/cluetip/jquery.cluetip.js');
-WW_addScript('/j/jquery.uploadify/jquery.uploadify.js');
+WW_addScript('/j/jquery.saorfm/jquery.saorfm.js');
 WW_addScript('/j/jquery-ui-timepicker-addon.js');
+WW_addScript('/j/jquery.uploadify/jquery.uploadify.js');
 WW_addScript('/j/lang.js');
 // }
 // { css
 WW_addCSS('/j/cluetip/jquery.cluetip.css');
 WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
+WW_addCSS('/j/jquery.saorfm/jquery.saorfm.css');
 WW_addCSS('/ww.admin/theme/admin.css');
 // }
 echo '<!doctype html>

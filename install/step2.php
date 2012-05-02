@@ -34,7 +34,7 @@ mysql_query(
 		email text default "",
 		name text default "",
 		password varchar(32),
-		phone text default "",
+		contact text default "",
 		active smallint default 0,
 		address text,
 		parent int default 0
