@@ -343,10 +343,9 @@ function Core_mail(
 		.', cdate=now(), subject="'.addslashes($subject).'"'
 	);
 	$images=array();
-	$count=0;
-	$newhtml=$html;
+	$count=md5(date('r', time()));;
 	do {
-		$html=$newhtml;
+		$newhtml=$html;
 		$itypes=array(
 			'png'=>'image/png',
 			'gif'=>'image/gif',
@@ -357,40 +356,36 @@ function Core_mail(
 				preg_match_all('/.*"(http[^"]*'.$extension.')".*/i', $html, $matches);
 				$origimg=$matches[1][0];
 				$img=str_replace(' ', '%20', $origimg);
+				$fname=preg_replace('/.*\//', '', $origimg);
 				$f=file_get_contents($img);
-				$images[]=array($f, $mime, 'kvImage'.$count.'_');
-				$t=str_replace($origimg, 'kvImage'.$count.'_', $html);
+				$images[]=array($f, $mime, 'ii_'.$count, $fname);
+				$html=str_replace($origimg, 'cid:ii_'.$count, $html);
+				$count=md5($count);
 			}
 		}
 	} while ($newhtml!=$html);
-	$sep=sha1(date('r', time()));
-	$headers.="Content-Type: multipart/mixed;\r\n"
-		."              boundary=\"PHP-mixed-{$sep}\"";
+	$sep=md5(date('r', time()));
+	$sep2=md5($sep);
+	$headers.="Content-Type: multipart/related; boundary={$sep}";
 
-	$body="--PHP-mixed-{$sep}\r\n"
-		."Content-Type: multipart/alternative;\r\n"
-		."              boundary=\"PHP-alt-{$sep}\"\r\n\r\n"
-		."--PHP-alt-{$sep}\r\n"
-		."Content-Type: text/plain\r\n\r\n"
-		."please use a HTML-capable email client\r\n\r\n"
-		."--PHP-alt-{$sep}\r\n"
-		."Content-Type: multipart/related; boundary=\"PHP-related-{$sep}\"\r\n\r\n";
-
-	$body.="--PHP-alt-{$sep}\r\n"
-		."Content-type: text/html; charset=utf-8\r\n\r\n"
-		.$html."\r\n\r\n";
+	$body="--{$sep}\r\n"
+		."Content-Type: multipart/alternative; boundary={$sep2}\r\n\r\n"
+		."--{$sep2}\r\n"
+		."Content-type: text/html; charset=UTF-8\r\n\r\n"
+		.$html."\r\n\r\n"
+		."--{$sep2}--\r\n";
 
 	foreach ($images as $v) {
-		$body.="--PHP-related-{$sep}\r\n"
-			."Content-Type: ".$v[1]."\r\n"
+		$body.="--{$sep}\r\n"
+			."Content-Type: ".$v[1]."; name=\"".$v[3]."\"\r\n"
 			."Content-Transfer-Encoding: base64\r\n"
-			."Content-ID: <".$v[2].">\r\n\r\n"
+			."Content-ID: <".$v[2].">\r\n"
+			."X-Attachment-Id: ".$v[2]."\r\n"
+			."\r\n"
 			.chunk_split(base64_encode($v[0]))."\r\n";
 	}
 
-	$body.="--PHP-related-{$sep}--\r\n\r\n"
-		."--PHP-alt-{$sep}--\r\n\r\n"
-		."--PHP-mixed-{$sep}--\r\n\r\n";
+	$body.="--{$sep}--";
 
 	mail(
 		$to,
