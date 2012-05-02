@@ -333,22 +333,71 @@ function Core_mail(
 	);
 	$html=$smarty->fetch($dirname.'/'.$template.'.tpl'); 
 	$headers ='MIME-Version: 1.0' . "\r\n";
-	$headers.='Content-type: text/html; charset=utf-8' . "\r\n";
 	$headers.='Reply-to: '.$from."\r\n";
 	$headers.='From-to: '.$from."\r\n";
-	$headers.='X-Mailer: PHP/'.phpversion();
+	$headers.='X-Mailer: PHP/'.phpversion()."\r\n";
 	$headers.=$additional_headers;
-	mail(
-		$to,
-		$subject,
-		$html,
-		$headers,
-		"-f$from"
-	);
 	dbQuery(
 		'insert into emails_sent set to_email="'.addslashes($to).'"'
 		.', body="'.addslashes($html).'", headers="'.addslashes($headers).'"'
 		.', cdate=now(), subject="'.addslashes($subject).'"'
+	);
+	$images=array();
+	$count=0;
+	$newhtml=$html;
+	do {
+		$html=$newhtml;
+		$itypes=array(
+			'png'=>'image/png',
+			'gif'=>'image/gif',
+			'jpg'=>'image/jpeg'
+		);
+		foreach ($itypes as $extension=>$mime) {
+			if (preg_match('/"http[^"]*'.$extension.'"/i', $html)) {
+				preg_match_all('/.*"(http[^"]*'.$extension.')".*/i', $html, $matches);
+				$origimg=$matches[1][0];
+				$img=str_replace(' ', '%20', $origimg);
+				$f=file_get_contents($img);
+				$images[]=array($f, $mime, 'kvImage'.$count.'_');
+				$t=str_replace($origimg, 'kvImage'.$count.'_', $html);
+			}
+		}
+	} while ($newhtml!=$html);
+	$sep=sha1(date('r', time()));
+	$headers.="Content-Type: multipart/mixed;\r\n"
+		."              boundary=\"PHP-mixed-{$sep}\"";
+
+	$body="--PHP-mixed-{$sep}\r\n"
+		."Content-Type: multipart/alternative;\r\n"
+		."              boundary=\"PHP-alt-{$sep}\"\r\n\r\n"
+		."--PHP-alt-{$sep}\r\n"
+		."Content-Type: text/plain\r\n\r\n"
+		."please use a HTML-capable email client\r\n\r\n"
+		."--PHP-alt-{$sep}\r\n"
+		."Content-Type: multipart/related; boundary=\"PHP-related-{$sep}\"\r\n\r\n";
+
+	$body.="--PHP-alt-{$sep}\r\n"
+		."Content-type: text/html; charset=utf-8\r\n\r\n"
+		.$html."\r\n\r\n";
+
+	foreach ($images as $v) {
+		$body.="--PHP-related-{$sep}\r\n"
+			."Content-Type: ".$v[1]."\r\n"
+			."Content-Transfer-Encoding: base64\r\n"
+			."Content-ID: <".$v[2].">\r\n\r\n"
+			.chunk_split(base64_encode($v[0]))."\r\n";
+	}
+
+	$body.="--PHP-related-{$sep}--\r\n\r\n"
+		."--PHP-alt-{$sep}--\r\n\r\n"
+		."--PHP-mixed-{$sep}--\r\n\r\n";
+
+	mail(
+		$to,
+		$subject,
+		$body,
+		$headers,
+		"-f$from"
 	);
 }
 
