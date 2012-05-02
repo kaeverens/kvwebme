@@ -575,6 +575,41 @@ function Core_adminMenuClearAllAdmins() {
 }
 
 // }
+// { Core_adminEmailTemplateGet
+
+/**
+	* get a list of existing email templates
+	*
+	* @return array list
+	*/
+function Core_adminEmailTemplateGet() {
+	$name=$_REQUEST['name'];
+	return dbOne(
+		'select body from email_templates where name="'.addslashes($name).'"',
+		'body'
+	);
+}
+
+// }
+// { Core_adminEmailTemplateSet
+
+/**
+	* get a list of existing email templates
+	*
+	* @return array list
+	*/
+function Core_adminEmailTemplateSet() {
+	$name=$_REQUEST['name'];
+	$body=$_REQUEST['body'];
+	dbQuery('delete from email_templates where name="'.addslashes($name).'"');
+	dbQuery(
+		'insert into email_templates set name="'.addslashes($name).'"'
+		.',body="'.addslashes($body).'"'
+	);
+	return true;
+}
+
+// }
 // { Core_adminEmailTemplatesList
 
 /**

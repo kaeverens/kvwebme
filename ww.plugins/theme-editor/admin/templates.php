@@ -30,7 +30,6 @@ echo '<textarea id="theme-body" name="theme-body">',htmlspecialchars($f)
 	,'</textarea>';
 echo '<br /><input type="submit" onclick="document.getElementById(\'theme-b'
 	,'ody\').value=editor.getCode();" name="action" value="save" /></form>';
-WW_addScript('/j/CodeMirror-0.93/js/codemirror.js');
 ?>
 <style>
 .CodeMirror-wrapping{
@@ -39,19 +38,22 @@ WW_addScript('/j/CodeMirror-0.93/js/codemirror.js');
 </style>
 <script type="text/javascript">
 $(function(){
-	var editor = CodeMirror.fromTextArea("theme-body", {
-	  parserfile: ["parsexml.js", "parsecss.js", "tokenizejavascript.js",
-			"parsejavascript.js", "parsehtmlmixed.js"],
-		reindentOnLoad:true,
-		height:($(window).height()-$('#main').offset().top-45)+'px',
-	  path: "/j/CodeMirror-0.93/js/",
-		stylesheet: [
-			"/j/CodeMirror-0.93/css/xmlcolors.css",
-			"/j/CodeMirror-0.93/css/jscolors.css",
-			"/j/CodeMirror-0.93/css/csscolors.css"
-		],
-		lineNumbers:true,
-		lineWrapping:true
+	var $textarea=$('#theme-body');
+	var editor = CodeMirror
+		.fromTextArea($textarea[0], {
+			mode: {
+				name: "smarty",
+				leftDelimiter: "{{",
+				rightDelimiter: "}}"
+			},
+			indentUnit: 1,
+			indentWithTabs: true,
+			lineWrapping:true,
+			lineNumbers:true
+		});
+	$('.CodeMirror-scroll').css({
+		'height':($(window).height()-$('#main').offset().top-45)+'px',
+		'border':'1px solid #000'
 	});
 });
 </script>

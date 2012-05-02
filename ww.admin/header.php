@@ -44,12 +44,19 @@ WW_addScript('/j/jquery.saorfm/jquery.saorfm.js');
 WW_addScript('/j/jquery-ui-timepicker-addon.js');
 WW_addScript('/j/jquery.uploadify/jquery.uploadify.js');
 WW_addScript('/j/lang.js');
+WW_addScript('/j/CodeMirror-2.24/lib/codemirror.js');
+WW_addScript('/j/CodeMirror-2.24/mode/css/css.js');
+WW_addScript('/j/CodeMirror-2.24/mode/javascript/javascript.js');
+WW_addScript('/j/CodeMirror-2.24/mode/xml/xml.js');
+WW_addScript('/j/CodeMirror-2.24/mode/smarty/smarty.js');
+WW_addScript('/j/CodeMirror-2.24/mode/htmlmixed/htmlmixed.js');
 // }
 // { css
 WW_addCSS('/j/cluetip/jquery.cluetip.css');
 WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
 WW_addCSS('/j/jquery.saorfm/jquery.saorfm.css');
 WW_addCSS('/ww.admin/theme/admin.css');
+WW_addCSS('/j/CodeMirror-2.24/lib/codemirror.css');
 // }
 echo '<!doctype html>
 <html><head><title>'.__('WebME admin area').'</title>';

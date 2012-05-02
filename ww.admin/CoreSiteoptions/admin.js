@@ -763,7 +763,94 @@ function CoreSiteoptions_screenMenus() {
 	// }
 }
 function CoreSiteoptions_screenEmails() {
+	function showEmailsSent(panel) {
+		var $panel=$(panel).empty();
+		$panel.html('todo');
+	}
+	function showTemplates(panel) {
+		var $panel=$(panel).empty();
+		var html='<select id="email-templates-list">'
+			+'<option> -- choose -- </option></select>'
+			+'<textarea disabled id="email-templates-source"></textarea>'
+			+'<button disabled id="email-templates-save">Save</button>';
+		$.post('/a/f=adminEmailTemplatesList', function(ret) {
+			var opts='<option> -- choose -- </option>';
+			for (var i=0;i<ret.length;++i) {
+				opts+='<option>'+ret[i].name+'</option>';
+			}
+			$('#email-templates-list').html(opts);
+		});
+		$panel.html(html);
+		$('#email-templates-list').change(function() {
+			var val=$(this).val();
+			if (val=='-- choose --') {
+				editor.setValue('');
+				editor.setOption('readOnly', true);
+				$('#email-templates-save').attr('disabled', true);
+				return;
+			}
+			$('#email-templates-save').attr('disabled', false);
+			$.post('/a/f=adminEmailTemplateGet', {
+				'name':val
+			}, function(ret) {
+				editor.setValue(ret);
+				editor.setOption('readOnly', false);
+			});
+		});
+		var $textarea=$('#email-templates-source');
+		var editor = CodeMirror
+			.fromTextArea($textarea[0], {
+				mode: {
+					name: "smarty",
+					leftDelimiter: "{{",
+					rightDelimiter: "}}"
+				},
+				indentUnit: 1,
+				indentWithTabs: true,
+				lineWrapping:true,
+				lineNumbers:true,
+				readOnly:true
+			});
+		$('.CodeMirror-scroll').css({
+			'height':($(window).height()-$('#content').offset().top-150)+'px',
+			'border':'1px solid #000'
+		});
+		$('#email-templates-save').click(function() {
+			var val=$('#email-templates-list').val();
+			if (val=='-- choose --') {
+				return;
+			}
+			var body=editor.getValue();
+			$.post('/a/f=adminEmailTemplateSet', {
+				'name': val,
+				'body': body
+			}, function() {
+				alert('saved');
+			});
+		});
+	}
 	var $content=$('#content').empty().append('<h1>Emails</h1>');
+	// { show tabs
+	$('<div><ul>'
+		+'<li><a href="#tab-emails-sent">Emails Sent</a></li>'
+		+'<li><a href="#tab-templates">Templates</a></li>'
+		+'</ul>'
+		+'<div id="tab-emails-sent"/><div id="tab-templates"/>'
+		+'</div>')
+		.appendTo($content)
+		.tabs({
+			'show':function(e, ui) {
+				switch(ui.index) {
+					case 0: // { emails sent
+						showEmailsSent(ui.panel);
+					break; // }
+					case 1: // { templates
+						showTemplates(ui.panel);
+					break; // }
+				}
+			}
+		});
+	// }
 }
 $(document).on('click', '.map-opener', function() {
 	var $this=$(this);

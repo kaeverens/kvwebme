@@ -540,6 +540,21 @@ if ($version==50) { // change user_accounts phone into a contact field
 	}
 	$version=51;
 }
+if ($version==51) { // add table for email templates
+	dbQuery(
+		'CREATE TABLE `email_templates` ('
+		.'`name` text, `body` text'
+		.') ENGINE=InnoDB DEFAULT CHARSET=utf8'
+	);
+	dbQuery(
+		'insert into email_templates values'
+		.' ("_body","{{include file=\'_header.tpl\'}}'."\n".'{{$email_body}}'."\n"
+		.'{{include file=\'_footer.tpl\'}}")'
+		.',("_header","<!doctype html>\n<html><head></head><body>")'
+		.',("_footer","</body></html>")'
+	);
+	$version=52;
+}
 
 $DBVARS['version']=$version;
 Core_configRewrite();
