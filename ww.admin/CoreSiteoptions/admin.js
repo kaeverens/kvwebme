@@ -775,6 +775,23 @@ function CoreSiteoptions_screenEmails() {
 			"bJQueryUI":true,
 			"bServerSide":true,
 			"fnRowCallback":function( nRow, aData, iDisplayIndex ) {
+				$('<a href="javascript:" data-id="'+aData[3]+'">view</a>')
+					.appendTo($('td:nth-child(4)', nRow).empty())
+					.click(function() {
+						console.log(1);
+						var w=$(window).width(), h=$(window).height();
+						var html='<iframe style="width:100%;height:100%"'
+							+' src="/a/f=adminEmailSentGet/id='+$(this).data('id')
+							+'"></iframe>';
+						var $iframe=$(html).dialog({
+							'modal':true,
+							'width':w-100,
+							'height':h-100,
+							'close':function() {
+								$iframe.remove();
+							}
+						});
+					});
 				return nRow;
 			}
 		};

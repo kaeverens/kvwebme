@@ -196,6 +196,21 @@ function Core_adminEmailsSentDT() {
 }
 
 // }
+// { Core_adminEmailSentGet
+
+/**
+	* get the HTMl of a sent email
+	*
+	* @return array
+	*/
+function Core_adminEmailSentGet() {
+	$id=(int)$_REQUEST['id'];
+	header('Content-type: text/html; charset=utf-8');
+	echo dbOne('select body from emails_sent where id='.$id, 'body');
+	exit;
+}
+
+// }
 // { Core_adminEmailTemplateGet
 
 /**
