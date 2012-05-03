@@ -955,8 +955,8 @@ function Products_typeEdit(id) {
 	}
 	function updateMultiView() {
 		tdata.multiview_template=$('#ts1 textarea').val();
-		tdata.multiview_template_footer=$('#ts2 textarea').val();
-		tdata.multiview_template_header=$('#ts3 textarea').val();
+		tdata.multiview_template_footer=$('#ts3 textarea').val();
+		tdata.multiview_template_header=$('#ts2 textarea').val();
 	}
 	function updateSingleView() {
 		tdata.singleview_template=$('#t3 textarea').val();
