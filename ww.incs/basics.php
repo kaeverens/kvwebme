@@ -754,6 +754,7 @@ $_language_notfound=array(); // for recording missing language strings
 // }
 // { set up constants
 define('SCRIPTBASE', $_SERVER['DOCUMENT_ROOT'] . '/');
+require_once SCRIPTBASE . '/ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
 if (!file_exists(SCRIPTBASE . '.private/config.php')) {
 	echo '<html><body><p>No configuration file found</p>';
 	if (file_exists('install/index.php')) {
