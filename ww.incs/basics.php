@@ -531,6 +531,9 @@ function dbAll($query, $key='') {
 	}
 	$arr=array();
 	foreach ($results as $r) {
+		if (!isset($r[$key])) {
+			return false;
+		}
 		$arr[$r[$key]]=$r;
 	}
 	return $arr;
