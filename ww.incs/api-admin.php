@@ -783,7 +783,7 @@ function Core_adminMenusRemove($path) {
 	*/
 function Core_adminMenusRemoveRecurse($menus, $bits, $name) {
 	if (!isset($menus[$name])) {
-		return;
+		return $menus;
 	}
 	$thismenu=$menus[$name];
 	$submenus=0;
