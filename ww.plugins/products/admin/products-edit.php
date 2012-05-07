@@ -165,7 +165,9 @@ function showCats($parent) {
 			$found[]=$l;
 		}
 	}
-	return '<ul>'.join('', $found).'</ul>';
+	return $found
+		?'<ul>'.join('', $found).'</ul>'
+		:'';
 }
 
 // }
@@ -793,6 +795,7 @@ $cid=(int)@$pdata['default_category'];
 if (!$cid) {
 	$cid=1;
 }
+echo '<input type="button" id="addCategory" value="Add Category" /><br />';
 echo '<label>Default Category: <select name="products_default_category">'
 	.'<option value="'.((int)@$pdata['products_default_category']).'">'
 	.dbOne(
@@ -853,3 +856,12 @@ echo '</div><input type="submit" value="Save" /></form>';
 // }
 WW_addScript('products/admin/products-edit.js');
 WW_addScript('products/admin/create-page.js');
+WW_addScript('products/admin/add-category.js');
+WW_addInlineScript(
+	'$(function(){'
+	.'$("#onTheFlyParent").remoteselectoptions({'
+	.'url:"/a/p=products/f=adminCategoriesGetRecursiveList"'
+	.'})'	
+	.'})'
+);
+

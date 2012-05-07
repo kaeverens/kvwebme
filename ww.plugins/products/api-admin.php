@@ -165,16 +165,21 @@ function Products_adminCategoryGet() {
 	*
 	* @return array category data
 	*/
-function Products_adminCategoryNew() {
-	if (!is_numeric(@$_REQUEST['parent_id']) || @$_REQUEST['name']=='') {
+function Products_adminCategoryNew() {	
+	
+	if (!is_numeric(@$_REQUEST['parent_id']) || @$_REQUEST['name']=='') {	
 		exit;
 	}
+		
 	dbQuery(
 		'insert into products_categories set name="'.addslashes($_REQUEST['name'])
 		.'",enabled=1,parent_id='.$_REQUEST['parent_id']
 	);
+	
+	
 	$id=dbOne('select last_insert_id() as id', 'id');
-	$data=Products_adminCategoryGetFromID($id);
+	$data=Products_adminCategoryGetFromID($id);	
+	
 	return $data;
 }
 
