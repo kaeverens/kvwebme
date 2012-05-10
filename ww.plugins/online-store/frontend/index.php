@@ -236,6 +236,8 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		require_once SCRIPTBASE . 'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
 		$smarty = new Smarty;
 		$smarty->compile_dir=USERBASE.'/ww.cache/templates_c';
+		$smarty->left_delimiter = '{{';
+		$smarty->right_delimiter = '}}';
 		if (!file_exists(USERBASE.'/ww.cache/templates_c')) {
 			mkdir(USERBASE.'/ww.cache/templates_c');
 		}
@@ -366,7 +368,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 				'select val from online_store_vars'
 				.' where name="email_order_made_customer"',
 				'val'
-			)
+			);
 			if ($r) {
 				file_put_contents($tpldir.$PAGEDATA->id.'-order_made_customer', $r);
 			}
@@ -401,7 +403,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 				'select val from online_store_vars'
 				.' where name="email_order_made_admin"',
 				'val'
-			)
+			);
 			if ($r) {
 				file_put_contents($tpldir.$PAGEDATA->id.'-order_made_admin', $r);
 			}

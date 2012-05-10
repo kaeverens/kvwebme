@@ -405,27 +405,6 @@ $c.='<div id="online-stores-fields">'
 	.htmlspecialchars($vars['online_stores_fields']).'" />'
 	.'</div>';
 // }
-// { invoice details
-$c.='<div id="online-store-invoice">';
-/* TODO - translation /CB */
-$c.='<p>This is what will be sent out to the buyer after the payment succeeds.'
-	.'</p>';
-$invoice=dbOne(
-	'select val from online_store_vars where name="email_invoice"', 'val'
-);
-if (!$invoice) {
-	$invoice=file_get_contents(
-		dirname(__FILE__).'/invoice_template_sample.html'
-	);
-	dbQuery('delete from online_store_vars where name="email_invoice"');
-	dbQuery(
-		'insert into online_store_vars set name="email_invoice"'
-		.',val="'.addslashes($invoice).'"'
-	);
-}
-$c.=ckeditor('email_invoice', $invoice);
-$c.='</div>';
-// }
 // { countries
 // { list of countries
 /* TODO - translation /CB */
