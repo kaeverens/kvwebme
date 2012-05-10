@@ -83,7 +83,7 @@ foreach ($rs2 as $r) {
 		continue;
 	}
 	echo '<option';
-	if ($r['name']==@$rs['email_'.$email.'_template']) {
+	if ($r['name']==@$rs['email_'.$email.'_template']['val']) {
 		echo ' selected="selected"';
 	}
 	echo '>'.$r['name'].'</option>';
@@ -104,9 +104,9 @@ echo '<tr><th>Admin who receives a copy of this email</th>'
 // }
 // { replyto
 echo '<tr><th>Reply-to address</th>'
-	.'<td><input type="email" name="onlinestore-emails-recipient-replyto"'
+	.'<td><input type="email" name="onlinestore-emails-replyto"'
 	.' value="'.htmlspecialchars(
-		@$rs['email_'.$email.'_recipient_replyto']['val']
+		@$rs['email_'.$email.'_replyto']['val']
 	).'"/></td>'
 	.'</tr>';
 // }

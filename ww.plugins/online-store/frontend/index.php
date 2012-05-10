@@ -382,17 +382,18 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$body=addslashes(
 				$smarty->fetch($tpldir.$PAGEDATA->id.'-order_made_customer')
 			);
+			echo 'customer:'.$body;
 			$additional_headers='';
 			if ($rs['email_order_made_customer_recipient']['val']) {
 				$additional_headers='BCC: '
 					.$rs['email_order_made_customer_recipient']['val']."\r\n";
 			}
 			Core_mail(
-				$email,
-				$rs['email_order_made_subject']['val'],
+				$_REQUEST['Email'],
+				$rs['email_order_made_customer_subject']['val'],
 				$body,
-				$rs['email_order_made_replyto']['val'],
-				$rs['email_order_made_customer']['val'],
+				$rs['email_order_made_customer_replyto']['val'],
+				$rs['email_order_made_customer_template']['val'],
 				$additional_headers
 			);
 		}
@@ -418,11 +419,11 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 				$smarty->fetch($tpldir.$PAGEDATA->id.'-order_made_admin')
 			);
 			Core_mail(
-				$$rs['email_order_made_admin_recipient']['val'],
-				$rs['email_order_made_subject']['val'],
+				$rs['email_order_made_admin_recipient']['val'],
+				$rs['email_order_made_admin_subject']['val'],
 				$body,
-				$rs['email_order_made_replyto']['val'],
-				$rs['email_order_made_admin']['val']
+				$rs['email_order_made_admin_replyto']['val'],
+				$rs['email_order_made_admin_template']['val']
 			);
 		}
 		// }
