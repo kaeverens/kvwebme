@@ -800,19 +800,49 @@ function CoreSiteoptions_screenEmails() {
 	function showTemplates(panel) {
 		var $panel=$(panel).empty();
 		var html='<select id="email-templates-list">'
-			+'<option> -- choose -- </option></select>'
+			+'<option>-- choose --</option></select>'
 			+'<textarea disabled id="email-templates-source"></textarea>'
 			+'<button disabled id="email-templates-save">Save</button>';
 		$.post('/a/f=adminEmailTemplatesList', function(ret) {
-			var opts='<option> -- choose -- </option>';
+			var opts='<option>-- choose --</option>';
 			for (var i=0;i<ret.length;++i) {
 				opts+='<option>'+ret[i].name+'</option>';
 			}
+			opts+='<option class="new" value="-1">new template</option>';
 			$('#email-templates-list').html(opts);
 		});
 		$panel.html(html);
 		$('#email-templates-list').change(function() {
 			var val=$(this).val();
+			if (val=='-1') {
+				editor.setValue('');
+				editor.setOption('readOnly', true);
+				$('#email-templates-save').attr('disabled', true);
+				var valid, name='';
+				do {
+					valid=true;
+					name=prompt("What should the new template be named?", name);
+					if (!name) {
+						return;
+					}
+					if (name.replace(/[^a-zA-Z0-9]/g, '')!=name) {
+						valid=false;
+						alert('Invalid name. Please use only letters and numbers.');
+					}
+				} while(!valid);
+				$.post('/a/f=adminEmailTemplateSet', {
+					'name': name,
+					'body': ''
+				}, function(ret) {
+					if (ret.error) {
+						return alert(ret.error);
+					}
+					$('<option value="'+name+'">'+name+'</option>')
+						.insertAfter('#email-templates-list option:first-child');
+					$('#email-templates-list').val(name).change();
+				});
+				return;
+			}
 			if (val=='-- choose --') {
 				editor.setValue('');
 				editor.setOption('readOnly', true);

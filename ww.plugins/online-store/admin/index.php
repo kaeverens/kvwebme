@@ -410,12 +410,20 @@ $c.='<div id="online-store-invoice">';
 /* TODO - translation /CB */
 $c.='<p>This is what will be sent out to the buyer after the payment succeeds.'
 	.'</p>';
-if (!isset($vars['online_stores_invoice']) || $vars['online_stores_invoice']=='') {
-	$vars['online_stores_invoice']=file_get_contents(
+$invoice=dbOne(
+	'select val from online_store_vars where name="email_invoice"', 'val'
+);
+if (!$invoice) {
+	$invoice=file_get_contents(
 		dirname(__FILE__).'/invoice_template_sample.html'
 	);
+	dbQuery('delete from online_store_vars where name="email_invoice"');
+	dbQuery(
+		'insert into online_store_vars set name="email_invoice"'
+		.',val="'.addslashes($invoice).'"'
+	);
 }
-$c.=ckeditor('page_vars[online_stores_invoice]', $vars['online_stores_invoice']);
+$c.=ckeditor('email_invoice', $invoice);
 $c.='</div>';
 // }
 // { countries
@@ -566,6 +574,8 @@ if (file_exists(USERBASE.'/ww.cache/online-store/'.$page['id'])) {
 }
 file_put_contents(
 	USERBASE.'/ww.cache/online-store/'.$page['id'],
-	$vars['online_stores_invoice']
+	dbOne(
+		'select val from online_store_vars where name="email_invoice"', 'val'
+	)
 );
 $c.='<style>@import "/ww.plugins/online-store/admin/styles.css";</style>';

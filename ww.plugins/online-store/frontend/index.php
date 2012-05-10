@@ -232,7 +232,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		);
 		$id=dbOne('select last_insert_id() as id', 'id');
 		 // }
-		// { generate invoice
+		// { generate emails
 		require_once SCRIPTBASE . 'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
 		$smarty = new Smarty;
 		$smarty->compile_dir=USERBASE.'/ww.cache/templates_c';
@@ -346,19 +346,84 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		$smarty->assign('_invoice_table', $table);
 		$smarty->assign('_invoicenumber', $id);
 		// }
-		if (!file_exists(USERBASE.'/ww.cache/online-store/'.$PAGEDATA->id)) {
-			@mkdir(USERBASE.'/ww.cache/online-store');
+		$tpldir=USERBASE.'/ww.cache/online-store/';
+		@mkdir($tpldir);
+		// { invoice
+		if (!file_exists($tpldir.$PAGEDATA->id)) {
 			file_put_contents(
-				USERBASE.'/ww.cache/online-store/'.$PAGEDATA->id,
-				$PAGEDATA->vars['online_stores_invoice']
+				$tpldir.$PAGEDATA->id,
+				dbOne(
+					'select val from online_store_vars where name="email_invoice"', 'val'
+				)
 			);
 		}
-		$invoice=addslashes(
-			$smarty->fetch(
-				USERBASE.'/ww.cache/online-store/'.$PAGEDATA->id
-			)
-		);
+		$invoice=addslashes($smarty->fetch($tpldir.$PAGEDATA->id));
 		dbQuery("update online_store_orders set invoice='$invoice' where id=$id");
+		// }
+		// { order_made_customer
+		if (!file_exists($tpldir.$PAGEDATA->id.'-order_made_customer')) {
+			$r=dbOne(
+				'select val from online_store_vars'
+				.' where name="email_order_made_customer"',
+				'val'
+			)
+			if ($r) {
+				file_put_contents($tpldir.$PAGEDATA->id.'-order_made_customer', $r);
+			}
+		}
+		if (file_exists($tpldir.$PAGEDATA->id.'-order_made_customer')) {
+			$rs=dbAll(
+				'select * from online_store_vars'
+				.' where name like "email_order_made_customer%"',
+				'name'
+			);
+			$body=addslashes(
+				$smarty->fetch($tpldir.$PAGEDATA->id.'-order_made_customer')
+			);
+			$additional_headers='';
+			if ($rs['email_order_made_customer_recipient']['val']) {
+				$additional_headers='BCC: '
+					.$rs['email_order_made_customer_recipient']['val']."\r\n";
+			}
+			Core_mail(
+				$email,
+				$rs['email_order_made_subject']['val'],
+				$body,
+				$rs['email_order_made_replyto']['val'],
+				$rs['email_order_made_customer']['val'],
+				$additional_headers
+			);
+		}
+		// }
+		// { order_made_admin
+		if (!file_exists($tpldir.$PAGEDATA->id.'-order_made_admin')) {
+			$r=dbOne(
+				'select val from online_store_vars'
+				.' where name="email_order_made_admin"',
+				'val'
+			)
+			if ($r) {
+				file_put_contents($tpldir.$PAGEDATA->id.'-order_made_admin', $r);
+			}
+		}
+		if (file_exists($tpldir.$PAGEDATA->id.'-order_made_admin')) {
+			$rs=dbAll(
+				'select * from online_store_vars'
+				.' where name like "email_order_made_admin%"',
+				'name'
+			);
+			$body=addslashes(
+				$smarty->fetch($tpldir.$PAGEDATA->id.'-order_made_admin')
+			);
+			Core_mail(
+				$$rs['email_order_made_admin_recipient']['val'],
+				$rs['email_order_made_subject']['val'],
+				$body,
+				$rs['email_order_made_replyto']['val'],
+				$rs['email_order_made_admin']['val']
+			);
+		}
+		// }
 		// }
 		// { show payment button
 		switch($_REQUEST['_payment_method_type']){

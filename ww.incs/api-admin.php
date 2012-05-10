@@ -230,7 +230,7 @@ function Core_adminEmailTemplateGet() {
 // { Core_adminEmailTemplateSet
 
 /**
-	* get a list of existing email templates
+	* save an email template
 	*
 	* @return array list
 	*/

@@ -1,7 +1,6 @@
 <html>
     <head>
         <style type="text/css">
-			{literal}
 			*{ font-family:sans-serif;font-size:9pt}
 			h3{text-align:center;font-variant:small-caps;margin-top:2cm}
 			table{border-spacing:0}
@@ -24,46 +23,45 @@
 			.amountheader{text-align:right}
 			#logo{width:288px;font-size:7pt;text-align:center}
 			#logo span{font-size:8.5pt}
-			{/literal}
 		</style>
     </head>
     <body>
         <div id="deliveryaddress">
-        {$FirstName} {$Surname}<br />
-				{$Street}<br />
-				{$Street2}<br />
-				{$Town}<br />
-				{$County}<br />
-				{$Country}<br />
+        {{$FirstName}} {{$Surname}}<br />
+				{{$Street}}<br />
+				{{$Street2}}<br />
+				{{$Town}}<br />
+				{{$County}}<br />
+				{{$Country}}<br />
 				</div>
         <div id="logo"><strong>COMPANY NAME</strong><br />
         Address, Town, County, Country<br />
         Tel: 1234 5678 &nbsp; &nbsp; Fax: 1234 5678<br />
         Email: sales@example.com</div>
-        <div id="invoiceinfo"><span style="font-size: 8pt;">No. {$_invoicenumber}<br />
-        {$smarty.now|date_format}<br />
+        <div id="invoiceinfo"><span style="font-size: 8pt;">No. {{$_invoicenumber}}<br />
+        {{$smarty.now|date_format}}<br />
         VAT: 12345678</span><br />
         <br />
         <br />
         <br />
         <br />
         <br />
-        {if $Billing_FirstName}
-	        {$Billing_FirstName} {$Billing_Surname}<br />
-					{$Billing_Street}<br />
-					{$Billing_Street2}<br />
-					{$Billing_Town}<br />
-					{$Billing_County}<br />
-					{$Billing_Country}
-				{else}
-	        {$FirstName} {$Surname}<br />
-					{$Street}<br />
-					{$Street2}<br />
-					{$Town}<br />
-					{$County}<br />
-					{$Country}
-				{/if}
+        {{if $Billing_FirstName}}
+	        {{$Billing_FirstName}} {{$Billing_Surname}}<br />
+					{{$Billing_Street}}<br />
+					{{$Billing_Street2}}<br />
+					{{$Billing_Town}}<br />
+					{{$Billing_County}}<br />
+					{{$Billing_Country}}
+				{{else}}
+	        {{$FirstName}} {{$Surname}}<br />
+					{{$Street}}<br />
+					{{$Street2}}<br />
+					{{$Town}}<br />
+					{{$County}}<br />
+					{{$Country}}
+				{{/if}}
 				</div>
-        {$_invoice_table}
+        {{$_invoice_table}}
     </body>
 </html>

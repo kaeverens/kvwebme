@@ -58,7 +58,7 @@ $plugin=array(
 		'initialisation-completed' => 'OnlineStore_startup',
 		'privacy_user_profile'     => 'OnlineStore_userProfile'
 	),
-	'version' => '14'
+	'version' => '15'
 );
 // }
 // { currency symbols

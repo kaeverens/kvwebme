@@ -131,3 +131,48 @@ if ($version==13) { // change menus for new separated pages
 	);
 	$version=14;
 }
+if ($version==14) { // no longer using page_vars for invoices
+	dbQuery(
+		'create table online_store_vars('
+		.'name text'
+		.',val text'
+		.')default charset=utf8'
+	);
+	$html=dbOne(
+		'select value from page_vars where name="online_stores_invoice"', 'value'
+	);
+	if ($html) {
+		$html=str_replace(array("\r", "\n"), ' ', $html);
+		$html=str_replace(array('{', '}'), array('{{', '}}'), $html);
+		$newhtml=$html;
+		do {
+			$html=$newhtml;
+			$newhtml=preg_replace(
+				'/({{literal}})(.*){{(.*)({{\/literal}})/', '\1\2{\3\4', $html
+			);
+			$newhtml=preg_replace(
+				'/({{literal}})(.*)}}(.*)({{\/literal}})/', '\1\2}\3\4', $newhtml
+			);
+		} while($newhtml!=$html);
+		$html=str_replace(array('{{literal}}', '{{/literal}}'), '', $html);
+		dbQuery(
+			'insert into online_store_vars set name="email_invoice"'
+			.', val="'.addslashes($html).'"'
+		);
+	}
+	$email=dbOne(
+		'select value from page_vars where name="online_stores_admin_email"',
+		'value'
+	);
+	if ($email) {
+		dbQuery(
+			'insert into online_store_vars set name="email_invoice_recipient"'
+			.', val="'.addslashes($email).'"'
+		);
+	}
+	require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/api-admin.php';
+	Core_adminMenusAdd(
+		'Online Store>Emails', 'plugin.php?_plugin=online-store&amp;_page=emails'
+	);
+	$version=15;
+}

@@ -234,6 +234,10 @@ foreach ($store_vals as $name=>$value) {
 }
 $query=substr($query, 0, strlen($query)-1); // remove last comma
 dbQuery($query);
+dbQuery(
+	'insert into online_store_vars set name="email_invoice"'
+	.',val="'.addslashes($store_vals['online_stores_invoice']).'"'
+);
 // }
 
 // }

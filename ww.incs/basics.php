@@ -305,10 +305,12 @@ function Core_isAdmin() {
 /**
 	* send an email
 	*
-	* @param string $to      email address to send to
-	* @param string $subject title of the email
-	* @param string $body    HTML of the email body
-	* @param string $from    who the email comes from
+	* @param string $to                 email address to send to
+	* @param string $subject            title of the email
+	* @param string $body               HTML of the email body
+	* @param string $from               who the email comes from
+	* @param string $template           email template to use
+	* @param string $additional_headers any additional headers
 	*
 	* @return null
 	*/
