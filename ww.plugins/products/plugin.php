@@ -329,7 +329,7 @@ class Product{
 			if ($pid) {
 				$page = Page::getInstance($pid);
 				$this->relativeUrl=$page->getRelativeUrl()
-					.'/'.$this->id.'|'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
+					.'/'.$this->id.'-'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
 				return $this->relativeUrl;
 			}
 		}
@@ -344,11 +344,11 @@ class Product{
 		if ($cat) {
 			$cat=ProductCategory::getInstance($cat);
 			return $cat->getRelativeUrl()
-				.'/'.$this->id.'|'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
+				.'/'.$this->id.'-'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
 		}
 		if (preg_match('/^products(\||$)/', $PAGEDATA->type)) { // TODO
 			return $PAGEDATA->getRelativeUrl()
-				.'/'.$this->id.'|'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
+				.'/'.$this->id.'-'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
 		}
 		$this->relativeUrl='/_r?type=products&amp;product_id='.$this->id;
 		return $this->relativeUrl;
@@ -1169,11 +1169,12 @@ function Products_frontend($PAGEDATA) {
 				$_REQUEST['product_cid']=$cat_id;
 			}
 			else {
-				if (strpos($bit, '|')===false) {
-					$pconstraint='link like "'.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'"';
+				$prefix=preg_replace('/-.*/', '', $bit);
+				if ($bit!=$prefix && is_numeric($prefix)) {
+					$pconstraint='id='.(int)$prefix;
 				}
 				else {
-					$pconstraint='id='.(int)preg_replace('/\|.*/', '', $bit);
+					$pconstraint='link like "'.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'"';
 				}
 				if ($cat_id) {
 					$id=dbOne(
