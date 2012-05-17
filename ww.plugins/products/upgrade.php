@@ -305,3 +305,22 @@ if ($version==39) { // add date_edited  field to products
 	dbQuery('update products set date_edited=date_created');
 	$version=40;
 }
+if ($version==40) { // watch-lists
+	dbQuery(
+		'create table products_watchlists('
+		.'user_id int'
+		.', category_id int'
+		.')default charset=utf8'
+	);
+	$version=41;
+}
+if ($version==41) { // periodic imports
+	dbQuery(
+		'insert into cron set name="product watches"'
+		.', notes="Send emails out to people that are watching categories"'
+		.', period="day",period_multiplier=1'
+		.', next_date=date_add(now(), interval 1 day)'
+		.', func="Products_categoryWatchesRun"'
+	);
+	$version=42;
+}

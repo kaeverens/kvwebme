@@ -102,14 +102,18 @@ switch ($widget_type) {
 		WW_addScript('products/j/categories-tree.js');
 	break; // }
 	default: // { List Categories
-		$html='<ul>';
+		$html='<ul class="product-categories">';
 		foreach ($cats as $c) {
 			$name=$c['name'];
 			$html.='<li class="products-cat-'
 				.preg_replace('/[^a-zA-Z0-9\-_]/', '', $name).'">'
-				.'<a href="/_r?type=products&product_cid='.$c['id'].'">'
+				.'<a data-cid="'.$c['id'].'"'
+				.' href="/_r?type=products&product_cid='.$c['id'].'">'
 				.$name.'</a></li>';
 		}
 		$html.='</ul>';
+		if (@$_SESSION['userdata']['id']) {
+			WW_addScript('products/j/watchlists.js');
+		}
 	break; // }
 }

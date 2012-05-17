@@ -63,6 +63,71 @@ function Products_categoriesOptionsGet() {
 }
 
 // }
+// { Products_categoryUnwatch
+/**
+	* unwatch this category
+	*
+	* @return null
+	*/
+
+function Products_categoryUnwatch() {
+	$cid=(int)$_REQUEST['cid'];
+	$uid=(int)$_SESSION['userdata']['id'];
+	if (!$uid || !$cid) {
+		return array('error'=>'no category selected or not logged in');
+	}
+	dbQuery(
+		'delete from products_watchlists where user_id='.$uid
+		.' and category_id='.$cid
+	);
+	return array('ok'=>1);
+}
+
+// }
+// { Products_categoryWatch
+/**
+	* watch this category
+	*
+	* @return null
+	*/
+
+function Products_categoryWatch() {
+	$cid=(int)$_REQUEST['cid'];
+	$uid=(int)$_SESSION['userdata']['id'];
+	if (!$uid || !$cid) {
+		return array('error'=>'no category selected or not logged in');
+	}
+	Products_categoryUnwatch();
+	dbQuery(
+		'insert into products_watchlists set user_id='.$uid.', category_id='.$cid
+	);
+	return array('ok'=>1);
+}
+
+// }
+// { Products_categoryWatches
+/**
+	* get list of watches
+	*
+	* @return null
+	*/
+
+function Products_categoryWatches() {
+	$uid=(int)$_SESSION['userdata']['id'];
+	if (!$uid) {
+		return array('error'=>'not logged in');
+	}
+	$rs=dbAll(
+		'select category_id from products_watchlists where user_id='.$uid
+	);
+	$arr=array();
+	foreach ($rs as $r) {
+		$arr[]=$r['category_id'];
+	}
+	return $arr;
+}
+
+// }
 // { Products_getImgs
 /**
 	* get a list of images

@@ -124,7 +124,7 @@ $plugin=array(
 	'triggers' => array( // {
 		'initialisation-completed' => 'Products_addToCart'
 	), // }
-	'version' => '40'
+	'version' => '42'
 );
 // }
 
@@ -1064,6 +1064,57 @@ function Products_adminPage($page, $vars) {
 function Products_amountInStock($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
 	return Products_amountInStock2($params, $smarty);
+}
+
+// }
+// { Products_categoryWatchesSend
+/**
+	* send list of new products to people watching the lists
+	*
+	* @return null
+	*/
+
+function Products_categoryWatchesSend() {
+	$rs=dbAll('select * from products_watchlists');
+	$users=array();
+	foreach ($rs as $r) {
+		if (!isset($users[$r['user_id']])) {
+			$users[$r['user_id']]=array();
+		}
+		$users[$r['user_id']][]=$r['category_id'];
+	}
+	foreach ($users as $uid=>$cats) {
+		$numFound=0;
+		$email='';
+		foreach ($cats as $cid) {
+			$sql='select id from products,products_categories_products'
+				.' where category_id='.$cid.' and products.id=product_id';
+			$rs=dbAll($sql);
+			if (count($rs)) {
+				$email.='<h2>'
+					.dbOne('select name from products_categories where id='.$cid, 'name')
+					.'</h2><table style="width:100%">';
+				foreach ($rs as $r) {
+					$product=Product::getInstance($r['id']);
+					$email.='<tr><td><img src="http://'.$_SERVER['HTTP_HOST']
+						.'/a/f=getImg/w=160/h=160/'.$product->getDefaultImage().'"></td>'
+						.'<td><h3>'.__FromJSON($product->name).'</h3>'
+						.'<a href="http://'.$_SERVER['HTTP_HOST']
+						.$product->getRelativeUrl().'">View this product on our website</a>'
+						.'</td></tr>';
+				}
+				$email.'</table>';
+			}
+		}
+		$user=User::getInstance($uid);
+		Core_mail(
+			$user->email,
+			'['.$_SERVER['HTTP_HOST'].'] Watched Categories',
+			$email,
+			'no-reply@'.$_SERVER['HTTP_HOST']
+		);
+	}
+	exit;
 }
 
 // }

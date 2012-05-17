@@ -766,7 +766,7 @@ function Products_adminProductsDisable() {
 	foreach ($ids_to_check as $id) {
 		$ids[]=(int)$id;
 	}
-	dbQuery('update products set enabled=0 where id in ('.join(', ', $ids).')');
+	dbQuery('update products set date_edited=now(),enabled=0 where id in ('.join(', ', $ids).')');
 	Core_cacheClear();
 	return array('ok'=>1);
 }
@@ -821,7 +821,7 @@ function Products_adminProductsEnable() {
 	foreach ($ids_to_check as $id) {
 		$ids[]=(int)$id;
 	}
-	dbQuery('update products set enabled=1 where id in ('.join(', ', $ids).')');
+	dbQuery('update products set date_edited=now(),enabled=1 where id in ('.join(', ', $ids).')');
 	Core_cacheClear();
 	return array('ok'=>1);
 }
