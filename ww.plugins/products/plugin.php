@@ -1067,6 +1067,9 @@ function Products_amountInStock($params, $smarty) {
 }
 
 // }
+function Products_categoryWatchesRun() {
+	Products_categoryWatchesSend();
+}
 // { Products_categoryWatchesSend
 /**
 	* send list of new products to people watching the lists
@@ -1088,7 +1091,8 @@ function Products_categoryWatchesSend() {
 		$email='';
 		foreach ($cats as $cid) {
 			$sql='select id from products,products_categories_products'
-				.' where category_id='.$cid.' and products.id=product_id';
+				.' where category_id='.$cid.' and products.id=product_id'
+				.' and activates_on>date_add(now(), interval -1 day)';
 			$rs=dbAll($sql);
 			if (count($rs)) {
 				$email.='<h2>'
@@ -1114,7 +1118,6 @@ function Products_categoryWatchesSend() {
 			'no-reply@'.$_SERVER['HTTP_HOST']
 		);
 	}
-	exit;
 }
 
 // }
