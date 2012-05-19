@@ -1414,7 +1414,7 @@ function Products_importFile($vars=false) {
 		return array('message'=>'file not uploaded');
 	}
 	if (function_exists('mb_detect_encoding')) {
-		$charset=mb_detect_encoding(file_get_contents($fname));
+		$charset=mb_detect_encoding(file_get_contents($fname), 'UTF-8', true);
 	}
 	else {
 		$charset='UTF-8';
