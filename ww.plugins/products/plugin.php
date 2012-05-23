@@ -1110,6 +1110,9 @@ function Products_categoryWatchesSend() {
 				$email.'</table>';
 			}
 		}
+		if ($email=='') {
+			continue;
+		}
 		$user=User::getInstance($uid);
 		Core_mail(
 			$user->email,
