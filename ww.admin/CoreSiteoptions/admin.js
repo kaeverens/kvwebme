@@ -780,9 +780,9 @@ function CoreSiteoptions_screenEmails() {
 					.click(function() {
 						console.log(1);
 						var w=$(window).width(), h=$(window).height();
-						var html='<iframe style="width:100%;height:100%"'
+						var html='<div><iframe style="width:100%;height:100%"'
 							+' src="/a/f=adminEmailSentGet/id='+$(this).data('id')
-							+'"></iframe>';
+							+'"></iframe></div>';
 						var $iframe=$(html).dialog({
 							'modal':true,
 							'width':w-100,
