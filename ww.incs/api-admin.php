@@ -887,27 +887,42 @@ function Core_adminPageCopy() {
   * @return array status of the deletion
   */
 function Core_adminPageDelete() {
+	global $PLUGINS;
+
 	$id=(int)$_REQUEST['id'];
-	if (!$id) {
-		return array('error'=>'no ID provided');
+	$page=Page::getInstance($id);
+	$page->initValues();
+
+	if (isset($page->plugin)) {
+		$type=$page->plugin;
 	}
-	$r=dbRow("SELECT COUNT(id) AS pagecount FROM pages");
-	if ($r['pagecount']<2) {
-		return array('error'=>'there must always be at least one page.');
+
+	
+	if ((isset($type) && !isset($PLUGINS[$type]['do-not-delete']))
+		|| !isset($type)
+	) {	
+		if (!$id) {
+			return array('error'=>'no ID provided');
+		}
+		$r=dbRow("SELECT COUNT(id) AS pagecount FROM pages");
+		if ($r['pagecount']<2) {
+			return array('error'=>'there must always be at least one page.');
+		}
+		$q=dbQuery('select parent from pages where id="'.$id.'"');
+		if ($q->rowCount()) {
+			$r=dbRow('select parent from pages where id="'.$id.'"');
+			dbQuery('delete from page_vars where page_id="'.$id.'"');
+			dbQuery('delete from pages where id="'.$id.'"');
+			dbQuery(
+				'update pages set parent="'.$r['parent'].'" where parent="'.$id.'"'
+			);
+			Core_cacheClear();
+			dbQuery('update page_summaries set rss=""');
+			return array('ok'=>1);
+		}
+		return array('error'=>'page does not exist');
 	}
-	$q=dbQuery('select parent from pages where id="'.$id.'"');
-	if ($q->rowCount()) {
-		$r=dbRow('select parent from pages where id="'.$id.'"');
-		dbQuery('delete from page_vars where page_id="'.$id.'"');
-		dbQuery('delete from pages where id="'.$id.'"');
-		dbQuery(
-			'update pages set parent="'.$r['parent'].'" where parent="'.$id.'"'
-		);
-		Core_cacheClear();
-		dbQuery('update page_summaries set rss=""');
-		return array('ok'=>1);
-	}
-	return array('error'=>'page does not exist');
+	return array('error'=>'Page could not be deleted');	
 }
 
 // }
@@ -1028,6 +1043,7 @@ function Core_adminPageEdit() {
 			$original_body=$_REQUEST['body'];
 		}
 	}
+		
 	foreach ($GLOBALS['PLUGINS'] as $plugin) {
 		if (isset($plugin['admin']['body_override'])) {
 			$original_body=$plugin['admin']['body_override'](false);
@@ -1045,7 +1061,50 @@ function Core_adminPageEdit() {
 		recursivelyUpdatePageTemplates($id, $template);
 	}
 	// }
-	$type=$_REQUEST['type'];
+	
+	if ($id!=0) {				//if we don't create a page
+						//i.e. we edit it	
+		$page=Page::getInstance($id);
+		$page->initValues();
+	
+		if (isset($page->plugin)) { //if this page it's a plugin
+			$type=$page->plugin;		//we find the plugin's name(plugin type)
+		}
+	
+		if ($GLOBALS['PLUGINS'][$type]['do-not-delete']) { // don't modify type
+			$type=dbOne('select type from pages where id='.$id, 'type');
+			if ($type!=$_REQUEST['type']) {
+				echo '<script>alert("The type of the page couldn\'t be changed")</script>';
+			}
+		}
+		else { //We can change the type
+			$type=$_REQUEST['type'];
+		}
+	}
+	else {
+		//if we create the page
+		$type=$_REQUEST['type'];
+	}
+
+
+	
+	$destType=preg_replace('/\|.*/', '', $_REQUEST['type']);
+	if ($GLOBALS['PLUGINS'][$destType]['only-one-page-instance'] == true) {
+		
+		//we count how many pages of this type
+		//we have
+		$howMany = dbOne(
+			'select COUNT(type) FROM pages WHERE type="'. $_REQUEST['type'] .'"',
+			'COUNT(type)'
+		);
+			
+		if ($howMany>=1) {		//If we already have a page
+			echo "<script>alert('You already have one page of that type');</script>";					
+			return array('error' =>'You can have only one page of this type');
+		}	
+	}
+	
+
 	$associated_date=isset($_REQUEST['associated_date'])
 		?$_REQUEST['associated_date']
 		:date('Y-m-d H:i:s');
@@ -1073,13 +1132,38 @@ function Core_adminPageEdit() {
 		)+1;
 		$q.=',ord='.$ord.',cdate=now()';
 	}
+	
 	// { insert the page
 	if ($id) {
-		$q='update '.$q.' where id='.$id;
+		$q='UPDATE '.$q.' where id='.$id;
 	}
 	else {
-		$q='insert into '.$q;
+		$onlyOnePageInstance = false;
+		$pluginType = preg_replace('/\|.*/', '', $_REQUEST['type']);
+		
+		
+		if (isset($GLOBALS['PLUGINS'][$pluginType]['only-one-page-instance'])) {
+			$onlyOnePageInstance
+				=$GLOBALS['PLUGINS'][$pluginType]['only-one-page-instance'];
+		}
+	
+		$alreadyAtInstancesLimit=$onlyOnePageInstance
+			?dbOne(
+				'select COUNT(type) FROM pages WHERE type="'.$_REQUEST['type'].'"',
+				'COUNT(type)'
+			)
+			:0;
+
+		$q='INSERT into '.$q;		
+			
+		if ($onlyOnePageInstance == true) {
+			if ($howMany>=1) {
+				return array('error' =>'You can have only one page of this type');
+			}
+		}
+			
 	}
+	
 	dbQuery($q);
 	if (!$id) {
 		$id=dbOne('select last_insert_id() as id', 'id');
@@ -1150,7 +1234,7 @@ function Core_adminPageEdit() {
 	return array(
 		'id'   =>$id,
 		'pid'  =>$pid,
-		'alias'=>$alias
+		'alias'=>$alias		
 	);
 	// }
 }

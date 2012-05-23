@@ -58,6 +58,8 @@ $plugin=array(
 		'initialisation-completed' => 'OnlineStore_startup',
 		'privacy_user_profile'     => 'OnlineStore_userProfile'
 	),
+	'do-not-delete' => true,
+	'only-one-page-instance' => true,
 	'version' => '15'
 );
 // }

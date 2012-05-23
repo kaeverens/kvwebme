@@ -43,8 +43,12 @@ $(function(){
 						'name':name,
 						'type':$('#newpage-dialog select[name="type"]').val()
 					}, function(ret) {
+						if(ret.error)
+							alert(ret.error);
+						else{
 						pageAddNode(ret.alias, ret.id, ret.pid);
 						pageOpen(ret.id);
+						}
 					});
 					$(this).dialog('close');
 				},
@@ -131,12 +135,16 @@ $(function(){
 							if (!confirm("Are you sure you want to delete this page?")) {
 								return;
 							}
-							$.post('/a/f=adminPageDelete/id='+node[0].id.replace(/.*_/, ''), function(){
-								if (node.find('li').length) {
-									document.location=document.location.toString();
-								}
-								else {
-									$('#pages-wrapper').jstree('remove', node);
+							$.post('/a/f=adminPageDelete/id='+node[0].id.replace(/.*_/, ''), function(ret){
+								if(ret.error)
+									alert(ret.error);
+								else{
+									if (node.find('li').length) {
+										document.location=document.location.toString();
+									}
+									else {
+										$('#pages-wrapper').jstree('remove', node);
+									}
 								}
 							});
 						},
