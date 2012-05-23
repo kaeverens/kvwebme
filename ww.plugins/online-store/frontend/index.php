@@ -382,7 +382,6 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$body=addslashes(
 				$smarty->fetch($tpldir.$PAGEDATA->id.'-order_made_customer')
 			);
-			echo 'customer:'.$body;
 			$additional_headers='';
 			if ($rs['email_order_made_customer_recipient']['val']) {
 				$additional_headers='BCC: '
@@ -493,7 +492,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		}
 		// }
 		// { unset the shopping cart data
-//		unset($_SESSION['online-store']);
+		unset($_SESSION['online-store']);
 		// }
 		$submitted=1;
 	} 

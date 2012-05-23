@@ -34,7 +34,9 @@ if (isset($_REQUEST['action'])) {
         'street2'=>@$_POST['street2-'.$name],
         'town'=>@$_POST['town-'.$name],
         'county'=>@$_POST['county-'.$name],
+				'postcode'=>@$_POST['postcode-'.$name],
 				'country'=>@$_POST['country-'.$name],
+				'phone'=>@$_POST['phone-'.$name]
 			);
 			if ($_POST['default-address']==$name) {
 				$addresses[$name]['default']='yes';
@@ -238,19 +240,26 @@ if (!is_array($r['address'])) {
 }
 foreach ($r['address'] as $name=>$address) {
 	$select=(@$address['default']=='yes')?' checked="checked"':'';
-	echo '<table class="address-table"><tr> <th colspan="2"><input type="ra'
-		.'dio"'.$select.' name="default-address" value="'.$name.'"/> <h3>'
-		.str_replace('-', ' ', $name).'</h3> <a href="javascript:;" class="dele'
-		.'te-add">[-]</a></th> <input type="hidden" name="address['.$name
-		.']"/> <tr> <th>Street</th> <td><input type="text" name="street-'
-		.$name.'" value="'.$address['street'].'"/></td> </tr> <tr> <th>Street'
-		.' 2</th> <td><input type="text" name="street2-'.$name.'" value="'
-		.$address['street2'].'"/></td> </tr> <tr> <th>Town</th> <td><input ty'
-		.'pe="text" name="town-'.$name.'" value="'.$address['town'].'"/></td>'
-		.'</tr> <tr> <th>County</th> <td><input type="text" name="county-'
-		.$name.'" value="'.$address['county'].'"/></td> </tr> <tr> <th>Countr'
-		.'y</th> <td><input type="text" name="country-'.$name.'" value="'
-		.$address['country'].'"/></td> </tr> <th></tr></table>';
+	echo '<table class="address-table">'
+		.'<tr><th colspan="2"><input type="radio"'.$select.' name="default-address"'
+		.' value="'.$name.'"/>default '
+		.'<a href="javascript:;" class="delete-add" title="delete">[x]</a>'
+		.'<input type="hidden" name="address['.$name.']"/></th></tr>'
+		.'<tr><th>Street</th><td><input type="text" name="street-'.$name.'"'
+		.' value="'.$address['street'].'"/></td></tr>'
+		.'<tr><th>Street 2</th><td><input type="text" name="street2-'.$name.'"'
+		.' value="'.$address['street2'].'"/></td></tr>'
+		.'<tr> <th>Town</th> <td><input type="text" name="town-'.$name.'"'
+		.' value="'.$address['town'].'"/></td></tr>'
+		.'<tr> <th>Postcode</th> <td><input type="text" name="postcode-'.$name.'"'
+		.' value="'.$address['postcode'].'"/></td> </tr>'
+		.'<tr> <th>County</th> <td><input type="text" name="county-'.$name.'"'
+		.' value="'.$address['county'].'"/></td> </tr>'
+		.'<tr> <th>Country</th> <td><input type="text" name="country-'.$name.'"'
+		.' value="'.$address['country'].'"/></td> </tr>'
+		.'<tr> <th>Phone</th> <td><input type="text" name="phone-'.$name.'"'
+		.' value="'.$address['phone'].'"/></td> </tr>'
+		.'</table>';
 }
 echo '</div><br style="clear:both"/>';
 // }

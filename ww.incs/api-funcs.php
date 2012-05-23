@@ -226,15 +226,25 @@ function Core_getUserData() {
 	if (!isset($_SESSION['userdata'])) { // not logged in
 		return array('error'=>'you are not logged in');
 	}
-	$user=dbRow(
-		'select id,name,email,phone,address,parent,extras,last_login,last_view,da'
-		.'te_created from user_accounts where id='.$_SESSION['userdata']['id']
-		.' limit 1'
-	);
-	$user['address']=json_decode($user['address'], true);
+	// { main user row
+	$sql='select id, name, email, address, parent, extras, last_login'
+		.', last_view, date_created from user_accounts'
+		.' where id='.$_SESSION['userdata']['id'].' limit 1';
+	$user=dbRow($sql);
+	// }
+	// { address
+	$json=json_decode($user['address'], true);
+	$user['address']=array();
+	foreach ($json as $v) {
+		$user['address'][]=$v;
+	}
+	// }
+	// { extras
 	$user['extras']=@$user['extras']
 		?json_decode($user['extras'], true)
 		:array();
+	// }
+	// { groups
 	$groups=dbAll(
 		'select groups_id from users_groups where user_accounts_id='
 		.$_SESSION['userdata']['id']
@@ -244,6 +254,7 @@ function Core_getUserData() {
 		array_push($g, $group['groups_id']);
 	}
 	$user['groups']=$g;
+	// }
 	return $user;
 }
 

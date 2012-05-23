@@ -19,6 +19,8 @@ $(function(){
 				+'</td>'
 				+'<th>Country</th><td>'+htmlspecialchars(addr.country)
 				+'</td></tr>'
+				+'<th>Phone</th><td>'+htmlspecialchars(addr.phone)
+				+'</td></tr>'
 				+'<tr><th colspan="2"><input type="checkbox" aid="'+i+'"'
 				+(addr.default=='yes'?' checked="checked"':'')
 				+'/>'
@@ -53,6 +55,7 @@ $(function(){
 				.val(addr.postcode||'');
 			$('#online-store-County,input[name="County"]').val(addr.county||'');
 			$('#online-store-Country,select[name="Country"]').val(addr.country||'');
+			$('#online-store-Phone,input[name="Phone"]').val(addr.phone||'');
 			$table.remove();
 			$('#online-store-Country').change();
 		});
@@ -133,7 +136,8 @@ $(function(){
 					'postcode':os_post_vars.Postcode,
 					'town':os_post_vars.Town,
 					'county':os_post_vars.County,
-					'country':os_post_vars.Country
+					'country':os_post_vars.Country,
+					'phone':os_post_vars.Phone
 				};
 			}
 			$('input[name="'+bill+'Street"]').val(current.street);
@@ -142,6 +146,7 @@ $(function(){
 			$('input[name="'+bill+'Town"]').val(current.town);
 			$('input[name="'+bill+'County"]').val(current.county);
 			$('input[name="'+bill+'Country"]').val(current.country);
+			$('input[name="'+bill+'Phone"]').val(current.phone);
 		}
 	}
 	function reloadPage(tabNum) {
