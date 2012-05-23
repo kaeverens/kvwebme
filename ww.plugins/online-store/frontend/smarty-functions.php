@@ -11,6 +11,7 @@
 	* @link     None
 	*/
 
+// { OnlineStore_productPriceFull2
 
 /**
   * generates a formatted price, including currency symbol
@@ -27,6 +28,9 @@ function OnlineStore_productPriceFull2($params, $smarty) {
 		),
 		$params
 	);
+	if (!$params['vat'] && $_SESSION['onlinestore_prices_shown_post_vat']) {
+		$params['vat']=1;
+	}
 	$pid=$smarty->_tpl_vars['product']->id;
 	$product=Product::getInstance($pid);
 	if (!isset($product->vals['online-store'])) {
@@ -64,3 +68,5 @@ function OnlineStore_productPriceFull2($params, $smarty) {
 	$tmp='<span class="os_full_price">'.$tmp.'</span>';
 	return $tmp;
 }
+
+// }

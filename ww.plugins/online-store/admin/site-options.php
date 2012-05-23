@@ -12,6 +12,16 @@
  */
 
 if ( isset($_REQUEST['action']) && $_REQUEST['action']=='Save') {
+	// { online_store_vars
+	foreach ($_REQUEST['online_store_vars'] as $k=>$v) {
+		dbQuery('delete from online_store_vars where name="'.addslashes($k).'"');
+		dbQuery(
+			'insert into online_store_vars set name="'.addslashes($k).'"'
+			.', val="'.addslashes($v).'"'
+		);
+	}
+	$_SESSION['onlinestore_prices_shown_post_vat']=(int)$_REQUEST['vat_display'];
+	// }
 	// { currencies
 	$curs=array();
 	foreach ($_REQUEST['os-currencies_iso'] as $key=>$val) {
@@ -48,6 +58,7 @@ if ( isset($_REQUEST['action']) && $_REQUEST['action']=='Save') {
 	}
 	// }
 	/* TODO - translation /CB */
+	Core_cacheClear('online-store');
 	echo '<em>Saved</em>';
 }
 
@@ -59,10 +70,25 @@ if (!$os_currencies) {
 	/* TODO - translation + more currencies please /CB */
 	$os_currencies='[{"name":"Euro","iso":"Eur","symbol":"€","value":1}]';
 }
-echo '<form method="post" action="'.$_url.'" />'
+echo '<form method="post" action="'.$_url.'" />';
 /* TODO - translation /CB */
+// { default price display with/without VAT
+echo '<h3>VAT</h3>'
+	.'<p>Prices will be displayed on the frontend by default: '
+	.'<select name="online_store_vars[vat_display]">'
+	.'<option value="0">pre-VAT</option>'
+	.'<option value="1"';
+$postvat=(int)dbOne(
+	'select val from online_store_vars where name="vat_display"',
+	'val'
+);
+if ($postvat) {
+	echo ' selected="selected"';
+}
+echo '>post-VAT</option></select>.</p>';
+// }
 // { currencies
-	.'<h3>Currencies</h3>'
+echo '<h3>Currencies</h3>'
 	.'<div id="currencies">'
 	.'<p>The top row is the default currency of the website.'
 	.' To change the default, please drag a different row to the top.</p>'

@@ -537,9 +537,13 @@ function OnlineStore_showBasketWidget($vars=null) {
 		if (!@$_SESSION['onlinestore_checkout_page']) {
 			OnlineStore_setCheckoutPage();
 		}
+		$total=OnlineStore_getFinalTotal();
+		if ($_SESSION['onlinestore_prices_shown_post_vat']) {
+			$total*=(100+$_SESSION['onlinestore_vat_percent'])/100;
+		}
 		$t=str_replace(
 			'{{ONLINESTORE_FINAL_TOTAL}}',
-			OnlineStore_numToPrice(OnlineStore_getFinalTotal()),
+			OnlineStore_numToPrice($total),
 			$t
 		);
 		if (strpos($t, '{{ONLINESTORE_CHECKOUTURL}}')!==false) {
@@ -579,20 +583,32 @@ function OnlineStore_showBasketWidget($vars=null) {
 				}
 				$html.='</th></tr>';
 				// }
-				$html.='<tr class="os_basket_itemDetails '.$md5.'" product="'.$md5.'">'
-					.'<td>'.OnlineStore_numToPrice($item['cost']).'</td>';
+				$html.='<tr class="os_basket_itemDetails '.$md5.'" product="'.$md5.'">';
+				// { cost
+				$cost=$_SESSION['onlinestore_prices_shown_post_vat']
+					?$item['cost']*(100+$_SESSION['onlinestore_vat_percent'])/100
+					:$item['cost'];
+				$html.='<td>'.OnlineStore_numToPrice($cost).'</td>';
+				// }
 				// { amount
 				$html.='<td class="amt"><span class="'.$md5.'-amt">'.$item['amt'].'</span>'
 					.' [<a title="remove" class="amt-del" href="javascript:;">x</a>]'
 					.'</td>';
 				// }
+				// { price
+				$price=$cost*$item['amt'];
 				$html.='<td class="'.$md5.'-item-total">'
-					.OnlineStore_numToPrice($item['cost']*$item['amt'])
+					.OnlineStore_numToPrice($price)
 					.'</td></tr>';
+				// }
+			}
+			$total=$_SESSION['online-store']['total'];
+			if ($_SESSION['onlinestore_prices_shown_post_vat']) {
+				$total*=(100+$_SESSION['onlinestore_vat_percent'])/100;
 			}
 			$html.='<tr class="os_basket_totals"><th colspan="2">Total</th>'
 				.'<td class="total">'
-				.OnlineStore_numToPrice($_SESSION['online-store']['total'])
+				.OnlineStore_numToPrice($total)
 				.'</td></tr>'
 				.'</table>'
 				.'<a class="online-store-checkout-link" href="'.$cpage.'">'
@@ -673,6 +689,8 @@ function OnlineStore_startup() {
 		$_SESSION['onlinestore_checkout_page']=$osvals['onlinestore_checkout_page'];
 		$_SESSION['currency']=$osvals['currency'];
 		$_SESSION['onlinestore_vat_percent']=$osvals['onlinestore_vat_percent'];
+		$_SESSION['onlinestore_prices_shown_post_vat']=
+			(int)$osvals['prices_shown_post_vat'];
 		return;
 	}
 	OnlineStore_setCheckoutPage();
@@ -697,10 +715,18 @@ function OnlineStore_startup() {
 		$currencies=json_decode($currencies, true);
 		$_SESSION['currency']=$currencies[0];
 	}
+	// { whether to display prices with VAT included by default
+	$vat_display=(int)dbOne(
+		'select val from online_store_vars where name="vat_display"',
+		'val'
+	);
+	$_SESSION['onlinestore_prices_shown_post_vat']=$vat_display;
+	// }
 	$osvals=array(
 		'onlinestore_checkout_page'=>@$_SESSION['onlinestore_checkout_page'],
 		'currency'=>$_SESSION['currency'],
-		'onlinestore_vat_percent'=>@$_SESSION['onlinestore_vat_percent']
+		'onlinestore_vat_percent'=>@$_SESSION['onlinestore_vat_percent'],
+		'prices_shown_post_vat'=>$vat_display
 	);
 	Core_cacheSave('online-store', 'globals', $osvals);
 }
