@@ -33,7 +33,6 @@ $c.= '<ul>'
 	.'<li><a href="#online-store-payment">Payment Details</a></li>'
 	.'<li><a href="#online-store-delivery">Postage and Packaging</a></li>'
 	.'<li><a href="#online-stores-fields">Fields</a></li>'
-	.'<li><a href="#online-store-invoice">Invoice</a></li>'
 	.'<li><a href="#online-store-countries">Countries</a></li>'
 	.'<li><a href="#online-store-export">Export</a></li>'
 	.'</ul>';

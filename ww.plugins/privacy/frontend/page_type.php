@@ -109,15 +109,15 @@ function Privacy_controller() {
 				$email,
 				'['.$sitedomain.'] user password changed',
 				"Your new password:<br/><br/>".$p,
-				"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain"
+				"noreply@$sitedomain"
 			);
 			dbQuery(
 				'update user_accounts set password=md5("'.$p.'") where email="'
 				.$email.'"'
 			);
-			$c.='<script defer="defer">$(function(){$("<strong>Please check your email for your'
-				.' new password.</strong>").dialog({modal:true,height:100,width:150'
-				.'});});</script>';
+			$c.='<script defer="defer">$(function(){$("<strong>Please'
+				.' check your email for your new password.</strong>")'
+				.'.dialog({modal:true,height:100,width:150});});</script>';
 		}
 		else {
 			$c.='<script defer="defer">$(function(){$("<strong>No user account with that email '

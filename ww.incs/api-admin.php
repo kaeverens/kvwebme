@@ -1094,12 +1094,13 @@ function Core_adminPageEdit() {
 		//we count how many pages of this type
 		//we have
 		$howMany = dbOne(
-			'select COUNT(type) FROM pages WHERE type="'. $_REQUEST['type'] .'"',
+			'select COUNT(type) FROM pages WHERE type="'. $_REQUEST['type'] .'"'
+			.' and id!='.$id,
 			'COUNT(type)'
 		);
 			
 		if ($howMany>=1) {		//If we already have a page
-			echo "<script>alert('You already have one page of that type');</script>";					
+			echo "<script>alert('You already have one page of that type');</script>";
 			return array('error' =>'You can have only one page of this type');
 		}	
 	}
