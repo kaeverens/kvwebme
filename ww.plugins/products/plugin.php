@@ -934,6 +934,26 @@ class ProductType{
 }
 
 // }
+class Utf8encode_Filter extends php_user_filter{
+	/**
+		* whatever
+		*
+		* @param string $in        stuff
+		* @param string $out       stuff
+		* @param string &$consumed stuff
+		* @param string $closing   stuff
+		*
+		* @return int
+		*/
+	function filter($in, $out, &$consumed, $closing) { 
+		while ($bucket = stream_bucket_make_writeable($in)) { 
+			$bucket->data = utf8_encode($bucket->data); 
+			$consumed += $bucket->datalen; 
+			stream_bucket_append($out, $bucket); 
+		} 
+		return PSFS_PASS_ON; 
+	} 
+}
 
 // { Products_addToCart
 
@@ -1366,26 +1386,6 @@ function Products_importFile($vars=false) {
 		* @license  GPL 2.0
 		* @link     http://kvweb.me/
 		*/
-	class Utf8encode_Filter extends php_user_filter{
-		/**
-			* whatever
-			*
-			* @param string $in        stuff
-			* @param string $out       stuff
-			* @param string &$consumed stuff
-			* @param string $closing   stuff
-			*
-			* @return int
-			*/
-		function filter($in, $out, &$consumed, $closing) { 
-			while ($bucket = stream_bucket_make_writeable($in)) { 
-				$bucket->data = utf8_encode($bucket->data); 
-				$consumed += $bucket->datalen; 
-				stream_bucket_append($out, $bucket); 
-			} 
-			return PSFS_PASS_ON; 
-		} 
-	}
 	if ($vars===false) {
 		return false;
 	}
@@ -1506,6 +1506,8 @@ function Products_importFile($vars=false) {
 				.',ean="'.addslashes($ean).'"'
 				.',date_created=now()'
 				.',date_edited=now()'
+				.',activates_on=now()'
+				.',expires_on="2100-01-01"'
 				.',enabled=1'
 				.',data_fields="{}"'
 				.',online_store_fields="{}"';
@@ -1513,7 +1515,8 @@ function Products_importFile($vars=false) {
 			$id=dbLastInsertId();
 		}
 		$row=dbRow(
-			'select data_fields,online_store_fields from products where id='.$id
+			'select data_fields,online_store_fields,activates_on,expires_on'
+			.' from products where id='.$id
 		);
 		$data_fields=json_decode($row['data_fields'], true);
 		$os_fields=json_decode($row['online_store_fields'], true);
@@ -1546,11 +1549,20 @@ function Products_importFile($vars=false) {
 		else {
 			$os_fields=array();
 		}
+		$dates='';
+		$now=date('Y-m-d');
+		if ($postUpload && ($row['activates_on']>$now || $row['expires_on']<$now)) {
+			$dates=',activates_on="'.$now.'",expires_on="2100-01-01"';
+		}
+		if (!$postUpload && ($row['activates_on']<$now && $row['expires_on']>$now)) {
+			$dates=',activates_on="'.$now.'",expires_on="'.$now.'"';
+		}
 		dbQuery(
 			'update products set '
 			.'data_fields="'.addslashes(json_encode($data_fields)).'"'
 			.',online_store_fields="'.addslashes(json_encode($os_fields)).'"'
 			.',date_edited=now()'
+			.$dates
 			.',enabled='.$postUpload
 			.' where id='.$id
 		);
