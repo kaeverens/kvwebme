@@ -797,7 +797,7 @@ function Products_show($PAGEDATA) {
 	// }
 	switch($PAGEDATA->vars['products_what_to_show']) {
 		case '1': // { by type
-			if (isset($PAGEDATA->vars['products_pagetitleoverride_multiple'])) {
+			if (@$PAGEDATA->vars['products_pagetitleoverride_multiple']) {
 				$PAGEDATA->title=$PAGEDATA->vars['products_pagetitleoverride_multiple'];
 			}
 			return $c
@@ -807,7 +807,7 @@ function Products_show($PAGEDATA) {
 				.$export;
 			// }
 		case '2': // { by category
-			if (isset($PAGEDATA->vars['products_pagetitleoverride_multiple'])) {
+			if (@$PAGEDATA->vars['products_pagetitleoverride_multiple']) {
 				$PAGEDATA->title=$PAGEDATA->vars['products_pagetitleoverride_multiple'];
 			}
 			return $c
@@ -817,13 +817,13 @@ function Products_show($PAGEDATA) {
 				.$export;
 			// }
 		case '3': // { by id
-			if (isset($PAGEDATA->vars['products_pagetitleoverride_single'])) {
+			if (@$PAGEDATA->vars['products_pagetitleoverride_single']) {
 				$PAGEDATA->title=$PAGEDATA->vars['products_pagetitleoverride_single'];
 			}
 			return $c.Products_showById($PAGEDATA).$export;
 			// }
 	}
-	if (isset($PAGEDATA->vars['products_pagetitleoverride_multiple'])) {
+	if (@$PAGEDATA->vars['products_pagetitleoverride_multiple']) {
 		$PAGEDATA->title=$PAGEDATA->vars['products_pagetitleoverride_multiple'];
 	}
 	return $c
