@@ -163,20 +163,24 @@ function Products_screenImport() {
 		+'</tr>'
 		// }
 		// { what to do with already-existing products pre-upload
-		+'<tr><th>Before import, set existing products to</th>'
+		+'<tr><th>Pre-existing products should be</th>'
 		+'<td><select id="product-import-set-existing"><option value="0">'
 		+' -- no change -- </option><option value="1">Disabled</option>'
 		+'<option value="2">Enabled</option>'
 		+'</select></td></tr>'
 		// }
 		// { what to do with new imports
-		+'<tr><th>Imported products should be set to</th>'
+		+'<tr><th>Imported products should be</th>'
 		+'<td><select id="product-import-set-imported"><option value="0">'
 		+'Disabled</option><option value="1">Enabled</option>'
-		+'</select></td></tr>'
+		+'</select></td></tr>';
+		// }
+		// { product category
+	table+='<tr><th>Add products to category</th><td>'
+		+'<select id="product-import-category"></select></td></tr>';
 		// }
 		// { file url
-		+'<tr id="product-types-upload"><th>Upload Products File</th>'
+	table+='<tr id="product-types-upload"><th>Upload Products File</th>'
 		+'<td><input id="product-import-file-url"'
 		+' placeholder="leave blank for default"/></td>'
 		+'<td><input type="button" class="upload"'
@@ -240,6 +244,22 @@ function Products_screenImport() {
 		var ptype=+$select.val();
 		document.location='/a/p=products/f=adminTypesGetSampleImport/ptypeid='
 			+ptype;
+	});
+	$.post('/a/p=products/f=adminCategoriesGetRecursiveList', function(ret) {
+		var cats=[];
+		cats.push('<option value="0">don\'t do anything</option>');
+		cats.push('<option value="-1">'
+			+'import file contains categories list</option>');
+		cats.push('<option disabled="disabled">- - - - - - - - - -</option>');
+		$.each(ret, function(k, v) {
+			cats.push('<option value="'+k.replace(' ', '')+'">'+v+'</option>');
+		});
+		$('#product-import-category')
+			.html(cats.join(''))
+			.change(function() {
+				Core_saveAdminVars('productsImportCategory', $(this).val());
+			})
+			.val(adminVars.productsImportCategory);
 	});
 	// }
 	// { setup upload button

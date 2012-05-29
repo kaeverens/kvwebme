@@ -363,7 +363,7 @@ function Products_adminExport() {
 			'select category_id from products_categories_products '
 			.'where product_id = '.$product['id']
 		);
-		$stringCats = '';
+		$catsArr=array();
 		foreach ($cats as $cat) {
 			$info
 				= dbRow(
@@ -373,7 +373,7 @@ function Products_adminExport() {
 				);
 			$thisCat = '';
 			$catName = $info['name'];
-			$thisCat.=$catName.',';
+			$thisCat.=$catName;
 			$parent = $info['parent_id'];
 			while ($parent>0) {
 				$info = dbRow(
@@ -383,11 +383,9 @@ function Products_adminExport() {
 				$thisCat = $parentName.'>'.$thisCat;
 				$parent = $info['parent_id'];
 			}
-			$stringCats.= $thisCat;
+			$catsArr[]=$thisCat;
 		}
-		$stringCats = substr($stringCats, 0, (strrpos(',', $stringCats)-1));
-		$stringCats= '"'.$stringCats.'"';
-		$row.= $stringCats;
+		$row.='"'.join('|', $catsArr).'"';
 		$contents.=$row."\n";
 	}
 	echo $contents;

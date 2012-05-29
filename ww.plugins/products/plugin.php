@@ -515,6 +515,8 @@ class ProductCategory{
 	static $instances=array();
 	public $vals;
 
+	// { __construct
+
 	/**
 		* constructor for the class
 		*
@@ -537,6 +539,9 @@ class ProductCategory{
 		return $this;
 	}
 
+	// }
+	// { getInstance
+
 	/**
 		* get a category instance
 		*
@@ -553,6 +558,48 @@ class ProductCategory{
 		}
 		return self::$instances[$id];
 	}
+
+	// }
+	// { getInstanceByName
+
+	/**
+		* get a category by its name
+		*
+		* @param string $name name of the category
+		*
+		* @return object the instance
+		*/
+	static function getInstanceByName($name='') {
+		$bits=explode('>', $name);
+		$cname=$bits[count($bits)-1];
+		$parent=false;
+		if (count($bits)>1) {
+			$parent=ProductCategory::getInstanceByName(
+				preg_replace('/>[^>]*$/', '', $name)
+			);
+		}
+		$md5=md5('categorybyname-'.$name);
+		$id=Core_cacheLoad('products', $md5, -1);
+		if ($id===-1) {
+			$sql='select id from products_categories'
+				.' where name="'.addslashes($cname).'"';
+			if ($parent) {
+				$sql.=' and parent_id='.$parent->vals['id'];
+			}
+			else {
+				$sql.=' and parent_id=0';
+			}
+			$id=dbOne($sql, 'id');
+			Core_cacheSave('products', $md5, $id);
+		}
+		if (!array_key_exists($id, self::$instances)) {
+			new ProductCategory($id);
+		}
+		return self::$instances[$id];
+	}
+
+	// }
+	// { getRelativeUrl
 
 	/**
 		* get a URL for showing this category
@@ -604,6 +651,8 @@ class ProductCategory{
 			:$url.urlencode($this->vals['link']);
 		// }
 	}
+
+	// }
 }
 
 // }
@@ -1514,10 +1563,12 @@ function Products_importFile($vars=false) {
 			dbQuery($sql);
 			$id=dbLastInsertId();
 		}
+		// { get data from Products table
 		$row=dbRow(
 			'select data_fields,online_store_fields,activates_on,expires_on'
 			.' from products where id='.$id
 		);
+		// }
 		$data_fields=json_decode($row['data_fields'], true);
 		$os_fields=json_decode($row['online_store_fields'], true);
 		foreach ($headers as $k=>$v) {
@@ -1557,6 +1608,7 @@ function Products_importFile($vars=false) {
 		if (!$postUpload && ($row['activates_on']<$now && $row['expires_on']>$now)) {
 			$dates=',activates_on="'.$now.'",expires_on="'.$now.'"';
 		}
+		// { update the product row
 		dbQuery(
 			'update products set '
 			.'data_fields="'.addslashes(json_encode($data_fields)).'"'
@@ -1566,20 +1618,33 @@ function Products_importFile($vars=false) {
 			.',enabled='.$postUpload
 			.' where id='.$id
 		);
-		if (@$data[$headers['_categories']]) {
-			dbQuery('delete from products_categories_products where product_id='.$id);
-			$catname=$data[$headers['_categories']];
-			if (!isset($categoriesByName[$catname])) {
-				$categoriesByName[$catname]=(int)dbOne(
-					'select id from products_categories'
-					.' where name="'.addslashes($catname).'"',
-					'id'
+		// }
+		$cid=(int)@$vars->productsImportCategory['varvalue'];
+		switch ($cid) {
+			case '-1': // { from file
+				dbQuery('delete from products_categories_products where product_id='.$id);
+				if (@$data[$headers['_categories']]) {
+					$catnames=explode('|', $data[$headers['_categories']]);
+					foreach ($catnames as $catname) {
+						$cat=ProductCategory::getInstanceByName($catname);
+						if (!$cat) {
+							continue;
+						}
+						dbQuery(
+							'insert into products_categories_products set'
+							.' category_id='.$cat->vals['id'].', product_id='.$id
+						);
+					}
+				}
+			break; // }
+			case '0': break;
+			default: // {
+				dbQuery('delete from products_categories_products where product_id='.$id);  
+				dbQuery(
+					'insert into products_categories_products set'
+					.' category_id='.$cid.', product_id='.$id
 				);
-			}
-			dbQuery(
-				'insert into products_categories_products set'
-				.' category_id='.$categoriesByName[$catname].', product_id='.$id
-			);
+			break; // }
 		}
 		$imported++;
 	}
