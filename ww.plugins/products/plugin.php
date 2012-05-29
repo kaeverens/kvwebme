@@ -792,7 +792,7 @@ class ProductType{
 	  * @return string html of the product
 	  */
 	function render($product, $template='singleview', $add_wrapper=true) {
-		global $DBVARS;
+		global $DBVARS, $PAGEDATA;
 		$GLOBALS['products_template_used']=$template;
 		if (isset($DBVARS['online_store_currency'])) {
 			$csym=$DBVARS['online_store_currency'];
@@ -806,6 +806,7 @@ class ProductType{
 		foreach ($this->data_fields as $f) {
 			$f->n=preg_replace('/[^a-zA-Z0-9\-_]/', '_', $f->n);
 			$val=$product->get($f->n);
+			$PAGEDATA->title=str_replace('{{$'.$f->n.'}}', $val, $PAGEDATA->title);
 			$required=@$f->r?' required':'';
 			switch($f->t) {
 				case 'checkbox': // {
@@ -961,6 +962,12 @@ class ProductType{
 		}
 		$smarty->assign('_name', __FromJson($product->name));
 		$smarty->assign('_stock_number', $product->stock_number);
+		$smarty->assign('_ean', $product->ean);
+		$PAGEDATA->title=str_replace(
+			array('{{$_name}}', '{{$_stock_number}}', '{{$_ean}}'),
+			array(__FromJson($product->name), $product->vals['stock_number'], $product->vals['ean']),
+			$PAGEDATA->title
+		);
 		$html='';
 		if ($add_wrapper) {
 			$classes=array('products-product');
