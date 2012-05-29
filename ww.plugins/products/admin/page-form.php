@@ -200,6 +200,20 @@ if (@$vars['products_add_export_button']=='1') {
 }
 $c.='>Yes</option></select></td></tr>';
 // }
+// { override page title (multiple products view)
+$c.='<tr id="products-pagetitleoverride-multiple"><th>Page Title Override'
+	.' (multiple products view)</th><td>'
+	.'<input name="page_vars[products_pagetitleoverride_multiple]" value="'
+	.htmlspecialchars(@$vars['products_pagetitleoverride_multiple'])
+	.'"/></td></tr>';
+// }
+// { override page title (single page view)
+$c.='<tr id="products-pagetitleoverride-single"><th>Page Title Override'
+	.' (single product view)</th><td>'
+	.'<input name="page_vars[products_pagetitleoverride_single]" value="'
+	.htmlspecialchars(@$vars['products_pagetitleoverride_single'])
+	.'"/></td></tr>';
+// }
 $c.= '</table></div>';
 // }
 // { header

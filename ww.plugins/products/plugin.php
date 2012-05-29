@@ -1342,7 +1342,7 @@ function Products_frontend($PAGEDATA) {
 	if (!isset($PAGEDATA->vars['footer'])) {
 		$PAGEDATA->vars['footer']='';
 	}
-	// first render the products, in case the page needs to know what template was used
+	// render the products, in case the page needs to know what template was used
 	$producthtml=Products_show($PAGEDATA);
 	return $PAGEDATA->render()
 		.$producthtml

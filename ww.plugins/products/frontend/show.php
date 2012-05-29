@@ -738,6 +738,8 @@ function Products_setupSmarty() {
 	return $smarty;
 }
 
+// { Products_show
+
 /**
 	* show the products in a page
 	*
@@ -795,34 +797,34 @@ function Products_show($PAGEDATA) {
 	// }
 	switch($PAGEDATA->vars['products_what_to_show']) {
 		case '1': // { by type
+			if (isset($PAGEDATA->vars['products_pagetitleoverride_multiple'])) {
+				$PAGEDATA->title=$PAGEDATA->vars['products_pagetitleoverride_multiple'];
+			}
 			return $c
 				.Products_showByType(
-					$PAGEDATA,
-					0,
-					$start,
-					$limit,
-					$order_by,
-					$order_dir,
-					$search
+					$PAGEDATA, 0, $start, $limit, $order_by, $order_dir, $search
 				)
 				.$export;
 			// }
 		case '2': // { by category
+			if (isset($PAGEDATA->vars['products_pagetitleoverride_multiple'])) {
+				$PAGEDATA->title=$PAGEDATA->vars['products_pagetitleoverride_multiple'];
+			}
 			return $c
 				.Products_showByCategory(
-					$PAGEDATA,
-					0,
-					$start,
-					$limit,
-					$order_by,
-					$order_dir,
-					$search
+					$PAGEDATA, 0, $start, $limit, $order_by, $order_dir, $search
 				)
 				.$export;
 			// }
 		case '3': // { by id
+			if (isset($PAGEDATA->vars['products_pagetitleoverride_single'])) {
+				$PAGEDATA->title=$PAGEDATA->vars['products_pagetitleoverride_single'];
+			}
 			return $c.Products_showById($PAGEDATA).$export;
 			// }
+	}
+	if (isset($PAGEDATA->vars['products_pagetitleoverride_multiple'])) {
+		$PAGEDATA->title=$PAGEDATA->vars['products_pagetitleoverride_multiple'];
 	}
 	return $c
 		.Products_showAll(
@@ -835,6 +837,9 @@ function Products_show($PAGEDATA) {
 		)
 		.$export;
 }
+
+// }
+// { Products_showById
 
 /**
 	* show a specific product in a page
@@ -860,6 +865,9 @@ function Products_showById($PAGEDATA, $id=0) {
 	return $type->render($product);
 }
 
+// }
+// { Products_showByCategory
+
 /**
 	* display all products in a specified category
 	*
@@ -882,6 +890,9 @@ function Products_showByCategory(
 	$products=Products::getByCategory($id, $search);
 	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
+
+// }
+// { Products_showByType
 
 /**
 	* display all products of a certain type
@@ -906,6 +917,7 @@ function Products_showByType(
 	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
 
+// }
 // { Products_showAll
 
 /**
@@ -1000,6 +1012,7 @@ function Products_showRelatedProducts($params, $smarty) {
 }
 
 // }
+// { Products_submitReviewForm
 
 /**
 	* submit the form for submitting a review
@@ -1009,7 +1022,7 @@ function Products_showRelatedProducts($params, $smarty) {
 	*
 	* @return string the form
 	*/
-function Products_submitReviewForm ($productid, $userid) {
+function Products_submitReviewForm($productid, $userid) {
 	$formAction = '"http://webworks-webme';
 	$formAction.= '/ww.plugins/products';
 	$formAction.= '/frontend/submit_review.php"';
@@ -1038,7 +1051,9 @@ function Products_submitReviewForm ($productid, $userid) {
 	return $c;
 }
 
-// { Products
+// }
+
+// { Products class
 
 /**
 	* Products object
