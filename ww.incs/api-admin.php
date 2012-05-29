@@ -211,6 +211,26 @@ function Core_adminEmailSentGet() {
 }
 
 // }
+// { Core_adminEmailTemplateDownload
+
+/**
+	* download an email template
+	*
+	* @return null
+	*/
+function Core_adminEmailTemplateDownload() {
+	$name=$_REQUEST['name'];
+	$filename=$name.'.html';
+	header('Content-Type: force/download');
+	header('Content-Disposition: attachment; filename="'.$filename.'"');
+	echo dbOne(
+		'select body from email_templates where name="'.addslashes($name).'"',
+		'body'
+	);
+	exit;
+}
+
+// }
 // { Core_adminEmailTemplateGet
 
 /**
@@ -257,6 +277,21 @@ function Core_adminEmailTemplateSet() {
 function Core_adminEmailTemplatesList() {
 	$rs=dbAll('select name from email_templates order by name');
 	return $rs;
+}
+
+// }
+// { Core_adminEmailTemplateUpload
+
+/**
+	* handle an uploaded email template
+	*
+	* @return status
+	*/
+function Core_adminEmailTemplateUpload() {
+	$_REQUEST['name']=str_replace('.html', '', $_FILES['Filedata']['name']);
+	$_REQUEST['body']=file_get_contents($_FILES['Filedata']['tmp_name']);
+	Core_adminEmailTemplateSet();
+	return array('ok'=>1);
 }
 
 // }

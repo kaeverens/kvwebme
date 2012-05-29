@@ -801,7 +801,9 @@ function CoreSiteoptions_screenEmails() {
 		var $panel=$(panel).empty();
 		var html='<select id="email-templates-list">'
 			+'<option>-- choose --</option></select>'
+			+'<button disabled id="email-templates-download">Download</button>'
 			+'<textarea disabled id="email-templates-source"></textarea>'
+			+'<button disabled id="email-templates-upload">Upload</button>'
 			+'<button disabled id="email-templates-save">Save</button>';
 		$.post('/a/f=adminEmailTemplatesList', function(ret) {
 			var opts='<option>-- choose --</option>';
@@ -817,7 +819,7 @@ function CoreSiteoptions_screenEmails() {
 			if (val=='-1') {
 				editor.setValue('');
 				editor.setOption('readOnly', true);
-				$('#email-templates-save').attr('disabled', true);
+				$('button', $panel).attr('disabled', true);
 				var valid, name='';
 				do {
 					valid=true;
@@ -849,7 +851,7 @@ function CoreSiteoptions_screenEmails() {
 				$('#email-templates-save').attr('disabled', true);
 				return;
 			}
-			$('#email-templates-save').attr('disabled', false);
+			$('button', $panel).attr('disabled', false);
 			$.post('/a/f=adminEmailTemplateGet', {
 				'name':val
 			}, function(ret) {
@@ -888,6 +890,34 @@ function CoreSiteoptions_screenEmails() {
 				alert('saved');
 			});
 		});
+		$('#email-templates-download').click(function() {
+			var val=$('#email-templates-list').val();
+			if (val=='-- choose --') {
+				return;
+			}
+			document.location='/a/f=adminEmailTemplateDownload/name='+val;
+		});
+		$('#email-templates-upload')
+			.css('height',20)
+			.uploadify({
+				'swf':'/j/jquery.uploadify/uploadify.swf',
+				'auto':'true',
+				'checkExisting':false,
+				'cancelImage':'/i/blank.gif',
+				'buttonImage':'/i/choose-file.png',
+				'height':20,
+				'width':91,
+				'uploader':'/a/f=adminEmailTemplateUpload',
+				'postData':{
+					'PHPSESSID':sessid
+				},
+				'upload_success_handler':function(file, data, response){
+					ret=eval('('+data+')');
+					if (ret.ok) {
+						$('#email-templates-list').change();
+					}
+				}
+			});
 	}
 	var $content=$('#content').empty().append('<h1>Emails</h1>');
 	// { show tabs
