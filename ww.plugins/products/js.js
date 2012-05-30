@@ -13,6 +13,11 @@ $(function(){
 			}
 			price+= +(val.split('|')[1]);
 		});
+		var amt=+$wrapper.find('[name=products-howmany]').val();
+		if (!amt) {
+			amt=1;
+		}
+		price*=amt;
 		if ($price.hasClass('vat')) {
 			price*=1+(vat/100);
 		}
@@ -24,7 +29,7 @@ $(function(){
 		n=n.replace(/\.(..).*/, '.$1');
 		$price.text(currency+n);
 	}
-	var cache={},lastXhr;
+	var cache={}, lastXhr;
 	$('input[name=products-search]')
 		.autocomplete({
 			source: function(request, response){
@@ -49,17 +54,16 @@ $(function(){
 			this.value='';
 		})
 		.change(function(){
-			var $this=$(this)
-				,$form=$this.closest('form');
+			var $this=$(this), $form=$this.closest('form');
 			if(!$form.length){
 				$form=$this.wrap('<form style="display:inline" action="'+
 					(document.location.toString())+'" />');
 			}
 			setTimeout(function(){
 				$this.closest('form').submit();
-			},500);
+			}, 500);
 		});
-	$('div.products-product form input[type=submit],div.products-product form button').live('mouseover',function(){
+	$('div.products-product form input[type=submit], div.products-product form button').live('mouseover', function(){
 		var inps=[];
 		var $form=$(this).closest('form');
 		$form.find('input').each(function(){
@@ -67,7 +71,7 @@ $(function(){
 				$(this).remove();
 			}
 		});
-		$(this).closest('div.products-product').find('select,input,textarea').each(function(){
+		$(this).closest('div.products-product').find('select, input, textarea').each(function(){
 			if (!/products_values_/.test(this.name)) {
 				return;
 			}
@@ -81,7 +85,7 @@ $(function(){
 		}
 	});
 	var paddtocart=0;
-	$('form.products-addtocart,form.products-addmanytocart').submit(function(){
+	$('form.products-addtocart, form.products-addmanytocart').submit(function(){
 		var $this=$(this);
 		var found=0;
 		var redirect=$this.find('input[name=products_redirect]').val();
@@ -198,16 +202,16 @@ $(function(){
 	});
 	$('.products-product.stock-control').each(function() {
 		// { get details
-		var $this=$(this), $stockcontrol=$this.find('input.stock-control-total');
-		var $qty=$this.find('.add_multiple_widget_amount');
-		var details=$stockcontrol.attr('details');
+		var $this=$(this), $stockcontrol=$this.find('input.stock-control-total'),
+			$qty=$this.find('.add_multiple_widget_amount'),
+			details=$stockcontrol.attr('details');
 		if (!details) {
 			details='[]';
 		}
 		details=eval(details);
 		var total=+$stockcontrol.val();
 		if (!total) {
-			$this.find('select,input,button').attr('disabled', true);
+			$this.find('select, input, button').attr('disabled', true);
 			return;
 		}
 		// }
@@ -334,7 +338,7 @@ function Products_showMap() {
 	}
 	var latlng=window.userdata&&window.userdata.lat&&window.userdata.lng
 		?[window.userdata.lat, window.userdata.lng]
-		:[54.78310263573059,-6.278343984374946];
+		:[54.78310263573059, -6.278343984374946];
 	var myOptions={
 		zoom:10,
 		center:new google.maps.LatLng(latlng[0], latlng[1]),
@@ -356,9 +360,9 @@ function Products_showMap() {
 						continue;
 					}
 					var marker=new google.maps.Marker({
-						position: new google.maps.LatLng(ret[i].location_lat, ret[i].location_lng), 
-						map     : map,
-						user_id : user_id
+						position:new google.maps.LatLng(ret[i].location_lat, ret[i].location_lng), 
+						map:map,
+						user_id:user_id
 					});
 					google.maps.event.addListener(marker, 'click', function() {
 						var user_id=+this.user_id;
@@ -385,7 +389,10 @@ function Products_showMap() {
 		browserSupportFlag = true;
 		navigator.geolocation.getCurrentPosition(function(position) {
 			map.setCenter(
-				new google.maps.LatLng(position.coords.latitude,position.coords.longitude)
+				new google.maps.LatLng(
+					position.coords.latitude,
+					position.coords.longitude
+				)
 			);
 		}, function() {
 		});
