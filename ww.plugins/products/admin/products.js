@@ -95,7 +95,7 @@ $(function() {
 						var $inp=$('<select/>')
 							.html(opts.join(''))
 							.val(oldVal)
-							.blur(function() {
+							.change(function() {
 								var newVal=+$inp.val();
 								$this.text(ret[newVal])
 									.attr('in-edit', null)
@@ -118,7 +118,7 @@ $(function() {
 						.append('<option value="1">Yes</option>')
 						.append('<option value="0">No</option>')
 						.val(oldVal)
-						.blur(function() {
+						.change(function() {
 							var newVal=+$inp.val();
 							$this.text(newVal?'Yes':'No').attr('in-edit', null);
 							if (newVal!=oldVal) {
