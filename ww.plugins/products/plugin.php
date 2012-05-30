@@ -807,14 +807,11 @@ class ProductType{
 		foreach ($this->data_fields as $f) {
 			$f->n=preg_replace('/[^a-zA-Z0-9\-_]/', '_', $f->n);
 			$val=$product->get($f->n);
-			$PAGEDATA->title=str_replace('{{$'.$f->n.'}}', $val, $PAGEDATA->title);
 			$required=@$f->r?' required':'';
 			switch($f->t) {
 				case 'checkbox': // {
-					$smarty->assign(
-						$f->n,
-						($val?'Yes':'No')
-					);
+					$val=$val?'Yes':'No';
+					$smarty->assign($f->n, $val);
 				break; // }
 				case 'colour': // {
 					if (@$f->u) { // user-definable
@@ -861,17 +858,16 @@ class ProductType{
 						);
 					}
 					else {
-						$smarty->assign(
-							$f->n,
-							Core_dateM2H($val)
-						);
+						$val=Core_dateM2H($val);
+						$smarty->assign($f->n, $val);
 					}
 				break; // }
 				case 'hidden': // {
+					$val=__FromJson($val);
 					$smarty->assign(
 						$f->n,
 						'<input type="hidden" name="products_values_'.$f->n
-						.'" value="'.htmlspecialchars(__FromJson($val)).'"/>'
+						.'" value="'.htmlspecialchars($val).'"/>'
 					);
 				break; // }
 				case 'selectbox': // {
@@ -912,12 +908,10 @@ class ProductType{
 						$h.='</select>';
 					}
 					else {
-						$h=preg_replace('/\|.*/', '', $val);
+						$val=preg_replace('/\|.*/', '', $val);
+						$h=$val;
 					}
-					$smarty->assign(
-						$f->n,
-						$h
-					);
+					$smarty->assign($f->n, $h);
 				break; // }
 				case 'selected-image': // {
 					$smarty->assign(
@@ -928,45 +922,51 @@ class ProductType{
 				break; // }
 				case 'textarea': // { textarea
 					if (@$f->u) {
+						$val=trim(preg_replace('/<[^>]*>/', '', __FromJson($val)));
 						$smarty->assign(
 							$f->n,
 							'<textarea class="product-field '.$f->n.$required
 							.'" name="products_values_'.$f->n.'">'
-							.trim(htmlspecialchars(preg_replace('/<[^>]*>/', '', __FromJson($val))))
+							.htmlspecialchars($val)
 							.'</textarea>'
 						);
 					}
 					else {
-						$smarty->assign(
-							$f->n,
-							__FromJson($val)
-						);
+						$val=__FromJson($val);
+						$smarty->assign($f->n, $val);
 					}
 				break; // }
+				case 'user': // {
+					$u=User::getInstance($val, false, false);
+					$val=$u?$u->get('name'):'no name';
+					$smarty->assign($f->n, $val);
+				break; // }
 				default: // { everything else
+					$val=__FromJson($val);
 					if (@$f->u) {
 						$smarty->assign(
 							$f->n,
 							'<input class="product-field '.$f->n.$required
-							.'" value="'.htmlspecialchars(__FromJson($val))
+							.'" value="'.htmlspecialchars($val)
 							.'" name="products_values_'.$f->n.'"/>'
 						);
 					}
 					else {
-						$smarty->assign(
-							$f->n,
-							__FromJson($val)
-						);
+						$smarty->assign($f->n, $val);
 					}
 					// }
 			}
+			$PAGEDATA->title=str_replace('{{$'.$f->n.'}}', $val, $PAGEDATA->title);
 		}
 		$smarty->assign('_name', __FromJson($product->name));
 		$smarty->assign('_stock_number', $product->stock_number);
 		$smarty->assign('_ean', $product->ean);
 		$PAGEDATA->title=str_replace(
 			array('{{$_name}}', '{{$_stock_number}}', '{{$_ean}}'),
-			array(__FromJson($product->name), $product->vals['stock_number'], $product->vals['ean']),
+			array(
+				$product->get('_name'), $product->get('_stock_number'),
+				$product->vals['ean']
+			),
 			$PAGEDATA->title
 		);
 		$html='';
