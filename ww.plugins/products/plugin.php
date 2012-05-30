@@ -39,9 +39,10 @@ $plugin=array(
 	'dependencies'=>'image-gallery',
 	'description' => 'Product catalogue.',
 	'frontend' => array( // {
+		'breadcrumbs' => 'Products_breadcrumbs',
 		'page_type' => 'Products_frontend',
 		'widget' => 'Products_widget',
-		'template_functions' => array(
+		'template_functions' => array( // {
 			'PRODUCTS_AMOUNT_IN_STOCK' => array( // {
 				'function' => 'Products_amountInStock'
 			), // }
@@ -117,7 +118,7 @@ $plugin=array(
 			'PRODUCTS_USER' => array( // {
 				'function' => 'Products_user'
 			) // }
-		)
+		) // }
 	), // }
 	'name' => 'Products',
 	'search' => 'Products_search',
@@ -223,10 +224,10 @@ class Product{
 	  */
 	function get($name) {
 		if (isset($this->vals[$name])) {
-			return $this->vals[$name];
+			return __FromJSON($this->vals[$name]);
 		}
 		if (strpos($name, '_')===0) {
-			return $this->{preg_replace('/^_/', '', $name)};
+			return __FromJSON($this->{preg_replace('/^_/', '', $name)});
 		}
 		return false;
 	}
@@ -261,7 +262,7 @@ class Product{
 	  *
 	  * @return string URL of the product's page
 	  */
-	function getRelativeURL() {
+	function getRelativeUrl() {
 		global $PAGEDATA;
 		if ($this->relativeUrl) {
 			return $this->relativeUrl;
@@ -1277,17 +1278,16 @@ function Products_expiryClock($params, $smarty) {
 }
 
 // }
-// { Products_frontend
+// { Products_frontendVarsSetup
 
 /**
-  * render a product page
+  * figure out what will be shown
   *
   * @param object $PAGEDATA the page instance
   *
   * @return string HTML of the page
   */
-function Products_frontend($PAGEDATA) {
-	require_once dirname(__FILE__).'/frontend/show.php';
+function Products_frontendVarsSetup($PAGEDATA) {
 	global $PAGE_UNUSED_URI;
 	if ($PAGE_UNUSED_URI) {
 		$bits=explode('/', $PAGE_UNUSED_URI);
@@ -1339,6 +1339,21 @@ function Products_frontend($PAGEDATA) {
 		$PAGEDATA->vars['products_what_to_show']=3;
 		$PAGEDATA->vars['products_product_to_show']=(int)$_REQUEST['product_id'];
 	}
+}
+
+// }
+// { Products_frontend
+
+/**
+  * render a product page
+  *
+  * @param object $PAGEDATA the page instance
+  *
+  * @return string HTML of the page
+  */
+function Products_frontend($PAGEDATA) {
+	Products_frontendVarsSetup($PAGEDATA);
+	require_once dirname(__FILE__).'/frontend/show.php';
 	if (!isset($PAGEDATA->vars['footer'])) {
 		$PAGEDATA->vars['footer']='';
 	}
@@ -1934,3 +1949,20 @@ function Products_widget($vars=null) {
 }
 
 // }
+
+function Products_breadcrumbs($baseurl) {
+	global $PAGEDATA;
+	$breadcrumbs='';
+	Products_frontendVarsSetup($PAGEDATA);
+	if ($_REQUEST['product_cid']) {
+		$c=ProductCategory::getInstance($_REQUEST['product_cid']);
+		$breadcrumbs.=' &raquo; <a class="product-category" href="'
+			.$c->getRelativeUrl().'">'.htmlspecialchars($c->vals['name']).'</a>';
+	}
+	if ($_REQUEST['product_id']) {
+		$c=Product::getInstance($_REQUEST['product_id']);
+		$breadcrumbs.=' &raquo; <a class="product-product" href="'
+			.$c->getRelativeUrl().'">'.htmlspecialchars($c->get('_name')).'</a>';
+	}
+	return $breadcrumbs;
+}

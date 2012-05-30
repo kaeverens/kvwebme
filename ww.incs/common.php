@@ -417,8 +417,18 @@ function Template_breadcrumbs($id=0, $top=1) {
 	$c=$page->parent
 		? Template_breadcrumbs($page->parent, 0) . ' &raquo; '
 		: '';
-	$pre=$top?'<div class="breadcrumbs">':'';
-	$suf=$top?'</div>':'';
+	if ($top) {
+		$pre='<div class="breadcrumbs">';
+		$suf='</div>';
+		$bcfn=@$GLOBALS['PLUGINS'][$page->plugin]['frontend']['breadcrumbs'];
+		$suf=$bcfn
+			?$bcfn($page->getRelativeURL()).'</div>'
+			:'</div>';
+	}
+	else {
+		$pre='';
+		$suf='';
+	}
 	return $pre.$c.'<a href="' . $page->getRelativeURL() . '">' 
 		. htmlspecialchars(__fromJSON($page->name)) . '</a>'.$suf;
 }

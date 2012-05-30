@@ -629,6 +629,8 @@ function Products_plusVat($params, $smarty) {
 	}
 }
 
+// { Products_reviews
+
 /**
 	* display a list of reviews for the product
 	*
@@ -723,6 +725,9 @@ function Products_reviews($params, $smarty) {
 	return $c;
 }
 
+// }
+// { Products_setupSmarty
+
 /**
 	* setup Smarty with Products-specific stuff
 	*
@@ -738,6 +743,7 @@ function Products_setupSmarty() {
 	return $smarty;
 }
 
+// }
 // { Products_show
 
 /**
