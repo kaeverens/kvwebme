@@ -370,9 +370,15 @@ function Products_getAddManyToCartWidget($params, $smarty) {
 		array(
 			'text'=>'Add to Cart',
 			'redirect'=>'same',
+			'type'=>'input',
+			'min'=>0,
+			'max'=>0
 		),
 		$params
 	);
+	if ($params['type']=='select' && $params['max']==0) {
+		$params['max']=50;
+	}
 	$instock=(int)@$smarty->_tpl_vars['product']->vals['stockcontrol_total'];
 	$stockcontrol=$instock
 		?'<input type="hidden" class="stock-control-total" value="'
@@ -384,11 +390,24 @@ function Products_getAddManyToCartWidget($params, $smarty) {
 	$redirect=$params['redirect']=='checkout'
 		?'<input type="hidden" name="products_redirect" value="checkout"/>'
 		:'';
+	switch ($params['type']) {
+		case 'select': // {
+			$howmany='<select name="products-howmany"'
+				.' class="add_multiple_widget_amount">';
+			for ($i=$params['min'];$i<$params['max'];++$i) {
+				$howmany.='<option>'.$i.'</option>';
+			}
+			$howmany.='</select>';
+		break; // }
+		default: // {
+			$howmany='<input name="products-howmany" value="1"'
+				.' class="add_multiple_widget_amount" style="width:50px"/>';
+		// }
+	}
 	return '<form method="POST" class="products-addmanytocart">'
 		.$redirect
 		.'<input type="hidden" name="products_action" value="add_to_cart"/>'
-		.'<input name="products-howmany" value="1" '
-		.'class="add_multiple_widget_amount" style="width:50px"/>'
+		.$howmany
 		.$stockcontrol
 		.Products_getAddToCartButton(
 			$params['text'],

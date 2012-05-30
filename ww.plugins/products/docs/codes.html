@@ -1,8 +1,34 @@
 <table>
 <tr><td>{{PRODUCTS_AMOUNT_IN_STOCK}}</td><td>How many of this product are in stock</td></tr>
 <tr><td>{{PRODUCTS_AMOUNT_SOLD}}</td><td>How many of this product have already been sold</td></tr>
-<tr><td>{{PRODUCTS_BUTTON_ADD_TO_CART}}</td><td>Button for adding the product to a cart. Optional parameters:<ul><li>text: what text should be shown in the button. Default is "Add to Cart".</li><li>redirect: whether to load the same page again ("same"), or redirect to basket ("checkout").</li></ul></td></tr>
-<tr><td>{{PRODUCTS_BUTTON_ADD_MANY_TO_CART}}</td><td>Button and input box for adding many items to the cart</td></tr>
+<tr>
+	<td>{{PRODUCTS_BUTTON_ADD_TO_CART}}</td>
+	<td>Button for adding the product to a cart. Optional parameters:
+		<ul>
+			<li>text: what text should be shown in the button. Default is "Add to
+				Cart".</li>
+			<li>redirect: whether to load the same page again ("same"), or
+				redirect to basket ("checkout").</li>
+		</ul>
+	</td>
+</tr>
+<tr>
+	<td>{{PRODUCTS_BUTTON_ADD_MANY_TO_CART}}</td>
+	<td>Button and input box for adding many items to the cart.
+		Optional parameters:
+		<ul>
+			<li>text: what text should be shown in the button. Default is "Add to
+				Cart".</li>
+			<li>redirect: whether to load the same page again ("same"), or
+				redirect to basket ("checkout").</li>
+			<li>type: what type of interface to use. default is "input".
+				options are: "input", "select".</li>
+			<li>min: minimum to allow to add from this button.</li>
+			<li>max: maximum to allow from this button. If the "type" is "select",
+				then this will default to 50.</li>
+		</ul>
+	</td>
+</tr>
 <tr><td>{{PRODUCTS_CATEGORIES}}</td><td></td></tr>
 <tr><td>{{PRODUCTS_DATATABLE}}</td><td>Table overview of product</td></tr>
 <tr><td>{{PRODUCTS_EXPIRY_CLOCK}}</td><td>animated count-down to product expiry date</td></tr>
