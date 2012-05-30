@@ -648,7 +648,7 @@ function Core_adminMenusGetDefault() {
 					}
 					else {
 						$link=strpos($page, 'js:')===false
-							?'plugin.php?_plugin='.$pname.'&amp;_page='.$page
+							?$page
 							:'javascript:Core_screen(\''.$pname.'\', \''.$page.'\');';
 					}
 					$json='{"'.str_replace('>', '":{"', $name).'":{"_link":"'.$link.'"}}'

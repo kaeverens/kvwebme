@@ -836,7 +836,12 @@ function Products_adminProductEditVal() {
 	$id=(int)$_REQUEST['id'];
 	$name=$_REQUEST['name'];
 	$value=$_REQUEST['val'];
-	if (!in_array($name, array('stock_number', 'stockcontrol_total', 'enabled'))) {
+	if (!in_array($name, array(
+		'stock_number',
+		'stockcontrol_total',
+		'enabled',
+		'user_id'
+	))) {
 		return array('error'=>'field not allowed');
 	}
 	dbQuery(
@@ -1050,7 +1055,7 @@ function Products_adminProductsListDT() {
 		// }
 		// { owner
 		$user=User::getInstance($r['user_id'], false, false);
-		$row[]=$user?$user->get('name'):'unknown owner';
+		$row[]=$r['user_id'].'|'.($user?$user->get('name'):'unknown owner');
 		// }
 		// { id
 		$row[]=$r['id'];

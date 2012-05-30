@@ -18,8 +18,6 @@ $(function() {
 			$('td:nth-child(2)', nRow).html(+aData[1]
 				?'<div title="has images" class="ui-icon ui-icon-image"/>'
 				:'');
-			$('td:nth-child(4),td:nth-child(5),td:nth-child(8)', nRow)
-				.css('cursor', 'pointer');
 			$('td:nth-child(3)', nRow)
 				.css('cursor', 'pointer')
 				.addClass('link')
@@ -28,6 +26,11 @@ $(function() {
 					document.location='/ww.admin/plugin.php?_plugin='
 						+'products&_page=products-edit&id='+id;
 				});
+			$('td:nth-child(4),td:nth-child(5),td:nth-child(6),td:nth-child(8)', nRow)
+				.css('cursor', 'pointer');
+			$('td:nth-child(6)', nRow)
+				.data('uid', aData[5].replace(/\|.*/, ''))
+				.text(aData[5].replace(/.*\|/, ''));
 			$('td:nth-child(9)', nRow).html(
 				'<a class="delete-product" href="#" title="delete">[x]</a>'
 			);
@@ -81,6 +84,33 @@ $(function() {
 						})
 						.appendTo($this.empty())
 						.focus();
+				break; // }
+				case 5: // { owner
+					var oldVal=+$this.data('uid');
+					$.post('/a/f=adminUserNamesGet', function(ret) {
+						var opts=['<option>unknown owner</option>'];
+						$.each(ret, function(k, v) {
+							opts.push('<option value="'+k+'">'+v+'</option>');
+						});
+						var $inp=$('<select/>')
+							.html(opts.join(''))
+							.val(oldVal)
+							.blur(function() {
+								var newVal=+$inp.val();
+								$this.text(ret[newVal])
+									.attr('in-edit', null)
+									.data('uid', newVal);
+								if (newVal!=oldVal) {
+									$.post('/a/p=products/f=adminProductEditVal', {
+										'name': 'user_id',
+										'val': newVal,
+										'id': id
+									});
+								}
+							})
+							.appendTo($this.empty())
+							.focus();
+					});
 				break; // }
 				case 7: // { enabled
 					var oldVal=$this.text()=='Yes'?1:0;

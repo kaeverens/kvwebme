@@ -31,7 +31,7 @@ if (strpos($md5, '..')!==false) {
 
 $fname=USERBASE.'/ww.cache/admin/'.$md5;
 header('X-Powered-By:');
-header("Expires: " . gmdate("D, d M Y H:i:s", filemtime($fname) + 216000) . " GMT");
+header("Expires: ".gmdate("D, d M Y H:i:s", filemtime($fname)+216000)." GMT");
 header("Cache-Control: max-age=216000, private, must-revalidate", true);
 header("Last-Modified: ".gmdate("D, d M Y H:i:s", filemtime($fname))." GMT");
 header('Set-Cookie:');

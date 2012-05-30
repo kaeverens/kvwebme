@@ -16,12 +16,13 @@
 $plugin=array(
 	'admin' => array( // {
 		'menu' => array(
-			'Products>Products'=>'plugin.php?_plugin=products&amp;_page=products',
+			'Products>Products'=>
+				'/ww.admin/plugin.php?_plugin=products&amp;_page=products',
 			'Products>Categories'=>
-				'plugin.php?_plugin=products&amp;_page=categories',
+				'/ww.admin/plugin.php?_plugin=products&amp;_page=categories',
 			'Products>Types'=>'javascript:Core_screen(\'products\', \'Types\')',
 			'Products>Relation Types'=>
-				'plugin.php?_plugin=products&amp;_page=relation-types',
+				'/ww.admin/plugin.php?_plugin=products&amp;_page=relation-types',
 			'Products>Import'=>'javascript:Core_screen(\'products\', \'Import\')',
 			'Products>Export Data'=>
 				'javascript:Core_screen(\'products\', \'ExportData\')',
