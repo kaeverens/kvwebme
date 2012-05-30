@@ -16,7 +16,21 @@ $(function() {
 					+'</table>';
 				var $comments=$(html).appendTo($this);
 				$comments.find('button').click(function() {
-					
+					$.post('/a/p=blog/f=commentAdd', {
+						'page_id':pagedata.id,
+						'blog_entry_id':id,
+						'name':$('.blog-comment-name').val(),
+						'email':$('.blog-comment-email').val(),
+						'url':$('.blog-comment-url').val()
+					}, function(ret) {
+						if (ret.error) {
+							return alert(ret.error);
+						}
+						if (ret.message) {
+							alert(ret.message);
+						}
+						document.location=ret.url;
+					});
 				});
 			}
 		}
@@ -63,7 +77,10 @@ $(function() {
 					'cdate':d,
 					'published':0,
 					'udate':'0000-00-00 00:00:00',
-					'pdate':'0000-00-00 00:00:00'
+					'pdate':'0000-00-00 00:00:00',
+					'comments':0,
+					'allow_comments':1,
+					'status':1
 				});
 				return false;
 			})
@@ -108,6 +125,9 @@ $(function() {
 				var avatar=author.avatar
 					?'/a/f=getImg/w=256/h=256/'+author.avatar
 					:'/i/silhouette-256x256.png';
+				var avatarSrc=author.avatar
+					?author.avatar
+					:'';
 				var avatarEdit=editThis
 					?'<br/><table><tr><th>Image</th>'
 					+'<input class="saorfm user-avatar"/></td></tr></table>'
@@ -120,7 +140,7 @@ $(function() {
 					});
 				if (editThis) {
 					$dialog.find('.user-avatar')
-						.val(avatar)
+						.val(avatarSrc)
 						.change(function() {
 							var $this=$(this);
 							var src=$this.val();
@@ -152,7 +172,8 @@ $(function() {
 	// }
 });
 function Blog_editPost(pdata) {
-	$('<div class="shade" style="position:fixed;left:0;top:0;right:0;bottom:0;background:#000;opacity:.1;z-index:9999"/>').appendTo(document.body);
+	$('<div class="shade" style="position:fixed;left:0;top:0;right:0;bottom:0;'
+		+'background:#000;opacity:.1;z-index:9999"/>').appendTo(document.body);
 	$.getScript('/ww.plugins/blog/funcs/Blog_editPost.js', function() {
 		Blog_editPost(pdata);
 	});

@@ -48,3 +48,19 @@ if ($version==6) {
 	dbQuery('alter table blog_entry add status smallint default 1');
 	$version=7;
 }
+if ($version==7) {
+	dbQuery('CREATE TABLE `blog_comment` (
+	  `id` int(11) NOT NULL AUTO_INCREMENT,
+	  `user_id` int(11) DEFAULT 0,
+	  `name` text,
+	  `url` text,
+	  `email` text,
+	  `comment` text,
+	  `cdate` datetime DEFAULT NULL,
+	  `blog_entry_id` int(11) DEFAULT 0,
+	  `status` smallint(6) DEFAULT 0,
+		`verification` varchar(32) DEFAULT NULL,
+	  PRIMARY KEY (`id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8');
+	$version=8;
+}

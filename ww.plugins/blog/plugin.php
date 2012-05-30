@@ -22,7 +22,7 @@ $plugin=array(
 	'frontend' => array(
 		'page_type' => 'Blog_frontend'
 	),
-	'version'=>7
+	'version'=>8
 );
 // }
 // { Blog_admin

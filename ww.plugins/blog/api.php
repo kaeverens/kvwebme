@@ -1,5 +1,78 @@
 <?php
 
+// { Blog_commentAdd
+
+/**
+	* add a comment to a blog entry
+	*
+	* return array entry status
+	*/
+function Blog_commentAdd() {
+	$ret=array();
+	$bid=(int)$_REQUEST['blog_entry_id'];
+	$pid=(int)$_REQUEST['page_id'];
+	$page=Page::getInstance($pid);
+	if (!$page->name) {
+		$ret['error']='Invalid page id.';
+		return $ret;
+	}
+	$entry=dbRow(
+		'select * from blog_entry where id='.$bid.' and status and allow_comments'
+	);
+	if (!$entry) {
+		$ret['error']='Entry does not exist, is not yet public,'
+			.' or does not allow comments.';
+		return $ret;
+	}
+	$name=$_REQUEST['name'];
+	$email=$_REQUEST['email'];
+	$url=$_REQUEST['url'];
+	$comment=$_REQUEST['comment'];
+	$status=0;
+	$uid=0;
+	if (isset($_SESSION['userdata']['id'])) {
+		$name=$_SESSION['userdata']['name'];
+		$email=$_SESSION['userdata']['email'];
+		$status=1;
+		$uid=$_SESSION['userdata']['id'];
+	}
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		$ret['error']='Invalid email address';
+		return $ret;
+	}
+	if ($url && !filter_var($url, FILTER_VALIDATE_URL)) {
+		$ret['error']='Invalid URL';
+		return $ret;
+	}
+	$verification='';
+	if (!$status && $entry['allow_comments']==1) {
+		$verification=md5(time().rand());
+	}
+	dbQuery(
+		'insert into blog_comment set user_id='.$uid
+		.', name="'.addslashes($name).'"'
+		.', url="'.addslashes($url).'"'
+		.', email="'.addslashes($email).'"'
+		.', comment="'.addslashes($comment).'"'
+		.', cdate=now(), blog_entry_id='.$bid
+		.', status='.$status.', verification="'.$verification.'"'
+	);
+	if (!$status && $entry['allow_comments']==1) {
+		Core_mail(
+			$email,
+			'['.$_SERVER['HTTP_HOST'].'] comment verification',
+			'A comment was posted on our website claiming to be from your email'
+			." address.\n\nIf it was not you, then please ignore this email.\n\n"
+			."To verify the comment, please click the following link:\n"
+			.'http://'.$_SERVER['HTP_HOST'].'/a/p=blog/f=commentVerify/md5='
+			.$verification
+		);
+		$ret['message']='Please check your email for a verification code';
+	}
+	return $ret;
+}
+
+// }
 // { Blog_getPostsList
 
 /**

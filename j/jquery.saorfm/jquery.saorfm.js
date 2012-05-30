@@ -256,14 +256,13 @@
 			}
 			var $this=$(this);
 			var width=$this.outerWidth(), height=$this.outerHeight();
-			$this
+			var $wrapper=$this
 				.wrap('<div class="saorfm"></div>')
 				.css({
 					'height':height+'px'
 				});
 			var $wrapper=$this.closest('.saorfm');
 			$wrapper.css({
-				'width':width+'px',
 				'height':height+'px'
 			});
 			var button=$(
