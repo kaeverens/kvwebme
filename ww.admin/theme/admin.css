@@ -230,3 +230,19 @@ div.mini-tabs .ui-tabs-nav{
 .smalltext input.date{
 	width:54px !important;
 }
+
+table.borders{
+	border:solid #000;
+	border-width:1px 0 0 1px;
+}
+table.borders>*>tr>th, table.borders>*>tr>td{
+	border:solid #000;
+	border-width:0 1px 1px 0;
+}
+table.borders>thead{
+	background:#333;
+}
+table.borders>thead *{
+	color:#fff;
+	font-style:italic;
+}
