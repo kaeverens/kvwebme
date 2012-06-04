@@ -185,8 +185,6 @@ $relations=dbAll(
 // }
 require_once $_SERVER['DOCUMENT_ROOT'].'/j/kfm/includes/directories.php';
 if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
-	Core_cacheClear('products');
-	Core_cacheClear('pages');
 	$errors=array();
 	if (!isset($_REQUEST['name']) || $_REQUEST['name']=='') {
 		$errors[]='You must fill in the <strong>Name</strong>.';
@@ -295,7 +293,9 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 		// { save categories
 		dbQuery('delete from products_categories_products where product_id='.$id);
 		if (!isset($_REQUEST['product_categories'])) {
-			$_REQUEST['product_categories']=array('1'=>'on');
+			$type=ProductType::getInstance((int)$_REQUEST['product_type_id']);
+			$_REQUEST['product_categories']
+				=array((string)$type->default_category=>'on');
 		}
 		foreach ($_REQUEST['product_categories'] as $key=>$val) {
 			dbQuery(
@@ -355,6 +355,8 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 		unset($DBVARS['cron-next']);
 		Core_configRewrite();
 	}
+	Core_cacheClear('products');
+	Core_cacheClear('pages');
 }
 
 if ($id) {

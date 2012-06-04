@@ -722,6 +722,7 @@ class ProductType{
 		$this->is_voucher=(int)@$r['is_voucher'];
 		$this->stock_control=(int)@$r['stock_control'];
 		$this->voucher_template=@$r['voucher_template'];
+		$this->default_category=(int)$r['default_category'];
 		self::$instances[$this->id] =& $this;
 		return $this;
 	}
