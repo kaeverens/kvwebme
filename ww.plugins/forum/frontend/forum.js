@@ -56,7 +56,7 @@ $(function(){
 							if (ret.error) {
 								return alert(ret.error);
 							}
-							document.location=document.location.toString();
+							document.location.reload();;
 						});
 					}
 				});

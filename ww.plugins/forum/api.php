@@ -149,9 +149,11 @@ function Forum_delete() {
 	if (!$post_id) {
 		$errs[]='no post selected';
 	}
-	$sql='select author_id from forums_posts where id='.$post_id;
+	$post=dbRow(
+		'select author_id,thread_id from forums_posts where id='.$post_id
+	);
 	if (!Core_isAdmin()
-		&& dbOne($sql, 'author_id') != $_SESSION['userdata']['id']
+		&& $post['author_id'] != $_SESSION['userdata']['id']
 	) {
 		$errs[]='this is not your post, or post does not exist';
 	}
@@ -159,6 +161,12 @@ function Forum_delete() {
 		return array('errors'=>$errs);
 	}
 	dbQuery('delete from forums_posts where id='.$post_id);
+	if ((int)dbOne(
+		'select count(id) from forums_posts where thread_id='.$post['author_id'],
+		'count(id)'
+	)<1) {
+		dbQuery('delete from forums_threads where id='.$post['thread_id']);
+	}
 	dbQuery(
 		'update forums_threads set num_posts='
 		.'(select count(id) as ids from forums_posts '
