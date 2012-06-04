@@ -4,6 +4,14 @@ function Blog_editPost(pdata) {
 			Blog_editPost(pdata)
 		});
 	}
+	if (!$.fn.tagsInput) {
+		$('head').append(
+			'<link type="text/css" href="/j/jquery.tagsinput.css" rel="stylesheet"/>'
+		);
+		return $.cachedScript('/j/jquery.tagsinput.js').done(function() {
+			Blog_editPost(pdata)
+		});
+	}
 	if (!window.CKEDITOR) {
 		return $.cachedScript('/j/ckeditor-3.6.2/ckeditor.js').done(function() {
 			$.cachedScript('/j/ckeditor-3.6.2/adapters/jquery.js').done(function() {
@@ -112,6 +120,11 @@ function Blog_editPost(pdata) {
 		'rpc':'/ww.incs/saorfm/rpc.php',
 		'select':'file',
 		'prefix':userdata.isAdmin?'':'/users/'+userdata.id
+	});
+	$('#blog-tags').tagsInput({
+		'height':30,
+		'width':'100%',
+		'delimiter':'|'
 	});
 	$('.shade').remove();
 }

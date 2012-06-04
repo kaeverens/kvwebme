@@ -208,14 +208,22 @@ function Blog_postEdit() {
 	if ($id) {
 		$sql='update blog_entry set '.$sql.' where id='.$id;
 		dbQuery($sql);
-		return array('ok'=>$id);
 	}
 	else {
 		$sql='insert into blog_entry set '.$sql.',cdate=now(),user_id='
 			.((int)$_SESSION['userdata']['id']);
 		dbQuery($sql);
-		return array('ok'=>dbLastInsertId());
+		$id=dbLastInsertId();
 	}
+	dbQuery('delete from blog_tags where entry_id='.$id);
+	$tags=explode('|', $tags);
+	foreach ($tags as $tag) {
+		dbQuery(
+			'insert into blog_tags set entry_id='.$id.', tag="'.addslashes($tag).'"'
+		);
+	}
+	Core_cacheClear('blog');
+	return array('ok'=>$id);
 }
 
 // }

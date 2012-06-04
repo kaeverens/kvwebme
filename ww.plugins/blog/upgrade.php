@@ -64,3 +64,10 @@ if ($version==7) {
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8');
 	$version=8;
 }
+if ($version==8) {
+	dbQuery('CREATE TABLE `blog_tags` (
+	  `entry_id` int(11) DEFAULT 0,
+	  `tag` text
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8');
+	$version=9;
+}
