@@ -20,7 +20,8 @@ $plugin=array(
 		'page_type' => 'Blog_admin'
 	),
 	'frontend' => array(
-		'page_type' => 'Blog_frontend'
+		'page_type' => 'Blog_frontend',
+		'widget' => 'Blog_widget'
 	),
 	'version'=>9
 );
@@ -130,6 +131,29 @@ function Blog_frontend($PAGEDATA) {
 	}
 	require_once dirname(__FILE__).'/frontend/excerpts.php';
 	return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
+}
+
+// }
+// { Blog_widget
+
+/**
+	* widget for blog stuff
+	*
+	* @return html
+	*/
+function Blog_widget($vars=null) {
+	global $PAGEDATA;
+	$rs=dbAll(
+		'select count(tag) as cnt, tag from blog_tags group by tag order by tag'
+	);
+	$tags=array();
+	foreach ($rs as $r) {
+		$h=htmlspecialchars($r['tag']);
+		$tags[]='<a href="'.$PAGEDATA->getRelativeUrl().'/tags/'.$h
+			.'">'.$h.'</a>';
+	}
+	
+	return '<div class="blog-tags">'.join(', ', $tags).'</div>';
 }
 
 // }

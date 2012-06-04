@@ -24,4 +24,4 @@ foreach ($rs as $r) {
 		.'">'.$h.' <span>('.$r['cnt'].')</span></a>';
 }
 
-$c.='<div id="blog-tags">'.join(', ', $tags).'</div>';
+$c.='<div class="blog-tags">'.join(', ', $tags).'</div>';
