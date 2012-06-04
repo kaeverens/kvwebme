@@ -74,8 +74,8 @@ switch ($widget_type) {
 				?'<a href="'.$product->getRelativeURL().'"><img src="/a/w=100/h=100/'
 				.'/f=getImg/'.$iid.'"/></a>'
 				:'';
-			$html.='<table class="product"><tr><td rowspan="2">'.$img
-				.'</td><td><strong>'.htmlspecialchars($product->name).'</strong>'
+			$html.='<table class="product"><tr><td rowspan="2">'.$img.'</td>'
+				.'<td><strong>'.htmlspecialchars(__FromJson($product->name)).'</strong>'
 				.'<p class="base-price">was: '.$_SESSION['currency']['symbol']
 				.$product->vals['online-store']['_price'].'</p>'
 				.'<p class="sale-price">now: '.$_SESSION['currency']['symbol']
