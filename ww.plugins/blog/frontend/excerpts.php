@@ -24,6 +24,9 @@ if (!Core_isAdmin()) {
 if ($blog_author) {
 	$constraints[]='user_id='.$blog_author;
 }
+if ($entry_ids) {
+	$constraints[]='id in ('.join(',', $entry_ids).')';
+}
 
 $constraints=' where '.join(' and ', $constraints);
 $num_of_entries=dbOne(

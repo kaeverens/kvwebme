@@ -104,6 +104,28 @@ function Blog_frontend($PAGEDATA) {
 			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
 		}
 		// }
+		// { tags
+		if (preg_match('#^tags/#', $unused_uri)) {
+			// { show list of tags
+			if ($unused_uri=='tags/') {
+				require_once dirname(__FILE__).'/frontend/tags.php';
+				return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
+			}
+			// }
+			// { show list of excerpts specific to a tag
+			$tagname=preg_replace('#^tags/([^/]*).*#', '\1', $unused_uri);
+			$entry_ids=array();
+			$rs=dbAll(
+				'select entry_id from blog_tags where tag="'.addslashes($tagname).'"'
+			);
+			foreach ($rs as $r) {
+				$entry_ids[]=$r['entry_id'];
+			}
+			require_once dirname(__FILE__).'/frontend/excerpts.php';
+			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
+			// }
+		}
+		// }
 		return $PAGEDATA->render().$unused_uri.@$PAGEDATA->vars['footer'];
 	}
 	require_once dirname(__FILE__).'/frontend/excerpts.php';
