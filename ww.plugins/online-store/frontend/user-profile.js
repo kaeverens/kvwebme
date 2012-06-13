@@ -1,4 +1,8 @@
-function os_invoice(id, print){
+function os_invoice(id, type, print){
+	if (type=='pdf') {
+		document.location='/a/p=online-store/f=invoicePdf/id='+id;
+		return;
+	}
 	var w=$(window);
 	var wh=w.height(),ww=w.width();
 	var p=print?'&print=1':'';

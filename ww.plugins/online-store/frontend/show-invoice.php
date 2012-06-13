@@ -12,20 +12,11 @@
 	*/
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
+require_once dirname(__FILE__).'/../api.php';
 
 if (!isset($_REQUEST['id'])) {
 	exit;
 }
 $id=(int)$_REQUEST['id'];
 
-$inv=dbOne(
-	'select invoice from online_store_orders where id='.$id.' and user_id='
-	.$_SESSION['userdata']['id'], 'invoice'
-);
-if (strpos($inv, '<body')===false) {
-	$inv='<body>'.$inv.'</body>';
-}
-if (isset($_REQUEST['print'])) {
-	$inv=str_replace('<body', '<body onload="window.print()"', $inv);
-}
-echo $inv;
+echo OnlineStore_invoiceGet($id);

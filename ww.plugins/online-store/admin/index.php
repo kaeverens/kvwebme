@@ -234,8 +234,8 @@ $c.=' /></td></tr>';
 // }
 // { redirect page
 $c.='<tr><th>Redirect after payment</th><td>';
-$c.='<select id="online_store_redirect_to" name="page_vars[online_store_red'
-	.'irect_to]">';
+$c.='<select id="online_store_redirect_to"'
+	.' name="page_vars[online_store_redirect_to]">';
 if (isset($vars['online_store_redirect_to'])
 	&& $vars['online_store_redirect_to']
 ) {

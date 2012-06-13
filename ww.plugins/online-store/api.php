@@ -132,6 +132,59 @@ function OnlineStore_getQrCode() {
 }
 
 // }
+// { OnlineStore_invoicePdf
+
+/**
+	* get a PDF version of the invoice
+	*
+	* @return null
+	*/
+function OnlineStore_invoicePdf() {
+	$id=(int)$_REQUEST['id'];
+	$inv=dbOne(
+		'select invoice from online_store_orders where id='.$id.' and user_id='
+		.$_SESSION['userdata']['id'], 'invoice'
+	);
+	if (!$inv) {
+		exit;
+	}
+	$pdfFile=USERBASE.'/ww.cache/online-store/invoice-pdf-'.$id;
+	if (!file_exists($pdfFile)) {
+		$html=OnlineStore_invoiceGet($id);
+		require_once $_SERVER['DOCUMENT_ROOT']
+			.'/ww.incs/dompdf/dompdf_config.inc.php';
+		$dompdf=new DOMPDF();
+		$dompdf->set_base_path($_SERVER['DOCUMENT_ROOT']);
+		$dompdf->load_html(utf8_decode(str_replace('€', '&euro;', $html)), 'UTF-8');
+		$dompdf->set_paper('a4');
+		$dompdf->render();
+		file_put_contents($pdfFile, $dompdf->output());
+	}
+	header('Content-type: application/pdf');
+	$fp=fopen($pdfFile, 'r');
+	fpassthru($fp);
+	fclose($fp);
+	exit;
+}
+
+// }
+// { OnlineStore_invoiceGet
+
+function OnlineStore_invoiceGet($id) {
+	$inv=dbOne(
+		'select invoice from online_store_orders where id='.$id.' and user_id='
+		.$_SESSION['userdata']['id'], 'invoice'
+	);
+	if (strpos($inv, '<body')===false) {
+		$inv='<body>'.$inv.'</body>';
+	}
+	if (isset($_REQUEST['print'])) {
+		$inv=str_replace('<body', '<body onload="window.print()"', $inv);
+	}
+	return $inv;
+}
+
+// }
 // { OnlineStore_listSavedLists
 
 /**

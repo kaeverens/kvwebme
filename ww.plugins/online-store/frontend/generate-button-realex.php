@@ -22,8 +22,7 @@ $sha1hash=sha1(
 	.'.'.$DBVARS['online_store_currency']
 );
 $sha1hash=sha1(
-	$sha1hash
-	.'.'.$PAGEDATA->vars['online_stores_realex_sharedsecret']
+	$sha1hash.'.'.$PAGEDATA->vars['online_stores_realex_sharedsecret']
 );
 $html='<form id="online-store-realex" method="post" action="'
 	.'https://epage.payandshop.com/epage.cgi">'

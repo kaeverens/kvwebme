@@ -59,12 +59,22 @@ OnlineStore_processOrder($id, $order);
 // }
 $rid=$p->vars['online_store_redirect_to'];
 $url='http://'.$_SERVER['HTTP_HOST'].'/';
+$pfound=false;
 if ($rid) {
 	$rp=Page::getInstance($rid);
 	if ($rp) {
-		$url.=$rp->getRelativeUrl();
+		$pfound=true;
+		$url.=$rp->getRelativeUrl().'?total='.$order['total'];
 	}
 }
-echo '<script defer="defer">document.location="'.addslashes($url).'?total='
-	.$order['total'].'";</script><p>Thank you!</p><p>Please <a href="'
-	.htmlspecialchars($url).'">click here</a> to continue.</p>';
+if (!$pfound) {
+	$rp=Page::getInstanceByType('privacy');
+	if ($rp) {
+		$pfound=true;
+		$url.=$rp->getRelativeUrl().'?onlinestore_iid='.$id;
+	}
+}
+echo '<script>document.location="'.addslashes($url).'";</script>'
+	.'<p>Thank you!</p>'
+	.'<p>Please <a href="'.htmlspecialchars($url)
+	.'">click here</a> to continue.</p>';

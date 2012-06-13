@@ -636,6 +636,10 @@ function Privacy_registrationRegister() {
 	* @return string HTML of the profile
 	*/
 function Privacy_profileGet() {
+	$html=Core_trigger('privacy_overload', array($user));
+	if ($html) {
+		return $html;
+	}
 	$uid = addslashes($_SESSION['userdata'][ 'id' ]);
 	$user = dbRow('select * from user_accounts where id=' . $uid);
 	$contact=json_decode($user['contact'], true);

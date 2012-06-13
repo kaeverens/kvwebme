@@ -42,15 +42,18 @@ $html .= '<table id="online_store_orders" style="border:1px solid #ccc;'
 
 foreach ($history as $order) {
 	$status = ( $order[ 'status' ] == 1 ) ? 'Paid' : 'Unpaid';
-	$html .= '<tr>
-		<td>' . Core_dateM2H($order[ 'date_created' ]) . '</td>
-		<td>' . $order[ 'total' ] . '</td>
-		<td>' . $status . '</td>
-		<td>
-			<a href="javascript:os_invoice(' . $order[ 'id' ] . ')">Invoice</a> 
-		  <a href="javascript:os_invoice(' . $order[ 'id' ] . ', true)">(print)</a>
-		</td>
-	</tr>';
+	$html .= '<tr>'
+		.'<td>' . Core_dateM2H($order[ 'date_created' ]) . '</td>'
+		.'<td>' . $order[ 'total' ] . '</td>'
+		.'<td>' . $status . '</td>'
+		.'<td>'
+		.'<a href="'.$PAGEDATA->getRelativeUrl().'?onlinestore_iid='.$order['id']
+		.'">Details</a> | '
+		.'<a href="javascript:os_invoice('.$order['id'].', \'html\')">Invoice</a>'
+		.' (<a href="javascript:os_invoice('.$order['id'].', \'html\', true)">'
+		.'print</a> | '
+		.'<a href="javascript:os_invoice('.$order['id'].', \'pdf\', true)">PDF</a>)'
+		.'</td></tr>';
 }  
 
 $html .= '</table>';

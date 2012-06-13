@@ -18,8 +18,26 @@ $http=((empty($_SERVER['HTTPS'])||$_SERVER['HTTPS']=='off')
 $callbackurl=$http.$_SERVER['HTTP_HOST'].'/ww.plugins/online-store/verify/'
 	.'quickpay.php';
 
+// { redirect URL for cancelled purchases
+$canc=Page::getInstance(
+	$PAGEDATA->vars['online_store_quickpay_redirect_failed']
+);
+// }
+// { redirect URL (for successful purchases
 $cont=Page::getInstance($PAGEDATA->vars['online_store_quickpay_redirect_to']);
-$canc=Page::getInstance($PAGEDATA->vars['online_store_quickpay_redirect_failed']);
+if ($cont) {
+	$cont_url=$cont->getAbsoluteURL();
+}
+else {
+	$rp=Page::getInstanceByType('privacy');
+	if ($rp) {
+		$cont_url=$rp->getAbsoluteUrl().'?onlinestore_iid='.$id;
+	}
+	else {
+		$cont_url='http://'.$_SERVER['HTTP_HOST'].'/';
+	}
+}
+// }
 
 $fields = array(
 	'protocol'    => 4,
@@ -29,7 +47,7 @@ $fields = array(
 	'ordernumber' => str_pad($id, 8, '0', STR_PAD_LEFT),
 	'amount'      => $total * 100,
 	'currency'    => $DBVARS['online_store_currency'],
-	'continueurl' => $cont->getAbsoluteURL(),
+	'continueurl' => $cont_url,
 	'cancelurl'   => $canc->getAbsoluteURL(),
 	'callbackurl' => $callbackurl,
 	'autocapture' => $PAGEDATA->vars['online_stores_quickpay_autocapture'],

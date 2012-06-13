@@ -14,7 +14,7 @@
 // { define $plugin
 $plugin=array(
 	'name' => 'Online Store',
-	'admin' => array(
+	'admin' => array( // {
 		'page_type' => 'OnlineStore_adminPageForm',
 		'menu' => array(
 			'Online Store>Orders'=>
@@ -32,10 +32,10 @@ $plugin=array(
 			'form_url' => '/ww.plugins/online-store/admin/widget-form.php',
 			'js_include' => '/ww.plugins/online-store/j/widget-admin.js'
 		)
-	),
+	), // }
 	'description'=>'Add online-shopping capabilities to some plugins. '
 		.'REQUIRES products plugin.',
-	'frontend' => array(
+	'frontend' => array( // {
 		'widget' => 'OnlineStore_showBasketWidget',
 		'page_type' => 'OnlineStore_frontend',
 		'template_functions' => array(
@@ -52,12 +52,13 @@ $plugin=array(
 				'function' => 'OnlineStore_productPriceFull'
 			)
 		)
-	),
-	'triggers' => array(
+	), // }
+	'triggers' => array( // {
 		'displaying-pagedata'      => 'OnlineStore_pagedata',
 		'initialisation-completed' => 'OnlineStore_startup',
-		'privacy_user_profile'     => 'OnlineStore_userProfile'
-	),
+		'privacy_user_profile'     => 'OnlineStore_userProfile',
+		'privacy_overload' => 'OnlineStore_userProfileInvoiceDetails'
+	), // }
 	'do-not-delete' => true,
 	'only-one-page-instance' => true,
 	'version' => '15'
@@ -746,6 +747,33 @@ function OnlineStore_startup() {
   */
 function OnlineStore_userProfile( $PAGEDATA, $user ) {
 	require dirname(__FILE__).'/frontend/user-profile.php';
+	return $html;
+}
+
+// }
+// { OnlineStore_userProfileInvoiceDetails
+
+/**
+  * show specific details of an order by a user
+  *
+  * @param object $PAGEDATA the current page instance
+  * @param int    $user     the user ID
+  *
+  * @return string HTML list of orders
+  */
+function OnlineStore_userProfileInvoiceDetails($PAGEDATA, $user) {
+	if (!isset($_REQUEST['onlinestore_iid'])) {
+		return false;
+	}
+	$iid=(int)$_REQUEST['onlinestore_iid'];
+	$iid=dbRow(
+		'select * from online_store_orders where id='.$iid.' and user_id='
+		.$_SESSION['userdata']['id']
+	);
+	if ($iid===false) {
+		return false;
+	}
+	require_once dirname(__FILE__).'/frontend/user-profile-invoice-details.php';
 	return $html;
 }
 

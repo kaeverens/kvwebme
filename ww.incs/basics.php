@@ -674,7 +674,7 @@ bsaaaaaaaceeeeiiiidnoooooouuuyybyRr';
   * @return null
   */
 function WebME_autoload($name) {
-	require $name . '.php';
+	@include $name . '.php';
 }
 
 // }

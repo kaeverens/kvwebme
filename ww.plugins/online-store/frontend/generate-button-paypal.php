@@ -13,6 +13,17 @@
 
 global $DBVARS;
 $total=sprintf("%.2f", $total);
+// { redirect URL for successful purchases
+if (!$return) {
+	$rp=Page::getInstanceByType('privacy');
+	if ($rp) {
+		$return=$rp->getAbsoluteUrl().'?onlinestore_iid='.$id;
+	}
+	else {
+		$return='http://'.$_SERVER['HTTP_HOST'].'/';
+	}
+}
+// }
 $html='<form id="online-store-paypal" method="post" action="https://www.pay'
 	.'pal.com/cgi-bin/webscr"><input type="hidden" value="_xclick" name="cmd"'
 	.'/><input type="hidden" value="'
