@@ -21,7 +21,7 @@ $plugin=array(
 	'frontend' => array(
 		'page_type' => 'IssueTracker_front'
 	),
-	'version'=>1
+	'version'=>5
 );
 // }
 
@@ -52,7 +52,7 @@ function IssueTracker_admin($page, $page_vars) {
 	*/
 function IssueTracker_front($PAGEDATA) {
 	require SCRIPTBASE.'ww.plugins/issue-tracker/frontend/page_type.php';
-	return $PAGEDATA->render().$html;
+	return $PAGEDATA->render().$html.__FromJson(@$PAGEDATA->vars['footer']);
 }
 
 // }

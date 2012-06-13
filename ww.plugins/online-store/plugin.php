@@ -692,7 +692,7 @@ function OnlineStore_startup() {
 		$_SESSION['currency']=$osvals['currency'];
 		$_SESSION['onlinestore_vat_percent']=$osvals['onlinestore_vat_percent'];
 		$_SESSION['onlinestore_prices_shown_post_vat']=
-			(int)$osvals['prices_shown_post_vat'];
+			(int)@$osvals['prices_shown_post_vat'];
 		return;
 	}
 	OnlineStore_setCheckoutPage();

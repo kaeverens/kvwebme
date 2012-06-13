@@ -225,9 +225,9 @@ echo '<div id="locations">';
 echo '<h2>Currently located</h2>'
 	.'<p id="user-location">The user is recorded as being located at '
 	.'Lat:<input name="location_lat" value="'
-	.((float)$r['location_lat']).'"/>, '
+	.((float)@$r['location_lat']).'"/>, '
 	.'Long:<input name="location_lng" value="'
-	.((float)$r['location_lng']).'"/> <a href="#">edit</a></p>';
+	.((float)@$r['location_lng']).'"/> <a href="#">edit</a></p>';
 // }
 // { addresses
 echo '<h2>Addresses</h2> <a id="new-address" href="javascript:;" style="flo'

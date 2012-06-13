@@ -52,9 +52,9 @@ function Products_map2($params, $smarty) {
 	if (!$uid) {
 		return 'unknown location';
 	}
-	$user=User::getInstance($uid);
+	$user=User::getInstance($uid, false, false);
 	if (!$user) {
-		return 'unknown location';
+		return 'unknown user';
 	}
 	$lat=(float)$user->get('location_lat');
 	$lng=(float)$user->get('location_lng');
@@ -92,7 +92,7 @@ function Products_owner2($params, $smarty) {
 	if (!$uid) {
 		return 'unknown';
 	}
-	$user=User::getInstance($uid);
+	$user=User::getInstance($uid, false, false);
 	if (!$user) {
 		return 'unknown';
 	}
@@ -295,7 +295,7 @@ function Products_soldAmount2($params, $smarty) {
 // { Products_user2
 
 /**
-	* show how many have been sold
+	* show owner's name
 	*
 	* @param array  $params parameters
 	* @param object $smarty Smarty object

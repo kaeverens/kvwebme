@@ -630,6 +630,23 @@ function Core_userSetDefaultAddress() {
 }
 
 // }
+// { Core_userGetUid
+
+/**
+	* get the user id of a user
+	*
+	* @return status of user
+	*/
+function Core_userGetUid() {
+	$email=@$_REQUEST['email'];
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		return array('error'=>'invalid email address');
+	}
+	$sql='select id from user_accounts where email="'.addslashes($email).'"';
+	$id=(int)dbOne($sql, 'id');
+	return array('uid'=>$id);
+}
+// }
 // { Core_translationsGet
 
 /**

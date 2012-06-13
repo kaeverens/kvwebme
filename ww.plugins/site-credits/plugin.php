@@ -19,7 +19,7 @@ $plugin=array(
 		.' manage site subscriptions',
 	'admin' => array(
 		'menu' => array(
-			'Credits' => 'overview'
+			'Credits' => 'plugin.php?_plugin=site-credits&amp;_page=overview'
 		)
 	),
 	'frontend' => array(
@@ -45,5 +45,5 @@ function SiteCredits_isActive() {
 	}
 }
 function SiteCredits_adminShowStatus() {
-	return '<script src="/ww.plugins/site-credits/admin-status.js"></script>';
+	WW_addScript('/ww.plugins/site-credits/admin-status.js');
 }

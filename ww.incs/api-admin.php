@@ -1106,7 +1106,7 @@ function Core_adminPageEdit() {
 			$type=$page->plugin;		//we find the plugin's name(plugin type)
 		}
 	
-		if ($GLOBALS['PLUGINS'][$type]['do-not-delete']) { // don't modify type
+		if (@$GLOBALS['PLUGINS'][$type]['do-not-delete']) { // don't modify type
 			$type=dbOne('select type from pages where id='.$id, 'type');
 			if ($type!=$_REQUEST['type']) {
 				echo '<script>alert("The type of the page couldn\'t be changed")</script>';
@@ -1121,10 +1121,8 @@ function Core_adminPageEdit() {
 		$type=$_REQUEST['type'];
 	}
 
-
-	
 	$destType=preg_replace('/\|.*/', '', $_REQUEST['type']);
-	if ($GLOBALS['PLUGINS'][$destType]['only-one-page-instance'] == true) {
+	if (@$GLOBALS['PLUGINS'][$destType]['only-one-page-instance'] == true) {
 		
 		//we count how many pages of this type
 		//we have

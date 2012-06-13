@@ -127,7 +127,7 @@ switch ($_REQUEST['action']) {
 						$admin['email'],
 						'['.$domain.'] credits updated',
 						str_replace('%ADMIN%', $admin['name'], $email),
-						"Bcc: kae@verens.com\r\nFrom: no-reply@$domain\r\nReply-To: no-reply@$domain"
+						"Bcc: kae.verens@gmail.com\r\nFrom: no-reply@$domain\r\nReply-To: no-reply@$domain"
 					);
 				}
 				$GLOBALS['DBVARS']['sitecredits-credits']=$cur_total;
@@ -139,6 +139,7 @@ switch ($_REQUEST['action']) {
 				'select *,date_format(next_payment_date, "%b-%d-%Y") as npd '
 				.'from sitecredits_recurring '
 				.'where next_payment_date<date_add(now(), interval 1 week) '
+				.'and next_payment_date>date_add(now(), interval 5 day) '
 				.'order by next_payment_date'
 			);
 			if (!count($rs)) {
@@ -157,18 +158,20 @@ switch ($_REQUEST['action']) {
 			if ($total<$cur_total) {
 				echo '{"ok":1}';
 			}
-			$email.="\n\nYour current balance is $cur_total credits, which is not "
-				."enough to cover the $total credits which your site will be charged. "
-				."Please log into your administration area and increase "
-				."your credits balance."
-				."\n\nPlease note that this is an automated email.\n\nThank you\n"
-				.$domain.' hosting provider';
+			else {
+				$email.="\n\nYour current balance is $cur_total credits, which is not "
+					."enough to cover the $total credits which your site will be charged. "
+					."Please log into your administration area and increase "
+					."your credits balance."
+					."\n\nPlease note that this is an automated email.\n\nThank you\n"
+					.$domain.' hosting provider';
+			}
 			foreach ($admins as $admin) {
 				mail(
 					$admin['email'],
 					'['.$domain.'] credits reminder',
 					str_replace('%ADMIN%', $admin['name'], $email),
-					"BCC: kae@verens.com\nFrom: no-reply@$domain\nReply-To: no-reply@$domain"
+					"BCC: kae.verens@gmail.com\nFrom: no-reply@$domain\nReply-To: no-reply@$domain"
 				);
 			}
 			// }

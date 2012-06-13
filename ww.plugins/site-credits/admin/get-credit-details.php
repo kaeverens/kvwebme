@@ -11,7 +11,9 @@ foreach ($rs as $k=>$v) {
 	$options[$v['name']]=$v['value'];
 }
 if (!(@$options['payment-recipient'])) {
-	die('{"error":"no payment recipient set"}');
+	$options['payment-recipient']='kae@kvsites.ie';
+	dbQuery('insert into sitecredits_options values("payment-recipient", "kae@kvsites.ie")');
+//	die('{"error":"no payment recipient set"}');
 }
 if (!(@$options['currency'])) {
 	$options['currency']='EUR';

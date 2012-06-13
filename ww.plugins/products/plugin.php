@@ -962,7 +962,9 @@ class ProductType{
 		}
 		$smarty->assign('_name', __FromJson($product->name));
 		$smarty->assign('_stock_number', $product->stock_number);
-		$smarty->assign('_ean', $product->ean);
+		if (isset($product->ean)) {
+			$smarty->assign('_ean', $product->ean);
+		}
 		$PAGEDATA->title=str_replace(
 			array('{{$_name}}', '{{$_stock_number}}', '{{$_ean}}'),
 			array(

@@ -12,6 +12,31 @@
   * @link       www.kvweb.me
  */
 
+// { IssueTracker_adminProjectSave
+
+/**
+	* save details about a project, or create a project
+	*
+	* @return array saved project
+	*/
+function IssueTracker_adminProjectSave() {
+	$id=(int)$_REQUEST['id'];
+	$name=$_REQUEST['name'];
+	$meta=json_encode($_REQUEST['meta']);
+	$parent_id=(int)$_REQUEST['parent_id'];
+	$sql='set name="'.addslashes($name).'"'
+		.', meta="'.addslashes($meta).'", parent_id='.$parent_id;
+	if ($id) {
+		dbQuery('update issuetracker_projects '.$sql.' where id='.$id);
+		return array('id'=>$id);
+	}
+	else {
+		dbQuery('insert into issuetracker_projects '.$sql);
+		return array('id'=>dbLastInsertId());
+	}
+}
+
+// }
 // { IssueTracker_adminTypeGet
 
 /**
