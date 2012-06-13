@@ -1433,6 +1433,9 @@ function Products_getSubCategoriesAsMenu($ignore, $page) {
 		if ($page->type!='products' && $page->type!='products|products') {
 			return false;
 		}
+		if (!@$page->vars['products_show_subcats_in_menu']) {
+			return false;
+		}
 		$pid=(int)$page->vars['products_category_to_show'];
 	}
 	else {
@@ -1480,6 +1483,9 @@ function Products_getSubCategoriesAsMenuHtml(
 		if (!$pid->type
 			|| ($pid->type!='products' && $pid->type!='products|products')
 		) {
+			return false;
+		}
+		if (!@$pid->vars['products_show_subcats_in_menu']) {
 			return false;
 		}
 		$pid=(int)$pid->vars['products_category_to_show'];
