@@ -495,14 +495,18 @@ function Core_trigger($trigger_name, $params = null) {
 		}
 		else {
 			if (is_array($params)) {
-				$temp = $params;
+				$args=$params;
 				// push PAGEDATA to beginning of array
-				array_unshift($temp, $PAGEDATA);
-				$c .= call_user_func_array($fn, $temp);
+				array_unshift($args, $PAGEDATA);
+				$rs=call_user_func_array($fn, $args);
 			}
 			else {
-				$c.= $fn($PAGEDATA, $params);
+				$res=$fn($PAGEDATA, $params);
 			}
+			if (is_array($res)) {
+				return $res;
+			}
+			else $c.=$res;
 		}
 	}
 	return $c;

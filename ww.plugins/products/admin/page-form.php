@@ -214,6 +214,16 @@ $c.='<tr id="products-pagetitleoverride-single"><th>Page Title Override'
 	.htmlspecialchars(@$vars['products_pagetitleoverride_single'])
 	.'"/></td></tr>';
 // }
+// { show sub-categories in navigation menu
+$c.='<tr id="products_show_subcats_in_menu">'
+	.'<th>Show sub-categories in menu</th><td>'
+	.'<select name="page_vars[products_show_subcats_in_menu]">';
+$c.='<option value="0">No</option><option value="1"';
+if (@$vars['products_show_subcats_in_menu']=='1') {
+	$c.=' selected="selected"';
+}
+$c.='>Yes</option></select></td></tr>';
+// }
 $c.= '</table></div>';
 // }
 // { header

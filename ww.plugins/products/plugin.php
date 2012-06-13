@@ -124,7 +124,8 @@ $plugin=array(
 	'name' => 'Products',
 	'search' => 'Products_search',
 	'triggers' => array( // {
-		'initialisation-completed' => 'Products_addToCart'
+		'initialisation-completed' => 'Products_addToCart',
+		'menu-subpages' => 'Products_getSubCategoriesAsMenu'
 	), // }
 	'version' => '42'
 );
@@ -633,7 +634,7 @@ class ProductCategory{
 		// { or if there's a category parent, return its URL plus the name appended
 		if ($this->vals['parent_id']!=0) {
 			$cat=ProductCategory::getInstance($this->vals['parent_id']);
-			return $cat->getRelativeUrl().'/'.urlencode($this->vals['link']);
+			return $cat->getRelativeUrl().'/'.urlencode($this->vals['name']);
 		}
 		// }
 		// { or get at least any product page
@@ -650,7 +651,7 @@ class ProductCategory{
 		}
 		return $url=='/#no-url-available'
 			?'/#no-url-available'
-			:$url.urlencode($this->vals['link']);
+			:$url.urlencode($this->vals['name']);
 		// }
 	}
 
@@ -1416,6 +1417,46 @@ function Products_getProductPrice(
 	}
 	// }
 	return array($price, $amount, $vat);
+}
+
+// }
+// { Products_getSubCategoriesAsMenu
+
+/**
+	* get subcategories of a page as menu items
+	*
+	* @return array menu items
+	*/
+function Products_getSubCategoriesAsMenu($ignore, $page) {
+	if ($page->type!='products' && $page->type!='products|products') {
+		return false;
+	}
+	$rs=array();
+	$pid=(int)$page->vars['products_category_to_show'];
+	$cats=dbAll(
+		'select * from products_categories where parent_id='.$pid.' order by name'
+	);
+	foreach ($cats as $cat) {
+		$cat=ProductCategory::getInstance($cat['id']);
+		$arr=array(
+			'id'=>$cat->vals['id'],
+			'name'=>$cat->vals['name'],
+			'type'=>'products|products',
+			'classes'=>'menuItem',
+			'link'=>$cat->getRelativeUrl(),
+			'parent'=>$pid
+		);
+		$subcats=dbOne(
+			'select id from products_categories where parent_id='.$cat->vals['id'],
+			'id'
+		);
+		if ($subcats) {
+			$arr['classes'].=' ajaxmenu_hasChildren';
+			$arr['numchildren']=1;
+		}
+		$rs[]=$arr;
+	}
+	return count($rs)?$rs:false;
 }
 
 // }

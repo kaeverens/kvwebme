@@ -4,13 +4,27 @@ if (!Core_isAdmin()) {
 	die('access denied');
 }
 
-if (isset($_REQUEST['id'])) {
-	$id=(int)$_REQUEST['id'];
-}
-else {
-	$id=0;
-}
+$id=(int)@$_REQUEST['id'];
 
+// { type
+echo '<strong>View Type</strong><br/>';
+$type=@$_REQUEST['widget_type'];
+$types=array(
+	'List Categories',
+	'Tree View',
+	'Products',
+	'Pie-Chart'
+);
+echo '<select name="widget_type">';
+foreach ($types as $t) {
+	echo '<option';
+	if ($type==$t) {
+		echo ' selected="selected"';
+	}
+	echo '>'.$t.'</option>';
+}
+echo '</select><br/>';
+// }
 // { parent category
 echo '<strong>Parent Category</strong><br />'
 	.'<select name="parent_cat" id="parent_cat_'.$id.'">';
@@ -26,21 +40,7 @@ else {
 		)
 		.'</option>';
 }
-echo '</select>';
-// }
-// { type
-echo '<br /><strong>Type</strong>';
-$type=@$_REQUEST['widget_type'];
-$types=array('List Categories', 'Tree View', 'Products', 'Pie-Chart');
-echo '<select name="widget_type">';
-foreach ($types as $t) {
-	echo '<option';
-	if ($type==$t) {
-		echo ' selected="selected"';
-	}
-	echo '>'.$t.'</option>';
-}
-echo '</select>';
+echo '</select><br/>';
 // }
 // { diameter
 echo '<div class="diameter"><strong>Diameter (for Pie Chart)</strong>';

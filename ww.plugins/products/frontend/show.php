@@ -19,201 +19,7 @@ if (!file_exists(USERBASE.'/ww.cache/products/templates')) {
 	mkdir(USERBASE.'/ww.cache/products/templates_c');
 }
 
-// { Products_categories
-
-/**
-	* get a list of product categories
-	*
-	* @param array  $params Smarty parameters
-	* @param object $smarty the Smarty object
-	*
-	* @return string the list
-	*/
-function Products_categories ($params, $smarty) {
-	$product = $smarty->_tpl_vars['product'];
-	$productID = $product->id;
-	$categoryIDs=dbAll(
-		'select category_id from products_categories_products where product_id='
-		.$productID
-	);
-	if ($categoryIDs) {
-		$query='select count(id) from products_categories where enabled = 1 and'
-			.' id in (';
-		foreach ($categoryIDs as $catID) {
-			$query.= (int)$catID['category_id'].', ';
-		}
-		$query= substr_replace($query, '', -2);
-		$query.=')';
-		$numEnabledCats = dbOne($query, 'count(id)'); 	
-	}
-	if ($numEnabledCats==0) {
-		return '<div class="products-categories">'
-			.'No Categories exist for this product</div>';
-	}
-	$c= '<ul>';
-	$directCategoryPages=dbAll(
-		'select page_id from page_vars where name= "products_what_to_show" and '
-		.'value=2'
-	); 
-	foreach ($categoryIDs as $catID) {
-		$pageFound = false;
-		$cid = $catID['category_id'];
-		$catDetails=dbRow(
-			'select name, enabled, parent_id from products_categories where id='.$cid
-		);
-		$catIsEnabled = $catDetails['enabled'];
-		$catName = $catDetails['name'];
-		if ($catIsEnabled==1) {
-			foreach ($directCategoryPages as $catPage) {
-				$pageID = $catPage['page_id'];
-				$shownCat=dbOne(
-					'select value from page_vars where name = "products_category_to_s'
-					.'how" and page_id='.$pageID, 'value'
-				);
-				if ($shownCat==$cid) {
-					$page=  Page::getInstance($pageID);
-					$c.='<li><a href="'.$page->getRelativeUrl().'">'
-						.htmlspecialchars($catName).'</a></li>';
-					$pageFound= true;
-					break;
-				}
-			}
-			if (!$pageFound) {
-				$parent = $catDetails['parent_id'];
-				while ($parent>0) {
-					foreach ($directCategoryPages as $catPage) {
-						$pageID= $catPage['page_id'];
-						$shownCat=dbOne(
-							'select value from page_vars where name = "prod'
-							.'ucts_category_to_show" and page_id= '.$pageID, 'value'
-						);
-						if ($parent==$shownCat) {
-							$page = Page::getInstance($pageID);
-							$c.= '<li><a href="'.$page->getRelativeUrl().'?product_cid='
-								.$cid.'">'.htmlspecialchars($catName).'</a></li>';
-							$pageFound= true;
-							break;
-						}
-					}	
-					$parent=dbOne(
-						'select parent_id from products_categories where id = '.$parent,
-						'parent_id'
-					);
-				}
-			}
-			if (!$pageFound) {
-				$c.='<li><a href="/_r?type=products&amp;product_cid='.$cid.'">'
-					.htmlspecialchars($catName).'</a></li>';
-			}
-		}
-	}
-	$c.= '</ul>';
-	return $c;
-}
-
-// }
-
-/**
-	* display a table in simple table format
-	*
-	* @param array  $params Smarty parameters
-	* @param object $smarty the Smarty object
-	*
-	* @return string the table
-	*/
-function Products_datatable ($params, $smarty) {
-	$product= $smarty->_tpl_vars['product'];
-	$type= ProductType::getInstance($product->get('product_type_id'));
-	if (!$type) {
-		return 'Missing Product Type : '.$product->get('product_type_id');
-	}
-	$datafields= $type->data_fields;
-	if (!is_array($datafields)) {
-		$datafields=array();
-	}
-	$c = '<table>';
-	if ($params['align']!='horizontal') {
-		foreach ($datafields as $data) {
-			$name = $data->ti
-				?$data->ti
-				:ucwords(str_replace('_', ' ', $data->n));
-			$c.= '<tr><th class="left">';
-			$c.= htmlspecialchars(ucfirst($name));
-			$c.= '</th><td>';
-			switch($data->t) {
-				case 'date': // {
-					$c.= Core_dateM2H($product->vals[$data->n]);
-				break; // }
-				case 'checkbox': // {
-					if (isset($product->vals[$data->n])) {
-						$c.='Yes';
-					}
-					else {
-						$c.= 'No';
-					}
-				break; // }
-				case 'textarea': // {
-					$c.=__FromJson($product->vals[$data->n]);
-				break; // }
-				default: // {
-					if (isset($product->vals[$data->n])) {
-						$c.=htmlspecialchars(__FromJson($product->vals[$data->n]));
-					}
-					else {
-						$c.= '&nbsp;';
-					}
-					// }
-			}
-			$c.='</td></tr>';
-		}
-	}
-	else {
-		$c.= '<thead>';
-		$c.= '<tr>';
-		foreach ($datafields as $data) {
-			$name = $data->ti
-				?$data->ti
-				:ucwords(str_replace('_', ' ', $data->n));
-			$c.= '<th>'.htmlspecialchars(ucfirst($name)).'</th>';
-		}
-		$c.= '</tr>';
-		$c.= '</thead>';
-		$c.='<tbody>';
-		$c.= '<tr>';
-		foreach ($datafields as $data) {
-			$c.= '<td>';
-			switch ($data->t) {
-				case 'date' : // {
-					$c.= Core_dateM2H($product->vals[$data->n]);
-				break; // }
-				case 'checkbox': // {
-					if (isset($product->vals[$data->n])) {
-						$c.= 'Yes';
-					}
-					else{ 
-						$c.= 'No';
-					}
-				break; // }
-				case 'textarea': // {
-					$c.= $product->vals[$data->n];
-				break; // }
-				default: // {
-					if (isset($product->vals[$data->n])) {
-						$c.=htmlspecialchars($product->vals[$data->n]);
-					}
-					else {
-						$c.='&nbsp;';
-					}
-					// }
-			}
-			$c.='</td>';
-		}
-		$c.= '</tr>';
-		$c.= '</tbody>';
-	}
-	$c.= '</table>';
-	return $c;
-}
+// { Product_datatableMultiple
 
 /**
 	* display products in a datatable format
@@ -317,6 +123,207 @@ function Product_datatableMultiple ($products, $direction) {
 	}
 }
 
+// }
+// { Products_categories
+
+/**
+	* get a list of product categories
+	*
+	* @param array  $params Smarty parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string the list
+	*/
+function Products_categories ($params, $smarty) {
+	$product = $smarty->_tpl_vars['product'];
+	$productID = $product->id;
+	$categoryIDs=dbAll(
+		'select category_id from products_categories_products where product_id='
+		.$productID
+	);
+	if ($categoryIDs) {
+		$query='select count(id) from products_categories where enabled = 1 and'
+			.' id in (';
+		foreach ($categoryIDs as $catID) {
+			$query.= (int)$catID['category_id'].', ';
+		}
+		$query= substr_replace($query, '', -2);
+		$query.=')';
+		$numEnabledCats = dbOne($query, 'count(id)'); 	
+	}
+	if ($numEnabledCats==0) {
+		return '<div class="products-categories">'
+			.'No Categories exist for this product</div>';
+	}
+	$c= '<ul>';
+	$directCategoryPages=dbAll(
+		'select page_id from page_vars where name= "products_what_to_show" and '
+		.'value=2'
+	); 
+	foreach ($categoryIDs as $catID) {
+		$pageFound = false;
+		$cid = $catID['category_id'];
+		$catDetails=dbRow(
+			'select name, enabled, parent_id from products_categories where id='.$cid
+		);
+		$catIsEnabled = $catDetails['enabled'];
+		$catName = $catDetails['name'];
+		if ($catIsEnabled==1) {
+			foreach ($directCategoryPages as $catPage) {
+				$pageID = $catPage['page_id'];
+				$shownCat=dbOne(
+					'select value from page_vars where name = "products_category_to_s'
+					.'how" and page_id='.$pageID, 'value'
+				);
+				if ($shownCat==$cid) {
+					$page=  Page::getInstance($pageID);
+					$c.='<li><a href="'.$page->getRelativeUrl().'">'
+						.htmlspecialchars($catName).'</a></li>';
+					$pageFound= true;
+					break;
+				}
+			}
+			if (!$pageFound) {
+				$parent = $catDetails['parent_id'];
+				while ($parent>0) {
+					foreach ($directCategoryPages as $catPage) {
+						$pageID= $catPage['page_id'];
+						$shownCat=dbOne(
+							'select value from page_vars where name = "prod'
+							.'ucts_category_to_show" and page_id= '.$pageID, 'value'
+						);
+						if ($parent==$shownCat) {
+							$page = Page::getInstance($pageID);
+							$c.= '<li><a href="'.$page->getRelativeUrl().'?product_cid='
+								.$cid.'">'.htmlspecialchars($catName).'</a></li>';
+							$pageFound= true;
+							break;
+						}
+					}	
+					$parent=dbOne(
+						'select parent_id from products_categories where id = '.$parent,
+						'parent_id'
+					);
+				}
+			}
+			if (!$pageFound) {
+				$c.='<li><a href="/_r?type=products&amp;product_cid='.$cid.'">'
+					.htmlspecialchars($catName).'</a></li>';
+			}
+		}
+	}
+	$c.= '</ul>';
+	return $c;
+}
+
+// }
+// { Products_datatable
+
+/**
+	* display a table in simple table format
+	*
+	* @param array  $params Smarty parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string the table
+	*/
+function Products_datatable ($params, $smarty) {
+	$product= $smarty->_tpl_vars['product'];
+	$type= ProductType::getInstance($product->get('product_type_id'));
+	if (!$type) {
+		return 'Missing Product Type : '.$product->get('product_type_id');
+	}
+	$datafields= $type->data_fields;
+	if (!is_array($datafields)) {
+		$datafields=array();
+	}
+	$c = '<table>';
+	if ($params['align']!='horizontal') {
+		foreach ($datafields as $data) {
+			$name = $data->ti
+				?$data->ti
+				:ucwords(str_replace('_', ' ', $data->n));
+			$c.= '<tr><th class="left">';
+			$c.= htmlspecialchars(ucfirst($name));
+			$c.= '</th><td>';
+			switch($data->t) {
+				case 'date': // {
+					$c.= Core_dateM2H($product->vals[$data->n]);
+				break; // }
+				case 'checkbox': // {
+					if (isset($product->vals[$data->n])) {
+						$c.='Yes';
+					}
+					else {
+						$c.= 'No';
+					}
+				break; // }
+				case 'textarea': // {
+					$c.=__FromJson($product->vals[$data->n]);
+				break; // }
+				default: // {
+					if (isset($product->vals[$data->n])) {
+						$c.=htmlspecialchars(__FromJson($product->vals[$data->n]));
+					}
+					else {
+						$c.= '&nbsp;';
+					}
+					// }
+			}
+			$c.='</td></tr>';
+		}
+	}
+	else {
+		$c.= '<thead>';
+		$c.= '<tr>';
+		foreach ($datafields as $data) {
+			$name = $data->ti
+				?$data->ti
+				:ucwords(str_replace('_', ' ', $data->n));
+			$c.= '<th>'.htmlspecialchars(ucfirst($name)).'</th>';
+		}
+		$c.= '</tr>';
+		$c.= '</thead>';
+		$c.='<tbody>';
+		$c.= '<tr>';
+		foreach ($datafields as $data) {
+			$c.= '<td>';
+			switch ($data->t) {
+				case 'date' : // {
+					$c.= Core_dateM2H($product->vals[$data->n]);
+				break; // }
+				case 'checkbox': // {
+					if (isset($product->vals[$data->n])) {
+						$c.= 'Yes';
+					}
+					else{ 
+						$c.= 'No';
+					}
+				break; // }
+				case 'textarea': // {
+					$c.= $product->vals[$data->n];
+				break; // }
+				default: // {
+					if (isset($product->vals[$data->n])) {
+						$c.=htmlspecialchars($product->vals[$data->n]);
+					}
+					else {
+						$c.='&nbsp;';
+					}
+					// }
+			}
+			$c.='</td>';
+		}
+		$c.= '</tr>';
+		$c.= '</tbody>';
+	}
+	$c.= '</table>';
+	return $c;
+}
+
+// }
+// { Products_getAddToCartWidget
+
 /**
 	* get a button for adding single items to a cart
 	*
@@ -356,6 +363,9 @@ function Products_getAddToCartWidget($params, $smarty) {
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'" /></form>';
 }
+
+// }
+// { Products_getAddManyToCartWidget
 
 /**
 	* get a button for adding multiple items to a cart
@@ -418,6 +428,9 @@ function Products_getAddManyToCartWidget($params, $smarty) {
 		. $smarty->_tpl_vars['product']->id .'"/></form>';
 }
 
+// }
+// { Products_getAddToCartButton
+
 /**
 	* create an "add to cart" button
 	*
@@ -439,6 +452,9 @@ function Products_getAddToCartButton($text, $baseprice=0, $saleprice=0) {
 		.' vat="'.$_SESSION['onlinestore_vat_percent'].'"'
 		.'>'.$text.'</button>';
 }
+
+// }
+// { Products_image
 
 /**
 	* display the default product image
@@ -483,6 +499,9 @@ function Products_image($params, $smarty) {
 		.$link2.'</div>';
 }
 
+// }
+// { Products_imageNotFound
+
 /**
 	* display an "image not found" message
 	*
@@ -497,6 +516,9 @@ function Products_imageNotFound($params, $smarty) {
 	$pt=ProductType::getInstance($product->vals['product_type_id']);
 	return $pt->getMissingImage($s);
 }
+
+// }
+// { Products_images
 
 /**
 	* get a list of images for a product
@@ -561,6 +583,9 @@ function Products_images($params, $smarty) {
 	return $html;
 }
 
+// }
+// { Products_link
+
 /**
 	* get a URL for a product page
 	*
@@ -573,6 +598,7 @@ function Products_link($params, $smarty) {
 	return $smarty->_tpl_vars['product']->getRelativeURL();
 }
 
+// }
 // { Products_listCategories2
 
 /**
@@ -630,6 +656,7 @@ function Products_listCategoryContents2($params, $smarty) {
 }
 
 // }
+// { Products_plusVat
 
 /**
 	* if VAT applies to the product, return '+ VAT'
@@ -648,6 +675,7 @@ function Products_plusVat($params, $smarty) {
 	}
 }
 
+// }
 // { Products_reviews
 
 /**
@@ -1091,6 +1119,8 @@ function Products_submitReviewForm($productid, $userid) {
 	*/
 class Products{
 	static $instances=array();
+
+	// { __construct
 	/**
 		* constructor for the class
 		*
@@ -1157,6 +1187,10 @@ class Products{
 		self::$instances[$md5]=& $this;
 		return $this;
 	}
+
+	// }
+	// { getAll
+
 	/**
 		* get all products
 		*
@@ -1180,6 +1214,10 @@ class Products{
 		}
 		return self::$instances[$id];
 	}
+
+	// }
+	// { getByCategory
+
 	/**
 		* retrieve products within a specified category
 		*
@@ -1237,6 +1275,10 @@ class Products{
 		}
 		return self::$instances[$md5];
 	}
+
+	// }
+	// { getByCategoryName
+
 	/**
 		* retrieve products by their category name
 		*
@@ -1265,6 +1307,40 @@ class Products{
 		}
 		return Products::getByCategory($cid);
 	}
+
+	// }
+	// { getByIds
+
+	/**
+		* get a list of products by their IDs
+		*
+		* @param array  $ids        list of IDs
+		* @param string $sarch      search string
+		* @param array  $search_arr array of search strings to filter by
+		* @param string $sort_col   field to sort by
+		* @param string $sort_dir   sort direction
+		*
+		* @return object instance of Products object
+		*/
+	static function getByIds(
+		$ids, $search='', $search_arr=array(), $sort_col='name', $sort_dir='asc'
+	) {
+		if (!is_array($ids)) {
+			return false;
+		}
+		$md5=md5(
+			join(',',$ids).'|'.$search.'|'.print_r($search_arr, true).'|'
+			.$sort_col.'|'.$sort_dir
+		);
+		if (!array_key_exists($md5, self::$instances)) {
+			new Products($ids, $md5, $search, $search_arr, $sort_col, $sort_dir);
+		}
+		return self::$instances[$md5];
+	}
+
+	// }
+	// { getByType
+
 	/**
 		* retrieve products that have a specific type
 		*
@@ -1295,6 +1371,10 @@ class Products{
 		}
 		return self::$instances[$md5];
 	}
+
+	// }
+	// { render
+
 	/**
 		* render a list of products to HTML
 		*
@@ -1504,35 +1584,6 @@ class Products{
 			}
 		}
 		return $categories.$prevnext.'<div class="products">'.$c.'</div>'.$prevnext;
-	}
-
-	// { getByIds
-
-	/**
-		* get a list of products by their IDs
-		*
-		* @param array  $ids        list of IDs
-		* @param string $sarch      search string
-		* @param array  $search_arr array of search strings to filter by
-		* @param string $sort_col   field to sort by
-		* @param string $sort_dir   sort direction
-		*
-		* @return object instance of Products object
-		*/
-	static function getByIds(
-		$ids, $search='', $search_arr=array(), $sort_col='name', $sort_dir='asc'
-	) {
-		if (!is_array($ids)) {
-			return false;
-		}
-		$md5=md5(
-			join(',',$ids).'|'.$search.'|'.print_r($search_arr, true).'|'
-			.$sort_col.'|'.$sort_dir
-		);
-		if (!array_key_exists($md5, self::$instances)) {
-			new Products($ids, $md5, $search, $search_arr, $sort_col, $sort_dir);
-		}
-		return self::$instances[$md5];
 	}
 
 	// }

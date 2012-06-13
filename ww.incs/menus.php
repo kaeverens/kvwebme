@@ -38,12 +38,19 @@ function Menu_getChildren(
 		$PARENTDATA->initValues();
 	}
 	else {
-		$PARENTDATA=array(
+		$PARENTDATA=(object)array(
+			'id'=>'0',
 			'order_of_sub_pages'=>'ord',
 			'order_of_sub_pages_dir'=>'asc'
 		);
 	}
 	$filter=$isadmin?'':'&& !(special&2)';
+	// { override menu if a trigger causes the override
+	$trigger=Core_trigger('menu-subpages', $PARENTDATA);
+	if ($trigger) {
+		return $trigger;
+	}
+	// }
 	// { menu order
 	$order='ord,name';
 	if (isset($PARENTDATA->vars['order_of_sub_pages'])) {
@@ -97,6 +104,13 @@ function Menu_getChildren(
 			$c[]='first';
 		}
 		$c[]='c'.$i;
+		// { see if the menu item has sub-pages according to a trigger
+		$trigger=is_array(Core_trigger('menu-subpages', $PAGEDATA));
+		if ($trigger) {
+			$r['numchildren']=1;
+			$rs[$k]['numchildren']=1;
+		}
+		// }
 		if ($r['numchildren']) {
 			$c[]='ajaxmenu_hasChildren';
 		}
