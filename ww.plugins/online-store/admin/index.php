@@ -58,6 +58,8 @@ if (isset($vars['online_stores_admin_email'])) {
 	$c.=' value="'.htmlspecialchars($vars['online_stores_admin_email']).'"';
 }
 $c.=' /></td>';
+// }
+// { users must log in
 if (!isset($vars['online_stores_requires_login'])) {
 	$vars['online_stores_requires_login']=0;
 }
@@ -78,6 +80,16 @@ foreach ($online_store_currencies as $key=>$val) {
 }
 $c.= '</select></td>';
 // }
+// { register new users without verification
+if (!isset($vars['online_stores_user_reg_no_verify'])) {
+	$vars['online_stores_user_reg_no_verify']=0;
+}
+/* TODO - translation /CB */
+$c.='<th width="20%">Register users without verification</th><td><input type="checkbox"'
+	.' name="page_vars[online_stores_user_reg_no_verify]"'
+	.($vars['online_stores_user_reg_no_verify']?' checked="checked"':'')
+	.' /></td></tr>';
+// }
 // { VAT
 $vat=isset($vars['online_stores_vat_percent'])?
 	$vars['online_stores_vat_percent']:
@@ -86,7 +98,7 @@ if ($vat=='') {
 	$vat=0;
 }
 /* TODO - translation /CB */
-$c.='<th>VAT</th><td><input name="page_vars[online_stores_vat_percent]"'
+$c.='<tr><th>VAT</th><td><input name="page_vars[online_stores_vat_percent]"'
 	.' value="'.((float)$vat).'" /></td></tr>';
 // }
 // { usergroup to add users to

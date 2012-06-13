@@ -764,7 +764,10 @@ function Products_adminProductsDisable() {
 	foreach ($ids_to_check as $id) {
 		$ids[]=(int)$id;
 	}
-	dbQuery('update products set date_edited=now(),enabled=0 where id in ('.join(', ', $ids).')');
+	dbQuery(
+		'update products set date_edited=now(),enabled=0 where id in ('
+		.join(', ', $ids).')'
+	);
 	Core_cacheClear();
 	return array('ok'=>1);
 }
@@ -819,7 +822,10 @@ function Products_adminProductsEnable() {
 	foreach ($ids_to_check as $id) {
 		$ids[]=(int)$id;
 	}
-	dbQuery('update products set date_edited=now(),enabled=1 where id in ('.join(', ', $ids).')');
+	dbQuery(
+		'update products set date_edited=now(),enabled=1 where id in ('
+		.join(', ', $ids).')'
+	);
 	Core_cacheClear();
 	return array('ok'=>1);
 }
@@ -836,12 +842,13 @@ function Products_adminProductEditVal() {
 	$id=(int)$_REQUEST['id'];
 	$name=$_REQUEST['name'];
 	$value=$_REQUEST['val'];
-	if (!in_array($name, array(
+	$valid_fields=array(
 		'stock_number',
 		'stockcontrol_total',
 		'enabled',
 		'user_id'
-	))) {
+	);
+	if (!in_array($name, $valid_fields)) {
 		return array('error'=>'field not allowed');
 	}
 	dbQuery(

@@ -290,3 +290,26 @@ function OnlineStore_saveSavedList($params) {
 }
 
 // }
+// { OnlineStore_userRegister
+
+/**
+	* register a user in the checkout, without email validation
+	*
+	* @return array status
+	*/
+function OnlineStore_userRegister() {
+  $email=$_REQUEST['email'];
+  if (!isset($_SESSION['privacy'])) {
+    $_SESSION['privacy']=array();
+  } 
+  $_SESSION['privacy']['registration']=array(
+    'token'=> 'token',
+    'custom'=> array(),
+    'email'=>$email
+  );
+  $_REQUEST['token']='token';
+  require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/api-funcs.php';
+  return Core_register();
+}
+
+// }

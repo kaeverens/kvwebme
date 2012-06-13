@@ -22,7 +22,7 @@ $(function(){
 				+'<th>Phone</th><td>'+htmlspecialchars(addr.phone)
 				+'</td></tr>'
 				+'<tr><th colspan="2"><input type="checkbox" aid="'+i+'"'
-				+(addr.default=='yes'?' checked="checked"':'')
+				+(addr['default']=='yes'?' checked="checked"':'')
 				+'/>'
 				+'<span class="__" lang-context="core">default address</span>'
 				+'</th><th colspan="2"><button aid="'+i+'" class="__"'
@@ -105,8 +105,8 @@ $(function(){
 			return true;
 		}
 		for (var i in userdata.address){
-			if (userdata.address[i].default) {
-				address.default=userdata.address[i].default;
+			if (userdata.address[i]['default']) {
+				address['default']=userdata.address[i]['default'];
 			}
 			if (compare(userdata.address[i],address)) {
 				return true;
@@ -118,16 +118,17 @@ $(function(){
 		if (userdata.id==null) {
 			return;
 		}
-		for (var i in userdata.address) {
-			if (userdata.address[i].default=="yes"&&address==null) {
-				var current=userdata.address[i];
-				break;
+		var current=null;
+		$.each(userdata.address, function(i, v) {
+			if (v['default']=='yes' && address==null) {
+				current=v;
+				return;
 			}
 			if (i==address) {
-				var current=userdata.address[i];
-				break;
+				current=v;
+				return;
 			}
-		}
+		});
 		if(current!=null){
 			if (current.country=='' && os_post_vars.Country!='') {
 				current={
@@ -330,62 +331,114 @@ $(function(){
 						content.find('.user-register button').click(function() {
 							var $form=$('#online-store-wrapper .user-register');
 							var email=$form.find('.email input').val();
-							$.post('/a/f=sendRegistrationToken', {
-								'email':email
-							}, function(ret) {
-								if (ret.error) {
-									return alert(ret.error);
-								}
-								var $dialog=$('<div class="online-store">'
-									+'<h2 class="__" lang-context="core">'
-									+'Verify your email address</h2>'
-									+'<p class="__" lang-context="core">We have send a 5-digit '
-									+'token to your email address to verify it. Please check '
-									+'your email, then enter the token below. Then enter a '
-									+'password you want to use for this site.</p>'
-									+'<label class="token"><span class="__" lang-context="core">'
-									+'Token</span><input id="form-token"/></label>'
-									+'<label class="password"><span class="__" '
-									+'lang-context="core">Password</span>'
-									+'<input type="password" id="form-pass1"/></label>'
-									+'<label class="repeat-password"><span class="__" '
-									+'lang-context="core">Repeat Password</span>'
-									+'<input type="password" id="form-pass2"/></label>'
-									+'</div>'
-								).dialog({
-									'modal': true,
-									'width': 350,
-									'close':function() {
-										$dialog.remove();
-									},
-									'buttons':{
-										'Register':function() {
-											var token=$('#form-token').val(),
-												pass1=$('#form-pass1').val(),
-												pass2=$('#form-pass2').val();
-											if (token.length!=5) {
-												return alert('Token must be 5 digits in length');
-											}
-											if (!pass1 || pass1!=pass2) {
-												return alert('Passwords must be equal');
-											}
-											$.post('/a/f=register', {
-												'token':token,
-												'password':pass1
-											}, function(ret) {
-												if (ret.error) {
-													return alert(ret.error);
-												}
-												alert('Thank you. We are logging you in now.');
-												$.post('/a/f=login', {
-													'email':email,
-													'password':pass1
-												}, fnSubmit);
-											});
-										}
+							if (os_userRegWithoutVerification) {
+								$.post('/a/f=userGetUid', {
+									'email':email
+								}, function(ret) {
+									if (+ret.uid) {
+										return alert(
+											'That user account already exists.'
+											+' Please login instead'
+										);
 									}
-								});
-							}, 'json');
+									var $dialog=$('<div class="online-store">'
+										+'<p>Please enter the password you want to use.</p>'
+										+'<label class="password"><span class="__" '
+										+'lang-context="core">Password</span>'
+										+'<input type="password" id="form-pass1"/></label>'
+										+'<label class="repeat-password"><span class="__" '
+										+'lang-context="core">Repeat Password</span>'
+										+'<input type="password" id="form-pass2"/></label>'
+										+'</div>'
+									).dialog({
+										'modal': true,
+										'width': 350,
+										'close':function() {
+											$dialog.remove();
+										},
+										'buttons':{
+											'Register':function() {
+												var pass1=$('#form-pass1').val(),
+													pass2=$('#form-pass2').val();
+												if (!pass1 || pass1!=pass2) {
+													return alert('Passwords must be equal');
+												}
+												$.post('/a/p=online-store/f=userRegister', {
+													'password':pass1,
+													'email':email
+												}, function(ret) {
+													if (ret.error) {
+														return alert(ret.error);
+													}
+													alert('Thank you. We are logging you in now.');
+													$.post('/a/f=login', {
+														'email':email,
+														'password':pass1
+													}, fnSubmit);
+												});
+											}
+										}
+									});
+								}, 'json');
+							}
+							else {
+								$.post('/a/f=sendRegistrationToken', {
+									'email':email
+								}, function(ret) {
+									if (ret.error) {
+										return alert(ret.error);
+									}
+									var $dialog=$('<div class="online-store">'
+										+'<h2 class="__" lang-context="core">'
+										+'Verify your email address</h2>'
+										+'<p class="__" lang-context="core">We have send a 5-digit '
+										+'token to your email address to verify it. Please check '
+										+'your email, then enter the token below. Then enter a '
+										+'password you want to use for this site.</p>'
+										+'<label class="token"><span class="__" lang-context="core">'
+										+'Token</span><input id="form-token"/></label>'
+										+'<label class="password"><span class="__" '
+										+'lang-context="core">Password</span>'
+										+'<input type="password" id="form-pass1"/></label>'
+										+'<label class="repeat-password"><span class="__" '
+										+'lang-context="core">Repeat Password</span>'
+										+'<input type="password" id="form-pass2"/></label>'
+										+'</div>'
+									).dialog({
+										'modal': true,
+										'width': 350,
+										'close':function() {
+											$dialog.remove();
+										},
+										'buttons':{
+											'Register':function() {
+												var token=$('#form-token').val(),
+													pass1=$('#form-pass1').val(),
+													pass2=$('#form-pass2').val();
+												if (token.length!=5) {
+													return alert('Token must be 5 digits in length');
+												}
+												if (!pass1 || pass1!=pass2) {
+													return alert('Passwords must be equal');
+												}
+												$.post('/a/f=register', {
+													'token':token,
+													'password':pass1
+												}, function(ret) {
+													if (ret.error) {
+														return alert(ret.error);
+													}
+													alert('Thank you. We are logging you in now.');
+													$.post('/a/f=login', {
+														'email':email,
+														'password':pass1
+													}, fnSubmit);
+												});
+											}
+										}
+									});
+								}, 'json');
+							}
 						});
 						content.find('.user-guest button').click(function() {
 							$('#online-store-checkout-accordion-wrapper').accordion(

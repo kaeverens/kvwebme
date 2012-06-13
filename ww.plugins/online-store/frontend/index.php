@@ -714,7 +714,11 @@ if (!$submitted) {
 		}
 		$post['os_pandp']=isset($_SESSION['os_pandp'])?(int)$_SESSION['os_pandp']:0;
 		// }
-		WW_addInlineScript('var os_post_vars='.json_encode($post).';');
+		WW_addInlineScript(
+			'var os_post_vars='.json_encode($post)
+			.', os_userRegWithoutVerification='
+			.((int)(@$PAGEDATA->vars['online_stores_user_reg_no_verify']=='on')).';'
+		);
 		WW_addScript('online-store');
 		// }
 	}

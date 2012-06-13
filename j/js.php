@@ -12,7 +12,6 @@
 	*/
 
 require_once '../ww.incs/basics.php';
-require_once '../ww.incs/jslibs.php';
 
 header('Cache-Control: max-age=2592000, public');
 header('Expires-Active: On');
