@@ -125,7 +125,8 @@ $plugin=array(
 	'search' => 'Products_search',
 	'triggers' => array( // {
 		'initialisation-completed' => 'Products_addToCart',
-		'menu-subpages' => 'Products_getSubCategoriesAsMenu'
+		'menu-subpages' => 'Products_getSubCategoriesAsMenu',
+		'menu-subpages-html' => 'Products_getSubCategoriesAsMenuHtml'
 	), // }
 	'version' => '42'
 );
@@ -1462,6 +1463,85 @@ function Products_getSubCategoriesAsMenu($ignore, $page) {
 		$rs[]=$arr;
 	}
 	return count($rs)?$rs:false;
+}
+
+// }
+// { Products_getSubCategoriesAsMenuHtml
+
+/**
+	* get subcategories of a page as menu items, html format
+	*
+	* @return string menu items
+	*/
+function Products_getSubCategoriesAsMenuHtml(
+	$ignore, $pid, $depth, $options
+) {
+	if (is_object($pid)) {
+		if (!$pid->type
+			|| ($pid->type!='products' && $pid->type!='products|products')
+		) {
+			return false;
+		}
+		$pid=(int)$pid->vars['products_category_to_show'];
+	}
+	$rs=dbAll(
+		'select id,name from products_categories where parent_id='.$pid
+		.' and enabled'
+	);
+	if ($rs===false || !count($rs)) {
+		return '';
+	}
+
+	$items=array();
+	foreach ($rs as $r) {
+		$item='<li>';
+		$cat=ProductCategory::getInstance($r['id']);
+		$item.='<a class="menu-fg menu-pid-product_'.$r['id'].'" href="'
+			.$cat->getRelativeUrl().'">'
+			.htmlspecialchars(__FromJson($r['name'])).'</a>';
+		$item.=Products_getSubCategoriesAsMenuHtml(
+			null, $r['id'], $depth+1, $options
+		);
+		$item.='</li>';
+		$items[]=$item;
+	}
+	$options['columns']=(int)$options['columns'];
+
+	// { return top-level menu
+	if (!$depth) {
+		return '<ul>'.join('', $items).'</ul>';
+	}
+	// }
+	if ($options['style_from']=='1') {
+		$s='';
+		if ($options['background']) {
+			$s.='background:'.$options['background'].';';
+		}
+		if ($options['opacity']) {
+			$s.='opacity:'.$options['opacity'].';';
+		}
+		if ($s) {
+			$s=' style="'.$s.'"';
+		}
+	}
+	// { return 1-column sub-menu
+	if ($options['columns']<2) {
+		return '<ul'.$s.'>'.join('', $items).'</ul>';
+	}
+	// }
+	// { return multi-column submenu
+	$items_count=count($items);
+	$items_per_column=ceil($items_count/$options['columns']);
+	$c='<table'.$s.'><tr><td><ul>';
+	for ($i=1;$i<$items_count+1;++$i) {
+		$c.=$items[$i-1];
+		if ($i!=$items_count && !($i%$items_per_column)) {
+			$c.='</ul></td><td><ul>';
+		}
+	}
+	$c.='</ul></td></tr></table>';
+	return $c;
+	// }
 }
 
 // }

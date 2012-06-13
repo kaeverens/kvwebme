@@ -11,6 +11,8 @@
 	* @link     http://kvsites.ie/
 	*/
 
+// { Menu_containsPage
+
 function Menu_containsPage($needle, $haystack) {
 	$r=Page::getInstance($needle);
 	if (!isset($r->parent) || $r->parent==0) {
@@ -21,6 +23,10 @@ function Menu_containsPage($needle, $haystack) {
 	}
 	return Menu_containsPage($r->parent, $haystack);
 }
+
+// }
+// { Menu_getChildren
+
 function Menu_getChildren(
 	$parentid,
 	$currentpage=0,
@@ -144,6 +150,10 @@ function Menu_getChildren(
 	}
 	return $menuitems;
 }
+
+// }
+// { Menu_show
+
 function Menu_show($b) {
 	WW_addScript('/j/menu.js');
 	global $PAGEDATA, $_languages;
@@ -269,3 +279,5 @@ function Menu_show($b) {
 	Core_cacheSave('menus', $md5, $c);
 	return $c;
 }
+
+// }

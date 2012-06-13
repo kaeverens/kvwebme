@@ -132,14 +132,14 @@ function Core_locationsGetUi($params=null) {
 // { menu_build_fg
 
 /**
-	* get recursive details of pages to build a menu
-	*
-	* @param int   $parentid the parent's ID
-	* @param int   $depth    current menu depth
-	* @param array $options  any further options
-	*
-	* @return string HTML of the sub-menu
-	*/
+ * get recursive details of pages to build a menu
+ *
+ * @param int   $parentid the parent's ID
+ * @param int   $depth    current menu depth
+ * @param array $options  any further options
+ *
+ * @return string HTML of the sub-menu
+ */
 function menu_build_fg($parentid, $depth, $options) {
 	$PARENTDATA=Page::getInstance($parentid)->initValues();
 	// { menu order
@@ -165,7 +165,7 @@ function menu_build_fg($parentid, $depth, $options) {
 					$order.=' desc';
 				}
 				$order.=',name';
-				// }
+			break; // }
 		}
 	}
 	// }
@@ -184,47 +184,60 @@ function menu_build_fg($parentid, $depth, $options) {
 		$item.='<a class="menu-fg menu-pid-'.$r['id'].'" href="'
 			.$page->getRelativeUrl().'">'
 			.htmlspecialchars(__FromJson($page->name)).'</a>';
-		$item.=menu_build_fg($r['id'], $depth+1, $options);
+		// { override menu if a trigger causes the override
+		$submenus=Core_trigger(
+			'menu-subpages-html',
+			array($page, $depth+1, $options)
+		);
+		if ($submenus) {
+			$item.=$submenus;
+		}
+		// }
+		// { otherwise load sub-menus as usual
+		else {
+			$item.=menu_build_fg($r['id'], $depth+1, $options);
+		}
+		// }
 		$item.='</li>';
 		$items[]=$item;
 	}
 	$options['columns']=(int)$options['columns'];
 
-	// return top-level menu
+	// { return top-level menu
 	if (!$depth) {
-		return '<ul>'.join('', $items).'</ul>';
+					return '<ul>'.join('', $items).'</ul>';
 	}
-
+	// }
 	if ($options['style_from']=='1') {
-		$s='';
-		if ($options['background']) {
-			$s.='background:'.$options['background'].';';
-		}
-		if ($options['opacity']) {
-			$s.='opacity:'.$options['opacity'].';';
-		}
-		if ($s) {
-			$s=' style="'.$s.'"';
-		}
+					$s='';
+					if ($options['background']) {
+									$s.='background:'.$options['background'].';';
+					}
+					if ($options['opacity']) {
+									$s.='opacity:'.$options['opacity'].';';
+					}
+					if ($s) {
+									$s=' style="'.$s.'"';
+					}
 	}
-
-	// return 1-column sub-menu
+	// { return 1-column sub-menu
 	if ($options['columns']<2) {
-		return '<ul'.$s.'>'.join('', $items).'</ul>';
+					return '<ul'.$s.'>'.join('', $items).'</ul>';
 	}
-
-	// return multi-column submenu
+	// }
+	// { return multi-column submenu
 	$items_count=count($items);
 	$items_per_column=ceil($items_count/$options['columns']);
 	$c='<table'.$s.'><tr><td><ul>';
 	for ($i=1;$i<$items_count+1;++$i) {
-		$c.=$items[$i-1];
-		if ($i!=$items_count && !($i%$items_per_column)) {
-			$c.='</ul></td><td><ul>';
-		}
+					$c.=$items[$i-1];
+					if ($i!=$items_count && !($i%$items_per_column)) {
+									$c.='</ul></td><td><ul>';
+					}
 	}
 	$c.='</ul></td></tr></table>';
 	return $c;
+	// }
 }
 
 // }
@@ -277,15 +290,15 @@ function menu_show_fg ($opts=array()) {
 		$options['parent'].'|0|'.json_encode($options).'|'.join(', ', $_languages)
 	);
 	$html=Core_cacheLoad('pages', 'fgmenu-'.$md5);
-	if ($html===false) {
+	if (1 || $html===false) {
 		$html=menu_build_fg($options['parent'], 0, $options);
 		Core_cacheSave('pages', 'fgmenu-'.$md5, $html);
 	}
 	switch ($options['type']) {
-		case 2: // {
+		case 2: // { tree
 			$c.='<div class="menu-tree'.$class.'">'.$html.'</div>';
 		break; // }
-		case 1: // {
+		case 1: // { accordion
 			WW_addScript('/j/menu-accordion/menu.js');
 			WW_addCSS('/j/menu-accordion/menu.css');
 			$class = ( $options[ 'state' ] == 0 )
@@ -293,7 +306,7 @@ function menu_show_fg ($opts=array()) {
 				: (( $options[ 'state' ] == 1 ) ? ' expanded' : ' expand-selected') ;
 			$c.= '<div class="menu-accordion'.$class.'">'.$html.'</div>';
 		break; // }
-		default: // {
+		default: // { fly-out
 			WW_addScript('/j/fg.menu/fg.menu.js');
 			WW_addCSS('/j/fg.menu/fg.menu.css');
 			$c.='<div class="menu-fg menu-fg-'.$options['direction'].'" id="menu-fg-'

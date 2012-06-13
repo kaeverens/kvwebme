@@ -498,7 +498,7 @@ function Core_trigger($trigger_name, $params = null) {
 				$args=$params;
 				// push PAGEDATA to beginning of array
 				array_unshift($args, $PAGEDATA);
-				$rs=call_user_func_array($fn, $args);
+				$res=call_user_func_array($fn, $args);
 			}
 			else {
 				$res=$fn($PAGEDATA, $params);
@@ -506,7 +506,7 @@ function Core_trigger($trigger_name, $params = null) {
 			if (is_array($res)) {
 				return $res;
 			}
-			else $c.=$res;
+			$c.=$res;
 		}
 	}
 	return $c;
