@@ -491,7 +491,7 @@ function Core_trigger($trigger_name, $params = null) {
 	$c='';
 	foreach ($PLUGIN_TRIGGERS[$trigger_name] as $fn) {
 		if ($params == null) {
-			$c .= $fn($PAGEDATA);
+			$c.=$fn($PAGEDATA);
 		}
 		else {
 			if (is_array($params)) {

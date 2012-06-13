@@ -1428,23 +1428,28 @@ function Products_getProductPrice(
 	* @return array menu items
 	*/
 function Products_getSubCategoriesAsMenu($ignore, $page) {
-	if ($page->type!='products' && $page->type!='products|products') {
-		return false;
+	if (is_object($page)) {
+		if ($page->type!='products' && $page->type!='products|products') {
+			return false;
+		}
+		$pid=(int)$page->vars['products_category_to_show'];
 	}
-	$rs=array();
-	$pid=(int)$page->vars['products_category_to_show'];
+	else {
+		$pid=(int)$page;
+	}
 	$cats=dbAll(
 		'select * from products_categories where parent_id='.$pid.' order by name'
 	);
+	$rs=array();
 	foreach ($cats as $cat) {
 		$cat=ProductCategory::getInstance($cat['id']);
 		$arr=array(
-			'id'=>$cat->vals['id'],
+			'id'=>'products_'.$cat->vals['id'],
 			'name'=>$cat->vals['name'],
 			'type'=>'products|products',
 			'classes'=>'menuItem',
 			'link'=>$cat->getRelativeUrl(),
-			'parent'=>$pid
+			'parent'=>$page->id
 		);
 		$subcats=dbOne(
 			'select id from products_categories where parent_id='.$cat->vals['id'],

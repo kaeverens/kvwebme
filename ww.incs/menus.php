@@ -33,6 +33,15 @@ function Menu_getChildren(
 		.'|'.join(',', $_languages).'|'.@$_SESSION['language']
 	);
 	$pageParentFound=0;
+	// { first, check to see if this is a menu that should be handled by a plugin
+	if (preg_match('/[a-z]/', $parentid)) {
+		$bits=explode('_', $parentid);
+		return $GLOBALS['PLUGINS'][$bits[0]]['triggers']['menu-subpages'](
+			null,
+			$bits[1]
+		);
+	}
+	// }
 	if ($parentid) {
 		$PARENTDATA=Page::getInstance($parentid);
 		$PARENTDATA->initValues();
