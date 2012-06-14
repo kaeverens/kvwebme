@@ -144,7 +144,7 @@ function forum_user_profile($PAGEDATA, $user) {
 	<table style="border:1px solid #ccc;margin:10px">
 		<tr>
 			<td rowspan="3">
-		    <img src="http://www.gravatar.com/avatar/' . $emailHash . '" />
+		    <img class="avatar" data-uid="'.$user['id'].'"/>
 			</td>
 			<th>Threads Created:</th>
 			<td>' . $threads . '</tr>

@@ -62,6 +62,8 @@ function UserAuthentication_admin($page, $page_vars) {
 	* @return HTML of the page
 	*/
 function UserAuthentication_front($PAGEDATA) {
+	WW_addCSS('/j/jquery.saorfm/jquery.saorfm.css');		
+	WW_addScript('/j/jquery.saorfm/jquery.saorfm.js');
 	require SCRIPTBASE.'ww.plugins/privacy/frontend/page_type.php';
 	return $PAGEDATA->render().$html;
 }

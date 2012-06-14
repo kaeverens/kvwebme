@@ -231,11 +231,13 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 			)
 			:0;
 		$emailHash=md5(trim(strtolower($user_email)));
-		$c.='<tr><td><img src="http://www.gravatar.com/avatar/'
-			.$emailHash.'" /><span>Posts: '.$count_posts.'</span>'
+		
+		$c.='<tr><td><img class="avatar" data-uid=' . $user->get('id') . '/>'
+			. '<span>Posts: '.$count_posts.'</span>'
 			. '<p>Helpfulness:'
 			. '<span class="ratings" id="forum_user_'.$user_email.'"'
-			. ' type="forum_user">rating</span></p>';
+			. ' type="forum_user">rating</span></p>';				
+
 		$c.='</td><td class="post">'.bb2html($post['body'])
 			.'</td></tr>';
 	}

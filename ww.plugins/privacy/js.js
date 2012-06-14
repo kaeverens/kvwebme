@@ -1,3 +1,67 @@
+function showAvatar() {
+  var avatar=$('#avatar-wrapper');
+  var uid = avatar.data('uid');
+
+  id=[];
+  id.push(uid);
+
+  $.get('/a/f=usersAvatarsGet', {
+    ids:id
+  }, function(ret){
+    var src='';
+    if(ret[0]){
+      src='/f' + ret[0].avatar
+    }
+    else{
+      src= '/i/silhouette-256x256.png';
+    }
+					
+    $('#avatar-wrapper')
+      .append('<img id="avatar" style="width:64px;height:64px;display:inline-block;cursor:pointer;"'+
+              'src="' + src + '" />')
+      .click(function(){
+      var uid = $('#avatar-wrapper').data('uid');
+      var avatarSrc = src ? src : ''; 			
+      var avatarEdit='<br/><table><tr><th>Image</th>'
+                    +'<input class="saorfm user-avatar"/></td></tr></table>';
+      
+      var $dialog=$('<div>'+
+                      '<h1>' + userdata.name + '</h1>'+							 
+                      '<img style="width:256px;height:256px;"'+
+                      'src="' + src  + '" class="avatarDialogWindow" />'+
+                       avatarEdit +
+                    '</div>')
+                 .dialog({'modal':true,
+                          'close':function(){
+                                  $dialog.remove();
+                                  }
+                           });					
+
+      var filename=avatarSrc.split("/");
+      filename=filename[filename.length-1];
+
+      $dialog.find('.user-avatar')
+             .val(filename)
+             .change(function(){
+               var $this = $(this);
+               src = $this.val();
+               $.post('/a/f=userSetAvatar', {'src':src});
+               $('.avatarDialogWindow').attr('src','/f'+src);
+               $('#avatar').attr('src', '/f'+src);
+               src='/f'+src;
+               filename = $this.val().split('/');
+               filename = filename[filename.length-1];
+               $this.val(filename);               
+             })
+             .saorfm({
+               'rpc' : '/ww.incs/saorfm/rpc.php',
+               'select': 'file',
+               'prefix': userdata.isAdmin? '' : '/users/' + userdata.id
+               });
+      });
+  }, 'json');
+}
+
 function edit_user_dialog( id ){
 	$( "<div id='users-dialog' title='Edit User Details'></div>" )
 	.html( "Loading..." )
@@ -99,6 +163,7 @@ function edit_address(id){
 	);
 }
 $(function(){
+	showAvatar();
 	$("#tabs").tabs();
 });
 $(".delete-addr").live("click",function(){

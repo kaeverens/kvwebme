@@ -660,8 +660,8 @@ function Privacy_profileGet() {
 			dbOne('select name from groups where id=' . $id[ 'groups_id' ], 'name')
 		);
 	}
-	$groups = implode(',', $groups);
-
+	
+	$groups = implode(',', $groups);	
 	$html='<a class="logout __" href="/?logout=1" style="float:right" '
 		.'lang-context="core">Logout</a>
 	<h2>' . htmlspecialchars($user[ 'name' ]) . '</h2>
@@ -684,6 +684,9 @@ function Privacy_profileGet() {
 		</tr>
 		<tr>
 			<th class="__" lang-context="core">Phone</th><td>' . $phone . '</td>
+		</tr>
+		<tr>
+			<th class="__" lang-context="core">Avatar:</th><td><span id="avatar-wrapper" data-uid="'.$uid.'"></span></td>
 		</tr>';
 
 	$html .= '</table></div> <div id="address"><a id="new-address" href="java'
