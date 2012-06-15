@@ -88,10 +88,14 @@ class User{
 			$this->vals['id']=(int)$this->dbVals['id'];
 			$this->vals['email']=$this->dbVals['email'];
 			$this->vals['name']=$this->dbVals['name'];
+			// { contact details
 			$contact=json_decode($this->dbVals['contact']);
-			foreach ($contact as $k=>$v) {
-				$this->vals[$k]=$v;
+			if (is_array($contact)) {
+				foreach ($contact as $k=>$v) {
+					$this->vals[$k]=$v;
+				}
 			}
+			// }
 			// { address
 			$address=$this->dbVals['address'];
 			if ($address=='') {

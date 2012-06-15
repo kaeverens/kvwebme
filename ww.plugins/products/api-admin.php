@@ -1256,6 +1256,7 @@ function Products_adminTypesGetSampleImport() {
 		$row[]='_sale_price';
 		$row[]='_bulk_price';
 		$row[]='_bulk_amount';
+		$row[]='_stockcontrol_total';
 	}
 	foreach ($names as $n) {
 		$row[]=$n;
@@ -1271,6 +1272,7 @@ function Products_adminTypesGetSampleImport() {
 			$row[]='0.00';
 			$row[]='0.00';
 			$row[]='0.00';
+			$row[]='0';
 			$row[]='0';
 		}
 		foreach ($names as $n) {

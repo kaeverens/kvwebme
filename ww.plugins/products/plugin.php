@@ -1430,7 +1430,9 @@ function Products_getProductPrice(
 	*/
 function Products_getSubCategoriesAsMenu($ignore, $page) {
 	if (is_object($page)) {
-		if ($page->type!='products' && $page->type!='products|products') {
+		if (!isset($page->type)
+			|| ($page->type!='products' && $page->type!='products|products')
+		) {
 			return false;
 		}
 		if (!@$page->vars['products_show_subcats_in_menu']) {
@@ -1670,6 +1672,7 @@ function Products_importFile($vars=false) {
 	) {
 		$id=0;
 		$stocknumber=$data[$headers['_stocknumber']];
+		$stockcontrol_total=(int)@$data[$headers['_stockcontrol_total']];
 		$type=$data[$headers['_type']];
 		if (!$type) {
 			$type='default';
@@ -1701,6 +1704,7 @@ function Products_importFile($vars=false) {
 					'update products set ean="'.addslashes($ean).'"'
 					.',product_type_id='.$type_id
 					.',name="'.addslashes($name).'",date_edited=now()'
+					.',stockcontrol_total='.$stockcontrol_total
 					.' where id='.$id
 				);
 			}
@@ -1708,6 +1712,7 @@ function Products_importFile($vars=false) {
 		if (!$id) {
 			$sql='insert into products set '
 				.'stock_number="'.addslashes($stocknumber).'"'
+				.',stockcontrol_total='.$stockcontrol_total
 				.',product_type_id='.$type_id
 				.',name="'.addslashes($name).'"'
 				.',ean="'.addslashes($ean).'"'
