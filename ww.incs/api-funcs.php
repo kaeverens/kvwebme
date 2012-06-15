@@ -656,7 +656,7 @@ function Core_userGetUid() {
 	*/
 function Core_translationsGet() {
 	global $_languages;
-	$context=$_REQUEST['context'];
+	$context=@$_REQUEST['context'];
 	$md5=md5(join('|', $_languages).'|'.$context);
 	$strings=Core_cacheLoad('core-translation', $md5);
 	if (1 || $strings==false) {
