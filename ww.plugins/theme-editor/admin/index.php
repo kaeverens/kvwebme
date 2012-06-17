@@ -1,4 +1,3 @@
-<h1>Theme Editor</h1>
 <?php
 /**
 	* admin page for editing themes
@@ -12,6 +11,7 @@
 	* @link     http://webme.kvsites.ie/
 	**/
 
+echo '<h1>'.__('Theme Editor').'</h1>';
 
 $type=isset($_REQUEST['type'])?$_REQUEST['type']:'';
 $name=isset($_REQUEST['name'])?$_REQUEST['name']:'';
@@ -43,7 +43,7 @@ if (isset($_REQUEST['other']) && $_REQUEST['other']=='restore') {
 }
 
 // { menu
-echo '<div class="left-menu">';
+echo '<h2>'.__('Editor').'</h2><div class="left-menu">';
 // { html templates
 $d=new DirectoryIterator(THEME_DIR.'/'.THEME.'/h');
 $files=array();
@@ -58,7 +58,7 @@ foreach ($d as $f) {
 	$files[]=preg_replace('/\.html$/', '', $fname);
 }
 asort($files);
-echo '<h2>Templates</h2>'
+echo '<h4>'.__('Templates').'</h4>'
 	.'<ul id="themeeditor-templates">';
 foreach ($files as $file) {
 	echo '<li><a ';
@@ -85,7 +85,7 @@ foreach ($d as $f) {
 	$files[]=preg_replace('/\.css$/', '', $fname);
 }
 asort($files);
-echo '<h2>CSS</h2>';
+echo '<h4>'.__('CSS').'</h4>';
 echo '<ul id="themeeditor-css">';
 foreach ($files as $file) {
 	echo '<li><a href="/ww.admin/plugin.php?_plugin=theme-editor&amp;_page=in'

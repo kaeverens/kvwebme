@@ -19,9 +19,8 @@ echo '<a href="plugin.php?_plugin=products&amp;_page=products">'
 	.'List all products</a> | '
 	.'<a href="plugin.php?_plugin=products&amp;_page=products-edit">'
 	.'Add a Product</a> | '
-	.'<a href="javascript:Core_screen(\'products\', \'js:Import\');"'
-	.' class="__" lang-context="core">'
-	.'Import</a>'
+	.'<a href="javascript:Core_screen(\'products\', \'js:Import\');">'
+	.__('Import', 'core').'</a>'
 	;
 // }
 if (!dbOne('select id from products_types limit 1', 'id')) {
@@ -32,10 +31,12 @@ if (!dbOne('select id from products_types limit 1', 'id')) {
 }
 $rs=dbAll('select id from products limit 1');
 if (!count($rs)) {
-	echo '<em>No existing products. <a href="plugin.php?_plugin=products&amp;'
-		.'_page=products-edit">Click here to create one</a>.'
-		.' or <a href="javascript:Core_screen(\'products\', \'js:Import\');"'
-	  .' class="__" lang-context="core">import</a> a list of them';
+	echo '<em>'.__('No existing products.', 'core')
+		.' <a href="plugin.php?_plugin=products&amp;_page=products-edit">'
+		.__('Click here to create one.', 'core')
+		.'</a> '.__('or', 'core')
+		.' <a href="javascript:Core_screen(\'products\', \'js:Import\');">'
+		.__('import a list of them', 'core').'</a>';
 	return;
 }
 

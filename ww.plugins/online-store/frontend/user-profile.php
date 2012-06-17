@@ -12,7 +12,7 @@
 	* @link     None
 	*/
 
-$html = '<h2 class="__" lang-context="core">Online Store - Order History</h2>';
+$html = '<h2>'.__('Online Store - Order History', 'core').'</h2>';
 
 $history = array();
 $orders = dbAll(
@@ -34,10 +34,10 @@ WW_addScript('online-store/frontend/user-profile.js');
 $html .= '<table id="online_store_orders" style="border:1px solid #ccc;'
 	.'margin:10px">
 	<tr>
-		<th class="__" lang-context="core">Date</th>
-		<th class="__" lang-context="core">Amount</th>
-		<th class="__" lang-context="core">Status</th>
-		<th class="__" lang-context="core">Invoice</th>
+		<th>'.__('Date', 'core').'</th>
+		<th>'.__('Amount',  'core').'</th>
+		<th>'.__('Status', 'core').'</th>
+		<th>'.__('Invoice', 'core').'</th>
 	</tr>';
 
 foreach ($history as $order) {

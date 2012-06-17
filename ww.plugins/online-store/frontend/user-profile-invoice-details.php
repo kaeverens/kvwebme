@@ -26,9 +26,10 @@ switch ($iid['status']) {
 		$status='Status number '.$iid['status'].' is unknown';
 	break;
 }
-$html='<h2 class="__" lang-context="core">Online Store - Order History - '
-	.'Invoice '.$iid['id'].'</h2>'
-	.'<a href="'.$PAGEDATA->getRelativeUrl().'">back to profile</a>'
+$html='<h2>'.__('Online Store - Order History - Invoice', 'core')
+	.' '.$iid['id'].'</h2>'
+	.'<a href="'.$PAGEDATA->getRelativeUrl().'">'.__('back to profile', 'core')
+	.'</a>'
 	.'<table class="onlinestore-purchase-details">'
 	.'<tr><th>Invoice ID</th><td>'.$iid['id'].'</td></tr>'
 	.'<tr><th>Date</th><td>'

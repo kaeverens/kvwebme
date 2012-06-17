@@ -383,9 +383,8 @@ else {
 // { top links
 echo '<a href="plugin.php?_plugin=products&amp;_page=products-edit">Add a P'
 	.'roduct</a> | '
-	.'<a href="javascript:Core_screen(\'products\', \'js:Import\');"'
-	.' class="__" lang-context="core">'
-	.'Import</a>';
+	.'<a href="javascript:Core_screen(\'products\', \'js:Import\');">'
+	.__('Import', 'core').'</a>';
 // }
 // { gather needed data
 $sql='select stock_control,data_fields from products_types '

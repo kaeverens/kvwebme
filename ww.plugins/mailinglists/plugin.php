@@ -27,14 +27,14 @@ $plugin=array(
 
 function MailingLists_widget($vars) {
 	$html='<div id="mailinglists-subscribe">'
-		.'<table><tr><td class="__" lang-context="core">Email</td><td><input/></td>'
-		.'<td class="__" lang-context="core">Choose your City/Country</td><td><select><option></option>';
+		.'<table><tr><td>'.__('Email', 'core').'</td><td><input/></td>'
+		.'<td>'.__('Choose your City/Country').'</td><td><select><option></option>';
 	$lists=dbAll('select * from mailinglists_lists');
 	foreach ($lists as $list) {
 		$html.='<option value="'.$list['id'].'">'
 			.htmlspecialchars($list['name']).'</option>';
 	}
 	$html.='</select></td>'
-		.'<td><button class="__" lang-context="core">Subscribe</button></td></tr></table></div>';
+		.'<td><button>'.__('Subscribe').'</button></td></tr></table></div>';
 	return $html;
 }

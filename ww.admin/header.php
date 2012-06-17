@@ -82,9 +82,9 @@ echo Core_languagesGetUi(array('type'=>'selectbox'));
 // { if maintenance mode is enabled show warning
 if (@$DBVARS['maintenance-mode']=='yes') {
 	echo '<div id="maintenance"><em>'.__(
-		'Maintenance Mode is currently enabled which means that only administra'
-		.'tors can view the frontend of this website. Click <a href="siteoption'
-		.'s.php">here</a> to disable it.'
+		'Maintenance Mode is currently enabled which means that only'
+		.' administrators can view the frontend of this website.'
+		.' Click <a href="siteoptions.php">here</a> to disable it.'
 	)
 	.'</em></div><style type="text/css">.has-left-menu{ top:130px!important;}'
 	.'</style>';

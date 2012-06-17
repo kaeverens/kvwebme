@@ -58,7 +58,7 @@ function Core_languagesGetUi($params=null) {
 			$ui.='</select>';
 		break; // }
 		default: // {
-			$ui='<h2 class="__">Languages</h2><ul class="languages">';
+			$ui='<h2>'.__('Languages', 'core').'</h2><ul class="languages">';
 			$url=preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI']);
 			foreach ($languages as $language) {
 				$ui.='<li><a href="#'.$language['code'].'"';
@@ -209,16 +209,16 @@ function menu_build_fg($parentid, $depth, $options) {
 	}
 	// }
 	if ($options['style_from']=='1') {
-					$s='';
-					if ($options['background']) {
-									$s.='background:'.$options['background'].';';
-					}
-					if ($options['opacity']) {
-									$s.='opacity:'.$options['opacity'].';';
-					}
-					if ($s) {
-									$s=' style="'.$s.'"';
-					}
+		$s='';
+		if ($options['background']) {
+			$s.='background:'.$options['background'].';';
+		}
+		if ($options['opacity']) {
+			$s.='opacity:'.$options['opacity'].';';
+		}
+		if ($s) {
+			$s=' style="'.$s.'"';
+		}
 	}
 	// { return 1-column sub-menu
 	if ($options['columns']<2) {

@@ -13,13 +13,13 @@
 	* @link     http://kvsites.ie/
 	*/
 
-echo '<h2>Approved Themes</h2>';
+echo '<h2>'.__('Approved Themes').'</h2>';
 
 /**
  * no themes in db
  */
 if (count($themes) == 0) {
-	die('themes database empty!!');
+	die(__('Themes database empty!'));
 }
 
 /**
@@ -33,7 +33,7 @@ for ($i = 0; $i < count($themes); ++$i) {
 }
 
 if (count($approved)==0) {
-	die('no themes approved');
+	die(__('No themes approved'));
 }
 
 /**
@@ -56,7 +56,9 @@ $( ".delete" ).click( function( ){
 			if( html == "ok" )
 				$this.parent( ).parent( ).fadeOut( "slow" );
 			else
-				alert( "there was an error deleting the file, please try again" );
+				alert("'.addslashes(__(
+					'There was an error deleting the file, please try again'
+				)).'" );
 		}   
 	});  
 
@@ -77,7 +79,10 @@ $( ".unapprove" ).click( function( ){
 			if( html == "ok" )
 			       $this.parent( ).parent( ).fadeOut( "slow" );
 			else
-				alert( "there was an error approving the file, please try again" );
+				alert( "'.addslashes(__(
+					'There was an error approving the file. Please try again.'
+				))
+				.'" );
 		}   
 	});  
 } );
@@ -87,14 +92,14 @@ WW_addInlineScript($script);
 echo '
 <table>
 	<tr>
-		<th>Name</th>
-		<th>Version</th>
-		<th>Description</th>
-		<th>Download</th>
-		<th>Submit Date</th>
-		<th>Author</th>
-		<th>Unapprove</th>
-		<th>Delete</th>
+		<th>'.__('Name').'</th>
+		<th>'.__('Version').'</th>
+		<th>'.__('Description').'</th>
+		<th>'.__('Download').'</th>
+		<th>'.__('Submit Date').'</th>
+		<th>'.__('Author').'</th>
+		<th>'.__('Unapprove').'</th>
+		<th>'.__('Delete').'</th>
 	</tr>
 ';
 

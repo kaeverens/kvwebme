@@ -110,10 +110,16 @@ echo '<div id="available">
 			<tbody>';
 
 foreach ($available as $name => $plugin) {
+	$name2=is_string($plugin['name'])
+		?$plugin['name']
+		:$plugin['name']();
+	$description=is_string($plugin['description'])
+		?$plugin['description']
+		:$plugin['description']();
 	echo '<tr>
-		<td>' . $plugin[ 'name' ] . '</td>
-		<td><input type="checkbox" name="plugins[' . $name . ']"/></td>
-		<td>' . $plugin[ 'description' ] . '</td>
+		<td>'.$name2.'</td>
+		<td><input type="checkbox" name="plugins['.$name.']"/></td>
+		<td>'.$description.'</td>
 	</tr>';
 }
 

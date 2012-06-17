@@ -1426,6 +1426,9 @@ function Products_getProductPrice(
 /**
 	* get subcategories of a page as menu items
 	*
+	* @param object $ignore ignore this parameter
+	* @param object $page   the page under which to look
+	*
 	* @return array menu items
 	*/
 function Products_getSubCategoriesAsMenu($ignore, $page) {
@@ -1475,6 +1478,11 @@ function Products_getSubCategoriesAsMenu($ignore, $page) {
 
 /**
 	* get subcategories of a page as menu items, html format
+	*
+	* @param object $ignore  ignore this
+	* @param int    $pid     ID of the parent menu
+	* @param int    $depth   current depth of the menu
+	* @param array  $options options
 	*
 	* @return string menu items
 	*/

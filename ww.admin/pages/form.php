@@ -90,8 +90,9 @@ echo '</head>'
 if ((!isset($_REQUEST['id']) || $_REQUEST['id']==0)
 	&& (!isset($_REQUEST['action']) || $_REQUEST['action']!='Insert Page Details')
 ) {
-	echo '<p class="__" lang-context="core">Please use the navigation menu on'
-		.' the left to choose a page or to create a new one</p>';
+	echo '<p>'
+		.__('Please use the navigation menu on the left to choose a page or to create a new one', 'core')
+		.'</p>';
 	WW_addInlineScript(
 		'this.page_menu_currentpage='.$id.';this.sessid="'.session_id().'";'
 		.'this.user_id='.$_SESSION['userdata']['id'].';'

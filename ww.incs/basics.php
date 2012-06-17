@@ -30,6 +30,10 @@ $scripts_inline=array();
 
 /**
 	* translate a string
+	* note that the function should be called
+	* as either __($str, array('params'), 'context')
+	* or as __($str, 'context')
+	* the context always comes last
 	*
 	* @param string $str     string to translate
 	* @param string $context the translation context
@@ -37,50 +41,72 @@ $scripts_inline=array();
 	*
 	* @return string the translated string
 	*/
-function __($str, $context='core', $params=array()) {
+function __($str, $param1='core', $param2=null) {
+	if (is_string($param1)) {
+		$context=$param1;
+		$params=array();
+	}
+	else if (is_array($param1)) {
+		$context=$param2;
+		$params=$param1;
+	}
+	if ($context==null) {
+		$context='core';
+	}
+
 	global $_language_cache, $_languages, $_language_notfound;
 	if ($context=='') {
 		$context='core';
 	}
-
-	// webme is written in en-GB
-	if ($_languages[0]=='en' || $_languages[0]=='en-gb' || $_languages[0]=='en-us') {
+	// { webme is written in en-GB
+	if ($_languages[0]=='en' || $_languages[0]=='en-gb'
+		|| $_languages[0]=='en-us'
+	) {
 		return $str;
 	}
-
-	// return already-translated strings
+	// }
+	// { return already-translated strings
 	if (isset($_language_cache[$context][$str])) {
 		return $_language_cache[$context][$str];
 	}
-
+	// }
 	if (!isset($_language_cache[$context])) {
 		$_language_cache[$context]=array();
 	}
-
-	// load from cache or database
+	// { load from cache or database
 	$rs=Core_cacheLoad('core-translation', md5($str.'|'.$context));
 	if (!$rs) {
 		$rs=dbAll(
-			'select trstr from languages where lang in ("'.join('","', $_languages)
+			'select lang,trstr from languages where lang in ("'.join('","', $_languages)
 			.'") and context="'.$context.'" and str="'.addslashes($str).'"', 'lang'
 		);
 		if ($rs) {
 			Core_cacheSave('core-translation', md5($str.'|'.$context), $rs);
 		}
 	}
-
-	// find the best-fit translation
+	// }
+	// { find the best-fit translation
 	if ($rs && count($rs)) {
+		$found='';
 		foreach ($_languages as $l) {
 			if ($l=='en' || $l=='en-GB') {
-				return $str;
+				$found=$str;
+				break;
 			}
 			if (isset($rs[$l])) {
-				$_language_cache[$context][$str]=$rs[$l];
-				return $rs[$l];
+				$_language_cache[$context][$str]=$rs[$l]['trstr'];
+				$found=$rs[$l]['trstr'];
+				break;
 			}
 		}
+		if ($found!='') {
+			for ($i=count($params);$i;--$i) {
+				$found=str_replace('%'.$i, $params[$i-1], $found);
+			}
+			return $found;
+		}
 	}
+	// }
 
 	// otherwise, log the failure and return the string
 	$_language_notfound[]=array($str, $context, $_languages[0]);

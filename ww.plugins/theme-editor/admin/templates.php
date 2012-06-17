@@ -15,8 +15,13 @@ $tpl=THEME_DIR.'/'.THEME.'/h/'.$name.'.html';
 
 if (isset($_REQUEST['action']) && ($_REQUEST['action']=='save')) {
 	if (file_put_contents($tpl, $_REQUEST['theme-body'])===false) {
-		echo '<em>failed to write to '.THEME_DIR.'/'.THEME.'/h/'.$name
-			.'.html. Please check the permissions on the file.</em>';
+		$fname=THEME_DIR.'/'.THEME.'/h/'.$name;
+		echo '<em>'.__(
+			'Failed to write to %1. Please check the permissions on the file.',
+			array($fname),
+			'core'
+		)
+		.'</em>';
 	}
 }
 $f=file_get_contents($tpl);
@@ -26,10 +31,11 @@ echo '<input type="hidden" name="_plugin" value="theme-editor" />';
 echo '<input type="hidden" name="_page" value="index" />';
 echo '<input type="hidden" name="name" value="'.$name.'" />';
 echo '<input type="hidden" name="type" value="h" />';
+echo '<input type="hidden" name="action" value="save"/>';
 echo '<textarea id="theme-body" name="theme-body">',htmlspecialchars($f)
 	,'</textarea>';
 echo '<br /><input type="submit" onclick="document.getElementById(\'theme-b'
-	,'ody\').value=editor.getCode();" name="action" value="save" /></form>';
+	,'ody\').value=editor.getCode();" value="'.__('Save').'" /></form>';
 ?>
 <style>
 .CodeMirror-wrapping{

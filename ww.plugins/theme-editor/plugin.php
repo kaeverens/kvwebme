@@ -12,8 +12,12 @@
 	*/
 
 $plugin=array(
-	'name'=>'Theme Editor',
-	'description'=>'This plugin will let you edit your themes online.',
+	'name'=>function() {
+		return __('Theme Editor');
+	},
+	'description'=>function() {
+		return __('This plugin will let you edit your themes online.');
+	},
 	'admin'=>array(
 		'menu'=>array(
 			'Site Options>Theme Editor'=>'plugin.php?_plugin=theme-editor&amp;_page=index'

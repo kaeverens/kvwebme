@@ -13,9 +13,13 @@
 
 // { plugin array
 $plugin = array(
-	'name'		=>	'Ratings',
+	'name' => function() {
+		return __('Ratings');
+	},
 	'version'	=>	2,
-	'description'	=>	'Rate anything',
+	'description'	=>	function() {
+		return __('Rate anything');
+	},
   'frontend'=>array(
 		'template_functions'=>array(
 			'RATINGS'=>array(
@@ -50,5 +54,5 @@ function Ratings_templateFunction($vars) {
 	WW_addInlineScript($script);
 
 	return '<div class="ratings" id="' . $name . '" type="' . $type . '">'
-		. 'ratings</div>';
+		.__('ratings', 'core').'</div>';
 }

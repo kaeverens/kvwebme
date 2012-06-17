@@ -5,7 +5,10 @@ if (!isset($_REQUEST['areyousure']) || $_REQUEST['areyousure']!='yes') {
 		.'you must add ?areyousure=yes to the address of this script to run it.';
 	exit;
 }
-require '../ww.incs/basics.php';
+require_once '../ww.incs/basics.php';
+if (!Core_isAdmin()) {
+	exit;
+}
 
 $saved=0;
 $deleted=0;

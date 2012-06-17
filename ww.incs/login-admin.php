@@ -22,16 +22,16 @@
 			<form id="admin-login" action="./" method="post">
 				<table>
 					<tr>
-						<th class="__">Email</th>
+						<th class="__" lang-context="core">Email</th>
 						<td><input id="email" type="email" /></td>
 					</tr>
 					<tr>
-						<th class="__">Password</th>
+						<th class="__" lang-context="core">Password</th>
 						<td><input type="password" id="password" /></td>
 					</tr>
 					<tr>
 						<th colspan="2" style="text-align:right;">
-							<button id="login" class="__">Log In</button>
+							<button id="login" class="__" lang-context="core">Log In</button>
 						</th>
 					</tr>
 				</table>

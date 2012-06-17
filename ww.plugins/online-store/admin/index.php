@@ -70,7 +70,8 @@ $c.='<th width="20%">Users must log in</th><td><input type="checkbox"'
 	.' /></td></tr>';
 // }
 // { currency
-$c.='<tr><th class="__" lang-context="core">Currency</th><td><select name="online_store_currency">';
+$c.='<tr><th>'.__('Currency', 'core').'</th>'
+	.'<td><select name="online_store_currency">';
 foreach ($online_store_currencies as $key=>$val) {
 	$c.= '<option value="'.$key.'"';
 	if ($key==$DBVARS['online_store_currency']) {

@@ -1,6 +1,6 @@
 <?php
 /**
-	* info.php, KV-Webme Ratings Plugin
+	* info.php, Ratings Plugin
 	* echos info about a certain product
 	*
 	* PHP version 5.2
@@ -23,5 +23,5 @@ if ($name == '') {
 $votes = dbAll('select * from ratings where name="' . $name . '"');
 $votes = count($votes);
 
-echo $votes . ' people have rated this.';
+echo __('%1 people have rated this.', array($votes), 'core');
 exit;

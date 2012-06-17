@@ -1,6 +1,6 @@
 <?php
 /**
-	* get_ratings.php, KV-Webme Ratings Plugin
+	* get_ratings.php, Ratings Plugin
 	* returns an array of ratings for items
 	*
 	* PHP version 5.2

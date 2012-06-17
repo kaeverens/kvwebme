@@ -108,18 +108,18 @@ function Blog_getPostsList() {
 			$row['comments']
 		);
 		// { dates
-		$dates='<span class="__" lang-context="blog" title="created: '
+		$dates='<span title="'.__('Date created', 'core').': '
 			.$row['cdate'].'">c: '.preg_replace('/ .*/', '', $row['cdate'])
 			.'</span>';
 		if ($row['pdate']) {
-			$dates.='<br/><span class="__" lang-context="blog" title="published: '
+			$dates.='<br/><span title="'.__('Date published', 'core').': '
 				.$row['pdate'].'">p: '.preg_replace('/ .*/', '', $row['pdate'])
 				.'</span>';
 		}
 		if ($row['udate'] && $row['udate']!=$row['cdate']
 			&& $row['udate']!=$row['pdate']
 		) {
-			$dates.='<br/><span class="__" lang-context="blog" title="updated: '
+			$dates.='<br/><span title="'.__('Date updated', 'core').': '
 				.$row['udate'].'">u: '.preg_replace('/ .*/', '', $row['udate'])
 				.'</span>';
 		}

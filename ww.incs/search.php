@@ -73,8 +73,8 @@ function Search_showResults() {
 	}
 	// }
 	if (!$c) {
-		return '<em id="searchResultsTitle" class="__" lang-context="core">'
-			.'no results found</em>';
+		return '<em id="searchResultsTitle">'
+			.__('no results found', 'core').'</em>';
 	}
 	return $c;
 }

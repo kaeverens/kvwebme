@@ -271,14 +271,23 @@ function Core_languagesAddStrings() {
 	if (!@$_SESSION['wasAdmin']) {
 		return;
 	}
+	$added=array();
 	foreach ($_REQUEST['strings'] as $str) {
+		if (dbOne(
+			'select lang from languages where str="'.addslashes($str[0]).'"'
+			.' and context="'.addslashes($str[1]).'"', 'lang'
+		)) {
+			continue;
+		}
 		dbQuery(
 			'insert into languages set str="'.addslashes($str[0]).'",'
 			.'context="'.addslashes($str[1]).'",'
 			.'trstr="'.addslashes($str[0]).'",'
 			.'lang="'.addslashes($_languages[0]).'"'
 		);
+		$added[]=$str[0];
 	}
+	return $added;
 }
 
 // }

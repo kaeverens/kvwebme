@@ -23,7 +23,7 @@ $user = ((int) @$_SESSION[ 'userdata' ][ 'id' ] == 0)
 $date = date('m-d-Y');
 
 if ($name == '') {
-	die('error');
+	die(__('error'));
 }
 // }
 

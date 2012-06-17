@@ -134,14 +134,13 @@ function Privacy_controller() {
 		$c.='<div class="tabs"><ul>';
 		// { menu
 		if ($PAGEDATA->vars['userlogin_visibility']&1) {
-			$c.='<li><a href="#Privacy_controllerLoginBox" class="__" '
-				.'lang-context="core">Login</a></li>'
-				.'<li><a href="#userPasswordReminder" class="__" '
-				.'lang-context="core">Password reminder</a></li>';
+			$c.='<li><a href="#Privacy_controllerLoginBox">'.__('Login', 'core')
+				.'</a></li>'
+				.'<li><a href="#userPasswordReminder">'.__('Password reminder', 'core')
+				.'</a></li>';
 		}
 		if ($PAGEDATA->vars['userlogin_visibility']&2) {
-			$c.='<li><a href="#userregistration" class="__" lang-context="core">'
-				.'Register</a></li>';
+			$c.='<li><a href="#userregistration">'.__('Register', 'core').'</a></li>';
 		}
 		// }
 		$c.='</ul>';
@@ -175,13 +174,13 @@ function Privacy_loginForm() {
 	$c.='<form class="userLoginBox" action="'
 		.$GLOBALS['PAGEDATA']->getRelativeUrl()
 		.'#tab=Login" method="post"><table>';
-	$c.='<tr><th><label for="email" class="__" lang-context="core">Email</label></th>'
+	$c.='<tr><th><label for="email">'.__('Email', 'core').'</label></th>'
 		.'<td><input name="email" '
 		.'value="'.@$_REQUEST['email'].'" /></td>';
-	$c.='<th><label for="password" class="__" lang-context="core">Password</label></th>'
+	$c.='<th><label for="password">'.__('Password', 'core').'</label></th>'
 		.'<td><input type="password" name="password" /></td></tr>';
 	$c.='</table>'
-		.'<button class="__" lang-context="core">Login</button>'
+		.'<button>'.__('Login', 'core').'</button>'
 		.'<input type="hidden" name="action" value="Login"/>';
 	if (isset($_REQUEST['login_referer'])) {
 		$c.='<input type="hidden" name="login_referer" value="'
@@ -205,9 +204,9 @@ function Privacy_passwordReminderForm() {
 	$c.='<form class="userLoginBox" action="'
 		.$GLOBALS['PAGEDATA']->getRelativeUrl()
 		.'#tab=Password Reminder" method="post"><table>';
-	$c.='<tr><th><label for="email" class="__" lang-context="core">Email</label></th>'
+	$c.='<tr><th><label for="email">'.__('Email', 'core').'</label></th>'
 		.'<td><input name="email"/></td></tr></table>';
-	$c.='<button class="__" lang-context="core">Remind</button>'
+	$c.='<button>'.__('Remind', 'core').'</button>'
 		.'<input type="hidden" name="action" value="Remind" /></form></div>';
 	return $c;
 }
@@ -248,15 +247,15 @@ function Privacy_registrationShowForm($error='', $alert='') {
 	$c.=$error.'<form id="reg-form" class="userRegistrationBox" action="'
 		.$GLOBALS['PAGEDATA']->getRelativeUrl()
 		.'#userregistration" method="post"><table>'
-		.'<tr><th class="__" lang-context="core">Name</th>'
+		.'<tr><th>'.__('Name', 'core').'</th>'
 		.'<td><input type="text" name="name" value="'
 		.htmlspecialchars(@$_REQUEST['name']).'" /></td>'
-		.'<th class="__" lang-context="core">Email</th>'
+		.'<th>'.__('Email', 'core').'</th>'
 		.'<td><input type="text" name="email" value="'
 		.htmlspecialchars(@$_REQUEST['email']).'" /></td></tr>'
-		.'<tr><th class="__" lang-context="core">Preferred Password</th>'
+		.'<tr><th>'.__('Preferred Password', 'core').'</th>'
 		.'<td><input name="pass1" type="password"/></td>'
-		.'<th class="__" lang-context="core">Repeat Password</th>'
+		.'<th>'.__('Repeat Password', 'core').'</th>'
 		.'<td><input name="pass2" type="password"/></td'
 		.'></tr><tr><td colspan="2">'.Recaptcha_getHTML().'</td></tr></table>';
 	if (strlen(@$PAGEDATA->vars['privacy_extra_fields'])>2) {
@@ -388,14 +387,12 @@ function Privacy_registrationShowForm($error='', $alert='') {
 		}
 		$c.='</table>';
 		if (count($required)) {
-			$c.='<br /><span class="__" lang-context="core">* indicates required '
-				.'fields</span>';
+			$c.='<br /><span>'.__('* indicates required fields', 'core').'</span>';
 		}
 	}
 	if (@$PAGEDATA->vars['userlogin_terms_and_conditions']) {
-		$c.='<input type="checkbox" name="terms_and_conditions" /> '
-			.'<span class="__" lang-context="core">I agree to the '
-			.'<a href="javascript:userlogin_t_and_c()">terms and conditions</a>.'
+		$c.='<input type="checkbox" name="terms_and_conditions" /> <span>'
+			.__('I agree to the <a href="javascript:userlogin_t_and_c()">terms and conditions</a>.', 'core')
 			.'</span><br />';
 		$c.='<script defer="defer">function userlogin_t_and_c(){$("<div>'
 			.addslashes(
@@ -412,8 +409,7 @@ function Privacy_registrationShowForm($error='', $alert='') {
 			.'</div>\').dialog({modal:true});});'
 		);
 	}
-	$c.='<button class="__" lang-context="core" id="registration-submit">'
-		.'Register</button>'
+	$c.='<button id="registration-submit">'.__('Register', 'core').'</button>'
 		.'<input type="hidden" name="a" value="Register" /></form></div>';
 
 	/** 
@@ -454,8 +450,9 @@ function Privacy_registrationRegister() {
 	if (@$PAGEDATA->vars['userlogin_terms_and_conditions']
 		&& !isset($_REQUEST['terms_and_conditions'])
 	) {
-		return '<em class="__" lang-context="core">You must agree to the terms and'
-			.'conditions. Please press "Back" and try again.</em>';
+		return '<em>'
+			.__('You must agree to the terms and conditions. Please press "Back" and try again.', 'core')
+			.'</em>';
 	}
 	$missing=array();
 	// { check for user_account table "extras"
@@ -480,16 +477,15 @@ function Privacy_registrationRegister() {
 	// }
 	// { check for required fields
 	if (!$name) {
-		$missing[]='<span class="__" lang-context="core">your name</span>';
+		$missing[]='<span>'.__('your name', 'core').'</span>';
 	}
 	if (!$email) {
-		$missing[]='<span class="__" lang-context="core">your email address</span>';
+		$missing[]='<span>'.__('your email address', 'core').'</span>';
 	};
 	if (count($missing)) {
 		return Privacy_registrationShowForm(
-			'<em><span class="__" lang-context="core">'
-			.'You must fill in the following fields:</span> '
-			.join(', ', $missing).'</em>'
+			'<em><span>'.__('You must fill in the following fields:', 'core')
+			.'</span> '.join(', ', $missing).'</em>'
 		);
 	}
 	// }
@@ -497,16 +493,15 @@ function Privacy_registrationRegister() {
 	$r=dbRow('select id from user_accounts where email="'.$email.'"');
 	if ($r && count($r)) {
 		return Privacy_registrationShowForm(
-			'<p><em class="__" lang-context="core">That email is already '
-			.'registered.</em></p>'
+			'<p><em>'.__('That email is already registered.', 'core').'</em></p>'
 		);
 	}
 	// }
 	// { check that passwords match
 	if (!$pass1 || $pass1!=$pass2) {
 		return Privacy_registrationShowForm(
-			'<p><em class="__" lang-context="core">Please enter your preferred '
-			.'password twice</em></p>'
+			'<p><em>'.__('Please enter your preferred password twice', 'core')
+			.'</em></p>'
 		);
 	}
 	// }
@@ -514,8 +509,7 @@ function Privacy_registrationRegister() {
 	require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/recaptcha.php';
 	if (!isset($_REQUEST['recaptcha_challenge_field'])) {
 		return Privacy_registrationShowForm(
-			'<p><em class="__" lang-context="core">You must fill in the '
-			.'Captcha</em></p>'
+			'<p><em>'.__('You must fill in the Captcha', 'core').'</em></p>'
 		);
 	}
 	else {
@@ -528,8 +522,7 @@ function Privacy_registrationRegister() {
 			);
 		if (!$result->is_valid) {
 			return Privacy_registrationShowForm(
-				'<p><em class="__" lang-context="core">Invalid captcha. Please try '
-				.'again.</em></p>'
+				'<p><em>'.__('Invalid captcha. Please try again.', 'core').'</em></p>'
 			);
 		}
 	}
@@ -598,9 +591,10 @@ function Privacy_registrationRegister() {
 		}
 		return Privacy_registrationShowForm(
 			false,
-			'<p class="__" lang-context="core"><strong>Thank you for registering'
-			.'</strong>. Please check your email for a verification URL. Once '
-			.'that\'s been followed, your account will be activated.</p>'
+			'<p><strong>'.__('Thank you for registering.', 'core')
+			.'</strong> '
+			.__('Please check your email for a verification URL. Once that\'s been followed, your account will be activated.', 'core')
+			.'</p>'
 		);
 	}
 	else {
@@ -622,9 +616,9 @@ function Privacy_registrationRegister() {
 		}
 		return Privacy_registrationShowForm(
 			false,
-			'<p class="__" lang-context="core"><strong>Thank you for registering'
-			.'</strong>. Our admins will moderate your registration, and you '
-			.'will receive an email when it is activated.</p>'
+			'<p><strong>'.__('Thank you for registering.', 'core').'</strong> '
+			.__('Our admins will moderate your registration, and you will receive an email when it is activated.', 'core')
+			.'</p>'
 		);
 	}
 	// }
@@ -646,7 +640,7 @@ function Privacy_profileGet() {
 
 	$phone = ($contact['phone'] == '')
 		?'<a href="javascript:edit_user_dialog('.$user['id']
-		.');" class="__" lang-context="core">Add</a>'
+		.');">'.__('Add', 'core').'</a>'
 		:htmlspecialchars($contact['phone']);
 
 	// get array of groups the user is a member of
@@ -667,31 +661,32 @@ function Privacy_profileGet() {
 	<h2>' . htmlspecialchars($user[ 'name' ]) . '</h2>
 	<div id="tabs">
 		<ul>
-			<li><a href="#details" class="__" lang-context="core">User Details</a></li>
-			<li><a href="#address" class="__" lang-context="core">Address</a></li>
+			<li><a href="#details">'.__('User Details', 'core').'</a></li>
+			<li><a href="#address">'.__('Address', 'core').'</a></li>
 		</ul>
 		<div id="details">
 
 	<p style="float:right">
 	<a href="javascript:edit_user_dialog('.$user['id']
-	.');" id="edit-user-info" class="__" lang-context="core">Edit Details</a>
+	.');" id="edit-user-info">'.__('Edit Details', 'core').'</a>
 	<a href="javascript:change_password_dialog(' . $user[ 'id' ] . ');"
-	id="user-change-password" style="diplay:inline" class="__" lang-context="core">Change Password</a></p>
+	id="user-change-password" style="diplay:inline">'
+	.__('Change Password', 'core').'</a></p>
 	<table id="user-info" style="border:1px solid #ccc;margin:10px">
 		<tr>
-			<th class="__" lang-context="core">Email</th><td>'
+			<th>'.__('Email', 'core').'</th><td>'
 				. htmlspecialchars($user[ 'email' ]) . '</td>
 		</tr>
 		<tr>
-			<th class="__" lang-context="core">Phone</th><td>' . $phone . '</td>
+			<th>'.__('Phone', 'core').'</th><td>' . $phone . '</td>
 		</tr>
 		<tr>
-			<th class="__" lang-context="core">Avatar:</th><td><span id="avatar-wrapper" data-uid="'.$uid.'"></span></td>
+			<th>'.__('Avatar', 'core').'</th><td><span id="avatar-wrapper" data-uid="'.$uid.'"></span></td>
 		</tr>';
 
 	$html .= '</table></div> <div id="address"><a id="new-address" href="java'
-		.'script:add_address();" style="float:right" class="__" '
-		.'lang-context="core">[+] Add Address</a> <div id="address-container">'
+		.'script:add_address();" style="float:right">[+] '
+		.__('Add Address', 'core').'</a> <div id="address-container">'
 		.'<table>';
 
 	if ($addresses=json_decode(@$user['address'], true)) {
@@ -707,7 +702,7 @@ function Privacy_profileGet() {
 		}
 	}
 	else {
-		$html.= '<i class="__" lang-context="core">No address(es) saved yet</i>';
+		$html.= '<i>'.__('No address(es) saved yet', 'core').'</i>';
 	}
 	$html.='</table></div><br style="clear:both"/></div>
 	</div>';
