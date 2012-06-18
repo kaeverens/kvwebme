@@ -13,10 +13,14 @@
 
 // { define $plugin
 $plugin=array(
-	'name' => 'SiteCredits',
+	'name'=>function() {
+		return __('SiteCredits');
+	},
 	'hide_from_admin'=>	true,
-	'description' => 'admins can pay for credits, which are used to'
-		.' manage site subscriptions',
+	'description' =>function() {
+		return __('admins can pay for credits, which are used to'
+			.' manage site subscriptions';
+	},
 	'admin' => array(
 		'menu' => array(
 			'Credits' => 'plugin.php?_plugin=site-credits&amp;_page=overview'
@@ -30,6 +34,9 @@ $plugin=array(
 	),
 	'version'=>3
 );
+/**
+	* __('Credits')
+	*/
 // }
 
 function SiteCredits_isActive() {
@@ -39,8 +46,11 @@ function SiteCredits_isActive() {
 		Core_configRewrite();
 	}
 	if ($DBVARS['sitecredits-credits']<-1) {
-		echo '<p>Website Administrator attention needed.'
-			.' Please log into your administration area (and check your email).</p>';
+		echo '<p>'.__(
+			'Website Administrator attention needed.'
+			.' Please log into your administration area (and check your email).'
+		)
+			.'</p>';
 		exit;
 	}
 }

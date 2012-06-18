@@ -11,15 +11,19 @@
 	* @link     http://kvsites.ie/
 	*/
 
-
+// { configuration
 /**
  * plugin array, which holds the configuartion
  * options for the plugin
  */
 $plugin = array( 
-	'name'		=>	'Themes API',
+	'name'=>function() {
+		return __('Themes API');
+	},
 	'version'	=>	3,
-	'description'	=>	'Private Plugin for themes API',
+	'description'=>function() {
+		return __('Private Plugin for themes API');
+	},
 	'hide_from_admin'=>	true,
 	'admin'		=>	array(
 		'menu'	=>	array(
@@ -38,6 +42,13 @@ $plugin = array(
 		'file_hook'	=>	'ThemesApi_filesCheck'
 	)
 );
+/** translatable strings
+	* __('Themes Repository')
+	* __('Themes Catalogue')
+	* __('Upload Form')
+	* __('Upload Form')
+	*/
+// }
 
 /**
 	* show front-end page type for uploading themes
@@ -55,7 +66,7 @@ function ThemesApi_frontend() {
 	* @return html
 	*/
 function ThemesApi_admin() {
-	echo 'this is the admin area page type';
+	echo __('this is the admin area page type');
 }
 
 /**
@@ -87,7 +98,7 @@ function ThemesApi_filesCheck( $vars ) {
 	);
 
 	if ( $moderated == 'no' ) {
-		die( 'This theme is awaiting moderation and has not been deemed as safe yet.' );
+		die(__('This theme is awaiting moderation and has not been deemed as safe yet.'));
 	}
 
 	// save in database
@@ -105,7 +116,7 @@ function ThemesApi_filesCheck( $vars ) {
 	* @return html
 	*/
 function ThemesApi_catalogueAdmin() {
-	echo '<h1>Themes Repository</h1>';
+	echo '<h1>'.__('Themes Repository').'</h1>';
 }
 
 /**

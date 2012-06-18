@@ -1,8 +1,6 @@
 <?php
 if (!isset($_REQUEST['areyousure']) || $_REQUEST['areyousure']!='yes') {
-	echo 'this script deletes any files older than 6 months. in order to '
-		.'ensure it\'s not accidentally run by bots such as search engines, '
-		.'you must add ?areyousure=yes to the address of this script to run it.';
+	echo __("This script deletes any files older than 6 months. in order to ensure it's not accidentally run by bots such as search engines, you must add ?areyousure=yes to the address of this script to run it.");
 	exit;
 }
 require_once '../ww.incs/basics.php';
@@ -38,5 +36,5 @@ function find_old_files($dirname, $before_date) {
 	}
 }
 find_old_files(USERBASE.'/f/.files', time()-3600*24*182);
-echo $deleted.' files deleted.<br />';
-echo $saved.' bytes saved.';
+echo __('%1 files deleted.', array($deleted), 'core').'<br />';
+echo __('%1 bytes saved.', array($saved), 'core');

@@ -50,7 +50,7 @@ if ($version == '' || $author == '') {
 $theme_old_name = $_FILES[ 'theme-zip' ][ 'name' ];
 $theme_old_name =end(explode('.', $theme_old_name));
 if ($theme_old_name != 'zip') {
-	die('must be a zip file');
+	die(__('must be a zip file'));
 }
 
 /**

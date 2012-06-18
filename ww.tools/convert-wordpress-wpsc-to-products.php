@@ -1,6 +1,6 @@
 <?php
 if ($_SERVER['REMOTE_ADDR']!='127.0.0.1') {
-	die('you must run this script from your localhost (to stop hackers)');
+	die(__('You must run this script from your localhost (to stop hackers)'));
 }
 
 if (isset($_POST['action']) && $_POST['action']=='convert') {
@@ -12,14 +12,14 @@ if (isset($_POST['action']) && $_POST['action']=='convert') {
 	);
 	if ($mysqli->connect_error) {
 		die(
-			'Connect Error (' . $mysqli->connect_errno . ') '
+			__('Connect Error').' (' . $mysqli->connect_errno . ') '
 			. $mysqli->connect_error
 		);
 	}
 	// { products
 	$query=$mysqli->real_query('select * from wp_wpsc_product_list');
 	if (!($result=$mysqli->use_result())) {
-		die ('error retrieving products list');
+		die(__('error retrieving products list'));
 	}
 	$products=array();
 	while ($row=$result->fetch_array()) {
@@ -56,7 +56,7 @@ if (isset($_POST['action']) && $_POST['action']=='convert') {
 		'select * from wp_wpsc_product_images order by product_id,image_order'
 	);
 	if (!($result=$mysqli->use_result())) {
-		die ('error retrieving products list');
+		die(__('error retrieving products list'));
 	}
 	while ($row=$result->fetch_array()) {
 		if ($row['image_order']=='') {
@@ -72,7 +72,7 @@ if (isset($_POST['action']) && $_POST['action']=='convert') {
 	$products_categories=array();
 	$query2=$mysqli->real_query('select * from wp_wpsc_product_categories');
 	if (!($result=$mysqli->use_result())) {
-		die ('error retrieving product_categories list');
+		die(__('error retrieving product_categories list'));
 	}
 	while ($row=$result->fetch_array()) {
 		$products_categories[]=array(
@@ -87,7 +87,7 @@ if (isset($_POST['action']) && $_POST['action']=='convert') {
 	$products_categories_products=array();
 	$query2=$mysqli->real_query('select * from wp_wpsc_item_category_assoc');
 	if (!($result=$mysqli->use_result())) {
-		die ('error retrieving wp_wpsc_item_category_assoc list');
+		die(__('error retrieving wp_wpsc_item_category_assoc list'));
 	}
 	while ($row=$result->fetch_array()) {
 		$products_categories_products[]=array(
@@ -108,13 +108,15 @@ if (isset($_POST['action']) && $_POST['action']=='convert') {
 	exit;
 }
 
-echo '<form method="post"><table><tr><th>hostname</th><td><input name="host'
-	.'name" /></td></tr><tr><th>username</th><td><input name="username" /></t'
-	.'d></tr><tr><th>password</th><td><input name="password" /></td></tr><tr>'
-	.'<th>database</th><td><input name="database" /></td></tr><tr><th>origina'
-	.'l website</th><td><input name="url" placeholder="http://www.whatever.co'
-	.'m/" /></td></tr><tr><th colspan="2"><input type="submit" name="action" '
-	.'value="convert" /></th></tr></table></form>';
+echo '<form method="post"><table>'
+	.'<tr><th>'.__('Hostname').'</th><td><input name="hostname" /></td></tr>'
+	.'<tr><th>'.__('Username').'</th><td><input name="username" /></td></tr>'
+	.'<tr><th>'.__('Password').'</th><td><input name="password" /></td></tr>'
+	.'<tr><th>'.__('Database').'</th><td><input name="database" /></td></tr>'
+	.'<tr><th>'.__('Original website').'</th>'
+	.'<td><input name="url" placeholder="http://www.whatever.com/" /></td></tr>'
+	.'<tr><th colspan="2"><input type="hidden" name="action" value="convert"/>'
+	.'<input type="submit" value="'.__('Convert').'" /></th></tr></table></form>';
 
 /*
 tables which are not converted

@@ -65,14 +65,15 @@ $script = '
 		"multi"		:	false,
 		"method"	:	"post",
 		"fileDataName"	:	"theme-zip",
-		"buttonText"	:	"Select Zip FIle",
-		"fileDesc"	:	"Compressed Zip Files",
+		"buttonText"	:	"'.__('Select Zip File').'",
+		"fileDesc"	:	"'.__('Compressed Zip Files').'",
 		"fileExt"	:	"*.zip",
 		"onComplete"	:	function( event, ID, fileObj, response, data ){
 			if( response == "error" )
 				alert(
-					"There has been an unexpected error, please try uploading the fil"
-					+"e again."
+					"'.__(
+	'There has been an unexpected error, please try uploading the file again.'
+	).'"
 				);
 			else{
 				$( "#return-id" ).attr( "value", response );
@@ -162,54 +163,61 @@ $script = '
 				switch( data ){
 					case "screenshot":
 						$( "#theme-error" ).html(
-							"The \'./screenshot.png\' file could not be found. All themes are"
-							+"required to provide screenshots. Please correct your zip file, "
-							+"refresh the page and try again."
+"'.addslashes(__(
+	'The "./screenshot.png" file could not be found. All themes are required'
+	.' to provide screenshots. Please correct your zip file, refresh the page'
+	.' and try again.')).'"
 						);
 					break;
 					case "h":
 						$( "#theme-error" ).html(
-							"The \'./h\' directory could not be found, this directory is a "
-							+"requirement in all themes. Please correct your zip file, refr"
-							+"esh the page and try again."
+							"'
+.addslashes(__(
+	'The "./h" directory could not be found, this directory is a requirement'
+	.' in all themes. Please correct your zip file, refresh the page and try'
+	.' again.')).'"
 						);
 					break;
 					case "c":
 						$( "#theme-error" ).html(
-							"The \'./c\' directory could not be found, this directory is a "
-							+"requirement in all themes. Please correct your zip file, refr"
-							+"esh the page and try again."
+							"'
+.addslashes(__(
+	'The "./c" directory could not be found, this directory is a requirement'
+	.' in all themes. Please correct your zip file, refresh the page and try'
+	.' again.')).'"
 						);
 					break;
 					case "no h":
 						$( "#theme-error" ).html(
-							"No HTML files were found in the \'./h\' directory. Please corr"
-							+"ect your zip file, refresh the page and try again."
+							"'.addslashes(__(
+	'No HTML files were found in the "./h" directory. Please correct your zip'
+	.' file, refresh the page and try again.')).'"
 						);
 					break;
 					case "panels":
 						$( "#theme-error" ).html(
-							"All themes require a header and footer panel and a left or rig"
-							+"ht panel"
+							"'.addslashes(__(
+	'All themes require a header and footer panel and a left or right panel')).'"
 						);
 					break;
 					case "base":
 						$( "#theme-error" ).html(
-							"The zip does not have the correct directory structure. All zip"
-							+"s must contain a folder according to the name of the zip file"
-							+", which contains the theme files."
+							"'.addslashes(__(
+	'The zip does not have the correct directory structure. All zips must'
+	.' contain a folder according to the name of the zip file, which contains'
+	.' the theme files.')).'"
 						);
 					break;
 					case "cs":
 						$( "#theme-error" ).html(
-							"The cs directory is optional, but if it is present then all cs"
-							+"s variant files in the directory must have corresponding scre"
-							+"enshot files in the png. These screenshot files must have the"
-							+" same name as the css files."
+							"'.addslashes(__(
+	'The cs directory is optional, but if it is present then all css variant'
+	.' files in the directory must have corresponding screenshot files in the'
+	.' png. These screenshot files must have the same name as the css files.')).'"
 						);
 					break;
 					case "ok":
-						$( "#theme-error" ).html( "Theme Verified!" );
+						$( "#theme-error" ).html( "'.addslashes(__('Theme Verified!')).'" );
 						setTimeout(
 							function( ){
 								$( "#accordion" ).accordion( "activate", 3 );
@@ -280,26 +288,49 @@ $theme_tags = ( isset( $_SESSION[ 'theme_upload' ][ 'tags' ] ) )
 	:'';
 
 $html='<style type="text/css">.error{border:1px solid #600;background:#f99}'
-	.'</style><h3>Theme Uploader</h3><div id="accordion"><h3>'
-	.'<a href="#">Theme Details</a></h3><div><p id="error-msg" style="color:red">'
-	.'</p><input type="hidden" name="theme_tags" id="hidden-tags" value="'
-	.$theme_tags.'"/><table><tr><td colspan="2"><i>The theme name will be taken'
-	.' from the name of the zip file</i></td></tr><tr><td>Version:</td><td>'
-	.'<input type="text" name="theme_version" value="'.$theme_version.'"/></td>'
-	.'</tr><tr><td>Description:</td><td>&nbsp;</td></tr><tr><td colspan="2">'
+	.'</style><h3>'
+	.__('Theme Uploader')
+	.'</h3><div id="accordion"><h3><a href="#">'
+	.__('Theme Details')
+	.'</a></h3><div><p id="error-msg" style="color:red"></p>'
+	.'<input type="hidden" name="theme_tags" id="hidden-tags" value="'
+	.$theme_tags.'"/><table><tr><td colspan="2"><i>'
+	.__('The theme name will be taken from the name of the zip file')
+	.'</i></td></tr><tr><td>'
+	.__('Version')
+	.':</td><td><input type="text" name="theme_version" value="'
+	.$theme_version.'"/></td></tr><tr><td>'
+	.__('Description')
+	.':</td><td>&nbsp;</td></tr><tr><td colspan="2">'
 	.'<textarea name="theme_description" id="theme_description" value="'
-	.$theme_description.'"></textarea></td></tr><tr><td>Tags:</td><td><input '
-	.'type="text" id="tags"/><a href="javascript:;" id="add">Add</a>'
-	.'<a href="javascript:;" id="delete">Clear</a></td></tr><tr><td colspan="2">'
-	.'<span id="tags-display">&nbsp;</span></td></tr><tr><td>'
-	.'<input type="submit" value="Continue" id="stage-1"/></td><td>&nbsp;</td>'
-	.'</tr></table></div><h3><a href="#">Upload</a></h3><div><table><tr>'
+	.$theme_description.'"></textarea></td></tr><tr><td>'
+	.__('Tags')
+	.':</td><td><input type="text" id="tags"/><a href="javascript:;" id="add">'
+	.__('Add')
+	.'</a><a href="javascript:;" id="delete">'
+	.__('Clear')
+	.'</a></td></tr><tr><td colspan="2"><span id="tags-display">&nbsp;</span>'
+	.'</td></tr><tr><td><input type="submit" value="'
+	.__('Continue')
+	.'" id="stage-1"/></td><td>&nbsp;</td>'
+	.'</tr></table></div><h3><a href="#">'
+	.__('Upload')
+	.'</a></h3><div><table><tr>'
 	.'<td colspan="2"><input id="theme-upload" name="file_upload" type="file" />'
-	.'</td></tr><tr><td><input type="submit" value="Continue" id="stage-2"/></td>'
-	.'<td id="loading"></td></tr></table></div><h3><a href="#">Verify '
-	.'<span id="loading"></span></a></h3><div>'
+	.'</td></tr><tr><td><input type="submit" value="'
+	.__('Continue')
+	.'" id="stage-2"/></td>'
+	.'<td id="loading"></td></tr></table></div><h3><a href="#">'
+	.__('Verify')
+	.' <span id="loading"></span></a></h3><div>'
 	.'<input type="hidden" id="return-id" value=""/>'
-	.'<h3 id="theme-error" style="color:red"></h3></div><h3>'
-	.'<a href="#">Finish</a></h3><div><h3>Upload Complete!</h3>'
-	.'<p>Your theme is now awaiting moderation, you will receive an email if '
-	.'it is approved.</p></div></div>';
+	.'<h3 id="theme-error" style="color:red"></h3></div><h3><a href="#">'
+	.__('Finish')
+	.'</a></h3><div><h3>'
+	.__('Upload Complete!')
+	.'</h3><p>'
+	.__(
+		'Your theme is now awaiting moderation, you will receive an email if it'
+		.' is approved.'
+	)
+	.'</p></div></div>';

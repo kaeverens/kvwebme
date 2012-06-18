@@ -11,6 +11,7 @@
 	* @link     http://kvsites.ie/
 	*/
 
+// { config
 $plugin=array(
 	'name'=>function() {
 		return __('Theme Editor');
@@ -24,3 +25,8 @@ $plugin=array(
 		)
 	)
 );
+/**
+	* __('Site Options>Theme Editor')
+	*/
+
+// }

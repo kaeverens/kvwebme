@@ -158,7 +158,9 @@ foreach ($html as $file) {
 	 * remove metadata tag and replace with
 	 * title so that it passes xhtml5 validation
 	 */
-	$contents = str_replace('{{$METADATA}}', '<title>Example</title>', $contents); 
+	$contents = str_replace(
+		'{{$METADATA}}', '<title>'.__('Example').'</title>', $contents
+	); 
 
 	/**
 	 * remove all tags and write to file for
@@ -229,14 +231,19 @@ $users_c = count($users);
 
 if ($users_c != 0 && $users != false) {
 	for ($i = 0; $i < $users_c; ++$i) {
-		$body = ' <h3>Theme Moderation</h3> <p>Hi '.$users[ $i ][ 'name' ].',</p>'
-			.'<p>A new theme named "'.$name.'" has been marked for moderation, please'
-			.' <a href="'.$url.'/ww.admin">log in</a> and moderate the theme.</p>'
-			.'<p>Thanks<br/>---<br/> KvWebme</p>';
+		$body = '<h3>'.__('Theme Moderation').'</h3>'
+			.'<p>'.__('Hi %1,', array($users[$i]['name']), 'core').'</p>'
+			.'<p>'.__(
+				'A new theme named "%1" has been marked for moderation, please'
+				.' <a href="%2/ww.admin">log in</a> and moderate the theme.',
+				array($name, $url),
+				'core'
+			).'</p>'
+			.'<p>'.__('Thanks<br/>---<br/>kvWebME').'</p>';
 		send_mail(
 			$users[ $i ][ 'email' ],
 			'noreply@'.$_SERVER[ 'HTTP_HOST' ],
-			'Theme Moderation',
+			__('Theme Moderation'),
 			$body,
 			false
 		);
@@ -244,5 +251,3 @@ if ($users_c != 0 && $users != false) {
 }
 
 ThemesApi_error('ok');
-
-?>
