@@ -30,6 +30,38 @@ $html.='<h2>Edit an issue type.</h2>'
 	.'<tr><th>Fields</th>'
 	.'<td id="issue-fields-wrapper"></td></tr>'
 	.'</table>';
+$html.='<h2>Options</h2><table>';
+// { what groups can see all projects
+$html.='<tr><th>What groups can see all projects</th><td>'
+	.'<select name="page_vars[issue_tracker_see_all][]" multiple="multiple"'
+	.' id="it-see-all">';
+$rs=dbAll('select id,name from groups order by name');
+$opts=json_decode($page_vars['issue_tracker_see_all']);
+foreach ($rs as $r) {
+	$html.='<option value="'.$r['id'].'"';
+	if (in_array($r['id'], $opts)) {
+		$html.=' selected="selected"';
+	}
+	$html.='>'.htmlspecialchars($r['name']).'</option>';
+}
+$html.='</select></td></tr>';
+// }
+// { what groups can edit all projects
+$html.='<tr><th>What groups can edit all projects</th><td>'
+	.'<select name="page_vars[issue_tracker_edit_all][]" multiple="multiple"'
+	.' id="it-edit-all">';
+$rs=dbAll('select id,name from groups order by name');
+$opts=json_decode($page_vars['issue_tracker_edit_all']);
+foreach ($rs as $r) {
+	$html.='<option value="'.$r['id'].'"';
+	if (in_array($r['id'], $opts)) {
+		$html.=' selected="selected"';
+	}
+	$html.='>'.htmlspecialchars($r['name']).'</option>';
+}
+$html.='</select></td></tr>';
+// }
+$html.='</table>';
 $html.= '</div>';
 // }
 // { header
@@ -50,3 +82,5 @@ $html.= '</div>';
 // }
 $html.= '</div>';
 WW_addScript('issue-tracker/admin.js');
+WW_addScript('/j/jquery.multiselect/jquery.multiselect.min.js');
+WW_addCSS('/j/jquery.multiselect/jquery.multiselect.css');

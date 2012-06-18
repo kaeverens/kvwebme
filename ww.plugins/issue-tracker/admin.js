@@ -34,6 +34,26 @@ $(function() {
 			})
 			.change();
 	});
+	$('#it-edit-all').multiselect({
+		'close':function() {
+			var opts=$(this).multiselect('getChecked');
+			var vals=[];
+			$.each(opts, function(k, v) {
+				vals.push($(v).val());
+			});
+			$('#it-edit-all').val(vals);
+		}
+	});
+	$('#it-see-all').multiselect({
+		'close':function() {
+			var opts=$(this).multiselect('getChecked');
+			var vals=[];
+			$.each(opts, function(k, v) {
+				vals.push($(v).val());
+			});
+			$('#it-see-all').val(vals);
+		}
+	});
 	function showFields(id, $wrapper) {
 		$wrapper.empty();
 		var $table=$('<table class="borders">'

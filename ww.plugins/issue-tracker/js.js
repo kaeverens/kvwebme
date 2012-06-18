@@ -26,7 +26,13 @@ $(function() {
 		var validOpts=0, lastValid=0;
 		for (var i=0;i<ret.length;++i) {
 			var meta=eval('('+ret[i].meta+')');
-			if (userdata.isAdmin) {
+			var allowed=0;
+			for (var j=0;j<it_see_all.length;++j) {
+				if ($.inArray(+it_see_all[j], userdata.groups)!=-1) {
+					allowed=1;
+				}
+			}
+			if (allowed==1 || userdata.isAdmin) {
 				validOpts++;
 				var opt=ret[i];
 				opt.meta=meta;
@@ -211,6 +217,12 @@ $(function() {
 				return alert(ret.error);
 			}
 			$content.empty();
+			var allowedEdit=0;
+			for (var j=0;j<it_edit_all.length;++j) {
+				if ($.inArray(+it_edit_all[j], userdata.groups)!=-1) {
+					allowedEdit=1;
+				}
+			}
 			$('#issuetracker-navbar').hide();
 			var issue=ret.issue, type=ret.type;
 			type.fields=eval('('+type.fields+')');
@@ -232,23 +244,26 @@ $(function() {
 			// }
 			$content.html(html);
 			// { set up variables
-			if (userdata.isAdmin) {
+			if (allowedEdit || userdata.isAdmin) {
 				var name=$('<input class="name"/>').val(issue.name);
 				$.each(type.fields, function(k, v) {
 					switch(v.type) {
 						case 'date': // {
 							var obj=$('<input class="date '+v.cname+'"/>')
-								.val(issue[v.name||'']).datepicker({
+								.val(issue.meta[v.name]||'').datepicker({
 									'dateFormat':'yy-mm-dd'
 								});
 						break; // }
 						case 'input': // {
 							var obj=$('<input class="'+v.cname+'"/>')
-								.val(issue[v.name||'']);
+								.val(issue.meta[v.name]||'');
 						break; // }
 						case 'textarea': // {
 							var obj=$('<textarea class="'+v.cname+'"/>')
-								.val(issue[v.name||'']);
+								.val(issue.meta[v.name]||'');
+						break; // }
+						default: // {
+							alert('unknown data type: '+v.type);
 						break; // }
 					}
 					$content.find('.'+v.cname).append(obj);
@@ -260,6 +275,27 @@ $(function() {
 			}
 			else {
 				var name='<span>'+issue.name+'</span>';
+				$.each(type.fields, function(k, v) {
+					switch(v.type) {
+						case 'date': // {
+							var obj=$('<span class="date"/>')
+								.text(Core_dateM2H(issue.meta[v.name]||''));
+						break; // }
+						case 'input': // {
+							var obj=$('<span class="text-single-line"/>')
+								.text(issue.meta[v.name]||'');
+						break; // }
+						case 'textarea': // {
+							var obj=$('<pre class="text-multi-line"/>')
+								.css('white-space', 'pre-wrap')
+								.text(issue.meta[v.name]||'');
+						break; // }
+						default: // {
+							alert('unknown data type: '+v.type);
+						break; // }
+					}
+					$content.find('.'+v.cname).append(obj);
+				});
 				var istatus=[undefined, 'Open', 'Completed'][issue.status];
 			}
 			$content.find('.name').append(name);

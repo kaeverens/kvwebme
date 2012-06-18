@@ -24,7 +24,7 @@ if (!Core_isAdmin()) {
 if ($blog_author) {
 	$constraints[]='user_id='.$blog_author;
 }
-if ($entry_ids) {
+if (isset($entry_ids) && $entry_ids) {
 	$constraints[]='id in ('.join(',', $entry_ids).')';
 }
 

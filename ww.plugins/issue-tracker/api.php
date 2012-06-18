@@ -78,16 +78,17 @@ function Issuetracker_issueSet() {
 	$id=(int)$_REQUEST['id'];
 	$name=$_REQUEST['name'];
 	$status=(int)$_REQUEST['status'];
-	$meta=$_REQUEST['meta'];
-	$oldMeta=dbOne('select meta from issuetracker_issues where id='.$id, 'meta');
-	$oldMeta=json_decode($oldMeta, true);
-	foreach ($meta as $k=>$v) {
-		$oldMeta[$k]=$v;
+	$newMeta=$_REQUEST['meta'];
+	$meta=dbOne('select meta from issuetracker_issues where id='.$id, 'meta');
+	$meta=json_decode($meta, true);
+	foreach ($newMeta as $k=>$v) {
+		$meta[$k]=$v;
 	}
 	$sql='update issuetracker_issues set date_modified=now()'
 		.', name="'.addslashes($name).'", status='.$status
-		.', meta="'.addslashes(json_encode($oldMeta)).'"'
+		.', meta="'.addslashes(json_encode($meta)).'"'
 		.' where id='.$id;
+	dbQuery($sql);
 	return array('ok'=>1);
 }
 
