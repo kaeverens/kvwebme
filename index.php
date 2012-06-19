@@ -76,6 +76,7 @@ if (!isset($DBVARS['version']) || $DBVARS['version']<54) {
 $id=(int)@$_REQUEST['pageid'];
 $page=preg_replace('#/$#', '', @$_REQUEST['page']);
 // }
+echo DistConfig::get('email');
 // { is this a search?
 if ($page=='' && isset($_GET['search']) || isset($_GET['s'])) {
 	require_once 'ww.incs/search.php';
@@ -204,7 +205,7 @@ if (!$access_allowed) {
 		.'<form method="post"><input type="password" name="privacy_password" />'
 		.'<input type="submit" /></form>';
 }
-elseif (@$_REQUEST['webmespecial']=='sitemap') {
+elseif (@$_REQUEST['cmsspecial']=='sitemap') {
 	require_once 'ww.incs/sitemap-funcs.php';
 	$c.=Sitemap_get();
 }

@@ -19,6 +19,8 @@ $plugin=array(
 				'Site Options>Backup'=>'plugin.php?_plugin=backup&amp;_page=backup'
 			),
 	),
-	'description' => 'backup your website, or replace with an old backup',
+	'description' =>function() {
+		return __('backup your website, or replace with an old backup');
+	},
 	'version' => 0
 );

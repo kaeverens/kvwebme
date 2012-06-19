@@ -47,6 +47,7 @@ foreach ($panel->widgets as $widget) {
 		$details=file_get_contents('https://graph.facebook.com/me?'.$auth);
 		$details=json_decode($details);
 		if (is_null($details)) {	// failed login
+			mail(DistConfig::get('email'), 'Facebook failed data', $details);
 			header('Location: /');
 			exit;
 		}

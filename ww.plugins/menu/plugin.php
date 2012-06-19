@@ -12,7 +12,9 @@ $plugin=array(
 			'css_include' => '/ww.plugins/menu/j/farbtastic/farbtastic.css'
 		)
 	),
-	'description' => 'Menu widget',
+	'description' =>function() {
+		return __('Menu widget');
+	},
 	'frontend' => array(
 		'widget' => 'menu_showWidget'
 	),

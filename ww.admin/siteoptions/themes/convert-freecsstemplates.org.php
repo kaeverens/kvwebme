@@ -1,6 +1,6 @@
 <?php
 /**
-	* convert a freecsstempaltes.org theme to a kvwebme one
+	* convert a freecsstempaltes.org theme
 	*
 	* PHP version 5.2
 	*

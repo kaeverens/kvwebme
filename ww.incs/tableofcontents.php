@@ -24,7 +24,7 @@ function TableOfContents_getContent(&$PAGEDATA) {
 	$kids=Pages::getInstancesByParent($PAGEDATA->id);
 	$c=$PAGEDATA->render();
 	if (!count($kids->pages)) {
-		$c.='<em>no sub-pages</em>';
+		$c.='<em>'.__('No sub-pages').'</em>';
 	}
 	else{
 		$c.='<ul class="subpages">';

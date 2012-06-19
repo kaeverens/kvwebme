@@ -253,7 +253,7 @@ function Menu_show($b) {
 	}
 	if (!@$GLOBALS['DBVARS']['disable-hidden-sitemap']) {
 		$c.='<a class="menuItemTop" style="display:none" href="'
-			.$PAGEDATA->getRelativeURL().'?webmespecial=sitemap">Site Map</a>';
+			.$PAGEDATA->getRelativeURL().'?cmsspecial=sitemap">Site Map</a>';
 	}
 	$c.='</div>';
 	if ($vals['mode']=='two-tier') {

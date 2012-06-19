@@ -5,7 +5,6 @@ function SiteCredits_recordTransaction($description, $amt) {
 	$sql='insert into sitecredits_accounts set cdate=now(),'
 		.'description="'.addslashes($description).'",amt='.$amt.','
 		.'total='.$GLOBALS['DBVARS']['sitecredits-credits'];
-	mail('kae@kvsites.ie', 'test', $sql);
 	dbQuery($sql);
 }
 

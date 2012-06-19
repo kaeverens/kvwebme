@@ -1,6 +1,6 @@
 <?php
 if(!defined('START_TIME'))define('START_TIME',microtime(true));
-$ignore_webme_plugins=true;
+$ignore_cms_plugins=true;
 include_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 $GLOBALS['kfm_userfiles_address']=$GLOBALS['DBVARS']['userbase'].'/f/';
 if(!session_id()){

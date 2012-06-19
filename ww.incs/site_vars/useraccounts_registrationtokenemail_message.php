@@ -11,4 +11,4 @@
 	* @link     http://kvsites.ie/
 	*/
 
-$value='Your token is: %token%';
+$value=__('Your token is: %token%');

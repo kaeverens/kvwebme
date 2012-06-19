@@ -19,7 +19,7 @@ $plugin=array(
 	'hide_from_admin'=>	true,
 	'description' =>function() {
 		return __('admins can pay for credits, which are used to'
-			.' manage site subscriptions';
+			.' manage site subscriptions');
 	},
 	'admin' => array(
 		'menu' => array(

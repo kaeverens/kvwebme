@@ -20,7 +20,7 @@ require_once SCRIPTBASE . 'ww.incs/menus.php';
   */
 function Sitemap_get() {
 	if (@$GLOBALS['DBVARS']['disable-hidden-sitemap']) {
-		redirect(preg_replace('/.webmespecial=sitemap/', '', $_SERVER['REQUEST_URI']));
+		redirect(preg_replace('/.cmsspecial=sitemap/', '', $_SERVER['REQUEST_URI']));
 	}
 	global $PAGEDATA;
 	$rs=Menu_getChildren(0, $PAGEDATA->id);

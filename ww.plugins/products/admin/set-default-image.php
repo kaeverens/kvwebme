@@ -2,7 +2,7 @@
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 
 if (!Core_isAdmin()) {
-	die('access denied');
+	die(__('access denied'));
 }
 
 $product_id=(int)$_REQUEST['product_id'];

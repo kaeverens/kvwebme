@@ -14,7 +14,7 @@
  
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!Core_isAdmin()) {
-	die("access denied");
+	die(__("access denied"));
 }
 
 $images=@$_POST['image'];

@@ -16,7 +16,7 @@ $md5=$_REQUEST['md5'];
 $id=preg_replace('/^products_([0-9]*)(,.*)?$/', '\1', $md5);
 $md5=preg_replace('/^products_[0-9]*/', '', $md5);
 if (!isset($_SESSION['online-store']['items']['products_'.$id.$md5])) {
- die('no such item');
+ die(__('No such item'));
 }
 
 $product=Product::getInstance($id);

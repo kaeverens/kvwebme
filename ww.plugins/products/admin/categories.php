@@ -36,8 +36,8 @@ function showCats($id) {
 }
 
 echo '<table><tr>'
-	.'<th style="width:300px">Categories</th>'
-	.'<th style="width:300px">Attributes</th>'
+	.'<th style="width:300px">'.__('Categories').'</th>'
+	.'<th style="width:300px">'.__('Attributes').'</th>'
 	.'</tr><tr><td><div id="categories-wrapper">';
 $rs=dbAll('select * from products_categories order by sortNum');
 $cats=array();

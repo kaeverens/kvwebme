@@ -1,6 +1,8 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if(!Core_isAdmin())die('access denied');
+if (!Core_isAdmin()) {
+	die(__('access denied'));
+}
 
 $ps=dbAll('select id,name from products order by name');
 $end=count($ps);

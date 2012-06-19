@@ -48,7 +48,7 @@ if ($theme == false) {
  */
 if ($theme['moderated'] == 'no' && !isset($_SESSION['userdata'])) {
 	die(
-		'This theme is awaiting moderation and has not been deemed as safe yet.'
+		__('This theme is awaiting moderation and has not been deemed as safe yet.')
 	);
 }
 

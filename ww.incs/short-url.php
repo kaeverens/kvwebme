@@ -22,5 +22,5 @@ if ($l) {
 	header('Location: '.$l);
 }
 else {
-	echo 'that url is obsolete, or incorrect';
+	echo __('That url is obsolete, or incorrect');
 }
