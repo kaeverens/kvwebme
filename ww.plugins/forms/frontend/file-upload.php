@@ -29,7 +29,7 @@ if (!is_dir($dir)) { // make dir named after $session_id
 $size=CoreDirectory::getSize($dir);
 if ($size>52428800) { // greater than 50mb
 	CoreDirectory::delete($dir);
-	echo 'deleted';
+	echo __('Deleted');
 	exit;
 }
 // }
@@ -37,4 +37,4 @@ move_uploaded_file(
 	$_FILES['file-upload']['tmp_name'],
 	$dir.$_FILES['file-upload']['name']
 );
-echo 'upload';
+echo __('Upload');

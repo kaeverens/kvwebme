@@ -1,6 +1,6 @@
 <?php
 /**
-	* Webme Banner Image Plugin
+	* Banner Image Plugin
 	*
 	* PHP version 5.2
 	*

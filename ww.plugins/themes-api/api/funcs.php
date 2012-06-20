@@ -144,7 +144,7 @@ function ThemesApi_downloadLink($id) {
 	*/
 function ThemesApi_displayImage($file) {
 	if (!file_exists($file) || !filesize($file)) {
-		die(__('File %1 does not exist', $file));
+		die(__('File %1 does not exist', array($file), 'core'));
 	}
 
 	$arr=getimagesize($file);

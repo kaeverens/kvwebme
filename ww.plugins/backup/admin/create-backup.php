@@ -13,7 +13,7 @@
 
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!Core_isAdmin()) {
-	die('access denied');
+	die(__('access denied'));
 }
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.admin/admin_libs.php';
 
@@ -21,11 +21,11 @@ $password=addslashes($_REQUEST['password']);
 if (!$password) {
 	exit;
 }
-$tmpdir='/tmp/webmeBackup-'.md5($_SERVER['HTTP_HOST'].microtime(true));
+$tmpdir='/tmp/cmsBackup-'.md5($_SERVER['HTTP_HOST'].microtime(true));
 
 mkdir($tmpdir);
 if (!is_dir($tmpdir)) {
-	die('couldn\'t create tmp directory '.$tmpdir);
+	die(__('Could not create tmp directory %1', array($tmpdir), 'core'));
 }
 
 $dir=$tmpdir.'/site';

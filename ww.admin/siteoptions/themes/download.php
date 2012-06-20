@@ -37,12 +37,15 @@ function Theme_getTemplateNames() {
 }
 
 echo '<script src="/ww.admin/siteoptions/themes/download.js"></script>'
-	.'<link rel="stylesheet" href="http://kvweb.me/ww.plugins/themes-api/api.'
+	.'<link rel="stylesheet" href="'.DistConfig::get('themes-api').'/api.'
 	.'css"/>';
 
-echo '<div id="public-repository"><p>Choosing a theme here will download it'
-	.' into your private repository. If you already have a copy of the chosen'
-	.' theme there, then your copy will be over-written.</p>';
+echo '<div id="public-repository"><p>'.__(
+	'Choosing a theme here will download it into your private repository.'
+	.' If you already have a copy of the chosen theme there, then your copy'
+	.' will be over-written.'
+)
+	.'</p>';
 
 echo '<div id="themes-carousel">
 </div>';

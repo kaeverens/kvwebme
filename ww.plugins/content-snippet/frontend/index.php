@@ -30,7 +30,7 @@ function ContentSnippet_show2($vars) {
 			Core_cacheSave('content_snippets', $vars->id.'-data', $data);
 		}
 		if (!is_array($data['content']) || !count($data['content'])) {
-			return '<p>this Content Snippet is not yet defined.</p>';
+			return '<p>'.__('This Content Snippet is not yet defined.').'</p>';
 		}
 
 		// { no sub-pages
@@ -110,5 +110,5 @@ function ContentSnippet_show2($vars) {
 		return $data['accordion_direction'];
 		// }
 	}
-	return '<p>this Content Snippet is not yet defined.</p>';
+	return '<p>'.__('This Content Snippet is not yet defined.').'</p>';
 }

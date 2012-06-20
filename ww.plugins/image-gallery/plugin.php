@@ -14,7 +14,9 @@
 
 // { config
 $plugin=array(
-	'name' => 'Image Gallery',
+	'name' =>function() {
+		return __('Image Gallery');
+	},
 	'version'=>3,
 	'admin' => array(
 		'page_type' => 'ImageGallery_adminPageForm',
@@ -23,7 +25,9 @@ $plugin=array(
 			'js_include' => '/ww.plugins/image-gallery/admin/widget.js'
 		)
 	),
-	'description' => 'Allows a directory of images to be shown as a gallery.',
+	'description' =>function() {
+		return __('Allows a directory of images to be shown as a gallery.');
+	},
 	'frontend' => array(
 		'page_type' => 'ImageGallery_frontend',
 		'widget' => 'ImageGallery_widget'

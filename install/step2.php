@@ -16,7 +16,7 @@ require 'header.php';
 
 if (!$_SESSION['db_vars']['passed']) { // user shouldn't be here
 	echo '<script>document.location="/install/step1.php";</script>'
-		.'should not be here';
+		.__('Should not be here');
 	exit;
 }
 

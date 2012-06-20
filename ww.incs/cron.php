@@ -59,8 +59,9 @@ while (!isset($DBVARS['cron-next']) || $DBVARS['cron-next']<date('Y-m-d H:i:s'))
 	}
 	if ($n) {
 		dbQuery(
-			'insert into cron set name="publish/unpublish page", notes="show'
-			.' or hide a page in the site menus", period="day", period_multiplier=1, '
+			'insert into cron set name="publish/unpublish page", notes="'
+			.addslashes(__('show or hide a page in the site menus'))
+			.'", period="day", period_multiplier=1, '
 			.'next_date="'.$n.'", func="Core_pagesCronHandle"'
 		);
 	}

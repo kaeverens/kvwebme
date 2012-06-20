@@ -28,7 +28,7 @@ $theme = dbRow(
  * theme was not found
  */
 if ($theme == false) {
-	die('not found');
+	die(__('not found'));
 }
 /**
  * add screenshot urls, html file urls and

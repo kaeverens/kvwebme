@@ -49,15 +49,23 @@ shell_exec('rm -rf ' . USERBASE.'/themes-personal/' . $theme_id . '.zip');
  * send the user an email telling them the theme
  * was approved
  */
-$body='<h3>Theme Approved</h3><p>Hi '.$user['name'].',</p>'
-	.'<p>Your theme named "'.$theme_name.'" has been approved by moderaters '
-	.'for addition to the theme repository.</p><p>Thanks<br/>---<br/>KvWebme'
+$cms_name=DistConfig::get('cms-name');
+$body='<h3>'.__('Theme Approved').'</h3><p>'
+	.__('Hi %1,', array($user['name']), 'core').'</p>'
+	.'<p>'.__(
+		'Your theme named "%1" has been approved by moderaters '
+		.'for addition to the theme repository.',
+		array($theme_name),
+		'core'
+	)
+	.'</p><p>'
+	.__('Thanks<br/>---<br/>%1', array($cms_name), 'core')
 	.'</p>';
 
 send_mail(
 	$user[ 'email' ],
-	'noreply@' . $_SERVER[ 'HTTP_HOST' ],
-	'Theme Approved',
+	'no-reply@' . $_SERVER[ 'HTTP_HOST' ],
+	__('Theme Approved'),
 	$body,
 	false
 );

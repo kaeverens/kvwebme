@@ -45,13 +45,20 @@ dbQuery('delete from  themes_api where id=' . $theme_id);
  * send the user an email telling them the theme
  * was deleted
  */
-$body='<h3>Theme Deleted</h3><p>Hi '.$user['name'].',</p><p>Your theme named "'
-	.$theme_name.'" has been deleted by moderaters.</p><p>Thanks<br/>---<br/>'
-	.'KvWebme</p>';
+$cms_name=DistConfig::get('cms-name');
+$body='<h3>'.__('Theme Deleted').'</h3><p>'
+	.__('Hi %1,', array($user['name']), 'core').'</p><p>'
+	.__(
+		'Your theme named "%1" has been deleted by moderaters.',
+		array($theme_name), 'core'
+	)
+	.'</p><p>'.__('Contact us if you have questions.').'</p><p>'
+	.__('Thanks<br/>---<br/>%1', array($cms_name), 'core')
+	.'</p>';
 send_mail(
 	$user[ 'email' ],
-	'noreply@' . $_SERVER[ 'HTTP_HOST' ],
-	'Theme Deleted',
+	'no-reply@' . $_SERVER[ 'HTTP_HOST' ],
+	__('Theme Deleted'),
 	$body,
 	false
 );

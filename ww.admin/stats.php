@@ -17,8 +17,8 @@ echo '<h1>'.__('Website Statistics').'</h1>';
 
 echo Core_adminSideMenu(
 	array(
-		'Summary'=>'stats.php?page=summary',
-		'Popular Pages'=>'stats.php?page=popular_pages'
+		__('Summary')=>'stats.php?page=summary',
+		__('Popular Pages')=>'stats.php?page=popular_pages'
 	)
 );
 

@@ -49,8 +49,11 @@ function PageSummaries_getHtml($id) {
 	global $sitedomain;
 	$r=dbRow('select * from page_summaries where page_id="'.$PAGEDATA->id.'"');
 	if (!count($r)) {
-		return '<em>This page is marked as a page summary, but there is no '
-			.'information on how to handle it.</em>';
+		return '<em>'.__(
+			'This page is marked as a page summary, but there is no '
+			.'information on how to handle it.'
+		)
+			.'</em>';
 	}
 	if ($r['rss']) {
 		return PageSummaries_rssToHtml($r['rss']);
@@ -136,7 +139,7 @@ function PageSummaries_rssToHtml($rss) {
 	$rss=str_replace('<item>', '<div class="page_summary_item">', $rss);
 	$rss=str_replace('</item>', '</div>', $rss);
 	$rss=str_replace('<link>', '<a href="', $rss);
-	$rss=str_replace('</link>', '">[more...]</a>', $rss);
+	$rss=str_replace('</link>', '">'.__('[more...]').'</a>', $rss);
 	$rss=str_replace(array('</rss>', '</channel>'), array('', ''), $rss);
-	return $rss==''?'<em>No articles contained here</em>':$rss;
+	return $rss==''?'<em>'.__('No articles contained here.').'</em>':$rss;
 }
