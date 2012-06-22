@@ -224,6 +224,16 @@ if (@$vars['products_show_subcats_in_menu']=='1') {
 }
 $c.='>Yes</option></select></td></tr>';
 // }
+// { only show products that are in user's selected location
+$c.='<tr id="products_filter_by_users_location">'
+	.'<th>'.__('Filter by user\'s location').'</th><td>'
+	.'<select name="page_vars[products_filter_by_users_location]">';
+$c.='<option value="0">No</option><option value="1"';
+if (@$vars['products_filter_by_users_location']=='1') {
+	$c.=' selected="selected"';
+}
+$c.='>Yes</option></select></td></tr>';
+// }
 $c.= '</table></div>';
 // }
 // { header

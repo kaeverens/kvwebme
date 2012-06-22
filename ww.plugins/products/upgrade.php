@@ -324,3 +324,9 @@ if ($version==41) { // periodic imports
 	);
 	$version=42;
 }
+if ($version==42) { // add Location to products
+	dbQuery(
+		'alter table products add location int default 0'
+	);
+	$version=43;
+}

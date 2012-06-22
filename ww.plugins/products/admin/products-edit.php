@@ -232,6 +232,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 			.',default_category='.((int)$_REQUEST['products_default_category'])
 			.',enabled='.(int)$_REQUEST['enabled']
 			.',date_edited=now()'
+			.',location='.((int)$_REQUEST['location'])
 			.',images_directory="'.addslashes($_REQUEST['images_directory']).'"';
 		// { add data fields to SQL
 		$datafields=array();
@@ -546,6 +547,20 @@ echo '</tr><tr>';
 // { EAN
 echo '<th>EAN-13 barcode</th><td><input name="ean" value="'
 	.htmlspecialchars(@$pdata['ean']).'" /></td>';
+// }
+// { Location
+echo '<th>'.__('Location').'</th><td colspan="2"><select name="location">'
+	.'<option value="0"> -- </option>';
+require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/api-admin.php';
+$opts=Core_locationsGetFull();
+foreach ($opts as $k=>$v) {
+	echo '<option value="'.$v.'"';
+	if ($v==$pdata['location']) {
+		echo 'selected="selected"';
+	}
+	echo '>'.htmlspecialchars($k).'</option>';
+}
+echo '</select></td>';
 // }
 echo '</tr>';
 // { images

@@ -820,6 +820,25 @@ function Products_show($PAGEDATA) {
 			.'" /><input type="submit" value="Search" /></form>';
 	}
 	// }
+	// { filter by location
+	$locationFilter=0;
+	if (isset($PAGEDATA->vars['products_filter_by_users_location'])
+		&& $PAGEDATA->vars['products_filter_by_users_location']
+	) {
+		$locationFilter=0;
+		function getSubLocations($parent_id) {
+			$locs=array($parent_id);
+			$rs=dbAll('select id from locations where parent_id='.$parent_id);
+			foreach ($rs as $r) {
+				$locs=array_merge($locs, getSubLocations($r['id']));
+			}
+			return $locs;
+		}
+		$locationFilter=join(',', getSubLocations(
+			$_SESSION['location']['id']
+		));
+	}
+	// }
 	// { set limit variables
 	$limit=isset($PAGEDATA->vars['products_per_page'])
 		?(int)$PAGEDATA->vars['products_per_page']
@@ -855,7 +874,8 @@ function Products_show($PAGEDATA) {
 			}
 			return $c
 				.Products_showByType(
-					$PAGEDATA, 0, $start, $limit, $order_by, $order_dir, $search
+					$PAGEDATA, 0, $start, $limit, $order_by,
+					$order_dir, $search, $locationFilter
 				)
 				.$export;
 			// }
@@ -865,7 +885,8 @@ function Products_show($PAGEDATA) {
 			}
 			return $c
 				.Products_showByCategory(
-					$PAGEDATA, 0, $start, $limit, $order_by, $order_dir, $search
+					$PAGEDATA, 0, $start, $limit, $order_by,
+					$order_dir, $search, $locationFilter
 				)
 				.$export;
 			// }
@@ -886,7 +907,8 @@ function Products_show($PAGEDATA) {
 			$limit,
 			$order_by,
 			$order_dir,
-			$search
+			$search,
+			$locationFilter
 		)
 		.$export;
 }
@@ -931,16 +953,20 @@ function Products_showById($PAGEDATA, $id=0) {
 	* @param string $order_by  what field to order the search by
 	* @param int    $order_dir order ascending or descending
 	* @param string $search    search string to filter by
+	* @param string $location  filter the products by location
 	*
 	* @return string HTML of the list of products
 	*/
 function Products_showByCategory(
-	$PAGEDATA, $id=0, $start=0, $limit=0, $order_by='', $order_dir=0, $search=''
+	$PAGEDATA, $id=0, $start=0, $limit=0, $order_by='', $order_dir=0, $search='',
+	$location=0
 ) {
 	if ($id==0) {
 		$id=(int)$PAGEDATA->vars['products_category_to_show'];
 	}
-	$products=Products::getByCategory($id, $search);
+	$products=Products::getByCategory(
+		$id, $search, array(), '', 'asc', $location
+	);
 	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
 
@@ -982,21 +1008,23 @@ function Products_showByType(
 	* @param string $order_by  what field to order the search by
 	* @param int    $order_dir order ascending or descending
 	* @param string $search    search string to filter by
+	* @param string $location  filter the products by location
 	*
 	* @return string HTML of the list of products
 	*/
 function Products_showAll(
-	$PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0, $search=''
+	$PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0, $search='',
+	$location=0
 ) {
 	if (isset($_REQUEST['product_id'])) {
-		$product_id= $_REQUEST['product_id'];
-		$products= Products::getAll('', $product_id);
+		$product_id=$_REQUEST['product_id'];
+		$products=Products::getAll('', $location);
 	}
 	else if (isset($_REQUEST['product_category'])) {
 		$products=Products::getByCategory($_REQUEST['product_category']);
 	}
 	else {
-		$products=Products::getAll($search);
+		$products=Products::getAll($search, $location);
 	}
 	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
@@ -1130,14 +1158,30 @@ class Products{
 		* @param array  $search_arr array of search strings to filter by
 		* @param string $sort_col   field to sort by
 		* @param string $sort_dir   sort direction
+		* @param string $location   filter the products by location
 		*
 		* @return object the category instance
 		*/
 	function __construct(
-		$vs, $md5, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc'
+		$vs, $md5, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc',
+		$location=0
 	) {
-		$this->product_ids=Core_cacheLoad('products', 'products_'.$md5);
-		if ($this->product_ids===false) {
+		$this->product_ids=Core_cacheLoad('products', 'products_'.$md5, -1);
+		if (1 || $this->product_ids===-1) {
+			if ($location) {
+				$locations=explode(',', $location);
+				$arr=array();
+				foreach ($vs as $v) {
+					$p=Product::getInstance($v);
+					if (!$p) {
+						continue;
+					}
+					if (in_array($p->location, $locations)) {
+						$arr[]=$v;
+					}
+				}
+				$vs = $arr;
+			}
 			if ($search!='') {
 				$arr=array();
 				foreach ($vs as $v) {
@@ -1151,7 +1195,7 @@ class Products{
 				}
 				$vs = $arr;
 			}
-			if (count($search_arr)) {
+			if (is_array($search_arr) && count($search_arr)) {
 				$arr=array();
 				foreach ($vs as $v) {
 					$p=Product::getInstance($v);
@@ -1194,12 +1238,14 @@ class Products{
 	/**
 		* get all products
 		*
-		* @param string $search search string to filter by
+		* @param string $search   search string to filter by
+		* @param string $location filter the products by location
 		*
 		* @return object instance of Products object
 		*/
-	static function getAll($search='') {
-		$id=md5('all|'.$search);
+	static function getAll($search='', $location=0) {
+		$md5loc=$location?join(',', $location):0;
+		$id=md5('all|'.$search.'|'.$md5loc);
 		if (!array_key_exists($id, self::$instances)) {
 			$product_ids=Core_cacheLoad('products', 'all-enabled-product-ids', -1);
 			if ($product_ids===-1) {
@@ -1210,7 +1256,7 @@ class Products{
 				}
 				Core_cacheSave('products', 'all-enabled-product-ids', $product_ids);
 			}
-			new Products($product_ids, $id, $search);
+			new Products($product_ids, $id, $search, array(), '', 'asc', $location);
 		}
 		return self::$instances[$id];
 	}
@@ -1226,27 +1272,29 @@ class Products{
 		* @param array  $search_arr array of search strings to filter by
 		* @param string $sort_col   field to sort by
 		* @param string $sort_dir   sort direction
+		* @param string $location   filter the products by location
 		*
 		* @return object instance of Products object
 		*/
 	static function getByCategory(
-		$id, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc'
+		$id, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc',
+		$location=0
 	) {
 		if (!is_numeric($id)) {
 			return false;
 		}
-		$md5=md5($id.'|'.$search.'|'.join(',', $search_arr));
+		$md5=md5(
+			$id.'|'.$search.'|'.join(',', $search_arr).'|'.join(',', $location)
+		);
 		if (!array_key_exists($md5, self::$instances)) {
 			$product_ids=array();
+			$locFilter=$location?' and location in ('.$location.')':'';
+			$sql='select id from products,products_categories_products'
+				.' where id=product_id'.$locFilter.' and enabled and category_id='.$id;
 			if ($search=='' && !count($search_arr)) {
-				$rs=dbAll(
-					'select id from products,products_categories_products'
-					.' where id=product_id and enabled and category_id='.$id
-				);
+				$rs=dbAll($sql);
 			}
 			else {
-				$sql='select id from products,products_categories_products'
-					.' where id=product_id and enabled and category_id='.$id;
 				if ($search!='') {
 					$sql.=' and (name like "%'.addslashes($search)
 						.'%" or data_fields like "%'.addslashes($search).'%")';
