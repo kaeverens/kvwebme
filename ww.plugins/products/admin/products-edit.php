@@ -691,28 +691,28 @@ if (isset($PLUGINS['online-store'])) {
 					'reduce base price by percentage'
 				)
 			),
-			'_bulk_price' => 'Bulk Price',
-			'_bulk_amount' => 'Bulk Amount',
-			'_weight(kg)' => 'Weight (kg)',
+			'_bulk_price' =>__('Bulk Price'),
+			'_bulk_amount' =>__('Bulk Amount'),
+			'_weight(kg)' => __('Weight (kg)'),
 			'_vatfree'  
 				=> array (
-					'VAT-free', 
+					__('VAT-free'),
 					'Options' 
 						=>array(
 							'No',
 							'Yes'
 						)
 				),
-			'_custom_vat_amount' => 'Custom VAT Amount',
+			'_custom_vat_amount' => __('Custom VAT Amount'),
 			'_deliver_free' => array(
-				'Free Delivery', 'Options'=>array('No', 'Yes')
+				__('Free Delivery'), 'Options'=>array('No', 'Yes')
 			),
 			'_not_discountable' => array(
-				'Not Discountable', 'Options'=>array('No', 'Yes')
+				__('Not Discountable'), 'Options'=>array('No', 'Yes')
 			),
-			'_sold_amt' => 'Amount Sold',
-			'_stock_amt' => 'Amount in Stock',
-			'_max_allowed' => 'Amount allowed per purchase'
+			'_sold_amt' => __('Amount Sold'),
+			'_stock_amt' => __('Amount in Stock'),
+			'_max_allowed' => __('Amount allowed per purchase')
 		);
 	$sql='select is_voucher from products_types where id='
 		.$pdata['product_type_id'];

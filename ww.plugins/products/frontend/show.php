@@ -1244,7 +1244,7 @@ class Products{
 		* @return object instance of Products object
 		*/
 	static function getAll($search='', $location=0) {
-		$md5loc=$location?join(',', $location):0;
+		$md5loc=is_array($location)?join(',', $location):0;
 		$id=md5('all|'.$search.'|'.$md5loc);
 		if (!array_key_exists($id, self::$instances)) {
 			$product_ids=Core_cacheLoad('products', 'all-enabled-product-ids', -1);
