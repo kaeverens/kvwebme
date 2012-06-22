@@ -1,7 +1,7 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!Core_isAdmin()) {
-	die('access denied');
+	die(__('access denied'));
 }
 
 function ImageTransition_getSubdirs ($base, $dir) {
@@ -30,7 +30,7 @@ if (isset($_REQUEST['get_image_transition'])) {
 	if ($id) {
 		$r=dbRow('select * from image_transitions where id='.$id);
 		if (!$r['url']) {
-			$r['pagename']=' -- none -- ';
+			$r['pagename']=' -- '.__('none').' -- ';
 		}
 		else {
 			$r['pagename']=Page::getInstance($r['url'])->name;
@@ -39,7 +39,7 @@ if (isset($_REQUEST['get_image_transition'])) {
 	else {
 		$r=array(
 			'url'=>0,
-			'pagename'=>' -- none -- ',
+			'pagename'=>' -- '.__('none').' -- ',
 			'trans_type'=>'fade',
 			'pause'=>3000,
 			'directory'=>'',
@@ -92,4 +92,5 @@ else {
 }
 echo '<a href="javascript:;" id="image_transition_editlink_'.$id
 	.'" class="image_transition_editlink">'
-	.'view or edit image transition details</a>';
+	.__('view or edit image transition details')
+	.'</a>';

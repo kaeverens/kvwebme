@@ -14,14 +14,18 @@
  */
 
 $plugin=array(
-	'name' => 'News',
+	'name' => function() {
+		return __('News');
+	},
 	'admin' => array(
 		'page_type' => 'News_admin',
 		'widget' => array(
 			'form_url' => '/ww.plugins/news/admin/widget-form.php'
 		)
 	),
-	'description' => 'Create news items from sub-pages.',
+	'description' => function() {
+		return __('Create news items from sub-pages.');
+	},
 	'frontend' => array(
 		'page_type' => 'News_frontend',
 		'widget' => 'News_showWidget'

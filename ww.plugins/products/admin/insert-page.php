@@ -1,7 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!Core_isAdmin()) {
-	die ('access denied');
+	die(__('access denied'));
 }
 $name= addslashes($_REQUEST['name']);
 $parent= (int)$_REQUEST['parent'];
@@ -96,11 +96,11 @@ if ($product) {
 }
 
 if (dbOne("select name from pages where id=$pageid", 'name')==stripslashes($name)) {
-	$message= 'Page Created';
+	$message=__('Page Created');
 	$status= 1;
 }
 else {
-	$message= 'Failed to create page';
+	$message=__('Failed to create page');
 	$status= 0;
 }
 echo '{

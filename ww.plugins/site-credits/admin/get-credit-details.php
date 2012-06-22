@@ -11,9 +11,11 @@ foreach ($rs as $k=>$v) {
 	$options[$v['name']]=$v['value'];
 }
 if (!(@$options['payment-recipient'])) {
-	$options['payment-recipient']='kae@kvsites.ie';
-	dbQuery('insert into sitecredits_options values("payment-recipient", "kae@kvsites.ie")');
-//	die('{"error":"no payment recipient set"}');
+	$cr=DistCongif::get('credits-email');
+	$options['payment-recipient']=$cr;
+	dbQuery(
+		'insert into sitecredits_options values("payment-recipient", "'.$cr.'")'
+	);
 }
 if (!(@$options['currency'])) {
 	$options['currency']='EUR';

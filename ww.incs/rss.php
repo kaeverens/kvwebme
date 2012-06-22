@@ -29,5 +29,5 @@ if ($page) {
 	}
 }
 else {
-	echo 'page "'.$pagename.'" not found';
+	echo __('page "%1" not found', array($pagename), 'core');
 }

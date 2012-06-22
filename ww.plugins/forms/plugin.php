@@ -14,12 +14,16 @@
 
 // { plugin definition
 $plugin=array(
-	'name' => 'Form',
+	'name' => function() {
+		return __('Form');
+	},
 	'admin' => array(
 		'page_types' => array('forms'),
 		'page_type' => 'Form_adminPageForm'
 	),
-	'description' => 'Allows forms to be created so visitors can contact you',
+	'description' => function() {
+		return __('Allows forms to be created so visitors can contact you');
+	},
 	'frontend' => array(
 		'page_type' => 'Form_frontend'
 	),

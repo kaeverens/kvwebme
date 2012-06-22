@@ -654,10 +654,9 @@ function Privacy_profileGet() {
 			dbOne('select name from groups where id=' . $id[ 'groups_id' ], 'name')
 		);
 	}
-	
 	$groups = implode(',', $groups);	
 	$html='<a class="logout __" href="/?logout=1" style="float:right" '
-		.'lang-context="core">Logout</a>
+		.'lang-context="core">'.__('Logout').'</a>
 	<h2>' . htmlspecialchars($user[ 'name' ]) . '</h2>
 	<div id="tabs">
 		<ul>
@@ -695,10 +694,10 @@ function Privacy_profileGet() {
 		  $html.=' <tr> <td> <input type="radio"'.$select
 				.' name="default-address" value="'.$name.'"/> </td> <td>'
 				.str_replace(' ', '-', $name).'</td> <td> <a href="javascript:edit_addr'
-				.'ess(\''.$name.'\');" class="__ edit-addr" name="'.$name
-				.'" lang-context="core">edit</a> <a href="javascript:;" '
+				.'ess(\''.$name.'\');" class="edit-addr" name="'.$name
+				.'">'.__('edit')'.</a> <a href="javascript:;" '
 				.'class="delete-addr" name="'
-				.$name.'">[x]</a> </td> </tr> ';
+				.$name.'">'.__('[x]').'</a> </td> </tr> ';
 		}
 	}
 	else {

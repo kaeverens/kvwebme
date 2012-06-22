@@ -11,5 +11,5 @@
 	* @link     http://kvsites.ie/
 	*/
 
-$value='['.preg_replace('/^www\./', '', $_SERVER['HTTP_HOST']).']'
-	.' user registration token';
+$servername=preg_replace('/^www\./', '', $_SERVER['HTTP_HOST']);
+$value=__('[%1] user registration token');

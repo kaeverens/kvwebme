@@ -63,7 +63,7 @@ function ImageTransition_show($vars) {
 			$height=$max[1];
 			asort($imgs);
 			if (!count($imgs)) {
-				return '<em>no images in selected directory</em>';
+				return '<em>'.__('No images in selected directory.').'</em>';
 			}
 			if ($r['trans_type']=='3dCarousel') {
 				$html.='<div id="k3dCarousel'.$vars->id.'" style="height:'
@@ -122,5 +122,5 @@ function ImageTransition_show($vars) {
 			return $html;
 		}
 	}
-	return '<p>this Image Transition is not yet defined.</p>';
+	return '<p>'.__('This Image Transition is not yet defined.').'</p>';
 }

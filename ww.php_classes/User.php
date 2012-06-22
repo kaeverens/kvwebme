@@ -1,6 +1,6 @@
 <?php
 /**
-	* front controller for WebME files
+	* User class
 	*
 	* PHP version 5.2
 	*

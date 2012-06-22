@@ -14,7 +14,7 @@
 
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!Core_isAdmin()) {
-	die('access denied');
+	die(__('access denied'));
 }
 
 if (isset($_REQUEST['id'])) {
@@ -28,7 +28,7 @@ if (!$id) {
 }
 $date=$_REQUEST['date'];
 if (!preg_match('/^20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]$/', $date)) {
-	die('invalid date format');
+	die(__('invalid date format'));
 }
 
 header('Content-type: application/octet-stream');
@@ -52,7 +52,7 @@ foreach ($rs as $r) {
 }
 // }
 // { do the export
-echo '"Date Submitted","';
+echo '"'.__('Date Submitted').'","';
 echo join('","', $cols).'"'."\n";
 foreach ($ids as $id=>$date) {
 	echo '"'.$date.'",';

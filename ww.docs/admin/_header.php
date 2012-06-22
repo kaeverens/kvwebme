@@ -5,4 +5,6 @@
 	</head>
 	<body>
 		<div id="wrapper">
-			<h1>WebWorks WebME manual - Administration</h1>
+<?php
+$cmsname=DistConfig::get('cms-name');
+echo '<h1>'.__('%1 manual - Administration', array($cmsname). 'core').'</h1>';

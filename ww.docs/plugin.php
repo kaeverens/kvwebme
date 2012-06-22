@@ -1,28 +1,28 @@
 <?php
 require_once '../ww.incs/basics.php';
 if (!isset($_REQUEST['t']) || !isset($_REQUEST['p'])) {
-	echo 'must include a plugin name and documentation type';
+	echo __('You must include a plugin name and documentation type.');
 	exit;
 }
 $p=$_REQUEST['p'];
 $t=$_REQUEST['t'];
 if (!in_array($p, $DBVARS['plugins'])) {
-	echo 'you don\'t have that plugin installed.';
+	echo __("You don't have that plugin installed.");
 	exit;
 }
 switch ($t) {
 	case 'admin':
-		$title='Administraton - '.$p;
+		$title=__('Administraton').' - '.$p;
 	break;
 	case 'design':
-		$title='Design - '.$p;
+		$title=__('Design').' - '.$p;
 	break;
 	default:
-		echo 'no such documentation type.';
+		echo __('No such documentation type.');
 		exit;
 }
 if (!file_exists('../ww.plugins/'.$p.'/docs/'.$t.'.html')) {
-	echo 'that documentation page does not exist.';
+	echo __('That documentation page does not exist.');
 	exit;
 }
 ?>

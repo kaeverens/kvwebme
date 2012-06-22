@@ -1,7 +1,7 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!Core_isAdmin()) {
-	die('access denied');
+	die(__('access denied'));
 }
 
 if (isset($_REQUEST['id']) && isset($_REQUEST['vis']) && isset($_REQUEST['hid'])) {
