@@ -22,8 +22,7 @@ if ($version==0) {
 		.'body text,'
 		.'tags text,'
 		.'user_id int default 0,'
-		.'cdate datetime,'
-		.'published smallint default 0'
+		.'cdate datetime'
 		.')default charset=utf8'
 	);
 	$version=1;
@@ -70,4 +69,8 @@ if ($version==8) {
 	  `tag` text
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8');
 	$version=9;
+}
+if ($version==9) {
+	dbQuery('alter table blog_entry drop published');
+	$version=10;
 }

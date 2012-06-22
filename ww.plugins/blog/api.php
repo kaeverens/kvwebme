@@ -17,7 +17,7 @@ function Blog_commentAdd() {
 		return $ret;
 	}
 	$entry=dbRow(
-		'select * from blog_entry where id='.$bid.' and status and allow_comments'
+		'select * from blog_entry where id='.$bid.' and status>0 and allow_comments'
 	);
 	if (!$entry) {
 		$ret['error']='Entry does not exist, is not yet public,'
@@ -95,7 +95,7 @@ function Blog_getPostsList() {
 	);
 	$totalDisplayRecords=$totalRecords;
 	$sql=
-		'select id, title, cdate, pdate, udate, user_id, published, comments'
+		'select id, title, cdate, pdate, udate, user_id, status, comments'
 		.' from blog_entry where 1'
 		.$userfilter
 		.' order by cdate desc limit '.$startAt.','.$numPerPage;

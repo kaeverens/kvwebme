@@ -23,7 +23,7 @@ $plugin=array(
 		'page_type' => 'Blog_frontend',
 		'widget' => 'Blog_widget'
 	),
-	'version'=>9
+	'version'=>10
 );
 // }
 // { Blog_admin
@@ -115,9 +115,10 @@ function Blog_frontend($PAGEDATA) {
 			// }
 			// { show list of excerpts specific to a tag
 			$tagname=preg_replace('#^tags/([^/]*).*#', '\1', $unused_uri);
+			$tagsql=preg_replace('/[^a-zA-Z0-9]/', '_', $tagname);
 			$entry_ids=array();
 			$rs=dbAll(
-				'select entry_id from blog_tags where tag="'.addslashes($tagname).'"'
+				'select entry_id from blog_tags where tag like "'.$tagsql.'"'
 			);
 			foreach ($rs as $r) {
 				$entry_ids[]=$r['entry_id'];

@@ -15,7 +15,7 @@
 $constraints=array(1);
 if (!Core_isAdmin()) {
 	if (isset($_SESSION['userdata']) && $_SESSION['userdata']['id']) {
-		$constraints[]='(status or user_id='.$_SESSION['userdata']['id'].')';
+		$constraints[]='(status>0 or user_id='.$_SESSION['userdata']['id'].')';
 	}
 	else {
 		$constraints[]='status';
@@ -32,7 +32,7 @@ $constraints=' where '.join(' and ', $constraints);
 $num_of_entries=dbOne(
 	'select count(id) ids from blog_entry'.$constraints, 'ids'
 );
-$sql='select * from blog_entry'.$constraints.' order by status,cdate desc'
+$sql='select * from blog_entry'.$constraints.' order by cdate desc'
 	.' limit '.$excerpts_offset.','.$excerpts_per_page;
 $rs=dbAll($sql);
 $c='<div class="blog-main-wrapper">';
@@ -51,7 +51,19 @@ foreach ($rs as $r) {
 	$excerpt=$r['excerpt']
 		?$r['excerpt']
 		:substr(preg_replace('/<[^>]*>/', ' ', $r['body']), 0, $excerpt_length).'...';
-	$c.='<div class="blog-excerpt">'.$excerpt.'</div>';
+	// { image
+	if (!$r['excerpt_image']) {
+		$img=preg_replace('/.*<img.*?src="([^"]*)".*/m', '\1', str_replace(array("\n", "\r"), ' ', $r['body']));
+		if (strpos($img, '/f')===0) {
+			$r['excerpt_image']=preg_replace('#^/f/#', '', $img);
+		}
+	}
+	$img='';
+	if ($r['excerpt_image']) {
+		$img='<img class="blog-excerpt-image" src="/a/f=getImg/w=100/h=100/'.$r['excerpt_image'].'"/>';
+	}
+	// }
+	$c.='<div class="blog-excerpt">'.$img.$excerpt.'</div>';
 	$date=preg_replace('/ .*/', '', $r['cdate']);
 	$c.='<a class="blog-link-to-article" href="'
 		.$PAGEDATA->getRelativeUrl().'/'.$r['user_id'].'/'.$date.'/'

@@ -16,7 +16,7 @@ $c='<h1>List of Authors</h1>';
 
 $rs=dbAll(
 	'select user_id,count(blog_entry.id) as ids from blog_entry,user_accounts'
-	.' where user_id=user_accounts.id and blog_entry.status group by user_id'
+	.' where user_id=user_accounts.id and blog_entry.status>0 group by user_id'
 	.' order by user_accounts.name'
 );
 

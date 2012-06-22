@@ -75,7 +75,6 @@ $(function() {
 					'tags':'',
 					'user_id':window.user_id,
 					'cdate':d,
-					'published':0,
 					'udate':'0000-00-00 00:00:00',
 					'pdate':'0000-00-00 00:00:00',
 					'comments':0,
