@@ -508,6 +508,15 @@ function Core_adminLocationsAdd() {
 	*/
 function Core_adminLocationDelete() {
 	$id=(int)$_REQUEST['id'];
+	$sub=dbOne(
+		'select count(id) as ids from locations where parent_id='.$id,
+		'ids'
+	);
+	if ($sub) {
+		return array(
+			'error'=>__('Can not delete this location as it contains other locations')
+		);
+	}
 	dbQuery('delete from locations where id='.$id);
 	Core_cacheClear('core');
 	return array('ok'=>1);
@@ -526,6 +535,7 @@ function Core_adminLocationsEdit() {
 	$name=$_REQUEST['name'];
 	$lat=(float)$_REQUEST['lat'];
 	$lng=(float)$_REQUEST['lng'];
+	$parent_id=(int)$_REQUEST['parent_id'];
 	$is_default=(int)$_REQUEST['is_default'];
 	if (!$name) {
 		return array(
@@ -542,7 +552,7 @@ function Core_adminLocationsEdit() {
 		}
 	}
 	dbQuery(
-		'update locations set name="'.addslashes($name).'"'
+		'update locations set name="'.addslashes($name).'"'.',parent_id='.$parent_id
 		.',lat='.$lat.',lng='.$lng.',is_default='.$is_default
 		.' where id='.$id
 	);

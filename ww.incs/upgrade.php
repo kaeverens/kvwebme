@@ -569,6 +569,12 @@ if ($version==53) { // forgot to add subject
 	);
 	$version=54;
 }
+if ($version==54) { // locations can have sublocations
+	dbQuery(
+		'alter table locations add parent_id int default 0;'
+	);
+	$version=55;
+}
 
 $DBVARS['version']=$version;
 Core_configRewrite();

@@ -320,6 +320,43 @@ function Core_locationsGet() {
 }
 
 // }
+// { Core_locationsGetFull
+
+/**
+	* return a list of locations recorded by the CMS, with parents
+	*
+	* @return array the list of locations
+	*/
+function Core_locationsGetFull() {
+	$locs=Core_cacheLoad('core', 'locationsFull', -1);
+	if ($locs == -1) {
+		$locs=dbAll('select * from locations order by is_default desc, name');
+		function getParents($locs, $id) {
+			if (!$id) {
+				return '';
+			}
+			foreach ($locs as $loc) {
+				if ($loc['id']==$id) {
+					return getParents($locs, $loc['parent_id']).' / '.$loc['name'];
+				}
+			}
+			return '';
+		}
+		$arr=array();
+		foreach ($locs as $k=>$v) {
+			$locs[$k]['path']=preg_replace(
+				'/^ \/ /', '', getParents($locs, $v['id'])
+			);
+			$arr[$locs[$k]['path']]=$v['id'];
+		}
+		$locs=$arr;
+		ksort($locs);
+		Core_cacheSave('core', 'locationsFull', $locs);
+	}
+	return $locs;
+}
+
+// }
 // { Core_login
 
 /**

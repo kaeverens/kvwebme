@@ -310,16 +310,30 @@ function CoreSiteoptions_screenLocations() {
 	$.post('/a/f=locationsGet', function(locations) {
 		var table='<table id="locations-table"><thead>'
 			+'<tr><th>Name</th><th>Lat</th><th>Lng</th>'
+			+'<th>Located In</th>'
 			+'<th>Default</th><th>&nbsp;</th></tr></thead>'
 			+'<tbody>';
+		function getParent(parent_id) {
+			if (parent_id) {
+				for (var i=0;i<locations.length;++i) {
+					var loc=locations[i];
+					if (parent_id==+loc.id) {
+						return getParent(+loc.parent_id)+loc.name+' / ';
+					}
+				}
+			}
+			return '';
+		}
 		for (var i=0;i<locations.length;++i) {
 			var loc=locations[i];
 			var links=['<a href="#" class="edit">edit</a>'];
 			if (!(+loc.is_default)) {
 				links.push('<a href="#" class="delete">[x]</a>');
 			}
+			var located_in=getParent(+loc.parent_id).replace(/\/ $/, '') || ' - ';
 			table+='<tr cid="'+loc.id+'"><td>'+loc.name+'</td>'
 				+'<td>'+loc.lat+'</td><td>'+loc.lng+'</td>'
+				+'<td>'+located_in+'</td>'
 				+'<td>'+(+loc.is_default?'Yes':'')+'</td>'
 				+'<td>'+links.join(', ')+'</td></tr>';
 		}
@@ -335,6 +349,8 @@ function CoreSiteoptions_screenLocations() {
 					+'lat="#location-lat" lng="#location-lng">click to open</a></td></tr>'
 					+'<tr><th>Latitude</th><td><input id="location-lat" name="lat"/></td></tr>'
 					+'<tr><th>Longitude</th><td><input id="location-lng" name="lng"/></td></tr>'
+					+'<tr><th>Located In</th><td><select id="location-locatedin">'
+					+'</select></td></tr>'
 					+'</table></form>'
 				)
 					.dialog({
@@ -358,24 +374,36 @@ function CoreSiteoptions_screenLocations() {
 				return false;
 			})
 			.appendTo($content);
-		$('#locations-table .delete').click(function() {
+		$('#locations-table').on('click', '.delete', function() {
 			var id=$(this).closest('tr').attr('cid');
 			if (!confirm('are you sure you want to delete this location?')) {
 				return;
 			}
 			$.post(
-				'/a/f=adminLocationsDelete/id='+id,
-				CoreSiteoptions_screenLocations
+				'/a/f=adminLocationDelete/id='+id,
+				function(ret) {
+					if (ret.error) {
+						return alert(ret.error);
+					}
+					CoreSiteoptions_screenLocations();
+				}
 			);
 			return false;
 		});
-		$('#locations-table .edit').click(function() {
+		$('#locations-table').on('click', '.edit', function() {
 			var id=$(this).closest('tr').attr('cid');
-			var location;
+			var loc;
 			for (var i=0;i<locations.length;++i) {
 				if (locations[i].id==id) {
-					location=locations[i];
+					loc=locations[i];
 				}
+			}
+			var parents=['<option value="0"> - </option>'];
+			for (var i=0;i<locations.length;++i) {
+				var opt='<option value="'+locations[i].id+'">';
+				var name=getParent(+locations[i].parent_id)+locations[i].name;
+				opt+=name+'</option>';
+				parents.push(opt);
 			}
 			$('<form id="locations-form"><input name="id" type="hidden"/><table>'
 				+'<tr><th>Name</th><td><input name="name"/></td></tr>'
@@ -383,6 +411,8 @@ function CoreSiteoptions_screenLocations() {
 				+'lat="#location-lat" lng="#location-lng">click to open</a></td></tr>'
 				+'<tr><th>Latitude</th><td><input id="location-lat" name="lat"/></td></tr>'
 				+'<tr><th>Longitude</th><td><input id="location-lng" name="lng"/></td></tr>'
+				+'<tr><th>Located In</th><td><select id="location-parent_id"'
+				+' name="parent_id">'+parents.join('')+'</select></td></tr>'
 				+'<tr><th>Is Default</th><td><select name="is_default">'
 				+'<option value="0">No</option><option value="1">Yes</option>'
 				+'</select></td></tr>'
@@ -406,8 +436,8 @@ function CoreSiteoptions_screenLocations() {
 						}
 					}
 				});
-			for (var k in location) {
-				$('#locations-form *[name='+k+']').val(location[k]);
+			for (var k in loc) {
+				$('#locations-form *[name='+k+']').val(loc[k]);
 			}
 			return false;
 		});

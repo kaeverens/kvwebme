@@ -115,14 +115,14 @@ function Core_dateM2H($d, $type = 'date') {
 	*/
 function Core_locationsGetUi($params=null) {
 	require_once dirname(__FILE__).'/api-funcs.php';
-	$locations=Core_locationsGet();
+	$locations=Core_locationsGetFull();
 	$ui='<select id="core-location">';
-	foreach ($locations as $location) {
-		$ui.='<option value="'.$location['id'].'"';
-		if ($location['id']==@$_SESSION['location']['id']) {
+	foreach ($locations as $k=>$v) {
+		$ui.='<option value="'.$v.'"';
+		if ($v==@$_SESSION['location']['id']) {
 			$ui.=' selected="selected"';
 		}
-		$ui.='>'.htmlspecialchars($location['name']).'</option>';
+		$ui.='>'.htmlspecialchars($k).'</option>';
 	}
 	$ui.='</select>';
 	return $ui;
@@ -209,16 +209,16 @@ function menu_build_fg($parentid, $depth, $options) {
 	}
 	// }
 	if ($options['style_from']=='1') {
-		$s='';
-		if ($options['background']) {
-			$s.='background:'.$options['background'].';';
-		}
-		if ($options['opacity']) {
-			$s.='opacity:'.$options['opacity'].';';
-		}
-		if ($s) {
-			$s=' style="'.$s.'"';
-		}
+					$s='';
+					if ($options['background']) {
+									$s.='background:'.$options['background'].';';
+					}
+					if ($options['opacity']) {
+									$s.='opacity:'.$options['opacity'].';';
+					}
+					if ($s) {
+									$s=' style="'.$s.'"';
+					}
 	}
 	// { return 1-column sub-menu
 	if ($options['columns']<2) {
