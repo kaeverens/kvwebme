@@ -24,17 +24,15 @@ echo '
 <p id="error"></p>
 <table>
 	<tr>
-		<th>Name:</th>
+		<th>'.__('Name').':</th>
 		<td>
 			<input type="text" value="' . $user['name'] . '" name="user-name"/>
 		</td>
 	</tr>
 	<tr>
-		<th>Phone:</th>	
+		<th>'.__('Phone').':</th>
 		<td>
 			<input type="text" value="' . $c['phone'] . '" name="user-phone"/>
 		</td>
 	</tr>
 </table>';
-
-?>

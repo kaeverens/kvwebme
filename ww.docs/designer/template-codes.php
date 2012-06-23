@@ -48,28 +48,28 @@ echo '<tr><th>'.__('Code').'</th><th>'.__('Description').'</th></tr>'
 	.__('Prints the menu to the HTML, including classes as appropriate.')
 	.'</td><td><code>mode</code>: '
 	.__(
-		"the style of menu. choose from 'accordion', 'two-tier' and 'default'."
-		." defaults to 'default'"
+		'the style of menu. choose from \'accordion\', \'two-tier\' and \'default\'.'
+		.' defaults to \'default\''
 	)
 	.'<br /><code>preopen</code>: '
 	.__('open up the menu to the current page. no values necessary')
 	.'<br /><code>direction</code>: '
 	.__(
-		"how the menu is drawn. choose from 'horizontal' or 'vertical'."
-		." defaults to 'horizontal'."
+		'how the menu is drawn. choose from \'horizontal\' or \'vertical\'.'
+		.' defaults to \'horizontal\'.'
 	)
 	.'<br /><code>close</code>: '
 	.__(
-		"whether to allow submenus to be closed. choose from 'yes' or 'no'."
-		." defaults to 'yes'."
+		'whether to allow submenus to be closed. choose from \'yes\' or \'no\'.'
+		.' defaults to \'yes\'.'
 	)
 	.'<br /><code>parent</code>: '
 	.__(
-		"what is the root page of the menu. enter a page's name. defaults to the"
-		." top-level."
+		'what is the root page of the menu. enter a page\'s name. defaults to the'
+		.' top-level.'
 	)
 	.'<br /><code>nodropdowns</code>: '
-	.__("use this if you don't want submenus to appear.")
+	.__('use this if you don\'t want submenus to appear.')
 	.'</td> <td><code>{{MENU}}</code><br /><code>'
 	.'{{MENU mode="accordion"&nbsp;direction="vertical"}}</code><br />'
 	.'<code>{{MENU direction="vertical"&nbsp;preopen="yes"}}</code><br />'

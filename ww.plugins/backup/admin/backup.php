@@ -11,13 +11,18 @@
 	* @link     http://kvsites.ie/
 	*/
 
-echo '<p>Backing up your site may use a lot of resources and take a while '
-	.'if your site is large. Please only do this once a day.</p>'
+echo '<p>'
+	.__(
+		'Backing up your site may use a lot of resources and take a while '
+		.'if your site is large. Please only do this once a day.'
+	)
+	.'</p>'
 	.'<form action="/ww.plugins/backup/admin/create-backup.php" method="post">'
 	.'<table>'
-	.'<tr><th>Password</th><td><input name="password" type="password" /></td>'
-	.'<td>Password to use to encrypt the archive.</td></tr>'
+	.'<tr><th>'.__('Password')
+	.'</th><td><input name="password" type="password" /></td>'
+	.'<td>'.__('Password to use to encrypt the archive.').'</td></tr>'
 	.'<tr><th colspan="3">'
-	.'<input type="submit" name="action" value="Create Backup" />'
+	.'<input type="submit" name="action" value="'.__('Create Backup').'" />'
 	.'</th></tr></table></form>';
 WW_addScript('backup/admin/backup.js');

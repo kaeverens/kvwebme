@@ -7,7 +7,7 @@ if (!isset($_REQUEST['t']) || !isset($_REQUEST['p'])) {
 $p=$_REQUEST['p'];
 $t=$_REQUEST['t'];
 if (!in_array($p, $DBVARS['plugins'])) {
-	echo __("You don't have that plugin installed.");
+	echo __('You don\'t have that plugin installed.');
 	exit;
 }
 switch ($t) {

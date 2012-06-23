@@ -1,6 +1,6 @@
 <?php
 if (!isset($_REQUEST['areyousure']) || $_REQUEST['areyousure']!='yes') {
-	echo __("This script deletes any files older than 6 months. in order to ensure it's not accidentally run by bots such as search engines, you must add ?areyousure=yes to the address of this script to run it.");
+	echo __('This script deletes any files older than 6 months. in order to ensure it's not accidentally run by bots such as search engines, you must add ?areyousure=yes to the address of this script to run it.');
 	exit;
 }
 require_once '../ww.incs/basics.php';

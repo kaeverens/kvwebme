@@ -11,11 +11,16 @@
 	* @link     http://kvsites.ie/
 	*/
 
+echo '<div class="pages_iframe">';
 echo '<table style="width:95%"><tr><td class="splitter-panel-left">'
-	.'<h3>Widgets</h3><p>Drag a widget into a panel on the right.</p>'
+	.'<h3>'.__('Widgets').'</h3><p>'
+	.__('Drag a widget into a panel on the right.')
+	.'</p>'
 	.'<div id="widgets"></div><br style="clear:both" /></td>'
-	.'<td style="width:220px"><h3>Panels</h3><p>Click a header to open it.</p>'
+	.'<td style="width:220px"><h3>'.__('Panels').'</h3>'
+	.'<p>'.__('Click a header to open it.').'</p>'
 	.'<div id="panels"></div><br style="clear:both" /></td></tr></table>'
+	.'</div>'
 	.'<link rel="stylesheet" href="/ww.plugins/panels/c/admin.css"/>';
 // { panel and widget data
 echo '<script>';
@@ -61,8 +66,8 @@ foreach ($PLUGINS as $n=>$p) {
 }
 $ws[]=json_encode(array(
 	'type'=>'languages',
-	'description' => 'Language selector',
-	'name'        => 'Languages'
+	'description' => __('Language selector'),
+	'name'        => __('Languages')
 ));
 echo join(',', $ws);
 echo '];';

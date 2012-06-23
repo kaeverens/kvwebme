@@ -12,8 +12,7 @@ $exclude=array(
 	'#^/ww.incs/dompdf#',
 	'#^/ww.incs/Smarty#',
 	'#^/j/lang.js#',
-	'#^/j/CodeMirror#',
-	'#^/ww.tools#'
+	'#^/j/CodeMirror#'
 );
 $found=array();
 $wrong_format=array();
@@ -59,7 +58,7 @@ function findTranslations($basedir) {
 			$m=preg_replace('/\',\s*array\(.*?\),\s*\'/sm', "', '", $m);
 			$m=preg_replace('/\',\s*\'/sm', "', '", $m);
 			$bits=explode("', '", $m);
-			$bits[0]=preg_replace('/\'\s*\.\'/sm', '', $bits[0]);
+			$bits[0]=stripslashes(preg_replace('/\'\s*\.\'/sm', '', $bits[0]));
 			if (count($bits)==1) {
 				$bits[1]='core';
 			}

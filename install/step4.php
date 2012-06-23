@@ -25,13 +25,25 @@ if (isset($_REQUEST['userbase']) && $_REQUEST['userbase']) {
 	$hd=htmlspecialchars($d);
 	$_SESSION['userbase']=$_REQUEST['userbase'];
 	if (!is_dir($d)) {
-		echo "<em><strong><code>$hd</code></strong> is not a directory or does '
-			.'not exist.</em>";
+		echo '<em>'
+			.__(
+				'<strong><code>%1</code></strong> is not a directory or does not'
+				.' exist.',
+				array($hd),
+				'core'
+			)
+			.'</em>';
 	}
 	else {
 		if (!is_writable($d)) {
-			echo "<em><strong><code>$hd</code></strong> is not writable by the '
-				.'web server.</em>";
+			echo '<em>'
+				.__(
+					'<strong><code>%1</code></strong> is not writable by the '
+					.'web server.',
+					array($hd),
+					'core'
+				)
+				.'</em>';
 		}
 		else {
 			$_SESSION['userbase_created']=true;
@@ -56,13 +68,21 @@ echo '
         } );
 </script>';
 
-echo '<h3>User Files</h3>';
+echo '<h3>'.__('User Files').'</h3>';
 echo '<p id="errors"></p>';
-echo '<form method="post" id="files-form"><p>Please type the address of the'
-	.' directory you want to use for your user files.</p>
+echo '<form method="post" id="files-form"><p>'
+	.__(
+		'Please type the address of the directory you want to use for your user'
+		.' files.'
+	)
+	.'</p>
 	<input name="userbase" value="'.htmlspecialchars($_SESSION['userbase'])
 		.'" style="width:90%" /><br /><input type="submit" /></form>';
-echo '<p>It is a good idea to place this directory outside the web-accessib'
-	.'le part of the server.</p>';
+echo '<p>'
+	.__(
+		'It is a good idea to place this directory outside the web-accessible'
+		.' part of the server.'
+	)
+	.'</p>';
 
 require 'footer.php';

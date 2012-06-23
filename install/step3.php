@@ -30,7 +30,7 @@ if (isset($_REQUEST['action'])) {
 	if ($_REQUEST['password']!=$_REQUEST['password2']
 		|| $_REQUEST['password']==''
 	) {
-		echo '<p>Passwords do not match or are empty.</p>';
+		echo '<p>'.__('Passwords do not match or are empty.').'</p>';
 		$ok=0;
 	}
 	if (@$_REQUEST['name']=='') {
@@ -38,7 +38,7 @@ if (isset($_REQUEST['action'])) {
 		$ok=0;
 	}
 	if (!filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL)) {
-		echo '<p>Email not valid.</p>';
+		echo '<p>'.__('Email not valid.').'</p>';
 		$ok=0;
 	}
 	if ($ok) {
@@ -79,20 +79,23 @@ echo '
         } );
 </script>';
 
-echo '<h3>User Account</h3>';
+echo '<h3>'.__('User Account').'</h3>';
 echo '<p id="errors"></p>';
 echo '<form method="post" id="user-form"><table>';
-echo '<tr><th>Name</th><td><input type="text" name="name" value="'
+echo '<tr><th>'.__('Name').'</th><td><input type="text" name="name" value="'
 	.htmlspecialchars($_SESSION['user']['name']).'" /></td></tr>';
-echo '<tr><th>Email</th><td><input type="text" name="email" value="'
-	.htmlspecialchars($_SESSION['user']['email']).'" /></td><td>You will log '
-	.'in with this. Please ensure it is correct. If you forget your password'
-	.', it can be sent to this address.</td></tr>';
-echo '<tr><th>Password</th><td><input type="password" name="password" value'
-	.'="" /></td></tr>';
-echo '<tr><th>Repeat Password</th><td><input type="password" name="password'
-	.'2" value="" /></td></tr>';
-echo '</table><input name="action" type="submit" value="Create Admin" /></f'
-	.'orm>';
+echo '<tr><th>'.__('Email').'</th><td><input type="text" name="email" value="'
+	.htmlspecialchars($_SESSION['user']['email']).'" /></td><td>'
+	.__(
+		'You will log in with this. Please ensure it is correct. If you forget'
+		.' your password, it can be sent to this address.'
+	)
+	.'</td></tr>';
+echo '<tr><th>'.__('Password').'</th><td>'
+	.'<input type="password" name="password" value="" /></td></tr>';
+echo '<tr><th>'.__('Repeat Password').'</th><td>'
+	.'<input type="password" name="password2" value="" /></td></tr>';
+echo '</table><input name="action" type="submit" value="'
+	.__('Create Admin').'" /></form>';
 
 require 'footer.php';

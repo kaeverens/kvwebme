@@ -41,22 +41,22 @@ for ( $i=0; $i<count($users); ++$i) {
 }
 
 echo '
-<h2>Overview</h2>
+<h2>'.__('Overview').'</h2>
 <table>
 	<tr>
-		<th>Total Themes:</th>
+		<th>'.__('Total Themes:').'</th>
 		<td>' . count($themes) . '</td>
 	</tr>
 	<tr>
-		<th>Approved Themes:</th>
+		<th>'.__('Approved Themes:').'</th>
 		<td>' . $approved . '</td>
 	</tr>
 	<tr>
-		<th>Awaiting Moderation:</th>
+		<th>'.__('Awaiting Moderation:').'</th>
 		<td>' . $moderate . '</td>
 	</tr>
 	<tr>
-		<th>Theme Moderators:</th>
+		<th>'.__('Theme Moderators:').'</th>
 		<td>' . implode(',', $list) . '</td>
 	</tr>
 </table>';

@@ -20,15 +20,15 @@ $product_id = (int)$_POST['productid'];
 $rating = (int)$_POST['rating'];
 $text = addslashes($_POST['text']);
 $errors= array();
-if (empty($text)||$text=='Put your comments about the product here') {
-	$errors[]= 'You need to type a comment';
+if (empty($text)||$text==__('Put your comments about the product here')) {
+	$errors[]= __('You need to type a comment');
 }
 if (($rating<1)||($rating>5)) {
-	$errors[]= 'Rating must be between 1 and 5';
+	$errors[]= __('Rating must be between 1 and 5');
 }
 if (!empty($errors)) {
 	echo '<script defer="defer">';
-	echo 'alert("There are errors in your form");';
+	echo 'alert("'.addslashes(__('There are errors in your form')).'");';
 	echo 'history.go(-1);';
 	echo '</script>';
 }
@@ -40,8 +40,8 @@ else {
 	);
 	echo '<script defer="defer">';
 	echo 'alert(
-			"Thank you for leaving a review for this product\n"
-			+"You can edit your review for 15 minutes"
+			"'.addslashes(__('Thank you for leaving a review for this product.')).'\n"
+			+"'.addslashes(__('You can edit your review for 15 minutes')).'"
 		);';
 	echo 'history.go(-1)';
 	echo '</script>';

@@ -26,7 +26,7 @@ echo '<a href="plugin.php?_plugin=products&amp;_page=products">'
 // }
 if (!dbOne('select id from products_types limit 1', 'id')) {
 	echo '<em>'
-		.__("You can't create a product until you have created a type.")
+		.__('You can\'t create a product until you have created a type.')
 		.' <a href="javascript:Core_screen(\'products\',\'js:Types\');">'
 		.__('Click here to create a Product Type.')
 		.'</a></em>';

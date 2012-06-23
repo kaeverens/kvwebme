@@ -16,17 +16,22 @@ session_start();
 if (file_exists('../.private/config.php')
 	&&!isset($_SESSION['config_written'])
 ) {
-	echo '<p><strong>Config file already exists</strong>. Please remove the '
-		.'/install directory.</p>';
+	echo '<p>'
+		.__(
+			'<strong>Config file already exists</strong>. Please remove the '
+			.'/install directory.'
+		)
+		.'</p>';
 	exit;
 }
 
-$home_dir = substr(dirname(__FILE__), 0, -7);
+$home_dir=DistConfig::get('installer-userbase');
+$cms_name=DistConfig::get('cms-name');
 echo '
 <!doctype html>
 <html>
 <head>
-	<title>WebME Installer</title>
+	<title>'.__('%1 Installer', array($cms_name), 'core').'</title>
 
 	<link rel="stylesheet" type="text/css" href="/j/cluetip/jquery.cluetip.css" />
 	<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />
@@ -90,8 +95,7 @@ echo '
 		}
 		.error{
 			border:1px solid #600;
-			color:#fff;
-			background:red;
+			background:#D36042;
 		}
 	</style>
 
@@ -103,16 +107,16 @@ echo '
 	<div id="wrapper">
 		<div id="main">
 
-		<h1>Webme Installer</h1>
+		<h1>'.__('%1 Installer', array($cms_name), 'core').'</h1>
 
 		<div class="sub-nav">
 			<ul id="install-menu">
-				<li><a href="index.php">Requirements</a></li>
-				<li><a href="step1.php">Add Database</a></li>
-				<li><a href="step3.php">Create User</a></li>
-				<li><a href="step4.php">User Files</a></li>
-				<li><a href="step6.php">Select Theme</a></li>
-				<li><a href="step7.php">Finish</a></li>
+				<li><a href="index.php">'.__('Installation Requirements').'</a></li>
+				<li><a href="step1.php">'.__('Add Database').'</a></li>
+				<li><a href="step3.php">'.__('Create User').'</a></li>
+				<li><a href="step4.php">'.__('User Files').'</a></li>
+				<li><a href="step6.php">'.__('Select Theme').'</a></li>
+				<li><a href="step7.php">'.__('Finish').'</a></li>
 			</ul>
 		</div>
 

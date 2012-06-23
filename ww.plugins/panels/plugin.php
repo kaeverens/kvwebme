@@ -1,8 +1,12 @@
 <?php
 // { plugin configuration
 $plugin=array(
-	'name'=>'Panels',
-	'description'=>'Allows content sections to be displayed throughout the site.',
+	'name'=>function() {
+		return __('Panels');
+	},
+	'description'=>function() {
+		return __('Allows content sections to be displayed throughout the site.');
+	},
 	'admin'=>array(
 		'menu'=>array(
 			'Misc>Panels'=>'plugin.php?_plugin=panels&amp;_page=index'
@@ -93,8 +97,12 @@ function panels_show($vars) {
 				$h.=$PLUGINS[$widget->type]['frontend']['widget']($widget, $p['id']);
 			}
 			else {
-				$h.='<em>plugin "'.htmlspecialchars($widget->type)
-					.'" does not have a widget interface.</em>';
+				$h.='<em>'.__(
+					'plugin "%1" does not have a widget interface.',
+					array(htmlspecialchars($widget->type)),
+					'core'
+				)
+				.'</em>';
 			}
 		}
 		else {
@@ -103,7 +111,13 @@ function panels_show($vars) {
 				require $file;
 			}
 			else {
-				$h.='<em>missing plugin "'.htmlspecialchars($widget->type).'".</em>';
+				$h.='<em>'
+					.__(
+						'missing plugin "%1".',
+						array(htmlspecialchars($widget->type)),
+						'core'
+					)
+					.'</em>';
 			}
 		}
 		$h.='</div>';

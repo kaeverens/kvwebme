@@ -378,7 +378,7 @@ function Privacy_registrationShowForm($error='', $alert='') {
 						.$name.'" value="'.$val.'" class="'.$class.' text" />';
 					// }
 			}
-			$c.='<tr><th class="__">'.htmlspecialchars($r->name);
+			$c.='<tr><th>'.htmlspecialchars($r->name);
 			if (isset($r->is_required) && $r->is_required) {
 				$c.='<sup>*</sup>';
 			}
@@ -616,8 +616,8 @@ function Privacy_registrationRegister() {
 		}
 		return Privacy_registrationShowForm(
 			false,
-			'<p><strong>'.__('Thank you for registering.', 'core').'</strong> '
-			.__('Our admins will moderate your registration, and you will receive an email when it is activated.', 'core')
+			'<p><strong>'.__('Thank you for registering.').'</strong> '
+			.__('Our admins will moderate your registration, and you will receive an email when it is activated.')
 			.'</p>'
 		);
 	}
@@ -655,8 +655,8 @@ function Privacy_profileGet() {
 		);
 	}
 	$groups = implode(',', $groups);	
-	$html='<a class="logout __" href="/?logout=1" style="float:right" '
-		.'lang-context="core">'.__('Logout').'</a>
+	$html='<a class="logout" href="/?logout=1" style="float:right"'
+		.'>'.__('Logout').'</a>
 	<h2>' . htmlspecialchars($user[ 'name' ]) . '</h2>
 	<div id="tabs">
 		<ul>
@@ -685,7 +685,8 @@ function Privacy_profileGet() {
 
 	$html .= '</table></div> <div id="address"><a id="new-address" href="java'
 		.'script:add_address();" style="float:right">[+] '
-		.__('Add Address', 'core').'</a> <div id="address-container">'
+		.__('Add Address')
+		.'</a> <div id="address-container">'
 		.'<table>';
 
 	if ($addresses=json_decode(@$user['address'], true)) {

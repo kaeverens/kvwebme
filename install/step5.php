@@ -18,16 +18,26 @@ if (!$_SESSION['userbase_created']) { // user shouldn't be here
 	header('Location: /install/step4.php');
 	exit;
 }
-
-if (!is_dir('../.private')) { // create config directory
-	mkdir('../.private');
-	if (!is_dir('../.private')) {
-		echo '<p><strong>Couldn\'t create <code>'.$_SERVER['DOCUMENT_ROOT']
-			.'/.private</code> directory.</strong> Please either:</p><ul><li>'
-			.'make the web root <code>'.$_SERVER['DOCUMENT_ROOT'].'</code> '
+$privatedir=DistConfig::get('installer-private');
+if (!is_dir($privatedir)) { // create config directory
+	mkdir($privatedir);
+	if (!is_dir($privatedir)) {
+		echo '<p><strong>'
+			.__(
+				'Could not create <code>%1</code> directory.',
+				array($privatedir),
+				'code'
+			)
+			.'</strong></p>';
+		$webroot=dirname($privatedir);
+		echo __(
+			'<p>Please either:</p><ul><li>make the web root <code>%1</code> '
 			.'writable for the web server</li><li>or create the <code>.private'
 			.'</code> directory yourself and make it writable to the web server'
-			.'</li></ul><p>Then reload this page.</p>';
+			.'</li></ul><p>Then reload this page.</p>',
+			array($webroot),
+			'core'
+		);
 		exit;
 	}
 }
@@ -44,11 +54,15 @@ $config='<'."?php
 	'version'  => 1
 );";
 
-file_put_contents('../.private/config.php', $config);
+file_put_contents($privatedir.'/config.php', $config);
 
-if (!file_exists('../.private/config.php')) {
-	echo '<p><strong>Could not create /.private/config.php</strong>. Please '
-		.'make /.private/ writable for the web server, then reload this page.</p>';
+if (!file_exists($privatedir.'/config.php')) {
+	echo '<p>'
+		.__(
+			'<strong>Could not create /.private/config.php</strong>. Please '
+			.'make /.private/ writable for the web server, then reload this page.'
+		)
+		.'</p>';
 	exit;
 }
 

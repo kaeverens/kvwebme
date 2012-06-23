@@ -18,8 +18,8 @@ function OnlineStore_adminCapture() {
 			.' where id='.$id
 		);
 		if ($r['authorised']!=1) {
-			$errors[]='transaction '.$id.' is no longer authorised.'
-				.' maybe it was already captured?';
+			$errors[]=__('Transaction %1 is no longer authorised.', array($id), 'core')
+				.' '.__('Maybe it was already captured?');
 			continue;
 		}
 		$meta=json_decode($r['meta'], true);
@@ -76,7 +76,9 @@ function OnlineStore_adminCapture() {
 			switch ($switchkey) {
 				case '004': // {
 					$ok[]=$id;
-					$errors[]='transaction '.$id.' has already been captured.';
+					$errors[]=__(
+						'Transaction %1 has already been captured.', array($id), 'core'
+					);
 					$status=$r['status']<1?1:$r['status'];
 					dbQuery(
 						'update online_store_orders set status='.$status.', authorised=0 '
@@ -84,7 +86,8 @@ function OnlineStore_adminCapture() {
 					);
 				break; // }
 				default: // {
-					$errors[]='unknown error on transaction '.$id.': '.$switchkey;
+					$errors[]=__('unknown error on transaction %1', array($id), 'core')
+						.': '.$switchkey;
 				// }
 			}
 		}
@@ -129,7 +132,7 @@ function OnlineStore_adminOrderItemsList() {
 	$id=(int)$_REQUEST['id'];
 	$r=dbRow('select * from online_store_orders where id='.$id);
 	if (!$r || !$r['items']) {
-		return array('error'=>'no such order');
+		return array('error'=>__('No such order'));
 	}
 	$items=array();
 	foreach (json_decode($r['items'], true) as $item) {
@@ -176,7 +179,7 @@ function OnlineStore_adminRedeemVoucher() {
 		'update online_store_orders set items="'.addslashes($order['items'])
 		.'" where id='.$oid
 	);
-	echo '<p>This voucher has been marked as Redeemed.</p>';
+	echo '<p>'.__('This voucher has been marked as Redeemed.').'</p>';
 	exit;
 }
 

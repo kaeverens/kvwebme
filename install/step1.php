@@ -16,10 +16,10 @@ require 'header.php';
 // get db variables
 if (!isset($_SESSION['db_vars'])) { // set up dummy values
 	$_SESSION['db_vars']=array(
-		'username' => 'root',
+		'username' => '',
 		'password' => '',
 		'hostname' => 'localhost',
-		'db_name'  => 'kvwebme',
+		'db_name'  => '',
 		'passed'   => 0
 	);
 }
@@ -40,8 +40,8 @@ if (isset($_REQUEST['action'])) {
 	);
 
 	if (!$mysql) {
-		printf("Connect failed: %s\n", mysql_error());
-		echo '<p>Please check your values and try again.</p>';
+		echo __('Connect failed:').' '.mysql_error();
+		echo '<p>'.__('Please check your values and try again.').'</p>';
 	}
 	else {
 		// if database doesn't exist, try create it
@@ -50,7 +50,7 @@ if (isset($_REQUEST['action'])) {
 		}
 		// if it still doesn't exist, fail
 		if (!mysql_select_db($_SESSION['db_vars']['db_name'])) {
-			echo '<p>Please provide an existing database name.</p>';
+			echo '<p>'.__('Please provide an existing database name.').'</p>';
 		}
 		else {
 			$_SESSION['db_vars']['passed']=1;
@@ -72,18 +72,22 @@ echo '
 	} );
 </script>';
 
-echo '<h3>Database Details</h3>';
+echo '<h3>'.__('Database Details').'</h3>';
 echo '<p id="errors"></p>';
 echo '<form method="post" id="database-form"><table>';
-echo '<tr><th>Username</th><td><input type="text" name="username" value="'
+echo '<tr><th>'.__('Username').'</th>'
+	.'<td><input type="text" name="username" value="'
 	.htmlspecialchars($_SESSION['db_vars']['username']).'" /></td></tr>';
-echo '<tr><th>Password</th><td><input type="text" name="password" value="'
+echo '<tr><th>'.__('Password').'</th>'
+	.'<td><input type="text" name="password" value="'
 	.htmlspecialchars($_SESSION['db_vars']['password']).'" /></td></tr>';
-echo '<tr><th>HostName</th><td><input type="text" name="hostname" value="'
+echo '<tr><th>'.__('HostName').'</th>'
+	.'<td><input type="text" name="hostname" value="'
 	.htmlspecialchars($_SESSION['db_vars']['hostname']).'" /></td></tr>';
-echo '<tr><th>Database Name</th><td><input type="text" name="db_name" value="'
+echo '<tr><th>'.__('Database Name').'</th>'
+	.'<td><input type="text" name="db_name" value="'
 	.htmlspecialchars($_SESSION['db_vars']['db_name']).'" /></td></tr>';
-echo '</table><input name="action" type="submit" value="Configure Database" '
-	.'/></form>';
+echo '</table><input name="action" type="submit" value="'
+	.__('Configure Database').'" /></form>';
 
 require 'footer.php';

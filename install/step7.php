@@ -19,9 +19,10 @@ if (!$_SESSION['theme_selected']&&@$_GET['theme']!='skipped') {
 	exit;
 }
 
+$cmsname=DistConfig::get('cms-name');
 echo '<p><strong>'.__('Success!')
 	.'</strong> '
-	.__('Your %1 installation is complete.', DistConfig::get('cms-name'))
+	.__('Your %1 installation is complete.', array($cmsname), 'core')
 	.' '
 	.__('Please <a href="/">click here</a> to go to the root of the site.')
 	.'</p>';

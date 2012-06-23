@@ -62,7 +62,7 @@ function OnlineStore_voucherCheckValidity($code, $email) {
 		.' and start_date<now() and end_date>now()'
 	);
 	$valid=false;
-	$error='invalid voucher code, or voucher has expired';
+	$error=__('invalid voucher code, or voucher has expired');
 	foreach ($rs as $voucher) {
 		if ($voucher['user_constraints']=='userlist') {
 			$voucher['users_list']=json_decode($voucher['users_list'], true);
@@ -70,7 +70,7 @@ function OnlineStore_voucherCheckValidity($code, $email) {
 			if (!in_array($_SESSION['userdata']['id'], $voucher['users_list']['users'])
 				&& !in_array($email, $voucher['users_list']['emails'])
 			) {
-				$error='your email address is not associated with this voucher';
+				$error=__('your email address is not associated with this voucher');
 				continue;
 			}
 			// }
@@ -79,7 +79,7 @@ function OnlineStore_voucherCheckValidity($code, $email) {
 				&& isset($voucher['users_list']['total_uses'])
 				&& $voucher['users_list']['total_uses'] >= $voucher['usages_in_total']
 			) {
-				$error='this voucher has been used up';
+				$error=__('this voucher has been used up');
 				continue;
 			}
 			// }
@@ -87,7 +87,7 @@ function OnlineStore_voucherCheckValidity($code, $email) {
 				// { has this email address's quota been used up?
 				$usesbyemail=(int)@$voucher['users_list']['uses_by_email'][$email];
 				if ($usesbyemail>=$voucher['usages_per_user']) {
-					$error='you have used your quota of this voucher';
+					$error=__('you have used your quota of this voucher');
 					continue;
 				}
 				// }
