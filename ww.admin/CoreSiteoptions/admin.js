@@ -193,8 +193,57 @@ function CoreSiteoptions_screenLanguages() {
 		});
 	}
 	function showTranslations() {
-		var $languages=$('<select><option> -- loading -- </option></select>')
+		function changeLanguage() {
+			var lang=$(this).val();
+			if (lang=='') {
+				$languagestable.find('.context')
+					.text('-- choose a language --')
+					.css('cursor', 'default');
+				return;
+			}
+			$.post('/a/f=adminLanguagesGetTrStrings', {
+				'lang':lang
+			}, function(ret) {
+				$languagestable.find('.context')
+					.text('')
+					.css('cursor', 'pointer');
+				currentTr=ret;
+				updateVisibleTranslations();
+			});
+		}
+		function updateVisibleTranslations() {
+			if ($languages.val()=='') {
+				return;
+			}
+			var trs=$languagestable.find('tbody tr');
+			trs.find('td:last-child').text('');
+			for (var i=0;i<trs.length;++i) {
+				var $tr=$(trs[i]);
+				var str=$tr.find('td:first-child').text(), context=$tr.find('td:nth-child(2)').text();
+				if (!str) {
+					continue;
+				}
+				$tr.find('td:last-child').text(str);
+				for (var j=0;j<currentTr.length;++j) {
+					var cstr=currentTr[j];
+					if (cstr.str==str && cstr.context==context) {
+						$tr.find('td:last-child').text(cstr.trstr);
+					}
+				}
+			}
+		}
+		// { header
+		var $header=$(
+			'<table><tr><td id="lang-selector"/><td id="lang-export"/><td id="lang-import"/></tr></table>'
+		)
 			.appendTo($content.empty());
+		var $languages=$('<select><option> -- loading -- </option></select>')
+			.appendTo('#lang-selector');
+		var $export=$('<button>'+__('Export')+'</button>')
+			.appendTo('#lang-export');
+		var $import=$('<button>'+__('Import')+'</button>')
+			.appendTo('#lang-import');
+		// }
 		var currentTr=[];
 		var $languagestable;
 		$.post('/a/f=languagesGet', function(languages) {
@@ -220,7 +269,9 @@ function CoreSiteoptions_screenLanguages() {
 			$languagestable=$(table)
 				.appendTo($content)
 				.dataTable({
-					fnDrawCallback:updateVisibleTranslations,
+					fnDrawCallback:function() {
+						setTimeout(updateVisibleTranslations, 1);
+					},
 					"aoColumns": [
 						{ "sWidth": "46%" },
 						{ "sWidth": "8%" },
@@ -263,45 +314,13 @@ function CoreSiteoptions_screenLanguages() {
 				});
 			});
 		});
-		function changeLanguage() {
-			var lang=$(this).val();
-			if (lang=='') {
-				$languagestable.find('.context')
-					.text('-- choose a language --')
-					.css('cursor', 'default');
+		$export.click(function() {
+			var lang=$languages.val();
+			if (!lang) {
 				return;
 			}
-			$.post('/a/f=adminLanguagesGetTrStrings', {
-				'lang':lang
-			}, function(ret) {
-				$languagestable.find('.context')
-					.text('')
-					.css('cursor', 'pointer');
-				currentTr=ret;
-				updateVisibleTranslations();
-			});
-		}
-		function updateVisibleTranslations() {
-			if ($languages.val()=='') {
-				return;
-			}
-			var trs=$languagestable.find('tbody tr');
-			trs.find('td:last-child').text('');
-			for (var i=0;i<trs.length;++i) {
-				var $tr=$(trs[i]);
-				var str=$tr.find('td:first-child').text(), context=$tr.find('td:nth-child(2)').text();
-				if (!str) {
-					continue;
-				}
-				$tr.find('td:last-child').text(str);
-				for (var j=0;j<currentTr.length;++j) {
-					var cstr=currentTr[j];
-					if (cstr.str==str && cstr.context==context) {
-						$tr.find('td:last-child').text(cstr.trstr);
-					}
-				}
-			}
-		}
+			document.location='/a/f=adminLanguagesExportPo?lang='+lang
+		});
 	}
 	showLanguages();
 }

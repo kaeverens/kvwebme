@@ -19,7 +19,7 @@ $(function() {
 		return false;
 	});
 });
-function __(el) {
+function __e(el) {
 	var context=$(el).attr('lang-context')||'unknown';
 	// if language is not yet loaded, start it loading
 	if (!__lang[context]) {
@@ -58,7 +58,7 @@ function __(el) {
 }
 function __langInit() {
 	$('.__').each(function() {
-		__(this);
+		__e(this);
 	});
 }
 function __report() {
@@ -72,3 +72,10 @@ function __report() {
 	window.__reportTimer=setTimeout(__report, 5000);
 }
 var __lang={},__langUnknown=[];
+function __(str, params, context) {
+	if (!context) {
+		context='core';
+	}
+	setTimeout(__langInit, 1);
+	return '<span class="__" lang-context="'+context+'">'+str+'</span>';
+}

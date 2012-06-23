@@ -62,6 +62,9 @@ function __($str, $param1='core', $param2=null) {
 	if ($_languages[0]=='en' || $_languages[0]=='en-gb'
 		|| $_languages[0]=='en-us'
 	) {
+		for ($i=count($params);$i;--$i) {
+			$str=str_replace('%'.$i, $params[$i-1], $str);
+		}
 		return $str;
 	}
 	// }

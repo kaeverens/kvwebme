@@ -422,6 +422,43 @@ function Core_adminLanguagesEditString() {
 }
 
 // }
+// { Core_adminLanguagesExportPo
+
+/**
+	* export po file
+	*
+	* @return status
+	*/
+function Core_adminLanguagesExportPo() {
+	$lang=$_REQUEST['lang'];
+	$strings=array();
+	$rs=dbAll('select distinct str from languages');
+	foreach ($rs as $r) {
+		$strings[$r['str']]=1;
+	}
+	$rs=dbAll(
+		'select str,trstr from languages where lang="'.addslashes($lang).'"'
+		.' order by str'
+	);
+	header('Content-Type: force/download');
+	header('Content-Disposition: attachment; filename="'.$lang.'.po"');
+	echo "msgid \"\"\nmsgstr \"\"\n\"MIME-Version: 1.0\\n\"\n"
+		."\"Content-Type: text/plain; charset=utf-8\\n\"\n"
+		."\"Content-Transfer-Encoding: 8bit\\n\"\n"
+		."\n";
+	foreach ($rs as $r) {
+		echo 'msgid "'.$r['str']."\"\n";
+		echo 'msgstr "'.$r['trstr']."\"\n\n";
+		unset($strings[$r['str']]);
+	}
+	foreach ($strings as $r=>$v) {
+		echo 'msgid "'.$r."\"\n";
+		echo "msgstr \"\"\n\n";
+	}
+	exit;
+}
+
+// }
 // { Core_adminLanguagesGetStrings
 
 /**
