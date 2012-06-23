@@ -13,7 +13,7 @@
 
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!Core_isAdmin()) {
-	die('access denied');
+	die(__('access denied'));
 }
 require $_SERVER['DOCUMENT_ROOT'].'/ww.admin/admin_libs.php';
 if (isset($_REQUEST['get_content_snippet'])) {
@@ -76,4 +76,4 @@ else {
 	$id=0;
 }
 echo '<a href="javascript:;" id="content_snippet_editlink_'
-	.$id.'" class="content_snippet_editlink">view or edit snippet</a>';
+	.$id.'" class="content_snippet_editlink">'.__('view or edit snippet').'</a>';

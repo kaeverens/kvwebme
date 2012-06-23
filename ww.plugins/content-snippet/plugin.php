@@ -1,6 +1,6 @@
 <?php
 /**
-	* front controller for WebME files
+	* plugin config for content snippets
 	*
 	* PHP version 5.2
 	*
@@ -13,15 +13,21 @@
 
 // { plugin config
 $plugin=array(
-	'name' => 'Content Snippets',
+	'name' => function() {
+		return __('Content Snippets');
+	},
 	'admin' => array(
 		'widget' => array(
 			'form_url' => '/ww.plugins/content-snippet/admin/widget-form.php',
 			'js_include' => '/ww.plugins/content-snippet/admin/widget.js'
 		)
 	),
-	'description' => 'Add small static HTML snippets to any panel - address, '
-		.'slogan, footer, image, etc.',
+	'description' => function()	{
+		return __(
+			'Add small static HTML snippets to any panel - address, slogan,'
+			.' footer, image, etc.'
+		);
+	},
 	'frontend' => array(
 		'widget' => 'ContentSnippet_show'
 	),

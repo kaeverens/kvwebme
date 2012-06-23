@@ -22,7 +22,7 @@ if (@count($p->pages)) {
 WW_addScript('online-store/admin/wizard.js');
 echo '<h1>Online Store Wizard</h1>
 <div id="preview-dialog"></div>
-<ul class="left-menu" id="register-progress" style="list-style-type:none">
+<ul class="sub-nav" id="register-progress" style="list-style-type:none">
   <li>Store</li>
 	<li>Payment Details</li>
 	<li>Company Details</li>
@@ -31,7 +31,7 @@ echo '<h1>Online Store Wizard</h1>
 </ul>
 </div>
 <p id="error"></p>
-<div class="has-left-menu" style="position:static">
+<div class="pages_iframe" style="position:static">
 	<div id="online-store-wizard">
 		<div id="slider">
 		</div>

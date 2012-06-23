@@ -105,7 +105,7 @@ echo '
 
 		<h1>Webme Installer</h1>
 
-		<div class="left-menu">
+		<div class="sub-nav">
 			<ul id="install-menu">
 				<li><a href="index.php">Requirements</a></li>
 				<li><a href="step1.php">Add Database</a></li>

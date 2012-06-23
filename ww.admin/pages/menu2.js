@@ -217,7 +217,7 @@ $(function(){
 	$('<button>add main page</button>')
 		.click(pageNew)
 		.appendTo(div);
-	div.appendTo('div.left-menu');
+	div.appendTo('div.sub-nav');
 	$('#pages-wrapper a').live('click',function(e){
 		var node=e.target.parentNode;
 		pageOpen(node.id.replace(/.*_/,''));
@@ -232,21 +232,21 @@ $(function(){
 			start:function(e){
 				this.offsetStart=e.pageX;
 				this.hasLeftOffsetStart=parseInt(
-					$('div.has-left-menu').css('left')
+					$('div.pages_iframe').css('left')
 				);
 				this.menuWidthStart=parseInt(
-					$(this).closest('div.left-menu').css('width')
+					$(this).closest('div.sub-nav').css('width')
 				);
 			},
 			drag:function(e){
 				var offset=e.pageX-this.offsetStart;
-				$(this).closest('div.left-menu').css('width', this.menuWidthStart+offset);
-				$('div.has-left-menu').css('left', this.hasLeftOffsetStart+offset);
+				$(this).closest('div.sub-nav').css('width', this.menuWidthStart+offset);
+				$('div.pages_iframe').css('left', this.hasLeftOffsetStart+offset);
 			},
 			stop:function(){
 			}
 		})
-		.appendTo('div.left-menu');
+		.appendTo('div.sub-nav');
 	if (/\?id=/.test(document.location.toString())) {
 		pageOpen(document.location.toString().replace(/.*\?id=/, ''));
 	}

@@ -5,4 +5,4 @@
 	</head>
 	<body>
 		<div id="wrapper">
-			<h1>WebWorks WebME manual - Design</h1>
+			<h1><?php echo DistConfig::get('cms-name'); ?> - Design</h1>

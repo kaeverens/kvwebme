@@ -44,10 +44,14 @@ dbQuery('update themes_api set moderated="no" where id=' . $theme_id);
  * send the user an email telling them the theme
  * was marked for approval again
  */
-$body='<h3>Theme Removed</h3> <p>Hi '.$user['name'].',</p><p>Your theme nam'
-	.'ed "' . $theme_name . '" has been marked for approval by moderaters for'
-	.' re-addition to the theme repository.</p> <p>Thanks<br/>---<br/> KvWebm'
-	.'e</p>';
+$cmsname=DistConfig::get('cms-name');
+$body='<h3>'.__('Theme Removed').'</h3>'
+	.'<p>'.__('Hi %1,', array($user['name']), 'core').'</p>'
+	.'<p>'.__(
+		'Your theme named "%1" has been marked for approval by moderaters for'
+		.' re-addition to the theme repository.', array($theme_name), 'core'
+	)
+	.'</p><p>'.__('Thanks<br/>---<br/>%1', array($cmsname), 'core').'</p>';
 
 send_mail(
 	$user[ 'email' ],

@@ -50,7 +50,7 @@ if (!file_exists(SCRIPTBASE.'/ww.plugins/'.$pname.'/admin/'.$pagename.'.php')) {
 else {
 	if (file_exists(SCRIPTBASE.'/ww.plugins/'.$pname.'/admin/menu.php')) {
 		require_once SCRIPTBASE.'/ww.plugins/'.$pname.'/admin/menu.php';
-		echo '<div class="has-left-menu">';
+		echo '<div class="pages_iframe">';
 		require_once SCRIPTBASE.'/ww.plugins/'.$pname.'/admin/'.$pagename.'.php';
 		echo '</div>';
 	}

@@ -20,7 +20,7 @@ echo Core_adminSideMenu(
 	)
 );
 
-echo '<div class="has-left-menu">';
+echo '<div class="pages_iframe">';
 
 $page=isset($_GET['mailing_list'])?$_GET['mailing_list']:'';
 $dir=dirname(__FILE__);

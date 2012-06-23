@@ -14,13 +14,17 @@
 
 // { define $plugin
 $plugin=array(
-	'name' => 'Banners',
+	'name' => function() {
+		return __('Banners');
+	},
 	'admin' => array(
 		'menu' => array(
 			'Misc>Banners'  => 'plugin.php?_plugin=banner-image&amp;_page=index'
 		),
 	),
-	'description' => 'HTML snippet or image.',
+	'description' => function() {
+		return __('HTML snippet or image.');
+	},
 	'frontend' => array(
 		'template_functions' => array(
 			'BANNER' => array(
@@ -31,6 +35,10 @@ $plugin=array(
 	),
 	'version' => '3'
 );
+/**
+	* __('Misc')
+	* __('Banners')
+	*/
 // }
 $banner_image_types=array('jpg','gif','png');
 
@@ -43,7 +51,7 @@ function BannerImage_getImgHtml($id, $hide_message=false) {
 		}
 	}
 	if (!$type) {
-		return $hide_message?'':'no image uploaded';
+		return $hide_message?'':__('no image uploaded');
 	}
 	return '<img src="/f/skin_files/banner-image/'.$id.'.'.$type.'" />';
 }

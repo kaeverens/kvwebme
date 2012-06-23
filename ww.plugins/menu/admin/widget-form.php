@@ -13,7 +13,7 @@
 
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!Core_isAdmin()) {
-	die('access denied');
+	die(__('access denied'));
 }
 
 if (isset($_REQUEST['get_menu'])) {
@@ -30,10 +30,10 @@ if (isset($_REQUEST['get_menu'])) {
 	}
 	else {
 		if ($r['parent']==0) {
-			$r['parent_name']=' -- none -- ';
+			$r['parent_name']=' -- '.__('none').' -- ';
 		}
 		else {
-			$r['parent_name']=' -- current page -- ';
+			$r['parent_name']=' -- '.__('current page').' -- ';
 		}
 	}
 	echo json_encode($r);
@@ -75,4 +75,4 @@ else {
 	$id=0;
 }
 echo '<a href="javascript:;" id="menu_editlink_'.$id.'" '
-	.'class="menu_editlink">view or edit menu</a>';
+	.'class="menu_editlink">'.__('view or edit menu').'</a>';

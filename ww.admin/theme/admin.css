@@ -41,19 +41,19 @@ textarea{font-size:1em;width:100%;height:200px;border-width:1px}
 .menu a{width:120px;color:#416BA7;display:block;text-decoration:none;padding:5px;border:0}
 .menu a:hover{color:#A76b41;background:#fff}
 a[href^=http]{background:url("/ww.admin/theme/10x10_external.png") no-repeat right;padding-right:10px}
-.left-menu{width:150px;background:#fff;float:left;border:1px solid #ededed;padding:5px;margin:0 25px 40px 0;position:relative}
-.left-menu a{display:block;color:#d36042;text-decoration:none;border:0}
-.left-menu a:hover{background-color:#A6BFE2;color:#fff}
-.left-menu a.thispage{background:#fff;font-weight:bold;font-style:italic}
-.left-menu a.thispage:hover{color:#00f;background:#fff}
-.left-menu b{display:none}
-.left-menu h4{margin:20px 0 0 0;padding:0;border-bottom:2px solid #999;font-weight:bold;background:#333}
-.left-menu h5{margin:10px 0 0 0;padding:0;border-bottom:1px solid #ddd;font-style:italic;background:#eee}
-.left-menu span{display:block;text-transform:capitalize;color:#666;margin:0;padding:3px 0 3px 10px}
-.left-menu .jstree a{
+.sub-nav{width:150px;background:#fff;float:left;border:1px solid #ededed;padding:5px;margin:0 25px 40px 0;position:relative}
+.sub-nav a{display:block;color:#d36042;text-decoration:none;border:0}
+.sub-nav a:hover{background-color:#A6BFE2;color:#fff}
+.sub-nav a.thispage{background:#fff;font-weight:bold;font-style:italic}
+.sub-nav a.thispage:hover{color:#00f;background:#fff}
+.sub-nav b{display:none}
+.sub-nav h4{margin:20px 0 0 0;padding:0;border-bottom:2px solid #999;font-weight:bold;background:#333}
+.sub-nav h5{margin:10px 0 0 0;padding:0;border-bottom:1px solid #ddd;font-style:italic;background:#eee}
+.sub-nav span{display:block;text-transform:capitalize;color:#666;margin:0;padding:3px 0 3px 10px}
+.sub-nav .jstree a{
 	display:inline-block;
 }
-.has-left-menu{
+.pages_iframe{
 	position:absolute;
 	right:5px;
 	left:180px;
@@ -61,7 +61,7 @@ a[href^=http]{background:url("/ww.admin/theme/10x10_external.png") no-repeat rig
 	bottom:0px;
 	overflow:auto;
 }
-.has-left-menu input.checkbox{width:auto !important}
+.pages_iframe input.checkbox{width:auto !important}
 div.resize-bar-w{position:absolute;background:#3b3c37;width:6px;bottom:0;top:0;right:0}
 .box{width:130px;padding:10px;margin:5px;border:1px solid #000;float:left;clear:right;text-align:center}
 .button{display:inline-block;text-align:center;text-decoration:none;background:#F6F6F5;color:#666666;border:#999 solid 1px;-moz-border-radius:5px;border-radius:5px;box-shadow:1px 1px 2px #666;-moz-box-shadow:1px 1px 2px #666;padding:2px 5px}

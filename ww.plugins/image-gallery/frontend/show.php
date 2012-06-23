@@ -79,8 +79,10 @@ function ImageGallery_show($PAGEDATA) {
 		return $c.$vars['footer'];
 	}
 	else {
-		return $c.'<em>gallery "'.$vars['image_gallery_directory']
-			.'" not found.</em>'.$vars['footer'];
+		$dir=$vars['image_gallery_directory'];
+		return $c.'<em>'
+			.__('gallery "%1" not found.', array($dir), 'core')
+			.$vars['footer'];
 	}
 }
 
@@ -170,8 +172,10 @@ function GalleryWidget_show($vars){
 		return $c;
 	}
 	else {
-		return '<em>gallery "'.$vars['directory']
-			.'" not found or empty.</em>';
+		$dir=$vars['directory'];
+		return '<em>'
+			.__('gallery "%1" not found or empty.', array($dir), 'core')
+			.'</em>';
 	}
 }
 

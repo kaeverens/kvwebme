@@ -43,7 +43,7 @@ if (isset($_REQUEST['other']) && $_REQUEST['other']=='restore') {
 }
 
 // { menu
-echo '<h2>'.__('Editor').'</h2><div class="left-menu">';
+echo '<h2>'.__('Editor').'</h2><div class="sub-nav">';
 // { html templates
 $d=new DirectoryIterator(THEME_DIR.'/'.THEME.'/h');
 $files=array();
@@ -97,7 +97,7 @@ echo '</ul>';
 echo '</div>';
 // }
 // { content
-echo '<div class="has-left-menu">';
+echo '<div class="pages_iframe">';
 if (!$name || !$type || !in_array($type, array('h', 'c'))
 	|| !preg_match('/^[a-z0-9_][^\/]*$/', $name)
 ) {

@@ -86,7 +86,7 @@ if (@$DBVARS['maintenance-mode']=='yes') {
 		.' administrators can view the frontend of this website.'
 		.' Click <a href="siteoptions.php">here</a> to disable it.'
 	)
-	.'</em></div><style type="text/css">.has-left-menu{ top:130px!important;}'
+	.'</em></div><style type="text/css">.pages_iframe{ top:130px!important;}'
 	.'</style>';
 }
 // }

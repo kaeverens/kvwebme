@@ -1,6 +1,6 @@
 <?php
 /**
-	* convert a wordpress theme to a kvwebme one
+	* convert a wordpress theme
 	*
 	* PHP version 5.2
 	*
@@ -242,7 +242,7 @@ do {
 	$h=preg_replace('#<\?php\s*post_class\(.*?\);\s*\?>#', '', $h);
 
 	// }
-	// { currently doesn't exist in kvWebME
+	// { currently doesn't exist in engine
 	$h=preg_replace('#<\?php\s*edit_post_link(.*?);\s*\?>#', '', $h);
 	$h=str_replace('<?php body_class(); ?>', '', $h);
 	$h=str_replace('<?php wp_meta(); ?>', '', $h);

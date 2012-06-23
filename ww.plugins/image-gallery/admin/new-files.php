@@ -14,7 +14,7 @@
 
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!Core_isAdmin()) {
-	die("access denied");
+	die(__("access denied"));
 }
 
 $id=(int)@$_POST['id'];
@@ -39,6 +39,7 @@ if (!$dir) {
 echo '<li id="image_'.$id.'">';
 echo '<img id="image-gallery-image'.$id.'" src="/a/f=getImg/w=64/h=64/'
 	.$dir.'/'.$meta['name'].'"/>';
-echo '<a href="javascript:;" class="edit-img" id="'.$id.'">Edit</a> or ';
-echo '<a href="javascript:;" class="delete-img" id="'.$id.'">[x]</a>';
+echo '<a href="javascript:;" class="edit-img" id="'.$id.'">'.__('Edit')
+	.'</a> '.__('or').' ';
+echo '<a href="javascript:;" class="delete-img" id="'.$id.'">'.__('[x]').'</a>';
 echo '</li>';

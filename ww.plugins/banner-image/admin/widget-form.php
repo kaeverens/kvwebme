@@ -1,7 +1,7 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!Core_isAdmin()) {
-	die('access denied');
+	die(__('access denied'));
 }
 if (isset($_REQUEST['get_banner'])) {
 	require '../frontend/index.php';
@@ -38,7 +38,7 @@ else {
 	$id=0;
 }
 echo '<a href="javascript:;" id="banner_editlink_'.$id.'" class="banner_edi'
-	.'tlink">view or edit snippet</a>';
+	.'tlink">'.__('view or edit snippet').'</a>';
 if ($id) {
 	echo '<div id="banner_preview_'.$id.'"></div>';
 }
@@ -70,7 +70,7 @@ function banner_edit(ev) {
 				ww.banner.rte=null;
 			},
 			buttons:{
-				'Save':function(){
+				'<?php echo __('Save'); ?>':function(){
 					var html=ww.banner.rte.getData();
 					$.post('/ww.plugins/banner-image/admin/widget-form.php', {
 						'id':id,'action':'save','html':html
@@ -87,7 +87,7 @@ function banner_edit(ev) {
 						d.dialog('close');
 					},'json');
 				},
-				'Close':function(){
+				'<?php echo __('Close'); ?>':function(){
 					d.dialog('close');
 				}
 			}

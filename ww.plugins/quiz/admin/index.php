@@ -75,7 +75,7 @@ if (count($quizzes)>count($pageQuizzes)) {
 echo Core_adminSideMenu(
 	$menuItems
 );
-echo '<div class="has-left-menu">';
+echo '<div class="pages_iframe">';
 $dir = dirname(__FILE__);
 switch ($action){
 	case 'newQuestion':

@@ -46,7 +46,7 @@ function Privacy_register() {
 	}
 	$sql='select id from user_accounts where email="'.addslashes($email).'"';
 	if (dbOne($sql, 'id')) {
-		return array('error'=>'already registered');
+		return array('error'=>__('already registered'));
 	}
 	if ($token && $token==@$reg['token']) {
 		$latlngsql='';
@@ -66,6 +66,6 @@ function Privacy_register() {
 		return array('ok'=>1);
 	}
 	else {
-		return array('error'=>'token does not match');
+		return array('error'=>__('token does not match'));
 	}
 }

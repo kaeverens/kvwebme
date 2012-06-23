@@ -1,22 +1,22 @@
-div.left-menu li{
+div.sub-nav li{
 	clear:both;
 	list-style:none;
 }
-div.left-menu li .actions{
+div.sub-nav li .actions{
 	text-align:right;
 }
-div.left-menu li:hover .actions *{
+div.sub-nav li:hover .actions *{
 	visibility:visible;
 }
-div.left-menu li .actions *{
+div.sub-nav li .actions *{
 	visibility:hidden;
 }
-div.left-menu li .actions a{
+div.sub-nav li .actions a{
 	padding:0;
 	background:none;
 	display:inline;
 }
-div.left-menu li .actions a:hover{
+div.sub-nav li .actions a:hover{
 	background:none;
 	color:red;
 }

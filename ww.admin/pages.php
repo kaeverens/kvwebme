@@ -15,12 +15,12 @@ require_once 'header.php';
 
 echo '<h1>'.__('Pages').'</h1>';
 // { left side
-echo '<div class="left-menu">'
+echo '<div class="sub-nav">'
 	.'<div id="pages-wrapper"></div>'
 	.'</div>';
 // }
 // { right side
-echo '<div class="has-left-menu"><div id="reports-wrapper"></div></div>';
+echo '<div class="pages_iframe"><div id="reports-wrapper"></div></div>';
 // }
 // { scripts, etc
 WW_addScript('/j/jstree/_lib/jquery.cookie.js');

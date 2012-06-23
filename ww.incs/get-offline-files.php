@@ -31,8 +31,10 @@ function Core_getOfflineJQueryScripts($jquery_versions) {
 			);
 		}
 		else {
-			echo 'could not download jQuery files. please go online, '
-				.'reload this page, then go offline.';
+			echo __(
+				'could not download jQuery files. please go online, '
+				.'reload this page, then go offline.'
+			);
 		}
 	}
 	if (!file_exists(USERBASE.'/f/.files/jqueryui-'.$jquery_versions[1].'.js')) {
@@ -47,8 +49,10 @@ function Core_getOfflineJQueryScripts($jquery_versions) {
 			);
 		}
 		else {
-			echo 'could not download jQuery UI files. please go online, '
-				.'reload this page, then go offline.';
+			echo __(
+				'could not download jQuery UI files. please go online, '
+				.'reload this page, then go offline.'
+			);
 		}
 	}
 	if (!file_exists(USERBASE.'/f/.files/jqueryui-'.$jquery_versions[1].'.css')) {
@@ -71,8 +75,10 @@ function Core_getOfflineJQueryScripts($jquery_versions) {
 			}
 		}
 		else {
-			echo 'could not download jQuery UI CSS. please go online, '
-				.'reload this page, then go offline.';
+			echo __(
+				'could not download jQuery UI CSS. please go online, '
+				.'reload this page, then go offline.'
+			);
 		}
 	}
 	$jurls=array(

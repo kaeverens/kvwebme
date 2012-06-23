@@ -70,15 +70,20 @@ function News_displayHeadlines($PAGEDATA) {
 	}
 	
 	$nextprev=array();
-	$nextprev[]='<span class="page_n_of_n">page '.(1+floor($p/$items_per_page))
-		.' of '.(ceil($num_stories/$items_per_page)).'</span>';
+	$nextprev[]='<span class="page_n_of_n">'
+		.__(
+			'page %1 of %2',
+			array(1+floor($p/$items_per_page), ceil($num_stories/$items_per_page)),
+			'core'
+		)
+		.'</span>';
 	if ($p) {
 		$nextprev[]='<a class="prev" href="?news_page='.($p-$items_per_page)
-		.'">Previous Page</a>';
+		.'">'.__('Previous Page').'</a>';
 	}
 	if ($p+$items_per_page < $num_stories) {
 		$nextprev[]='<a class="next" href="?news_page='.($p+$items_per_page)
-		.'">Next Page</a>';
+		.'">'.__('Next Page').'</a>';
 	}
 	$nextprev='<div class="nextprev">'.join(' | ', $nextprev).'</div>';
 	
@@ -105,7 +110,8 @@ function News_displayHeadlines($PAGEDATA) {
 		)
 			?'<h2 class="news-header"><a href="'.$page->getRelativeURL().'">'
 			.htmlspecialchars($page->name).'</a></h2>'.'<a class="news-date" href="'
-			.$page->getRelativeURL().'">posted on '.Core_dateM2H($page->associated_date)
+			.$page->getRelativeURL().'">'
+			.__('posted on %1', array(Core_dateM2H($page->associated_date)), 'core')
 			.'</a>'
 			:'';
 		if (!isset($page->associated_date)

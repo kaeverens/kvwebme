@@ -13,7 +13,7 @@
 
 $d=array();
 if (!file_exists(THEME_DIR.'/'.THEME.'/h/')) {
-	die('no theme installed. please <a href="/ww.admin/">install one</a>');
+	die(__('no theme installed. please <a href="/ww.admin/">install one</a>'));
 }
 $dir=new DirectoryIterator(THEME_DIR.'/'.THEME.'/h/');
 foreach ($dir as $f) {
@@ -28,5 +28,5 @@ foreach ($dir as $f) {
 asort($d);
 $template=$d[0];
 if ($template=='') {
-	die('no template created. please create a template first');
+	die(__('no template created. please create a template first'));
 }

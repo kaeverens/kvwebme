@@ -12,15 +12,18 @@
 	*/
 
 if (!@$vars->id) {
-	$c.='<em>error: no user authentication page chosen for this widget</em>';
+	$c.='<em>'
+		.__('error: no user authentication page chosen for this widget')
+		.'</em>';
 	return;
 }
 $c='<div id="userauthentication-widget" widget-id="'
 	.$widget_id.'-'.$vars->id.'"><ul>'
-	.'<li>Hi, Guest</li>'
-	.'<li class="userauthentication-login"><button>Login</button></li>'
+	.'<li>'.__('Hi, Guest').'</li>'
+	.'<li class="userauthentication-login"><button>'.__('Login').'</button></li>'
 	.'<li class="userauthentication-register"><button href="'
-	.Page::getInstance($vars->id)->getRelativeUrl().'">Register</button></li>';
+	.Page::getInstance($vars->id)->getRelativeUrl().'">'.__('Register')
+	.'</button></li>';
 if (isset($vars->external_login)
 	&& $vars->external_login=='1'
 ) {
@@ -28,4 +31,4 @@ if (isset($vars->external_login)
 		.'<img src="/ww.plugins/privacy/i/facebook.png" appid="'.$vars->fbappid
 		.'" class="facebook" alt="Facebook"/></li>';
 }
-$c.='</ul><br class="clear"/></div>';
+$c.='</ul><span class="clear"></span></div>';

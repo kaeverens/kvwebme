@@ -37,7 +37,9 @@ $html='<form id="online-store-realex" method="post" action="'
 	.'<input type="hidden" value="'.$timestamp.'" name="TIMESTAMP" />'
 	.'<input type="hidden" value="'.$sha1hash.'" name="SHA1HASH" />'
 	.'<input type="hidden" value="1" name="AUTO_SETTLE_FLAG" />'
-	.'<input type="hidden" value="Purchase made from '.$_SERVER['HTTP_HOST']
+	.'<input type="hidden" value="'
+	.addslashes(__('Purchase made from %1', array($_SERVER['HTTP_HOST']), 'core'))
 	.'" name="COMMENT1"/>'
-	.'<input type="submit" value="Proceed to Payment" /></form>'
+	.'<input type="submit" value="'
+	.addslashes(__('Proceed to Payment')).'" /></form>'
 	.'<script defer="defer">$("#online-store-realex").submit()</script>';

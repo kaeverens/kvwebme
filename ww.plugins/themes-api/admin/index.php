@@ -14,13 +14,16 @@
 
 $action = @$_GET[ 'action' ];
 
-echo '<h1>Themes Repository</h1>
-<div class="left-menu">
-	<a href="plugin.php?_plugin=themes-api&_page=index">Overview</a>
-	<a href="plugin.php?_plugin=themes-api&_page=index&action=moderate">Moderate</a>
-	<a href="plugin.php?_plugin=themes-api&_page=index&action=approved">Approved</a>
+echo '<h1>'.__('Themes Repository').'</h1>
+<div class="sub-nav">
+	<a href="plugin.php?_plugin=themes-api&_page=index">'.__('Overview').'</a>
+	<a href="plugin.php?_plugin=themes-api&_page=index&action=moderate">'
+	.__('Moderate').'</a>
+	<a href="plugin.php?_plugin=themes-api&_page=index&action=approved">'
+	.__('Approved')
+	.'</a>
 </div>
-<div class="has-left-menu">
+<div class="pages_iframe">
 ';
 
 /**

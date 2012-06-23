@@ -4,7 +4,7 @@ echo Core_adminSideMenu(
 	array('New'=>$_url.'&action=newPoll', 'View All'=>$_url)
 );
 
-echo '<div class="has-left-menu">';
+echo '<div class="pages_iframe">';
 $edit=($action=='editPoll')?1:0;
 $dir=dirname(__FILE__);
 switch($action){

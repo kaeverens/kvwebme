@@ -11,11 +11,12 @@
 	* @link     http://kvsites.ie/
 	*/
 
-echo '<h2>Users</h2>';
-echo '<a href="./siteoptions.php?page=users">List Users</a>'
-	.' | <a href="./siteoptions.php?page=users&amp;tab=options">User Options</a>'
+echo '<h2>'.__('Users').'</h2>';
+echo '<a href="./siteoptions.php?page=users">'.__('List Users').'</a>'
+	.' | <a href="./siteoptions.php?page=users&amp;tab=options">'
+	.__('User Options').'</a>'
 	.' | <a href="./siteoptions.php?page=users&amp;action=clear-groups">'
-	.'Remove unused groups</a>';
+	.__('Remove unused groups').'</a>';
 if (isset($_REQUEST['action']) && $_REQUEST['action']=='clear-groups') {
 	$removed=array();
 	$rs=dbAll(
@@ -30,11 +31,11 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']=='clear-groups') {
 		}
 	}
 	if (count($removed)) {
-		echo '<em>Removed the following unused groups: "'
+		echo '<em>'.__('Removed the following unused groups').': "'
 			.join('", "', $removed).'".</em>';
 	}
 	else {
-		echo '<em>No unused groups were found.</em>';
+		echo '<em>'.__('No unused groups were found.').'</em>';
 	}
 }
 $groups=array();

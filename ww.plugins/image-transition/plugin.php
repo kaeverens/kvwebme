@@ -1,13 +1,17 @@
 <?php
 $plugin=array(
-	'name' => 'Image Transitions',
+	'name' => function() {
+		return __('Image Transitions');
+	},
 	'admin' => array(
 		'widget' => array(
 			'form_url'   => '/ww.plugins/image-transition/admin/widget-form.php',
 			'js_include' => '/ww.plugins/image-transition/admin/widget.js'
 		)
 	),
-	'description' => 'Show all images in a directory, transitioning between them',
+	'description' => function() {
+		__('Show all images in a directory, transitioning between them';
+	},
 	'frontend' => array(
 		'widget' => 'showImageTransition'
 	),

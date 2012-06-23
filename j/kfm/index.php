@@ -130,8 +130,6 @@ if(!empty($_POST['kaejax']))kfm_kaejax_handle_client_request();
 	</head>
 	<body>
 		<div id="removeme">
-			<p>Please Wait - loading...</p>
-			<noscript>KFM relies on JavaScript. Please either turn on JavaScript in your browser, or <a href="http://www.getfirefox.com/">get Firefox</a> if your browser does not support JavaScript.</noscript>
 		</div>
 <?php
 // { if there's a template, show it here
@@ -148,14 +146,6 @@ $last_registration = isset($kfm_parameters['last_registration'])?$kfm_parameters
 if ($last_registration!=$today) {
 // { database maintenance
 	echo '<iframe style="display:none" src="maintenance.php"></iframe>';
-// }
-// { once per day, tell the kfm website a few simple details about usage
-	if (!$kfm_dont_send_metrics) {
-		echo '<img src="http://kfm.verens.com/extras/register.php?version='.urlencode(KFM_VERSION).
-			'&amp;domain_name='.urlencode($_SERVER['SERVER_NAME']).
-			'&amp;db_type='.$kfm_db_type.
-		'" />';
-	}
 // }
 	$kfmdb->query("delete from ".KFM_DB_PREFIX."parameters where name='last_registration'");
 	$kfmdb->query("insert into ".KFM_DB_PREFIX."parameters (name,value) values ('last_registration','".$today."')");

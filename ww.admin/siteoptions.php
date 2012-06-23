@@ -33,10 +33,10 @@ function Core_verifyAdminPage($validlist, $default, $val) {
 }
 echo Core_adminSideMenu(
 	array(
-		'General'=>'siteoptions.php?page=general',
-		'Users'=>'siteoptions.php?page=users',
-		'Themes'=>'siteoptions.php?page=themes',
-		'Plugins'=>'siteoptions.php?page=plugins'
+		__('General')=>'siteoptions.php?page=general',
+		__('Users')=>'siteoptions.php?page=users',
+		__('Themes')=>'siteoptions.php?page=themes',
+		__('Plugins')=>'siteoptions.php?page=plugins'
 	)
 );
 
@@ -46,7 +46,7 @@ $page=Core_verifyAdminPage(
 	isset($_REQUEST['page'])?$_REQUEST['page']:''
 );
 
-echo '<div class="has-left-menu">';
+echo '<div class="pages_iframe">';
 require 'siteoptions/'.$page.'.php';
 echo '</div>';
 require 'footer.php';

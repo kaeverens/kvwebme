@@ -127,7 +127,7 @@ function banner_image_drawForm($id=0) {
 }
 
 // { show left menu
-echo '<div class="left-menu">';
+echo '<div class="sub-nav">';
 $rs=dbAll('select id,name from banners_images');
 foreach ($rs as $r) {
 	echo '<a href="/ww.admin/plugin.php?_plugin=banner-image&id='.$r['id']

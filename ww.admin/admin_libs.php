@@ -41,7 +41,7 @@ function Core_adminSideMenu($list, $this='') {
 			$arr[]='<a href="'.$val.'">'.__($key, 'menu').'</a>';
 		}
 	}
-	return '<div class="left-menu">'.join('', $arr).'</div>';
+	return '<div class="sub-nav">'.join('', $arr).'</div>';
 }
 
 /**

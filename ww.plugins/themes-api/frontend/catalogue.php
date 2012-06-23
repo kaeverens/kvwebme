@@ -36,7 +36,9 @@ $( "#themes_search" ).click( function( ){
 WW_addInlineScript($script);
 
 $html='<input type="text" name="themes_search" /><input type="submit" '
-	.'name="Search" id="themes_search"/> <h1>Themes Repository</h1>'
-	.'<div id="carousel"></div> <div id="previous">P</div>'
+	.'name="Search" id="themes_search"/>'
+	.'<h1>'.__('Themes Repository').'</h1>'
+	.'<div id="carousel"></div>'
+	.'<div id="previous">&lt;</div>'
 	.'<div id="next" style="position:relative;top:0;background:#000;color:#ff'
-	.'f;padding:30px">N</div> <br style="clear:both"/>';
+	.'f;padding:30px">&gt;</div> <br style="clear:both"/>';

@@ -33,7 +33,7 @@ else {
 }
 if (!isset($_REQUEST['f'])) {
 	header('Content-type: application/json; charset=utf-8');
-	die('{"error":"no function name supplied"}');
+	die('{"error":"'.addslashes(__('no function name supplied')).'"}');
 }
 $_REQUEST['_remainder']=$remainder;
 // }
@@ -41,13 +41,15 @@ $_REQUEST['_remainder']=$remainder;
 if (isset($_REQUEST['p'])) {
 	if (!isset($PLUGINS[$_REQUEST['p']])) {
 		header('Content-type: application/json; charset=utf-8');
-		die('{"error":"plugin not installed"}');
+		die('{"error":"'.addslashes(__('plugin not installed')).'"}');
 	}
 	require_once SCRIPTBASE.'ww.plugins/'.$_REQUEST['p'].'/api.php';
 	if (strpos($_REQUEST['f'], 'admin')===0) {
 		if (!Core_isAdmin()) {
 			header('Content-type: application/json; charset=utf-8');
-			die('{"error":"you are not logged in as an admin"}');
+			die(
+				'{"error":"'.addslashes(__('you are not logged in as an admin')).'"}'
+			);
 		}
 		require_once SCRIPTBASE.'ww.admin/admin_libs.php';
 		require_once SCRIPTBASE.'ww.plugins/'.$_REQUEST['p'].'/api-admin.php';
@@ -75,7 +77,11 @@ else {
 $func=ucfirst($plugin).'_'.$_REQUEST['f'];
 if (!function_exists($func)) {
 	header('Content-type: application/json; charset=utf-8');
-	die('{"error":"function '.$func.' does not exist"}');
+	die(
+		'{"error":"'
+		.addslashes(__('function %1 does not exist', array($func), 'core'))
+		.'"}'
+	);
 }
 
 $res=$func($_REQUEST);

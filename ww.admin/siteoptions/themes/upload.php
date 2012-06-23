@@ -26,7 +26,7 @@ $(function( ){
 		var filename = $( this ).val( ).split( "." );
 		var extention = filename[ filename.length - 1 ];
 		if( extention != "zip" ){
-			alert( "must be a zip file!" );
+			alert( "'.__('must be a zip file!').'" );
 			$( this ).attr( "value", "" );
 			return false;
 		}
@@ -35,8 +35,9 @@ $(function( ){
 });
 </script>
 
-<h2>Theme Upload</h2>
-<p>This uploader can be used to upload themes from your local computer.</p>
+<h2>'.__('Theme Upload').'</h2>
+<p>'.__('This uploader can be used to upload themes from your local computer.')
+	.'</p>
 <form id="themes-upload-form" enctype="multipart/form-data" action="/ww.adm'
 .'in/siteoptions/themes/theme-upload.php" method="post" target="upload-ifra'
 .'me">
@@ -44,7 +45,8 @@ $(function( ){
 	<tr>
 		<td><input type="file" name="theme-zip" id="theme-zip"/></td>
 		<td><input type="submit" name="upload-theme" value="Upload"/></td>
-		<td><input type="submit" name="install-theme" value="Upload & Install"/'
+		<td><input type="submit" name="install-theme" value="'
+		.__('Upload & Install').'"/'
 		.'></td>
 	</tr>
 </table>

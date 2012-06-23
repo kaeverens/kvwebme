@@ -22,7 +22,7 @@ echo Core_adminSideMenu(
 	)
 );
 
-echo '<div class="has-left-menu">';
+echo '<div class="pages_iframe">';
 $page=isset($_REQUEST['page'])?$_REQUEST['page']:'';
 switch ($page) {
 	case 'popular_pages': // {
