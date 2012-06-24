@@ -1,0 +1,1511 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid " --  none  -- "
+msgstr ""
+
+msgid " -- none -- "
+msgstr ""
+
+msgid "%1 bytes saved."
+msgstr "%1 bytes gemt."
+
+msgid "%1 files deleted."
+msgstr "%1 filer slettede."
+
+msgid "%1 Installer"
+msgstr "%1 installation"
+
+msgid "%1 manual - Administration"
+msgstr ""
+
+msgid "%1 people have rated this."
+msgstr "%1 personer har bedømt dette."
+
+msgid "* indicates required fields"
+msgstr ""
+
+msgid "2 required"
+msgstr "2 p&aring;kr&aelig;vet"
+
+msgid "5.2 required"
+msgstr "5.2 p&aring;kr&aelig;vet"
+
+msgid "<p>Please either:</p><ul><li>make the web root <code>%1</code> writable for the web server</li><li>or create the <code>.private</code> directory yourself and make it writable to the web server</li></ul><p>Then reload this page.</p>"
+msgstr "<p>Venligst enten:</p><ul><li>g&oslash;r web-roden <code>%1</code> skrivbar for webserveren</li><li>eller opret <code>.private</code> mappen selv og g&oslash; den skrivbar for webserveren</li></ul><p>Genindl&aelig;s da denne side.</p>"
+
+msgid "<strong><code>%1</code></strong> is not a directory or does not exist."
+msgstr "<strong><code>%1</code></strong> er ikke en mappe eller eksisterer ikke."
+
+msgid "<strong><code>%1</code></strong> is not writable by the web server."
+msgstr "<strong><code>$hd</code></strong> er ikke skrivbar for webserveren."
+
+msgid "<strong>Config file already exists</strong>. Please remove the /install directory."
+msgstr "<strong>Konfigurationsfilen eksisterer allerede</strong>. Venligst fjern /install mappen."
+
+msgid "<strong>Could not create /.private/config.php</strong>. Please make /.private/ writable for the web server, then reload this page."
+msgstr "<strong>Kunne ikke oprette /.private/config.php</strong>. Venligst g&oslash;r /.private/ skrivbar for webserveren og genindl&aelig;s denne side."
+
+msgid "A new theme named "%1" has been marked for moderation, please <a href="%2/ww.admin">log in</a> and moderate the theme."
+msgstr "Temaet "%1" er blevet markeret til godkendelse. Venligst <a href="%2/ww.admin">log ind</a> og gennemse temaet"
+
+msgid "access denied"
+msgstr "Ingen adgang"
+
+msgid "Add"
+msgstr "Tilføj"
+
+msgid "Add a Product"
+msgstr "Tilføj et produkt"
+
+msgid "Add Address"
+msgstr ""
+
+msgid "Add Database"
+msgstr "Tilføj database"
+
+msgid "Add small static HTML snippets to any panel - address, slogan, footer, image, etc."
+msgstr "Tilføj statiske HTML-elementer til ethvert panel - adresser, slogans, footer, billeder, osv."
+
+msgid "Address"
+msgstr ""
+
+msgid "Administraton"
+msgstr ""
+
+msgid "admins can pay for credits, which are used to manage site subscriptions"
+msgstr "Administratorer kan betale for point, som kan bruges til at betale for abonnement"
+
+msgid "All themes require a header and footer panel and a left or right panel"
+msgstr "Alle temaer skal have et header og et footer panel samt et left eller right panel"
+
+msgid "Allows a directory of images to be shown as a gallery."
+msgstr "Tillader en mappe af billeder at blive vist som et galleri."
+
+msgid "Allows content sections to be displayed throughout the site."
+msgstr "Gør det muligt at få elementer vist på alle undersider."
+
+msgid "Allows forms to be created so visitors can contact you"
+msgstr "Opret formularer, f.eks. til kontakt eller oprettelser"
+
+msgid "already registered"
+msgstr "Allerede registreret"
+
+msgid "Amount"
+msgstr ""
+
+msgid "Amount allowed per purchase"
+msgstr ""
+
+msgid "Amount in Stock"
+msgstr "På lager"
+
+msgid "Amount Sold"
+msgstr ""
+
+msgid "And here is a list of common functions. These are different to codes, in that they can include parameters to adjust what is printed to the HTML."
+msgstr ""
+
+msgid "Apache mod_rewrite:"
+msgstr ""
+
+msgid "Apache Version"
+msgstr ""
+
+msgid "Approve"
+msgstr "Godkend"
+
+msgid "Approved"
+msgstr "Godkendt"
+
+msgid "Approved Themes"
+msgstr "Godkendte temaer"
+
+msgid "Approved Themes:"
+msgstr "Godkendte temaer:"
+
+msgid "are you sure you want to remove the favicon?"
+msgstr ""
+
+msgid "are you sure you want to remove the logo?"
+msgstr ""
+
+msgid "ascending (a-z, 0-9)"
+msgstr ""
+
+msgid "Associated Date"
+msgstr ""
+
+msgid "Attributes"
+msgstr "Attributter"
+
+msgid "Author"
+msgstr "Forfatter"
+
+msgid "Avatar"
+msgstr ""
+
+msgid "Awaiting Moderation:"
+msgstr "Afventer godkendelse:"
+
+msgid "back to profile"
+msgstr ""
+
+msgid "Backing up your site may use a lot of resources and take a while if your site is large. Please only do this once a day."
+msgstr "Backup af siden kan kr&aelig;ve mange ressourcer og tage noget tid, hvis din hjemmeside er stor."
+
+msgid "Backup"
+msgstr ""
+
+msgid "backup your website, or replace with an old backup"
+msgstr "Tag backup af hjemmesiden eller indl&aelig;s en gammel backup"
+
+msgid "Banners"
+msgstr "Bannere"
+
+msgid "Brands and Producers"
+msgstr ""
+
+msgid "Bulk Amount"
+msgstr ""
+
+msgid "Bulk Price"
+msgstr ""
+
+msgid "Can not delete this location as it contains other locations"
+msgstr ""
+
+msgid "Canonical Domain Name"
+msgstr ""
+
+msgid "Categories"
+msgstr "Kategorier"
+
+msgid "Change Password"
+msgstr ""
+
+msgid "Choose your City/Country"
+msgstr ""
+
+msgid "Choosing a theme here will download it into your private repository. If you already have a copy of the chosen theme there, then your copy will be over-written."
+msgstr "Ved at vælge et tema her vil det blive downloadet til din egen mappe. Hvis du allerede har en kopi af det valgte tema der, vil din egen kopi blive overskrevet."
+
+msgid "Clear"
+msgstr "Ryd"
+
+msgid "Click a header to open it."
+msgstr "Klik for at åbne et panel."
+
+msgid "Click here to create a Product Type."
+msgstr "Klik her for at oprette en"
+
+msgid "Close"
+msgstr "Luk"
+
+msgid "Code"
+msgstr "Kode"
+
+msgid "Common Details"
+msgstr ""
+
+msgid "Compressed Zip Files"
+msgstr "Komprimerede ZIP-filer"
+
+msgid "Configure Database"
+msgstr "Konfigur&eacute;r database"
+
+msgid "Connect Error"
+msgstr "Forbindelsesfejl"
+
+msgid "Connect failed:"
+msgstr "Forbindelsesfejl:"
+
+msgid "Contact us if you have questions."
+msgstr "Kontakt os, hvis du har sp&oslash;rgsm&aring;l"
+
+msgid "Content Snippets"
+msgstr "Indholdselementer"
+
+msgid "Continue"
+msgstr "Forts&aelig;t"
+
+msgid "Convert"
+msgstr "Konverter"
+
+msgid "Could not create <code>%1</code> directory."
+msgstr "Kunne ikke oprette mappen, <code>%1</code> directory."
+
+msgid "Could not create <code>%1</code> directory."
+msgstr "Kunne ikke oprette mappen, <code>%1</code> directory."
+
+msgid "Could not create tmp directory %1"
+msgstr "Kunne ikke oprette tmp-mappen, %1"
+
+msgid "could not download jQuery files. please go online, reload this page, then go offline."
+msgstr "Kunne ikke downloade jQuery-filer. Venligst forbind til internettet, genopfrisk denne side og da g&aring; offline."
+
+msgid "could not download jQuery UI CSS. please go online, reload this page, then go offline."
+msgstr "Kunne ikke downloade jQuery UI CSS-filer. Venligst forbind til internettet, genopfrisk denne side og gå da offline."
+
+msgid "could not download jQuery UI files. please go online, reload this page, then go offline."
+msgstr "Kunne ikke downloade jQuery UI-filer. Venligst forbind til internettet, genopfrisk denne side og da g&aring; offline."
+
+msgid "Create Admin"
+msgstr "Opret administrator"
+
+msgid "Create Backup"
+msgstr "Opret backup"
+
+msgid "Create New Checkout"
+msgstr ""
+
+msgid "Create news items from sub-pages."
+msgstr "Opret nyheder fra undersider."
+
+msgid "Create User"
+msgstr "Opret bruger"
+
+msgid "Creates a panel, which can contain Widgets"
+msgstr ""
+
+msgid "Credits"
+msgstr ""
+
+msgid "CSS"
+msgstr "CSS-stylesheets"
+
+msgid "Currency"
+msgstr ""
+
+msgid "current page"
+msgstr "Nuværende side"
+
+msgid "Custom VAT Amount"
+msgstr ""
+
+msgid "Database"
+msgstr ""
+
+msgid "Database Details"
+msgstr "Databasedetaljer"
+
+msgid "Database Name"
+msgstr "Databasenavn"
+
+msgid "Date"
+msgstr ""
+
+msgid "Date created"
+msgstr ""
+
+msgid "Date published"
+msgstr ""
+
+msgid "Date Submitted"
+msgstr "Dato sendt"
+
+msgid "Date to Publish"
+msgstr ""
+
+msgid "Date to Unpublish"
+msgstr ""
+
+msgid "Date updated"
+msgstr ""
+
+msgid "Delete"
+msgstr "Slet"
+
+msgid "Delete Selected"
+msgstr "Slet valgte"
+
+msgid "Deleted"
+msgstr "Slettet"
+
+msgid "descending (z-a, 9-0)"
+msgstr ""
+
+msgid "description"
+msgstr "Beskrivelse"
+
+msgid "Design"
+msgstr ""
+
+msgid "Disable the hidden sitemap"
+msgstr ""
+
+msgid "Don't load the jQuery-UI CSS"
+msgstr ""
+
+msgid "done"
+msgstr "Færdig"
+
+msgid "Download"
+msgstr ""
+
+msgid "Downloading Theme"
+msgstr "Downloader tema"
+
+msgid "Downloading..."
+msgstr "Downloader..."
+
+msgid "Drag a widget into a panel on the right."
+msgstr "Træk det ønskede element til et panel til højre."
+
+msgid "edit"
+msgstr "Ret"
+
+msgid "Edit Details"
+msgstr "Ret informationer"
+
+msgid "Editor"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Email not valid."
+msgstr "Email er ikke gyldig. Venligst pr&oslash;v igen."
+
+msgid "Emails"
+msgstr ""
+
+msgid "Enabled"
+msgstr "Aktivt"
+
+msgid "Enter the words above"
+msgstr "Indtast ovenstående ord"
+
+msgid "error"
+msgstr "Fejl"
+
+msgid "error retrieving products list"
+msgstr "Fejl ved indlæsning af liste for produktbilleder"
+
+msgid "error retrieving product_categories list"
+msgstr "Fejl ved indlæsning af liste for produktkategorier"
+
+msgid "error retrieving wp_wpsc_item_category_assoc list"
+msgstr "Fejl ved indl&aelig;sning af wp_wpsc_item_category_assoc liste"
+
+msgid "error: no user authentication page chosen for this widget"
+msgstr "Fejl: Ingen login-side defineret for denne widget"
+
+msgid "Example"
+msgstr "Eksempel"
+
+msgid "Examples"
+msgstr "Eksempler"
+
+msgid "Export"
+msgstr ""
+
+msgid "Export Data"
+msgstr ""
+
+msgid "Extracting..."
+msgstr "Udpakker..."
+
+msgid "failed to copy the file. please check file permissions"
+msgstr "Kunne ikke kopiere filen. Venligsst kontrollér filtilladelserne"
+
+msgid "Failed to create page"
+msgstr "Kunne ikke oprette siden"
+
+msgid "Failed to write to %1. Please check the permissions on the file."
+msgstr "Kunne ikke skrive til %1. Venligst kontroll&eacute;r skriverettighederne for filen."
+
+msgid "Favicon"
+msgstr ""
+
+msgid "File %1 does not exist"
+msgstr "Filen %1 eksisterer ikke"
+
+msgid "File does not exist"
+msgstr "Fil eksisterer ikke"
+
+msgid "File Manager"
+msgstr ""
+
+msgid "Filter by user's location"
+msgstr ""
+
+msgid "Finish"
+msgstr "Gennemført"
+
+msgid "Following is a list of common codes used by the %1 engine."
+msgstr "Følgende liste viser skabelonkoder for %1."
+
+msgid "Footer"
+msgstr ""
+
+msgid "Form"
+msgstr "Formularer"
+
+msgid "Free Delivery"
+msgstr ""
+
+msgid "Function"
+msgstr "Funktion"
+
+msgid "function %1 does not exist"
+msgstr "Funktionen %1 eksisterer ikke"
+
+msgid "gallery "%1" not found or empty."
+msgstr "Galleri "%1" ikke fundet eller tomt."
+
+msgid "gallery "%1" not found."
+msgstr "Galleri "%1" ikke fundet."
+
+msgid "General"
+msgstr "Websitet"
+
+msgid "Google Site Verification"
+msgstr ""
+
+msgid "Header"
+msgstr ""
+
+msgid "Help"
+msgstr ""
+
+msgid "Help - Write Access"
+msgstr "Hj&aelig;lp - Skriveadgang"
+
+msgid "Hi %1,"
+msgstr "Hej %1,"
+
+msgid "Hi, Guest"
+msgstr "Hej, Gæst"
+
+msgid "HostName"
+msgstr "Host"
+
+msgid "How long browsers should cache uploaded files for"
+msgstr ""
+
+msgid "how the menu is drawn. choose from 'horizontal' or 'vertical"
+msgstr ""
+
+msgid "HTML snippet or image."
+msgstr "Vis et banner som enten en HTML-snippet eller et billede."
+
+msgid "I agree to the <a href="javascript:userlogin_t_and_c()">terms and conditions</a>."
+msgstr ""
+
+msgid "ID"
+msgstr ""
+
+msgid "If you do not have a user account, but have been supplied with a password for the page, please enter it here and submit the form:"
+msgstr ""
+
+msgid "If you have a user account, please <a href="/_r?type=loginpage">click here</a> to log in."
+msgstr ""
+
+msgid "If you have forgotten your password, please enter your email address here to have a new verification email sent out to you."
+msgstr ""
+
+msgid "illegal character in page name"
+msgstr ""
+
+msgid "Image Gallery"
+msgstr "Billedgalleri"
+
+msgid "Image Transitions"
+msgstr ""
+
+msgid "Import"
+msgstr "Importer"
+
+msgid "Import Products"
+msgstr "Importer produkter"
+
+msgid "importance"
+msgstr ""
+
+msgid "incorrect email or password given."
+msgstr ""
+
+msgid "Incorrect please try again"
+msgstr "Ikke korrekt - venligst prøv igen"
+
+msgid "Installation Requirements"
+msgstr "Krav til installation"
+
+msgid "Installed"
+msgstr "Installeret"
+
+msgid "invalid "From" name"
+msgstr "Ugyldigt "Fra" navn"
+
+msgid "invalid "To" name"
+msgstr "Ugyldigt "Til" navn"
+
+msgid "Invalid captcha. Please try again."
+msgstr ""
+
+msgid "invalid date format"
+msgstr "Ugyldigt dato format"
+
+msgid "invalid voucher code, or voucher has expired"
+msgstr "Ugyldig eller udløbet rabatkode"
+
+msgid "Invoice"
+msgstr ""
+
+msgid "IP Addresses"
+msgstr ""
+
+msgid "Is the plugin installed and enabled?"
+msgstr ""
+
+msgid "It is a good idea to place this directory outside the web-accessible part of the server."
+msgstr "Det er en god id&eacute; at placere mappen udenfor web-tilg&aelig;ngelige del af serveren."
+
+msgid "keywords"
+msgstr ""
+
+msgid "Language selector"
+msgstr "Sprogvalg"
+
+msgid "Languages"
+msgstr "Sprog"
+
+msgid "leave blank to accept multiple domain names"
+msgstr ""
+
+msgid "List all products"
+msgstr "Vis alle produkter"
+
+msgid "List Users"
+msgstr "Vis brugere"
+
+msgid "Loading.. If you have no internet connection, please <a href="/'"
+msgstr "Indlæser.. Hvis der ikke er adgang til internettet, venligst <a href="/install/step7.php?theme=skipped">klik her for at fortsætte.</a>"
+
+msgid "Location"
+msgstr ""
+
+msgid "Locations"
+msgstr ""
+
+msgid "Log Out"
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
+msgid "Logo"
+msgstr ""
+
+msgid "Logout"
+msgstr "Log ud"
+
+msgid "Maintenance Mode is currently enabled which means that only administrators can view the frontend of this website. Click <a href="siteoptions.php">here</a> to disable it."
+msgstr ""
+
+msgid "Maintenance mode message"
+msgstr ""
+
+msgid "Maybe it was already captured?"
+msgstr "Måske den allerede er captured?"
+
+msgid "Menu widget"
+msgstr "Indsæt menuer med forskellige indstillinger"
+
+msgid "Menus"
+msgstr ""
+
+msgid "Misc"
+msgstr "Diverse"
+
+msgid "Misc."
+msgstr ""
+
+msgid "missing email address or password"
+msgstr ""
+
+msgid "missing plugin "%1"."
+msgstr "Mangler modul, "%1"."
+
+msgid "Moderate"
+msgstr "Moder&eacute;r"
+
+msgid "must be a zip file"
+msgstr "Skal v&aelig;re en ZIP-fil"
+
+msgid "must be a zip file!"
+msgstr "Skal være en zip-fil!"
+
+msgid "my account"
+msgstr ""
+
+msgid "MySQL driver missing. In RPM-based systems, this is usually php-mysql"
+msgstr "MySQL driver mangler."
+
+msgid "Name"
+msgstr "Navn"
+
+msgid "News"
+msgstr "Nyheder"
+
+msgid "Next"
+msgstr "Næste"
+
+msgid "Next Page"
+msgstr "Næste side"
+
+msgid "No"
+msgstr ""
+
+msgid "No address(es) saved yet"
+msgstr "Ingen adresse(r) gemt endnu"
+
+msgid "No articles contained here."
+msgstr "Ingen artikler her"
+
+msgid "No existing products."
+msgstr "Ingen eksisterende produkter."
+
+msgid "no function name supplied"
+msgstr "Intet funktionsnavn angivet"
+
+msgid "No HTML files were found in the "./h" directory. Please correct your zip file, refresh the page and try again."
+msgstr "Ingen HTML-filer fundet i './h' mappen. Venligst ret ZIP-filen, genopfrisk siden og pr&oslash;v igen."
+
+msgid "no image uploaded"
+msgstr "Intet billede uploadet"
+
+msgid "No images in selected directory."
+msgstr "Ingen billeder i den valgte mappe."
+
+msgid "no options available"
+msgstr ""
+
+msgid "no page loaded. If this is a new site, then please <a href="/ww.admin/">log into the admin area</a> and create your first page."
+msgstr ""
+
+msgid "No page of type Online Store created."
+msgstr "Ingen webshop oprettet."
+
+msgid "No plugin found to handle page type:"
+msgstr ""
+
+msgid "no results found"
+msgstr ""
+
+msgid "No sub-pages"
+msgstr "Ingen undersider"
+
+msgid "No such documentation type."
+msgstr "Dokumentationstype findes ikke."
+
+msgid "No such item"
+msgstr "Vare findes ikke"
+
+msgid "No such order"
+msgstr "Ordren kunne ikke findes"
+
+msgid "no template created. please create a template first"
+msgstr "Ingen skabeloner oprettet. Venligst opret en f&oslash;rst"
+
+msgid "no theme installed. please <a href="/ww.admin/">install one</a>"
+msgstr "Intet tema installeret. Venligst <a href="/ww.admin/">klik her</a> for at installere et"
+
+msgid "No themes approved"
+msgstr "Ingen godkendte temaer"
+
+msgid "No themes awaiting moderation!"
+msgstr "Der er ingen temaer som afventer godkendelse."
+
+msgid "No unused groups were found."
+msgstr "Der blev ikke fundet tomme grupper."
+
+msgid "none"
+msgstr "Ingen"
+
+msgid "Not Discountable"
+msgstr ""
+
+msgid "not found"
+msgstr "Ikke fundet"
+
+msgid "Not Granted"
+msgstr "Ikke tildelt"
+
+msgid "Not Installed"
+msgstr "Ikke installeret"
+
+msgid "NOTE: this page is currently hidden from the front-end navigation. Use the "Misc." tab to un-hide it."
+msgstr ""
+
+msgid "Number Format"
+msgstr ""
+
+msgid "Online Store"
+msgstr ""
+
+msgid "Online Store - Order History"
+msgstr ""
+
+msgid "Online Store - Order History - Invoice"
+msgstr ""
+
+msgid "Online Store Wizard"
+msgstr "Guide til oprettelse af webshop"
+
+msgid "Oops! missing file"
+msgstr "Beklager, filen ikke fundet."
+
+msgid "Opacity"
+msgstr ""
+
+msgid "open up the menu to the current page. no values necessary"
+msgstr ""
+
+msgid "Options"
+msgstr ""
+
+msgid "options updated"
+msgstr ""
+
+msgid "or"
+msgstr "eller"
+
+msgid "Order of sub-pages"
+msgstr ""
+
+msgid "Orders"
+msgstr ""
+
+msgid "Original website"
+msgstr "Originalt website"
+
+msgid "Our admins will moderate your registration, and you will receive an email when it is activated."
+msgstr "Når vi har aktiveret din konto vil du modtage en email."
+
+msgid "Overview"
+msgstr "Overblik"
+
+msgid "Owner"
+msgstr "Oprettet af"
+
+msgid "page "%1" not found"
+msgstr "Siden, "%1", blev ikke fundet"
+
+msgid "page %1 of %2"
+msgstr "Side %1 af %2"
+
+msgid "Page Created"
+msgstr "Side oprettet"
+
+msgid "Page Length Limit"
+msgstr ""
+
+msgid "Pages"
+msgstr "Sider"
+
+msgid "pages summarised from"
+msgstr ""
+
+msgid "Panels"
+msgstr "Paneler"
+
+msgid "Parameters"
+msgstr "Parametre"
+
+msgid "Password"
+msgstr "Kodeord"
+
+msgid "Password reminder"
+msgstr ""
+
+msgid "Password to use to encrypt the archive."
+msgstr "Kodeord til kryptere backup-filen."
+
+msgid "Passwords do not match or are empty."
+msgstr "Kodeordene matcher ikke eller er ikke udfyldte."
+
+msgid "PDO library (for database)"
+msgstr "PDO bibliotek (for database)"
+
+msgid "PDO MySQL driver"
+msgstr ""
+
+msgid "PDO not installed. In RPM-based systems, this is usually the php-pdo RPM"
+msgstr "PDO ikke installeret."
+
+msgid "Permission Denied"
+msgstr ""
+
+msgid "Phone"
+msgstr "Telefon"
+
+msgid "PHP Version:"
+msgstr ""
+
+msgid "Please <a href="/">click here</a> to go to the root of the site."
+msgstr "Venligst <a href="/">klik her</a> for at g&aring; til forsiden."
+
+msgid "Please <a href="/ww.admin/pages.php">create one</a>."
+msgstr "<a href="/ww.admin/pages.php">Opret en her</a>."
+
+msgid "Please check your email for a verification URL. Once that's been followed, your account will be activated."
+msgstr ""
+
+msgid "Please check your values and try again."
+msgstr "Venligst kontroll&eacute;r dine v&aelig;rdier og pr&oslash;v igen."
+
+msgid "Please choose the online store you want to administrate."
+msgstr "Vælg venligst hvilken webshop du vil administrere."
+
+msgid "Please correct anything noted above and reload this page to make sure they have been solved. If they are solved, or you believe they will not cause a problem, you can continue."
+msgstr "Venligt ret alle listede mangler herover og genindl&aelig;s siden for at l&oslash;se dem."
+
+msgid "Please enter the IP Address"
+msgstr ""
+
+msgid "Please enter your name and email address. After submitting, please check your email account for your account verification link."
+msgstr ""
+
+msgid "Please enter your preferred password twice"
+msgstr ""
+
+msgid "Please log in using your email address and password. If you don't already have a user account, please use the Register tab (see above) to register."
+msgstr ""
+
+msgid "Please provide an existing database name."
+msgstr "Venligst indtast et eksisterende databasenavn."
+
+msgid "Please type the address of the directory you want to use for your user files."
+msgstr "Venligst indtast adressen p&aring; den mappe der skal bruges til brugerfiler."
+
+msgid "Please use the navigation menu on the left to choose a page or to create a new one"
+msgstr ""
+
+msgid "plugin "%1" does not have a widget interface."
+msgstr "Modulet, "%1", har ikke et element interface."
+
+msgid "plugin not installed"
+msgstr "Modul ikke installeret"
+
+msgid "Plugins"
+msgstr "Moduler"
+
+msgid "Popular Pages"
+msgstr "Populære sider"
+
+msgid "Popup"
+msgstr ""
+
+msgid "posted on %1"
+msgstr "Udgivet d. %1"
+
+msgid "Preferred Password"
+msgstr ""
+
+msgid "Previous Page"
+msgstr "Forrige side"
+
+msgid "Prints out the site logo to the screen, resizing if necessary."
+msgstr ""
+
+msgid "Prints the menu to the HTML, including classes as appropriate."
+msgstr ""
+
+msgid "Private Plugin for themes API"
+msgstr "Privat modul til tema API"
+
+msgid "Proceed to Payment"
+msgstr "Fortsæt til betaling"
+
+msgid "Products"
+msgstr ""
+
+msgid "Purchase made from %1"
+msgstr "Ordre fra %1"
+
+msgid "Put your comments about the product here"
+msgstr "Skriv din kommentar om produktet her"
+
+msgid "Rate anything"
+msgstr "Lad brugerne bedømme produkter, artikler, osv."
+
+msgid "Rating must be between 1 and 5"
+msgstr "Bedømmelse skal være mellem 1 og 5"
+
+msgid "ratings"
+msgstr "Bedømmelser"
+
+msgid "Recursively update page templates"
+msgstr ""
+
+msgid "Register"
+msgstr "Registrer"
+
+msgid "Relation Types"
+msgstr ""
+
+msgid "reload captcha"
+msgstr "Genindlæs captcha"
+
+msgid "Remind"
+msgstr ""
+
+msgid "remove favicon"
+msgstr ""
+
+msgid "remove logo"
+msgstr ""
+
+msgid "Remove unused groups"
+msgstr "Fjern tomme grupper"
+
+msgid "Removed the following unused groups"
+msgstr "Flg. grupper er fjernet:"
+
+msgid "Removing Zip File..."
+msgstr "Fjerner zip-fil..."
+
+msgid "Repeat Password"
+msgstr "Gentag kodeord"
+
+msgid "Repeat Password:"
+msgstr "Gentag kodeord:"
+
+msgid "Save"
+msgstr "Gem"
+
+msgid "Select Theme"
+msgstr "Vælg tema"
+
+msgid "Select Themes"
+msgstr "Vælg temaer"
+
+msgid "Select Zip File"
+msgstr "Vælg ZIP-fil"
+
+msgid "SELECTED THEME DOES NOT EXIST<br />Please <a href="/ww.admin/siteoptions.php?page=themes">select a theme</a>"
+msgstr ""
+
+msgid "SEO / Metadata"
+msgstr ""
+
+msgid "Set Disabled"
+msgstr "Deaktiveret"
+
+msgid "Set Enabled"
+msgstr "Aktiveret"
+
+msgid "Short URL"
+msgstr ""
+
+msgid "Should not be here"
+msgstr "Skulle ikke være her"
+
+msgid "Show all images in a directory, transitioning between them';"
+msgstr ""
+
+msgid "show or hide a page in the site menus"
+msgstr "Vis eller skjul en side i hjemmesidens menu"
+
+msgid "Site Map"
+msgstr "Sitemap"
+
+msgid "Site Options"
+msgstr "Sidefunktioner"
+
+msgid "Site Options>Theme Editor"
+msgstr "Avanceret>Editor"
+
+msgid "SiteCredits"
+msgstr ""
+
+msgid "Software"
+msgstr ""
+
+msgid "Special"
+msgstr ""
+
+msgid "Stats"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Stock Number"
+msgstr "Varenummer"
+
+msgid "Store Name"
+msgstr "Shop navn"
+
+msgid "Submit Date"
+msgstr "Upload dato"
+
+msgid "Subscribe"
+msgstr ""
+
+msgid "Success!"
+msgstr "Tillykke!"
+
+msgid "Summary"
+msgstr "Opsummering"
+
+msgid "Tags"
+msgstr ""
+
+msgid "template"
+msgstr ""
+
+msgid "Template Codes"
+msgstr "Skabelonkoder"
+
+msgid "Templates"
+msgstr "HTML-skabeloner"
+
+msgid "Temporarily Unavailable"
+msgstr ""
+
+msgid "Thank you for leaving a review for this product."
+msgstr "Tak for din vurdering af produktet."
+
+msgid "Thank you for registering."
+msgstr "Mange tak for din registrering."
+
+msgid "Thanks<br/>---<br/>%1"
+msgstr "De bedste hilsner<br/>%1"
+
+msgid "Thanks<br/>---<br/>kvWebME"
+msgstr ""
+
+msgid "that CSS file already exists"
+msgstr "CSS-filen eksisterer allerede"
+
+msgid "That documentation page does not exist."
+msgstr "Dokumentationssiden findes ikke."
+
+msgid "That email is already registered."
+msgstr ""
+
+msgid "that template already exists"
+msgstr "Skabelonen eksisterer allerede"
+
+msgid "That url is obsolete, or incorrect"
+msgstr "Denne adresse kan ikke findes"
+
+msgid "The "./c" directory could not be found, this directory is a requirement in all themes. Please correct your zip file, refresh the page and try again."
+msgstr "Mappen, "./c" kunne ikke findes. Alle temaer skal have denne mappe. Venligst ret ZIP-filen, genopfrisk siden og pr&oslash;v igen."
+
+msgid "The "./h" directory could not be found, this directory is a requirement in all themes. Please correct your zip file, refresh the page and try again."
+msgstr "Mappen, "./h" kunne ikke findes. Alle temaer skal have denne mappe. Venligst ret ZIP-filen, genopfrisk siden og pr&oslash;v igen."
+
+msgid "The "./screenshot.png" file could not be found. All themes are required to provide screenshots. Please correct your zip file, refresh the page and try again."
+msgstr "Filen, "./screenshot.png" kunne ikke findes. Alle temaer skal have et passende screenshot. Venligst ret ZIP-filen, genopfrisk siden og pr&oslash;v igen."
+
+msgid "the "From" file does not exist"
+msgstr ""Fra" filen eksisterer ikke"
+
+msgid "the "From" template does not exist"
+msgstr ""Fra" skabelonen eksisterer ikke"
+
+msgid "The cs directory is optional, but if it is present then all css variant files in the directory must have corresponding screenshot files in the png. These screenshot files must have the same name as the css files."
+msgstr "Mappen, "./cs" er valgfri, men hvis den er inkluderet skal alle CSS-varianter af filerne i mappen have tilsvarende screenshot-filer. Screenshot-filerne skal have samme navn som CSS-filerne."
+
+msgid "the maximum height to be shown. defaults to 64"
+msgstr ""
+
+msgid "the maximum width to be shown. defaults to 64"
+msgstr ""
+
+msgid "The quickest way to get this working is to execute the following command, but it is also the <strong>least secure</strong> method:"
+msgstr "Den hurtigste, men ogs&aring; <strong>mindst sikre</strong>, metode til at give skriveadgang er at eksekvere flg. kommando:"
+
+msgid "The requirements below are the minimum specifications needed to run the system reliably. You may install without meeting all of these requirements, but some aspects of the system may not function properly."
+msgstr "Disse krav er de minimale specifikationer for stabil afvikling af systemet. Installationen vil muligvis virke uden alle krav er opfyldte, men nogle aspekter af systemet vil muligvis ikke fungere optimalt."
+
+msgid "the style of menu. choose from 'accordion', 'two-tier' and 'default"
+msgstr "the style of menu. choose from 'accordion', 'two-tier' and 'default'. defaults to 'default'"
+
+msgid "The theme name will be taken from the name of the zip file"
+msgstr "Temanavnet vil blive defineret ud fra ZIP-filens navn"
+
+msgid "The website sub-title, if it has one. This is site-wide, and is set in the Site Options part of the admin."
+msgstr ""
+
+msgid "The website title. This is site-wide, and is set in the Site Options part of the admin."
+msgstr ""
+
+msgid "The zip does not have the correct directory structure. All zips must contain a folder according to the name of the zip file, which contains the theme files."
+msgstr "ZIP-filen har ikke den korrekte mappestruktur. Alle ZIP-filer skal indeholde en mappe med samme navn som ZIP-filen, som indeholder tema-filerne."
+
+msgid "Theme Approved"
+msgstr "Tema godkendt"
+
+msgid "Theme Deleted"
+msgstr "Tema slettet"
+
+msgid "Theme Details"
+msgstr "Temadetaljer"
+
+msgid "Theme does not exist"
+msgstr "Temaet eksisterer ikke"
+
+msgid "Theme Download Successful"
+msgstr "Temaet blev downloadet"
+
+msgid "Theme Editor"
+msgstr "Skabelon-editor"
+
+msgid "Theme Moderation"
+msgstr "Tema godkendelse"
+
+msgid "Theme Moderators:"
+msgstr "Tema moderatorer:"
+
+msgid "Theme Removed"
+msgstr "Tema slettet"
+
+msgid "Theme Upload"
+msgstr "Tema uploader"
+
+msgid "Theme Uploader"
+msgstr "Tema uploader"
+
+msgid "Theme Verified!"
+msgstr "Tema godkendt"
+
+msgid "Themes"
+msgstr "Temaer"
+
+msgid "Themes API"
+msgstr "Tema API"
+
+msgid "Themes Awaiting Moderation"
+msgstr "Temaer som afventer godkendelse"
+
+msgid "Themes Catalogue"
+msgstr "Tema katalog"
+
+msgid "Themes database empty!"
+msgstr "Tema databasen er tom!"
+
+msgid "Themes Repository"
+msgstr "Tema-server"
+
+msgid "There are errors in your form"
+msgstr "Der er fejl i formularen"
+
+msgid "There has been an unexpected error, please try uploading the file again."
+msgstr "Der opstod en uventet fejl. Fors&oslash;g venligst at uploade filen igen."
+
+msgid "There was an error approving the file. Please try again."
+msgstr "Der opstod en fejl under godkendelse af filen. Venligst pr&oslash;v igen"
+
+msgid "There was an error deleting the file, please try again"
+msgstr "Der opstod en fejl under sletning af filen. Venligst pr&oslash;v igen"
+
+msgid "this"
+msgstr ""
+
+msgid "This Content Snippet is not yet defined."
+msgstr "Dette indholdselement er ikke defineret endnu."
+
+msgid "This Image Transition is not yet defined."
+msgstr "Billed slideren er ikke indstillet endnu."
+
+msgid "This is a protected document."
+msgstr ""
+
+msgid "this is the admin area page type"
+msgstr "Dette er sidetypen til admin området"
+
+msgid "This is the content of the page; the "body" of the page. This changes depending on the page you are on."
+msgstr "Dette er indholdet af siden; det man HTML vil definere som "body". This changes depending on the page you are on."
+
+msgid "This is the name for the page that the products will be shown in."
+msgstr "Dette er navnet p&aring; produktsiden"
+
+msgid "This page is marked as a page summary, but there is no information on how to handle it."
+msgstr "Denne side er markeret som et page summary, men der er ingen information om hvordan det skal h&aring;ndteres."
+
+msgid "This plugin will let you edit your themes online."
+msgstr "Med dette modul er det muligt, at redigere sine skabeloner direkte i browseren."
+
+msgid "This script deletes any files older than 6 months. in order to ensure it's not accidentally run by bots such as search engines, you must add ?areyousure=yes to the address of this script to run it."
+msgstr "Dette script sletter filer &aelig;ldre end 6 m&aring;neder for at sikre at det ikke tilf&aelig;ldigvis k&oslash;res af bots som f.eks. s&oslash;gemaskiner. Det skal k&oslash;res med "?areyousure=yes" efter adressen."
+
+msgid "This theme is awaiting moderation and has not been deemed as safe yet."
+msgstr "Dette tema afventer godkendelse."
+
+msgid "This uploader can be used to upload themes from your local computer."
+msgstr "<i>Uploaderen kan bruges til at uploade temaer fra computer til serveren.</i>"
+
+msgid "This voucher has been marked as Redeemed."
+msgstr "Denne rabatkode er markeret som brugt."
+
+msgid "this voucher has been used up"
+msgstr "Denne rabatkode er blevet brugt op"
+
+msgid "This website is undergoing maintenance and is temporarily unavailable"
+msgstr ""
+
+msgid "This will appear above the table of contents."
+msgstr ""
+
+msgid "This will appear below the table of contents."
+msgstr ""
+
+msgid "This wizard will guide you through the process of creating an online store and populating it with products."
+msgstr "Guiden vil hjælpe med processen til at oprette en webshop og oprette produkter."
+
+msgid "Timed Events"
+msgstr ""
+
+msgid "title"
+msgstr ""
+
+msgid "token does not match"
+msgstr "Kode matcher ikke"
+
+msgid "Total Themes:"
+msgstr "Totalt antal temaer:"
+
+msgid "Transaction %1 has already been captured."
+msgstr "Transaktion %1 er allerede blevet captured."
+
+msgid "Transaction %1 is no longer authorised."
+msgstr "Transaktionen %1 er ikke længere authorised."
+
+msgid "Types"
+msgstr ""
+
+msgid "Unapprove"
+msgstr "Fratag godkendelse"
+
+msgid "Unknown"
+msgstr "Ukendt"
+
+msgid "unknown error on transaction %1"
+msgstr "Ukendt fejl ved transaktion %1"
+
+msgid "Update Page Details"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "Upload & Install"
+msgstr "Upload og installer"
+
+msgid "Upload Complete!"
+msgstr "Upload gennemf&oslash;rt"
+
+msgid "Upload Form"
+msgstr "Upload formular"
+
+msgid "use this if you don't want submenus to appear."
+msgstr ""
+
+msgid "used by Google. importance of page relative to other pages on site. values 0.1 to 1.0"
+msgstr ""
+
+msgid "User Account"
+msgstr "Administrationskonto"
+
+msgid "User Details"
+msgstr "Kundeoplysninger"
+
+msgid "User Files"
+msgstr "Brugerfiler"
+
+msgid "User Options"
+msgstr "Brugerindstillinger"
+
+msgid "Username"
+msgstr "Brugernavn"
+
+msgid "Users"
+msgstr "Brugere"
+
+msgid "VAT-free"
+msgstr ""
+
+msgid "Verify"
+msgstr "Bekr&aelig;ft"
+
+msgid "Version"
+msgstr ""
+
+msgid "view or edit image transition details"
+msgstr "Se eller ret detaljer for billed slider"
+
+msgid "view or edit menu"
+msgstr "Se eller ret menu"
+
+msgid "view or edit snippet"
+msgstr "Se eller ret snippet"
+
+msgid "VIEW PAGE"
+msgstr ""
+
+msgid "View Site"
+msgstr ""
+
+msgid "Vouchers"
+msgstr ""
+
+msgid "WebME admin area"
+msgstr ""
+
+msgid "Website Administrator attention needed. Please log into your administration area (and check your email)."
+msgstr "OBS: Opmærksomhed påkrævet!. Venligst log ind i dit kontrolpanel."
+
+msgid "Website Statistics"
+msgstr "Statistik for webside"
+
+msgid "Website Subtitle"
+msgstr ""
+
+msgid "Website Title"
+msgstr ""
+
+msgid "Weight (kg)"
+msgstr ""
+
+msgid "what is the root page of the menu. enter a page's name. defaults to the top-level."
+msgstr ""
+
+msgid "What URL would you like to redirect to"
+msgstr ""
+
+msgid "Where do you want to start summarising your pages from? If you want this summary to list excerpts from all the pages on your site, then choose "<strong>none</strong>". Otherwise, choose the page which <strong>contains</strong> the pages you want summarised."
+msgstr ""
+
+msgid "whether to allow submenus to be closed. choose from 'yes' or 'no"
+msgstr ""
+
+msgid "Widgets"
+msgstr "Elementer"
+
+msgid "Write Access"
+msgstr "Skriveadgang"
+
+msgid "year-month-day hour:minute"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "You are not in a user-group which has access to this page. If you think you should be, please contact the site administrator."
+msgstr ""
+
+msgid "you are not logged in as an admin"
+msgstr "Du er ikke logget ind som administrator"
+
+msgid "You can edit your review for 15 minutes"
+msgstr "Du kan rette din vurdering i 15 minutter"
+
+msgid "You can't create a product until you have created a type."
+msgstr "Der kan ikke oprettes et produkt uden en tilgængelig produkttype."
+
+msgid "You don't have that plugin installed."
+msgstr "Dette modul er ikke installeret."
+
+msgid "you have used your quota of this voucher"
+msgstr "Du har opbrugt din kvote for denne rabatkode"
+
+msgid "You must agree to the terms and conditions. Please press "Back" and try again."
+msgstr ""
+
+msgid "You must fill in the Captcha"
+msgstr ""
+
+msgid "You must fill in the following fields:"
+msgstr ""
+
+msgid "You must include a plugin name and documentation type."
+msgstr "Skal indeholde et modulnavn og dokumentationstype"
+
+msgid "You must run this script from your localhost (to stop hackers)"
+msgstr "Du skal køre dette script fra localhost (for at stoppe hackere)"
+
+msgid "you need PHP 5.2 or PECL json 1.2"
+msgstr "PHP 5.2 eller PECL JSON 1.2 p&aring;kr&aelig;vet"
+
+msgid "You need to type a comment"
+msgstr "Du skal indtaste en kommentar"
+
+msgid "You will log in with this. Please ensure it is correct. If you forget your password, it can be sent to this address."
+msgstr "Du bruger denne til at logge ind. Venligst kontroll&eacute;r om den er korrekt. Hvis kodeordet glemmes, kan det sendes til denne adresse."
+
+msgid "Your %1 installation is complete."
+msgstr "Installationen af %1 er nu gennemf&oslash;rt."
+
+msgid "your email address"
+msgstr ""
+
+msgid "your email address is not associated with this voucher"
+msgstr "Emailadressen passer ikke til rabatkoden"
+
+msgid "your name"
+msgstr ""
+
+msgid "Your theme is now awaiting moderation, you will receive an email if it is approved."
+msgstr "Dit tema vil nu blive vurderet og du vil modtage en email hvis det bliver godkendt."
+
+msgid "Your theme named "%1" has been approved by moderaters for addition to the theme repository."
+msgstr "Dit tema, "%1", er blevet godkendt tilf&oslash;jelse i vores system."
+
+msgid "Your theme named "%1" has been deleted by moderaters."
+msgstr "Dit tema "%1" er blevet slettet fra systemet."
+
+msgid "Your theme named "%1" has been marked for approval by moderaters for re-addition to the theme repository."
+msgstr "Dit tema "%1" er blevet fjernet fra tema-databasen og indsendes igen for at blive inkluderet."
+
+msgid "Your token is: %token%"
+msgstr "Din registreringskode er: %token%"
+
+msgid "Zoom"
+msgstr ""
+
+msgid "[%1] user registration token"
+msgstr "Din registreringskode til %1"
+
+msgid "[+] Add Address"
+msgstr "[+] Tilføj adresse"
+
+msgid "[more...]"
+msgstr "Læs mere..."
+
+msgid "[x]"
+msgstr "Slet"
+
+msgid "how the menu is drawn. choose from 'horizontal' or 'vertical
+		.' defaults to 'horizontal'."
+msgstr ""
+
+msgid "whether to allow submenus to be closed. choose from 'yes' or 'no
+		.' defaults to 'yes'."
+msgstr ""
+
+msgid "Show all images in a directory, transitioning between them';
+	},
+	'frontend' => array(
+		'widget' => 'showImageTransition"
+msgstr ""
+
+msgid "or import:"
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+msgid "Context"
+msgstr ""
+
+msgid "File"
+msgstr ""
+

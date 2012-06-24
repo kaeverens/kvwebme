@@ -56,7 +56,7 @@ $(function() {
 		echo '<div id="themes-carousel">'
 			.__(
 				'Loading.. If you have no internet connection, please <a href="/'
-				'install/step7.php?theme=skipped">click here to proceed.</a>'
+				.'install/step7.php?theme=skipped">click here to proceed.</a>'
 			)
 			.'</div>';
 		?>		

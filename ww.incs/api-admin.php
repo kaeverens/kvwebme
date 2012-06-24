@@ -1553,13 +1553,14 @@ function Core_adminPluginsGetAvailable() {
 			continue;
 		}
 		require SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php';
-		if (isset( $plugin[ 'hide_from_admin' ] ) && $plugin[ 'hide_from_admin' ]) {
+		if (isset($plugin['hide_from_admin']) && $plugin['hide_from_admin']) {
 		  continue;
 		}
-		$available[ $name ] = array( 
-			'name' => $plugin[ 'name' ],
-			'description' => @$plugin[ 'description' ],
-			'version' => ( @$plugin[ 'version' ] == 0 ) ? '0' : $plugin[ 'version' ]
+		$available[$name] = array( 
+			'name' => is_string($plugin['name'])?$plugin['name']:$plugin['name'](),
+			'description'=>is_string($plugin['description'])
+				?$plugin['description']:$plugin['description'](),
+			'version'=>(@$plugin['version']==0)?'0':$plugin['version']
 		);
 	}	
 	return $available;
@@ -1582,8 +1583,9 @@ function Core_adminPluginsGetInstalled() {
 			continue;
 		}
 		$installed[ $name ] = array(
-			'name' => $plugin[ 'name' ],
-			'description' => $plugin[ 'description' ],
+			'name' => is_string($plugin['name'])?$plugin['name']:$plugin['name'](),
+			'description'=>is_string($plugin['description'])
+				?$plugin['description']:$plugin['description'](),
 			'version' => ( @$plugin[ 'version' ] == 0 ) ? '0' : $plugin[ 'version' ]
 		);
 	}

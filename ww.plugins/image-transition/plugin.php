@@ -10,7 +10,7 @@ $plugin=array(
 		)
 	),
 	'description' => function() {
-		__('Show all images in a directory, transitioning between them';
+		return __('Show all images in a directory, transitioning between them');
 	},
 	'frontend' => array(
 		'widget' => 'showImageTransition'

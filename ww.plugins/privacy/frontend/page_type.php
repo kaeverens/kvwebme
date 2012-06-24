@@ -237,7 +237,7 @@ function Privacy_registrationShowForm($error='', $alert='') {
 	/**
 	 * form validation array
 	 */
-	$validation = array( );
+	$validation=array();
 
 	$c='<div id="userregistration"><em style="color:red" id="error"></em>';
 	if (isset($PAGEDATA->vars['userlogin_message_registration'])) {
@@ -630,12 +630,12 @@ function Privacy_registrationRegister() {
 	* @return string HTML of the profile
 	*/
 function Privacy_profileGet() {
+	$uid = addslashes($_SESSION['userdata'][ 'id' ]);
+	$user = dbRow('select * from user_accounts where id=' . $uid);
 	$html=Core_trigger('privacy_overload', array($user));
 	if ($html) {
 		return $html;
 	}
-	$uid = addslashes($_SESSION['userdata'][ 'id' ]);
-	$user = dbRow('select * from user_accounts where id=' . $uid);
 	$contact=json_decode($user['contact'], true);
 
 	$phone = ($contact['phone'] == '')
@@ -696,7 +696,7 @@ function Privacy_profileGet() {
 				.' name="default-address" value="'.$name.'"/> </td> <td>'
 				.str_replace(' ', '-', $name).'</td> <td> <a href="javascript:edit_addr'
 				.'ess(\''.$name.'\');" class="edit-addr" name="'.$name
-				.'">'.__('edit')'.</a> <a href="javascript:;" '
+				.'">'.__('edit').'.</a> <a href="javascript:;" '
 				.'class="delete-addr" name="'
 				.$name.'">'.__('[x]').'</a> </td> </tr> ';
 		}
