@@ -234,14 +234,17 @@ function CoreSiteoptions_screenLanguages() {
 		}
 		// { header
 		var $header=$(
-			'<table><tr><td id="lang-selector"/><td id="lang-export"/><td id="lang-import"/></tr></table>'
+			'<table><tr><td id="lang-selector"/><td>'+__('export')+':</td>'
+			+'<td id="lang-export"/>'
+			+'<td>'+__('or')+' '+__('import')+':</td><td id="lang-import"/>'
+			+'</tr></table>'
 		)
 			.appendTo($content.empty());
 		var $languages=$('<select><option> -- loading -- </option></select>')
 			.appendTo('#lang-selector');
 		var $export=$('<button>'+__('Export')+'</button>')
 			.appendTo('#lang-export');
-		var $import=$('<button>'+__('Import')+'</button>')
+		var $import=$('<button id="lang-import-button">'+__('Import')+'</button>')
 			.appendTo('#lang-import');
 		// }
 		var currentTr=[];
@@ -320,6 +323,61 @@ function CoreSiteoptions_screenLanguages() {
 				return;
 			}
 			document.location='/a/f=adminLanguagesExportPo?lang='+lang
+		});
+		$import.click(function() {
+			var $dialog=$('<table>'
+				+'<tr><th>'+__('Language')+':</th><td><select id="popup-lang"/>'
+				+'</td></tr>'
+				+'<tr><th>'+__('Context')+':</th><td><select id="popup-context"/></td>'
+				+'</tr>'
+				+'<tr><th>'+__('File')+':</th><td><input type="button" class="upload"'
+		    +' id="popup-file" value="Select and Upload"/>'
+				+'</td></tr>'
+				+'</table>'
+			).dialog({
+				'close':function() {
+					$dialog.remove();
+				}
+			});
+			// { set up import button
+			$('#popup-file')
+				.css('height',20)
+				.uploadify({
+					'swf':'/j/jquery.uploadify/uploadify.swf',
+					'auto':'true',
+					'checkExisting':false,
+					'cancelImage':'/i/blank.gif',
+					'height':20,
+					'width':81,
+					'multi':false,
+					'buttonImage':'/i/choose-file.png',
+					'uploader':'/a/f=adminLanguagesImportPo',
+					'onUploadSuccess':function(file, data, response){
+					console.log(data);
+						ret=eval('('+data+')');
+						if (ret.error) {
+							return alert(ret.error);
+						}
+						updateVisibleTranslations();
+						$dialog.remove();
+					},
+					'onUploadStart':function() {
+						$('#popup-file').uploadify('settings', 'formData', {
+							'PHPSESSID':sessid,
+							'lang':$('#popup-lang').val(),
+							'context':$('#popup-context').val()
+						});
+					}
+				});
+			// }
+			$('#popup-lang').html($languages.html()).val($languages.val());
+			$.post('/a/f=adminLanguagesGetContexts', function(ret) {
+				var opts=['<option value=""></option>'];
+				for (var i=0;i<ret.length;++i) {
+					opts.push('<option>'+ret[i].context+'</option>');
+				}
+				$('#popup-context').html(opts.join(''));
+			});
 		});
 	}
 	showLanguages();
@@ -690,7 +748,6 @@ function CoreSiteoptions_screenMenus() {
 				'#menu-details'
 			);
 			if (!$inp.length && key!='_ord') {
-				console.log('unknown key: '+key);
 				return;
 			}
 			$inp.val(val);
@@ -827,7 +884,6 @@ function CoreSiteoptions_screenEmails() {
 				$('<a href="javascript:" data-id="'+aData[3]+'">view</a>')
 					.appendTo($('td:nth-child(4)', nRow).empty())
 					.click(function() {
-						console.log(1);
 						var w=$(window).width(), h=$(window).height();
 						var html='<div><iframe style="width:100%;height:100%"'
 							+' src="/a/f=adminEmailSentGet/id='+$(this).data('id')

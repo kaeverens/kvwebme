@@ -1,10 +1,15 @@
 @import "/css";
-*{font:13px tahoma,sans-serif;color:#666}
 a img{border:0}
 a:hover,.link:hover{color:#900}
 a,.link{color:#369;text-decoration:underline;cursor:pointer}
 body.noheader{margin:0;padding:1px 0 0 0;background:#fff}
-body{margin:0;padding:100px 0 20px 0;background:url(/ww.admin/theme/bnner-bg.jpg) repeat-x left top}
+body{
+	margin:0;
+	padding:100px 0 20px 0;
+	background:url(/ww.admin/theme/bnner-bg.jpg) repeat-x left top;
+	font:13px tahoma,sans-serif;
+	color:#666;
+}
 em strong{color:red;font-style:italic}
 em{display:block;color:#333;font-weight:bold;padding:3px;padding-left:45px;padding-top:18px;margin:3px 0px;background:url("/ww.admin/theme/warning.gif") 1% 50% no-repeat}
 h1{position:absolute;right:10px;top:5px;line-height:40px;font-size:16px;letter-spacing:1px;background:#fff;color:#000;border:1px solid #000;padding:0 20px;text-transform:capitalize}

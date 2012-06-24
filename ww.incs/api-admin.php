@@ -459,6 +459,18 @@ function Core_adminLanguagesExportPo() {
 }
 
 // }
+// { Core_adminLanguagesGetContexts
+
+/**
+	* get list of available contexts
+	*
+	* @return array of strings
+	*/
+function Core_adminLanguagesGetContexts() {
+	return dbAll('select distinct context from languages');
+}
+
+// }
 // { Core_adminLanguagesGetStrings
 
 /**
@@ -484,6 +496,54 @@ function Core_adminLanguagesGetTrStrings() {
 		'select str,context,trstr from languages where lang="'
 		.addslashes($lang).'"'
 	);
+}
+
+// }
+// { Core_adminLanguagesImportPo
+
+/**
+	* import po file
+	*
+	* @return status
+	*/
+function Core_adminLanguagesImportPo() {
+	$lang=@$_REQUEST['lang'];
+	$context=@$_REQUEST['context'];
+	if (!$lang || !$context) {
+		return array(
+			'error'=>__('"Language" and "Context" parameters both required')
+		);
+	}
+	$file=file($_FILES['Filedata']['tmp_name']);
+	$msgid='';
+	$msgstr='';
+	dbQuery(
+		'delete from languages where lang="'.addslashes($lang).'"'
+		.' and context="'.addslashes($context).'"'
+	);
+	foreach ($file as $line) {
+		$line=trim($line);
+		if ($line=='') {
+			$msgid='';
+			$msgstr='';
+			continue;
+		}
+		if (preg_match('/^msgid "/', $line)) {
+			$msgid=preg_replace('/^msgid "|"$/', '', $line);
+			continue;
+		}
+		if (preg_match('/^msgstr "/', $line)) {
+			$msgstr=preg_replace('/^msgstr "|"$/', '', $line);
+			if (!$msgid) {
+				continue;
+			}
+			$sql='insert into languages set str="'.addslashes($msgid).'", lang="'
+				.addslashes($lang).'", context="'.addslashes($context).'"'
+				.', trstr="'.addslashes($msgstr).'"';
+			dbQuery($sql);
+		}
+	}
+	return true;
 }
 
 // }

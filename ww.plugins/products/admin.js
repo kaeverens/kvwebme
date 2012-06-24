@@ -272,7 +272,7 @@ function Products_screenImport() {
 			'cancelImage':'/i/blank.gif',
 			'buttonImage':'/i/choose-file.png',
 			'height':20,
-			'width':91,
+			'width':81,
 			'uploader':'/a/p=products/f=adminImportFileUpload',
 			'postData':{
 				'PHPSESSID':sessid
