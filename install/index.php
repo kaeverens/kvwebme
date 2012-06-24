@@ -2,7 +2,7 @@
 /**
 	* installer welcome page
 	*
-	* PHP version 5.2
+	* PHP version 5.3
 	*
 	* @category None
 	* @package  None
@@ -43,10 +43,10 @@ echo '<tr><td>'.__('Write Access').'</td>'
 	.'<td><code>'.$home_dir.'</code></td><td>'.$access.'</td></tr>';
 // }
 // { php version
-$php=($phpversion<'5.2')
-	?'<span class="error">'.$phpversion.' '.__('you need PHP 5.2 or PECL json 1.2').'</span>'
+$php=($phpversion<'5.3')
+	?'<span class="error">'.$phpversion.' '.__('you need PHP 5.3 or PECL json 1.2').'</span>'
 	:'OK: '.$phpversion;
-echo '<tr><td>'.__('PHP Version:').'</td><td>'.__('5.2 required').'</td><td>'.$php.'</td></tr>';
+echo '<tr><td>'.__('PHP Version:').'</td><td>'.__('5.3 required').'</td><td>'.$php.'</td></tr>';
 // }
 // { PHP PDO
 $ok=class_exists('PDO');

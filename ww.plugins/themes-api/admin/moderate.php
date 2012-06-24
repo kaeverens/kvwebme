@@ -39,68 +39,27 @@ if (count($moderation)==0) {
 /**
  * write javascript and add it to caching scheme
  */
-$script = '
-$( ".delete" ).click( function( ){
-	var theme_id = $( this ).attr( "id" );
-	var user_id = $( this ).attr( "userid" );
-
-	var hash = Math.floor( Math.random( ) * 1001 );
-	var dataString = "theme_id=" + theme_id + "&user_id=" + user_id;
-	var $this = $( this );
-
-	$.ajax({
-		type: "POST",
-		data: dataString,
-		url:"/ww.plugins/themes-api/admin/delete-theme.php?hash="+hash,
-		success:function(html){
-			if( html == "ok" )
-				$this.parent( ).parent( ).fadeOut( "slow" );
-			else
-				alert("'.addslashes(__(
-					'There was an error deleting the file, please try again'
-				)).'" );
-		}   
-	});  
-
-} );
-$( ".approve" ).click( function( ){
-	var theme_id = $( this ).attr( "id" );
-	var user_id = $( this ).attr( "userid" );
-
-	var hash = Math.floor( Math.random( ) * 1001 );
-	var dataString = "theme_id=" + theme_id + "&user_id=" + user_id;
-	var $this = $( this );
-
-	$.ajax({
-		type: "POST",
-		data: dataString,
-		url:"/ww.plugins/themes-api/admin/approve-theme.php?hash="+hash,
-		success:function(html){
-			if( html == "ok" )
-			       $this.parent( ).parent( ).fadeOut( "slow" );
-			else
-				alert( "'.addslashes(__(
-					'There was an error approving the file. Please try again.'
-				))
-		}   
-	});  
-} );
-';
+$script='$(".delete").click(function(){var theme_id=$(this).attr("id");var '
+	.'user_id=$(this).attr("userid");var hash=Math.floor(Math.random()*1001);'
+	.'var dataString="theme_id="+theme_id+"&user_id="+user_id;var $this=$(thi'
+	.'s);$.ajax({type:"POST",data:dataString,url:"/ww.plugins/themes-api/admi'
+	.'n/delete-theme.php?hash="+hash,success:function(html){if(html=="ok")$th'
+	.'is.parent().parent().fadeOut("slow");else alert("'
+	.addslashes(__('There was an error deleting the file,please try again'))
+	.'");}});});$(".approve").click(function(){var theme_id=$(this).attr("id"'
+	.');var user_id=$(this).attr("userid");var hash=Math.floor(Math.random()*'
+	.'1001);var dataString="theme_id="+theme_id+"&user_id="+user_id;var $this'
+	.'=$(this);$.ajax({type:"POST",data:dataString,url:"/ww.plugins/themes-ap'
+	.'i/admin/approve-theme.php?hash="+hash,success:function(html){if(html=="'
+	.'ok")$this.parent().parent().fadeOut("slow");else alert("'
+	.addslashes(__('There was an error approving the file. Please try again.'))
+	.'");}});});';
 WW_addInlineScript($script);
 
-echo '
-<table>
-	<tr>
-		<th>'.__('Name').'</th>
-		<th>'.__('Version').'</th>
-		<th>'.__('Description').'</th>
-		<th>'.__('Download').'</th>
-		<th>'.__('Submit Date').'</th>
-		<th>'.__('Author').'</th>
-		<th>'.__('Approve').'</th>
-		<th>'.__('Delete').'</th>
-	</tr>
-';
+echo '<table><tr><th>'.__('Name').'</th><th>'.__('Version').'</th><th>'
+	.__('Description').'</th><th>'.__('Download').'</th><th>'
+	.__('Submit Date').'</th><th>'.__('Author').'</th><th>'.__('Approve')
+	.'</th><th>'.__('Delete').'</th></tr>';
 
 /**
  * print themes in table
