@@ -6,6 +6,7 @@ $(function() {
 		'projects':[],
 		'types':[]
 	};
+	var issueId=0;
 	var $wrapper=$('#issuetracker-wrapper');
 	var navbar=$('<div id="issuetracker-navbar" style="text-align:right">'
 		+'<select class="project"/></div>')
@@ -210,6 +211,7 @@ $(function() {
 		}
 	}
 	function showIssue(id) {
+		issueId=id;
 		$.post('/a/p=issue-tracker/f=issueGet', {
 			'id':id
 		}, function(ret) {
@@ -326,7 +328,7 @@ $(function() {
 						'cancelImage':'/i/blank.gif',
 						'buttonImage':'/i/choose-file.png',
 						'height':20,
-						'width':91,
+						'width':81,
 						'uploader':'/a/p=issue-tracker/f=issueFileUpload',
 						'postData':{
 							'PHPSESSID':pagedata.sessid,
@@ -378,6 +380,42 @@ $(function() {
 				})
 				.appendTo($content);
 			// }
+			$.post('/a/p=issue-tracker/f=commentsGet', {
+				'id':id
+			}, showComments);
+		});
+	}
+	function showComments(ret) {
+		var comments=[];
+		for (var i=0;i<ret.length;++i) {
+			comments.push(
+				'<div class="issuetracker-comment"><table>'
+				+'<tr><th>Name</th><td>'+ret[i].name+'</td></tr>'
+				+'<tr><th>Date</th><td>'+Core_dateM2H(ret[i].cdate, 'datetime')
+				+'</td></tr>'
+				+'<tr><th>Comment</th><td>'+htmlspecialchars(ret[i].body)+'</td></tr>'
+				+'</table><hr/></div>'
+			);
+		}
+		$content.append(comments.join(''));
+		var $addComment=$('<div class="issuetracker-addComment">'
+			+'<textarea style="width:100%;height:100px;"/>'
+			+'<button>Add Comment</button>'
+			+'</div>').appendTo($content);
+		$addComment.find('button').click(function() {
+			var body=$addComment.find('textarea').val();
+			if (body) {
+				$.post('/a/p=issue-tracker/f=commentAdd', {
+					'issue_id':issueId,
+					'body':body
+				}, function(ret) {
+					if (ret.error) {
+						return alert(ret.error);
+					}
+					showIssue(issueId);
+				});
+			}
+			return false;
 		});
 	}
 });

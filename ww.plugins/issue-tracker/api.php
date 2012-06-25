@@ -12,6 +12,55 @@
   * @link       www.kvweb.me
  */
 
+// { Issuetracker_commentAdd
+
+/**
+	* add a comment to an issue
+	*
+	* @return array status
+	*/
+function Issuetracker_commentAdd() {
+	$iid=(int)$_REQUEST['issue_id'];
+	$body=$_REQUEST['body'];
+	$uid=@$_SESSION['userdata']['id'];
+	if (!$uid) {
+		return array(
+			'error'=>__('you are not logged in')
+		);
+	}
+	dbQuery(
+		'insert into issuetracker_comments'
+		.' set user_id='.$uid.', body="'.addslashes($body).'"'
+		.', cdate=now(), issue_id='.$iid
+	);
+	return array(
+		'ok'=>1
+	);
+}
+
+// }
+// { Issuetracker_commentsGet
+
+/**
+	* get comments attached to an issue
+	*
+	* @return array status
+	*/
+function Issuetracker_commentsGet() {
+	$iid=(int)$_REQUEST['id'];
+	$rs=dbAll(
+		'select * from issuetracker_comments where issue_id='.$iid
+		.' order by cdate'
+	);
+	foreach ($rs as $k=>$r) {
+		$rs[$k]['name']=dbOne(
+			'select name from user_accounts where id='.$r['user_id'], 'name'
+		);
+	}
+	return $rs;
+}
+
+// }
 // { Issuetracker_issueCreate
 
 /**

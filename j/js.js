@@ -2,7 +2,7 @@ $j=jQuery;
 jQuery.fn.outerHTML = function() {
 	return $('<div>').append( this.eq(0).clone() ).html();
 };
-function Core_dateM2H(d,type){
+function Core_dateM2H(d, type){
 	if(d=='' || d=='0000-00-00')return '-';
 	if(!type)type='date';
 	date=d.replace(/([0-9]+)-([0-9]+)-([0-9]+).*/,'$3-$2-$1',d).replace(/-0/g,'-');

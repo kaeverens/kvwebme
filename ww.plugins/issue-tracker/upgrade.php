@@ -50,3 +50,13 @@ if ($version==4) {
 	dbQuery('alter table issuetracker_issues add meta text');
 	$version=5;
 }
+if ($version==5) {
+	dbQuery(
+		'create table issuetracker_comments('
+		.'id int auto_increment primary key not null'
+		.',user_id int, body text'
+		.',cdate datetime, issue_id int'
+		.')default charset=utf8;'
+	);
+	$version=6;
+}

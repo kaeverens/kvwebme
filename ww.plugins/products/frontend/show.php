@@ -1283,9 +1283,8 @@ class Products{
 		if (!is_numeric($id)) {
 			return false;
 		}
-		$md5=md5(
-			$id.'|'.$search.'|'.join(',', $search_arr).'|'.join(',', $location)
-		);
+		$locmd5=is_array($location)?join(',', $location):0;
+		$md5=md5($id.'|'.$search.'|'.join(',', $search_arr).'|'.$locmd5);
 		if (!array_key_exists($md5, self::$instances)) {
 			$product_ids=array();
 			$locFilter=$location?' and location in ('.$location.')':'';
