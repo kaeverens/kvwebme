@@ -1038,7 +1038,9 @@ function Products_adminProductsListDT() {
 		$row=array(0);
 		// { has images
 		$has_images=0;
-		if (@is_dir(USERBASE.'/f/'.$r['images_directory'])) {
+		if ($r['images_directory']
+			&& @is_dir(USERBASE.'/f/'.$r['images_directory'])
+		) {
 			$dir=new DirectoryIterator(USERBASE.'/f/'.$r['images_directory']);
 			foreach ($dir as $f) {
 				if ($f->isDot()) {
