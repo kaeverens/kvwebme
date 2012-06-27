@@ -456,7 +456,6 @@ function Products_adminImportFileUpload() {
 	@mkdir(dirname($fname), 0777, true);
 	$from=$_FILES['Filedata']['tmp_name'];
 	move_uploaded_file($from, $fname);
-	mail('kae.verens@gmail.com', 'test', $fname."\n".filesize($fname));
 	return array('ok'=>1);
 }
 
