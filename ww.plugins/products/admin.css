@@ -7,3 +7,10 @@
 td.editable{
 	cursor:pointer;
 }
+#product-images-wrapper>div{
+	display:inline-block;
+	margin:5px;
+	box-shadow:0 0 5px #000;
+	text-align:center;
+	padding:5px;
+}

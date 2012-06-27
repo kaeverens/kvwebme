@@ -873,6 +873,7 @@ echo '</div><input type="submit" value="Save" /></form>';
 WW_addScript('products/admin/products-edit.js');
 WW_addScript('products/admin/create-page.js');
 WW_addScript('products/admin/add-category.js');
+WW_addCss('/ww.plugins/products/admin.css');
 WW_addInlineScript(
 	'$(function(){'
 	.'$("#onTheFlyParent").remoteselectoptions({'

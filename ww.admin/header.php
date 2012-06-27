@@ -43,6 +43,7 @@ WW_addScript('/j/cluetip/jquery.cluetip.js');
 WW_addScript('/j/jquery.saorfm/jquery.saorfm.js');
 WW_addScript('/j/jquery-ui-timepicker-addon.js');
 WW_addScript('/j/jquery.uploadify/jquery.uploadify.js');
+WW_addScript('/j/uploader.js');
 WW_addScript('/j/lang.js');
 WW_addScript('/j/CodeMirror-2.24/lib/codemirror.js');
 WW_addScript('/j/CodeMirror-2.24/mode/css/css.js');

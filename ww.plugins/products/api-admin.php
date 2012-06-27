@@ -349,7 +349,7 @@ function Products_adminExport() {
 	foreach ($fields as $field) {
 	    $row.= '"_'.$field['Field'].'",';
 	}
-	$row.="\"_categories\"\n";
+	$row.="\"_categories\",\"_has_images\"\n";
 	$contents = $row;
 	// } 
 	// { Get the data
@@ -386,10 +386,28 @@ function Products_adminExport() {
 			$catsArr[]=$thisCat;
 		}
 		$row.='"'.join('|', $catsArr).'"';
+		// { has images
+		$has_images=0;
+		if ($product['images_directory']
+			&& @is_dir(USERBASE.'/f/'.$product['images_directory'])
+		) {
+			$dir=new DirectoryIterator(USERBASE.'/f/'.$product['images_directory']);
+			foreach ($dir as $f) {
+				if ($f->isDot()) {
+					continue;
+				}
+				if ($f->isFile()) {
+					$has_images++;
+				}
+			}
+		}
+		$row.=',"'.($has_images?'Yes':'No').'"';
+		// }
 		$contents.=$row."\n";
 	}
 	echo $contents;
 	// }
+	exit;
 }
 
 // }
@@ -438,6 +456,7 @@ function Products_adminImportFileUpload() {
 	@mkdir(dirname($fname), 0777, true);
 	$from=$_FILES['Filedata']['tmp_name'];
 	move_uploaded_file($from, $fname);
+	mail('kae.verens@gmail.com', 'test', $fname."\n".filesize($fname));
 	return array('ok'=>1);
 }
 

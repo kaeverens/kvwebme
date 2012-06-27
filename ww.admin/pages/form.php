@@ -67,6 +67,7 @@ WW_addScript('/j/jquery.remoteselectoptions.js');
 WW_addScript('/j/cluetip/jquery.cluetip.js');
 WW_addScript('/j/jquery-ui-timepicker-addon.js');
 WW_addScript('/ww.admin/pages/form2.js');
+WW_addScript('/j/uploader.js');
 WW_addScript('/j/lang.js');
 echo '<html><head>'
 	.Core_getJQueryScripts()

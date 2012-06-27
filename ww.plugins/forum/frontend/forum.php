@@ -232,7 +232,7 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 			:0;
 		$emailHash=md5(trim(strtolower($user_email)));
 		
-		$c.='<tr><td><img class="avatar" data-uid=' . $user->get('id') . '/>'
+		$c.='<tr><td><img class="avatar" data-uid="'.$user_id.'" />'
 			. '<span>Posts: '.$count_posts.'</span>'
 			. '<p>Helpfulness:'
 			. '<span class="ratings" id="forum_user_'.$user_email.'"'

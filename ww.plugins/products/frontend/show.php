@@ -829,13 +829,15 @@ function Products_show($PAGEDATA) {
 		function getSubLocations($parent_id) {
 			$locs=array($parent_id);
 			$rs=dbAll('select id from locations where parent_id='.$parent_id);
-			foreach ($rs as $r) {
-				$locs=array_merge($locs, getSubLocations($r['id']));
+			if ($rs) {
+				foreach ($rs as $r) {
+					$locs=array_merge($locs, getSubLocations($r['id']));
+				}
 			}
 			return $locs;
 		}
 		$locationFilter=join(',', getSubLocations(
-			$_SESSION['location']['id']
+			isset($_SESSION['location']['id'])?$_SESSION['location']['id']:0
 		));
 	}
 	// }

@@ -56,11 +56,6 @@ $(function(){
 		document.location=document.location.toString().replace(/\?.*/, '')
 			+'?__LANG='+$(this).val();
 	});
-	$('#core-location').live('change', function() {
-		var val=$(this).val();
-		document.location=document.location.toString().replace(/\?.*/, '')
-			+'?__LOCATION='+$(this).val();
-	});
 	if (!window.console) {
 		window.console={
 			"log":function(v){}

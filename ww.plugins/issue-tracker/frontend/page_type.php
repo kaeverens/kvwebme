@@ -7,4 +7,4 @@ WW_addInlineScript('var it_edit_all='.$PAGEDATA->vars['issue_tracker_edit_all'].
 WW_addScript('issue-tracker/js.js');
 WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
 WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
-WW_addScript('/j/jquery.uploadify/jquery.uploadify.js');
+WW_addScript('/j/uploader.js');

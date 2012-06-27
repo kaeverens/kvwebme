@@ -320,27 +320,19 @@ $(function() {
 			if (userdata.isAdmin) {
 				var $button=$('<button id="issuetracker-file">Upload</button>')
 					.appendTo($filesWrapper);
-				$button.css('height',20)
-					.uploadify({
-						'swf':'/j/jquery.uploadify/uploadify.swf',
-						'auto':'true',
-						'checkExisting':false,
-						'cancelImage':'/i/blank.gif',
-						'buttonImage':'/i/choose-file.png',
-						'height':20,
-						'width':81,
-						'uploader':'/a/p=issue-tracker/f=issueFileUpload',
-						'postData':{
-							'PHPSESSID':pagedata.sessid,
-							'id':id
-						},
-						'upload_success_handler':function(file, data, response){
-							ret=eval('('+data+')');
-							if (ret.ok) {
+				Core_uploader($button, {
+					'serverScript': '/a/p=issue-tracker/f=issueFileUpload',
+					'postData': {
+						'id':id
+					},
+					'successHandler':function(file, data, response){
+						$('#pte3-img').attr('src', data+'?'+Math.random());
+						ret=eval('('+data+')');
+						if (ret.ok) {
 							alert('file uploaded');
-							}
 						}
-					});
+					}
+				});
 			}
 			// }
 			// { add Save buttons, etc

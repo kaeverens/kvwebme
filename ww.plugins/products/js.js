@@ -169,7 +169,13 @@ $(function(){
 			var minutes=parseInt(diff/1000/60);
 			diff-=minutes*1000*60;
 			var seconds=parseInt(diff/1000);
-			$this.html(days+'d, '+hours+'h, '+minutes+'m, '+seconds+'s');
+			var show=days?days+'d ':'';
+			show+=hours<10?'0'+hours:hours;
+			show+=':';
+			show+=minutes<10?'0'+minutes:minutes;
+			show+=':';
+			show+=seconds<10?'0'+seconds:seconds;
+			$this.html(days+'d, '+hours+':'+minutes+':'+seconds);
 			setTimeout(update, 1000);
 		}
 		update();

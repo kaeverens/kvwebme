@@ -263,27 +263,15 @@ function Products_screenImport() {
 	});
 	// }
 	// { setup upload button
-	$('#product-types-upload-button')
-		.css('height',20)
-		.uploadify({
-			'swf':'/j/jquery.uploadify/uploadify.swf',
-			'auto':'true',
-			'checkExisting':false,
-			'cancelImage':'/i/blank.gif',
-			'buttonImage':'/i/choose-file.png',
-			'height':20,
-			'width':81,
-			'uploader':'/a/p=products/f=adminImportFileUpload',
-			'postData':{
-				'PHPSESSID':sessid
-			},
-			'upload_success_handler':function(file, data, response){
-				ret=eval('('+data+')');
-				if (ret.ok) {
-					$('#product-types-upload-button-uploaded').text('file uploaded');
-				}
+	Core_uploader('#product-types-upload-button', {
+		'serverScript': '/a/p=products/f=adminImportFileUpload',
+		'successHandler':function(file, data, response){
+			ret=eval('('+data+')');
+			if (ret.ok) {
+				$('#product-types-upload-button-uploaded').text('file uploaded');
 			}
-		});
+		}
+	});
 	// }
 	// { setup import button
 	$('#content button').click(function() {
@@ -858,23 +846,12 @@ function Products_typeEdit(id) {
 			+'<input name="image_not_found" id="pte3-inp"/>'
 		)
 			.appendTo('#pte3');
-		$('#pte3-inp')
-			.uploadify({
-				'swf':'/j/jquery.uploadify/uploadify.swf',
-				'auto':'true',
-				'checkExisting':false,
-				'cancelImage':'/i/blank.gif',
-				'height':20,
-				'width':81,
-				'buttonImage':'/i/choose-file.png',
-				'uploader':'/a/p=products/f=adminTypeUploadMissingImage/id='+id,
-				'postData':{
-					'PHPSESSID':sessid
-				},
-				'upload_success_handler':function(file, data, response){
-					$('#pte3-img').attr('src', data+'?'+Math.random());
-				}
-			});
+		Core_uploader('#pte3-inp', {
+			'serverScript': '/a/p=products/f=adminTypeUploadMissingImage/id='+id,
+			'successHandler':function(file, data, response){
+				$('#pte3-img').attr('src', data+'?'+Math.random());
+			}
+		});
 	}
 	function showMultiView(panel) {
 		$('<div><ul><li><a href="#ts1">body</a></li>'

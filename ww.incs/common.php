@@ -121,10 +121,12 @@ function Core_locationsGetUi($params=null) {
 		$ui.='<option value="'.$v.'"';
 		if ($v==@$_SESSION['location']['id']) {
 			$ui.=' selected="selected"';
+			WW_addInlineScript('pagedata.locationName="'.addslashes($k).'";');
 		}
 		$ui.='>'.htmlspecialchars($k).'</option>';
 	}
 	$ui.='</select>';
+	WW_addScript('/j/locations-selector.js');
 	return $ui;
 }
 
