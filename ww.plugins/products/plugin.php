@@ -1427,6 +1427,9 @@ function Products_getProductPrice(
 /**
 	* get subcategories of a page as menu items
 	*
+	* @param misc   $ignore ignore this
+	* @param object $page   page object
+	*
 	* @return array menu items
 	*/
 function Products_getSubCategoriesAsMenu($ignore, $page) {
@@ -1476,6 +1479,11 @@ function Products_getSubCategoriesAsMenu($ignore, $page) {
 
 /**
 	* get subcategories of a page as menu items, html format
+	*
+	* @param misc  $ignore  ignore this
+	* @param int   $pid     parent id
+	* @param int   $depth   current depth of the menu
+	* @param array $options options
 	*
 	* @return string menu items
 	*/
@@ -1805,7 +1813,8 @@ function Products_importFile($vars=false) {
 					}
 				}
 			break; // }
-			case '0': break;
+			case '0':
+			break;
 			default: // {
 				dbQuery('delete from products_categories_products where product_id='.$id);  
 				dbQuery(
@@ -2095,7 +2104,15 @@ function Products_widget($vars=null) {
 }
 
 // }
+// { Products_breadcrumbs
 
+/**
+  * show breadcrumbs for nav
+  *
+  * @param string $baseurl
+  *
+  * @return string the HTML of the breadcrumbs
+  */
 function Products_breadcrumbs($baseurl) {
 	global $PAGEDATA;
 	$breadcrumbs='';
@@ -2112,3 +2129,5 @@ function Products_breadcrumbs($baseurl) {
 	}
 	return $breadcrumbs;
 }
+
+// }

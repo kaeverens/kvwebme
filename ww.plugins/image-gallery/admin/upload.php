@@ -47,13 +47,13 @@ $position=dbOne(
 	'position'
 );
 
-$dimensions=getimagesize($_FILES['file_upload']['tmp_name']);
+$dimensions=getimagesize($_FILES['Filedata']['tmp_name']);
 $meta=addslashes(
 	json_encode(
 		array(
 			'width'=>$dimensions[0],
 			'height'=>$dimensions[1],
-			'name'=>$_FILES['file_upload']['name'],
+			'name'=>$_FILES['Filedata']['name'],
 			'caption'=>''
 		)
 	)
@@ -65,8 +65,8 @@ dbQuery($query);
 $last_id=dbLastInsertId();
 
 move_uploaded_file(
-	$_FILES['file_upload']['tmp_name'],
-	$dir.'/'.$_FILES['file_upload']['name']
+	$_FILES['Filedata']['tmp_name'],
+	$dir.'/'.$_FILES['Filedata']['name']
 );
 
 echo $last_id;

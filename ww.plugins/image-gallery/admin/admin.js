@@ -147,50 +147,27 @@ $(function(){
 			.val(vals.join(' '));
 		frameDemoUpdate();
 	});
-	$("#uploader").uploadify({
-		"uploader":"/ww.plugins/image-gallery/files/uploadify.swf",
-		"script":"/ww.plugins/image-gallery/admin/upload.php",
-		"cancelImg":"/ww.plugins/image-gallery/files/cancel.png",
-		"multi":true,
-		"buttonText":"Upload Files",
-		"removeCompleted":true,
-		"fileDataName":"file_upload",
-		"scriptData":{
-			"PHPSESSID":window.sessid,
-			"gallery_id":window.page_menu_currentpage
-		},
-		"onComplete":function(event, ID, fileObj, response, data) {
+	Core_uploader('#uploader', {
+		'serverScript': '/ww.plugins/image-gallery/admin/upload.php',
+		'successHandler':function(file, data, response){
 			$.post("/ww.plugins/image-gallery/admin/new-files.php", {
 				"gallery_id":window.page_menu_currentpage,
-				"id":response
+				"id":data
 			}, function(html) {
 				$("#image-gallery-wrapper")
 					.append(html)
 					.find('.error').remove();
 			});
 		},
-		"fileExt":"*.jpg;*.jpeg;*.png;*.gif",
-		"fileDesc":"Images Only",
-		"auto":true
+		'postData': {
+			'gallery_id':window.page_menu_currentpage
+		}
 	});
-	$("#frame-uploader").uploadify({
-		"uploader":"/ww.plugins/image-gallery/files/uploadify.swf",
-		"script":"/a/p=image-gallery/f=adminFrameUpload",
-		"cancelImg":"/ww.plugins/image-gallery/files/cancel.png",
-		"multi":false,
-		"buttonText":"Upload Frame",
-		"removeCompleted":true,
-		"fileDataName":"file_upload",
-		"scriptData":{
-			"PHPSESSID":window.sessid,
-			"id":window.page_menu_currentpage
-		},
-		"onComplete":function(event, ID, fileObj, response, data) {
-
-		},
-		"fileExt":"*.jpg;*.jpeg;*.png;*.gif",
-		"fileDesc":"Images Only",
-		"auto":true
+	Core_uploader('#frame-uploader', {
+		'serverScript': '/a/p=image-gallery/f=adminFrameUpload',
+		'postData': {
+			'id':window.page_menu_currentpage
+		}
 	});
 	function frameDemoUpdate() {
 		var frame=$('#val-image_gallery_frame').val(),

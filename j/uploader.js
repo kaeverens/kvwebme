@@ -1,9 +1,17 @@
 function Core_uploader(selector, opts) {
+	if (CoreUploaderOpts.requiresLoading) {
+		setTimeout(function() {
+			Core_uploader(selector, opts);
+		}, 100);
+		return;
+	}
 	if (!CoreUploaderOpts.requiresLoaded) {
 		$.cachedScript(CoreUploaderOpts.requires, function() {
 			CoreUploaderOpts.requiresLoaded=true;
+			CoreUploaderOpts.requiresLoading=null;
 			doIt();
 		});
+		CoreUploaderOpts.requiresLoading=true;
 		return;
 	}
 	function doIt() {
@@ -14,12 +22,13 @@ function Core_uploader(selector, opts) {
 					pluginOpts.upload_success_handler=opts.successHandler;
 				}
 				if (opts.postData) {
-					$.extend(pluginOpts.postData, opts.postData);
+					$.extend(pluginOpts.formData, opts.postData);
 				}
 				if (opts.extensions) {
 					pluginOpts.fileExt=opts.extensions;
 				}
 				pluginOpts.uploader=opts.serverScript;
+				console.log(pluginOpts);
 				$(selector).uploadify(pluginOpts);
 			break; // }
 		}
@@ -38,7 +47,7 @@ $(function() {
 				'buttonImage':'/i/choose-file.png',
 				'height':20,
 				'width':81,
-				'postData':{
+				'formData':{
 					'PHPSESSID':window.sessid || window.pagedata.sessid
 				}
 			}

@@ -1,6 +1,6 @@
 #image-gallery-wrapper{
 	list-style-type:none;
-	margin:10px 0;
+	clear:both;
 	padding:0;
 }
 #image-gallery-wrapper li{
