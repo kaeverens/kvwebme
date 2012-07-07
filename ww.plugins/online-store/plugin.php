@@ -33,8 +33,12 @@ $plugin=array(
 			'js_include' => '/ww.plugins/online-store/j/widget-admin.js'
 		)
 	), // }
-	'description'=>'Add online-shopping capabilities to some plugins. '
-		.'REQUIRES products plugin.',
+	'description'=>function() {
+		return __(
+			'Add online-shopping capabilities to some plugins. '
+			.'REQUIRES products plugin.'
+		);
+	},
 	'frontend' => array( // {
 		'widget' => 'OnlineStore_showBasketWidget',
 		'page_type' => 'OnlineStore_frontend',

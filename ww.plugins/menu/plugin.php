@@ -1,7 +1,9 @@
 <?php
 // { setup the config
 $plugin=array(
-	'name' => 'Menu',
+	'name' => function() {
+		return __('Menu');
+	},
 	'admin' => array(
 		'widget' => array(
 			'form_url' => '/ww.plugins/menu/admin/widget-form.php',

@@ -27,7 +27,7 @@ $plugin=array(
 	'frontend' => array(
 		'page_type' => 'Form_frontend'
 	),
-	'version' => 5
+	'version' => 7
 );
 // }
 

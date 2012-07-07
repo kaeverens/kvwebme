@@ -63,6 +63,28 @@ function Products_categoriesOptionsGet() {
 }
 
 // }
+// { Products_categoriesGetFull
+
+/**
+	* return a list of categories and ids, named in full
+	*
+	* @return array
+	*/
+function Products_categoriesGetFull() {
+	$pid=(int)$_REQUEST['pid'];
+	function getFull($pid, $prefix='') {
+		$rs=dbAll('select name,id from products_categories where parent_id='.$pid);
+		$cats=array();
+		foreach ($rs as $r) {
+			$cats[$prefix.$r['name']]=$r['id'];
+			$cats=array_merge($cats, getFull($r['id'], $prefix.$r['name'].' - '));
+		}
+		return $cats;
+	}
+	return getFull($pid);
+}
+
+// }
 // { Products_categoryUnwatch
 /**
 	* unwatch this category

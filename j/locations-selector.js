@@ -1,8 +1,13 @@
 $(function() {
 	pagedata.locations={
 		'all':[],
-		'tree':{}
+		'tree':{},
+		'opts':$.extend({
+			'numselects':1,
+			'names':[]
+		}, window.locationSelectorOpts||{})
 	};
+	window.locationSelectorOpts=undefined;
 	var roots=[pagedata.locations.tree];
 	var isActive=false;
 	function update() {
@@ -16,6 +21,17 @@ $(function() {
 		var name=$this.val();
 		if (!name) {
 			if (!root.id) {
+				for (var i=num+1;i<pagedata.locations.opts.numselects;++i) {
+					var names=pagedata.locations.opts.names.split(",");
+					$('<select id="core-location-'+(num+1)+'"'
+						+' disabled="disabled"><option>'+(names[i]||'')
+						+'</option></select>')
+						.insertAfter($this);
+				}
+				if (isActive) {
+					document.location=document.location.toString().replace(/[?#]?.*/, '')
+						+'?__LOCATION=';
+				}
 				return;
 			}
 		}
@@ -26,9 +42,10 @@ $(function() {
 		}
 		var root=root[name];
 		roots[num+1]=root;
-		var $newSelect=$('<select id="core-location-'+(num+1)+'"><option/>');
+		var $newSelect=$('<select id="core-location-'+(num+1)+'">');
 		if (root.id!=undefined) {
-			$newSelect.append('<option value="'+root.id+'">[choose '+name+']</option>');
+			var names=pagedata.locations.opts.names.split(",");
+			$newSelect.append('<option value="'+root.id+'">'+(names[num+1]||'')+'</option>');
 		}
 		var count=0;
 		$.each(root, function(k, v) {
@@ -39,13 +56,22 @@ $(function() {
 			$opt.attr('value', k).text(k);
 			count++;
 		});
-		if (!count && isActive) {
+		if (isActive) {
 			document.location=document.location.toString().replace(/[?#]?.*/, '')
 				+'?__LOCATION='+root.id;
 			return;
 		}
 		if (count) {
 			$newSelect.change(update).insertAfter($this);
+		}
+		else {
+			for (var i=num+1;i<pagedata.locations.opts.numselects;++i) {
+				var names=pagedata.locations.opts.names.split(",");
+				$('<select id="core-location-'+(num+1)+'"'
+					+' disabled="disabled"><option>'+(names[i]||'')
+					+'</option></select>')
+					.insertAfter($this);
+			}
 		}
 	}
 	// { replace selector drop-down with a lot of them
@@ -71,7 +97,9 @@ $(function() {
 		}
 		root.id=opt.id;
 	}
-	var $newSelect=$('<select id="core-location-0"><option/>');
+	var names=pagedata.locations.opts.names.split(",");
+	var $newSelect=$('<select id="core-location-0">'
+		+'<option value="">'+(names[0]||'')+'</option>');
 	$.each(pagedata.locations.tree, function(k, v) {
 		if (k=='id') {
 			return;
@@ -80,10 +108,10 @@ $(function() {
 		$opt.attr('value', k).text(k);
 	});
 	$selector.replaceWith($newSelect);
-	$newSelect.change(update);
+	$newSelect.change(update).change();
 	// }
 	// { activate the current location
-	var bits=pagedata.locationName.split(/ \/ /);
+	var bits=pagedata.locationName?pagedata.locationName.split(/ \/ /):[];
 	for (var i=0;i<bits.length;++i) {
 		$('#core-location-'+i).val(bits[i]).change();
 	}

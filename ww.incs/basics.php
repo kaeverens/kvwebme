@@ -906,6 +906,10 @@ if (isset($_REQUEST['__LOCATION'])) {
 			'name'=>$loc['name']
 		);
 	}
+	else {
+		$_SESSION['location']['id']=0;
+		$_SESSION['location']['name']='Nationwide';
+	}
 }
 // }
 // { plugins

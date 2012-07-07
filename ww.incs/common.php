@@ -113,7 +113,7 @@ function Core_dateM2H($d, $type = 'date') {
 	*
 	* @return string HTML of <select> list of locations
 	*/
-function Core_locationsGetUi($params=null) {
+function Core_locationsGetUi($params=array()) {
 	require_once dirname(__FILE__).'/api-funcs.php';
 	$locations=Core_locationsGetFull();
 	$ui='<select id="core-location">';
@@ -127,6 +127,7 @@ function Core_locationsGetUi($params=null) {
 	}
 	$ui.='</select>';
 	WW_addScript('/j/locations-selector.js');
+	WW_addInlineScript('var locationSelectorOpts='.json_encode($params).';');
 	return $ui;
 }
 

@@ -14,8 +14,12 @@
 
 // { config
 $plugin=array(
-	'name' => 'Blog',
-	'description' => 'Add a blog page-type to your site',
+	'name' => function() {
+		return __('Blog');
+	},
+	'description' => function() {
+		return __('Add a blog page-type to your site');
+	},
 	'admin' => array(
 		'page_type' => 'Blog_admin'
 	),

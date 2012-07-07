@@ -162,6 +162,8 @@ $(function(){
 		function update() {
 			var now=new Date();
 			var diff=d-now;
+			var years=parseInt(diff/1000/3600/24/365);
+			diff-=years*1000*3600*24/365;
 			var days=parseInt(diff/1000/3600/24);
 			diff-=days*1000*3600*24;
 			var hours=parseInt(diff/1000/3600);
@@ -169,7 +171,8 @@ $(function(){
 			var minutes=parseInt(diff/1000/60);
 			diff-=minutes*1000*60;
 			var seconds=parseInt(diff/1000);
-			var show=days?days+'d ':'';
+			var show=years?years+'y ':'';
+			show+=days?days+'d ':'';
 			show+=hours<10?'0'+hours:hours;
 			show+=':';
 			show+=minutes<10?'0'+minutes:minutes;

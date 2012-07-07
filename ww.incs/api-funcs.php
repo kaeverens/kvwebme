@@ -503,9 +503,16 @@ function Core_register() {
 	* @return null
 	*/
 function Core_sendLoginToken() {
+	if (!isset($_REQUEST['email'])) {
+		return array(
+			'error'=>__('No email address was entered.')
+		);
+	}
 	$email=$_REQUEST['email'];
 	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-		exit('{"error":"please enter a properly formatted email address"}');
+		return array(
+			'error'=>__('Please enter a properly formatted email address.')
+		);
 	}
 	$u=dbRow("SELECT * FROM user_accounts WHERE email='$email'");
 	if ($u && count($u)) {

@@ -78,3 +78,13 @@ if ($version==4) { // copy forms fields to page_vars
 	$version=5;
 }
 // note: remove forms_fields table after 2012-08-22
+if ($version<7) { // create forms_nonpage
+	dbQuery(
+		'create table forms_nonpage('
+		.'id int auto_increment not null primary key,'
+		.'name text,'
+		.'fields text'
+		.')default charset utf8'
+	);
+	$version=7;
+}

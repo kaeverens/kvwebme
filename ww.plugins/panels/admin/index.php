@@ -45,8 +45,8 @@ foreach ($PLUGINS as $n=>$p) {
 		$ws[]=json_encode(
 			array(
 				'type'        => $n,
-				'description' => $p['description'],
-				'name'        => $p['name']
+				'description' => is_callable($p['description'])?$p['description']():$p['description'],
+				'name'        => is_callable($p['name'])?$p['name']():$p['name']
 			)
 		);
 	}
