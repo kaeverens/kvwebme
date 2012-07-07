@@ -273,10 +273,9 @@ function Core_languagesAddStrings() {
 	}
 	$added=array();
 	foreach ($_REQUEST['strings'] as $str) {
-		if (dbOne(
-			'select lang from languages where str="'.addslashes($str[0]).'"'
-			.' and context="'.addslashes($str[1]).'"', 'lang'
-		)) {
+		$sql='select lang from languages where str="'.addslashes($str[0]).'"'
+			.' and context="'.addslashes($str[1]).'"';
+		if (dbOne($sql, 'lang')) {
 			continue;
 		}
 		dbQuery(
@@ -331,6 +330,16 @@ function Core_locationsGetFull() {
 	$locs=Core_cacheLoad('core', 'locationsFull', -1);
 	if ($locs == -1) {
 		$locs=dbAll('select * from locations order by is_default desc, name');
+		// { getParents
+
+		/**
+			* get list of sub-locations, recursive
+			*
+			* @param array $locs cache
+			* @param int   $id   locations parent
+			*
+			* @return list of sub-locations
+			*/
 		function getParents($locs, $id) {
 			if (!$id) {
 				return '';
@@ -342,6 +351,8 @@ function Core_locationsGetFull() {
 			}
 			return '';
 		}
+
+		// }
 		$arr=array();
 		foreach ($locs as $k=>$v) {
 			$locs[$k]['path']=preg_replace(
@@ -616,6 +627,8 @@ function Core_updateUserPasswordUsingToken() {
 
 /**
 	* get a list of users' avatars
+	*
+	* @return status
 	*/
 function Core_usersAvatarsGet() {
 	if (!isset($_REQUEST['ids']) || !is_array($_REQUEST['ids'])) {
@@ -635,6 +648,8 @@ function Core_usersAvatarsGet() {
 
 /**
 	* update the user's avatar
+	*
+	* @return status
 	*/
 function Core_userSetAvatar() {
 	$src=$_REQUEST['src'];
@@ -653,6 +668,8 @@ function Core_userSetAvatar() {
 
 /**
 	* update the default address of a user
+	*
+	* @return status
 	*/
 function Core_userSetDefaultAddress() {
 	$aid=(int)@$_REQUEST['aid'];

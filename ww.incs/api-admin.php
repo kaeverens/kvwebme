@@ -1,6 +1,6 @@
 <?php
 /**
-	* API for common admin WebME functions
+	* API for common admin CMS functions
 	*
 	* PHP version 5.2
 	*
@@ -22,7 +22,7 @@ function Core_adminAdminVarsSave() {
 	$name=$_REQUEST['name'];
 	$val=$_REQUEST['val'];
 	if ($name=='') {
-		return array('error'=>'missing name');
+		return array('error'=>__('Missing name'));
 	}
 	dbQuery(
 		'delete from admin_vars where admin_id='.$_SESSION['userdata']['id']
@@ -324,7 +324,7 @@ function Core_adminLanguagesAdd() {
 	$code=$_REQUEST['code'];
 	if (!$name || !$code) {
 		return array(
-			'error'=>'You must fill in Name and Code'
+			'error'=>__('You must fill in Name and Code')
 		);
 	}
 	$isInUse=dbOne(
@@ -333,7 +333,7 @@ function Core_adminLanguagesAdd() {
 	);
 	if ($isInUse) {
 		return array(
-			'error'=>'Either the Name or Code are already in use'
+			'error'=>__('Either the Name or Code are already in use')
 		);
 	}
 	dbQuery(
@@ -374,7 +374,7 @@ function Core_adminLanguagesEdit() {
 	$is_default=(int)$_REQUEST['is_default'];
 	if (!$name || !$code) {
 		return array(
-			'error'=>'You must fill in Name and Code'
+			'error'=>__('You must fill in Name and Code')
 		);
 	}
 	if ($is_default) {
@@ -575,7 +575,7 @@ function Core_adminLocationsAdd() {
 	$lng=(float)$_REQUEST['lng'];
 	if (!$name) {
 		return array(
-			'error'=>'You must fill in Name'
+			'error'=>__('You must fill in Name')
 		);
 	}
 	$isInUse=dbOne(
@@ -584,7 +584,7 @@ function Core_adminLocationsAdd() {
 	);
 	if ($isInUse) {
 		return array(
-			'error'=>'Name already in use'
+			'error'=>__('Name already in use')
 		);
 	}
 	dbQuery(
@@ -636,7 +636,7 @@ function Core_adminLocationsEdit() {
 	$is_default=(int)$_REQUEST['is_default'];
 	if (!$name) {
 		return array(
-			'error'=>'You must fill in Name'
+			'error'=>__('You must fill in Name')
 		);
 	}
 	if ($is_default) {
@@ -712,33 +712,36 @@ function Core_adminMenusGetDefault() {
 			global $PLUGINS;
 			// { setup standard menu items
 			$menus=array(
-				'Pages'=>array(
+				'Pages'=>array( // __('Pages')
 					'_link'=>'pages.php'
 				),
-				'Site Options'=>array(
-					'General'=> array('_link'=>'siteoptions.php'),
-					'Languages'=>array(
+				'Site Options'=>array( // { __('Site Options')
+					'General'=> array('_link'=>'siteoptions.php'), // __('General')
+					'Languages'=>array( // { __('Languages')
 						'_link'=>
 							'javascript:Core_screen(\'CoreSiteoptions\', \'js:Languages\')'
-					),
-					'Locations'=>array(
+					), // }
+					'Locations'=>array( // { __('Locations')
 						'_link'=>
 							'javascript:Core_screen(\'CoreSiteoptions\', \'js:Locations\')'
-					),
-					'Menus' => array(
+					), // }
+					'Menus' => array( // { __('Menus')
 						'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Menus\')'
-					),
-					'Emails' => array(
+					), // }
+					'Emails' => array( // { __('Emails')
 						'_link'=>
 							'javascript:Core_screen(\'CoreSiteoptions\', \'js:Emails\')'
-					),
+					), // }
+					 // __('Users')
 					'Users' => array('_link'=>'siteoptions.php?page=users'),
+					// __('Plugins')
 					'Plugins'=> array('_link'=>'siteoptions.php?page=plugins'),
+					// __('Themes')
 					'Themes' => array('_link'=>'siteoptions.php?page=themes'),
-					'Timed Events'=>array(
+					'Timed Events'=>array( // { __('Timed Events')
 						'_link'=>'javascript:Core_screen(\'CoreSiteoptions\', \'js:Cron\')'
-					)
-				)
+					) // }
+				) // }
 			);
 			// }
 			// { add custom items (from plugins)
@@ -765,10 +768,11 @@ function Core_adminMenusGetDefault() {
 			}
 			// }
 			// { add final items
-			$menus['Site Options']['Stats']=array('_link'=>'/ww.admin/stats.php');
+			// __('View Site')
 			$menus['View Site']=array( '_link'=>'/', '_target'=>'_blank');
-			$menus['Help']=array( '_link'=>'http://kvweb.me/', '_target'=>'_blank');
+			// __('Log Out')
 			$menus['Log Out']=  array('_link'=>'/?logout=1');
+			// __('Misc') __('File Manager')
 			$menus['Misc']['File Manager']=array(
 				'_link'=>'javascript:return window.open(\'/j/kfm/\', \'kfm\', '
 				.'\'modal,width=800,height=640\')'
@@ -1002,7 +1006,7 @@ function Core_adminPageChildnodes() {
 function Core_adminPageCopy() {
 	$id=(int)$_REQUEST['id'];
 	if (!$id) {
-		return array('error'=>'no ID provided');
+		return array('error'=>__('No ID provided'));
 	}
 	$p=dbRow('select * from pages where id='.$id);
 	$name=$p['name'];
@@ -1030,25 +1034,21 @@ function Core_adminPageCopy() {
   */
 function Core_adminPageDelete() {
 	global $PLUGINS;
-
 	$id=(int)$_REQUEST['id'];
 	$page=Page::getInstance($id);
 	$page->initValues();
-
 	if (isset($page->plugin)) {
 		$type=$page->plugin;
 	}
-
-	
 	if ((isset($type) && !isset($PLUGINS[$type]['do-not-delete']))
 		|| !isset($type)
 	) {	
 		if (!$id) {
-			return array('error'=>'no ID provided');
+			return array('error'=>__('No ID provided'));
 		}
 		$r=dbRow("SELECT COUNT(id) AS pagecount FROM pages");
 		if ($r['pagecount']<2) {
-			return array('error'=>'there must always be at least one page.');
+			return array('error'=>__('There must always be at least one page.'));
 		}
 		$q=dbQuery('select parent from pages where id="'.$id.'"');
 		if ($q->rowCount()) {
@@ -1062,9 +1062,9 @@ function Core_adminPageDelete() {
 			dbQuery('update page_summaries set rss=""');
 			return array('ok'=>1);
 		}
-		return array('error'=>'page does not exist');
+		return array('error'=>__('Page does not exist'));
 	}
-	return array('error'=>'Page could not be deleted');	
+	return array('error'=>__('Page could not be deleted'));	
 }
 
 // }
@@ -1149,7 +1149,7 @@ function Core_adminPageEdit() {
 	// { name, alias
 	$name=trim($_REQUEST['name']);
 	if (!$name) {
-		$name='no page name provided';
+		$name=__('No page name provided');
 	}
 	else { // check to see if name is already in use
 		$sql='select id from pages where name="'.addslashes($name)
@@ -1162,8 +1162,12 @@ function Core_adminPageEdit() {
 			)) {
 				$i++;
 			}
-			$msgs.='<em>A page named "'.$name.'" already exists. Page name amended'
-				.' to "'.$name.$i.'"</em>';
+			$msgs.='<em>'
+				.__(
+					'A page named "%1" already exists. Page name amended to "%2"',
+					$name, $name.$i
+				)
+				.'</em>';
 			$name.=$i;
 		}
 	}
@@ -1216,7 +1220,9 @@ function Core_adminPageEdit() {
 		if (@$GLOBALS['PLUGINS'][$type]['do-not-delete']) { // don't modify type
 			$type=dbOne('select type from pages where id='.$id, 'type');
 			if ($type!=$_REQUEST['type']) {
-				echo '<script>alert("The type of the page couldn\'t be changed")</script>';
+				echo '<script>alert("'
+					.addslashes(__("The type of the page couldn't be changed"))
+					.'")</script>';
 			}
 		}
 		else { //We can change the type
@@ -1240,8 +1246,10 @@ function Core_adminPageEdit() {
 		);
 			
 		if ($howMany>=1) {		//If we already have a page
-			echo "<script>alert('You already have one page of that type');</script>";
-			return array('error' =>'You can have only one page of this type');
+			echo "<script>alert('"
+				.addslashes(__('You already have one page of that type'))
+				."');</script>";
+			return array('error' =>__('You can have only one page of this type'));
 		}	
 	}
 	
@@ -1281,30 +1289,23 @@ function Core_adminPageEdit() {
 	else {
 		$onlyOnePageInstance = false;
 		$pluginType = preg_replace('/\|.*/', '', $_REQUEST['type']);
-		
-		
 		if (isset($GLOBALS['PLUGINS'][$pluginType]['only-one-page-instance'])) {
 			$onlyOnePageInstance
 				=$GLOBALS['PLUGINS'][$pluginType]['only-one-page-instance'];
 		}
-	
 		$alreadyAtInstancesLimit=$onlyOnePageInstance
 			?dbOne(
 				'select COUNT(type) FROM pages WHERE type="'.$_REQUEST['type'].'"',
 				'COUNT(type)'
 			)
 			:0;
-
 		$q='INSERT into '.$q;		
-			
 		if ($onlyOnePageInstance == true) {
 			if ($howMany>=1) {
-				return array('error' =>'You can have only one page of this type');
+				return array('error'=>__('You can have only one page of this type'));
 			}
 		}
-			
 	}
-	
 	dbQuery($q);
 	if (!$id) {
 		$id=dbOne('select last_insert_id() as id', 'id');
@@ -1439,7 +1440,7 @@ function Core_adminPageParentsList() {
 		return $arr;
 	}
 	return array_merge(
-		array(' 0'=>' -- none -- '),
+		array(' 0'=>' -- '.__('None').' -- '),
 		selectkiddies(0, 0, $id)
 	);
 }
@@ -1656,7 +1657,7 @@ function Core_adminPluginsInstallOne() {
 	$installed=Core_adminPluginsGetInstalled();
 	foreach ($installed as $key=>$p) {
 		if ($key==$to_install) {
-			return array('ok'=>1, 'message'=>'already installed');
+			return array('ok'=>1, 'message'=>__('Plugin already installed'));
 		}
 	}
 	// }
@@ -1669,7 +1670,7 @@ function Core_adminPluginsInstallOne() {
 		}
 	}
 	if ($found==0) {
-		return array('ok'=>0, 'message'=>'plugin not found');
+		return array('ok'=>0, 'message'=>__('Plugin not found'));
 	}
 	// }
 	// { install it
@@ -1702,7 +1703,7 @@ function Core_adminPluginsRemoveOne() {
 		}
 	}
 	if ($found==0) {
-		return array('ok'=>1, 'message'=>'already removed');
+		return array('ok'=>1, 'message'=>__('Plugin already removed'));
 	}
 	// }
 	// { remove it

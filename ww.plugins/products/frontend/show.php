@@ -376,7 +376,7 @@ function Products_getAddManyToCartWidget($params, $smarty) {
 		default: // {
 			$howmany='<input name="products-howmany" value="1"'
 				.' class="add_multiple_widget_amount" style="width:50px"/>';
-		// }
+		break; // }
 	}
 	return '<form method="POST" class="products-addmanytocart">'
 		.$redirect
@@ -831,6 +831,14 @@ function Products_show($PAGEDATA) {
 		&& $PAGEDATA->vars['products_filter_by_users_location']
 	) {
 		$locationFilter=0;
+		// { getSubLocations
+		/**
+			* get sublocations
+			*
+			* @param int $parent_id the parent location
+			*
+			* @return array array of locations
+			*/
 		function getSubLocations($parent_id) {
 			$locs=array($parent_id);
 			$rs=dbAll('select id from locations where parent_id='.$parent_id);
@@ -841,9 +849,10 @@ function Products_show($PAGEDATA) {
 			}
 			return $locs;
 		}
-		$locationFilter=join(',', getSubLocations(
-			isset($_SESSION['location']['id'])?$_SESSION['location']['id']:0
-		));
+
+		// }
+		$locid=isset($_SESSION['location']['id'])?$_SESSION['location']['id']:0;
+		$locationFilter=join(',', getSubLocations($locid));
 	}
 	// }
 	// { set limit variables
@@ -1005,7 +1014,8 @@ function Products_showById($PAGEDATA, $id=0) {
 	$typeID = $product->get('product_type_id');
 	$type=ProductType::getInstance($typeID);
 	if (!$type) {
-		return '<em>'.__('Product Type %1 does not exist.', array($typeID), 'core').'</em>';
+		return '<em>'
+			.__('Product Type %1 does not exist.', array($typeID), 'core').'</em>';
 	}
 	return $type->render($product);
 }
@@ -1088,7 +1098,7 @@ function Products_showRelatedProducts($params, $smarty) {
 				$h[]=htmlspecialchars($p->name).'</a>';
 				continue;
 			}
-			if(!$vals['online_store_fields']) {
+			if (!$vals['online_store_fields']) {
 				$pvat = array("vat" => $_SESSION['onlinestore_vat_percent']);
 				$h[]='<img src="/a/w=180/h=180//f=getImg/'.$iid.'" />'
 					.OnlineStore_productPriceFull2($pvat, $smarty)
@@ -1099,11 +1109,11 @@ function Products_showRelatedProducts($params, $smarty) {
 			$h[]='<img src="/a/w=180/h=180/f=getImg/'.$iid.'"/>'
 				.'<br/>'.htmlspecialchars(__fromJSON($p->name)).'</a>';
 		}
-	return count($h)
-		?'<div class="products_related_all">'
-		.'<div class="product_list products_'.htmlspecialchars($params['type'])
-		.'">'.join('', $h).'</div></div>'
-		:__('none yet');
+		return count($h)
+			?'<div class="products_related_all">'
+			.'<div class="product_list products_'.htmlspecialchars($params['type'])
+			.'">'.join('', $h).'</div></div>'
+			:__('none yet');
 	}
 	return '<p class="no_products_related">'.__('none yet').'</p>';
 }
@@ -1376,7 +1386,7 @@ class Products{
 		* get a list of products by their IDs
 		*
 		* @param array  $ids        list of IDs
-		* @param string $sarch      search string
+		* @param string $search     search string
 		* @param array  $search_arr array of search strings to filter by
 		* @param string $sort_col   field to sort by
 		* @param string $sort_dir   sort direction
@@ -1390,7 +1400,7 @@ class Products{
 			return false;
 		}
 		$md5=md5(
-			join(',',$ids).'|'.$search.'|'.print_r($search_arr, true).'|'
+			join(',', $ids).'|'.$search.'|'.print_r($search_arr, true).'|'
 			.$sort_col.'|'.$sort_dir
 		);
 		if (!array_key_exists($md5, self::$instances)) {
@@ -1484,7 +1494,7 @@ class Products{
 				else if ($order_dir==0) {
 					ksort($tmpprods1);
 				}
-				else if($order_dir==2) {
+				else if ($order_dir==2) {
 					shuffle($tmpprods1);
 				}
 
