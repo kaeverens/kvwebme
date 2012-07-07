@@ -115,7 +115,7 @@ if (!function_exists('__')) {
 		return $str;
 	}
 }
-if (!function_exists('CMS_autoload')) {
+if (!function_exists('Core_autoload')) {
 	/**
 	  * autoloader for classes
 	  *
@@ -123,10 +123,10 @@ if (!function_exists('CMS_autoload')) {
 	  *
 	  * @return null
 	  */
-	function CMS_autoload($name) {
+	function Core_autoload($name) {
 		@include $name . '.php';
 	}
-	spl_autoload_register('CMS_autoload');
+	spl_autoload_register('Core_autoload');
 }
 // { __FromJson
 
@@ -792,13 +792,13 @@ $_language_notfound=array(); // for recording missing language strings
 define('SCRIPTBASE', $_SERVER['DOCUMENT_ROOT'] . '/');
 require_once SCRIPTBASE . '/ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
 if (!file_exists(SCRIPTBASE . '.private/config.php')) {
-	echo '<html><body><p>No configuration file found</p>';
+	echo '<html><body><p>'.__('No configuration file found').'</p>';
 	if (file_exists('install/index.php')) {
-		echo '<p><a href="/install/index.php">Click here to install</a></p>';
+		echo '<p><a href="/install/index.php">'.__('Click here to install').'</a></p>';
 	}
 	else {
-		echo '<p><strong>Installation script also missing...</strong> please '
-			.'contact kae@kvsites.ie if you think there\'s a problem.</p>';
+		echo '<p><strong>'.__('Installation script also missing...')
+			.'</strong></p>';
 	}
 	echo '</body></html>';
 	exit;
@@ -864,8 +864,11 @@ else {
 		@mkdir(THEME_DIR);
 		if (!file_exists(THEME_DIR)) {
 			die(
-				'error: theme directory '.THEME_DIR.' does not exist. please '
-				.'create it and make sure it is writable by the web server.'
+				__(
+					'error: theme directory %1 does not exist. please'
+					.' create it and make sure it is writable by the web server.',
+					array(THEME_DIR), 'core'
+				)
 			);
 		}
 	}
@@ -915,7 +918,7 @@ if (isset($_REQUEST['__LOCATION'])) {
 // { plugins
 $PLUGINS=array();
 $PLUGIN_TRIGGERS=array();
-if (!isset($ignore_webme_plugins)) {
+if (!isset($ignore_cms_plugins)) {
 	foreach ($DBVARS['plugins'] as $pname) {
 		if (strpos('/', $pname)!==false) {
 			continue;

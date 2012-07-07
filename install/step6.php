@@ -35,7 +35,7 @@ if (!$_SESSION['userbase_created']) { // user shouldn't be here
   exit;
 }
 
-$ignore_webme_plugins=1;
+$ignore_cms_plugins=1;
 require '../ww.incs/basics.php';
 
 

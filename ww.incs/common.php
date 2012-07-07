@@ -1,4 +1,16 @@
 <?php
+/**
+	* common functions
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 require_once dirname(__FILE__).'/basics.php';
 
 // { Core_getJQueryScripts
@@ -132,119 +144,7 @@ function Core_locationsGetUi($params=array()) {
 }
 
 // }
-// { menu_build_fg
-
-/**
- * get recursive details of pages to build a menu
- *
- * @param int   $parentid the parent's ID
- * @param int   $depth    current menu depth
- * @param array $options  any further options
- *
- * @return string HTML of the sub-menu
- */
-function menu_build_fg($parentid, $depth, $options) {
-	$PARENTDATA=Page::getInstance($parentid)->initValues();
-	// { menu order
-	$order='ord,name';
-	if (isset($PARENTDATA->vars['order_of_sub_pages'])) {
-		switch ($PARENTDATA->vars['order_of_sub_pages']) {
-			case 1: // { alphabetical
-				$order='name';
-				if ($PARENTDATA->vars['order_of_sub_pages_dir']) {
-					$order.=' desc';
-				}
-			break; // }
-			case 2: // { associated_date
-				$order='associated_date';
-				if ($PARENTDATA->vars['order_of_sub_pages_dir']) {
-					$order.=' desc';
-				}
-				$order.=',name';
-			break; // }
-			default: // { by admin order
-				$order='ord';
-				if ($PARENTDATA->vars['order_of_sub_pages_dir']) {
-					$order.=' desc';
-				}
-				$order.=',name';
-			break; // }
-		}
-	}
-	// }
-	$rs=dbAll(
-		"select id,name,type from pages where parent='".$parentid
-		."' and !(special&2) order by $order"
-	);
-	if ($rs===false || !count($rs)) {
-		return '';
-	}
-
-	$items=array();
-	foreach ($rs as $r) {
-		$item='<li>';
-		$page=Page::getInstance($r['id'])->initValues();
-		$item.='<a class="menu-fg menu-pid-'.$r['id'].'" href="'
-			.$page->getRelativeUrl().'">'
-			.htmlspecialchars(__FromJson($page->name)).'</a>';
-		// { override menu if a trigger causes the override
-		$submenus=Core_trigger(
-			'menu-subpages-html',
-			array($page, $depth+1, $options)
-		);
-		if ($submenus) {
-			$item.=$submenus;
-		}
-		// }
-		// { otherwise load sub-menus as usual
-		else {
-			$item.=menu_build_fg($r['id'], $depth+1, $options);
-		}
-		// }
-		$item.='</li>';
-		$items[]=$item;
-	}
-	$options['columns']=(int)$options['columns'];
-
-	// { return top-level menu
-	if (!$depth) {
-					return '<ul>'.join('', $items).'</ul>';
-	}
-	// }
-	if ($options['style_from']=='1') {
-					$s='';
-					if ($options['background']) {
-									$s.='background:'.$options['background'].';';
-					}
-					if ($options['opacity']) {
-									$s.='opacity:'.$options['opacity'].';';
-					}
-					if ($s) {
-									$s=' style="'.$s.'"';
-					}
-	}
-	// { return 1-column sub-menu
-	if ($options['columns']<2) {
-					return '<ul'.$s.'>'.join('', $items).'</ul>';
-	}
-	// }
-	// { return multi-column submenu
-	$items_count=count($items);
-	$items_per_column=ceil($items_count/$options['columns']);
-	$c='<table'.$s.'><tr><td><ul>';
-	for ($i=1;$i<$items_count+1;++$i) {
-					$c.=$items[$i-1];
-					if ($i!=$items_count && !($i%$items_per_column)) {
-									$c.='</ul></td><td><ul>';
-					}
-	}
-	$c.='</ul></td></tr></table>';
-	return $c;
-	// }
-}
-
-// }
-// { menu_show_fg
+// { Core_menuShowFg
 
 /**
 	* get HTML for building a hierarchical menu
@@ -253,7 +153,117 @@ function menu_build_fg($parentid, $depth, $options) {
 	*
 	* @return string the html
 	*/
-function menu_show_fg ($opts=array()) {
+function Core_menuShowFg ($opts=array()) {
+	// { menuBuildFg
+	
+	/**
+	 * get recursive details of pages to build a menu
+	 *
+	 * @param int   $parentid the parent's ID
+	 * @param int   $depth    current menu depth
+	 * @param array $options  any further options
+	 *
+	 * @return string HTML of the sub-menu
+	 */
+	function menuBuildFg($parentid, $depth, $options) {
+		$PARENTDATA=Page::getInstance($parentid)->initValues();
+		// { menu order
+		$order='ord,name';
+		if (isset($PARENTDATA->vars['order_of_sub_pages'])) {
+			switch ($PARENTDATA->vars['order_of_sub_pages']) {
+				case 1: // { alphabetical
+					$order='name';
+					if ($PARENTDATA->vars['order_of_sub_pages_dir']) {
+						$order.=' desc';
+					}
+				break; // }
+				case 2: // { associated_date
+					$order='associated_date';
+					if ($PARENTDATA->vars['order_of_sub_pages_dir']) {
+						$order.=' desc';
+					}
+					$order.=',name';
+				break; // }
+				default: // { by admin order
+					$order='ord';
+					if ($PARENTDATA->vars['order_of_sub_pages_dir']) {
+						$order.=' desc';
+					}
+					$order.=',name';
+				break; // }
+			}
+		}
+		// }
+		$rs=dbAll(
+			"select id,name,type from pages where parent='".$parentid
+			."' and !(special&2) order by $order"
+		);
+		if ($rs===false || !count($rs)) {
+			return '';
+		}
+		$items=array();
+		foreach ($rs as $r) {
+			$item='<li>';
+			$page=Page::getInstance($r['id'])->initValues();
+			$item.='<a class="menu-fg menu-pid-'.$r['id'].'" href="'
+				.$page->getRelativeUrl().'">'
+				.htmlspecialchars(__FromJson($page->name)).'</a>';
+			// { override menu if a trigger causes the override
+			$submenus=Core_trigger(
+				'menu-subpages-html',
+				array($page, $depth+1, $options)
+			);
+			if ($submenus) {
+				$item.=$submenus;
+			}
+			// }
+			// { otherwise load sub-menus as usual
+			else {
+				$item.=menuBuildFg($r['id'], $depth+1, $options);
+			}
+			// }
+			$item.='</li>';
+			$items[]=$item;
+		}
+		$options['columns']=(int)$options['columns'];
+		// { return top-level menu
+		if (!$depth) {
+						return '<ul>'.join('', $items).'</ul>';
+		}
+		// }
+		if ($options['style_from']=='1') {
+			$s='';
+			if ($options['background']) {
+				$s.='background:'.$options['background'].';';
+			}
+			if ($options['opacity']) {
+				$s.='opacity:'.$options['opacity'].';';
+			}
+			if ($s) {
+				$s=' style="'.$s.'"';
+			}
+		}
+		// { return 1-column sub-menu
+		if ($options['columns']<2) {
+						return '<ul'.$s.'>'.join('', $items).'</ul>';
+		}
+		// }
+		// { return multi-column submenu
+		$items_count=count($items);
+		$items_per_column=ceil($items_count/$options['columns']);
+		$c='<table'.$s.'><tr><td><ul>';
+		for ($i=1;$i<$items_count+1;++$i) {
+			$c.=$items[$i-1];
+			if ($i!=$items_count && !($i%$items_per_column)) {
+				$c.='</ul></td><td><ul>';
+			}
+		}
+		$c.='</ul></td></tr></table>';
+		return $c;
+		// }
+	}
+	
+	// }
 	global $_languages;
 	$c='';
 	$md5_1=md5('menu_fg|'.print_r($opts, true).'|'.join(', ', $_languages));
@@ -294,7 +304,7 @@ function menu_show_fg ($opts=array()) {
 	);
 	$html=Core_cacheLoad('pages', 'fgmenu-'.$md5);
 	if (1 || $html===false) {
-		$html=menu_build_fg($options['parent'], 0, $options);
+		$html=menuBuildFg($options['parent'], 0, $options);
 		Core_cacheSave('pages', 'fgmenu-'.$md5, $html);
 	}
 	switch ($options['type']) {
@@ -369,7 +379,7 @@ function redirect($addr) {
 }
 
 // }
-// { smarty_setup
+// { Core_smartySetup
 
 /**
 	* set up Smarty with common functions
@@ -378,7 +388,7 @@ function redirect($addr) {
 	*
 	* @return object the Smarty object
 	*/
-function smarty_setup($compile_dir) {
+function Core_smartySetup($compile_dir) {
 	global $DBVARS, $PLUGINS, $PAGEDATA;
 	$smarty = new Smarty;
 	$smarty->left_delimiter = '{{';
@@ -400,7 +410,7 @@ function smarty_setup($compile_dir) {
 	$smarty->register_function('LOGO', 'Template_logoDisplay');
 	$smarty->register_function('MENU', 'menuDisplay');
 	$smarty->assign('QRCODE', '/a/f=qrCode/id='.$PAGEDATA->id);
-	$smarty->register_function('nuMENU', 'menu_show_fg');
+	$smarty->register_function('nuMENU', 'Core_menuShowFg');
 	foreach ($PLUGINS as $pname=>$plugin) {
 		if (isset($plugin['frontend']['template_functions'])) {
 			foreach ($plugin['frontend']['template_functions'] as $fname=>$vals) {

@@ -44,10 +44,10 @@ set_include_path(
   *
   * @return null
   */
-function CMS_autoload($name) {
+function Core_autoload($name) {
 	require_once $name.'.php';
 }
-spl_autoload_register('CMS_autoload');
+spl_autoload_register('Core_autoload');
 // }
 // { __
 

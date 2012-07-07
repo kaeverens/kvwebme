@@ -48,5 +48,5 @@ function menu_showWidget($vars=null) {
 			$vars['parent']=$pid;
 		}
 	}
-	return menu_show_fg($vars);
+	return Core_menuShowFg($vars);
 }

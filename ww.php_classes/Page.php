@@ -407,7 +407,7 @@ class Page{
 				return $plugin['frontend']['body_override']($this);
 			}
 		}
-		$smarty=smarty_setup(USERBASE.'/ww.cache/pages');
+		$smarty=Core_smartySetup(USERBASE.'/ww.cache/pages');
 		global $_languages;
 		$fname=USERBASE.'/ww.cache/pages/template_'.$this->id.'|'
 			.join(',', $_languages);

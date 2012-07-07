@@ -285,7 +285,7 @@ else {
 }
 // }
 // { set up smarty
-$smarty=smarty_setup(USERBASE.'/ww.cache/pages');
+$smarty=Core_smartySetup(USERBASE.'/ww.cache/pages');
 $smarty->template_dir=THEME_DIR.'/'.THEME.'/h/';
 $smarty->assign(
 	'PAGECONTENT', '<div id="ww-pagecontent">'.$pagecontent.'</div>'

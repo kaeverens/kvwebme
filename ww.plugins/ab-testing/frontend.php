@@ -10,7 +10,7 @@
 	* @license  GPL 2.0
 	* @link     http://kvsites.ie/
 	*/
-$smarty=smarty_setup(USERBASE.'/ww.cache/pages');
+$smarty=Core_smartySetup(USERBASE.'/ww.cache/pages');
 if (!isset($_SESSION['ab_testing']['p'.$page->id])
 	|| !file_exists(USERBASE.'/ww.cache/pages/template_ab_'.$page->id.'_0')
 ) {

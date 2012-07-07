@@ -786,7 +786,7 @@ function Products_reviews($params, $smarty) {
 	* @return object the Smarty object
 	*/
 function Products_setupSmarty() {
-	$smarty=smarty_setup(USERBASE.'/ww.cache/products/templates_c');
+	$smarty=Core_smartySetup(USERBASE.'/ww.cache/products/templates_c');
 	$smarty->template_dir='/ww.cache/products/templates';
 	$smarty->assign('PAGEDATA', $GLOBALS['PAGEDATA']);
 	if (isset($_SESSION['userdata'])) {
