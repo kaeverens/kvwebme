@@ -15,20 +15,22 @@
 // { plugin declaration
 $plugin=array(
 	'admin' => array( // {
-		'menu' => array(
-			'Products>Products'=>
+		'menu' => array( // {
+			'Products>Products'=> // __('Products')
 				'/ww.admin/plugin.php?_plugin=products&amp;_page=products',
-			'Products>Categories'=>
+			'Products>Categories'=> // __('Categories')
 				'/ww.admin/plugin.php?_plugin=products&amp;_page=categories',
+			 // __('Types')
 			'Products>Types'=>'javascript:Core_screen(\'products\', \'Types\')',
-			'Products>Relation Types'=>
+			'Products>Relation Types'=> // __('Relation Types')
 				'/ww.admin/plugin.php?_plugin=products&amp;_page=relation-types',
+			// __('Import')
 			'Products>Import'=>'javascript:Core_screen(\'products\', \'Import\')',
-			'Products>Export Data'=>
+			'Products>Export Data'=> // __('Export Data')
 				'javascript:Core_screen(\'products\', \'ExportData\')',
-			'Products>Brands and Producers' =>
+			'Products>Brands and Producers' => // __('Brands and Producers')
 				'javascript:Core_screen(\'products\', \'BrandsandProducers\')'
-		),
+		), // }
 		'page_type' => 'Products_adminPage',
 		'widget' => array(
 			'form_url'   => '/ww.plugins/products/admin/widget.php',
@@ -38,7 +40,9 @@ $plugin=array(
 		)
 	), // }
 	'dependencies'=>'image-gallery',
-	'description' => 'Product catalogue.',
+	'description' =>function() {
+		return __('Product catalogue.');
+	},
 	'frontend' => array( // {
 		'breadcrumbs' => 'Products_breadcrumbs',
 		'page_type' => 'Products_frontend',
@@ -121,7 +125,9 @@ $plugin=array(
 			) // }
 		) // }
 	), // }
-	'name' => 'Products',
+	'name' =>function() {
+		return __('Products');
+	},
 	'search' => 'Products_search',
 	'triggers' => array( // {
 		'initialisation-completed' => 'Products_addToCart',
@@ -137,7 +143,7 @@ $plugin=array(
 /**
 	* Product object
 	*
-	*	@category WebME
+	* @category WebME
 	* @package  WebME
 	* @author   Kae Verens <kae@kvsites.ie>
 	* @license  GPL 2.0
@@ -450,10 +456,10 @@ class Product{
 					break; // }
 					case 'checkbox': // {
 						if (isset($this->vals[$data->n]) && $this->vals[$data->n]) {
-							return 'Yes';
+							return __('Yes');
 						}
 						else {
-							return 'No';
+							return __('No');
 						}
 					break; // }
 					default: // {
@@ -815,7 +821,7 @@ class ProductType{
 			$required=@$f->r?' required':'';
 			switch($f->t) {
 				case 'checkbox': // {
-					$val=$val?'Yes':'No';
+					$val=$val?__('Yes'):__('No');
 					$smarty->assign($f->n, $val);
 				break; // }
 				case 'colour': // {
@@ -1151,9 +1157,45 @@ function Products_amountInStock($params, $smarty) {
 }
 
 // }
+// { Products_breadcrumbs
+
+/**
+  * show breadcrumbs for nav
+  *
+  * @param string $baseurl
+  *
+  * @return string the HTML of the breadcrumbs
+  */
+function Products_breadcrumbs($baseurl) {
+	global $PAGEDATA;
+	$breadcrumbs='';
+	Products_frontendVarsSetup($PAGEDATA);
+	if ($_REQUEST['product_cid']) {
+		$c=ProductCategory::getInstance($_REQUEST['product_cid']);
+		$breadcrumbs.=' &raquo; <a class="product-category" href="'
+			.$c->getRelativeUrl().'">'.htmlspecialchars($c->vals['name']).'</a>';
+	}
+	if ($_REQUEST['product_id']) {
+		$c=Product::getInstance($_REQUEST['product_id']);
+		$breadcrumbs.=' &raquo; <a class="product-product" href="'
+			.$c->getRelativeUrl().'">'.htmlspecialchars($c->get('_name')).'</a>';
+	}
+	return $breadcrumbs;
+}
+
+// }
+// { Products_categoryWatchesRun
+
+/**
+	* pseudonym for Products_categoryWatchesSend
+	*
+	* @return null
+	*/
 function Products_categoryWatchesRun() {
 	Products_categoryWatchesSend();
 }
+
+// }
 // { Products_categoryWatchesSend
 /**
 	* send list of new products to people watching the lists
@@ -1285,6 +1327,29 @@ function Products_expiryClock($params, $smarty) {
 }
 
 // }
+// { Products_frontend
+
+/**
+  * render a product page
+  *
+  * @param object $PAGEDATA the page instance
+  *
+  * @return string HTML of the page
+  */
+function Products_frontend($PAGEDATA) {
+	Products_frontendVarsSetup($PAGEDATA);
+	require_once dirname(__FILE__).'/frontend/show.php';
+	if (!isset($PAGEDATA->vars['footer'])) {
+		$PAGEDATA->vars['footer']='';
+	}
+	// render the products, in case the page needs to know what template was used
+	$producthtml=Products_show($PAGEDATA);
+	return $PAGEDATA->render()
+		.$producthtml
+		.__FromJson($PAGEDATA->vars['footer']);
+}
+
+// }
 // { Products_frontendVarsSetup
 
 /**
@@ -1346,29 +1411,6 @@ function Products_frontendVarsSetup($PAGEDATA) {
 		$PAGEDATA->vars['products_what_to_show']=3;
 		$PAGEDATA->vars['products_product_to_show']=(int)$_REQUEST['product_id'];
 	}
-}
-
-// }
-// { Products_frontend
-
-/**
-  * render a product page
-  *
-  * @param object $PAGEDATA the page instance
-  *
-  * @return string HTML of the page
-  */
-function Products_frontend($PAGEDATA) {
-	Products_frontendVarsSetup($PAGEDATA);
-	require_once dirname(__FILE__).'/frontend/show.php';
-	if (!isset($PAGEDATA->vars['footer'])) {
-		$PAGEDATA->vars['footer']='';
-	}
-	// render the products, in case the page needs to know what template was used
-	$producthtml=Products_show($PAGEDATA);
-	return $PAGEDATA->render()
-		.$producthtml
-		.__FromJson($PAGEDATA->vars['footer']);
 }
 
 // }
@@ -1629,10 +1671,10 @@ function Products_importFile($vars=false) {
 	}
 	$fname=USERBASE.'/'.$vars->productsImportFileUrl['varvalue'];
 	if (strpos($fname, '..')!==false) {
-		return array('message'=>'invalid file url');
+		return array('message'=>__('Invalid file URL'));
 	}
 	if (!file_exists($fname)) {
-		return array('message'=>'file not uploaded');
+		return array('message'=>__('File not uploaded'));
 	}
 	if (function_exists('mb_detect_encoding')) {
 		$charset=mb_detect_encoding(file_get_contents($fname), 'UTF-8', true);
@@ -1643,7 +1685,7 @@ function Products_importFile($vars=false) {
 	$handle=fopen($fname, 'r');
 	if ($charset!='UTF-8') {
 		stream_filter_register("utf8encode", "Utf8encode_Filter")
-			or die("Failed to register filter");
+			or die(__('Failed to register filter'));
 		stream_filter_prepend($handle, "utf8encode");
 	}
 	$row=fgetcsv($handle, 1000, $vars->productsImportDelimiter['varvalue']);
@@ -1659,10 +1701,10 @@ function Products_importFile($vars=false) {
 		|| !isset($headers['_type'])
 		|| !isset($headers['_categories'])
 	) {
+		$req='_name, _ean, _stocknumber, _type, _categories';
 		return array(
-			'message'=>'Missing required headers (_name, _ean, _stocknumber,'
-			.' _type, _categories). Please use the Download link'
-			.' to get a sample import file',
+			'message'=>__('Missing required headers (%1)', array($req), 'core').'. '
+				.__('Please use the Download link to get a sample import file.'),
 			'headers-found'=>$headers
 		);
 	}
@@ -1827,9 +1869,9 @@ function Products_importFile($vars=false) {
 	}
 	Core_cacheClear('products');
 	if ($imported) {
-		return array('message'=>'Imported '.$imported.' products');
+		return array('message'=>'Imported %1 products', $imported);
 	}
-	return array('message'=>'No products imported');
+	return array('message'=>__('No products imported'));
 }
 
 // }
@@ -2101,33 +2143,6 @@ function Products_widget($vars=null) {
 	require_once dirname(__FILE__).'/frontend/show.php';
 	require dirname(__FILE__).'/frontend/widget.php';
 	return $html;
-}
-
-// }
-// { Products_breadcrumbs
-
-/**
-  * show breadcrumbs for nav
-  *
-  * @param string $baseurl
-  *
-  * @return string the HTML of the breadcrumbs
-  */
-function Products_breadcrumbs($baseurl) {
-	global $PAGEDATA;
-	$breadcrumbs='';
-	Products_frontendVarsSetup($PAGEDATA);
-	if ($_REQUEST['product_cid']) {
-		$c=ProductCategory::getInstance($_REQUEST['product_cid']);
-		$breadcrumbs.=' &raquo; <a class="product-category" href="'
-			.$c->getRelativeUrl().'">'.htmlspecialchars($c->vals['name']).'</a>';
-	}
-	if ($_REQUEST['product_id']) {
-		$c=Product::getInstance($_REQUEST['product_id']);
-		$breadcrumbs.=' &raquo; <a class="product-product" href="'
-			.$c->getRelativeUrl().'">'.htmlspecialchars($c->get('_name')).'</a>';
-	}
-	return $breadcrumbs;
 }
 
 // }

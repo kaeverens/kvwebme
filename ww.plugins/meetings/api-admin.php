@@ -1,5 +1,23 @@
 <?php
+/**
+	* admin api for Meetings plugin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
+// { Meetings_adminCustomerCreate
+
+/**
+	* create a customer
+	*
+	* @return array
+	*/
 function Meetings_adminCustomerCreate() {
 	$name=$_REQUEST['name'];
 	dbQuery('insert into user_accounts set name="'.addslashes($name).'"');
@@ -16,6 +34,15 @@ function Meetings_adminCustomerCreate() {
 		'id'=>$id
 	);
 }
+
+// }
+// { Meetings_adminCustomersList
+
+/**
+	* get a list of all customers
+	*
+	* @return array
+	*/
 function Meetings_adminCustomersList() {
 	return dbAll(
 		'select user_accounts.id as id,user_accounts.name as name'
@@ -24,6 +51,15 @@ function Meetings_adminCustomersList() {
 		.' and groups.name in ("customers")'
 	);
 }
+
+// }
+// { Meetings_adminEmployeeCreate
+
+/**
+	* create an employee
+	*
+	* @return array
+	*/
 function Meetings_adminEmployeeCreate() {
 	$name=$_REQUEST['name'];
 	dbQuery('insert into user_accounts set name="'.addslashes($name).'"');
@@ -40,6 +76,15 @@ function Meetings_adminEmployeeCreate() {
 		'id'=>$id
 	);
 }
+
+// }
+// { Meetings_adminEmployeesList
+
+/**
+	* get a list of employees
+	*
+	* @return array
+	*/
 function Meetings_adminEmployeesList() {
 	return dbAll(
 		'select user_accounts.id as id,user_accounts.name as name'
@@ -48,6 +93,15 @@ function Meetings_adminEmployeesList() {
 		.' and groups.name in ("employees", "administrators")'
 	);
 }
+
+// }
+// { Meetings_adminFormEdit
+
+/**
+	* edit a form
+	*
+	* @return array
+	*/
 function Meetings_adminFormEdit() {
 	$id=(int)$_REQUEST['id'];
 	$name=$_REQUEST['name'];
@@ -61,9 +115,28 @@ function Meetings_adminFormEdit() {
 		'ok'=>$sql
 	);
 }
+
+// }
+// { Meetings_adminFormsList
+
+/**
+	* get a list of all non-page forms
+	*
+	* @return array
+	*/
 function Meetings_adminFormsList() {
 	return dbAll('select * from forms_nonpage order by name');
 }
+
+// }
+// { Meetings_adminMeetingEdit
+
+/**
+	* edit the details of a meeting
+	*
+	* @return array
+	*/
+
 function Meetings_adminMeetingEdit() {
 	$id=(int)$_REQUEST['id'];
 	$user_id=(int)$_REQUEST['user_id'];
@@ -80,7 +153,18 @@ function Meetings_adminMeetingEdit() {
 		'ok'=>1
 	);
 }
+
+// }
+// { Meetings_adminMeetingGet
+
+/**
+	* get details about a specific meeting
+	*
+	* @return array
+	*/
 function Meetings_adminMeetingGet() {
 	$id=(int)$_REQUEST['id'];
 	return dbRow('select * from meetings where id='.$id);
 }
+
+// }
