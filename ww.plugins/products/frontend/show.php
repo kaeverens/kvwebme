@@ -38,19 +38,24 @@ function Product_datatableMultiple ($products, $direction) {
 		$product=Product::getInstance($pid);
 		$type=ProductType::getInstance($product->vals['product_type_id']);
 		if (!isset($type)) {
-			return '<em>product type with id '.$product->vals['product_type_id']
-				.' does not exist - please alert the admin of this site.</em>';
+			$ptid=$product->vals['product_type_id'];
+			return '<em>'.__(
+				'Product Type with ID %1 does not exist - please alert the admin of'
+				.' this site.', array($ptid), 'core'
+			).'</em>';
 		}
 		$row['name']=$product->name;
 		if (!is_array($type->data_fields)) {
-			return 'product type "'.$type->name.'" has no data fields.';
+			return __(
+				'Product Type "%1" has no data fields.', array($type->name), 'core'
+			);
 		}
 		foreach ($type->data_fields as $df) {
 			switch ($df->t) {
 				case 'checkbox': // {
 					$row[$df->n]=isset($product->vals[$df->n])&&$product->vals[$df->n]
-						?'Yes'
-						:'No';
+						?__('Yes')
+						:__('No');
 				break; // }
 				case 'date': // {
 					$row[$df->n] = Core_dateM2H($product->vals[$df->n]);
@@ -98,7 +103,8 @@ function Product_datatableMultiple ($products, $direction) {
 			foreach ($headers as $key=>$name) {
 				if ($header_types[$key]=='checkbox') {
 					$html.='<th><select name="search_'.$name.'"><option></option>'
-						.'<option value="0">No</option><option value="1">Yes</option>'
+						.'<option value="0">'.__('No').'</option>'
+						.'<option value="1">'.__('Yes').'</option>'
 						.'</select></th>';
 				}
 				else {
@@ -153,7 +159,7 @@ function Products_categories ($params, $smarty) {
 	}
 	if ($numEnabledCats==0) {
 		return '<div class="products-categories">'
-			.'No Categories exist for this product</div>';
+			.__('No Categories exist for this product').'</div>';
 	}
 	$c= '<ul>';
 	$directCategoryPages=dbAll(
@@ -229,9 +235,10 @@ function Products_categories ($params, $smarty) {
 	*/
 function Products_datatable ($params, $smarty) {
 	$product= $smarty->_tpl_vars['product'];
-	$type= ProductType::getInstance($product->get('product_type_id'));
+	$ptid=$product->get('product_type_id');
+	$type= ProductType::getInstance($ptid);
 	if (!$type) {
-		return 'Missing Product Type : '.$product->get('product_type_id');
+		return __('Missing Product Type: %1', array($ptid), 'core');
 	}
 	$datafields= $type->data_fields;
 	if (!is_array($datafields)) {
@@ -252,10 +259,10 @@ function Products_datatable ($params, $smarty) {
 				break; // }
 				case 'checkbox': // {
 					if (isset($product->vals[$data->n])) {
-						$c.='Yes';
+						$c.=__('Yes');
 					}
 					else {
-						$c.= 'No';
+						$c.=__('No');
 					}
 				break; // }
 				case 'textarea': // {
@@ -294,10 +301,10 @@ function Products_datatable ($params, $smarty) {
 				break; // }
 				case 'checkbox': // {
 					if (isset($product->vals[$data->n])) {
-						$c.= 'Yes';
+						$c.=__('Yes');
 					}
 					else{ 
-						$c.= 'No';
+						$c.=__('No');
 					}
 				break; // }
 				case 'textarea': // {
@@ -322,49 +329,6 @@ function Products_datatable ($params, $smarty) {
 }
 
 // }
-// { Products_getAddToCartWidget
-
-/**
-	* get a button for adding single items to a cart
-	*
-	* @param array  $params array of parameters passed to the Smarty function
-	* @param object $smarty the current Smarty object
-	*
-	* @return string the HTML
-	*/
-function Products_getAddToCartWidget($params, $smarty) {
-	$params=array_merge(
-		array(
-			'text'=>'Add to Cart',
-			'redirect'=>'same',
-		),
-		$params
-	);
-	$instock=(int)@$smarty->_tpl_vars['product']->vals['stockcontrol_total'];
-	$stockcontrol=$instock
-		?'<input type="hidden" class="stock-control-total" value="'
-		.((int)@$smarty->_tpl_vars['product']->vals['stockcontrol_total']).'"'
-		.' details="'.htmlspecialchars(
-			@$smarty->_tpl_vars['product']->vals['stockcontrol_details']
-		).'"/>'
-		:'';
-	$redirect=$params['redirect']=='checkout'
-		?'<input type="hidden" name="products_redirect" value="checkout"/>'
-		:'';
-	return '<form method="POST" class="products-addtocart">'
-		.'<input type="hidden" name="products_action" value="add_to_cart" />'
-		.$redirect
-		.$stockcontrol
-		.Products_getAddToCartButton(
-			$params['text'],
-			(float)$smarty->_tpl_vars['product']->vals['online-store']['_price'],
-			(float)$smarty->_tpl_vars['product']->vals['online-store']['_sale_price']
-		)
-		.'<input type="hidden" name="product_id" value="'
-		. $smarty->_tpl_vars['product']->id .'" /></form>';
-}
-
-// }
 // { Products_getAddManyToCartWidget
 
 /**
@@ -378,7 +342,7 @@ function Products_getAddToCartWidget($params, $smarty) {
 function Products_getAddManyToCartWidget($params, $smarty) {
 	$params=array_merge(
 		array(
-			'text'=>'Add to Cart',
+			'text'=>__('Add to Cart'),
 			'redirect'=>'same',
 			'type'=>'input',
 			'min'=>0,
@@ -454,6 +418,49 @@ function Products_getAddToCartButton($text, $baseprice=0, $saleprice=0) {
 }
 
 // }
+// { Products_getAddToCartWidget
+
+/**
+	* get a button for adding single items to a cart
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the HTML
+	*/
+function Products_getAddToCartWidget($params, $smarty) {
+	$params=array_merge(
+		array(
+			'text'=>__('Add to Cart'),
+			'redirect'=>'same',
+		),
+		$params
+	);
+	$instock=(int)@$smarty->_tpl_vars['product']->vals['stockcontrol_total'];
+	$stockcontrol=$instock
+		?'<input type="hidden" class="stock-control-total" value="'
+		.((int)@$smarty->_tpl_vars['product']->vals['stockcontrol_total']).'"'
+		.' details="'.htmlspecialchars(
+			@$smarty->_tpl_vars['product']->vals['stockcontrol_details']
+		).'"/>'
+		:'';
+	$redirect=$params['redirect']=='checkout'
+		?'<input type="hidden" name="products_redirect" value="checkout"/>'
+		:'';
+	return '<form method="POST" class="products-addtocart">'
+		.'<input type="hidden" name="products_action" value="add_to_cart" />'
+		.$redirect
+		.$stockcontrol
+		.Products_getAddToCartButton(
+			$params['text'],
+			(float)$smarty->_tpl_vars['product']->vals['online-store']['_price'],
+			(float)$smarty->_tpl_vars['product']->vals['online-store']['_sale_price']
+		)
+		.'<input type="hidden" name="product_id" value="'
+		. $smarty->_tpl_vars['product']->id .'" /></form>';
+}
+
+// }
 // { Products_image
 
 /**
@@ -467,8 +474,8 @@ function Products_getAddToCartButton($text, $baseprice=0, $saleprice=0) {
 function Products_image($params, $smarty) {
 	$params=array_merge(
 		array(
-			'width'=>128,
-			'height'=>128,
+			'width'=>200,
+			'height'=>200,
 			'zoom'=>0,
 			'zoompos'=>'right'
 		),
@@ -671,7 +678,7 @@ function Products_plusVat($params, $smarty) {
 	if (!isset($product->vals['online-store']['_vatfree'])
 		|| $product->vals['online-store']['_vatfree'] == '0'
 	) {
-		return '+ VAT';
+		return __('+ VAT');
 	}
 }
 
@@ -706,12 +713,10 @@ function Products_reviews($params, $smarty) {
 		$average = dbOne($query, 'avg(rating)');
 		$c.= '<div id="reviews_display">';
 		$c.= '<div id="average'.$productid.'">';
-		$c.= 'The average rating for this product over '.count($reviews);
-		$c.= ' review';
-		if (count($reviews)>1) {
-			$c.= 's';
-		}
-		$c.= ' was '.$average.'<br/><br/>';
+		$c.=__(
+			'The average rating for this product over %1 review(s) was %2',
+			array(count($reviews), $average), 'core'
+		);
 		$c.='</div>';
 		foreach ($reviews as $review) {
 			$name=dbOne(
@@ -721,11 +726,11 @@ function Products_reviews($params, $smarty) {
 			$c.= '<div id="'.$review['id'].'">';
 			$date = $review['cdate'];
 			$date = substr_replace($date, '', strpos($date, ' '));
-			$c.= 'Posted by '.htmlspecialchars($name).' on '.$date;
+			$c.=__('Posted by %1 on %2', array(htmlspecialchars($name), $date), 'core');
 			$body = htmlspecialchars($body);
 			$body = str_replace("\n", '<br />', $review['body']);
 			$c.= '   ';
-			$c.= '<b>Rated: </b>'.$review['rating'].'<br/>';
+			$c.= '<b>'.__('Rated').': </b>'.$review['rating'].'<br/>';
 			$c.= ($body).'<br/>';
 			if (Core_isAdmin()|| $userid==$review['user_id']) {
 				// { Edit Review Link
@@ -741,13 +746,13 @@ function Products_reviews($params, $smarty) {
 				if ($reviewMayBeEdited) {
 					$c.='<a href="javascript:;" onClick="edit_review('.$review['id']
 						.', \''.addslashes($body).'\', '.$review['rating'].', \''
-						.addslashes($review['cdate']).'\');">edit</a> ';
+						.addslashes($review['cdate']).'\');">'.__('Edit').'</a> ';
 				}
 				// }
 				// { Delete Review Link
 				$c.= '<a href="javascript:;" onClick="delete_review('
 					.$review['id'].', '.$review['user_id'].', '.$productid
-					.');">[x]</a><br/>';
+					.');">'.__('[x]').'</a><br/>';
 				// }
 			}
 			$c.= '<br/></div>';
@@ -763,7 +768,7 @@ function Products_reviews($params, $smarty) {
 		}
 	}
 	else {
-		$c.= '<em>Nobody has reviewed this product yet</em>';
+		$c.= '<em>'.__('Nobody has reviewed this product yet').'</em>';
 		$c.= '<br/>';
 		if (isset($_SESSION['userdata'])) {
 			$c.= Products_submitReviewForm($productid, $userid);
@@ -817,7 +822,7 @@ function Products_show($PAGEDATA) {
 		$c.='<form action="'.$PAGEDATA->getRelativeUrl()
 			.'" class="products-search"><input name="products-search" value="'
 			.htmlspecialchars($search)
-			.'" /><input type="submit" value="Search" /></form>';
+			.'" /><input type="submit" value="'.__('Search').'" /></form>';
 	}
 	// }
 	// { filter by location
@@ -865,7 +870,7 @@ function Products_show($PAGEDATA) {
 		$export='<form id="products-export" action="/ww.plugins/products/fronte'
 			.'nd/export.php">'
 			.'<input type="hidden" name="pid" value="'.$PAGEDATA->id.'" />'
-			.'<input type="submit" value="Export" />'
+			.'<input type="submit" value="'.__('Export').'" />'
 			.'</form>';
 	}
 	// }
@@ -916,30 +921,36 @@ function Products_show($PAGEDATA) {
 }
 
 // }
-// { Products_showById
+// { Products_showAll
 
 /**
-	* show a specific product in a page
+	* display all products
 	*
-	* @param object $PAGEDATA the page object
-	* @param int    $id       the product to show
+	* @param object $PAGEDATA  the page object
+	* @param int    $start     offset
+	* @param int    $limit     how many products to show
+	* @param string $order_by  what field to order the search by
+	* @param int    $order_dir order ascending or descending
+	* @param string $search    search string to filter by
+	* @param string $location  filter the products by location
 	*
-	* @return string the products
+	* @return string HTML of the list of products
 	*/
-function Products_showById($PAGEDATA, $id=0) {
-	if ($id==0) {
-		$id=(int)$PAGEDATA->vars['products_product_to_show'];
+function Products_showAll(
+	$PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0, $search='',
+	$location=0
+) {
+	if (isset($_REQUEST['product_id'])) {
+		$product_id=$_REQUEST['product_id'];
+		$products=Products::getAll('', $location);
 	}
-	if ($id<1) {
-		return '<em>product '.$id.' does not exist.</em>';
+	else if (isset($_REQUEST['product_category'])) {
+		$products=Products::getByCategory($_REQUEST['product_category']);
 	}
-	$product=Product::getInstance($id);
-	$typeID = $product->get('product_type_id');
-	$type=ProductType::getInstance($typeID);
-	if (!$type) {
-		return '<em>product type '.$typeID.' does not exist.</em>';
+	else {
+		$products=Products::getAll($search, $location);
 	}
-	return $type->render($product);
+	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
 
 // }
@@ -973,6 +984,33 @@ function Products_showByCategory(
 }
 
 // }
+// { Products_showById
+
+/**
+	* show a specific product in a page
+	*
+	* @param object $PAGEDATA the page object
+	* @param int    $id       the product to show
+	*
+	* @return string the products
+	*/
+function Products_showById($PAGEDATA, $id=0) {
+	if ($id==0) {
+		$id=(int)$PAGEDATA->vars['products_product_to_show'];
+	}
+	if ($id<1) {
+		return '<em>'.__('Product %1 does not exist.', array($id), 'core').'</em>';
+	}
+	$product=Product::getInstance($id);
+	$typeID = $product->get('product_type_id');
+	$type=ProductType::getInstance($typeID);
+	if (!$type) {
+		return '<em>'.__('Product Type %1 does not exist.', array($typeID), 'core').'</em>';
+	}
+	return $type->render($product);
+}
+
+// }
 // { Products_showByType
 
 /**
@@ -995,39 +1033,6 @@ function Products_showByType(
 		$id=(int)$PAGEDATA->vars['products_type_to_show'];
 	}
 	$products=Products::getByType($id, $search);
-	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
-}
-
-// }
-// { Products_showAll
-
-/**
-	* display all products
-	*
-	* @param object $PAGEDATA  the page object
-	* @param int    $start     offset
-	* @param int    $limit     how many products to show
-	* @param string $order_by  what field to order the search by
-	* @param int    $order_dir order ascending or descending
-	* @param string $search    search string to filter by
-	* @param string $location  filter the products by location
-	*
-	* @return string HTML of the list of products
-	*/
-function Products_showAll(
-	$PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0, $search='',
-	$location=0
-) {
-	if (isset($_REQUEST['product_id'])) {
-		$product_id=$_REQUEST['product_id'];
-		$products=Products::getAll('', $location);
-	}
-	else if (isset($_REQUEST['product_category'])) {
-		$products=Products::getByCategory($_REQUEST['product_category']);
-	}
-	else {
-		$products=Products::getAll($search, $location);
-	}
 	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
 }
 
@@ -1083,15 +1088,24 @@ function Products_showRelatedProducts($params, $smarty) {
 				$h[]=htmlspecialchars($p->name).'</a>';
 				continue;
 			}
-			$h[]='<img src="/a/w=150/p=150/'.$iid.'" /><br />'
-				.htmlspecialchars(__fromJSON($p->name)).'</a>';
+			if(!$vals['online_store_fields']) {
+				$pvat = array("vat" => $_SESSION['onlinestore_vat_percent']);
+				$h[]='<img src="/a/w=180/h=180//f=getImg/'.$iid.'" />'
+					.OnlineStore_productPriceFull2($pvat, $smarty)
+					.'<p class="product_related_name">'
+					.htmlspecialchars(__fromJSON($p->name)).'</p></a>';
+				continue;
+			}
+			$h[]='<img src="/a/w=180/h=180/f=getImg/'.$iid.'"/>'
+				.'<br/>'.htmlspecialchars(__fromJSON($p->name)).'</a>';
 		}
 	return count($h)
-		?'<div class="product_list products_'.htmlspecialchars($params['type'])
-		.'">'.join('', $h).'</div>'
-		:'none yet';
+		?'<div class="products_related_all">'
+		.'<div class="product_list products_'.htmlspecialchars($params['type'])
+		.'">'.join('', $h).'</div></div>'
+		:__('none yet');
 	}
-	return 'none yet';
+	return '<p class="no_products_related">'.__('none yet').'</p>';
 }
 
 // }
@@ -1106,15 +1120,14 @@ function Products_showRelatedProducts($params, $smarty) {
 	* @return string the form
 	*/
 function Products_submitReviewForm($productid, $userid) {
-	$formAction = '"http://webworks-webme';
-	$formAction.= '/ww.plugins/products';
+	$formAction = '/ww.plugins/products';
 	$formAction.= '/frontend/submit_review.php"';
-	$c.='<strong>Review This Product</strong><br/>';
+	$c.='<strong>'.__('Review This Product').'</strong><br/>';
 	$c.='<form method="post" id= "submit_review" action='.$formAction.'>';
 	$c.='<input type="hidden" name="productid" value="'.$productid.'" />';
 	$c.='<input type="hidden" name="userid" value="'.$userid.'" />';
-	$c.= '<b>Rating: </b>';
-	$c.= '<small><i>higher ratings are better </i></small>';
+	$c.= '<b>'.__('Rating:').' </b>';
+	$c.= '<small><i>'.__('Higher ratings are better.').' </i></small>';
 	// { The rating select box
 	$c.= '<select name="rating">';
 	for ($i=1; $i<=5; $i++) {
@@ -1124,11 +1137,10 @@ function Products_submitReviewForm($productid, $userid) {
 	$c.='<br />';
 	// }
 	$c.= '<textarea cols="50" rows="10" name="text">';
-	$c.= 'Put your comments about the product here';
+	$c.= __('Put your comments about the product here.');
 	$c.= '</textarea>';
 	$c.= '<div class="centre">';
-	$c.= '<input type="submit" name="submit" 
-		value="Submit Review" />';
+	$c.= '<input type="submit" name="submit" value="'.__('Submit Review').'" />';
 	$c.= '</div>';
 	$c.= '</form>';
 	return $c;
@@ -1169,7 +1181,7 @@ class Products{
 		$location=0
 	) {
 		$this->product_ids=Core_cacheLoad('products', 'products_'.$md5, -1);
-		if (1 || $this->product_ids===-1) {
+		if ($this->product_ids===-1) {
 			if ($location) {
 				$locations=explode(',', $location);
 				$arr=array();
@@ -1532,7 +1544,7 @@ class Products{
 				}
 				$prevnext.='<a class="products-next" href="'
 					.$PAGEDATA->getRelativeUrl().'?start='.($start+$limit)
-					.'">next --&gt;</a>';
+					.'">'.__('Next').'</a>';
 			}
 		}
 		$prevnext='<div class="products-pagination">'.$prevnext.'</div>';
@@ -1541,8 +1553,9 @@ class Products{
 		if (isset($PAGEDATA->vars['products_add_a_search_box'])
 			&& $PAGEDATA->vars['products_add_a_search_box']
 		) {
-			$c.='<div class="products-num-results"><strong>'
-				.$total_found.'</strong> results found.</div>';
+			$c.='<div class="products-num-results">'
+				.__('<strong>%1</strong> results found.', array($total_found), 'core')
+				.'</div>';
 		}
 		// }
 		if (!isset($PAGEDATA->vars['products_show_multiple_with'])) {
@@ -1569,7 +1582,8 @@ class Products{
 						$typeID = $product->get('product_type_id');
 						$type=ProductType::getInstance($typeID);
 						if (!$type) {
-							$c.='<li>Missing product type: '.$typeID.'</li>';
+							$c.='<li>'.__('Missing Product Type: %1', array($typeID), 'core')
+								.'</li>';
 						}
 						else {
 							$c.='<li id="products-'.$product->id.'" class="products-product">'
@@ -1597,7 +1611,7 @@ class Products{
 						$typeID = $product->get('product_type_id');
 						$type=ProductType::getInstance($typeID);
 						if (!$type) {
-							$c.='Missing product type: '.$typeID;
+							$c.=__('Missing Product Type: %1', array($typeID), 'core');
 						}
 						else if (isset($_REQUEST['product_id'])) {
 							$c.=$type->render($product, 'singleview');
