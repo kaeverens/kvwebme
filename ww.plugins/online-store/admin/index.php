@@ -28,13 +28,13 @@ $has_authrs=count($authrs)?1:0;
 $c='<div class="tabs mini-tabs">';
 // { list of tabs
 $c.= '<ul>'
-	/* TODO - translation /CB */
-	.'<li><a href="#online-store-form">Form</a></li>'
-	.'<li><a href="#online-store-payment">Payment Details</a></li>'
-	.'<li><a href="#online-store-delivery">Postage and Packaging</a></li>'
-	.'<li><a href="#online-stores-fields">Fields</a></li>'
-	.'<li><a href="#online-store-countries">Countries</a></li>'
-	.'<li><a href="#online-store-export">Export</a></li>'
+	.'<li><a href="#online-store-form">'.__('Form').'</a></li>'
+	.'<li><a href="#online-store-payment">'.__('Payment Details').'</a></li>'
+	.'<li><a href="#online-store-delivery">'.__('Postage and Packaging').'</a>'
+	.'</li>'
+	.'<li><a href="#online-stores-fields">'.__('Fields').'</a></li>'
+	.'<li><a href="#online-store-countries">'.__('Countries').'</a></li>'
+	.'<li><a href="#online-store-export">'.__('Export').'</a></li>'
 	.'</ul>';
 // }
 // { postage and packaging
@@ -51,8 +51,7 @@ $c.='</div>';
 $c.='<div id="online-store-payment">';
 $c.='<table style="width:100%">';
 // { admin email address
-/* TODO - translation /CB */
-$c.='<tr><th style="width:20%">Admin email address</th><td>'
+$c.='<tr><th style="width:20%">'.__('Admin email address').'</th><td>'
 	.'<input type="email" name="page_vars[online_stores_admin_email]"';
 if (isset($vars['online_stores_admin_email'])) {
 	$c.=' value="'.htmlspecialchars($vars['online_stores_admin_email']).'"';
@@ -63,8 +62,7 @@ $c.=' /></td>';
 if (!isset($vars['online_stores_requires_login'])) {
 	$vars['online_stores_requires_login']=0;
 }
-/* TODO - translation /CB */
-$c.='<th width="20%">Users must log in</th><td><input type="checkbox"'
+$c.='<th width="20%">'.__('Users must log in').'</th><td><input type="checkbox"'
 	.' name="page_vars[online_stores_requires_login]"'
 	.($vars['online_stores_requires_login']?' checked="checked"':'')
 	.' /></td></tr>';
@@ -85,8 +83,8 @@ $c.= '</select></td>';
 if (!isset($vars['online_stores_user_reg_no_verify'])) {
 	$vars['online_stores_user_reg_no_verify']=0;
 }
-/* TODO - translation /CB */
-$c.='<th width="20%">Register users without verification</th><td><input type="checkbox"'
+$c.='<th width="20%">'.__('Register users without verification')
+	.'</th><td><input type="checkbox"'
 	.' name="page_vars[online_stores_user_reg_no_verify]"'
 	.($vars['online_stores_user_reg_no_verify']?' checked="checked"':'')
 	.' /></td></tr>';
@@ -98,33 +96,32 @@ $vat=isset($vars['online_stores_vat_percent'])?
 if ($vat=='') {
 	$vat=0;
 }
-/* TODO - translation /CB */
-$c.='<tr><th>VAT</th><td><input name="page_vars[online_stores_vat_percent]"'
+$c.='<tr><th>'.__('VAT').'</th><td><input name="page_vars[online_stores_vat_percent]"'
 	.' value="'.((float)$vat).'" /></td></tr>';
 // }
 // { usergroup to add users to
 if (!isset($vars['online_stores_customers_usergroup'])) {
 	$vars['online_stores_customers_usergroup']='customers';
 }
-$c.='<tr><th>Add logged-in customers to this user group:</th>'
+$c.='<tr><th>'.__('Add logged-in customers to this user group:').'</th>'
 	.'<td><input id="onlinestore-customersUsergroup"'
 	.' name="page_vars[online_stores_customers_usergroup]"'
 	.' value="'.htmlspecialchars($vars['online_stores_customers_usergroup']).'"'
-	.' /></td><td><a href="javascript:onlinestoreCustomers();">List Customers</a></td></tr>';
+	.' /></td><td><a href="javascript:onlinestoreCustomers();">'
+	.__('List Customers').'</a></td></tr>';
 // }
-/* TODO - translation /CB */
 // { payment types
-$c.='<tr><th>Payment Types</th><td colspan="3"><div class="tabs">';
+$c.='<tr><th>'.__('Payment Types').'</th><td colspan="3"><div class="tabs">';
 $c.='<ul>';
 $c.='<li><a href="#online-store-payments-paypal">PayPal</a></li>';
-$c.='<li><a href="#online-store-payments-bank-transfer">Bank Transfer</a></li>';
+$c.='<li><a href="#online-store-payments-bank-transfer">'.__('Bank Transfer')
+	.'</a></li>';
 $c.='<li><a href="#online-store-payments-realex">Realex</a></li>';
 $c.='<li><a href="#online-store-payments-quickpay">QuickPay</a></li>';
 $c.='</ul>';
 // { paypal
 $c.='<div id="online-store-payments-paypal">';
 $c.='<table>';
-/* TODO - translation /CB */
 $c.='<tr><th>Email Address</th>';
 $c.='<td><input type="email" name="page_vars[online_stores_paypal_address]"';
 if (isset($vars['online_stores_paypal_address'])) {
@@ -136,8 +133,7 @@ $c.=' /></td></tr></table></div>';
 $c.='<div id="online-store-payments-bank-transfer">';
 $c.='<table>';
 // { bank name
-/* TODO - translation /CB */
-$c.='<tr><th>Bank Name</th>';
+$c.='<tr><th>'.__('Bank Name').'</th>';
 $c.='<td><input name="page_vars[online_stores_bank_transfer_bank_name]"';
 if (isset($vars['online_stores_bank_transfer_bank_name'])) {
 	$c.=' value="'.htmlspecialchars($vars['online_stores_bank_transfer_bank_name']).'"';
@@ -145,8 +141,7 @@ if (isset($vars['online_stores_bank_transfer_bank_name'])) {
 $c.=' /></td></tr>';
 // }
 // { sort code
-/* TODO - translation /CB */
-$c.='<tr><th>Sort Code</th>';
+$c.='<tr><th>'.__('Sort Code').'</th>';
 $c.='<td><input name="page_vars[online_stores_bank_transfer_sort_code]"';
 if (isset($vars['online_stores_bank_transfer_sort_code'])) {
 	$c.=' value="'.htmlspecialchars($vars['online_stores_bank_transfer_sort_code']).'"';
@@ -154,8 +149,7 @@ if (isset($vars['online_stores_bank_transfer_sort_code'])) {
 $c.=' /></td></tr>';
 // }
 // { account name
-/* TODO - translation /CB */
-$c.='<tr><th>Account Name</th>';
+$c.='<tr><th>'.__('Account Name').'</th>';
 $c.='<td><input name="page_vars[online_stores_bank_transfer_account_name]"';
 if (isset($vars['online_stores_bank_transfer_account_name'])) {
 	$c.=' value="'
@@ -164,8 +158,7 @@ if (isset($vars['online_stores_bank_transfer_account_name'])) {
 $c.=' /></td></tr>';
 // }
 // { account number
-/* TODO - translation /CB */
-$c.='<tr><th>Account Number</th>';
+$c.='<tr><th>'.__('Account Number').'</th>';
 $c.='<td><input name="page_vars[online_stores_bank_transfer_account_number]"';
 if (isset($vars['online_stores_bank_transfer_account_number'])) {
 	$c.=' value="'
@@ -192,16 +185,17 @@ $script='var bbcode_editor=CKEDITOR.replace("bank_transfer_message", { extr'
 WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
 WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
 WW_addInlineScript($script);
-/* TODO - translation /CB */
-$c.='<tr><th>Message to buyer</th>';
+$c.='<tr><th>'.__('Message to buyer').'</th>';
 if (!@$vars['online_stores_bank_transfer_message']) {
-	/* TODO - translation /CB */
-	$vars['online_stores_bank_transfer_message']='<p>Thank you for your purchase.'
-		.' Please send {{$total}} to the following bank account, quoting the '
-		.'invoice number {{$invoice_number}}:</p>'."\n<table>\n<tr><th>Bank</th>"
-		.'<td>{{$bank_name}}</td></tr>'."\n<tr><th>Account Name</th><td>"
-		.'{{$account_name}}</td></tr>'."\n<tr><th>Sort Code</th><td>"
-		.'{{$sort_code}}</td></tr>'."\n<tr><th>Account Number</th><td>"
+	$vars['online_stores_bank_transfer_message']='<p>'
+		.__(
+			'Thank you for your purchase. Please send {{$total}} to the following'
+			.' bank account, quoting the invoice number {{$invoice_number}}:'
+		)
+		.'</p>'."\n<table>\n<tr><th>".__('Bank')."</th>"
+		.'<td>{{$bank_name}}</td></tr>'."\n<tr><th>".__('Account Name')."</th><td>"
+		.'{{$account_name}}</td></tr>'."\n<tr><th>".__('Sort Code')."</th><td>"
+		.'{{$sort_code}}</td></tr>'."\n<tr><th>".__('Account Number')."</th><td>"
 		.'{{$account_number}}</td></tr>'."\n</table>";
 }
 $c.='<td><textarea name="page_vars[online_stores_bank_transfer_message]" id'
@@ -211,12 +205,11 @@ $c.='<td><textarea name="page_vars[online_stores_bank_transfer_message]" id'
 // }
 $c.='</table></div>';
 // }
-/* TODO - translation /CB */
 // { realex
 $c.='<div id="online-store-payments-realex">'
 	.'<table>';
 // { Merchant ID
-$c.='<tr><th>Merchant ID</th><td>'
+$c.='<tr><th>'.__('Merchant ID').'</th><td>'
 	.'<input name="page_vars[online_stores_realex_merchantid]"';
 if (isset($vars['online_stores_realex_merchantid'])) {
 	$c.=' value="'.htmlspecialchars($vars['online_stores_realex_merchantid'])
@@ -225,7 +218,7 @@ if (isset($vars['online_stores_realex_merchantid'])) {
 $c.=' /></td></tr>';
 // }
 // { Shared Secret
-$c.='<tr><th>Shared Secret</th><td>'
+$c.='<tr><th>'.__('Shared Secret').'</th><td>'
 	.'<input name="page_vars[online_stores_realex_sharedsecret]"';
 if (isset($vars['online_stores_realex_sharedsecret'])) {
 	$c.=' value="'.htmlspecialchars($vars['online_stores_realex_sharedsecret'])
@@ -234,7 +227,7 @@ if (isset($vars['online_stores_realex_sharedsecret'])) {
 $c.=' /></td></tr>';
 // }
 // { redirect page
-$c.='<tr><th>Redirect after payment</th><td>';
+$c.='<tr><th>'.__('Redirect after payment').'</th><td>';
 $c.='<select id="online_store_redirect_to"'
 	.' name="page_vars[online_store_redirect_to]">';
 if (isset($vars['online_store_redirect_to'])
@@ -245,37 +238,42 @@ if (isset($vars['online_store_redirect_to'])
 }
 else{
 	$vars['online_store_redirect_to']=0;
-	$c.='<option value="0"> -- none -- </option>';
+	$c.='<option value="0"> -- '.__('None').' -- </option>';
 }
 $c.='</select></td></tr>';
 // }
 // { test mode
-$c.='<tr><th>Mode</th><td>'
+$c.='<tr><th>'.__('Mode').'</th><td>'
 	.'<select name="page_vars[online_stores_realex_testmode]">'
-	.'<option value="test">Test Mode</option>'
+	.'<option value="test">'.__('Test Mode').'</option>'
 	.'<option value="live"';
 if (isset($vars['online_stores_realex_testmode'])
 	&& $vars['online_stores_realex_testmode']=='live'
 ) {
 	$c.=' selected="selected"';
 }
-$c.='>Live</option></select>'
-	.'In test mode, you can use the realex payment method by adding "?testmode=1"'
-	.' to the URL.</td></tr>';
+$c.='>'.__('Live').'</option></select>'
+	.__(
+		'In test mode, you can use the realex payment method by adding'
+		.' "?testmode=1" to the URL.'
+	)
+	.'</td></tr>';
 // }
 // { note
-/* TODO - translation /CB */
-$c.='<tr><td colspan="2">Note that some manual configuration is necessary. '
-	.'You will need to provide RealEx with a template (see their Real Auth '
-	.'Developers Guide for an example), and with the following Response Script'
-	.'URL: <br />'
-	.'http://'.$_SERVER['HTTP_HOST'].'/ww.plugins/online-store/verify/realex.php'
+$url='http://'.$_SERVER['HTTP_HOST']
+	.'/ww.plugins/online-store/verify/realex.php';
+$c.='<tr><td colspan="2">'
+	.__(
+		'Note that some manual configuration is necessary. '
+		.'You will need to provide RealEx with a template (see their Real Auth '
+		.'Developers Guide for an example), and with the following Response Script'
+		.'URL: <br />%1', array($url), 'core'
+	)
 	.'</td></tr>';
 // }
 $c.=' </table></div>';
 // }
 // { quickpay
-/* TODO - translation /CB */
 $c.='<div id="online-store-payments-quickpay">'
 	.'<table>';
 // { Merchant ID
@@ -288,8 +286,7 @@ if (isset($vars['online_stores_quickpay_merchantid'])) {
 $c.=' /></td></tr>';
 // }
 // { Shared Secret
-/* TODO - translation /CB */
-$c.='<tr><th>Secret</th><td>'
+$c.='<tr><th>'.__('MD5 Secret').'</th><td>'
 	.'<input name="page_vars[online_stores_quickpay_secret]"';
 if (isset($vars['online_stores_quickpay_secret'])) {
 	$c.=' value="'.htmlspecialchars($vars['online_stores_quickpay_secret'])
@@ -298,8 +295,7 @@ if (isset($vars['online_stores_quickpay_secret'])) {
 $c.=' /></td></tr>';
 // }
 // { redirect page (success)
-/* TODO - translation /CB */
-$c.='<tr><th>Redirect after successful payment</th><td>';
+$c.='<tr><th>'.__('Redirect after successful payment').'</th><td>';
 $c.='<select id="online_store_quickpay_redirect_to" name="page_vars[online_'
 	.'store_quickpay_redirect_to]">';
 if (isset($vars['online_store_quickpay_redirect_to'])
@@ -310,14 +306,12 @@ if (isset($vars['online_store_quickpay_redirect_to'])
 }
 else{
 	$vars['online_store_quickpay_redirect_to']=0;
-	/* TODO - translation /CB */
-	$c.='<option value="0"> -- none -- </option>';
+	$c.='<option value="0"> -- '.__('None').' -- </option>';
 }
 $c.='</select></td></tr>';
 // }
 // { redirect page (failed)
-/* TODO - translation /CB */
-$c.='<tr><th>Redirect after cancelled/failed payment</th><td>';
+$c.='<tr><th>'.__('Redirect after cancelled/failed payment').'</th><td>';
 $c.='<select id="online_store_quickpay_redirect_failed" name="page_vars[onl'
 	.'ine_store_quickpay_redirect_failed]">';
 if (isset($vars['online_store_quickpay_redirect_failed'])
@@ -328,26 +322,22 @@ if (isset($vars['online_store_quickpay_redirect_failed'])
 }
 else{
 	$vars['online_store_quickpay_redirect_failed']=0;
-	/* TODO - translation /CB */
-	$c.='<option value="0"> -- none -- </option>';
+	$c.='<option value="0"> -- '.__('None').' -- </option>';
 }
 $c.='</select></td></tr>';
 // }
 // { autocapture
-$c.='<tr><th>Autocapture</th><td>'
+$c.='<tr><th>'.__('Autocapture').'</th><td>'
 	.'<select name="page_vars[online_stores_quickpay_autocapture]">'
-	/* TODO - translation /CB */
-	.'<option value="0">No</option>'
+	.'<option value="0">'.__('No').'</option>'
 	.'<option value="1"';
 if (@$vars['online_stores_quickpay_autocapture']=='1') {
 	$c.=' selected="selected"';
 }
-/* TODO - translation /CB */
-$c.='>Yes</option></select></td></tr>';
+$c.='>'.__('Yes').'</option></select></td></tr>';
 // }
 // { test mode
-/* TODO - translation /CB */
-$c.='<tr><th>Mode</th><td>'
+$c.='<tr><th>'.__('Mode').'</th><td>'
 	.'<select name="page_vars[online_stores_quickpay_testmode]">'
 	.'<option value="test">Test Mode</option>'
 	.'<option value="live"';
@@ -356,10 +346,12 @@ if (isset($vars['online_stores_quickpay_testmode'])
 ) {
 	$c.=' selected="selected"';
 }
-/* TODO - translation /CB */
-$c.='>Live</option></select>'
-	.'In test mode, you can use the quickpay payment method by adding "?testmode=2"'
-	.' to the URL.</td></tr>';
+$c.='>'.__('Live').'</option></select>'
+	.__(
+		'In test mode, you can use the quickpay payment method by adding'
+		.' "?testmode=2" to the URL.'
+	)
+	.'</td></tr>';
 // }
 $c.=' </table></div>';
 // }
@@ -369,12 +361,10 @@ $c.='</table></div>';
 // }
 // { form
 $c.='<div id="online-store-form">';
-/* TODO - translation /CB */
-$c.='<p>This is the form that will be presented as the checkout.</p>';
+$c.='<p>'.__('This is the form that will be presented as the checkout.').'</p>';
 // { checkout view type
-$c.='<strong>View Type</strong>'
+$c.='<strong>'.__('Checkout Type').'</strong>'
 	.'<select name="page_vars[onlinestore_viewtype]">';
-/* TODO - translation /CB */	
 $types=array(
 	'All-in-one view',
 	'Basket, then All-in-one',
@@ -398,10 +388,9 @@ if ($page['body']==''
 	$page['body']
 		=file_get_contents(dirname(__FILE__).'/body_template_sample.html');
 }
-/* TODO - translation /CB */
 $c.=ckeditor('body', $page['body'])
 	.'<a href="#" class="docs" page="/ww.plugins/online-store/docs/form.html">'
-	.'codes</a></div>';
+	.__('Checkout Template Codes').'</a></div>';
 // }
 $c.='</div>';
 // }
@@ -419,7 +408,6 @@ $c.='<div id="online-stores-fields">'
 // }
 // { countries
 // { list of countries
-/* TODO - translation /CB */
 $continents=array(
 	'Africa'=>array(
 		'Algeria', 'Angola', 'Benin', 'Botswana', 'Burkina', 'Burundi',
@@ -492,9 +480,8 @@ if (@$vars['online-store-countries']) {
 foreach ($continents as $continent=>$countries) {
 	$num_countries=count($countries);
 	$c.='<div id="online-store-countries-'.$cnum.'">'
-		/* TODO - translation /CB */
-		.'<a href="#" class="all">[select all]</a>'
-		.' <a href="#" class="none">[select none]</a>'
+		.'<a href="#" class="all">'.__('[select all]').'</a>'
+		.' <a href="#" class="none">'.__('[select none]').'</a>'
 		.'<table style="width:100%">';
 	++$cnum;
 	$row=0;
@@ -521,31 +508,20 @@ $c.='</div></div>';
 // }
 // { export
 $c.='<div id="online-store-export">'
-	// { export orders as single file
-	/* TODO - translation /CB */
-	.'<!-- h3>Export Orders</h3>'
-	.'<table><tr><th>Export from</th><td><input id="online-store-export-from"'
-	.' value="'.date('Y-m-d').'"/>'
-	.'</td>'
-	.'<td><button id="online-store-export-button">Download</button>'
-	.'</td></tr>'
-	.'</table -->'
-	// }
 	// { automated exports
-	/* TODO - translation /CB */
-	.'<h3>Automated exports</h3>'
-	.'<p>Fill these in if you want paid orders to be automatically exported.</p>'
-	.'<table><tr><th>Orders Directory</th>'
+	.'<h3>'.__('Automated exports').'</h3>'
+	.'<p>'
+	.__('Fill these in if you want paid orders to be automatically exported.')
+	.'</p>'
+	.'<table><tr><th>'.__('Orders Directory').'</th>'
 	.'<td><input name="page_vars[online_stores_exportdir]" value="'
 	.htmlspecialchars(@$vars['online_stores_exportdir']).'" placeholder="'
 	.'/f/orders"/></td></tr>'
-	/* TODO - translation /CB */
-	.'<tr><th>Customers Directory</th><td>'
+	.'<tr><th>'.__('Customers Directory').'</th><td>'
 	.'<input name="page_vars[online_stores_exportcustomers]" value="'
 	.htmlspecialchars(@$vars['online_stores_exportcustomers']).'" placeholder="'
 	.'/f/customers"/></td></td></tr>'
-	/* TODO - translation /CB */
-	.'<tr><th>Customers Filename</th>'
+	.'<tr><th>'.__('Customers Filename').'</th>'
 	.'<td><input name="page_vars[online_stores_exportcustomer_filename]" value="'
 	.htmlspecialchars(@$vars['online_stores_exportcustomer_filename']).'"'
 	.' placeholder="customer-{{$Email}}.csv"/></td></tr>'

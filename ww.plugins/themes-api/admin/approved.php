@@ -39,54 +39,21 @@ if (count($approved)==0) {
 /**
  * write javascript and add it to caching scheme
  */
-$script = '
-$( ".delete" ).click( function( ){
-	var theme_id = $( this ).attr( "id" );
-	var user_id = $( this ).attr( "userid" );
-
-	var hash = Math.floor( Math.random( ) * 1001 );
-	var dataString = "theme_id=" + theme_id + "&user_id=" + user_id;
-	var $this = $( this );
-
-	$.ajax({
-		type: "POST",
-		data: dataString,
-		url:"/ww.plugins/themes-api/admin/delete-theme.php?hash="+hash,
-		success:function(html){
-			if( html == "ok" )
-				$this.parent( ).parent( ).fadeOut( "slow" );
-			else
-				alert("'.addslashes(__(
-					'There was an error deleting the file, please try again'
-				)).'" );
-		}   
-	});  
-
-} );
-$( ".unapprove" ).click( function( ){
-	var theme_id = $( this ).attr( "id" );
-	var user_id = $( this ).attr( "userid" );
-
-	var hash = Math.floor( Math.random( ) * 1001 );
-	var dataString = "theme_id=" + theme_id + "&user_id=" + user_id;
-	var $this = $( this );
-
-	$.ajax({
-		type: "POST",
-		data: dataString,
-		url:"/ww.plugins/themes-api/admin/unapprove-theme.php?hash="+hash,
-		success:function(html){
-			if( html == "ok" )
-			       $this.parent( ).parent( ).fadeOut( "slow" );
-			else
-				alert( "'.addslashes(__(
-					'There was an error approving the file. Please try again.'
-				))
-				.'" );
-		}   
-	});  
-} );
-';
+$script='$(".delete").click(function(){var theme_id=$(this).attr("id");'
+	.'var user_id=$(this).attr("userid");var hash=Math.floor(Math.random()*1001);'
+	.'var dataString="theme_id="+theme_id+"&user_id="+user_id;var $this=$(this);'
+	.'$.ajax({type:"POST",data:dataString,url:"/ww.plugins/themes-api/admin/d'
+	.'elete-theme.php?hash="+hash,success:function(html){if(html=="ok")'
+	.'$this.parent().parent().fadeOut("slow");else alert("'
+	.addslashes(__('There was an error deleting the file,please try again'))
+	.'");}});});$(".unapprove").click(function(){var theme_id=$(this).attr("id");'
+	.'var user_id=$(this).attr("userid");var hash=Math.floor(Math.random()*1001);'
+	.'var dataString="theme_id="+theme_id+"&user_id="+user_id;var $this=$(this);'
+	.'$.ajax({type:"POST",data:dataString,url:"/ww.plugins/themes-api/admin/u'
+	.'napprove-theme.php?hash="+hash,success:function(html){if(html=="ok")'
+	.'$this.parent().parent().fadeOut("slow");else alert("'
+	.addslashes(__('There was an error approving the file. Please try again.'))
+	.'");}});});';
 WW_addInlineScript($script);
 
 echo '
