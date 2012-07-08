@@ -26,7 +26,7 @@ function OnlineStore_getCountriesSelectbox($params, &$smarty) {
 	$cjson=$page->vars['online-store-countries'];
 	$required=@$params['prefix']?'':' required="required"';
 	$countries='<select name="'.(@$params['prefix']).'Country"'.$required.'>'
-		.'<option value="">'.__(' -- choose -- ', 'core').'</option>';
+		.'<option value=""> -- '.__('Choose').' -- </option>';
 	if ($cjson) {
 		$cjson=json_decode($cjson);
 		foreach ($cjson as $country=>$val) {
@@ -46,7 +46,7 @@ function OnlineStore_getCountriesSelectbox($params, &$smarty) {
   */
 function OnlineStore_showVoucherInput() {
 	$code=@$_REQUEST['os_voucher'];
-	return '<div id="os-voucher"><span>'.__('Voucher Code', 'core').':</span> '
+	return '<div id="os-voucher"><span>'.__('Voucher Code').':</span> '
 		.'<input name="os_voucher" value="'.htmlspecialchars($code).'"/></div>';
 }
 
@@ -58,7 +58,11 @@ if (isset($PAGEDATA->vars['online_stores_requires_login'])
 	&& !isset($_SESSION['userdata'])
 ) {
 	$c='<h2>'.__('Login Required', 'core').'</h2>'
-		.'<p>'.__('You must be logged-in in order to use this online store. Please <a href="/_r?type=privacy">login / register</a> to access the checkout.', 'core')
+		.'<p>'.__(
+			'You must be logged-in in order to use this online store. Please'
+			.' <a href="/_r?type=privacy">login / register</a> to access the'
+			.' checkout.', 'core'
+		)
 		.'</p>';
 	return;
 }
@@ -83,7 +87,8 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			continue;
 		} 
 		if (@$field->required && (!isset($_REQUEST[$name]) || !$_REQUEST[$name])) {
-			$errors[]='You must enter the "'.htmlspecialchars($name).'" field.';
+			$n=htmlspecialchars($name);
+			$errors[]=__('You must enter the "%1" field.', array($n), 'core');
 		} 
 	}
 	// }
@@ -101,7 +106,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$_REQUEST['_payment_method_type'] = 'Realex';
 		}
 		elseif (@$PAGEDATA->vars['online_stores_bank_transfer_account_number']) {
-			$_REQUEST['_payment_method_type'] = 'Bank Transfer';
+			$_REQUEST['_payment_method_type']=__('Bank Transfer');
 		}
 	}
 	// }
@@ -120,28 +125,27 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 	switch($_REQUEST['_payment_method_type']){
 		case 'Bank Transfer': // {
 			if (!@$PAGEDATA->vars['online_stores_bank_transfer_account_number']) {
-				$errors[]='Bank Transfer payment method not available.';
+				$errors[]=__('Bank Transfer payment method not available.');
 			}
 		break; // }
 		case 'PayPal': // {
 			if (!@$PAGEDATA->vars['online_stores_paypal_address']) {
-				$errors[]='PayPal payment method not available.';
+				$errors[]=__('PayPal payment method not available.');
 			}
 		break; // }
 		case 'QuickPay': // {
 			if (!@$PAGEDATA->vars['online_stores_quickpay_secret']) {
-				$errors[]='QuickPay payment method not available.';
+				$errors[]=__('QuickPay payment method not available.');
 			}
 		break; // }
 		case 'Realex': // {
 			if (!@$PAGEDATA->vars['online_stores_realex_sharedsecret']) {
-				$errors[]='Realex payment method not available.';
+				$errors[]=__('Realex payment method not available.');
 			}
 		break; // }
 		default: // {
-			$errors[]='Invalid payment method "'
-				.htmlspecialchars($_REQUEST['_payment_method_type'])
-				.'" selected.';
+			$p=htmlspecialchars($_REQUEST['_payment_method_type']);
+			$errors[]=__('Invalid payment method "%1" selected.', array($p), 'core');
 			// }
 	}
 	// }
@@ -204,10 +208,9 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		// }
 		// { add to user group if it's set
 		if (isset($PAGEDATA->vars['online_stores_customers_usergroup'])) {
-			if (!$user->isInGroup(
-				$PAGEDATA->vars['online_stores_customers_usergroup']
-			)) {
-				$user->addToGroup($PAGEDATA->vars['online_stores_customers_usergroup']);
+			$g=$PAGEDATA->vars['online_stores_customers_usergroup'];
+			if (!$user->isInGroup($g)) {
+				$user->addToGroup($g);
 			}
 		}
 		// }
@@ -244,11 +247,11 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$smarty->assign($key, $val);
 		}
 		// { table of items
-		$table='<table id="onlinestore-invoice" style="clear:both" width="100%"'
-			.'><tr><th class="quantityheader __" lang-context="core">Quantity</th>'
-			.'<th class="descriptionheader __" lang-context="core">Description</th>'
-			.'<th class="unitamountheader __" lang-context="core">Unit Price</th>'
-			.'<th class="amountheader __" lang-context="core">Amount</th>'
+		$table='<table id="onlinestore-invoice" style="clear:both" width="100%">'
+			.'<tr><th class="quantityheader">'.__('Quantity').'</th>'
+			.'<th class="descriptionheader">'.__('Description').'</th>'
+			.'<th class="unitamountheader">'.__('Unit Price').'</th>'
+			.'<th class="amountheader">'.__('Amount').'</th>'
 			.'</tr>';
 		$user_is_vat_free=0;
 		$group_discount=0;
@@ -470,19 +473,28 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 				$c.=$msg;
 			break; // }
 			case 'PayPal': // {
-				$c.='<p>'.__('Your order has been recorded. Please click the button below to go to PayPal for payment. Thank you.', 'core')
+				$c.='<p>'.__(
+					'Your order has been recorded. Please click the button below to'
+					.' go to PayPal for payment. Thank you.', 'core'
+				)
 				.'</p>';
 				$c.=OnlineStore_generatePaypalButton($PAGEDATA, $id, $total);
 			break; // }
 			case 'QuickPay': // {
 				$c.='<p>'
-					.__('Your order has been recorded. Please click the button below to go to QuickPay for payment. Thank you.', 'core')
+					.__(
+						'Your order has been recorded. Please click the button below to'
+						.' go to QuickPay for payment. Thank you.', 'core'
+					)
 					.'</p>';
 				$c.=OnlineStore_generateQuickPayButton($PAGEDATA, $id, $total);
 			break; // }
 			case 'Realex': // {
 				$c.='<p>'
-					.__('Your order has been recorded. Please click the button below to go to Realex Payments for payment. Thank you.', 'core')
+					.__(
+						'Your order has been recorded. Please click the button below to'
+						.' go to Realex Payments for payment. Thank you.', 'core'
+					)
 					.'</p>';
 				$c.=OnlineStore_generateRealexButton($PAGEDATA, $id, $total);
 			break; // }
