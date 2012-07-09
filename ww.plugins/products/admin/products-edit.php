@@ -89,7 +89,7 @@ function Products_showDataField($datafield, $def) {
 		case 'user': // {
 			require_once SCRIPTBASE.'/ww.incs/api-admin.php';
 			echo '<select name="data_fields['.htmlspecialchars($def['n']).']">'
-				.'<option value="0"> -- please choose -- </option>';
+				.'<option value="0"> -- '.__('Choose').' -- </option>';
 			$groups=explode("\n", $def['e']);
 			foreach ($groups as $k=>$v) {
 				if ($v=='') {
@@ -705,10 +705,10 @@ if (isset($PLUGINS['online-store'])) {
 				),
 			'_custom_vat_amount' => __('Custom VAT Amount'),
 			'_deliver_free' => array(
-				__('Free Delivery'), 'Options'=>array('No', 'Yes')
+				__('Free Delivery'), 'Options'=>array(__('No'), __('Yes'))
 			),
 			'_not_discountable' => array(
-				__('Not Discountable'), 'Options'=>array('No', 'Yes')
+				__('Not Discountable'), 'Options'=>array(__('No'), __('Yes'))
 			),
 			'_sold_amt' => __('Amount Sold'),
 			'_stock_amt' => __('Amount in Stock'),
@@ -769,7 +769,7 @@ if (isset($PLUGINS['online-store'])) {
 		}
 		// }
 		// { stock control for simple products
-		echo '<label>Amount in stock: '
+		echo '<label>'.__('Amount in stock').': '
 			.'<input class="small" name="stockcontrol_total" value="'
 			.(int)@$pdata['stockcontrol_total'].'"/></label>';
 		// }
@@ -783,8 +783,11 @@ if (isset($PLUGINS['online-store'])) {
 				.'window.stockcontrol_detail='.$detail.';window.stockcontrol_options=["'
 				.join('", "', $options).'"];</script><a href="#" id="'
 				.'stockcontrol-addrow">add row</a>'
-				.'<p>to remove rows, set their options to "-- choose --" and save '
-				.'the product.</p>';
+				.'<p>'.__(
+					'To remove rows, set their options to "-- Choose --" and save the'
+					.' product.'
+				)
+				.'</p>';
 		}
 		// }
 		echo '</div>';
@@ -792,7 +795,8 @@ if (isset($PLUGINS['online-store'])) {
 }
 // }
 // { categories
-echo '<div id="categories"><p>At least one category must be chosen.</p>';
+echo '<div id="categories"><p>'.__('At least one category must be chosen.')
+	.'</p>';
 // { build array of categories
 $rs=dbAll('select id,name,parent_id from products_categories');
 $cats=array();
@@ -831,7 +835,7 @@ if (count($relations)) {
 			'select * from products_relations where relation_id='.$relation['id']
 			.' and from_id='.$id
 		);
-		$options='<option value=""> -- please choose -- </option>';
+		$options='<option value=""> -- '.__('Choose').' -- </option>';
 		foreach ($relations as $r) {
 			$options.='<option value="'.$r['id'].'"';
 			if ($r['id']==$relation['id']) {
@@ -853,7 +857,7 @@ if (count($relations)) {
 		}
 	}
 	echo '<tr><td><select name="product-relations-type[]">'
-		.'<option value=""> -- please choose -- </option>';
+		.'<option value=""> -- '.__('Choose').' -- </option>';
 	foreach ($relations as $relation) {
 		echo '<option value="'.$relation['id'].'">'
 			.htmlspecialchars($relation['name'])
@@ -862,13 +866,13 @@ if (count($relations)) {
 	echo '</select></td>'
 		.'<td><select class="products-relations-product"'
 		.' name="products-relations-product[]">'
-		.'<option value=""> -- please choose -- </option></select>';
+		.'<option value=""> -- '.__('Choose').' -- </option></select>';
 	WW_addScript('products/admin/products-edit-related.js');
 	echo '</td></tr></table></div>';
 }
 // }
 // { end form and tabs
-echo '</div><input type="submit" value="Save" /></form>';
+echo '</div><input type="submit" value="'.__('Save').'" /></form>';
 // }
 WW_addScript('products/admin/products-edit.js');
 WW_addScript('products/admin/create-page.js');
@@ -881,4 +885,3 @@ WW_addInlineScript(
 	.'})'	
 	.'})'
 );
-

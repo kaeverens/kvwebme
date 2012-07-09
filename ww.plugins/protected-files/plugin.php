@@ -89,7 +89,7 @@ function ProtectedFiles_check($vars) {
 							exit;
 						}
 						else {
-							webmeMail(
+							cmsMail(
 								$pr['recipient_email'], 
 								'['.$_SERVER['HTTP_HOST'].'] protected file downloaded',
 								'protected file "'.addslashes($fname)

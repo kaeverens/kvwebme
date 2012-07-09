@@ -31,24 +31,35 @@ $sha1=sha1(
 );
 $p=Page::getInstanceByType('online-store');
 if (!$p) {
-	die('no online store detected on this site');
+	die(__('No online store detected on this site'));
 }
 $p->initValues();
 if (!isset($p->vars['online_stores_realex_sharedsecret'])
 	|| !($p->vars['online_stores_realex_sharedsecret'])
 ) {
-	die('Realex not configured on this server');
+	die(__('Realex not configured on this server'));
 }
 $sha1=sha1($sha1.'.'.$p->vars['online_stores_realex_sharedsecret']);
 if ($sha1!=$sha1hash) {
-	die('SHA1 hash does not match. Received '.$sha1hash.', expected '.$sha1);
+	die(
+		__(
+			'SHA1 hash does not match. Received %1, expected %2',
+			array($sha1hash, $sha1),
+			'core'
+		)
+	);
 }
 // }
 // { check that purchase was successful
 if ($result!='00') {
-	echo '<p>Error '.$result.'. "'.htmlspecialchars($message).'"</p><p>If you'
-		.' think this is a problem on our site, please contact us with the abov'
-		.'e error message, and the order ID '.$id.'</p>';
+	echo '<p>'.__('Error %1, "%2"', array($result, $message), 'core').'</p>'
+		.'<p>'.__(
+			'If you think this is a problem on our site, please contact us with'
+			.' the above error message, and the order ID %1',
+			array($id),
+			'core'
+		)
+		.'</p>';
 	exit;
 }
 // }
@@ -75,6 +86,9 @@ if (!$pfound) {
 	}
 }
 echo '<script>document.location="'.addslashes($url).'";</script>'
-	.'<p>Thank you!</p>'
-	.'<p>Please <a href="'.htmlspecialchars($url)
-	.'">click here</a> to continue.</p>';
+	.'<p>'.__('Thank you').'</p>'
+	.'<p>'.__(
+		'Please <a href="%1">click here</a> to continue',
+		array($url), 'core'
+	)
+	.'.</p>';

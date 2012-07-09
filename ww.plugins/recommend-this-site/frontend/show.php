@@ -49,15 +49,15 @@ function RecommendThisSite_send($page, $vars) {
 			$v
 		);
 	}
-	webmeMail(
+	cmsMail(
 		$yemail, $tplvars['amailemail'],
 		$tplvars['ymailsubject'], $tplvars['ymailbody']
 	);
-	webmeMail(
+	cmsMail(
 		$femail, $femail,
 		$tplvars['fmailsubject'], $tplvars['fmailbody']
 	);
-	webmeMail(
+	cmsMail(
 		$tplvars['amailemail'], 'noreply@'.str_replace('www.', '', $_SERVER['HTTP_HOST']), 
 		$tplvars['amailsubject'], $tplvars['amailbody']
 	);

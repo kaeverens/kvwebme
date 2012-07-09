@@ -154,116 +154,114 @@ function Core_locationsGetUi($params=array()) {
 	* @return string the html
 	*/
 function Core_menuShowFg ($opts=array()) {
-	// { menuBuildFg
-	
-	/**
-	 * get recursive details of pages to build a menu
-	 *
-	 * @param int   $parentid the parent's ID
-	 * @param int   $depth    current menu depth
-	 * @param array $options  any further options
-	 *
-	 * @return string HTML of the sub-menu
-	 */
-	function menuBuildFg($parentid, $depth, $options) {
-		$PARENTDATA=Page::getInstance($parentid)->initValues();
-		// { menu order
-		$order='ord,name';
-		if (isset($PARENTDATA->vars['order_of_sub_pages'])) {
-			switch ($PARENTDATA->vars['order_of_sub_pages']) {
-				case 1: // { alphabetical
-					$order='name';
-					if ($PARENTDATA->vars['order_of_sub_pages_dir']) {
-						$order.=' desc';
-					}
-				break; // }
-				case 2: // { associated_date
-					$order='associated_date';
-					if ($PARENTDATA->vars['order_of_sub_pages_dir']) {
-						$order.=' desc';
-					}
-					$order.=',name';
-				break; // }
-				default: // { by admin order
-					$order='ord';
-					if ($PARENTDATA->vars['order_of_sub_pages_dir']) {
-						$order.=' desc';
-					}
-					$order.=',name';
-				break; // }
+	if (!function_exists('menuBuildFg')) { // menuBuildFg
+		/**
+		 * get recursive details of pages to build a menu
+		 *
+		 * @param int   $parentid the parent's ID
+		 * @param int   $depth    current menu depth
+		 * @param array $options  any further options
+		 *
+		 * @return string HTML of the sub-menu
+		 */
+		function menuBuildFg($parentid, $depth, $options) {
+			$PARENTDATA=Page::getInstance($parentid)->initValues();
+			// { menu order
+			$order='ord,name';
+			if (isset($PARENTDATA->vars['order_of_sub_pages'])) {
+				switch ($PARENTDATA->vars['order_of_sub_pages']) {
+					case 1: // { alphabetical
+						$order='name';
+						if ($PARENTDATA->vars['order_of_sub_pages_dir']) {
+							$order.=' desc';
+						}
+					break; // }
+					case 2: // { associated_date
+						$order='associated_date';
+						if ($PARENTDATA->vars['order_of_sub_pages_dir']) {
+							$order.=' desc';
+						}
+						$order.=',name';
+					break; // }
+					default: // { by admin order
+						$order='ord';
+						if ($PARENTDATA->vars['order_of_sub_pages_dir']) {
+							$order.=' desc';
+						}
+						$order.=',name';
+					break; // }
+				}
 			}
-		}
-		// }
-		$rs=dbAll(
-			"select id,name,type from pages where parent='".$parentid
-			."' and !(special&2) order by $order"
-		);
-		if ($rs===false || !count($rs)) {
-			return '';
-		}
-		$items=array();
-		foreach ($rs as $r) {
-			$item='<li>';
-			$page=Page::getInstance($r['id'])->initValues();
-			$item.='<a class="menu-fg menu-pid-'.$r['id'].'" href="'
-				.$page->getRelativeUrl().'">'
-				.htmlspecialchars(__FromJson($page->name)).'</a>';
-			// { override menu if a trigger causes the override
-			$submenus=Core_trigger(
-				'menu-subpages-html',
-				array($page, $depth+1, $options)
+			// }
+			$rs=dbAll(
+				"select id,name,type from pages where parent='".$parentid
+				."' and !(special&2) order by $order"
 			);
-			if ($submenus) {
-				$item.=$submenus;
+			if ($rs===false || !count($rs)) {
+				return '';
+			}
+			$items=array();
+			foreach ($rs as $r) {
+				$item='<li>';
+				$page=Page::getInstance($r['id'])->initValues();
+				$item.='<a class="menu-fg menu-pid-'.$r['id'].'" href="'
+					.$page->getRelativeUrl().'">'
+					.htmlspecialchars(__FromJson($page->name)).'</a>';
+				// { override menu if a trigger causes the override
+				$submenus=Core_trigger(
+					'menu-subpages-html',
+					array($page, $depth+1, $options)
+				);
+				if ($submenus) {
+					$item.=$submenus;
+				}
+				// }
+				// { otherwise load sub-menus as usual
+				else {
+					$item.=menuBuildFg($r['id'], $depth+1, $options);
+				}
+				// }
+				$item.='</li>';
+				$items[]=$item;
+			}
+			$options['columns']=(int)$options['columns'];
+			// { return top-level menu
+			if (!$depth) {
+							return '<ul>'.join('', $items).'</ul>';
 			}
 			// }
-			// { otherwise load sub-menus as usual
-			else {
-				$item.=menuBuildFg($r['id'], $depth+1, $options);
+			if ($options['style_from']=='1') {
+				$s='';
+				if ($options['background']) {
+					$s.='background:'.$options['background'].';';
+				}
+				if ($options['opacity']) {
+					$s.='opacity:'.$options['opacity'].';';
+				}
+				if ($s) {
+					$s=' style="'.$s.'"';
+				}
+			}
+			// { return 1-column sub-menu
+			if ($options['columns']<2) {
+							return '<ul'.$s.'>'.join('', $items).'</ul>';
 			}
 			// }
-			$item.='</li>';
-			$items[]=$item;
-		}
-		$options['columns']=(int)$options['columns'];
-		// { return top-level menu
-		if (!$depth) {
-						return '<ul>'.join('', $items).'</ul>';
-		}
-		// }
-		if ($options['style_from']=='1') {
-			$s='';
-			if ($options['background']) {
-				$s.='background:'.$options['background'].';';
+			// { return multi-column submenu
+			$items_count=count($items);
+			$items_per_column=ceil($items_count/$options['columns']);
+			$c='<table'.$s.'><tr><td><ul>';
+			for ($i=1;$i<$items_count+1;++$i) {
+				$c.=$items[$i-1];
+				if ($i!=$items_count && !($i%$items_per_column)) {
+					$c.='</ul></td><td><ul>';
+				}
 			}
-			if ($options['opacity']) {
-				$s.='opacity:'.$options['opacity'].';';
-			}
-			if ($s) {
-				$s=' style="'.$s.'"';
-			}
+			$c.='</ul></td></tr></table>';
+			return $c;
+			// }
 		}
-		// { return 1-column sub-menu
-		if ($options['columns']<2) {
-						return '<ul'.$s.'>'.join('', $items).'</ul>';
-		}
-		// }
-		// { return multi-column submenu
-		$items_count=count($items);
-		$items_per_column=ceil($items_count/$options['columns']);
-		$c='<table'.$s.'><tr><td><ul>';
-		for ($i=1;$i<$items_count+1;++$i) {
-			$c.=$items[$i-1];
-			if ($i!=$items_count && !($i%$items_per_column)) {
-				$c.='</ul></td><td><ul>';
-			}
-		}
-		$c.='</ul></td></tr></table>';
-		return $c;
-		// }
 	}
-	
-	// }
 	global $_languages;
 	$c='';
 	$md5_1=md5('menu_fg|'.print_r($opts, true).'|'.join(', ', $_languages));
@@ -491,7 +489,7 @@ function Template_logoDisplay($vars) {
 }
 
 // }
-// { webmeMail
+// { cmsMail
 
 /**
 	* send an email in HTML and text format. optionally with attached files
@@ -504,7 +502,7 @@ function Template_logoDisplay($vars) {
 	*
 	* @return null
 	*/
-function webmeMail($from, $to, $subject, $message, $files = false) {
+function cmsMail($from, $to, $subject, $message, $files = false) {
 	require_once dirname(__FILE__).'/mail.php';
 	send_mail($from, $to, $subject, $message, $files);
 }

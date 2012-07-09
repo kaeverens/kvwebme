@@ -159,7 +159,7 @@ function Form_readonly($page_id, &$vars, &$form_fields) {
 				$d=Core_dateM2H($_REQUEST[$name]);
 			break; // }
 			case 'file': // {
-				$d='if there are any files, they are attached to this email';
+				$d=__('If there are any files, they are attached to this email');
 			break; // }
 			case 'hidden': // {
 				$d=htmlspecialchars($r2['extra']);
@@ -362,7 +362,7 @@ function Form_send($page, $vars, $form_fields) {
 		$to=$vars['forms_recipient'];
 		$form=str_replace(
 			array(
-				'<input type="submit" value="Submit Form" />',
+				'<input type="submit" value="'.__('Submit Form').'" />',
 				'<form action="'.$_SERVER['REQUEST_URI'].'" method="post" '
 					.'class="ww_form" enctype="multipart/form-data">',
 				'</form>'
@@ -370,10 +370,10 @@ function Form_send($page, $vars, $form_fields) {
 			'',
 			$form
 		);
-		webmeMail(
+		cmsMail(
 			$to,
 			$from,
-			'['.$_SERVER['HTTP_HOST'].'] '.$page['name'],
+			$_SERVER['HTTP_HOST'].' '.$page['name'],
 			'<html><head></head><body>'.$form.'</body></html>',
 			$_FILES
 		);
@@ -407,24 +407,33 @@ function Form_validate(&$vars, &$form_fields) {
 			if (!isset($_SESSION['emails'])
 				|| $_SESSION['emails'][@$_REQUEST[$name]]!==true
 			) {
-				$errors[]='Email validation code was not correct.';
+				$errors[]=__('Email validation code was not correct.');
 			}
 		}
 		if ($r2['isrequired'] && @$_REQUEST[$name]=='') {
-			$errors[]='You must fill in the <strong>' . $r2['name'] . '</strong> field.';
+			$n=$r2['name'];
+			$errors[]=__(
+				'You must fill in the <strong>%1</strong> field.',
+				array($n),
+				'core'
+			);
 		}
 		if ($r2['type']=='email'
 			&& !filter_var(@$_REQUEST[$name], FILTER_VALIDATE_EMAIL)
 		) {
-			$errors[]='You must provide a valid email in the <strong>'
-				.$r2['name'] . '</strong> field.';
+			$n=$r2['name'];
+			$errors[]=__(
+				'You must provide a valid email in the <strong>%1</strong> field.',
+				array($n),
+				'core'
+			);
 		}
 	}
 	// { check the captcha
 	if (@$vars['forms_captcha_required']) {
 		require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/recaptcha.php';
 		if (!isset($_REQUEST['recaptcha_challenge_field'])) {
-			$errors[]='You must fill in the captcha (image text).';
+			$errors[]=__('You must fill in the captcha (image text).');
 		}
 		else {
 			$result 
@@ -435,7 +444,7 @@ function Form_validate(&$vars, &$form_fields) {
 					$_REQUEST['recaptcha_response_field']
 				);
 			if (!$result->is_valid) {
-				$errors[]='Invalid captcha. Please try again.';
+				$errors[]=__('Invalid captcha. Please try again.');
 			}
 		}
 	}
@@ -445,7 +454,7 @@ function Form_validate(&$vars, &$form_fields) {
 	$from=isset($_REQUEST[$from_field])?$_REQUEST[$from_field]:'';
 	if ($from == '') {
 		if (!(@$vars['forms_replyto'])) {
-			$errors[]='no replyto field has been set up by the admin!';
+			$errors[]=__('No replyto field has been set up by the admin!');
 		}
 		else {
 			$errors[]='please fill in the "'.$vars['forms_replyto'].'" field.';
