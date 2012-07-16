@@ -15,7 +15,6 @@ $(function() {
 		.appendTo($('#issuetracker-navbar'))
 		.click(function() {
 			var id=+$('#issuetracker-navbar .project').val();
-			console.log(id);
 			$.post('/a/p=issue-tracker/f=projectGet', {
 				'id': id
 			}, editProject);
@@ -26,8 +25,11 @@ $(function() {
 		var opts=['<option value="0"> -- all -- </option>']
 		var validOpts=0, lastValid=0;
 		for (var i=0;i<ret.length;++i) {
-			var meta=eval('('+ret[i].meta+')');
+			var meta=eval('('+ret[i].meta+')')||{};
 			var allowed=0;
+			if (!meta.groups || !meta.users) {
+				allowed=1;
+			}
 			for (var j=0;j<it_see_all.length;++j) {
 				if ($.inArray(+it_see_all[j], userdata.groups)!=-1) {
 					allowed=1;
@@ -91,19 +93,47 @@ $(function() {
 	});
 	function editProject(prj) {
 		prj.meta=eval('('+prj.meta+')');
+		if (!prj.meta) {
+			prj.meta={
+				'groups':[],
+				'users':[]
+			};
+		}
 		var html='<table>'
 			+'<tr><th>Name</th><td><input class="name"/></td></tr>'
-			+'<tr><th>Visible&nbsp;To&nbsp;(users)</th><td class="users"></td></tr>'
-			+'<tr><th>Visible&nbsp;To&nbsp;(groups)</th><td class="groups"></td></tr>'
+			+'<tr><th>Restrict&nbsp;To&nbsp;(users)</th><td class="users"></td></tr>'
+			+'<tr><th>Restrict&nbsp;To&nbsp;(groups)</th><td class="groups"></td>'
+			+'</tr>'
 			+'</table>';
 		var $table=$(html).dialog({
 			'modal':true,
+			'width':370,
 			'close':function() {
 				$table.remove();
 			},
 			'buttons':{
 				'save':function() {
 					prj.name=$table.find('.name').val();
+					// { groups
+					var groups=[];
+					$.each(
+						$('.groups>select', $table).multiselect('getChecked'),
+						function(k, v) {
+							groups.push($(this).attr('value'));
+						}
+					);
+					prj.meta.groups=groups;
+					// }
+					// { users
+					var users=[];
+					$.each(
+						$('.users>select', $table).multiselect('getChecked'),
+						function(k, v) {
+							users.push($(this).attr('value'));
+						}
+					);
+					prj.meta.users=users;
+					// }
 					$.post('/a/p=issue-tracker/f=adminProjectSave', {
 						'id':prj.id,
 						'name':prj.name,
@@ -127,12 +157,37 @@ $(function() {
 				}
 			}
 		});
+		$.get('/a/f=adminUserNamesGet', function(ret) {
+			var opts=[], users=prj.meta.users||[];
+			$.each(ret, function(k, v) {
+				var selected=users.indexOf(k)!=-1
+					?' selected="selected"'
+					:'';
+				opts.push('<option value="'+k+'"'+selected+'>'+v+'</option>');
+			});
+			$('<select multiple="multiple">'+opts.join('')+'</select>')
+				.appendTo($table.find('.users'))
+				.multiselect();
+		});
+		$.get('/a/f=adminUserGroupsGet', function(ret) {
+			var opts=[], groups=prj.meta.groups||[];
+			$.each(ret, function(k, v) {
+				var selected=groups.indexOf(v.id)!=-1
+					?' selected="selected"'
+					:'';
+				opts.push('<option value="'+v.id+'"'+selected+'>'+v.name+'</option>');
+			});
+			$('<select multiple="multiple">'+opts.join('')+'</select>')
+				.appendTo($table.find('.groups'))
+				.multiselect();
+		});
 		$table.find('.name').val(prj.name);
 	}
 	function showIssues(pid) {
 		$content.empty();
 		var table='<table style="width:100%">'
-			+'<thead><tr><th>Name</th><th>Type</th><th>Status</th><th>&nbsp;</th>'
+			+'<thead><tr><th>Name</th><th>Type</th><th>Status</th>'
+			+'<th>ID</th><th>Project</th>'
 			+'</tr></thead>'
 			+'<tbody></tbody>'
 			+'</table>';

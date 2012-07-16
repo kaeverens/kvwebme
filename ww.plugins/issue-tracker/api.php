@@ -166,7 +166,7 @@ function Issuetracker_issuesGetDT() {
 		default:
 			$orderby='name';
 	}
-	$filters=array();
+	$filters=array('issuetracker_issues.project_id=issuetracker_projects.id');
 	if ($search) {
 		$filters[]='name like "%'.addslashes($search).'%"';
 	}
@@ -174,11 +174,45 @@ function Issuetracker_issuesGetDT() {
 		$filters[]='project_id='.$pid;
 	}
 	$filter='';
+	if (!Core_isAdmin()) { // check projects for restrictions
+		$projects=dbAll(
+			'select id, name, groups, users from issuetracker_projects', 'id'
+		);
+		$allowed_projects=array(0);
+		foreach ($projects as $p) {
+			if (strlen($p['groups'])>1) {
+				if (!isset($_SESSION['userdata'])) {
+					continue;
+				}
+				$ok=0;
+				foreach ($_SESSION['userdata']['groups'] as $k=>$v) {
+					if (strpos($p['groups'], '|'.$v.'|')!==false) {
+						$ok=1;
+					}
+				}
+				if (!$ok) {
+					continue;
+				}
+			}
+			if (strlen($p['users'])>1) {
+				if (!isset($_SESSION['userdata'])) {
+					continue;
+				}
+				if (strpos($p['users'], '|'.$_SESSION['userdata'].'|')===false) {
+					continue;
+				}
+			}
+			$allowed_projects[]=$p['id'];
+		}
+		$filters[]='issuetracker_projects.id in ('.join(',', $allowed_projects).')';
+	}
 	if (count($filters)) {
 		$filter='where ('.join(') and (', $filters).')';
 	}
-	$sql='select id, type_id, name, status'
-		.' from issuetracker_issues '.$filter
+	$sql='select issuetracker_issues.id id'
+		.', type_id, issuetracker_issues.name name, status, project_id'
+		.', issuetracker_projects.name project_name'
+		.' from issuetracker_issues,issuetracker_projects '.$filter
 		.' order by '.$orderby.' '.$orderdesc
 		.' limit '.$start.','.$length;
 	$rs=dbAll($sql);
@@ -205,6 +239,9 @@ function Issuetracker_issuesGetDT() {
 		// }
 		// { id
 		$row[]=$r['id'];
+		// }
+		// { project
+		$row[]=$r['project_name'];
 		// }
 		$arr[]=$row;
 	}

@@ -21,7 +21,7 @@ $plugin=array(
 	'frontend' => array(
 		'page_type' => 'IssueTracker_front'
 	),
-	'version'=>6
+	'version'=>7
 );
 // }
 
@@ -52,6 +52,10 @@ function IssueTracker_admin($page, $page_vars) {
 	*/
 function IssueTracker_front($PAGEDATA) {
 	require SCRIPTBASE.'ww.plugins/issue-tracker/frontend/page_type.php';
+	if (isset($_SESSION['userdata'])) {
+		WW_addCSS('/j/jquery.multiselect/jquery.multiselect.css');
+		WW_addScript('/j/jquery.multiselect/jquery.multiselect.min.js');
+	}
 	return $PAGEDATA->render().$html.__FromJson(@$PAGEDATA->vars['footer']);
 }
 

@@ -26,6 +26,24 @@ function IssueTracker_adminProjectSave() {
 	$parent_id=(int)$_REQUEST['parent_id'];
 	$sql='set name="'.addslashes($name).'"'
 		.', meta="'.addslashes($meta).'", parent_id='.$parent_id;
+	// { groups
+	$groups='|';
+	if (isset($_REQUEST['meta']['groups'])) {
+		foreach ($_REQUEST['meta']['groups'] as $v) {
+			$groups.=$v.'|';
+		}
+	}
+	$sql.=',groups="'.addslashes($groups).'"';
+	// }
+	// { users
+	$users='|';
+	if (isset($_REQUEST['meta']['users'])) {
+		foreach ($_REQUEST['meta']['users'] as $v) {
+			$users.=$v.'|';
+		}
+	}
+	$sql.=',users="'.addslashes($users).'"';
+	// }
 	if ($id) {
 		dbQuery('update issuetracker_projects '.$sql.' where id='.$id);
 		return array('id'=>$id);

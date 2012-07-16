@@ -50,7 +50,7 @@ if ($version==4) {
 	dbQuery('alter table issuetracker_issues add meta text');
 	$version=5;
 }
-if ($version==5) {
+if ($version==5) { // comments table
 	dbQuery(
 		'create table issuetracker_comments('
 		.'id int auto_increment primary key not null'
@@ -59,4 +59,10 @@ if ($version==5) {
 		.')default charset=utf8;'
 	);
 	$version=6;
+}
+if ($version==6) { // add groups/users to projects table
+	dbQuery('alter table issuetracker_projects add groups text');
+	dbQuery('alter table issuetracker_projects add users text');
+	dbQuery('update issuetracker_projects set groups="", users=""');
+	$version=7;
 }
