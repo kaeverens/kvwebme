@@ -81,6 +81,12 @@ for (var i=stubs.length;i--;) {
 		+"});});}";
 	eval(s);
 }
+function stub(fn, plugin) {
+	var s="window."+plugin+'_'+fn+"=function(){var args=arguments;"
+		+"$.cachedScript('/ww.plugins/"+plugin.toLowerCase()+"/j/"+fn+".js')"
+		+".done(function(){"+plugin+'_'+fn+".apply(this,args);});}";
+	eval(s);
+}
 // }
 Date.prototype.toYMD =function() {
 	var year, month, day;

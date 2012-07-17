@@ -134,7 +134,7 @@ $plugin=array(
 		'menu-subpages' => 'Products_getSubCategoriesAsMenu',
 		'menu-subpages-html' => 'Products_getSubCategoriesAsMenuHtml'
 	), // }
-	'version' => '43'
+	'version' => '44'
 );
 // }
 
@@ -274,7 +274,7 @@ class Product{
 	  */
 	function getRelativeUrl() {
 		global $PAGEDATA;
-		if ($this->relativeUrl) {
+		if (isset($this->relativeUrl) && $this->relativeUrl) {
 			return $this->relativeUrl;
 		}
 		// { Does the product have a page assigned to display the product?

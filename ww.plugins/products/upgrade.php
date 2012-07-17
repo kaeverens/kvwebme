@@ -330,3 +330,7 @@ if ($version==42) { // add Location to products
 	);
 	$version=43;
 }
+if ($version==43) { // add Location to watchlists
+	dbQuery('alter table products_watchlists add location_id int default 0');
+	$version=44;
+}

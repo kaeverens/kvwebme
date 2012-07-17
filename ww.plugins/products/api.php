@@ -131,6 +131,9 @@ function Products_categoryWatch() {
 /**
 	* get list of watches
 	*
+	* DEPRECATED: Kae to find all uses of this and replace with
+	*   Products_watchlistsGet then remove this function
+	*
 	* @return null
 	*/
 
@@ -489,6 +492,46 @@ function Products_typesTemplatesGet() {
 		$templates[]=str_replace('.json', '', $file->getFilename());
 	}
 	return $templates;
+}
+
+// }
+// { Products_watchlistsGet
+
+/**
+	* retrieve a user's watchlists
+	*
+	* @return array
+	*/
+function Products_watchlistsGet() {
+	if (!isset($_SESSION['userdata']['id'])) {
+		return array('error'=>__('not logged in'));
+	}
+	$uid=(int)$_SESSION['userdata']['id'];
+	return dbAll('select * from products_watchlists where user_id='.$uid);
+}
+
+// }
+// { Products_watchlistsSave
+
+/**
+	* update a user's watchlists
+	*
+	* @return array
+	*/
+function Products_watchlistsSave() {
+	if (!isset($_SESSION['userdata']['id'])) {
+		return array('error'=>__('not logged in'));
+	}
+	$uid=(int)$_SESSION['userdata']['id'];
+	dbQuery('delete from products_watchlists where user_id='.$uid);
+	foreach ($_REQUEST['watchlists'] as $w) {
+		dbQuery(
+			'insert into products_watchlists set category_id='
+			.((int)$w['category_id']).', location_id='.((int)$w['location_id'])
+			.', user_id='.$uid
+		);
+	}
+	return dbAll('select * from products_watchlists where user_id='.$uid);
 }
 
 // }

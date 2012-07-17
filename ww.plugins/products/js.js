@@ -407,3 +407,4 @@ function Products_showMap() {
 		});
 	}
 }
+stub('editWatchlists', 'Products');
