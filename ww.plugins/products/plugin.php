@@ -1004,6 +1004,17 @@ class ProductType{
 }
 
 // }
+// { class Utf8encode_Filter
+
+/**
+	* filter for making sure imported file is UTF8
+	*
+	*	@category WebME
+	* @package  WebME
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvweb.me/
+	*/
 class Utf8encode_Filter extends php_user_filter{
 	/**
 		* whatever
@@ -1024,6 +1035,8 @@ class Utf8encode_Filter extends php_user_filter{
 		return PSFS_PASS_ON; 
 	} 
 }
+
+// }
 
 // { Products_addToCart
 
@@ -1637,15 +1650,7 @@ function Products_imageSlider($params) {
 	* @return status
 	*/
 function Products_importFile($vars=false) {
-	/**
-		* filter for making sure imported file is UTF8
-		*
-		*	@category WebME
-		* @package  WebME
-		* @author   Kae Verens <kae@kvsites.ie>
-		* @license  GPL 2.0
-		* @link     http://kvweb.me/
-		*/
+	// { set up variables
 	if ($vars===false) {
 		return false;
 	}
@@ -1670,6 +1675,7 @@ function Products_importFile($vars=false) {
 		);
 	}
 	$fname=USERBASE.'/'.$vars->productsImportFileUrl['varvalue'];
+	// }
 	if (strpos($fname, '..')!==false) {
 		return array('message'=>__('Invalid file URL'));
 	}
@@ -1689,6 +1695,7 @@ function Products_importFile($vars=false) {
 		stream_filter_prepend($handle, "utf8encode");
 	}
 	$row=fgetcsv($handle, 1000, $vars->productsImportDelimiter['varvalue']);
+	// { check the headers
 	$headers=array();
 	foreach ($row as $k=>$v) {
 		if ($v) {
@@ -1708,6 +1715,7 @@ function Products_importFile($vars=false) {
 			'headers-found'=>$headers
 		);
 	}
+	// }
 	$product_types=array();
 	$imported=0;
 	$categoriesByName=array();
@@ -1716,6 +1724,7 @@ function Products_importFile($vars=false) {
 	if ($preUpload) {
 		dbQuery('update products set enabled='.($preUpload-1));
 	}
+	// { do the import
 	while (
 		($data=fgetcsv(
 			$handle, 1000, $vars->productsImportDelimiter['varvalue']
@@ -1867,9 +1876,12 @@ function Products_importFile($vars=false) {
 		}
 		$imported++;
 	}
+	// }
 	Core_cacheClear('products');
 	if ($imported) {
-		return array('message'=>'Imported %1 products', $imported);
+		return array('message'=>__(
+			'Imported %1 products', array($imported), 'core'
+		));
 	}
 	return array('message'=>__('No products imported'));
 }

@@ -1,4 +1,23 @@
+window.CoreUploaderDefault='uploadify';
 function Core_uploader(selector, opts) {
+	if (!window.CoreUploaderOpts) {
+		window.CoreUploaderOpts={
+			'uploadify':{
+				'requires':'/j/jquery.uploadify/jquery.uploadify.min.js',
+				'pluginOpts':{
+					'swf':'/j/jquery.uploadify/uploadify.swf',
+					'auto':'true',
+					'cancelImage':'/i/blank.gif',
+					'buttonImage':'/i/choose-file.png',
+					'height':20,
+					'width':81,
+					'formData':{
+						'PHPSESSID':window.sessid || window.pagedata.sessid
+					}
+				}
+			}
+		}[window.CoreUploaderDefault];
+	}
 	if (CoreUploaderOpts.requiresLoading) {
 		setTimeout(function() {
 			Core_uploader(selector, opts);
@@ -27,30 +46,19 @@ function Core_uploader(selector, opts) {
 				if (opts.extensions) {
 					pluginOpts.fileExt=opts.extensions;
 				}
+				if (opts.image) {
+					pluginOpts.buttonImage=opts.image;
+				}
+				if (opts.width) {
+					pluginOpts.width=opts.width;
+				}
+				if (opts.height) {
+					pluginOpts.height=opts.height;
+				}
 				pluginOpts.uploader=opts.serverScript;
-				console.log(pluginOpts);
 				$(selector).uploadify(pluginOpts);
 			break; // }
 		}
 	}
 	doIt();
 }
-$(function() {
-	window.CoreUploaderDefault='uploadify';
-	window.CoreUploaderOpts={
-		'uploadify':{
-			'requires':'/j/jquery.uploadify/jquery.uploadify.min.js',
-			'pluginOpts':{
-				'swf':'/j/jquery.uploadify/uploadify.swf',
-				'auto':'true',
-				'cancelImage':'/i/blank.gif',
-				'buttonImage':'/i/choose-file.png',
-				'height':20,
-				'width':81,
-				'formData':{
-					'PHPSESSID':window.sessid || window.pagedata.sessid
-				}
-			}
-		}
-	}[window.CoreUploaderDefault];
-});

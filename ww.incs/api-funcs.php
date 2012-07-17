@@ -310,9 +310,13 @@ function Core_languagesGet() {
 	* @return array the list of locations
 	*/
 function Core_locationsGet() {
-	$locs=Core_cacheLoad('core', 'locations', -1);
+	$pid=isset($_REQUEST['pid'])?(int)$_REQUEST['pid']:-1;
+	$locs=Core_cacheLoad('core', 'locations,'.$pid, -1);
+	$filter=$pid>-1?'where parent_id='.$pid:'';
 	if ($locs == -1) {
-		$locs=dbAll('select * from locations order by is_default desc, name');
+		$locs=dbAll(
+			'select * from locations '.$filter.' order by is_default desc, name'
+		);
 		Core_cacheSave('core', 'locations', $locs);
 	}
 	return $locs;

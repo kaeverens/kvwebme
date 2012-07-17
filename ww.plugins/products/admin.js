@@ -275,7 +275,9 @@ function Products_screenImport() {
 	// }
 	// { setup import button
 	$('#content button').click(function() {
+		$('<div class="overlay"/>').appendTo(document.body);
 		$.post('/a/p=products/f=adminImportFile', function(ret) {
+			$('.overlay').remove();
 			var $dialog=$('<p>'+ret.message+'</p>').dialog({
 				'modal':true,
 				'close':function() {

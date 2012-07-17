@@ -30,6 +30,19 @@ switch($type){
 		}
 		$url.='#Login';
 	break; // }
+	case 'register': // {
+		$p=Page::getInstanceByType('privacy');
+		if (!$p) {
+			$url='/';
+		}
+		else {
+			$url=$p->getRelativeUrl();
+		}
+		if (isset($_REQUEST['login_referer'])) {
+			$url.='?login_referer='.urlencode($_REQUEST['login_referer']);
+		}
+		$url.='#userregistration';
+	break; // }
 	default: // {
 		$get=array();
 		foreach ($_GET as $k=>$v) {

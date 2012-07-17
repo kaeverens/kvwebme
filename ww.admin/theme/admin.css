@@ -251,3 +251,9 @@ table.borders>thead *{
 	color:#fff;
 	font-style:italic;
 }
+.overlay{
+	position:fixed;
+	left:0;right:0;top:0;bottom:0;
+	background:#000;
+	opacity:.3;
+}
