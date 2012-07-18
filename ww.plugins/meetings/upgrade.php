@@ -15,3 +15,10 @@ if ($version==0) {
 	dbQuery('alter table meetings add is_complete smallint default 0');
 	$version=1;
 }
+if ($version==1) { // change menus for new forms page
+	require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/api-admin.php';
+	Core_adminMenusAdd(
+		'Meetings>Forms', 'plugin.php?_plugin=meetings&amp;_page=forms'
+	);
+	$version=2;
+}

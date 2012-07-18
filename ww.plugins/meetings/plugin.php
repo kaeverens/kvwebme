@@ -1,4 +1,7 @@
 <?php
+
+// { plugin config
+
 $plugin=array(
 	'admin' => array( // {
 		'menu' => array(
@@ -13,5 +16,7 @@ $plugin=array(
 	'name' => function() {
 		return __('Meetings');
 	},
-	'version'=>1
+	'version'=>2
 );
+
+// }

@@ -23,6 +23,8 @@ $pagetypes=array(
 );
 // }
 
+// { function Core_adminSideMenu
+
 /**
   * generate HTML for a menu
   *
@@ -43,6 +45,9 @@ function Core_adminSideMenu($list, $this='') {
 	}
 	return '<div class="sub-nav">'.join('', $arr).'</div>';
 }
+
+// }
+// { Core_fixImageResizes
 
 /**
   * check images to see if they are really as large as the HTML says
@@ -123,6 +128,9 @@ function Core_fixImageResizes($src) {
 	return $src;
 }
 
+// }
+// { Core_unfixImageResizes
+
 /**
   * replace any "fixed" images with the original image's src
   *
@@ -150,6 +158,7 @@ function Core_unfixImageResizes($src) {
 	return $src;
 }
 
+// }
 // { WW_getCSS
 
 /**
@@ -244,6 +253,7 @@ function WW_getScripts() {
 }
 
 // }
+// { ckeditor
 
 /**
   * output an RTE's HTML
@@ -315,6 +325,9 @@ function ckeditor($name, $value='', $height=250, $translatable=0) {
 	$tabindex++;
 	return $html;
 }
+
+// }
+// { Core_sanitiseHtmlEssential
 
 /**
   * basically clean up HTML
@@ -454,6 +467,9 @@ function Core_sanitiseHtmlEssential($original_html) {
 	$html = str_replace('{{LINERETURN}}', "\r", $html);
 	return $html;
 }
+
+// }
+// { Core_sanitiseHtml
 
 /**
   * thoroughly clean up HTML
@@ -616,6 +632,9 @@ function Core_sanitiseHtml($original_html) {
 	return $html;
 }
 
+// }
+// { Core_getExternalFile
+
 /**
   * retrieve an external file and return its contents
   *
@@ -631,3 +650,5 @@ function Core_getExternalFile($url) {
 	curl_close($ch);
 	return $response;
 }
+
+// }

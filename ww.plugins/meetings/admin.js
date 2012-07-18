@@ -68,7 +68,7 @@ $(function() {
 				}
 			}
 		});
-		$.post('/a/p=meetings/f=adminFormsList', function(ret) {
+		$.post('/a/p=forms/f=adminFormsList', function(ret) {
 			var opts='<option value="-1"> -- please choose -- </option>';
 			for (var i=0;i<ret.length;++i) {
 				opts+='<option value="'+ret[i].id+'">'+ret[i].name+'</option>';
@@ -148,19 +148,33 @@ $(function() {
 			});
 	}
 	function form_edit(f) {
+		if (typeof f.fields=='string') {
+			f.fields=eval('('+f.fields+')');
+		}
 		// { $dialog
-		var html='<table>'
+		var html='<div id="popup-wrapper"><ul><li><a href="#popup-fields">Fields</a></li>'
+			+'<li><a href="#popup-template">Template</a></li></ul>'
+			+'<div id="popup-fields"><table>'
 			+'<tr><th>Name</th><td><input id="dialog-name"/></td></tr>'
 			+'<tr><th>Questions</th><td><table id="dialog-questions">'
 			+'<thead><tr><th>Question</th><th>Type</th><th></th></tr></thead>'
 			+'<tbody/></table></td></tr>'
-			+'</table>';
+			+'</table></div>'
+			+'<div id="popup-template"><p>Note, that if you leave this blank'
+			+', the form will be shown in default format.</p>'
+			+'<textarea id="popup-template-val" style="width:100%;"/>'
+			+'</div>'
+			+'</div>';
 		var $dialog=$(html).dialog({
 			'modal':true,
 			'close':function() {
+				$('#popup-template-val').ckeditor(function(){
+					this.destroy();
+				});
 				$dialog.remove();
 			},
-			'width':600,
+			'width':800,
+			'height':500,
 			'buttons':{
 				'Save':function() {
 					var fields=[];
@@ -171,7 +185,7 @@ $(function() {
 							type=$this.find('select').val();
 						var extras=[];
 						switch(type) {
-							case 'select':
+							case 'select':case 'select-multiple':
 								extras={
 									'values':$this.find('textarea').val()
 								};
@@ -185,27 +199,36 @@ $(function() {
 							});
 						}
 					});
-					$.post('/a/p=meetings/f=adminFormEdit', {
+					var template=$('#popup-template-val').val();
+					$.post('/a/p=forms/f=adminFormEdit', {
 						'id':f.id,
 						'name':$('#dialog-name').val(),
-						'fields':fields
+						'fields':fields,
+						'template':template
 					}, function() {
+						$('#popup-template-val').ckeditor(function(){
+							this.destroy();
+						});
 						$dialog.remove();
 					});
 				}
 			}
 		});
 		// }
+		// { fields
 		var $fieldsTable=$('#dialog-questions');
 		for (var i=0;i<f.fields.length;++i) {
 			var r=f.fields[i];
-			addRow(r.name, r.type);
+			addRow(r.name, r.type, r.extras);
 		}
 		function addRow(name, type, extras) {
+			extras=extras||{};
 			var types={
 				'input':'single line of text',
 				'textarea':'multiple lines of text',
-				'select':'select from a list'
+				'select':'select from a list',
+				'select-multiple':'select multiple items',
+				'image':'photograph'
 			};
 			var thtml='<select>';
 			$.each(types, function(k, v) {
@@ -221,7 +244,12 @@ $(function() {
 				.change(function() {
 					switch ($(this).val()) {
 						case 'select':
-							$('<textarea/>').appendTo($row.find('.extras')).val(extras);
+							$('<textarea/>').appendTo($row.find('.extras'))
+								.val(extras.values);
+						break;
+						case 'select-multiple':
+							$('<textarea/>').appendTo($row.find('.extras'))
+								.val(extras.values);
 						break;
 						default:
 							$row.find('.extras').empty();
@@ -242,5 +270,19 @@ $(function() {
 		});
 		$('#dialog-name').val(f.name);
 		addRow('', '');
+		// }
+		// { template
+		$('#popup-template-val')
+			.val(f.template)
+			.ckeditor(CKEditor_config);
+		// }
+		$('#popup-wrapper').tabs();
 	}
+	$('#meeting-forms').dataTable({
+		'bJQueryUI':true
+	});
+	$('#meeting-forms').on('click', '.edit', function() {
+		var id=$(this).closest('tr').data('meeting-id');
+		$.post('/a/p=forms/f=adminGet/id='+id, form_edit);
+	});
 });

@@ -95,40 +95,6 @@ function Meetings_adminEmployeesList() {
 }
 
 // }
-// { Meetings_adminFormEdit
-
-/**
-	* edit a form
-	*
-	* @return array
-	*/
-function Meetings_adminFormEdit() {
-	$id=(int)$_REQUEST['id'];
-	$name=$_REQUEST['name'];
-	$fields=$_REQUEST['fields'];
-	$sql=$id?'update':'insert into';
-	$sql.=' forms_nonpage set name="'.addslashes($name).'"'
-		.',fields="'.addslashes(json_encode($fields)).'"';
-	$sql.=$id?' where id='.$id:'';
-	dbQuery($sql);
-	return array(
-		'ok'=>$sql
-	);
-}
-
-// }
-// { Meetings_adminFormsList
-
-/**
-	* get a list of all non-page forms
-	*
-	* @return array
-	*/
-function Meetings_adminFormsList() {
-	return dbAll('select * from forms_nonpage order by name');
-}
-
-// }
 // { Meetings_adminMeetingEdit
 
 /**

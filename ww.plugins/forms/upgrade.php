@@ -88,3 +88,7 @@ if ($version<7) { // create forms_nonpage
 	);
 	$version=7;
 }
+if ($version<8) { // add template to forms_nonpage
+	dbQuery('alter table forms_nonpage add template text');
+	$version=8;
+}
