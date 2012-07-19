@@ -10,3 +10,22 @@ if ($version==1) {
 	dbQuery('alter table ads add type_id int default 0');
 	$version=2;
 }
+if ($version==2) {
+	dbQuery('alter table ads_types add price_per_day float default 0');
+	dbQuery('alter table ads add date_expire date');
+	dbQuery('update ads set date_expire=date_add(now(), interval 1 year)');
+	$version=3;
+}
+if ($version==3) {
+	dbQuery(
+		'create table ads_purchase_orders(id int auto_increment not null primary key,user_id int,type_id int,days int,target_url text)default charset=utf8'
+	);
+	$version=4;
+}
+if ($version==4) {
+	dbQuery(
+		'create table ads_track(ad_id int default 0, click int default 0,'
+		.'view int default 0, cdate datetime);'
+	);
+	$version=5;
+}

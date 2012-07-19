@@ -1,6 +1,10 @@
 <?php
+
+// { config
+
 $plugin=array(
 	'admin' => array( // {
+		'page_type' => 'Ads_admin',
 		'menu' => array(
 			'Ads>Ads'=>
 				'/ww.admin/plugin.php?_plugin=ads&amp;_page=ads',
@@ -18,11 +22,21 @@ $plugin=array(
 		return __('Ads');
 	},
 	'frontend'=>array(
-		'widget' => 'Ads_widget',
+		'page_type' => 'Ads_frontend',
+		'widget' => 'Ads_widget'
 	),
-	'version'=>2
+	'version'=>5
 );
 
+// }
+
+// { Ads_widget
+
+/**
+	* show ads
+	*
+	* @return ads HTML
+	*/
 function Ads_widget($params) {
 	$type_id=(int)$params->{'ad-type'};
 	$howmany=(int)$params->{'how-many'};
@@ -35,7 +49,43 @@ function Ads_widget($params) {
 		$html.='<div class="ads-ad" data-id="'.$ad['id'].'">'
 			.'<img src="'.$ad['image_url'].'"/>'
 			.'</div>';
+		dbQuery(
+			'insert into ads_track set ad_id='.$ad['id'].', view=1, cdate=now()'
+		);
 	}
 	$html.='</div>';
+	WW_addScript('ads/j/js.js');
 	return $html;
+}
+
+// }
+// { Ads_frontend
+
+/**
+	* show the purchase page for Ads
+	*
+	* @param $PAGEDATA object the page object
+	*
+	* @return string
+	*/
+function Ads_frontend($PAGEDATA) {
+	if (!isset($_SESSION['userdata']['id'])) {
+		return $PAGEDATA->render()
+			.'<p>'.__('You must be logged in to use this page.').'</p>'
+			.'<p><a href="/_r?type=login">'.__('Login').'</a> '.__('or')
+			.' <a href="/_r?type=register">'.__('Register').'</a></p>';
+	}
+	$html='<div id="ads-purchase-wrapper"></div>';
+	WW_addInlineScript(
+		'var ads_paypal="'.addslashes($PAGEDATA->vars['ads-paypal']).'";'
+	);
+	WW_addScript('ads/j/purchase.js');
+	WW_addScript('/j/uploader.js');
+	return $PAGEDATA->render().$html.@$PAGEDATA->vars['footer'];
+}
+
+// }
+function Ads_admin($page, $vars) {
+	require SCRIPTBASE.'ww.plugins/ads/admin/page-type.php';
+	return $c;
 }
