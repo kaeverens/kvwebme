@@ -74,3 +74,11 @@ if ($version==9) {
 	dbQuery('alter table blog_entry drop published');
 	$version=10;
 }
+if ($version==10) { // featured stories
+	dbQuery('alter table blog_entry add featured tinyint default 0;');
+	$version=11;
+}
+if ($version==11) { // fix intermittent ID problem
+	dbQuery('alter table blog_entry change id id int auto_increment not null primary key');
+	$version=12;
+}

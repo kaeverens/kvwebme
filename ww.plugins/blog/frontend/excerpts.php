@@ -12,6 +12,10 @@
   * @link       www.kvweb.me
  */
 
+$c=''; // html to return
+
+// { set up constraints
+
 $constraints=array(1);
 if (!Core_isAdmin()) {
 	if (isset($_SESSION['userdata']) && $_SESSION['userdata']['id']) {
@@ -27,15 +31,24 @@ if ($blog_author) {
 if (isset($entry_ids) && $entry_ids) {
 	$constraints[]='id in ('.join(',', $entry_ids).')';
 }
-
 $constraints=' where '.join(' and ', $constraints);
+
+// }
+// { set up Featured Posts slider if there is one
+if (isset($PAGEDATA->vars['blog_featured_posts'])
+	&& (int)$PAGEDATA->vars['blog_featured_posts']
+) {
+	require dirname(__FILE__).'/featured-posts.php';
+}
+// }
+
 $num_of_entries=dbOne(
 	'select count(id) ids from blog_entry'.$constraints, 'ids'
 );
 $sql='select * from blog_entry'.$constraints.' order by cdate desc'
 	.' limit '.$excerpts_offset.','.$excerpts_per_page;
 $rs=dbAll($sql);
-$c='<div class="blog-main-wrapper">';
+$c.='<div class="blog-main-wrapper">';
 $excerpt_length=(int)$PAGEDATA->vars['blog_excerpt_length'];
 if (!$excerpt_length) {
 	$excerpt_length=200;

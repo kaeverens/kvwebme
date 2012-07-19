@@ -186,25 +186,27 @@ function Blog_postEdit() {
 	$title=@$_REQUEST['blog_title'];
 	$body=@$_REQUEST['blog_body'];
 	$excerpt=@$_REQUEST['blog_excerpt'];
-	$excerpt_image=@$_REQUEST['blog_excerpt_image'];
+	$excerpt_image=@$_REQUEST['blog_excerpt-image'];
 	$tags=@$_REQUEST['blog_tags'];
 	$pdate=@$_REQUEST['blog_pdate'];
 	$user_id=(int)@$_REQUEST['blog_user_id'];
 	$id=(int)@$_REQUEST['blog_id'];
 	$status=(int)@$_REQUEST['blog_status'];
 	$allow_comments=(int)@$_REQUEST['blog_allow_comments'];
+	$featured_post=isset($_REQUEST['blog_featured-post'])?1:0;
 
 	// TODO: make sure only verified users are allowed edit or create an entry
 
-	$sql='title="'.addslashes($title).'",'
-		.'body="'.addslashes($body).'",'
-		.'excerpt="'.addslashes($excerpt).'",'
-		.'excerpt_image="'.addslashes($excerpt_image).'",'
-		.'tags="'.addslashes($tags).'",'
-		.'pdate="'.addslashes($pdate).'",'
-		.'status="'.$status.'",'
-		.'allow_comments="'.$allow_comments.'",'
-		.'udate=now()';
+	$sql='title="'.addslashes($title).'"'
+		.', body="'.addslashes($body).'"'
+		.', featured="'.$featured_post.'"'
+		.', excerpt="'.addslashes($excerpt).'"'
+		.', excerpt_image="'.addslashes($excerpt_image).'"'
+		.', tags="'.addslashes($tags).'"'
+		.', pdate="'.addslashes($pdate).'"'
+		.', status="'.$status.'"'
+		.', allow_comments="'.$allow_comments.'"'
+		.', udate=now()';
 	if ($id) {
 		$sql='update blog_entry set '.$sql.' where id='.$id;
 		dbQuery($sql);

@@ -28,21 +28,46 @@ $c.='<div id="blog-options"><div id="blog-options-wrapper">';
 // { front page options
 $c.='<h2><a href="#">front page options</a></h2>'
 	.'<div>';
+// { excerpts per page
 $excerpts_per_page=(int)$vars['blog_excerpts_per_page'];
 if (!$excerpts_per_page) {
 	$excerpts_per_page=10;
 }
-$c.='<p>How many blog excerpts should be shown per page?</p>'
+$c.='<p>'.__('How many blog excerpts should be shown per page?').'</p>'
 	.'<input class="small" name="page_vars[blog_excerpts_per_page]"'
 	.' value="'.$excerpts_per_page.'"/>';
+// }
+// { excerpt length
 $excerpt_length=(int)$vars['blog_excerpt_length'];
 if (!$excerpt_length) {
 	$excerpt_length=200;
 }
-$c.='<p>If no excerpt is provided for a blog entry, then one will be automatically created by clipping the main article body after a number of characters. How many?</p>'
+$c.='<p>'.__(
+	'If no excerpt is provided for a blog entry, then one will be automatically created by clipping the main article body after a number of characters. How many?'
+	)
+	.'</p>'
 	.'<input class="small" name="page_vars[blog_excerpt_length]"'
 	.' value="'.$excerpt_length.'"/>';
-$c.='<p>If your site\'s theme provides multiple themes, you might want to use a different theme for the front page of the blog.</p>';
+// }
+// { show a featured-story carousel
+$featured_posts=(int)$vars['blog_featured_posts'];
+if (!$featured_posts) {
+	$featured_posts=0;
+}
+$c.='<p>'.__(
+	'If you would like featured posts to appear in a carousel, how many should'
+	.' appear?'
+)
+	.'</p>'
+	.'<input class="small" name="page_vars[blog_featured_posts]"'
+	.' value="'.$featured_posts.'"/>';
+// }
+// { facebook comments
+$fbappid=(int)@$vars['blog_fbappid'];
+$c.='<p>'.__('Your Facebook App ID (for comments management)').'</p>'
+	.'<input name="page_vars[blog_fbappid]"'
+	.' value="'.$fbappid.'"/>';
+// }
 $c.='</div>';
 // }
 // { groups access

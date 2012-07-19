@@ -27,9 +27,10 @@ $plugin=array(
 		'page_type' => 'Blog_frontend',
 		'widget' => 'Blog_widget'
 	),
-	'version'=>10
+	'version'=>12
 );
 // }
+
 // { Blog_admin
 
 /**

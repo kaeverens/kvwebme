@@ -1,4 +1,5 @@
 function Blog_editPost(pdata) {
+	$('#pages-submit').attr('disabled', true);
 	if (!$.fn.datetimepicker) {
 		return $.cachedScript('/j/jquery-ui-timepicker-addon.js').done(function() {
 			Blog_editPost(pdata)
@@ -38,8 +39,12 @@ function Blog_editPost(pdata) {
 		// { post
 		+'<tr><th>Post</th><td colspan="5"><textarea id="blog-body"/></td></tr>'
 		// }
+		// { featured post
+		+'<tr><th>Featured Post</th><td colspan="5">'
+		+'<input id="blog-featured-post" type="checkbox"/></td></tr>'
+		// }
 		// { featured image
-		+'<tr><th>Featured Image</th><td colspan="5"><input id="blog-featured-image"/></td></tr>'
+		+'<tr><th>Featured Image</th><td colspan="5"><input id="blog-excerpt-image"/></td></tr>'
 		// }
 		// { excerpt
 		+'<tr><th>Excerpt</th><td colspan="5"><textarea id="blog-excerpt"'
@@ -56,8 +61,8 @@ function Blog_editPost(pdata) {
 		// }
 		// { comments
 		+'<tr><th>Comments</th><td colspan="4"><select id="blog-allow_comments">'
+		+'<option value="1">Allow comments</option>'
 		+'<option value="0">Do not allow any comments</option>'
-		+'<option value="1">Allow comments from verified email addresses</option>'
 		+'</select></td>'
 		+'<th><input id="blog-user_id" type="hidden"/>'
 		+'<input id="blog-id" type="hidden"/>'
@@ -82,6 +87,9 @@ function Blog_editPost(pdata) {
 	}
 	$('#blog-body')
 		.ckeditor(CKEditor_config);
+	if (pdata.featured=='1') {
+		$('#blog-featured-post').attr('checked', true);
+	}
 	if (pdata.status=='1') {
 		$('<button class="unpublish">Unpublish</button>')
 			.click(function() {
@@ -103,20 +111,7 @@ function Blog_editPost(pdata) {
 			})
 			.insertAfter('button.save');
 	}
-	$('button.save', $main).click(function() {
-		$.post(
-			'/a/p=blog/f=postEdit',
-			$('form', $main).serialize(),
-			function(ret) {
-				if(window.Blog_showContents) {
-					return Blog_showContents(ret);
-				}
-				document.location=document.location.toString().replace(/#.*/, '');
-			}
-		);
-		return false;
-	});
-	$('#blog-featured-image').saorfm({
+	$('#blog-excerpt-image').saorfm({
 		'rpc':'/ww.incs/saorfm/rpc.php',
 		'select':'file',
 		'prefix':userdata.isAdmin?'':'/users/'+userdata.id
@@ -125,6 +120,20 @@ function Blog_editPost(pdata) {
 		'height':30,
 		'width':'100%',
 		'delimiter':'|'
+	});
+	$('button.save', $main).click(function() {
+		$.post(
+			'/a/p=blog/f=postEdit',
+			$('form', $main).serialize(),
+			function(ret) {
+				if (window.Blog_showContents) {
+					$('#pages-submit').attr('disabled', false);
+					return Blog_showContents(ret);
+				}
+				document.location=document.location.toString().replace(/#.*/, '');
+			}
+		);
+		return false;
 	});
 	$('.shade').remove();
 }

@@ -34,4 +34,25 @@ $c.='<div class="blog-body">'.$r['body'].'</div>';
 $date=preg_replace('/ .*/', '', $r['cdate']);
 $c.='</div>';
 WW_addScript('blog');
-WW_addInlineScript('window.blog_comments='.$r['allow_comments'].';');
+//WW_addInlineScript('window.blog_comments='.$r['allow_comments'].';');
+if ($r['allow_comments']) {
+	if (isset($PAGEDATA->vars['blog_fbappid'])
+		&& (int)$PAGEDATA->vars['blog_fbappid']
+	) {
+		$fbappid=(int)$PAGEDATA->vars['blog_fbappid'];
+		$c.='<div id="fb-root"></div><script>(function(d, s, id) {'
+			.'var js, fjs = d.getElementsByTagName(s)[0];'
+			.'if (d.getElementById(id)) return;js = d.createElement(s);'
+			.'js.id = id;js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1&appId='
+			.$fbappid
+			.'";fjs.parentNode.insertBefore(js, fjs);}'
+			.'(document, "script", "facebook-jssdk"));</script>';
+		$c.='<div class="fb-comments" data-href="'
+			.$PAGEDATA->getAbsoluteUrl().'/'.$r['user_id'].'/'.$date.'/'
+			.preg_replace('/[^a-zA-Z0-9]/', '-', transcribe($r['title']))
+			.'" data-num-posts="2"></div>';
+	}
+	else {
+		$c.='<em>no Facebook App ID set for comments</em>';
+	}
+}

@@ -1,0 +1,57 @@
+#blog-featured-excerpts .main{
+	height:400px;
+	position:relative;
+}
+#blog-featured-excerpts .featured-excerpt{
+	overflow:hidden;
+	position:absolute;
+	left:0;
+	top:0;
+	right:0;
+	bottom:0;
+}
+#blog-featured-excerpts .carousel{
+	position:relative;
+	height:100px;
+	overflow:hidden;
+}
+#blog-featured-excerpts .carousel ul{
+	position:absolute;
+	margin:0;
+	padding:0;
+	left:0;
+	top:0;
+	list-style:none;
+	height:100px;
+}
+#blog-featured-excerpts .carousel ul li{
+	width:200px;
+	height:100px;
+	vertical-align:top;
+	float:left;
+}
+#blog-featured-excerpts .carousel ul li img{
+	float:left;
+}
+#blog-featured-excerpts .carousel .nav-right,
+#blog-featured-excerpts .carousel .nav-left{
+	position:absolute;
+	width:20px;
+	height:100px;
+	background:#fff;
+	opacity:.3;
+	line-height:100px;
+	text-align:center;
+	font-size:20px;
+}
+#blog-featured-excerpts .carousel .nav-right:hover,
+#blog-featured-excerpts .carousel .nav-left:hover{
+	background:#000;
+	color:#fff;
+}
+#blog-featured-excerpts .carousel .nav-right{
+	right:0;
+}
+#blog-featured-excerpts .carousel .nav-left{
+	left:0;
+}
