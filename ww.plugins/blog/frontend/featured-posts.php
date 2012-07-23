@@ -5,7 +5,7 @@ $tmpconstraints=$constraints
 	?$constraints.' and'
 	:' where';
 $rs=dbAll(
-	'select * from blog_entry'.$tmpconstraints.' featured limit 0,'.$howmany
+	'select * from blog_entry'.$tmpconstraints.' featured order by pdate desc limit 0,'.$howmany
 );
 if (!count($rs)) {
 	return;
@@ -27,7 +27,7 @@ foreach ($rs as $r) {
 	}
 	$img='';
 	if ($r['excerpt_image']) {
-		$img='<img class="blog-excerpt-image" src="/a/f=getImg/w=400/h=400/'.$r['excerpt_image'].'"/>';
+		$img='<img class="blog-excerpt-image" src="/a/f=getImg/w=320/h=200/'.$r['excerpt_image'].'"/>';
 	}
 	// }
 	$c.=$img;

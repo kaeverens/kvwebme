@@ -14,7 +14,7 @@ $(function() {
 			});
 		html+='<li>';
 		if (image) {
-			html+='<img src="'+image.replace(/\/w=[0-9]*\/h=[0-9]*/, '/w=100/h=100')
+			html+='<img src="'+image.replace(/\/w=[0-9]*\/h=[0-9]*/, '/w=160/h=100')
 				+'"/>';
 		}
 		html+='<span>'+title+'</span>';
@@ -31,7 +31,7 @@ $(function() {
 		.click(function() {
 			var $ul=$carousel.find('>ul');
 			$ul.position({
-				'offset':(-200*$(this).data('dir'))+' 0',
+				'offset':(-160*$(this).data('dir'))+' 0',
 				'of':$ul
 			});
 		});
