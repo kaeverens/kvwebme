@@ -31,6 +31,8 @@ $plugin=array(
 );
 // }
 
+// { Forum_adminPageForm
+
 /**
   * display the forum-creation tool
   *
@@ -44,6 +46,9 @@ function Forum_adminPageForm($page, $vars) {
 	return $c;
 }
 
+// }
+// { Forum_frontend
+
 /**
   * display the page's forum
   *
@@ -55,6 +60,9 @@ function Forum_frontend($PAGEDATA) {
 	require dirname(__FILE__).'/frontend/forum.php';
 	return Forum_show($PAGEDATA);
 }
+
+// }
+// { Forum_rssHandler
 
 /**
   * get a list of posts for an RSS feed
@@ -104,6 +112,9 @@ function Forum_rssHandler($PAGEDATA) {
 	);
 }
 
+// }
+// { Forum_getRssLink
+
 /**
   * get RSS link if available
   *
@@ -120,6 +131,9 @@ function Forum_getRssLink($PAGEDATA) {
 		)
 		:false;
 }
+
+// }
+// { forum_user_profile
 
 function forum_user_profile($PAGEDATA, $user) {
 	$script = '$(function(){$(".rating").ratings();});
@@ -209,3 +223,5 @@ function forum_user_profile($PAGEDATA, $user) {
 
 	return $html;
 }
+
+// }

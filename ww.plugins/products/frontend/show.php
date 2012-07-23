@@ -1437,7 +1437,11 @@ class Products{
 		);
 		if (!array_key_exists($md5, self::$instances)) {
 			$product_ids=array();
-			$rs=dbAll('select id from products where enabled and product_type_id='.$id);
+			$rs=Core_cacheLoad('products', 'productByType-'.$id, -1);
+			if ($rs===-1) {
+				$rs=dbAll('select id from products where enabled and product_type_id='.$id);
+				Core_cacheSave('products', 'productByType-'.$id, $rs);
+			}
 			foreach ($rs as $r) {
 				$product_ids[]=$r['id'];
 			}
