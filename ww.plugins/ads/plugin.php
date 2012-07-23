@@ -25,6 +25,9 @@ $plugin=array(
 		'page_type' => 'Ads_frontend',
 		'widget' => 'Ads_widget'
 	),
+	'triggers'=>array(
+		'privacy_user_profile' => 'Ads_userProfile'
+	),
 	'version'=>5
 );
 
@@ -85,7 +88,33 @@ function Ads_frontend($PAGEDATA) {
 }
 
 // }
+// { Ads_admin
+
+/**
+	* page type admin
+	*
+	* @param object $page
+	* @param array  $vars
+	*/
 function Ads_admin($page, $vars) {
 	require SCRIPTBASE.'ww.plugins/ads/admin/page-type.php';
 	return $c;
 }
+
+// }
+// { Ads_userProfile
+
+/**
+	* user profile page stuff for ads
+	*
+	* @param object $PAGEDATA
+	* @param array  $user
+	*/
+function Ads_userProfile($PAGEDATA, $user) {
+	WW_addScript('ads/user-profile.js');
+	WW_addCss('/ww.plugins/ads/css.css');
+	return '<div class="ui-widget ui-widget-content ui-corner-all" id="ad-stats">'
+		.'<div class="ui-widget-header">Ad Statistics</div></div>';
+}
+
+// }

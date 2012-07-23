@@ -1,5 +1,35 @@
 <?php
 
+function Ads_adsGetMy() {
+	if (!isset($_SESSION['userdata']['id'])) {
+		return array('error'=>__('not logged in'));
+	}
+	return dbAll(
+		'select * from ads where customer_id='.$_SESSION['userdata']['id']
+	);
+}
+function Ads_statsGet() {
+	if (!isset($_SESSION['userdata']['id'])) {
+		return array('error'=>__('not logged in'));
+	}
+	$ad_id=(int)$_REQUEST['ad'];
+	$from=$_REQUEST['from'];
+	$to=$_REQUEST['to'];
+	$sql='select * from ads_track where cdate>"'.addslashes($from).'"'
+		.' and cdate<"'.addslashes($to).' 24"';
+	if ($ad_id) {
+		$sql.=' and ad_id='.$ad_id;
+	}
+	else {
+		$rs=dbAll('select id from ads where customer_id='.$_SESSION['userdata']['id']);
+		$ids=array();
+		foreach ($rs as $r) {
+			$ids[]=$r['id'];
+		}
+		$sql.=' and ad_id in ('.join(',', $ids).')';
+	}
+	return dbAll($sql);
+}
 function Ads_typeGet() {
 	return dbRow('select * from ads_types where id='.((int)$_REQUEST['id']));
 }
