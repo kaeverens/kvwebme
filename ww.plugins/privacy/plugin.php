@@ -36,6 +36,7 @@ $plugin=array(
 	'version'=>0
 );
 // }
+
 // { UserAuthentication_admin
 
 /**

@@ -638,7 +638,7 @@ function Privacy_profileGet() {
 	}
 	$contact=json_decode($user['contact'], true);
 
-	$phone = ($contact['phone'] == '')
+	$phone=(!isset($contact['phone']) || $contact['phone']=='')
 		?'<a href="javascript:edit_user_dialog('.$user['id']
 		.');">'.__('Add', 'core').'</a>'
 		:htmlspecialchars($contact['phone']);
