@@ -92,11 +92,14 @@ function Menu_getChildren(
 		}
 	}
 	// }
-	$rs=dbAll(
-		'select id as subid,id,name,alias,type,(select count(id) from pages where '
+	$sql='select id as subid,id,name,alias,type,(select count(id) from pages where '
 		."parent=subid $filter) as numchildren from pages where parent='"
-		.$parentid."' $filter order by $order"
-	);
+		.$parentid."' $filter order by $order";
+	$rs=Core_cacheLoad('pages', md5($sql), -1);
+	if ($rs==-1) {
+		$rs=dbAll($sql);
+		Core_cacheSave('pages', md5($sql), $rs);
+	}
 	$menuitems=array();
 	// { optimise db retrieval of pages
 	$ids=array();
