@@ -830,7 +830,6 @@ function Products_show($PAGEDATA) {
 	if (isset($PAGEDATA->vars['products_filter_by_users_location'])
 		&& $PAGEDATA->vars['products_filter_by_users_location']
 	) {
-		$locationFilter=0;
 		// { getSubLocations
 		/**
 			* get sublocations
@@ -1204,7 +1203,7 @@ class Products{
 						$arr[]=$v;
 					}
 				}
-				$vs = $arr;
+				$vs=$arr;
 			}
 			if ($search!='') {
 				$arr=array();
@@ -1268,17 +1267,17 @@ class Products{
 		* @return object instance of Products object
 		*/
 	static function getAll($search='', $location=0) {
-		$md5loc=is_array($location)?join(',', $location):0;
+		$md5loc=is_array($location)?join(',', $location):$location;
 		$id=md5('all|'.$search.'|'.$md5loc);
 		if (!array_key_exists($id, self::$instances)) {
-			$product_ids=Core_cacheLoad('products', 'all-enabled-product-ids', -1);
+			$product_ids=Core_cacheLoad('products', $id, -1);
 			if ($product_ids===-1) {
 				$product_ids=array();
 				$rs=dbAll('select id from products where enabled');
 				foreach ($rs as $r) {
 					$product_ids[]=$r['id'];
 				}
-				Core_cacheSave('products', 'all-enabled-product-ids', $product_ids);
+				Core_cacheSave('products', $id, $product_ids);
 			}
 			new Products($product_ids, $id, $search, array(), '', 'asc', $location);
 		}
