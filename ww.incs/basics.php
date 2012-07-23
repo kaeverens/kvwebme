@@ -900,7 +900,12 @@ if (!isset($_SESSION['location'])) {
 	}
 }
 if (isset($_REQUEST['__LOCATION'])) {
-	$loc=dbRow('select * from locations where id='.(int)$_REQUEST['__LOCATION']);
+	$lid=(int)$_REQUEST['__LOCATION'];
+	$loc=Core_cacheLoad('core', 'location-'.$lid, -1);
+	if ($loc==-1) {
+		$loc=dbRow('select * from locations where id='.$lid);
+		Core_cacheSave('core', 'location-'.$lid, $loc);
+	}
 	if ($loc) {
 		$_SESSION['location']=array(
 			'lat'=>$loc['lat'],

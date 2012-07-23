@@ -839,12 +839,16 @@ function Products_show($PAGEDATA) {
 			* @return array array of locations
 			*/
 		function getSubLocations($parent_id) {
-			$locs=array($parent_id);
-			$rs=dbAll('select id from locations where parent_id='.$parent_id);
-			if ($rs) {
-				foreach ($rs as $r) {
-					$locs=array_merge($locs, getSubLocations($r['id']));
+			$locs=Core_cacheLoad('core', 'locations,sublocations-'.$parent_id, -1);
+			if ($locs==-1) {
+				$locs=array($parent_id);
+				$rs=dbAll('select id from locations where parent_id='.$parent_id);
+				if ($rs) {
+					foreach ($rs as $r) {
+						$locs=array_merge($locs, getSubLocations($r['id']));
+					}
 				}
+				Core_cacheSave('core', 'locations,sublocations-'.$parent_id, $locs);
 			}
 			return $locs;
 		}
