@@ -22,3 +22,7 @@ if ($version==1) { // change menus for new forms page
 	);
 	$version=2;
 }
+if ($version==2) {
+	dbQuery('alter table meetings change form_values form_values longtext;');
+	$version=3;
+}

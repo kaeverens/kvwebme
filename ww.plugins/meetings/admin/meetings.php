@@ -23,10 +23,12 @@ foreach ($meetings as $meeting) {
 	$formname=dbOne(
 		'select name from forms_nonpage where id='.$meeting['form_id'], 'name'
 	);
+	$username=$user?$user->get('name'):'no such user';
+	$customername=$customer?$customer->get('name'):'no such user';
 	echo '<tr id="meeting-'.$meeting['id'].'">'
 		.'<td>'.Core_dateM2H($meeting['meeting_time'], 'datetime').'</td>'
-		.'<td>'.htmlspecialchars($user->get('name')).'</td>'
-		.'<td>'.htmlspecialchars($customer->get('name')).'</td>'
+		.'<td>'.htmlspecialchars($username).'</td>'
+		.'<td>'.htmlspecialchars($customername).'</td>'
 		.'<td>'.$formname.'</td>'
 		.'<td><a href="#" class="edit">'.__('Edit').'</a>'
 		.' | <a href="#" class="delete">'.__('[x]').'</a></td>'

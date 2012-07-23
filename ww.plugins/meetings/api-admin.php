@@ -134,3 +134,54 @@ function Meetings_adminMeetingGet() {
 }
 
 // }
+// { Meetings_adminMeetingsDataGetDT
+
+/**
+	* meetings get
+	*
+	* @return datatables thing
+	*/
+function Meetings_adminMeetingsDataGetDT() {
+	$start=(int)$_REQUEST['iDisplayStart'];
+	$length=(int)$_REQUEST['iDisplayLength'];
+	$search=$_REQUEST['sSearch'];
+	$form_id=(int)$_REQUEST['form_id'];
+	$filters=array('form_id='.$form_id);
+	if ($search) {
+		$filters[]='form_values like "%'.addslashes($search).'%"';
+	}
+	$filter='';
+	if (count($filters)) {
+		$filter='where '.join(' and ', $filters);
+	}
+	$rs=dbAll(
+		'select form_values from meetings '.$filter
+		.' limit '.$start.','.$length
+	);
+	$result=array();
+	$result['sEcho']=intval($_GET['sEcho']);
+	$result['iTotalRecords']=dbOne(
+		'select count(id) as ids from meetings where form_id='.$form_id, 'ids'
+	);
+	$result['iTotalDisplayRecords']=dbOne(
+		'select count(id) as ids from meetings '.$filter,
+		'ids'
+	);
+	$arr=array();
+	$fields=json_decode(
+		dbOne('select fields from forms_nonpage where id='.$form_id, 'fields'),
+		true
+	);
+	foreach ($rs as $r) {
+		$data=json_decode($r['form_values'], true);
+		$row=array();
+		foreach ($fields as $f) {
+			$row[]=isset($data[$f['name']])?$data[$f['name']]:'';
+		}
+		$arr[]=$row;
+	}
+	$result['aaData']=$arr;
+	return $result;
+}
+
+// }

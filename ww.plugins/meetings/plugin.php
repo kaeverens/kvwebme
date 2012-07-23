@@ -16,7 +16,7 @@ $plugin=array(
 	'name' => function() {
 		return __('Meetings');
 	},
-	'version'=>2
+	'version'=>3
 );
 
 // }

@@ -198,10 +198,6 @@ function Core_getImg() {
 	*/
 function Core_getMenu() {
 	require_once 'menus.php';
-	header('Expires-Active: On');
-	header('Cache-Control: max-age = 9999999999');
-	header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
-	header('Pragma:');
 	return array(
 		@$_REQUEST['pid'],
 		Menu_getChildren(
@@ -235,8 +231,10 @@ function Core_getUserData() {
 	// { address
 	$json=json_decode($user['address'], true);
 	$user['address']=array();
-	foreach ($json as $v) {
-		$user['address'][]=$v;
+	if (is_array($json)) {
+		foreach ($json as $v) {
+			$user['address'][]=$v;
+		}
 	}
 	// }
 	// { extras

@@ -3,8 +3,7 @@
 echo '<table id="meeting-forms"><thead><tr><th>Name</th><th>Data</th>'
 	.'<th>&nbsp;</th></tr></thead>';
 
-$sql='select forms_nonpage.id id, name, count(meetings.id) as amt'
-	.' from forms_nonpage, meetings where forms_nonpage.id=meetings.form_id';
+$sql='select forms_nonpage.id id,name, count(meetings.id) amt from forms_nonpage, meetings where meetings.form_id=forms_nonpage.id group by forms_nonpage.id';
 $rs=dbAll($sql);
 foreach ($rs as $r) {
 	echo '<tr data-meeting-id="'.$r['id'].'">'

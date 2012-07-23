@@ -284,5 +284,48 @@ $(function() {
 	$('#meeting-forms').on('click', '.edit', function() {
 		var id=$(this).closest('tr').data('meeting-id');
 		$.post('/a/p=forms/f=adminGet/id='+id, form_edit);
+		return false;
+	});
+	$('#meeting-forms').on('click', '.meetings-view', function() {
+		var id=$(this).closest('tr').data('meeting-id');
+		$.post('/a/p=forms/f=adminGet/id='+id, function(ret) {
+			var table='<table id="meetings-view"><thead><tr>';
+			var fields=eval('('+ret.fields+')');
+			for (var i=0;i<fields.length;++i) {
+				table+='<th>'+fields[i].name+'</th>';
+			}
+			table+='</tr></thead>';
+			table+='<tbody></tbody></table>';
+			$('#main').empty().append('<h1>Meetings</h1>')
+				.append('<a href="/ww.admin/plugin.php?_plugin=meetings&_page=forms">'
+					+'back to Forms</a>')
+				.append(table);
+			var params={
+				"sAjaxSource":'/a/p=meetings/f=adminMeetingsDataGetDT/form_id='+id,
+				"bProcessing":true,
+				"bJQueryUI":true,
+				"bServerSide":true,
+				"fnRowCallback":function( nRow, aData, iDisplayIndex ) {
+					for (var i=0;i<fields.length;++i) {
+					console.log(fields[i]);
+						switch (fields[i].type) {
+							case 'image':
+								if (aData[i]!='') {
+									$('td:nth-child('+(i+1)+')', nRow)
+										.html(
+											'<a target="popup" href="data:image/jpeg;base64,'+aData[i]+'">'
+											+'<img src="data:image/jpeg;base64,'+aData[i]+'"'
+											+' style="max-width:128px;max-height:128px;"/></a>'
+										);
+								}
+							break;
+						}
+					}
+					return nRow;
+				}
+			};
+			$('#meetings-view').dataTable(params);
+		});
+		return false;
 	});
 });
