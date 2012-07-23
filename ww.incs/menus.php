@@ -101,15 +101,6 @@ function Menu_getChildren(
 		Core_cacheSave('pages', md5($sql), $rs);
 	}
 	$menuitems=array();
-	// { optimise db retrieval of pages
-	$ids=array();
-	foreach ($rs as $r) {
-		if (!isset(Page::$instances[$r['id']])) {
-			$ids[]=$r['id'];
-		}
-	}
-	Pages::precache($ids);
-	// }
 	$i=0;
 	foreach ($rs as $k=>$r) {
 		$PAGEDATA=Page::getInstance($r['id']);
