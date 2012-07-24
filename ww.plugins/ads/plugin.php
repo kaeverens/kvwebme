@@ -84,6 +84,7 @@ function Ads_frontend($PAGEDATA) {
 	);
 	WW_addScript('ads/j/purchase.js');
 	WW_addScript('/j/uploader.js');
+	WW_addCss('/ww.plugins/ads/css.css');
 	return $PAGEDATA->render().$html.@$PAGEDATA->vars['footer'];
 }
 

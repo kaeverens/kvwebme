@@ -5,7 +5,7 @@ $(function() {
 	var html='<table>'
 		+'<tr><th>Ad Type</th><td><select id="ads-purchase-type_id"/></td></tr>'
 		+'<tr><th>Price</th><td id="ads-purchase-price_per_day"></td></tr>'
-		+'<tr><th>How many Days?</th><td><input type="number" style="width:30px" id="ads-purchase-days-wanted" value="7"/></td></tr>'
+		+'<tr><th>How many Days?</th><td><input type="number" style="width:60px" id="ads-purchase-days-wanted" value="7"/></td></tr>'
 		+'<tr><th>Target URL</th><td><input id="ads-purchase-target_url" style="width:300px" value="http://yourwebsiteaddress/" /></tr>'
 		+'<tr><th>Image Size Required</th><td id="ads-purchase-size"></td></tr>'
 		+'<tr><th>Your Image</th><td><span id="ads-purchase-image"/></td></tr>'
@@ -24,13 +24,14 @@ $(function() {
 		$('#ads-purchase-days-wanted').change(function() {
 			if (!chosenType) {
 				$('#ads-purchase-subtotal, #ads-purchase-purchase')
+					.addClass('disabled')
 					.html('please choose an ad type');
 				updatePreview();
 				return;
 			}
 			var days=$('#ads-purchase-days-wanted').val();
 			var subtotal=days*chosenType.price_per_day;
-			$('#ads-purchase-subtotal').html('€'+subtotal);
+			$('#ads-purchase-subtotal').removeClass().html('€'+subtotal);
 			updatePreview();
 			site_url=document.location.toString()
 				.replace(/(https?:\/\/[^\/]*).*/, '$1');
@@ -53,7 +54,7 @@ $(function() {
 				+'idth="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" '
 				+'alt=""/></form>';
 			// }
-			var $paypal=$(paypal).appendTo($('#ads-purchase-purchase').empty());
+			var $paypal=$(paypal).appendTo($('#ads-purchase-purchase').empty().removeClass());
 			$paypal.find('input').click(function() {
 				$.post('/a/p=ads/f=makePurchaseOrder', {
 					'type_id':$('#ads-purchase-type_id').val(),
@@ -70,6 +71,7 @@ $(function() {
 				var id=+$(this).val();
 				if (!id) {
 					$('#ads-purchase-price_per_day,#ads-purchase-size, #ads-purchase-preview')
+						.addClass('disabled')
 						.html('please choose an ad type');
 					chosenType=false;
 					$('#ads-purchase-days-wanted').change();
@@ -77,8 +79,12 @@ $(function() {
 					return;
 				}
 				chosenType=types[id];
-				$('#ads-purchase-price_per_day').html('€'+chosenType.price_per_day+' per day');
-				$('#ads-purchase-size').html(chosenType.width+'px x '+chosenType.height+'px');
+				$('#ads-purchase-price_per_day')
+					.removeClass()
+					.html('€'+chosenType.price_per_day+' per day');
+				$('#ads-purchase-size')
+					.removeClass()
+					.html(chosenType.width+'px x '+chosenType.height+'px');
 				$('#ads-purchase-days-wanted').change();
 				updatePreview();
 			})
@@ -92,13 +98,16 @@ $(function() {
 	});
 	function updatePreview() {
 		if (chosenType==false) {
-			return $('#ads-purchase-preview').html('please choose an ad type');
+			return $('#ads-purchase-preview').addClass('disabled')
+				.html('please choose an ad type and upload an image');
 		}
 		$.post('/a/p=ads/f=getTmpImage', function(ret) {
 			if (!ret) {
-				return $('#ads-purchase-preview').html('please upload an image');
+				return $('#ads-purchase-preview').addClass('disabled').html('please upload an image');
 			}
-			$('#ads-purchase-preview').html('<div style="border:1px solid red;width:'+chosenType.width+'px;height:'+chosenType.height+'px;"><img src="/a/f=getImg/w='+chosenType.width+'/h='+chosenType.height+'/'+ret+'"/></div><em>the red border is only to illustrate the size of the ad</em>');
+			$('#ads-purchase-preview')
+				.removeClass()
+				.html('<div style="border:1px solid red;width:'+chosenType.width+'px;height:'+chosenType.height+'px;"><img src="/a/f=getImg/w='+chosenType.width+'/h='+chosenType.height+'/'+ret+'"/></div><em>the red border is only to illustrate the size of the ad</em>');
 		});
 	}
 });

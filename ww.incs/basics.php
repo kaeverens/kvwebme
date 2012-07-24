@@ -699,9 +699,9 @@ function dbRow($query) {
  */
 function transcribe($string) {
     $a = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞ
-ßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿŔŕ';
+ßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿŔŕ“”’';
     $b = 'aaaaaaaceeeeiiiidnoooooouuuuy
-bsaaaaaaaceeeeiiiidnoooooouuuyybyRr';
+bsaaaaaaaceeeeiiiidnoooooouuuyybyRr""\'';
     $string = utf8_decode($string);    
     $string = strtr($string, utf8_decode($a), $b);
     $string = strtolower($string);
