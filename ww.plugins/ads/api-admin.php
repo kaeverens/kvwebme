@@ -54,9 +54,13 @@ function Ads_adminAdEdit() {
 	$customer_id=(int)$_REQUEST['customer_id'];
 	$is_active=(int)$_REQUEST['is_active'];
 	$date_expire=$_REQUEST['date_expire'];
+	$target_url=$_REQUEST['target_url'];
+	$image_url=preg_replace('/^\/f\//', '/', $_REQUEST['image_url']);
 	$sql='ads set name="'.addslashes($name).'", type_id='.$type_id
 		.', customer_id='.$customer_id.', is_active='.$is_active
-		.', date_expire="'.addslashes($date_expire).'"';
+		.', date_expire="'.addslashes($date_expire).'"'
+		.', target_url="'.addslashes($target_url).'"'
+		.', image_url="'.addslashes($image_url).'"';
 	if ($id) {
 		dbQuery('update '.$sql.' where id='.$id);
 	}
