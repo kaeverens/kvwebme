@@ -44,7 +44,7 @@ function Ads_widget($params) {
 	$type_id=(int)$params->{'ad-type'};
 	$howmany=(int)$params->{'how-many'};
 	$ads=dbAll(
-		'select id,image_url from ads where type_id='.$type_id.' order by rand()'
+		'select id,image_url from ads where type_id='.$type_id.' and is_active order by rand()'
 		.' limit '.$howmany
 	);
 	$html='<div class="ads-wrapper type-'.$type_id.'">';

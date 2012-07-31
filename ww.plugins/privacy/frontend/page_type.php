@@ -11,6 +11,8 @@
 	* @link     http://kvsites.ie/
 	*/
 
+// { Privacy_controller
+
 /**
 	* function for displaying the registration/reminder/login forms
 	*
@@ -157,6 +159,9 @@ function Privacy_controller() {
 	return $c;
 }
 
+// }
+// { Privacy_loginForm
+
 /**
 	* function for displaying a login form
 	*
@@ -190,6 +195,9 @@ function Privacy_loginForm() {
 	return $c;
 }
 
+// }
+// { Privacy_passwordReminderForm
+
 /**
 	* form for a user to get a password reminder (a token)
 	*
@@ -211,6 +219,9 @@ function Privacy_passwordReminderForm() {
 	return $c;
 }
 
+// }
+// { Privacy_registrationController
+
 /**
 	* either display the user registration form, or handle the registration
 	*
@@ -222,6 +233,9 @@ function Privacy_registrationController() {
 	}
 	return Privacy_registrationShowForm();
 }
+
+// }
+// { Privacy_registrationShowForm
 
 /**
 	* show a registration form for creating a user
@@ -429,6 +443,9 @@ function Privacy_registrationShowForm($error='', $alert='') {
 	return $c;
 }
 
+// }
+// { Privacy_registrationRegister
+
 /**
 	* check a registration submission, and register the user if valid
 	*
@@ -624,6 +641,9 @@ function Privacy_registrationRegister() {
 	// }
 }
 
+// }
+// { Privacy_profileGet
+
 /**
 	* display a user's profile
 	*
@@ -711,6 +731,8 @@ function Privacy_profileGet() {
 	$html .= Core_trigger('privacy_user_profile', array($user));
 	return $html;
 }
+
+// }
 
 // if not logged in display login box
 if (!isset($_SESSION['userdata']['id'])) {
