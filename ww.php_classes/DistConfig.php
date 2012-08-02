@@ -29,11 +29,11 @@ class DistConfig{
 			if (count(self::$vals)) {
 				self::$vals[$name]='';
 			}
-			try {
+			if (file_exists($_SERVER['DOCUMENT_ROOT'].'/ww.incs/distconfig.php')) {
 				require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/distconfig.php';
 				self::$vals=$config;
 			}
-			catch (Exception $e) {
+			else {
 				require_once $_SERVER['DOCUMENT_ROOT']
 					.'/ww.incs/distconfig.example.php';
 				self::$vals=$config;
