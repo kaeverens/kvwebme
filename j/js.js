@@ -61,6 +61,13 @@ $(function(){
 			"log":function(v){}
 		};
 	}
+	// { periodically refresh the user's session
+	function refreshSession() {
+		setTimeout(refreshSession, 60000); // ping the server every minute
+		$.post('/a/f=nothing');
+	}
+	setTimeout(refreshSession, 60000);
+	// }
 });	
 // { stubs
 var stubs=['lightbox_show'];

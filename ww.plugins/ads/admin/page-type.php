@@ -8,7 +8,6 @@
   * @package    None
   * @subpackage None
   * @author     Kae Verens <kae@kvsites.ie>
-  * @author     Conor MacAoidh <conor@macaoidh.name>
   * @license    GPL Version 2
   * @link       www.kvweb.me
  */

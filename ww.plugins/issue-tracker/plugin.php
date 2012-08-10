@@ -52,6 +52,12 @@ function IssueTracker_admin($page, $page_vars) {
 	*/
 function IssueTracker_front($PAGEDATA) {
 	require SCRIPTBASE.'ww.plugins/issue-tracker/frontend/page_type.php';
+	global $unused_uri;
+	if (isset($unused_uri) && $unused_uri) {
+		redirect(
+			$PAGEDATA->getRelativeURL().'#'.preg_replace('/\/$/', '', $unused_uri)
+		);
+	}
 	if (isset($_SESSION['userdata'])) {
 		WW_addCSS('/j/jquery.multiselect/jquery.multiselect.css');
 		WW_addScript('/j/jquery.multiselect/jquery.multiselect.min.js');

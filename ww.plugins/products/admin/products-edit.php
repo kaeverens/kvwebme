@@ -382,8 +382,10 @@ else {
 }
 
 // { top links
-echo '<a href="plugin.php?_plugin=products&amp;_page=products-edit">Add a P'
-	.'roduct</a> | '
+echo '<a href="plugin.php?_plugin=products&amp;_page=products">'
+	.__('List all Products').'</a> | '
+	.'<a href="plugin.php?_plugin=products&amp;_page=products-edit">'
+	.__('Add a Product').'</a> | '
 	.'<a href="javascript:Core_screen(\'products\', \'js:Import\');">'
 	.__('Import', 'core').'</a>';
 // }
@@ -646,34 +648,44 @@ echo '<a style="background:#ff0;font-weight:bold;color:red;display:block;'
 echo '</table></div>';
 // }
 // { data fields
-echo '<div id="data-fields"><table id="data-fields-table">';
-$datafields=json_decode($pdata['data_fields'], true);
-$datafieldjson=$product_type['data_fields'];
-if ($datafieldjson=='') {
-	$datafieldjson='[]';
-}
-$datafieldjson=str_replace(array("\n", "\r"), array('\n', ''), $datafieldjson);
-$datafieldjson=json_decode($datafieldjson, true);
-$datafielddefs=array();
-if (@$datafieldjson) {
-	foreach ($datafieldjson as $d) {
-		$datafielddefs[$d['n']]=$d;
+echo '<div id="data-fields">';
+if ($id) {
+	echo '<table id="data-fields-table">';
+	$datafields=json_decode($pdata['data_fields'], true);
+	$datafieldjson=$product_type['data_fields'];
+	if ($datafieldjson=='') {
+		$datafieldjson='[]';
 	}
-	foreach ($datafields as $datafield) {
-		if (isset($datafield['n']) && isset($datafielddefs[$datafield['n']])) {
-			$def=$datafielddefs[$datafield['n']];
-			unset($datafielddefs[$datafield['n']]);
-			Products_showDataField($datafield, $def);
+	$datafieldjson=str_replace(array("\n", "\r"), array('\n', ''), $datafieldjson);
+	$datafieldjson=json_decode($datafieldjson, true);
+	$datafielddefs=array();
+	if (@$datafieldjson) {
+		foreach ($datafieldjson as $d) {
+			$datafielddefs[$d['n']]=$d;
+		}
+		foreach ($datafields as $datafield) {
+			if (isset($datafield['n']) && isset($datafielddefs[$datafield['n']])) {
+				$def=$datafielddefs[$datafield['n']];
+				unset($datafielddefs[$datafield['n']]);
+				Products_showDataField($datafield, $def);
+			}
+		}
+		foreach ($datafielddefs as $def) {
+			Products_showDataField(array('v'=>''), $def);
 		}
 	}
-	foreach ($datafielddefs as $def) {
-		Products_showDataField(array('v'=>''), $def);
+	else {
+		echo '<p><i>No datafields defined in Product Type</i></p>';
 	}
+	echo '</table>';
 }
 else {
-	echo '<p><i>No datafields defined in Product Type</i></p>';
+	echo '<em>'.__(
+		'You must save the product\'s main details before editing anything else'
+	)
+	.'</em>';
 }
-echo '</table></div>';
+echo '</div>';
 // }
 // { online store tabs
 if (isset($PLUGINS['online-store'])) {
@@ -725,73 +737,83 @@ if (isset($PLUGINS['online-store'])) {
 	if (!isset($addOnlineStoreFields)||!$addOnlineStoreFields) {
 		echo ' style="display:none';
 	}
-	echo '><table>';
-	foreach ($online_store_fields as $internal=>$display) {
-		echo '<tr><th>';
-		if (is_array($display)) {
-			echo $display[0];
-		}
-		else {
-			echo $display;
-		}
-		echo '</th><td>';
-		if (!is_array($display)) {
-			echo '<input class="small" type="number" name="online-store-fields['
-				.$internal.']"';
-			if (isset($online_store_data->$internal)) {
-				echo ' value="'.$online_store_data->$internal.'"';
+	echo '>';
+	if ($id) {
+		echo '<table>';
+		foreach ($online_store_fields as $internal=>$display) {
+			echo '<tr><th>';
+			if (is_array($display)) {
+				echo $display[0];
 			}
-			echo ' />';
-		}
-		else {
-			echo '<select name="online-store-fields['.$internal.']">';
-			for ($i=0; $i<count($display['Options']); ++$i) {
-				echo '<option value="'.$i.'"';
-				if ($i==@$online_store_data->$internal) {
-					echo 'selected="selected"';
+			else {
+				echo $display;
+			}
+			echo '</th><td>';
+			if (!is_array($display)) {
+				echo '<input class="small" type="number" name="online-store-fields['
+					.$internal.']"';
+				if (isset($online_store_data->$internal)) {
+					echo ' value="'.$online_store_data->$internal.'"';
 				}
-				echo '>'.$display['Options'][$i]
-					.'</option>';
+				echo ' />';
 			}
-			echo '</select>';
+			else {
+				echo '<select name="online-store-fields['.$internal.']">';
+				for ($i=0; $i<count($display['Options']); ++$i) {
+					echo '<option value="'.$i.'"';
+					if ($i==@$online_store_data->$internal) {
+						echo 'selected="selected"';
+					}
+					echo '>'.$display['Options'][$i]
+						.'</option>';
+				}
+				echo '</select>';
+			}
+			echo '</td>';
 		}
-		echo '</td>';
+		echo '</table>';
+		if ((int)$product_type['stock_control']) {
+			echo '<div id="stock-control">';
+			// { figure out what kind of stock control we have
+			$options=array();
+			foreach ($datafieldjson as $datafield) {
+				if ($datafield['t']=='selectbox' && $datafield['u']=='1') {
+					$options[]=$datafield['n'];
+				}
+			}
+			// }
+			// { stock control for simple products
+			echo '<label>'.__('Amount in stock').': '
+				.'<input class="small" name="stockcontrol_total" value="'
+				.(int)@$pdata['stockcontrol_total'].'"/></label>';
+			// }
+			// { stock control for products which have user-selectable options
+			if (count($options)) {
+				$detail=@$pdata['stockcontrol_details'];
+				if (!$detail) {
+					$detail='[]';
+				}
+				echo '<table id="stockcontrol-complex"></table><script defer="defer">'
+					.'window.stockcontrol_detail='.$detail.';window.stockcontrol_options=["'
+					.join('", "', $options).'"];</script><a href="#" id="'
+					.'stockcontrol-addrow">add row</a>'
+					.'<p>'.__(
+						'To remove rows, set their options to "-- Choose --" and save the'
+						.' product.'
+					)
+					.'</p>';
+			}
+			// }
+			echo '</div>';
+		}
 	}
-	echo '</table></div>';
-	if ((int)$product_type['stock_control']) {
-		echo '<div id="stock-control">';
-		// { figure out what kind of stock control we have
-		$options=array();
-		foreach ($datafieldjson as $datafield) {
-			if ($datafield['t']=='selectbox' && $datafield['u']=='1') {
-				$options[]=$datafield['n'];
-			}
-		}
-		// }
-		// { stock control for simple products
-		echo '<label>'.__('Amount in stock').': '
-			.'<input class="small" name="stockcontrol_total" value="'
-			.(int)@$pdata['stockcontrol_total'].'"/></label>';
-		// }
-		// { stock control for products which have user-selectable options
-		if (count($options)) {
-			$detail=@$pdata['stockcontrol_details'];
-			if (!$detail) {
-				$detail='[]';
-			}
-			echo '<table id="stockcontrol-complex"></table><script defer="defer">'
-				.'window.stockcontrol_detail='.$detail.';window.stockcontrol_options=["'
-				.join('", "', $options).'"];</script><a href="#" id="'
-				.'stockcontrol-addrow">add row</a>'
-				.'<p>'.__(
-					'To remove rows, set their options to "-- Choose --" and save the'
-					.' product.'
-				)
-				.'</p>';
-		}
-		// }
-		echo '</div>';
+	else {
+		echo '<em>'.__(
+			'You must save the product\'s main details before editing anything else'
+		)
+		.'</em>';
 	}
+	echo '</div>';
 }
 // }
 // { categories

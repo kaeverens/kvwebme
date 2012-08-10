@@ -84,7 +84,15 @@ $(function() {
 		else if (validOpts==1) {
 			$('#issuetracker-navbar .project').val(lastValid).change();
 		}
-		else showIssues(0);
+		else {
+			var extras=document.location.toString().replace(/.*#(.*)/, '$1');
+			if (extras!=document.location.toString()) {
+				if (/^issue=/.test(extras)) {
+					return showIssue(+extras.replace('issue=', ''));
+				}
+			}
+			showIssues(0);
+		}
 	});
 	$.post('/a/p=issue-tracker/f=typesGet', function(ret) {
 		for (var i=0;i<ret.length;++i) {
@@ -186,21 +194,23 @@ $(function() {
 	function showIssues(pid) {
 		$content.empty();
 		var table='<table style="width:100%">'
-			+'<thead><tr><th>Name</th><th>Type</th><th>Status</th>'
-			+'<th>ID</th><th>Project</th>'
+			+'<thead><tr><th>ID</th><th>Status</th>'
+			+'<th>Name</th><th>Type</th>'
+			+'<th>Project</th>'
 			+'</tr></thead>'
 			+'<tbody></tbody>'
 			+'</table>';
 		var params={
 			"sAjaxSource": '/a/p=issue-tracker/f=issuesGetDT',
 			"bProcessing":true,
+			"aaSorting":[[1, "asc"]],
 			"bJQueryUI":true,
 			"bServerSide":true,
 			"fnRowCallback": function(nRow, aData, iDisplayIndex) {
-				$('td:nth-child(2)', nRow).text(vals.types[+aData[1]]);
-				$('td:nth-child(3)', nRow).text(statii[+aData[2]]);
+				$('td:nth-child(2)', nRow).text(statii[+aData[1]]);
+				$('td:nth-child(4)', nRow).text(vals.types[+aData[3]]);
 				$(nRow).css('cursor', 'pointer').click(function() {
-					showIssue(+aData[3]);
+					showIssue(+aData[0]);
 				});
 				return nRow;
 			},
@@ -285,7 +295,8 @@ $(function() {
 			type.fields=eval('('+type.fields+')');
 			issue.meta=eval('('+issue.meta+')');
 			// { set up table HTML
-			var html='<table><tr><th>Name</th><td class="name"></td></tr>'
+			var html=
+				'<table style="width:100%"><tr><th>Name</th><td class="name"></td></tr>'
 				+'<tr><th>Created</th><td>'+Core_dateM2H(issue.date_created)+'</td></tr>'
 				+'<tr><th>Modified</th><td>'+Core_dateM2H(issue.date_modified)+'</td></tr>'
 				+'<tr><th>Type</th><td>'+ret.type.name+'</td></tr>';
@@ -299,6 +310,7 @@ $(function() {
 			html+='<tr><th>Status</th><td class="status"></td></tr>';
 			html+='</table>';
 			// }
+			console.log(html);
 			$content.html(html);
 			// { set up variables
 			if (allowedEdit || userdata.isAdmin) {
@@ -316,7 +328,7 @@ $(function() {
 								.val(issue.meta[v.name]||'');
 						break; // }
 						case 'textarea': // {
-							var obj=$('<textarea class="'+v.cname+'"/>')
+							var obj=$('<textarea style="width:100%;min-height:100px;" class="'+v.cname+'"/>')
 								.val(issue.meta[v.name]||'');
 						break; // }
 						default: // {

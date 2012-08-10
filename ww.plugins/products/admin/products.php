@@ -35,9 +35,9 @@ if (!dbOne('select id from products_types limit 1', 'id')) {
 $rs=dbAll('select id from products limit 1');
 if (!count($rs)) {
 	echo '<em>'.__('No existing products.', 'core')
-		.' <a href="plugin.php?_plugin=products&amp;_page=products-edit">'
-		.__('Click here to create a Product Type.')
-		.'</a> '.__('or', 'core')
+		.' <a href="/ww.admin/plugin.php?_plugin=products&amp;_page=products-edit">'
+		.__('Add a Product').'</a> '
+		.__('or', 'core')
 		.' <a href="javascript:Core_screen(\'products\', \'js:Import\');">'
 		.__('Import Products', 'core').'</a>';
 	return;

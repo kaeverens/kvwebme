@@ -858,16 +858,23 @@ function Products_show($PAGEDATA) {
 		$locationFilter=join(',', getSubLocations($locid));
 	}
 	// }
+	// { filter by product status
+	$enabled_filter=isset($PAGEDATA->vars['products_filter_by_status'])
+		?(int)$PAGEDATA->vars['products_filter_by_status']:0;
+	// }
 	// { set limit variables
 	$limit=isset($PAGEDATA->vars['products_per_page'])
 		?(int)$PAGEDATA->vars['products_per_page']
 		:0;
+	$limit_start=isset($PAGEDATA->vars['products_per_page_offset_min'])
+		?(int)$PAGEDATA->vars['products_per_page_offset_min']
+		:0;
 	if (isset($_REQUEST['products_per_page'])) {
 		$limit=(int)$_REQUEST['products_per_page'];
 	}
-	$start=isset($_REQUEST['start'])?(int)$_REQUEST['start']:0;
-	if ($start<0) {
-		$start=0;
+	$start=isset($_REQUEST['start'])?(int)$_REQUEST['start']:$limit_start;
+	if ($start<$limit_start) {
+		$start=$limit_start;
 	}
 	// }
 	// { set order fields
@@ -894,7 +901,7 @@ function Products_show($PAGEDATA) {
 			return $c
 				.Products_showByType(
 					$PAGEDATA, 0, $start, $limit, $order_by,
-					$order_dir, $search, $locationFilter
+					$order_dir, $search, $locationFilter, $limit_start
 				)
 				.$export;
 			// }
@@ -905,7 +912,7 @@ function Products_show($PAGEDATA) {
 			return $c
 				.Products_showByCategory(
 					$PAGEDATA, 0, $start, $limit, $order_by,
-					$order_dir, $search, $locationFilter
+					$order_dir, $search, $locationFilter, $limit_start
 				)
 				.$export;
 			// }
@@ -913,7 +920,7 @@ function Products_show($PAGEDATA) {
 			if (@$PAGEDATA->vars['products_pagetitleoverride_single']) {
 				$PAGEDATA->title=$PAGEDATA->vars['products_pagetitleoverride_single'];
 			}
-			return $c.Products_showById($PAGEDATA).$export;
+			return $c.Products_showById($PAGEDATA, 0, $enabled_filter).$export;
 			// }
 	}
 	if (@$PAGEDATA->vars['products_pagetitleoverride_multiple']) {
@@ -927,7 +934,9 @@ function Products_show($PAGEDATA) {
 			$order_by,
 			$order_dir,
 			$search,
-			$locationFilter
+			$locationFilter,
+			$limit_start,
+			$enabled_filter
 		)
 		.$export;
 }
@@ -950,19 +959,21 @@ function Products_show($PAGEDATA) {
 	*/
 function Products_showAll(
 	$PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0, $search='',
-	$location=0
+	$location=0, $limit_start=0, $enabled_filter=0
 ) {
 	if (isset($_REQUEST['product_id'])) {
 		$product_id=$_REQUEST['product_id'];
-		$products=Products::getAll('', $location);
+		$products=Products::getAll('', $location, $enabled_filter);
 	}
 	else if (isset($_REQUEST['product_category'])) {
 		$products=Products::getByCategory($_REQUEST['product_category']);
 	}
 	else {
-		$products=Products::getAll($search, $location);
+		$products=Products::getAll($search, $location, $enabled_filter);
 	}
-	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
+	return $products->render(
+		$PAGEDATA, $start, $limit, $order_by, $order_dir, $limit_start, $enabled_filter
+	);
 }
 
 // }
@@ -984,7 +995,7 @@ function Products_showAll(
 	*/
 function Products_showByCategory(
 	$PAGEDATA, $id=0, $start=0, $limit=0, $order_by='', $order_dir=0, $search='',
-	$location=0
+	$location=0, $limit_start=0
 ) {
 	if ($id==0) {
 		$id=(int)$PAGEDATA->vars['products_category_to_show'];
@@ -992,7 +1003,9 @@ function Products_showByCategory(
 	$products=Products::getByCategory(
 		$id, $search, array(), '', 'asc', $location
 	);
-	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
+	return $products->render(
+		$PAGEDATA, $start, $limit, $order_by, $order_dir, $limit_start
+	);
 }
 
 // }
@@ -1006,14 +1019,14 @@ function Products_showByCategory(
 	*
 	* @return string the products
 	*/
-function Products_showById($PAGEDATA, $id=0) {
+function Products_showById($PAGEDATA, $id=0, $enabledFilter) {
 	if ($id==0) {
 		$id=(int)$PAGEDATA->vars['products_product_to_show'];
 	}
 	if ($id<1) {
 		return '<em>'.__('Product %1 does not exist.', array($id), 'core').'</em>';
 	}
-	$product=Product::getInstance($id);
+	$product=Product::getInstance($id, false, $enabledFilter);
 	$typeID = $product->get('product_type_id');
 	$type=ProductType::getInstance($typeID);
 	if (!$type) {
@@ -1040,13 +1053,16 @@ function Products_showById($PAGEDATA, $id=0) {
 	* @return string HTML of the list of products
 	*/
 function Products_showByType(
-	$PAGEDATA, $id=0, $start=0, $limit=0, $order_by='', $order_dir=0, $search=''
+	$PAGEDATA, $id=0, $start=0, $limit=0, $order_by='', $order_dir=0, $search='',
+	$limit_start=0
 ) {
 	if ($id==0) {
 		$id=(int)$PAGEDATA->vars['products_type_to_show'];
 	}
 	$products=Products::getByType($id, $search);
-	return $products->render($PAGEDATA, $start, $limit, $order_by, $order_dir);
+	return $products->render(
+		$PAGEDATA, $start, $limit, $order_by, $order_dir, $limit_start
+	);
 }
 
 // }
@@ -1191,7 +1207,7 @@ class Products{
 		*/
 	function __construct(
 		$vs, $md5, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc',
-		$location=0
+		$location=0, $enabledFilter=0
 	) {
 		$this->product_ids=Core_cacheLoad('products', 'products_'.$md5, -1);
 		if ($this->product_ids===-1) {
@@ -1199,7 +1215,7 @@ class Products{
 				$locations=explode(',', $location);
 				$arr=array();
 				foreach ($vs as $v) {
-					$p=Product::getInstance($v);
+					$p=Product::getInstance($v, false, $enabledFilter);
 					if (!$p) {
 						continue;
 					}
@@ -1212,7 +1228,7 @@ class Products{
 			if ($search!='') {
 				$arr=array();
 				foreach ($vs as $v) {
-					$p=Product::getInstance($v);
+					$p=Product::getInstance($v, false, $enabledFilter);
 					if (!$p) {
 						continue;
 					}
@@ -1225,7 +1241,7 @@ class Products{
 			if (is_array($search_arr) && count($search_arr)) {
 				$arr=array();
 				foreach ($vs as $v) {
-					$p=Product::getInstance($v);
+					$p=Product::getInstance($v, false, $enabledFilter);
 					$left=count($search_arr);
 					foreach ($search_arr as $k=>$s) {
 						if ($p->search($s, $k)) {
@@ -1243,7 +1259,7 @@ class Products{
 				$keys=array();
 				foreach ($vs as $v) {
 					$keys[]=$v;
-					$p=Product::getInstance($v);
+					$p=Product::getInstance($v, false, $enabledFilter);
 					$vals[]=$p->get($sort_col);
 				}
 				array_multisort($vals, $keys);
@@ -1270,20 +1286,33 @@ class Products{
 		*
 		* @return object instance of Products object
 		*/
-	static function getAll($search='', $location=0) {
+	static function getAll($search='', $location=0, $enabledFilter=0) {
 		$md5loc=is_array($location)?join(',', $location):$location;
-		$id=md5('all|'.$search.'|'.$md5loc);
+		$id=md5('all|'.$search.'|'.$md5loc.'|'.$enabledFilter);
 		if (!array_key_exists($id, self::$instances)) {
 			$product_ids=Core_cacheLoad('products', $id, -1);
 			if ($product_ids===-1) {
 				$product_ids=array();
-				$rs=dbAll('select id from products where enabled');
+				$enabledSql='where ';
+				if ($enabledFilter==0) {
+					$enabledSql.=' enabled';
+				}
+				if ($enabledFilter==1) {
+					$enabledSql='';
+				}
+				if ($enabledFilter==2) {
+					$enabledSql.=' !enabled';
+				}
+				$rs=dbAll('select id from products '.$enabledSql);
 				foreach ($rs as $r) {
 					$product_ids[]=$r['id'];
 				}
 				Core_cacheSave('products', $id, $product_ids);
 			}
-			new Products($product_ids, $id, $search, array(), '', 'asc', $location);
+			new Products(
+				$product_ids, $id, $search, array(), '', 'asc', $location,
+				$enabledFilter
+			);
 		}
 		return self::$instances[$id];
 	}
@@ -1304,7 +1333,7 @@ class Products{
 		* @return object instance of Products object
 		*/
 	static function getByCategory(
-		$id, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc',
+		$id, $search='', $search_arr=array(), $sort_col='_name', $sort_dir='asc',
 		$location=0
 	) {
 		if (!is_numeric($id)) {
@@ -1360,7 +1389,7 @@ class Products{
 		*
 		* @return object instance of Products object
 		*/
-	static function getByCategoryName($name) {
+	static function getByCategoryName($name, $enabledFilter=0) {
 		$arr=explode('/', $name);
 		if ($arr[0]=='') {
 			array_shift($arr);
@@ -1377,7 +1406,7 @@ class Products{
 			}
 		}
 		if (!$cid) {
-			return Products::getAll();
+			return Products::getAll('', 0, $enabledFilter);
 		}
 		return Products::getByCategory($cid);
 	}
@@ -1397,7 +1426,7 @@ class Products{
 		* @return object instance of Products object
 		*/
 	static function getByIds(
-		$ids, $search='', $search_arr=array(), $sort_col='name', $sort_dir='asc'
+		$ids, $search='', $search_arr=array(), $sort_col='_name', $sort_dir='asc'
 	) {
 		if (!is_array($ids)) {
 			return false;
@@ -1427,7 +1456,7 @@ class Products{
 		* @return object instance of Products object
 		*/
 	static function getByType(
-		$id, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc'
+		$id, $search='', $search_arr=array(), $sort_col='_name', $sort_dir='asc'
 	) {
 		if (!is_numeric($id)) {
 			return false;
@@ -1456,19 +1485,22 @@ class Products{
 	/**
 		* render a list of products to HTML
 		*
-		* @param object $PAGEDATA  the page object
-		* @param int    $start     offset
-		* @param int    $limit     how many products to show
-		* @param string $order_by  what field to order the search by
-		* @param int    $order_dir order ascending or descending
+		* @param object $PAGEDATA    the page object
+		* @param int    $start       offset
+		* @param int    $limit       how many products to show
+		* @param string $order_by    what field to order the search by
+		* @param int    $order_dir   order ascending or descending
+		* @param int    $limit_start lowest $start offset allowed
 		*
 		* @return string the HTML of the products list
 		*/
-	function render($PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0) {
+	function render(
+		$PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0, $limit_start=0, $enabledFilter=0
+	) {
 		$c='';
 		// { sort based on $order_by
 		$md5=md5(
-			'ps-sorted-'.join(',', $this->product_ids).'|'.$order_by.'|'.$order_dir
+			'ps-sorted-'.join(',', $this->product_ids).'|'.$order_by.'|'.$order_dir.'|'.$enabledFilter
 		);
 		$tmpprods=Core_cacheLoad(
 			'products',
@@ -1485,7 +1517,7 @@ class Products{
 				$tmpprods1=array();
 				$prods=$this->product_ids;
 				foreach ($prods as $key=>$pid) {
-					$prod=$product=Product::getInstance($pid);
+					$prod=$product=Product::getInstance($pid, false, $enabledFilter);
 					if ($product->get($order_by)) {
 						$key2=__FromJSON($product->get($order_by));
 						if (!isset($tmpprods1[$key2])) {
@@ -1516,7 +1548,7 @@ class Products{
 				}
 			}
 			else {
-				$tmpprods=&$this->product_ids;
+				$tmpprods=$this->product_ids;
 			}
 			Core_cacheSave(
 				'products',
@@ -1550,7 +1582,7 @@ class Products{
 					$prods[]=$tmpprods[$i];
 				}
 			}
-			if ($start) {
+			if ($start>$limit_start) {
 				$prevnext.='<a class="products-prev" href="'
 					.$PAGEDATA->getRelativeUrl().'?start='.($start-$limit)
 					.'">&lt;-- prev</a>';
@@ -1594,7 +1626,7 @@ class Products{
 				WW_addScript('products');
 				$c='<div id="products-carousel"><ul id="products-carousel-slider">';
 				foreach ($prods as $pid) {
-					$product=Product::getInstance($pid);
+					$product=Product::getInstance($pid, false, $enabledFilter);
 					if ($product && isset($product->id) && $product->id) {
 						$typeID = $product->get('product_type_id');
 						$type=ProductType::getInstance($typeID);
@@ -1615,7 +1647,7 @@ class Products{
 				// }
 			default: // { use template
 				if (count($prods)) { // display the first item's header
-					$product=Product::getInstance($prods[0]);
+					$product=Product::getInstance($prods[0], false, $enabledFilter);
 					$type=ProductType::getInstance($product->get('product_type_id'));
 					$smarty=Products_setupSmarty();
 					$c.=$smarty->fetch(
@@ -1623,7 +1655,7 @@ class Products{
 					);
 				}
 				foreach ($prods as $pid) {
-					$product=Product::getInstance($pid);
+					$product=Product::getInstance($pid, false, $enabledFilter);
 					if ($product && isset($product->id) && $product->id) {
 						$typeID = $product->get('product_type_id');
 						$type=ProductType::getInstance($typeID);

@@ -10,3 +10,12 @@
 #ads-purchase-wrapper .disabled{
 	color:#999;
 }
+#ads-purchase-wrapper th{
+	padding:5px;
+}
+.uploadify{
+	display:inline-block;
+}
+.uploadify-queue{
+	display:none;
+}

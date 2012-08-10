@@ -6,9 +6,13 @@ $(function() {
 		+'<tr><th>Ad Type</th><td><select id="ads-purchase-type_id"/></td></tr>'
 		+'<tr><th>Price</th><td id="ads-purchase-price_per_day"></td></tr>'
 		+'<tr><th>How many Days?</th><td><input type="number" style="width:60px" id="ads-purchase-days-wanted" value="7"/></td></tr>'
-		+'<tr><th>Target URL</th><td><input id="ads-purchase-target_url" style="width:300px" value="http://yourwebsiteaddress/" /></tr>'
-		+'<tr><th>Image Size Required</th><td id="ads-purchase-size"></td></tr>'
-		+'<tr><th>Your Image</th><td><span id="ads-purchase-image"/></td></tr>'
+		+'<tr><th>Target Type</th><td><select id="ads-purchase-target_type">'
+		+'<option value="0">Website</option><option value="1">Poster image</option>'
+		+'</select></td></tr>'
+		+'<tr><th id="ads-purchase-target_url-header">Target URL</th><td>'
+		+'<input id="ads-purchase-target_url" style="width:300px"'
+		+' value="http://yourwebsiteaddress/" /><div id="ads-purchase-poster-wrapper"><span id="ads-purchase-poster"/><span id="ads-purchase-poster-preview"/></div></tr>'
+		+'<tr><th>Your Image</th><td><span id="ads-purchase-image"/><span id="ads-purchase-size"/></td></tr>'
 		+'<tr><th>Preview</th><td id="ads-purchase-preview"></td></tr>'
 		+'<tr><th>Subtotal</th><td id="ads-purchase-subtotal"></td></tr>'
 		+'<tr><th>Purchase</th><td id="ads-purchase-purchase"></td></tr>'
@@ -59,7 +63,8 @@ $(function() {
 				$.post('/a/p=ads/f=makePurchaseOrder', {
 					'type_id':$('#ads-purchase-type_id').val(),
 					'days':$('#ads-purchase-days-wanted').val(),
-					'target_url':$('#ads-purchase-target_url').val()
+					'target_url':$('#ads-purchase-target_url').val(),
+					'target_type':$('#ads-purchase-target_type').val()
 				}, function(ret) {
 					$('#paypal-order-id').val(ret.id).closest('form').submit();
 				});
@@ -89,11 +94,34 @@ $(function() {
 				updatePreview();
 			})
 			.change();
+		$('#ads-purchase-target_type')
+			.change(function() {
+				var type=+$(this).val();
+				switch(type) {
+					case 1:
+						$('#ads-purchase-target_url').css('display', 'none');
+						$('#ads-purchase-poster-wrapper').css('display', 'block');
+						$('#ads-purchase-target_url-header').html('Poster Image<br/>(max 800x800)');
+					break;
+					default:
+						$('#ads-purchase-target_url').css('display', 'block');
+						$('#ads-purchase-poster-wrapper').css('display', 'none');
+						$('#ads-purchase-target_url-header').text('Website Address');
+					break;
+				}
+			})
+			.change();
 	});
 	Core_uploader('#ads-purchase-image', {
 		'serverScript': '/a/p=ads/f=fileUpload',
 		'successHandler':function(file, data, response){
 			updatePreview();
+		}
+	});
+	Core_uploader('#ads-purchase-poster', {
+		'serverScript': '/a/p=ads/f=posterUpload',
+		'successHandler':function(file, data, response){
+			updatePoster();
 		}
 	});
 	function updatePreview() {
@@ -109,5 +137,16 @@ $(function() {
 				.removeClass()
 				.html('<div style="border:1px solid red;width:'+chosenType.width+'px;height:'+chosenType.height+'px;"><img src="/a/f=getImg/w='+chosenType.width+'/h='+chosenType.height+'/'+ret+'"/></div><em>the red border is only to illustrate the size of the ad</em>');
 		});
+	}
+	function updatePoster() {
+/*		$.post('/a/p=ads/f=getTmpPoster', function(ret) {
+			if (!ret) {
+				return $('#ads-purchase-poster-preview')
+					.addClass('disabled').html('please upload an image');
+			} */
+			$('#ads-purchase-poster-preview')
+				.removeClass()
+				.html('Poster uploaded');
+//		});
 	}
 });

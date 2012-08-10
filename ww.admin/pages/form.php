@@ -69,6 +69,9 @@ WW_addScript('/j/jquery-ui-timepicker-addon.js');
 WW_addScript('/ww.admin/pages/form2.js');
 WW_addScript('/j/uploader.js');
 WW_addScript('/j/lang.js');
+WW_addScript('/j/jstree/jquery.jstree.js');
+WW_addScript('/j/jstree/_lib/jquery.cookie.js');
+WW_addInlineScript('$.jstree._themes="/j/jstree/themes/";');
 echo '<html><head>'
 	.Core_getJQueryScripts()
 	.'<link rel="stylesheet" href="/j/jquery.dataTables-1.7.5'

@@ -157,14 +157,17 @@ function Issuetracker_issuesGetDT() {
 	$orderby=(int)$_REQUEST['iSortCol_0'];
 	$orderdesc=$_REQUEST['sSortDir_0']=='desc'?'desc':'asc';
 	switch ($orderby) {
-		case 1:
-			$orderby='name';
+		case 0:
+			$orderby='id';
 		break;
-		case 2:
+		case 1:
 			$orderby='status';
 		break;
-		default:
+		case 2:
 			$orderby='name';
+		break;
+		default:
+			$orderby='status';
 	}
 	$filters=array('issuetracker_issues.project_id=issuetracker_projects.id');
 	if ($search) {
@@ -222,23 +225,23 @@ function Issuetracker_issuesGetDT() {
 		'select count(id) as ids from issuetracker_issues', 'ids'
 	);
 	$result['iTotalDisplayRecords']=dbOne(
-		'select count(id) as ids from issuetracker_issues '.$filter,
+		'select count(issuetracker_issues.id) as ids from issuetracker_issues, issuetracker_projects '.$filter,
 		'ids'
 	);
 	$arr=array();
 	foreach ($rs as $r) {
 		$row=array();
+		// { id
+		$row[]=$r['id'];
+		// }
+		// { status
+		$row[]=(int)$r['status'];
+		// }
 		// { name
 		$row[]=__FromJson($r['name']);
 		// }
 		// { type
 		$row[]=(int)$r['type_id'];
-		// }
-		// { status
-		$row[]=(int)$r['status'];
-		// }
-		// { id
-		$row[]=$r['id'];
 		// }
 		// { project
 		$row[]=$r['project_name'];

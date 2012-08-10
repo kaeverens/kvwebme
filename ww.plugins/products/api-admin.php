@@ -276,7 +276,7 @@ function Products_adminCategorySetIcon() {
 	* @return null
 	*/
 function Products_adminDatafieldsList() {
-	$fields=array('_name');
+	$fields=array();
 	$filter='';
 	if ($_REQUEST['other_GET_params']) {
 		if (is_numeric($_REQUEST['other_GET_params'])) { // product type
@@ -327,9 +327,11 @@ function Products_adminDatafieldsList() {
 	foreach ($fields as $field) {
 		$arr[$field]=$field;
 	}
+	$arr['_name']='Name';
+	$arr['_activates_on']='Publish date';
+	$arr['_expires_on']='Expiry date';
 	return $arr;
 }
-
 
 // }
 // { Products_adminExport
@@ -873,6 +875,23 @@ function Products_adminProductEditVal() {
 		'update products set '.$name.'="'.addslashes($value).'",date_edited=now()'
 		.' where id='.$id
 	);
+	if ($name=='enabled') {
+		if ($value=='0') {
+			dbQuery(
+				'update products set activates_on=now() where id='.$id
+				.' and activates_on>now()'
+			);
+			dbQuery(
+				'update products set expires_on=now() where id='.$id
+				.' and expires_on>now()'
+			);
+		}
+		else {
+			dbQuery(
+				'update products set expires_on=null where id='.$id.' and expires_on<now()'
+			);
+		}
+	}
 	Core_cacheClear();
 	return array('ok'=>1);
 }

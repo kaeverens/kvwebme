@@ -35,8 +35,7 @@ $plugin=array(
 	), // }
 	'description'=>function() {
 		return __(
-			'Add online-shopping capabilities to some plugins. '
-			.'REQUIRES products plugin.'
+			'Add online-shopping capabilities to some plugins.'
 		);
 	},
 	'frontend' => array( // {
@@ -575,10 +574,12 @@ function OnlineStore_showBasketWidget($vars=null) {
 					$p=Product::getInstance($item['id']);
 					if ($p) {
 						$img=$p->getDefaultImage();
-						$html.='<a href="/f/'.$img.'" target="popup" '
-							.'class="online-store-thumb-wrapper">'
-							.'<img src="/a/f=getImg/w=16/h=16/'.$img.'"/>'
-							.'</a>';
+						if ($img) {
+							$html.='<a href="/f/'.$img.'" target="popup" '
+								.'class="online-store-thumb-wrapper">'
+								.'<img src="/a/f=getImg/w=16/h=16/'.$img.'"/>'
+								.'</a>';
+						}
 					}
 				}
 				if ($item['url']) {

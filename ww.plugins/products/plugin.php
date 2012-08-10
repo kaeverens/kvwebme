@@ -163,14 +163,23 @@ class Product{
 	  *
 	  * @return object the product instance
 	  */
-	function __construct($v, $r=false, $enabled=true) {
+	function __construct($v, $r=false, $enabledFilter=0) {
 		$v=(int)$v;
 		if ($v<1) {
 			return false;
 		}
-		$filter=$enabled?' and enabled ':'';
+		$enabledSql='and ';
+		if ($enabledFilter==0) {
+			$enabledSql.=' enabled';
+		}
+		if ($enabledFilter==1) {
+			$enabledSql='';
+		}
+		if ($enabledFilter==2) {
+			$enabledSql.=' !enabled';
+		}
 		if (!$r) {
-			$sql="select * from products where id=$v $filter limit 1";
+			$sql="select * from products where id=$v $enabledSql limit 1";
 			$md5=md5($sql);
 			$r=Core_cacheLoad('products', $md5, -1);
 			if ($r===-1) {
@@ -254,7 +263,7 @@ class Product{
 	  *
 	  * @return object the product instance
 	  */
-	static function getInstance($id=0, $r=false, $enabled=true) {
+	static function getInstance($id=0, $r=false, $enabled=0) {
 		if (!is_numeric($id)) {
 			return false;
 		}
@@ -277,6 +286,14 @@ class Product{
 		if (isset($this->relativeUrl) && $this->relativeUrl) {
 			return $this->relativeUrl;
 		}
+		// { if this product is disabled, then it can only be shown on special pages...
+		if ($this->vals['enabled']=='0') {
+			$pid=dbOne('select page_id from page_vars where name="products_filter_by_status" and value in (1, 2)', 'page_id');
+			$page=Page::getInstance($pid);
+			return $page->getRelativeUrl()
+				.'/'.$this->id.'-'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
+		}
+		// }
 		// { Does the product have a page assigned to display the product?
 		$pageID=Core_cacheLoad('products', 'page_for_product_'.$this->id, -1);
 		if ($pageID===-1) {
@@ -1189,7 +1206,7 @@ function Products_breadcrumbs($baseurl) {
 			.$c->getRelativeUrl().'">'.htmlspecialchars($c->vals['name']).'</a>';
 	}
 	if ($_REQUEST['product_id']) {
-		$c=Product::getInstance($_REQUEST['product_id']);
+		$c=Product::getInstance($_REQUEST['product_id'], false, 1);
 		$breadcrumbs.=' &raquo; <a class="product-product" href="'
 			.$c->getRelativeUrl().'">'.htmlspecialchars($c->get('_name')).'</a>';
 	}
@@ -1334,7 +1351,7 @@ function Products_expiryClock($params, $smarty) {
 		$unlimited='no expiry date';
 	}
 	$pid=$smarty->_tpl_vars['product']->id;
-	$product=Product::getInstance($pid);
+	$product=Product::getInstance($pid, false, 1);
 	return '<div class="products-expiry-clock" unlimited="'
 		.htmlspecialchars($unlimited).'">'.$product->vals['expires_on'].'</div>';
 }

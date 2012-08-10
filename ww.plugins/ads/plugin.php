@@ -28,7 +28,7 @@ $plugin=array(
 	'triggers'=>array(
 		'privacy_user_profile' => 'Ads_userProfile'
 	),
-	'version'=>5
+	'version'=>9
 );
 
 // }
@@ -43,15 +43,22 @@ $plugin=array(
 function Ads_widget($params) {
 	$type_id=(int)$params->{'ad-type'};
 	$howmany=(int)$params->{'how-many'};
+	$type=dbRow('select * from ads_types where id='.$type_id);
+	echo '<!-- '; var_dump($type); echo ' -->';
 	$ads=dbAll(
-		'select id,image_url from ads where type_id='.$type_id.' and is_active order by rand()'
+		'select id,image_url,target_type,poster from ads'
+		.' where type_id='.$type_id.' and is_active order by rand()'
 		.' limit '.$howmany
 	);
 	$html='<div class="ads-wrapper type-'.$type_id.'">';
 	foreach ($ads as $ad) {
-		$html.='<div class="ads-ad" data-id="'.$ad['id'].'">'
-			.'<img src="'.$ad['image_url'].'"/>'
-			.'</div>';
+		$ad['image_url']=str_replace('/f/userfiles', '/a/f=getImg/w='.$type['width'].'/h='.$type['height'].'/userfiles', $ad['image_url']);
+		$html.='<div class="ads-ad" data-id="'.$ad['id'].'"'
+			.' data-type="'.$ad['target_type'].'"';
+		if ($ad['target_type']=='1') {
+			$html.=' data-poster="'.htmlspecialchars($ad['poster']).'"';
+		}
+		$html.='><img src="'.$ad['image_url'].'"/></div>';
 		dbQuery(
 			'insert into ads_track set ad_id='.$ad['id'].', view=1, cdate=now()'
 		);

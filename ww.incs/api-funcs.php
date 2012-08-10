@@ -1,5 +1,4 @@
 <?php
-
 /**
 	* API for common non-admin WebME functions
 	*
@@ -422,6 +421,7 @@ function Core_logout() {
 
 /**
 	* does nothing... :-)
+	* useful for simply keeping the session alive
 	*
 	* @return null
 	*/

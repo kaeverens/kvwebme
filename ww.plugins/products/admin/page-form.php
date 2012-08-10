@@ -133,7 +133,7 @@ if (@$vars['products_add_a_search_box']=='1') {
 $c.='>Yes</option></select></td></tr>';
 // }
 // { order by
-$c.='<tr id="products_order_by"><th>Order By</th><td>'
+$c.='<tr id="products_order_by"><th>'.__('Order By').'</th><td>'
 	.'<select id="products_order_by_select" name="page_vars[products_order_by]">';
 if (!isset($vars['products_order_by'])) {
 	$fs=json_decode(
@@ -182,14 +182,28 @@ foreach ($arr as $k=>$r) {
 }
 $c.= '</select></td></tr>';
 // }
-// { products per page
-$c.= '<tr id="products_per_page"><th>Products per page</th><td>';
+// { limits on amount shown
+$c.= '<tr id="products_per_page"><th>'.__('Products per page').'</th><td>';
+// { per page
 $c.= '<input name="page_vars[products_per_page]" class="small" value="';
 $i = isset($vars['products_per_page'])?(int)$vars['products_per_page']:0;
 if ($i<0) {
 	$i=0;
 }
-$c.= $i.'" /></td></tr>';
+$c.= $i.'" />';
+// }
+// { min offset
+$c.=' ('.__('min. offset')
+	.' <input name="page_vars[products_per_page_offset_min]"'
+	.' class="small" value="';
+$i = isset($vars['products_per_page_offset_min'])
+	?(int)$vars['products_per_page_offset_min']:0;
+if ($i<0) {
+	$i=0;
+}
+$c.= $i.'" />)';
+// }
+$c.='</td></tr>';
 // }
 // { add export button
 $c.='<tr id="products_export"><th>Add an Export button</th><td>'
@@ -234,6 +248,27 @@ if (@$vars['products_filter_by_users_location']=='1') {
 }
 $c.='>Yes</option></select></td></tr>';
 // }
+// { what status products to show here - active, expired, etc
+$c.='<tr id="products_filter_by_users_location">'
+	.'<th>'.__('What products are allowed here').'</th><td>'
+	.'<select name="page_vars[products_filter_by_status]">';
+$t=isset($vars['products_filter_by_status'])
+	?(int)$vars['products_filter_by_status']
+	:0;
+$vs=array(
+	__('Only show Active products'),
+	__('Show Active or Inactive products'),
+	__('Only show InActive products')
+);
+foreach ($vs as $k=>$v) {
+	$c.='<option value="'.$k.'"';
+	if ($k==$t) {
+		$c.=' selected="selected"';
+	}
+	$c.='>'.$v.'</option>';
+}
+$c.='</select></td></tr>';
+// }
 $c.= '</table></div>';
 // }
 // { header
@@ -253,4 +288,4 @@ $c.= ckeditor(
 $c.= '</div>';
 // }
 $c.= '</div>';
-$c.= '<script defer="defer" src="/ww.plugins/products/admin/page-form.js"></script>';
+WW_addScript('products/admin/page-form.js');

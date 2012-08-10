@@ -66,6 +66,36 @@ function Ads_fileUpload() {
 }
 
 // }
+// { Ads_posterUpload
+
+/**
+	* upload a poster
+	*
+	* @return status
+	*/
+function Ads_posterUpload() {
+	if (!isset($_SESSION['userdata']['id'])) {
+		return array('error'=>__('not logged in'));
+	}
+	$id=$_SESSION['userdata']['id'];
+	$fname=USERBASE.'/f/userfiles/'.$id.'/ads-upload-poster/'.$_FILES['Filedata']['name'];
+	if (strpos($fname, '..')!==false) {
+		return array('message'=>'invalid file url');
+	}
+	@mkdir(dirname($fname), 0777, true);
+	$from=$_FILES['Filedata']['tmp_name'];
+	$dir=new DirectoryIterator(USERBASE.'/f/userfiles/'.$id.'/ads-upload-poster');
+	foreach ($dir as $file) {
+		if ($file->isDot()) {
+			continue;
+		}
+		unlink(USERBASE.'/f/userfiles/'.$id.'/ads-upload-poster/'.$file->getFilename());
+	}
+	move_uploaded_file($from, $fname);
+	return array('ok'=>1);
+}
+
+// }
 function Ads_getTmpImage() {
 	if (!isset($_SESSION['userdata']['id'])) {
 		return array('error'=>__('not logged in'));
@@ -89,11 +119,21 @@ function Ads_makePurchaseOrder() {
 	$type_id=(int)$_REQUEST['type_id'];
 	$days=(int)$_REQUEST['days'];
 	$target_url=$_REQUEST['target_url'];
+	$target_type=(int)$_REQUEST['target_type'];
 	dbQuery(
 		'insert into ads_purchase_orders set user_id='.$user_id.', type_id='
 		.$type_id.', days='.$days.', target_url="'.addslashes($target_url).'"'
+		.', target_type='.$target_type
 	);
 	return array('id'=>dbLastInsertId());
+}
+function Ads_track() {
+	$id=(int)$_REQUEST['id'];
+	$r=dbRow('select * from ads where id='.$id);
+	if (!$r) {
+		return false;
+	}
+	dbQuery('insert into ads_track set ad_id='.$id.', click=1, cdate=now()');
 }
 function Ads_go() {
 	$id=(int)$_REQUEST['id'];

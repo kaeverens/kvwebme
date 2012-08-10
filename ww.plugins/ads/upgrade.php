@@ -29,3 +29,19 @@ if ($version==4) {
 	);
 	$version=5;
 }
+if ($version==5) {
+	dbQuery('alter table ads add target_type smallint default 0');
+	$version=6;
+}
+if ($version==6) {
+	dbQuery('alter table ads_purchase_orders add target_type smallint default 0');
+	$version=7;
+}
+if ($version==7) {
+	dbQuery('alter table ads_purchase_orders add poster text');
+	$version=8;
+}
+if ($version==8) {
+	dbQuery('alter table ads add poster text');
+	$version=9;
+}

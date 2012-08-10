@@ -29,7 +29,8 @@ $header .= "Content-Length: " . strlen($req) . "\r\n\r\n";
 $fp = fsockopen('ssl://www.paypal.com', 443, $errno, $errstr, 30);
 if (!$fp) {
 	// HTTP ERROR
-} else {
+}
+else {
 	fputs($fp, $header . $req);
 	while (!feof($fp)) {
 		$res = fgets($fp, 1024);
@@ -39,14 +40,38 @@ if (!$fp) {
 			if ($id<1) {
 				exit;
 			}
-
 			// create ad
 			$data=dbRow('select * from ads_purchase_orders where id='.$id);
 			dbQuery('insert into ads set name="ad",customer_id='.$data['user_id']
 				.',target_url="'.addslashes($data['target_url']).'",cdate=now()'
+				.',target_type="'.addslashes($data['target_type']).'"'
 				.',is_active=1,type_id='.$data['type_id']
 				.',date_expire=date_add(now(), interval '.$data['days'].' day)');
 			$ad_id=dbLastInsertId();
+			// { poster 
+			$url=false;
+			$dir=new DirectoryIterator(
+				USERBASE.'/f/userfiles/'.$data['user_id'].'/ads-upload-poster'
+			);
+			foreach ($dir as $file) {
+				if ($file->isDot()) {
+					continue;
+				}
+				$url='userfiles/'.$data['user_id'].'/ads-upload-poster/'.$file->getFilename();
+			}
+			$newName='/f/userfiles/'.$data['user_id'].'/ad-poster-'.$ad_id.'.'
+				.preg_replace('/.*\./', '', $url);
+			if ($url) {
+				rename(
+					USERBASE.'/f/'.$url,
+					USERBASE.$newName
+				);
+				dbQuery(
+					'update ads set poster="'.addslashes($newName).'" where id='.$ad_id
+				);
+			}
+			// }
+			// { image
 			$url=false;
 			$dir=new DirectoryIterator(
 				USERBASE.'/f/userfiles/'.$data['user_id'].'/ads-upload'
@@ -63,7 +88,10 @@ if (!$fp) {
 				USERBASE.'/f/'.$url,
 				USERBASE.$newName
 			);
-			dbQuery('update ads set image_url="'.addslashes($newName).'" where id='.$ad_id);
+			dbQuery(
+				'update ads set image_url="'.addslashes($newName).'" where id='.$ad_id
+			);
+			// }
 		}
 		else if (strcmp($res, "INVALID") == 0) {
 		}

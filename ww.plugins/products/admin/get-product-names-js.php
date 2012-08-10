@@ -4,6 +4,8 @@ if (!Core_isAdmin()) {
 	die(__('access denied'));
 }
 
+header('Content-type: text/javascript; charset=utf-8');
+
 $ps=dbAll('select id,name from products order by name');
 $end=count($ps);
 
