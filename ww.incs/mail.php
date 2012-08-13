@@ -52,7 +52,6 @@ function send_mail(
 		}
 	}
 	if (count($files)) {
-
 		for ($i=0; $i < count($files); $i++) {
 			if (is_file($files[$i]["file"])) {  
 				// File for Attachment

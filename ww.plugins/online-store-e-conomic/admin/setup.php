@@ -8,6 +8,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	if ($DBVARS['economic_enabled']) {
 		$DBVARS['economic_cashbook']=$_REQUEST['cashbook'];
 		$DBVARS['economic_debtorgroup']=$_REQUEST['debtorgroup'];
+		$DBVARS['economic_productgroup']=$_REQUEST['productgroup'];
 	}
 	Core_configRewrite();
 }
@@ -64,6 +65,24 @@ if ($DBVARS['economic_enabled']) {
 		}
 		echo '</select></td></tr>';
 		// }
+		// { products group
+		$productgroups=$OSE->getProductGroups();
+		echo '<tr><th>'.__('Product Group to add new customers to').'</th><td>'
+			.'<select name="productgroup">';
+		foreach ($productgroups as $k=>$v) {
+			echo '<option value="'.$k.'"';
+			if (isset($DBVARS['economic_productgroup']) && $DBVARS['economic_productgroup']==$k) {
+				echo ' selected="selected"';
+			}
+			echo '>'.htmlspecialchars($v->Name).'</option>';
+		}
+		echo '</select></td></tr>';
+		// }
+		// { login button
+		echo '<tr><th></th><td>'
+			.'<button id="login-to-external">'.__('Login to external dashboard')
+			.'</button></td></tr>';
+		// }
 	}
 	catch(Exception $e) {
 		echo '<tr><td></td><td class="error">'.__('Error connection to E-Conomic Server').'</td></tr>';
@@ -72,3 +91,5 @@ if ($DBVARS['economic_enabled']) {
 echo '</table>';
 echo '<input type="hidden" name="action" value="save"/>'
 	.'<button>'.__('Save').'</button></form>';
+
+WW_addScript('online-store-e-conomic/admin/setup.js');

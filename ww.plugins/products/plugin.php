@@ -245,7 +245,10 @@ class Product{
 			return __FromJSON($this->vals[$name]);
 		}
 		if (strpos($name, '_')===0) {
-			return __FromJSON($this->{preg_replace('/^_/', '', $name)});
+			$vname=preg_replace('/^_/', '', $name);
+			return isset($this->{$vname})
+				?__FromJSON($this->{$vname})
+				:'';
 		}
 		return false;
 	}

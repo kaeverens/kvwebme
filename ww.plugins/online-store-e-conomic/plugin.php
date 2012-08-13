@@ -52,6 +52,8 @@ class OnlineStoreEconomics{
 	private $_agreementNumber;
 	private $_username;
 	private $_password;
+	private $_debtors=array();
+	private $_products=array();
 
 	// { __construct
 
@@ -68,6 +70,49 @@ class OnlineStoreEconomics{
 		$this->_agreementNumber=$agreementNumber;
 		$this->_username=$username;
 		$this->_password=$password;
+	}
+
+	// }
+	// { addInvoiceLine
+
+	/**
+		* add an invoice line
+		*
+		* @return details
+		*/
+	public function addInvoiceLine($invId, $itemId, $short_desc, $cost, $amt) {
+		$client=$this->_connect();
+		global $DBVARS;
+		$lineHandle=$client->CurrentInvoiceLine_Create(array(
+			'invoiceHandle'=>array('Id'=>$invId)
+		));
+		$lineId=$lineHandle->CurrentInvoiceLine_CreateResult->Id;
+		$lineNr=$lineHandle->CurrentInvoiceLine_CreateResult->Number;
+		$product=$this->getProductByNumber((int)$itemId);
+		if (!$product) {
+			$this->createProduct(
+				$itemId,
+				$DBVARS['economic_productgroup'],
+				$short_desc
+			);
+			$product=$this->getProductByNumber((int)$itemId);
+		}
+		$client->CurrentInvoiceLine_SetProduct(array(
+			'currentInvoiceLineHandle'=>array('Id'=>$lineId, 'Number'=>$lineNr),
+			'valueHandle'=>array('Number'=>$itemId)
+		));
+		$client->CurrentInvoiceLine_SetDescription(array(
+			'currentInvoiceLineHandle'=>array('Id'=>$lineId, 'Number'=>$lineNr),
+			'value'=>$short_desc
+		));
+		$client->CurrentInvoiceLine_SetUnitNetPrice(array(
+			'currentInvoiceLineHandle'=>array('Id'=>$lineId, 'Number'=>$lineNr),
+			'value'=>$cost
+		));
+		$client->CurrentInvoiceLine_SetQuantity(array(
+			'currentInvoiceLineHandle'=>array('Id'=>$lineId, 'Number'=>$lineNr),
+			'value'=>$amt
+		));
 	}
 
 	// }
@@ -97,6 +142,66 @@ class OnlineStoreEconomics{
 			die();
 		}
 		return $client;
+	}
+
+	// }
+	// { createDebtor
+
+	/**
+		* create a debtor
+		*
+		* @return details
+		*/
+	public function createDebtor($number, $debtorGroupHandle, $name) {
+		$client=$this->_connect();
+		$result=$client->Debtor_Create(array(
+			'number'=>$number,
+			'debtorGroupHandle'=>array('Number'=>$debtorGroupHandle),
+			'name'=>$name,
+			'vatZone'=>'HomeCountry'
+		));
+		return $result;
+	}
+
+	// }
+	// { createInvoice
+
+	/**
+		* create an invoice
+		*
+		* @return details
+		*/
+	public function createInvoice($currency, $customer) {
+		$client=$this->_connect();
+		$result=$client->CurrentInvoice_Create(
+			array(
+				'debtorHandle'=>$customer
+			)
+		);
+		$invId=$result->CurrentInvoice_CreateResult->Id;
+		$client->CurrentInvoice_SetCurrency(array(
+			'currentInvoiceHandle'=>array('Id'=>$invId),
+			'valueHandle'=>array('Code'=>$currency)
+		));
+		return $invId;
+	}
+
+	// }
+	// { createProduct
+
+	/**
+		* create a product
+		*
+		* @return details
+		*/
+	public function createProduct($number, $productGroupHandle, $name) {
+		$client=$this->_connect();
+		$result=$client->Product_Create(array(
+			'number'=>$number,
+			'productGroupHandle'=>array('Number'=>$productGroupHandle),
+			'name'=>$name,
+		));
+		return $result;
 	}
 
 	// }
@@ -143,6 +248,32 @@ class OnlineStoreEconomics{
 	}
 
 	// }
+	// { getDebtorByNumber
+
+	/**
+		* get details about a debtor
+		*
+		* @param int $int the debtor's ID
+		*
+		* @return details
+		*/
+	public function getDebtorByNumber($int) {
+		$client=$this->_connect();
+		if (!isset($this->_debtors[$int])) {
+			$result=$client->Debtor_FindByNumber(
+				array('number'=>$int)
+			);
+			if (isset($result->Debtor_FindByNumberResult)) {
+				$this->_debtors[$int]=$result->Debtor_FindByNumberResult;
+			}
+			else {
+				$this->_debtors[$int]=false;
+			}
+		}
+		return $this->_debtors[$int];
+	}
+
+	// }
 	// { getDebtorGroups
 
 	/**
@@ -186,6 +317,234 @@ class OnlineStoreEconomics{
 	}
 
 	// }
+	// { getInvoiceAsPdf
+
+	/**
+		* get an invoice as a pdf
+		*
+		* @param int $int the invoice's ID
+		*
+		* @return details
+		*/
+	public function getInvoiceAsPdf($int) {
+		$client=$this->_connect();
+		$result=$client->CurrentInvoice_GetPdf(
+			array(
+				'currentInvoiceHandle'=>array('Id'=>$int)
+			)
+		);
+		return $result->CurrentInvoice_GetPdfResult;
+	}
+
+	// }
+	// { getProductByNumber
+
+	/**
+		* get details about a debtor
+		*
+		* @param int $int the debtor's ID
+		*
+		* @return details
+		*/
+	public function getProductByNumber($int) {
+		$client=$this->_connect();
+		if (!isset($this->_products[$int])) {
+			$result=$client->Product_FindByNumber(
+				array('number'=>$int)
+			);
+			if (isset($result->Product_FindByNumberResult)) {
+				$this->_products[$int]=$result->Product_FindByNumberResult;
+			}
+			else {
+				$this->_products[$int]=false;
+			}
+		}
+		return $this->_products[$int];
+	}
+
+	// }
+	// { getProductGroups
+
+	/**
+		* get all product groups
+		*
+		* @return array of all product groups
+		*/
+	public function getProductGroups() {
+		$client=$this->_connect();
+		if (isset($this->productgroups)) {
+			return $this->productgroups;
+		}
+		$bookHandles=$client->ProductGroup_GetAll();
+		$this->productgroups=array();
+		foreach ($bookHandles->ProductGroup_GetAllResult->ProductGroupHandle as $k=>$v) {
+			$num=$v->Number;
+			$this->getProductGroupDetails($num);
+		}
+		return $this->productgroups;
+	}
+
+	// }
+	// { getProductGroupDetails
+
+	/**
+		* get details about a product group
+		*
+		* @param int $int the product group's ID
+		*
+		* @return details
+		*/
+	public function getProductGroupDetails($int) {
+		$client=$this->_connect();
+		if (!isset($this->productgroups[$int])) {
+			$result=$client->ProductGroup_GetData(
+				array('entityHandle'=>array('Number'=>$int))
+			);
+			$this->productgroups[$int]=$result->ProductGroup_GetDataResult;
+		}
+		return $this->productgroups[$int];
+	}
+
+	// }
+	// { setDebtorAddress
+
+	/**
+		* set a debtor's address
+		*
+		* @return details
+		*/
+	public function setDebtorAddress($number, $address) {
+		$client=$this->_connect();
+		$address=join(', ', $address);
+		$address=preg_replace('/, $/', '', $address);
+		$address=preg_replace('/, , /', ', ', $address);
+		$result=$client->Debtor_SetAddress(array(
+			'debtorHandle'=>array('Number'=>$number),
+			'value'=>$address
+		));
+		return $result;
+	}
+
+	// }
+	// { setDebtorCity
+
+	/**
+		* set a debtor's city
+		*
+		* @return details
+		*/
+	public function setDebtorCity($number, $city) {
+		$client=$this->_connect();
+		$result=$client->Debtor_SetCity(array(
+			'debtorHandle'=>array('Number'=>$number),
+			'value'=>$city
+		));
+		return $result;
+	}
+
+	// }
+	// { setDebtorCounty
+
+	/**
+		* set a debtor's county
+		*
+		* @return details
+		*/
+	public function setDebtorCounty($number, $county) {
+		$client=$this->_connect();
+		$result=$client->Debtor_SetCounty(array(
+			'debtorHandle'=>array('Number'=>$number),
+			'value'=>$county
+		));
+		return $result;
+	}
+
+	// }
+	// { setDebtorCountry
+
+	/**
+		* set a debtor's country
+		*
+		* @return details
+		*/
+	public function setDebtorCountry($number, $country) {
+		$client=$this->_connect();
+		$result=$client->Debtor_SetCountry(array(
+			'debtorHandle'=>array('Number'=>$number),
+			'value'=>$country
+		));
+		return $result;
+	}
+
+	// }
+	// { setDebtorCurrency
+
+	/**
+		* set a debtor's currency
+		*
+		* @return details
+		*/
+	public function setDebtorCurrency($number, $currency) {
+		$client=$this->_connect();
+		$result=$client->Debtor_SetCurrency(array(
+			'debtorHandle'=>array('Number'=>$number),
+			'valueHandle'=>array('Code'=>$currency)
+		));
+		return $result;
+	}
+
+	// }
+	// { setDebtorEmail
+
+	/**
+		* set a debtor's email
+		*
+		* @return details
+		*/
+	public function setDebtorEmail($number, $email) {
+		$client=$this->_connect();
+		$result=$client->Debtor_SetEmail(array(
+			'debtorHandle'=>array('Number'=>$number),
+			'value'=>$email
+		));
+		return $result;
+	}
+
+	// }
+	// { setDebtorPhone
+
+	/**
+		* set a debtor's phone
+		*
+		* @return details
+		*/
+	public function setDebtorPhone($number, $phone) {
+		$client=$this->_connect();
+		$result=$client->Debtor_SetTelephoneAndFaxNumber(array(
+			'debtorHandle'=>array('Number'=>$number),
+			'value'=>$phone
+		));
+		return $result;
+	}
+
+	// }
+	// { setDebtorPostCode
+
+	/**
+		* set a debtor's postcode
+		*
+		* @return details
+		*/
+	public function setDebtorPostCode($number, $postcode) {
+		$client=$this->_connect();
+		$result=$client->Debtor_SetPostalCode(array(
+			'debtorHandle'=>array('Number'=>$number),
+			'value'=>$postcode
+		));
+		return $result;
+	}
+
+	// }
 }
 
 // }
@@ -201,10 +560,101 @@ class OnlineStoreEconomics{
 	*/
 function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 	$details=json_decode($order['form_vals'], true);
-	$email=$details['Email'];
-	$name=$details['FirstName'];
-	$surname=$details['Surname'];
-	mail('kae@verens.com', 'test', print_r($order, true));
+	global $DBVARS;
+	$OSE=new OnlineStoreEconomics(
+		$DBVARS['economic_agreement_no'],
+		$DBVARS['economic_user_id'],
+		$DBVARS['economic_password']
+	);
+	// { check that customer is recorded in e-conomic
+	if ($order['user_id']) { // use user_id as customer number
+		$uid=(int)$order['user_id'];
+	}
+	else { // make customer number from the phone number
+		$uid=preg_replace('/^[0-9]/', '', $details['Phone']);
+		$uid=preg_replace('/^0*/', '', $uid);
+		$uid=-(int)$uid;
+	}
+	$customer=$OSE->getDebtorByNumber($uid);
+	if ($customer==false) { // record the customer
+		$OSE->createDebtor(
+			$uid,
+			$DBVARS['economic_debtorgroup'],
+			$details['FirstName'].' '.$details['Surname']
+		);
+		$OSE->setDebtorAddress(
+			$uid,
+			array(
+				$details['Billing_Street'],
+				$details['Billing_Street2']
+			)
+		);
+		$OSE->setDebtorPostCode(
+			$uid,
+			$details['Billing_Postcode']
+		);
+		$OSE->setDebtorCity(
+			$uid,
+			$details['Billing_Town']
+		);
+		$OSE->setDebtorCounty(
+			$uid,
+			$details['Billing_County']
+		);
+		$OSE->setDebtorCountry(
+			$uid,
+			$details['Billing_Country']
+		);
+		$OSE->setDebtorEmail(
+			$uid,
+			$details['Billing_Email']
+		);
+		$OSE->setDebtorPhone(
+			$uid,
+			$details['Billing_Phone']
+		);
+		$OSE->setDebtorCurrency(
+			$uid,
+			$DBVARS['online_store_currency']
+		);
+		$customer=$uid;
+	}
+	// { create the invoice
+	$invId=$OSE->createInvoice(
+		$DBVARS['online_store_currency'],
+		$customer
+	);
+	$items=json_decode($order['items']);
+	foreach ($items as $item) {
+		$OSE->addInvoiceLine(
+			$invId,
+			$item->id,
+			$item->short_desc,
+			$item->cost,
+			$item->amt
+		);
+	}
+	mail('kae.verens@gmail.com', 'test', print_r($order, true));
+	// }
+	// { get PDF
+	$pdf=$OSE->getInvoiceAsPdf($invId);
+	require_once SCRIPTBASE.'/ww.incs/mail.php';
+	$dirname=USERBASE.'/ww.cache/online-store/invoices';
+	$fname=$dirname.'/'.$invId.'.pdf';
+	@mkdir($dirname);
+	file_put_contents($fname, $pdf);
+	send_mail(
+		$details['Billing_Email'], 'admin@localhost.localdomain',
+		'test4', 'test5', array(
+			array(
+				'tmp_name'=>$fname,
+				'name'=>$invId.'.pdf',
+				'type'=>'application/pdf'
+			)
+		)
+	);
+	// }
+	// }
 }
 
 // }
