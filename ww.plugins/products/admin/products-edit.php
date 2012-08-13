@@ -609,7 +609,7 @@ foreach ($dir as $f) {
 echo '<iframe src="/ww.plugins/products/admin/uploader.php?images_directory='
 	.urlencode($pdata['images_directory'])
 	.'" style="width:400px;height:50px;border:0;overflow:hidden"></iframe>';
-echo '<script defer="defer">window.kfm={alert:function(){}};window.kfm_vars={};'
+echo '<script>window.kfm={alert:function(){}};window.kfm_vars={};'
 	.'function x_kfm_loadFiles(){}'
 	.'function kfm_dir_openNode(){$("#products-form").submit();}'
 	.'var product_id='.$id.';</script>';
@@ -733,12 +733,12 @@ if (isset($PLUGINS['online-store'])) {
 	}
 	// }
 	$online_store_data = json_decode($pdata['online_store_fields']);
-	echo '<div id="online-store-fields" class="products-online-store"';
-	if (!isset($addOnlineStoreFields)||!$addOnlineStoreFields) {
-		echo ' style="display:none';
-	}
-	echo '>';
 	if ($id) {
+		echo '<div id="online-store-fields" class="products-online-store"';
+		if (!isset($addOnlineStoreFields)||!$addOnlineStoreFields) {
+			echo ' style="display:none';
+		}
+		echo '>';
 		echo '<table>';
 		foreach ($online_store_fields as $internal=>$display) {
 			echo '<tr><th>';
@@ -762,7 +762,7 @@ if (isset($PLUGINS['online-store'])) {
 				for ($i=0; $i<count($display['Options']); ++$i) {
 					echo '<option value="'.$i.'"';
 					if ($i==@$online_store_data->$internal) {
-						echo 'selected="selected"';
+						echo ' selected="selected"';
 					}
 					echo '>'.$display['Options'][$i]
 						.'</option>';
@@ -772,6 +772,7 @@ if (isset($PLUGINS['online-store'])) {
 			echo '</td>';
 		}
 		echo '</table>';
+		echo '</div>';
 		if ((int)$product_type['stock_control']) {
 			echo '<div id="stock-control">';
 			// { figure out what kind of stock control we have
@@ -793,7 +794,7 @@ if (isset($PLUGINS['online-store'])) {
 				if (!$detail) {
 					$detail='[]';
 				}
-				echo '<table id="stockcontrol-complex"></table><script defer="defer">'
+				echo '<table id="stockcontrol-complex"></table><script>'
 					.'window.stockcontrol_detail='.$detail.';window.stockcontrol_options=["'
 					.join('", "', $options).'"];</script><a href="#" id="'
 					.'stockcontrol-addrow">add row</a>'
@@ -813,7 +814,6 @@ if (isset($PLUGINS['online-store'])) {
 		)
 		.'</em>';
 	}
-	echo '</div>';
 }
 // }
 // { categories
