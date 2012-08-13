@@ -388,10 +388,9 @@ function Core_login() {
 	$email=$_REQUEST['email'];
 	$password=$_REQUEST['password'];
 	// }
-	$r=dbRow(
-		'select * from user_accounts where email="'.addslashes($email)
-		.'" and password=md5("'.$password.'")'
-	);
+	$sql='select * from user_accounts where email="'.addslashes($email)
+		.'" and password=md5("'.$password.'") and active';
+	$r=dbRow($sql);
 	if ($r && count($r)) {
 		$r['password']=$password;
 		$_SESSION['userdata'] = $r;

@@ -88,6 +88,7 @@
 						}
 						document.location=document.location;
 					});
+					return false;
 				});
 				$('#admin-forgotten-password').submit(function() {
 					$('#send-token').click();

@@ -178,7 +178,7 @@ $(function(){
 			show+=minutes<10?'0'+minutes:minutes;
 			show+=':';
 			show+=seconds<10?'0'+seconds:seconds;
-			$this.html(days+'d, '+hours+':'+minutes+':'+seconds);
+			$this.html(show);
 			setTimeout(update, 1000);
 		}
 		update();
