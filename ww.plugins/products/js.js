@@ -247,6 +247,7 @@ $(function(){
 			var $select=$('select[name=products_values_'+options[i]+']');
 			var $options=$select.find('option');
 			$options.attr('disabled', true);
+			var selectedOpt=false;
 			for (var i=0;i<details.length;++i) {
 				if (+details[i]._amt<1) {
 					continue;
@@ -287,15 +288,20 @@ $(function(){
 			var found;
 			var $options=$this
 				.find('select[name=products_values_'+options[0]+'] option');
+			var selectedOpt=false;
 			for (var i=0;i<details.length;++i) {
 				if (+details[i]._amt) {
 					for (var j=0;j<$options.length;++j) {
 						if ($options[j].value.replace(/\|.*/, '')==details[i][options[0]]) {
+							if (!selectedOpt) {
+								selectedOpt=$options[j].value;
+							}
 							$($options[j]).attr('disabled', false);
 						}
 					}
 				}
 			}
+			$this.find('select[name=products_values_'+options[0]+']').val(selectedOpt);
 			$('select[name=products_values_'+options[0]+']').change();
 		}
 		// }
