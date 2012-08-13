@@ -11,7 +11,6 @@
 	* @link     None
 	*/
 
-
 // { plugin declaration
 $plugin=array(
 	'admin' => array( // {

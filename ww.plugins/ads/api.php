@@ -1,5 +1,23 @@
 <?php
+/**
+	* API for Ads plugin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
+// { Ads_adsGetMy
+
+/**
+	* get my ads
+	*
+	* @return array of my ads
+	*/
 function Ads_adsGetMy() {
 	if (!isset($_SESSION['userdata']['id'])) {
 		return array('error'=>__('not logged in'));
@@ -8,6 +26,15 @@ function Ads_adsGetMy() {
 		'select * from ads where customer_id='.$_SESSION['userdata']['id']
 	);
 }
+
+// }
+// { Ads_statsGet
+
+/**
+	* get view and click statistics
+	*
+	* @return array stats
+	*/
 function Ads_statsGet() {
 	if (!isset($_SESSION['userdata']['id'])) {
 		return array('error'=>__('not logged in'));
@@ -30,12 +57,32 @@ function Ads_statsGet() {
 	}
 	return dbAll($sql);
 }
+
+// }
+// { Ads_typeGet
+
+/**
+	* get details about a specific ad type
+	*
+	* @return array details
+	*/
 function Ads_typeGet() {
 	return dbRow('select * from ads_types where id='.((int)$_REQUEST['id']));
 }
+
+// }
+// { Ads_typesGet
+
+/**
+	* get all ad types
+	*
+	* @return list of ad types
+	*/
 function Ads_typesGet() {
 	return dbAll('select * from ads_types order by name');
 }
+
+// }
 // { Ads_fileUpload
 
 /**
@@ -78,7 +125,8 @@ function Ads_posterUpload() {
 		return array('error'=>__('not logged in'));
 	}
 	$id=$_SESSION['userdata']['id'];
-	$fname=USERBASE.'/f/userfiles/'.$id.'/ads-upload-poster/'.$_FILES['Filedata']['name'];
+	$fname=USERBASE.'/f/userfiles/'.$id.'/ads-upload-poster/'
+		.$_FILES['Filedata']['name'];
 	if (strpos($fname, '..')!==false) {
 		return array('message'=>'invalid file url');
 	}
@@ -96,6 +144,13 @@ function Ads_posterUpload() {
 }
 
 // }
+// { Ads_getTmpImage
+
+/**
+	* get a temporary image
+	*
+	* @return url of the temporary image
+	*/
 function Ads_getTmpImage() {
 	if (!isset($_SESSION['userdata']['id'])) {
 		return array('error'=>__('not logged in'));
@@ -111,6 +166,15 @@ function Ads_getTmpImage() {
 	}
 	return $url;
 }
+
+// }
+// { Ads_makePurchaseOrder
+
+/**
+	* make a purchase order
+	*
+	* @return null
+	*/
 function Ads_makePurchaseOrder() {
 	if (!isset($_SESSION['userdata']['id'])) {
 		return array('error'=>__('not logged in'));
@@ -127,6 +191,15 @@ function Ads_makePurchaseOrder() {
 	);
 	return array('id'=>dbLastInsertId());
 }
+
+// }
+// { Ads_track
+
+/**
+	* track an ad view
+	*
+	* @return null
+	*/
 function Ads_track() {
 	$id=(int)$_REQUEST['id'];
 	$r=dbRow('select * from ads where id='.$id);
@@ -135,6 +208,15 @@ function Ads_track() {
 	}
 	dbQuery('insert into ads_track set ad_id='.$id.', click=1, cdate=now()');
 }
+
+// }
+// { Ads_go
+
+/**
+	* follow an ad
+	*
+	* @return null
+	*/
 function Ads_go() {
 	$id=(int)$_REQUEST['id'];
 	$r=dbRow('select * from ads where id='.$id);
@@ -148,3 +230,5 @@ function Ads_go() {
 	header('Location: '. $r['target_url']);
 	exit;
 }
+
+// }

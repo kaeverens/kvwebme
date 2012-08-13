@@ -1,4 +1,15 @@
 <?php
+/**
+	* definition file for Ads plugin
+	*
+	* PHP version 5
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     None
+	*/
 
 // { config
 
@@ -38,6 +49,8 @@ $plugin=array(
 /**
 	* show ads
 	*
+	* @param array $params parameters
+	*
 	* @return ads HTML
 	*/
 function Ads_widget($params) {
@@ -52,7 +65,11 @@ function Ads_widget($params) {
 	);
 	$html='<div class="ads-wrapper type-'.$type_id.'">';
 	foreach ($ads as $ad) {
-		$ad['image_url']=str_replace('/f/userfiles', '/a/f=getImg/w='.$type['width'].'/h='.$type['height'].'/userfiles', $ad['image_url']);
+		$ad['image_url']=str_replace(
+			'/f/userfiles',
+			'/a/f=getImg/w='.$type['width'].'/h='.$type['height'].'/userfiles',
+			$ad['image_url']
+		);
 		$html.='<div class="ads-ad" data-id="'.$ad['id'].'"'
 			.' data-type="'.$ad['target_type'].'"';
 		if ($ad['target_type']=='1') {
@@ -74,7 +91,7 @@ function Ads_widget($params) {
 /**
 	* show the purchase page for Ads
 	*
-	* @param $PAGEDATA object the page object
+	* @param object $PAGEDATA the page object
 	*
 	* @return string
 	*/
@@ -101,8 +118,10 @@ function Ads_frontend($PAGEDATA) {
 /**
 	* page type admin
 	*
-	* @param object $page
-	* @param array  $vars
+	* @param object $page page data
+	* @param array  $vars blah blah
+	*
+	* @return page admin
 	*/
 function Ads_admin($page, $vars) {
 	require SCRIPTBASE.'ww.plugins/ads/admin/page-type.php';
@@ -115,8 +134,10 @@ function Ads_admin($page, $vars) {
 /**
 	* user profile page stuff for ads
 	*
-	* @param object $PAGEDATA
-	* @param array  $user
+	* @param object $PAGEDATA page data
+	* @param array  $user     user data
+	*
+	* @return text
 	*/
 function Ads_userProfile($PAGEDATA, $user) {
 	WW_addScript('ads/user-profile.js');

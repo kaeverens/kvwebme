@@ -947,32 +947,34 @@ function Products_show($PAGEDATA) {
 /**
 	* display all products
 	*
-	* @param object $PAGEDATA  the page object
-	* @param int    $start     offset
-	* @param int    $limit     how many products to show
-	* @param string $order_by  what field to order the search by
-	* @param int    $order_dir order ascending or descending
-	* @param string $search    search string to filter by
-	* @param string $location  filter the products by location
+	* @param object $PAGEDATA      the page object
+	* @param int    $start         offset
+	* @param int    $limit         how many products to show
+	* @param string $order_by      what field to order the search by
+	* @param int    $order_dir     order ascending or descending
+	* @param string $search        search string to filter by
+	* @param string $location      filter the products by location
+	* @param int    $limit_start   lowest $start offset allowed
+	* @param int    $enabledFilter whether to allow enabled/disabled products
 	*
 	* @return string HTML of the list of products
 	*/
 function Products_showAll(
 	$PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0, $search='',
-	$location=0, $limit_start=0, $enabled_filter=0
+	$location=0, $limit_start=0, $enabledFilter=0
 ) {
 	if (isset($_REQUEST['product_id'])) {
 		$product_id=$_REQUEST['product_id'];
-		$products=Products::getAll('', $location, $enabled_filter);
+		$products=Products::getAll('', $location, $enabledFilter);
 	}
 	else if (isset($_REQUEST['product_category'])) {
 		$products=Products::getByCategory($_REQUEST['product_category']);
 	}
 	else {
-		$products=Products::getAll($search, $location, $enabled_filter);
+		$products=Products::getAll($search, $location, $enabledFilter);
 	}
 	return $products->render(
-		$PAGEDATA, $start, $limit, $order_by, $order_dir, $limit_start, $enabled_filter
+		$PAGEDATA, $start, $limit, $order_by, $order_dir, $limit_start, $enabledFilter
 	);
 }
 
@@ -982,14 +984,15 @@ function Products_showAll(
 /**
 	* display all products in a specified category
 	*
-	* @param object $PAGEDATA  the page object
-	* @param int    $id        the category's ID
-	* @param int    $start     offset
-	* @param int    $limit     how many products to show
-	* @param string $order_by  what field to order the search by
-	* @param int    $order_dir order ascending or descending
-	* @param string $search    search string to filter by
-	* @param string $location  filter the products by location
+	* @param object $PAGEDATA    the page object
+	* @param int    $id          the category's ID
+	* @param int    $start       offset
+	* @param int    $limit       how many products to show
+	* @param string $order_by    what field to order the search by
+	* @param int    $order_dir   order ascending or descending
+	* @param string $search      search string to filter by
+	* @param string $location    filter the products by location
+	* @param int    $limit_start lowest $start offset allowed
 	*
 	* @return string HTML of the list of products
 	*/
@@ -1014,12 +1017,13 @@ function Products_showByCategory(
 /**
 	* show a specific product in a page
 	*
-	* @param object $PAGEDATA the page object
-	* @param int    $id       the product to show
+	* @param object $PAGEDATA      the page object
+	* @param int    $id            the product to show
+	* @param int    $enabledFilter whether to allow enabled/disabled products
 	*
 	* @return string the products
 	*/
-function Products_showById($PAGEDATA, $id=0, $enabledFilter) {
+function Products_showById($PAGEDATA, $id=0, $enabledFilter=0) {
 	if ($id==0) {
 		$id=(int)$PAGEDATA->vars['products_product_to_show'];
 	}
@@ -1042,13 +1046,14 @@ function Products_showById($PAGEDATA, $id=0, $enabledFilter) {
 /**
 	* display all products of a certain type
 	*
-	* @param object $PAGEDATA  the page object
-	* @param int    $id        the page type's ID
-	* @param int    $start     offset
-	* @param int    $limit     how many products to show
-	* @param string $order_by  what field to order the search by
-	* @param int    $order_dir order ascending or descending
-	* @param string $search    search string to filter by
+	* @param object $PAGEDATA    the page object
+	* @param int    $id          the page type's ID
+	* @param int    $start       offset
+	* @param int    $limit       how many products to show
+	* @param string $order_by    what field to order the search by
+	* @param int    $order_dir   order ascending or descending
+	* @param string $search      search string to filter by
+	* @param int    $limit_start results to start at what offset
 	*
 	* @return string HTML of the list of products
 	*/
@@ -1195,13 +1200,14 @@ class Products{
 	/**
 		* constructor for the class
 		*
-		* @param array  $vs         variable identifiers for the products
-		* @param string $md5        unique identifier for the collection
-		* @param string $search     search string to filter by
-		* @param array  $search_arr array of search strings to filter by
-		* @param string $sort_col   field to sort by
-		* @param string $sort_dir   sort direction
-		* @param string $location   filter the products by location
+		* @param array  $vs            variable identifiers for the products
+		* @param string $md5           unique identifier for the collection
+		* @param string $search        search string to filter by
+		* @param array  $search_arr    array of search strings to filter by
+		* @param string $sort_col      field to sort by
+		* @param string $sort_dir      sort direction
+		* @param string $location      filter the products by location
+		* @param int    $enabledFilter whether to allow enabled/disabled products
 		*
 		* @return object the category instance
 		*/
@@ -1281,8 +1287,9 @@ class Products{
 	/**
 		* get all products
 		*
-		* @param string $search   search string to filter by
-		* @param string $location filter the products by location
+		* @param string $search        search string to filter by
+		* @param string $location      filter the products by location
+		* @param int    $enabledFilter whether to allow enabled/disabled products
 		*
 		* @return object instance of Products object
 		*/
@@ -1385,7 +1392,8 @@ class Products{
 	/**
 		* retrieve products by their category name
 		*
-		* @param string $name name of the category
+		* @param string $name          name of the category
+		* @param int    $enabledFilter whether to allow enabled/disabled products
 		*
 		* @return object instance of Products object
 		*/
@@ -1485,22 +1493,25 @@ class Products{
 	/**
 		* render a list of products to HTML
 		*
-		* @param object $PAGEDATA    the page object
-		* @param int    $start       offset
-		* @param int    $limit       how many products to show
-		* @param string $order_by    what field to order the search by
-		* @param int    $order_dir   order ascending or descending
-		* @param int    $limit_start lowest $start offset allowed
+		* @param object $PAGEDATA      the page object
+		* @param int    $start         offset
+		* @param int    $limit         how many products to show
+		* @param string $order_by      what field to order the search by
+		* @param int    $order_dir     order ascending or descending
+		* @param int    $limit_start   lowest $start offset allowed
+		* @param int    $enabledFilter whether to allow enabled/disabled products
 		*
 		* @return string the HTML of the products list
 		*/
 	function render(
-		$PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0, $limit_start=0, $enabledFilter=0
+		$PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0,
+		$limit_start=0, $enabledFilter=0
 	) {
 		$c='';
 		// { sort based on $order_by
 		$md5=md5(
-			'ps-sorted-'.join(',', $this->product_ids).'|'.$order_by.'|'.$order_dir.'|'.$enabledFilter
+			'ps-sorted-'.join(',', $this->product_ids).'|'.$order_by.'|'
+			.$order_dir.'|'.$enabledFilter
 		);
 		$tmpprods=Core_cacheLoad(
 			'products',

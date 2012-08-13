@@ -1,5 +1,23 @@
 <?php
+/**
+	* ads api functions
+	*
+	* PHP version 5
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     None
+	*/
 
+// { Ads_adminTypesDelete
+
+/**
+	* delete an ad type
+	*
+	* @return null
+	*/
 function Ads_adminTypesDelete() {
 	$id=(int)$_REQUEST['id'];
 	$ads=dbOne('select count(id) ids from ads where type_id='.$id, 'ids');
@@ -13,6 +31,15 @@ function Ads_adminTypesDelete() {
 		'ok'=>1
 	);
 }
+
+// }
+// { Ads_adminAdDelete
+
+/**
+	* delete an ad
+	*
+	* @return null
+	*/
 function Ads_adminAdDelete() {
 	$id=(int)$_REQUEST['id'];
 	dbQuery('delete from ads where id='.$id);
@@ -20,6 +47,15 @@ function Ads_adminAdDelete() {
 		'ok'=>1
 	);
 }
+
+// }
+// { Ads_adminTypesEdit
+
+/**
+	* edit an ad type
+	*
+	* @return null
+	*/
 function Ads_adminTypesEdit() {
 	$id=(int)$_REQUEST['id'];
 	$name=$_REQUEST['name'];
@@ -35,18 +71,45 @@ function Ads_adminTypesEdit() {
 		dbQuery('insert into '.$sql);
 	}
 }
+
+// }
+// { Ads_adminAdGet
+
+/**
+	* Ads_adminAdGet
+	*
+	* @return array ad details
+	*/
 function Ads_adminAdGet() {
 	$id=(int)$_REQUEST['id'];
 	return dbRow('select * from ads where id='.$id);
 }
+
+// }
+// { Ads_adminTypesList
+
+/**
+	* get list of ad types
+	*
+	* @return array of ad types
+	*/
 function Ads_adminTypesList() {
 	$adTypes=array();
 	$rs=dbAll('select id,name from ads_types order by name');
-	foreach($rs as $r) {
+	foreach ($rs as $r) {
 		$adTypes[$r['id']]=$r['name'];
 	}
 	return $adTypes;
 }
+
+// }
+// { Ads_adminAdEdit
+
+/**
+	* edit an ad
+	*
+	* @return null
+	*/
 function Ads_adminAdEdit() {
 	$id=(int)$_REQUEST['id'];
 	$name=$_REQUEST['name'];
@@ -68,3 +131,5 @@ function Ads_adminAdEdit() {
 		dbQuery('insert into '.$sql);
 	}
 }
+
+// }

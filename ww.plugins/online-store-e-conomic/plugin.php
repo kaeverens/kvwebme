@@ -37,31 +37,58 @@ $plugin=array(
 );
 // }
 
-class OnlineStoreEconomics {
-	private $agreementNumber;
-	private $username;
-	private $wsdlUrl;
-	private $password;
+// { OnlineStoreEconomics
 
+/**
+	* class for handling E-Conomic transactions
+	*
+	* @category WebME
+	* @package  WebME
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvweb.me/
+	*/
+class OnlineStoreEconomics{
+	private $_agreementNumber;
+	private $_username;
+	private $_password;
+
+	// { __construct
+
+	/**
+		* constructor
+		*
+		* @param string $agreementNumber agreement number
+		* @param string $username        username
+		* @param string $password        password
+		*
+		* @return null
+		*/
 	function __construct($agreementNumber, $username, $password) {
-		$this->agreementNumber=$agreementNumber;
-		$this->username=$username;
-		$this->password=$password;
-		$this->wsdlUrl='https://www.e-conomic.com/secure/api1/'
-			.'EconomicWebservice.asmx?WSDL';
-#		$this->wsdlUrl='https://secure.e-conomic.com/secure/api1/'
-#			.'EconomicWebService.asmx?WSDL';
+		$this->_agreementNumber=$agreementNumber;
+		$this->_username=$username;
+		$this->_password=$password;
 	}
-	private function connect() {
+
+	// }
+	// { connect
+
+	/**
+		* connect to the e-conomic server
+		*
+		* @return the client object
+		*/
+	private function _connect() {
 		try {
-			$client = new SoapClient($this->wsdlUrl,
+			$client = new SoapClient(
+				'https://www.e-conomic.com/secure/api1/EconomicWebservice.asmx?WSDL',
 				array("trace" => 1, "exceptions" => 1)
 			);
 			$client->Connect(
 				array(
-					'agreementNumber' => $this->agreementNumber,
-					'userName' => $this->username,
-					'password' => $this->password
+					'agreementNumber' => $this->_agreementNumber,
+					'userName' => $this->_username,
+					'password' => $this->_password
 				)
 			);
 		}
@@ -71,55 +98,17 @@ class OnlineStoreEconomics {
 		}
 		return $client;
 	}
-	public function Klassekladde(
-		$accountNumber, $modkonto, $vatCode, $klassekladdetekst, $klassekladdebelob
-	) {
-		$klassekladde = 1;
-		$date = date("Y-m-d\TH:i:s");
-		$client=$this->connect();
-		$PartOne = $client->CashBookEntry_CreateFinanceVoucher(
-			array(
-			'cashBookHandle' => array('Number' => $klassekladde),
-			'accountHandle' => array('Number' => $accountNumber),
-			'contraAccountHandle' => array('Number' => $modkonto)
-			)
-		);
-		$id1 = $PartOne->CashBookEntry_CreateFinanceVoucherResult->Id1;
-		$id2 = $PartOne->CashBookEntry_CreateFinanceVoucherResult->Id2;
-		$PartOneAndAHalf = $client->CashBookEntry_GetVoucherNumber(
-			array(
-				'cashBookEntryHandle' => array(
-				'Id1' => $id1,
-				'Id2' => $id2
-				)
-			)
-		);
-		$bilagsnummer = $PartOneAndAHalf->CashBookEntry_GetVoucherNumberResult;
-		$PartTwo = $client->CashBookEntry_UpdateFromData(
-			array(
-				'data' => array(
-					'Handle' => array('Id1' => $id1, 'Id2' => $id2),
-					'Id1' => $id1,
-					'Id2' => $id2,
-					'Type' => 'FinanceVoucher',
-					'CashBookHandle' => array('Number' => $klassekladde),
-					'VoucherNumber' => $bilagsnummer,
-					'Amount' => $klassekladdebelob,
-					'AmountDefaultCurrency' => $klassekladdebelob,
-					'Currency' => 'DKK',
-					'CurrencyHandle' => array('Code' => 'DKK'),
-					'Text' => $klassekladdetekst,
-					'Date' => $date,
-					'AccountHandle' => array('Number' => $accountNumber),
-					'VatAccountHandle' => array('VatCode' => $vatCode),
-					'ContraAccountHandle' => array('Number' => $modkonto)
-				)
-			)
-		);
-		return $bilagsnummer;
-	}
+
+	// }
+	// { getCashBooks
+
+	/**
+		* get all cash books
+		*
+		* @return array cashbooks
+		*/
 	public function getCashBooks() {
-		$client=$this->connect();
+		$client=$this->_connect();
 		if (isset($this->cashbooks)) {
 			return $this->cashbooks;
 		}
@@ -131,8 +120,19 @@ class OnlineStoreEconomics {
 		}
 		return $this->cashbooks;
 	}
+
+	// }
+	// { getCashBookDetails
+
+	/**
+		* get details about a cash book
+		*
+		* @param int $int ID of the cash book
+		*
+		* @return array of details
+		*/
 	public function getCashBookDetails($int) {
-		$client=$this->connect();
+		$client=$this->_connect();
 		if (!isset($this->cashbooks[$int])) {
 			$result=$client->CashBook_GetData(
 				array('entityHandle'=>array('Number'=>$int))
@@ -141,8 +141,17 @@ class OnlineStoreEconomics {
 		}
 		return $this->cashbooks[$int];
 	}
+
+	// }
+	// { getDebtorGroups
+
+	/**
+		* get all debtor groups
+		*
+		* @return array of all debtor groups
+		*/
 	public function getDebtorGroups() {
-		$client=$this->connect();
+		$client=$this->_connect();
 		if (isset($this->debtorgroups)) {
 			return $this->debtorgroups;
 		}
@@ -154,8 +163,19 @@ class OnlineStoreEconomics {
 		}
 		return $this->debtorgroups;
 	}
+
+	// }
+	// { getDebtorGroupDetails
+
+	/**
+		* get details about a debtor group
+		*
+		* @param int $int the debtor group's ID
+		*
+		* @return details
+		*/
 	public function getDebtorGroupDetails($int) {
-		$client=$this->connect();
+		$client=$this->_connect();
 		if (!isset($this->debtorgroups[$int])) {
 			$result=$client->DebtorGroup_GetData(
 				array('entityHandle'=>array('Number'=>$int))
@@ -164,7 +184,21 @@ class OnlineStoreEconomics {
 		}
 		return $this->debtorgroups[$int];
 	}
+
+	// }
 }
+
+// }
+// { OnlineStoreEconomics_recordTransaction
+
+/**
+	* record a transaction
+	*
+	* @param object $PAGEDATA details about the page
+	* @param array  $order    the order to record
+	*
+	* @return null
+	*/
 function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 	$details=json_decode($order['form_vals'], true);
 	$email=$details['Email'];
@@ -172,3 +206,5 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 	$surname=$details['Surname'];
 	mail('kae@verens.com', 'test', print_r($order, true));
 }
+
+// }
