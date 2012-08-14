@@ -57,7 +57,7 @@ function Mailinglists_editList(ret) {
 			}
 		};
 	}
-	var engines=['MailChimp'];
+	var engines=['MailChimp', 'Ubivox'];
 	var $form=$('<div><input type="hidden" id="mailinglist-id" value="'+ret.id+'"/><table>'
 		+'<tr><th>List Name</th><td><input id="mailinglist-name"/></td></tr>'
 		+'<tr><th>Mailer to use</th><td><select id="mailinglist-meta-engine"><option></option></td></tr>'
@@ -89,6 +89,34 @@ function Mailinglists_editList(ret) {
 						},
 						"errors":function() {
 							return alert('error retrieving mailing lists. is your API key correct?');
+						}
+					});
+			break; // }
+			case 'Ubivox': // {
+				var html='<a href="http://www.ubivox.com/" target="_blank" class="external">Ubivox website</a>'
+					+'<table>'
+					+'<tr><th>API Username</th><td><input id="mailinglist-meta-ubivox-apiusername"/></td></tr>'
+					+'<tr><th>API Password</th><td><input type="password" id="mailinglist-meta-ubivox-apipassword"/></td></tr>'
+					+'<tr><th>List to link to</th><td><select id="mailinglist-meta-ubivox-list"><option value="0"> -- please choose -- </option></td></tr>'
+					+'</table>';
+				$('#mailinglist-meta-engine-details').html(html);
+				$('#mailinglist-meta-ubivox-apiusername').val(ret.meta['ubivox-apiusername']||'');
+				$('#mailinglist-meta-ubivox-apipassword').val(ret.meta['ubivox-apipassword']||'');
+				if (ret.meta['mailchimp-list']) {
+					var v=ret.meta['mailchimp-list'].replace(/.*\|/, '');
+					$('#mailinglist-meta-mailchimp-list')
+						.append('<option value="'+ret.meta['mailchimp-list']+'">'+v+'</option>')
+						.val(ret.meta['mailchimp-list']);
+				}
+				$('#mailinglist-meta-ubivox-list')
+					.remoteselectoptions({
+						"url":'/a/p=mailinglists/f=adminListsGetUbivox',
+						"other_GET_params":function() {
+							return $('#mailinglist-meta-ubivox-apiusername').val()
+								+'|'+$('#mailinglist-meta-ubivox-apipassword').val();
+						},
+						"errors":function() {
+							return alert('error retrieving mailing lists.');
 						}
 					});
 			break; // }

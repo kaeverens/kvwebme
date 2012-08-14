@@ -73,6 +73,32 @@ function Mailinglists_adminListsGetMailChimp() {
 }
 
 // }
+// { Mailinglists_adminListsGetUbivox
+
+/**
+	* get a list of mailing lists from Ubivox
+	*
+	* @return list
+	*/
+function Mailinglists_adminListsGetUbivox() {
+	$bits=explode('|', $_REQUEST['other_GET_params']);
+	$apiusername=$bits[0];
+	$apipassword=$bits[1];
+	$response=Mailinglists_xmlrpcClient(
+		$apiusername,
+		$apipassword,
+		xmlrpc_encode_request('ubivox.get_maillists', array())
+	);
+	$data=xmlrpc_decode(trim($response));
+	$lists=array();
+	foreach ($data as $list) {
+		$lists[$list['id'].'|'.$list['title']]=$list['title'];
+	}
+	$lists['zzz']='add new...';
+	return $lists;
+}
+
+// }
 // { Mailinglists_adminListsList
 
 /**
