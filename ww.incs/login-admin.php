@@ -112,6 +112,7 @@ echo __(
 );
 					?>');
 					});
+					return false;
 				});
 				$('#change-password').click(function(){
 					var email=$('#email-r').val(), token=$('#token').val(),
@@ -137,6 +138,7 @@ echo __(
 						alert('<?php echo __('password updated. you can log in now.'); ?>');
 						$('#login').click();
 					});
+					return false;
 				});
 			});
 		</script>

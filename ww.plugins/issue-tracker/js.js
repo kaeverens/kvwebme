@@ -11,15 +11,23 @@ $(function() {
 	var navbar=$('<div id="issuetracker-navbar" style="text-align:right">'
 		+'<select class="project"/></div>')
 		.appendTo($wrapper);
-	$('<button class="edit" style="display:none;">edit project</button>')
-		.appendTo($('#issuetracker-navbar'))
-		.click(function() {
-			var id=+$('#issuetracker-navbar .project').val();
-			$.post('/a/p=issue-tracker/f=projectGet', {
-				'id': id
-			}, editProject);
-			return false;
-		});
+	var canedit=false;
+	for (var i=0;i<it_edit_all.length;++i) {
+		if ($.inArray(+it_edit_all[i], userdata.groups)!=-1) {
+			canedit=true;
+		}
+	}
+	if (canedit) {
+		$('<button class="edit" style="display:none;">edit project</button>')
+			.appendTo($('#issuetracker-navbar'))
+			.click(function() {
+				var id=+$('#issuetracker-navbar .project').val();
+				$.post('/a/p=issue-tracker/f=projectGet', {
+					'id': id
+				}, editProject);
+				return false;
+			});
+	}
 	var $content=$('<div id="issuetracker-content"></div>').appendTo($wrapper);
 	$.post('/a/p=issue-tracker/f=projectsGet', function(ret) {
 		var opts=['<option value="0"> -- all -- </option>']
