@@ -125,6 +125,38 @@ class User{
 	}
 
 	// }
+	// { getAsScript
+
+	/**
+		* get user details for page usage
+		*
+		* @return string
+		*/
+	function getAsScript() {
+		$tmp='userdata={isAdmin:'.(Core_isAdmin()?1:0)
+			.',id:'.$_SESSION['userdata']['id']
+			.(isset($_SESSION['wasAdmin'])?',wasAdmin:1':'')
+			.',name:"'.addslashes($_SESSION['userdata']['name']).'"'
+			.',lat:'.((float)@$_SESSION['userdata']['location_lat'])
+			.',lng:'.((float)@$_SESSION['userdata']['location_lng']);
+		if (isset($_SESSION['userdata']['discount'])) {
+			$tmp.=',discount:'.(int)$_SESSION['userdata']['discount'];
+		}
+		if (isset($_SESSION['userdata']['address'])) {
+			$tmp.=',address:1';
+		}
+		if (isset($_SESSION['userdata']['id']) && $_SESSION['userdata']['id']) {
+			$tmp.=',groups:['
+				.join(
+					',',
+					User::getInstance($_SESSION['userdata']['id'])->getGroups()
+				)
+				.']';
+		}
+		return $tmp.'};';
+	}
+
+	// }
 	// { getGroupHighest
 
 	/**

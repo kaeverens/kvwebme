@@ -1,5 +1,23 @@
 <?php
+/**
+	* admin API
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
+// { ClassifiedAds_adminCategoryUpdate
+
+/**
+	* edit a category
+	*
+	* @return status
+	*/
 function ClassifiedAds_adminCategoryUpdate() {
 	$id=(int)$_REQUEST['id'];
 	$parent=(int)$_REQUEST['parent'];
@@ -15,6 +33,15 @@ function ClassifiedAds_adminCategoryUpdate() {
 	}
 	return array('ok'=>1);
 }
+
+// }
+// { function ClassifiedAds_adminCategoryMove
+
+/**
+	* ClassifiedAds_adminCategoryMove
+	*
+	* @return status
+	*/
 function ClassifiedAds_adminCategoryMove() {
 	$id=(int)$_REQUEST['id'];
 	$parent=(int)$_REQUEST['parent'];
@@ -23,11 +50,29 @@ function ClassifiedAds_adminCategoryMove() {
 	);
 	return array('ok'=>1);
 }
+
+// }
+// { ClassifiedAds_adminTypeGet
+
+/**
+	* get an ad type's details
+	*
+	* @return array of details
+	*/
 function ClassifiedAds_adminTypeGet() {
 	return dbRow(
 		'select * from classifiedads_types where id='.((int)$_REQUEST['id'])
 	);
 }
+
+// }
+// { ClassifiedAds_adminTypeEdit
+
+/**
+	* edit an ad type
+	*
+	* @return status
+	*/
 function ClassifiedAds_adminTypeEdit() {
 	$sql='classifiedads_types set width='.((int)$_REQUEST['width'])
 		.', height='.((int)$_REQUEST['height'])
@@ -47,6 +92,8 @@ function ClassifiedAds_adminTypeEdit() {
 		'opts'=>dbAll('select id, name from classifiedads_types order by name')
 	);
 }
+
+// }
 // { ClassifiedAds_adminAdsGetDT
 
 /**
@@ -122,6 +169,11 @@ function ClassifiedAds_adminAdsGetDT() {
 // }
 // { ClassifiedAds_adminAdGet
 
+/**
+	* retrieve an ad
+	*
+	* @return array ad details
+	*/
 function ClassifiedAds_adminAdGet() {
 	$id=(int)$_REQUEST['id'];
 	return dbRow('select * from classifiedads_ad where id='.$id);

@@ -122,7 +122,7 @@ function Privacy_controller() {
 				.'.dialog({modal:true,height:100,width:150});});</script>';
 		}
 		else {
-			$c.='<script defer="defer">$(function(){$("<strong>No user account with that email '
+			$c.='<script>$(function(){$("<strong>No user account with that email '
 				.'address exists.</strong>").dialog({modal:true,height:100,width:15'
 				.'0});});</script>';
 		}
@@ -406,7 +406,10 @@ function Privacy_registrationShowForm($error='', $alert='') {
 	}
 	if (@$PAGEDATA->vars['userlogin_terms_and_conditions']) {
 		$c.='<input type="checkbox" name="terms_and_conditions" /> <span>'
-			.__('I agree to the <a href="javascript:userlogin_t_and_c()">terms and conditions</a>.', 'core')
+			.__(
+				'I agree to the <a href="javascript:userlogin_t_and_c()">'
+				.'terms and conditions</a>.', 'core'
+			)
 			.'</span><br />';
 		$c.='<script defer="defer">function userlogin_t_and_c(){$("<div>'
 			.addslashes(
@@ -468,7 +471,10 @@ function Privacy_registrationRegister() {
 		&& !isset($_REQUEST['terms_and_conditions'])
 	) {
 		return '<em>'
-			.__('You must agree to the terms and conditions. Please press "Back" and try again.', 'core')
+			.__(
+				'You must agree to the terms and conditions.'
+				.' Please press "Back" and try again.', 'core'
+			)
 			.'</em>';
 	}
 	$missing=array();
@@ -610,7 +616,10 @@ function Privacy_registrationRegister() {
 			false,
 			'<p><strong>'.__('Thank you for registering.', 'core')
 			.'</strong> '
-			.__('Please check your email for a verification URL. Once that\'s been followed, your account will be activated.', 'core')
+			.__(
+				'Please check your email for a verification URL.'
+				.' Once that\'s been followed, your account will be activated.', 'core'
+			)
 			.'</p>'
 		);
 	}
@@ -634,7 +643,10 @@ function Privacy_registrationRegister() {
 		return Privacy_registrationShowForm(
 			false,
 			'<p><strong>'.__('Thank you for registering.').'</strong> '
-			.__('Our admins will moderate your registration, and you will receive an email when it is activated.')
+			.__(
+				'Our admins will moderate your registration,'
+				.' and you will receive an email when it is activated.'
+			)
 			.'</p>'
 		);
 	}
@@ -700,7 +712,8 @@ function Privacy_profileGet() {
 			<th>'.__('Phone', 'core').'</th><td>' . $phone . '</td>
 		</tr>
 		<tr>
-			<th>'.__('Avatar', 'core').'</th><td><span id="avatar-wrapper" data-uid="'.$uid.'"></span></td>
+			<th>'.__('Avatar', 'core')
+			.'</th><td><span id="avatar-wrapper" data-uid="'.$uid.'"></span></td>
 		</tr>';
 
 	$html .= '</table></div> <div id="address"><a id="new-address" href="java'

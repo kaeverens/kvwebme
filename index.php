@@ -11,76 +11,70 @@
 	* @link     http://kvsites.ie/
 	*/
 
-$ww_startup = microtime(true);
 // { common variables and functions
 
+// { WW_getCSS
+
 /**
-  * retrieve a URL linking all added CSS sheets
-  *
-  * @return string HTML element with generated URL
-  */
+	* retrieve a URL linking all added CSS sheets
+	*
+	* @return string HTML element with generated URL
+	*/
 function WW_getCSS() {
-	global $css_urls;
-	$url='/css/';
-	foreach ($css_urls as $s) {
-		$url.='|'.$s;
-	}
-	return '<style>@import "'
-		.htmlspecialchars($url).'";</style>';
+	return '<style>@import "/css/'.join('|', $GLOBALS['css_urls']).'";</style>';
 }
 
+// }
+// { WW_getInlineScripts
+
 /**
-  * retrieve all inline JS scripts in a HTML element
-  *
-  * @return string HTML <script> element with inline JS scripts
-  */
+	* retrieve all inline JS scripts in a HTML element
+	*
+	* @return string HTML <script> element with inline JS scripts
+	*/
 function WW_getInlineScripts() {
-	global $scripts_inline;
-	if (!count($scripts_inline)) {
-		return '';
+	if (count($GLOBALS['scripts_inline'])) {
+		return '<script>'.join('', $GLOBALS['scripts_inline']).'</script>';
 	}
-	return '<script>'.join('', $scripts_inline).'</script>';
 }
+
+// }
+// { WW_getScripts
 
 /**
-  * retrieve a URL linking all added external JS scripts
-  *
-  * @return string generated URL
-  */
+	* retrieve a URL linking all added external JS scripts
+	*
+	* @return string generated URL
+	*/
 function WW_getScripts() {
-	global $scripts;
-	$url='/js/'.filemtime(SCRIPTBASE.'j/js.js');
-	foreach ($scripts as $s) {
-		$url.='*'.$s;
-	}
-	return $url;
+	return '/js/'.filemtime(SCRIPTBASE.'j/js.js').'*'
+		.join('*', $GLOBALS['scripts']);
 }
 
-// load common functions for displaying pages
+// }
+
 require_once 'ww.incs/common.php';
 if (isset($https_required) && $https_required && !$_SERVER['HTTPS']) {
-	$server=str_replace('www.', '', $_SERVER['HTTP_HOST']);
-	redirect('https://www.'.$server.'/');
+	redirect('https://www.'.str_replace('www.', '', $_SERVER['HTTP_HOST']).'/');
 }
 if (isset($DBVARS['canonical_name'])
 	&& $_SERVER['HTTP_HOST']!=$DBVARS['canonical_name']
 ) {
-	$url=(@$_SERVER['HTTPS']=='on'?'https':'http')
-		.'://'.$DBVARS['canonical_name']
-		.$_SERVER['REQUEST_URI'];
-	redirect($url);
+	redirect(
+		(@$_SERVER['HTTPS']=='on'?'https':'http')
+		.'://'.$DBVARS['canonical_name'].$_SERVER['REQUEST_URI']
+	);
 }
 if (!isset($DBVARS['version']) || $DBVARS['version']<55) {
 	redirect('/ww.incs/upgrade.php');
 }
 $id=(int)@$_REQUEST['pageid'];
-$page=preg_replace('#/$#', '', @$_REQUEST['page']);
+$page=preg_replace('#&.*|/$#', '', @$_REQUEST['page']);
 // }
 // { is this a search?
 if ($page=='' && isset($_GET['search']) || isset($_GET['s'])) {
 	require_once 'ww.incs/search.php';
-	$p=Search_getPage();
-	$id=$p->id;
+	$id=Search_getPage();
 }
 // }
 // { check for Cron events
@@ -89,7 +83,7 @@ if (!isset($DBVARS['cron-next']) || $DBVARS['cron-next']<date('Y-m-d H:i:s')) {
 }
 // }
 // { is maintenance mode enabled?
-if (@$DBVARS['maintenance-mode']=='yes') {
+if (isset($DBVARS['maintenance-mode']) && $DBVARS['maintenance-mode']=='yes') {
 	if (!Core_isAdmin()) {
 		die($DBVARS['maintenance-mode-message']);
 	}
@@ -98,15 +92,16 @@ if (@$DBVARS['maintenance-mode']=='yes') {
 // { get current page id
 if (!$id) {
 	if ($page) {         // find using the page name
-		if (strpos($page, '&')!==false) {
-			$page=preg_replace('/&.*/', '', $page);
-		}
 		$r=Page::getInstanceByName($page);
 		if ($r && isset($r->id)) {
 			$id=$r->id;
 			$PAGEDATA=Page::getInstance($id)->initValues();
-			if (@$PAGEDATA->vars['_short_url']) {
-				$s=dbOne('select short_url from short_urls where page_id='.$id, 'short_url');
+			if (isset($PAGEDATA->vars['_short_url'])
+				&& $PAGEDATA->vars['_short_url']
+			) {
+				$s=dbOne(
+					'select short_url from short_urls where page_id='.$id, 'short_url'
+				);
 				if ($s!=$page) {
 					redirect('/'.$s);
 				}
@@ -122,7 +117,7 @@ if (!$id) {
 	}
 	if (!$id) {          // or maybe it's a "special" or the home page
 		$special=1;
-		if (@$_GET['special']) {
+		if (isset($_GET['special']) && $_GET['special']) {
 			$special=$_GET['special'];
 		}
 		if (!$page) {
@@ -152,16 +147,20 @@ if (!$id) {
 // }
 // { load page data
 if ($id) {
-    $PAGEDATA=Page::getInstance($id)->initValues();
+	$PAGEDATA=Page::getInstance($id)->initValues();
 }
-else{
+else {
 	if ($page!='') {
 		redirect('/');
 	}
-	echo '<p>'
-		.__('no page loaded. If this is a new site, then please <a href="/ww.admin/">log into the admin area</a> and create your first page.', 'core')
-		.'</p>';
-	exit;
+	exit(
+		__(
+			'no page loaded. If this is a new site, then please'
+			.' <a href="/ww.admin/">log into the admin area</a> and create your'
+			.' first page.',
+			'core'
+		)
+	);
 }
 $c=Core_trigger('page-object-loaded');
 // }
@@ -169,37 +168,38 @@ $c=Core_trigger('page-object-loaded');
 if (isset($_REQUEST['_p'])
 	&& isset($PLUGINS[$_REQUEST['_p']]['page-override'])
 ) {
-	$PLUGINS[$_REQUEST['_p']]['page-override']($PAGEDATA);
-	exit;
+	exit($PLUGINS[$_REQUEST['_p']]['page-override']($PAGEDATA));
 }
 // }
 // { main content
 // { check if page is protected
 $access_allowed=1;
 foreach ($PLUGINS as $p) {
-	if (!$access_allowed) {
-		break;
-	}
-	if (isset($p['frontend']['page_display_test'])) {
+	if ($access_allowed && isset($p['frontend']['page_display_test'])) {
 		$access_allowed=$p['frontend']['page_display_test']($PAGEDATA);
 	}
 }
 // }
 if (!$access_allowed) {
 	$c.='<h2>'.__('Permission Denied', 'core').'</h2>'
-		.'<p>'.__('This is a protected document.', 'core').'</p>';
-	if (isset($_SESSION['userdata'])) {
-		$c.='<p>'
-			.__('You are not in a user-group which has access to this page. If you think you should be, please contact the site administrator.', 'core')
-			.'</p>';
-	}
-	else {
-		$c.='<p><strong>'
-			.__('If you have a user account, please <a href="/_r?type=loginpage">click here</a> to log in.', 'core')
-			.'</strong></p>';
-	}
-	$c.='<p>'
-		.__('If you do not have a user account, but have been supplied with a password for the page, please enter it here and submit the form:', 'core')
+		.'<p>'.__('This is a protected document.', 'core').'</p><p>'
+		.isset($_SESSION['userdata'])
+			?__(
+				'You are not in a user-group which has access to this page. If you'
+				.' think you should be, please contact the site administrator.',
+				'core'
+			)
+			:'<p><strong>'.__(
+				'If you have a user account, please <a href="/_r?type=loginpage">'
+				.'click here</a> to log in.',
+				'core'
+			);
+	$c.='</p><p>'
+		.__(
+			'If you do not have a user account, but have been supplied with a'
+			.' password for the page, please enter it here and submit the form:',
+			'core'
+		)
 		.'</p>'
 		.'<form method="post"><input type="password" name="privacy_password" />'
 		.'<input type="submit" /></form>';
@@ -215,9 +215,10 @@ else {
 		break;
 		// }
 		case '1': // { redirect
-			$redirect=@$PAGEDATA->vars['redirect_to'];
-			if ($redirect) {
-				redirect($redirect);
+			if (isset($PAGEDATA->vars['redirect_to'])
+				&& $PAGEDATA->vars['redirect_to']
+			) {
+				redirect($PAGEDATA->vars['redirect_to']);
 			}
 		break; // }
 		case '4': // { sub-page summaries
@@ -267,8 +268,9 @@ else {
 			// }
 	}
 }
-$c.=Core_trigger('page-content-created');
-$pagecontent=$c.'<span class="end-of-page-content"></span>';
+$pagecontent=$c
+	.Core_trigger('page-content-created')
+	.'<span class="end-of-page-content"></span>';
 // }
 // { load page template
 if (isset($_REQUEST['__t']) && !preg_match('/[\.\/]/', $_REQUEST['__t'])) {
@@ -277,7 +279,7 @@ if (isset($_REQUEST['__t']) && !preg_match('/[\.\/]/', $_REQUEST['__t'])) {
 if (file_exists(THEME_DIR.'/'.THEME.'/h/'.$PAGEDATA->template.'.html')) {
 	$template=THEME_DIR.'/'.THEME.'/h/'.$PAGEDATA->template.'.html';
 }
-else if (file_exists(THEME_DIR.'/'.THEME.'/h/_default.html')) {
+elseif (file_exists(THEME_DIR.'/'.THEME.'/h/_default.html')) {
 	$template=THEME_DIR.'/'.THEME.'/h/_default.html';
 }
 else {
@@ -295,44 +297,33 @@ $smarty->assign('THEMEDIR', '/ww.skins/'.THEME);
 // }
 // { build metadata
 // { page title
-$title=$PAGEDATA->title
-	?$PAGEDATA->title
-	:str_replace('www.', '', $_SERVER['HTTP_HOST']).' > '.__FromJson($PAGEDATA->name);
-$c='<title>'.htmlspecialchars($title).'</title>';
+$c='<title>'
+	.htmlspecialchars(
+		$PAGEDATA->title
+		?$PAGEDATA->title
+		:str_replace(
+			'www.', '',
+			$_SERVER['HTTP_HOST']
+		)
+		.' > '.__FromJson($PAGEDATA->name)
+	)
+	.'</title>';
 // }
 // { show stylesheet and javascript links
-$c.='WW_CSS_GOES_HERE';
-$c.=Core_getJQueryScripts();
-$c.='<script src="WW_SCRIPTS_GO_HERE"></script>';
+$c.='WW_CSS_GOES_HERE'.Core_getJQueryScripts()
+	.'<script src="WW_SCRIPTS_GO_HERE"></script>';
 // { generate inline javascript
 $tmp='var pagedata={id:'.$PAGEDATA->id
 	.Core_trigger('displaying-pagedata')
 	.',ptop:'.$PAGEDATA->getTopParentId()
 	.',sessid:"'.session_id().'"'
 	.',lang:"'.@$_SESSION['language'].'"'
-	.'},';
-$wasAdmin=@$_SESSION['wasAdmin']?',wasAdmin:1':'';
-if (isset($_SESSION['userdata'])) {
-	$tmp.='userdata={isAdmin:'.(Core_isAdmin()?1:0)
-		.',id:'.$_SESSION['userdata']['id']
-		.$wasAdmin
-		.',name:"'.addslashes($_SESSION['userdata']['name']).'"'
-		.',lat:'.((float)@$_SESSION['userdata']['location_lat'])
-		.',lng:'.((float)@$_SESSION['userdata']['location_lng']);
-	if (isset($_SESSION['userdata']['discount'])) {
-		$tmp.=',discount:'.(int)$_SESSION['userdata']['discount'];
-	}
-	if (isset($_SESSION['userdata']['address'])) {
-		$tmp.=',address:1';
-	}
-	if ($_SESSION['userdata']['id']) {
-		$tmp.=',groups:['.join(',', User::getInstance($_SESSION['userdata']['id'])->getGroups()).']';
-	}
-	$tmp.='};';
-}
-else {
-	$tmp.='userdata={isAdmin:0'.$wasAdmin.'};';
-}
+	.'},'
+	.(
+		isset($_SESSION['userdata']['id'])
+			?User::getAsScript()
+			:'userdata={isAdmin:0'.(isset($_SESSION['wasAdmin'])?',wasAdmin:1':'').'};'
+	);
 array_unshift($scripts_inline, $tmp);
 // }
 if (Core_isAdmin()) {
@@ -377,8 +368,7 @@ if (file_exists(USERBASE.'/f/skin_files/favicon.png')) {
 	$c.='<link rel="shortcut icon" href="/f/skin_files/favicon.png" />';
 }
 // }
-$c.=Core_trigger('building-metadata');
-$smarty->assign('METADATA', $c);
+$smarty->assign('METADATA', $c.Core_trigger('building-metadata'));
 // }
 // { display the document
 ob_start();
@@ -391,8 +381,6 @@ echo str_replace(
 	array(WW_getScripts(), WW_getCSS(), WW_getInlineScripts().'</body>'),
 	$t
 );
-
-header('X-page-generation: '.(microtime(true)-$ww_startup).'s');
 
 Core_flushBuffer('page', 'Content-type: text/html; Charset=utf-8');
 // }

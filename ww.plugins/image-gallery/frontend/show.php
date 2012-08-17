@@ -23,6 +23,9 @@
   */
 function ImageGallery_show($PAGEDATA) {
 	$vars=$PAGEDATA->vars;
+	if (!isset($vars['image_gallery_directory'])) {
+		return __('gallery directory has not yet been set');
+	}
 	$c=$PAGEDATA->render();
 	// { check to see if there are files in the directory
 	$hasImages=false;

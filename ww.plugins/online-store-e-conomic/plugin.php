@@ -78,14 +78,22 @@ class OnlineStoreEconomics{
 	/**
 		* add an invoice line
 		*
+		* @param int    $invId      invoice ID
+		* @param int    $itemId     item ID
+		* @param string $short_desc short description of line
+		* @param float  $cost       cost of the product (individual)
+		* @param int    $amt        amount of the product purchased
+		*
 		* @return details
 		*/
 	public function addInvoiceLine($invId, $itemId, $short_desc, $cost, $amt) {
 		$client=$this->_connect();
 		global $DBVARS;
-		$lineHandle=$client->CurrentInvoiceLine_Create(array(
-			'invoiceHandle'=>array('Id'=>$invId)
-		));
+		$lineHandle=$client->CurrentInvoiceLine_Create(
+			array(
+				'invoiceHandle'=>array('Id'=>$invId)
+			)
+		);
 		$lineId=$lineHandle->CurrentInvoiceLine_CreateResult->Id;
 		$lineNr=$lineHandle->CurrentInvoiceLine_CreateResult->Number;
 		$product=$this->getProductByNumber((int)$itemId);
@@ -97,22 +105,30 @@ class OnlineStoreEconomics{
 			);
 			$product=$this->getProductByNumber((int)$itemId);
 		}
-		$client->CurrentInvoiceLine_SetProduct(array(
-			'currentInvoiceLineHandle'=>array('Id'=>$lineId, 'Number'=>$lineNr),
-			'valueHandle'=>array('Number'=>$itemId)
-		));
-		$client->CurrentInvoiceLine_SetDescription(array(
-			'currentInvoiceLineHandle'=>array('Id'=>$lineId, 'Number'=>$lineNr),
-			'value'=>$short_desc
-		));
-		$client->CurrentInvoiceLine_SetUnitNetPrice(array(
-			'currentInvoiceLineHandle'=>array('Id'=>$lineId, 'Number'=>$lineNr),
-			'value'=>$cost
-		));
-		$client->CurrentInvoiceLine_SetQuantity(array(
-			'currentInvoiceLineHandle'=>array('Id'=>$lineId, 'Number'=>$lineNr),
-			'value'=>$amt
-		));
+		$client->CurrentInvoiceLine_SetProduct(
+			array(
+				'currentInvoiceLineHandle'=>array('Id'=>$lineId, 'Number'=>$lineNr),
+				'valueHandle'=>array('Number'=>$itemId)
+			)
+		);
+		$client->CurrentInvoiceLine_SetDescription(
+			array(
+				'currentInvoiceLineHandle'=>array('Id'=>$lineId, 'Number'=>$lineNr),
+				'value'=>$short_desc
+			)
+		);
+		$client->CurrentInvoiceLine_SetUnitNetPrice(
+			array(
+				'currentInvoiceLineHandle'=>array('Id'=>$lineId, 'Number'=>$lineNr),
+				'value'=>$cost
+			)
+		);
+		$client->CurrentInvoiceLine_SetQuantity(
+			array(
+				'currentInvoiceLineHandle'=>array('Id'=>$lineId, 'Number'=>$lineNr),
+				'value'=>$amt
+			)
+		);
 	}
 
 	// }
@@ -150,16 +166,22 @@ class OnlineStoreEconomics{
 	/**
 		* create a debtor
 		*
+		* @param int    $number            debtor ID
+		* @param int    $debtorGroupHandle debtor group ID
+		* @param string $name              name of the debtor
+		*
 		* @return details
 		*/
 	public function createDebtor($number, $debtorGroupHandle, $name) {
 		$client=$this->_connect();
-		$result=$client->Debtor_Create(array(
-			'number'=>$number,
-			'debtorGroupHandle'=>array('Number'=>$debtorGroupHandle),
-			'name'=>$name,
-			'vatZone'=>'HomeCountry'
-		));
+		$result=$client->Debtor_Create(
+			array(
+				'number'=>$number,
+				'debtorGroupHandle'=>array('Number'=>$debtorGroupHandle),
+				'name'=>$name,
+				'vatZone'=>'HomeCountry'
+			)
+		);
 		return $result;
 	}
 
@@ -168,6 +190,9 @@ class OnlineStoreEconomics{
 
 	/**
 		* create an invoice
+		*
+		* @param string $currency currency code
+		* @param int    $customer customer ID
 		*
 		* @return details
 		*/
@@ -179,10 +204,12 @@ class OnlineStoreEconomics{
 			)
 		);
 		$invId=$result->CurrentInvoice_CreateResult->Id;
-		$client->CurrentInvoice_SetCurrency(array(
-			'currentInvoiceHandle'=>array('Id'=>$invId),
-			'valueHandle'=>array('Code'=>$currency)
-		));
+		$client->CurrentInvoice_SetCurrency(
+			array(
+				'currentInvoiceHandle'=>array('Id'=>$invId),
+				'valueHandle'=>array('Code'=>$currency)
+			)
+		);
 		return $invId;
 	}
 
@@ -192,15 +219,21 @@ class OnlineStoreEconomics{
 	/**
 		* create a product
 		*
+		* @param int    $number             product ID
+		* @param int    $productGroupHandle product group ID
+		* @param string $name               name of the product
+		*
 		* @return details
 		*/
 	public function createProduct($number, $productGroupHandle, $name) {
 		$client=$this->_connect();
-		$result=$client->Product_Create(array(
-			'number'=>$number,
-			'productGroupHandle'=>array('Number'=>$productGroupHandle),
-			'name'=>$name,
-		));
+		$result=$client->Product_Create(
+			array(
+				'number'=>$number,
+				'productGroupHandle'=>array('Number'=>$productGroupHandle),
+				'name'=>$name,
+			)
+		);
 		return $result;
 	}
 
@@ -411,6 +444,9 @@ class OnlineStoreEconomics{
 	/**
 		* set a debtor's address
 		*
+		* @param int   $number  debtor ID
+		* @param array $address address
+		*
 		* @return details
 		*/
 	public function setDebtorAddress($number, $address) {
@@ -418,10 +454,12 @@ class OnlineStoreEconomics{
 		$address=join(', ', $address);
 		$address=preg_replace('/, $/', '', $address);
 		$address=preg_replace('/, , /', ', ', $address);
-		$result=$client->Debtor_SetAddress(array(
-			'debtorHandle'=>array('Number'=>$number),
-			'value'=>$address
-		));
+		$result=$client->Debtor_SetAddress(
+			array(
+				'debtorHandle'=>array('Number'=>$number),
+				'value'=>$address
+			)
+		);
 		return $result;
 	}
 
@@ -431,14 +469,19 @@ class OnlineStoreEconomics{
 	/**
 		* set a debtor's city
 		*
+		* @param int    $number debtor ID
+		* @param string $city   city
+		*
 		* @return details
 		*/
 	public function setDebtorCity($number, $city) {
 		$client=$this->_connect();
-		$result=$client->Debtor_SetCity(array(
-			'debtorHandle'=>array('Number'=>$number),
-			'value'=>$city
-		));
+		$result=$client->Debtor_SetCity(
+			array(
+				'debtorHandle'=>array('Number'=>$number),
+				'value'=>$city
+			)
+		);
 		return $result;
 	}
 
@@ -448,14 +491,19 @@ class OnlineStoreEconomics{
 	/**
 		* set a debtor's county
 		*
+		* @param int    $number debtor ID
+		* @param string $county county name
+		*
 		* @return details
 		*/
 	public function setDebtorCounty($number, $county) {
 		$client=$this->_connect();
-		$result=$client->Debtor_SetCounty(array(
-			'debtorHandle'=>array('Number'=>$number),
-			'value'=>$county
-		));
+		$result=$client->Debtor_SetCounty(
+			array(
+				'debtorHandle'=>array('Number'=>$number),
+				'value'=>$county
+			)
+		);
 		return $result;
 	}
 
@@ -465,14 +513,19 @@ class OnlineStoreEconomics{
 	/**
 		* set a debtor's country
 		*
+		* @param int    $number  debtor ID
+		* @param string $country country name
+		*
 		* @return details
 		*/
 	public function setDebtorCountry($number, $country) {
 		$client=$this->_connect();
-		$result=$client->Debtor_SetCountry(array(
-			'debtorHandle'=>array('Number'=>$number),
-			'value'=>$country
-		));
+		$result=$client->Debtor_SetCountry(
+			array(
+				'debtorHandle'=>array('Number'=>$number),
+				'value'=>$country
+			)
+		);
 		return $result;
 	}
 
@@ -482,14 +535,19 @@ class OnlineStoreEconomics{
 	/**
 		* set a debtor's currency
 		*
+		* @param int    $number   debtor ID
+		* @param string $currency currency
+		*
 		* @return details
 		*/
 	public function setDebtorCurrency($number, $currency) {
 		$client=$this->_connect();
-		$result=$client->Debtor_SetCurrency(array(
-			'debtorHandle'=>array('Number'=>$number),
-			'valueHandle'=>array('Code'=>$currency)
-		));
+		$result=$client->Debtor_SetCurrency(
+			array(
+				'debtorHandle'=>array('Number'=>$number),
+				'valueHandle'=>array('Code'=>$currency)
+			)
+		);
 		return $result;
 	}
 
@@ -499,14 +557,19 @@ class OnlineStoreEconomics{
 	/**
 		* set a debtor's email
 		*
+		* @param int    $number debtor ID
+		* @param string $email  email address
+		*
 		* @return details
 		*/
 	public function setDebtorEmail($number, $email) {
 		$client=$this->_connect();
-		$result=$client->Debtor_SetEmail(array(
-			'debtorHandle'=>array('Number'=>$number),
-			'value'=>$email
-		));
+		$result=$client->Debtor_SetEmail(
+			array(
+				'debtorHandle'=>array('Number'=>$number),
+				'value'=>$email
+			)
+		);
 		return $result;
 	}
 
@@ -516,14 +579,19 @@ class OnlineStoreEconomics{
 	/**
 		* set a debtor's phone
 		*
+		* @param int    $number debtor ID
+		* @param string $phone  phone number
+		*
 		* @return details
 		*/
 	public function setDebtorPhone($number, $phone) {
 		$client=$this->_connect();
-		$result=$client->Debtor_SetTelephoneAndFaxNumber(array(
-			'debtorHandle'=>array('Number'=>$number),
-			'value'=>$phone
-		));
+		$result=$client->Debtor_SetTelephoneAndFaxNumber(
+			array(
+				'debtorHandle'=>array('Number'=>$number),
+				'value'=>$phone
+			)
+		);
 		return $result;
 	}
 
@@ -533,14 +601,19 @@ class OnlineStoreEconomics{
 	/**
 		* set a debtor's postcode
 		*
+		* @param int    $number   debtor ID
+		* @param string $postcode post code
+		*
 		* @return details
 		*/
 	public function setDebtorPostCode($number, $postcode) {
 		$client=$this->_connect();
-		$result=$client->Debtor_SetPostalCode(array(
-			'debtorHandle'=>array('Number'=>$number),
-			'value'=>$postcode
-		));
+		$result=$client->Debtor_SetPostalCode(
+			array(
+				'debtorHandle'=>array('Number'=>$number),
+				'value'=>$postcode
+			)
+		);
 		return $result;
 	}
 

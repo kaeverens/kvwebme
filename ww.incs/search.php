@@ -97,5 +97,5 @@ function Search_getPage() {
 		Core_cacheClear('pages', 'page_by_type_5');
 		$p=Page::getInstanceByType(5);
 	}
-	return $p;
+	return $p->id;
 }

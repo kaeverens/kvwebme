@@ -109,7 +109,7 @@ function Forms_Pagetype_forms() {
 			}
 		}
 		$('#tc17')
-			.val(page_vars.forms_create_user==='0'?0:1)
+			.val(page_vars.forms_create_user==='1'?1:0)
 			.change(tc17Change);
 		tc17Change();
 		// }

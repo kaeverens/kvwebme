@@ -447,7 +447,7 @@ if ($ptypes===false) {
 		.'create one</a> before you go any further!</em>';
 }
 else {
-	if (!$pdata['product_type_id']) {
+	if (!$pdata['product_type_id'] && count($ptypes)) {
 		$pdata['product_type_id']=$ptypes[0]['id'];
 	}
 	echo '<select id="product_type_id" name="product_type_id" 
