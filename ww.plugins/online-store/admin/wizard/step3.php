@@ -54,9 +54,9 @@ if (isset($_POST['wizard-login'])) { // validate post data
 		$_SESSION['wizard']['payment']['realex-secret']
 			=$_POST['wizard-realex-shared-secret'];
 		$_SESSION['wizard']['payment']['realex-redirect']
-			=$_POST['wizard-relax-redirect-after-payment'];
+			=$_POST['wizard-realax-redirect-after-payment'];
 		$_SESSION['wizard']['payment']['realex-mode']
-			=$_POST['wizard-relax-mode'];
+			=$_POST['wizard-realax-mode'];
 	}
 }
 

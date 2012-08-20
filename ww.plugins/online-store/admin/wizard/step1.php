@@ -12,6 +12,7 @@
 	* @link     http://kvsites.ie/
 	*/
 
+require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 echo '<h2>'.__('Online Store Wizard').'</h2>'
 	.'<p><i>'.__(
 		'This wizard will guide you through the process of creating an online'
@@ -24,6 +25,6 @@ echo '<h2>'.__('Online Store Wizard').'</h2>'
 	.'<td><i>'.__(
 		'This is the name for the page that the products will be shown in.')
 	.'</i></p>'
-	'</tr></table></div>'
-	'<input type="submit" value="'.__('Next').'" class="next-link"'
+	.'</tr></table></div>'
+	.'<input type="submit" value="'.__('Next').'" class="next-link"'
 	.' style="float:right"/>';

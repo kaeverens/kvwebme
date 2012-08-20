@@ -33,9 +33,9 @@ if (!function_exists('__')) {
 		* or as __($str, 'context')
 		* the context always comes last
 		*
-		* @param string $str     string to translate
-		* @param string $context the translation context
-		* @param array  $params  array of parameters to insert into the string
+		* @param string $str    string to translate
+		* @param string $param1 mixed
+		* @param array  $param2 mixed
 		*
 		* @return string the translated string
 		*/
