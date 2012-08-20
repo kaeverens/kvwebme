@@ -132,7 +132,7 @@ class User{
 		*
 		* @return string
 		*/
-	function getAsScript() {
+	public static function getAsScript() {
 		$tmp='userdata={isAdmin:'.(Core_isAdmin()?1:0)
 			.',id:'.$_SESSION['userdata']['id']
 			.(isset($_SESSION['wasAdmin'])?',wasAdmin:1':'')
