@@ -1755,9 +1755,13 @@ function Products_importFile($vars=false) {
 		$id=0;
 		$stocknumber=$data[$headers['_stocknumber']];
 		// { stockcontrol_total (how many are in stock)
-		$stockcontrol_total=isset($data[$headers['_stockcontrol_total']])
-			?',stockcontrol_total='.(int)$data[$headers['_stockcontrol_total']]
-			:'';
+		$stockcontrol_total=''
+		if (isset($headers['_stockcontrol_total'])
+			&& isset($data[$headers['_stockcontrol_total']])
+		) {
+			$stockcontrol_total=',stockcontrol_total='
+				.(int)$data[$headers['_stockcontrol_total']];
+		}
 		// }
 		$type=$data[$headers['_type']];
 		if (!$type) {

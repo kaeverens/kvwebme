@@ -32,11 +32,13 @@ while (!isset($DBVARS['cron-next']) || $DBVARS['cron-next']<date('Y-m-d H:i:s'))
 	$rs=dbAll('select * from cron where next_date<now()');
 	// { update existing cron entries
 	foreach ($rs as $r) {
+		if ($r['period']=='never') {
+			continue;
+		}
 		$r['func']();
-		dbQuery(
-			'update cron set next_date=date_add(next_date, interval '
-			.$r['period_multiplier'].' '.$r['period'].') where id='.$r['id']
-		);
+		$sql='update cron set next_date=date_add(next_date, interval '
+			.$r['period_multiplier'].' '.$r['period'].') where id='.$r['id'];
+		dbQuery($sql);
 	}
 	// }
 	// { check pages for upcoming changes
@@ -75,7 +77,8 @@ while (!isset($DBVARS['cron-next']) || $DBVARS['cron-next']<date('Y-m-d H:i:s'))
 	}
 	// }
 	$DBVARS['cron-next']=dbOne(
-		'select next_date from cron order by next_date limit 1', 'next_date'
+		'select next_date from cron where period!="never"'
+		.' order by next_date limit 1', 'next_date'
 	);
 }
 
