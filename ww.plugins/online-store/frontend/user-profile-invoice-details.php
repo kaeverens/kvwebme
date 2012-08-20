@@ -22,6 +22,9 @@ switch ($iid['status']) {
 	case '2':
 		$status='Paid and Delivered';
 	break;
+	case '3':
+		$status='Cancelled';
+	break;
 	default:
 		$status='Status number '.$iid['status'].' is unknown';
 	break;

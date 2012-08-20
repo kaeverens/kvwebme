@@ -53,6 +53,9 @@ $plugin=array(
 			'PRODUCTS_AMOUNT_SOLD' => array( // {
 				'function' => 'Products_soldAmount'
 			), // }
+			'PRODUCTS_AMOUNT_TO_ADD' => array( // {
+				'function' => 'Products_getAmountToAddWidget'
+			), // }
 			'PRODUCTS_BUTTON_ADD_TO_CART' => array( // {
 				'function' => 'Products_getAddToCartWidget'
 			), // }

@@ -110,9 +110,16 @@ function OnlineStore_adminChangeOrderStatus() {
 	$id=(int)$_REQUEST['id'];
 	$status=(int)$_REQUEST['status'];
 	
-	if ($status==1) {
+	if ($status==1) { // paid
 		require dirname(__FILE__).'/verify/process-order.php';
 		OnlineStore_processOrder($id);
+	}
+	elseif ($status==3) { // cancelled
+		dbQuery('update online_store_orders set status='.$status.' where id='.$id);
+		Core_trigger(
+			'after-order-cancelled',
+			dbRow('select * from online_store_orders where id='.$id)
+		);
 	}
 	else {
 		dbQuery('update online_store_orders set status='.$status.' where id='.$id);

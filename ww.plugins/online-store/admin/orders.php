@@ -49,7 +49,7 @@ if (isset($_REQUEST['online-store-status'])) {
 $c.='<p>'
 	.'This list shows orders with the status: '
 	.'<select id="online-store-status">';
-$statii=array('Unpaid','Paid or Authorised','Delivered');
+$statii=array('Unpaid', 'Paid or Authorised', 'Delivered', 'Cancelled');
 foreach ($statii as $k=>$v) {
 	$c.='<option value="'.$k.'"';
 	if ($k==$_SESSION['online-store']['status']) {

@@ -1,5 +1,5 @@
 /* TODO - translation /CB */
-window.os_statuses=['Unpaid', 'Paid', 'Paid and Delivered'];
+window.os_statuses=['Unpaid', 'Paid', 'Paid and Delivered', 'Cancelled'];
 function os_invoice(id, print){
 	var w=$(window), wh=w.height(), ww=w.width(), p=print?'&print=1':'';
 	$('<iframe id="externalSite" class="externalSite" src="/ww.plugins/online-store/admin/show-invoice.php?id='+id+p+'" />').dialog({

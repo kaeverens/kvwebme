@@ -32,6 +32,7 @@ $plugin=array(
 	), // }
 	'triggers' => array( // {
 		'after-order-processed'=>'OnlineStoreEconomics_recordTransaction',
+		'after-order-cancelled'=>'OnlineStoreEconomics_cancelTransaction',
 	), // }
 	'version' => '0'
 );
@@ -186,6 +187,27 @@ class OnlineStoreEconomics{
 	}
 
 	// }
+	// { bookInvoice
+
+	/**
+		* book an invoice
+		*
+		* @param int $invId invoice ID
+		*
+		* @return details
+		*/
+	public function bookInvoice($invId) {
+		$client=$this->_connect();
+		$result=$client->CurrentInvoice_Book(
+			array(
+				'currentInvoiceHandle'=>array('Id'=>$invId)
+			)
+		);
+		$invId=$result->CurrentInvoice_BookResult->Number;
+		return $invId;
+	}
+
+	// }
 	// { createInvoice
 
 	/**
@@ -198,9 +220,12 @@ class OnlineStoreEconomics{
 		*/
 	public function createInvoice($currency, $customer) {
 		$client=$this->_connect();
+		if (is_object($customer)) {
+			$customer=$customer->Number;
+		}
 		$result=$client->CurrentInvoice_Create(
 			array(
-				'debtorHandle'=>$customer
+				'debtorHandle'=>array('Number'=>$customer)
 			)
 		);
 		$invId=$result->CurrentInvoice_CreateResult->Id;
@@ -367,6 +392,26 @@ class OnlineStoreEconomics{
 			)
 		);
 		return $result->CurrentInvoice_GetPdfResult;
+	}
+
+	// }
+	// { getInvoice
+
+	/**
+		* get an invoice's data
+		*
+		* @param int $int the invoice's ID
+		*
+		* @return details
+		*/
+	public function getInvoice($int) {
+		$client=$this->_connect();
+		$result=$client->Invoice_GetData(
+			array(
+				'entityHandle'=>array('Number'=>$int)
+			)
+		);
+		return $result->Invoice_GetDataResult;
 	}
 
 	// }
@@ -692,6 +737,7 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 		);
 		$customer=$uid;
 	}
+	// }
 	// { create the invoice
 	$invId=$OSE->createInvoice(
 		$DBVARS['online_store_currency'],
@@ -707,7 +753,6 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 			$item->amt
 		);
 	}
-	mail('kae.verens@gmail.com', 'test', print_r($order, true));
 	// }
 	// { get PDF
 	$pdf=$OSE->getInvoiceAsPdf($invId);
@@ -718,7 +763,7 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 	file_put_contents($fname, $pdf);
 	send_mail(
 		$details['Billing_Email'], 'admin@localhost.localdomain',
-		'test4', 'test5', array(
+		'Invoice '.$invId, 'test5', array(
 			array(
 				'tmp_name'=>$fname,
 				'name'=>$invId.'.pdf',
@@ -727,6 +772,90 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 		)
 	);
 	// }
+	// { book the invoice
+	$bookId=$OSE->bookInvoice($invId);
+	// }
+	// { record e-conomic invoice ID in order's meta data
+	$meta=json_decode($order['meta'], true);
+	if (!is_array($meta)) {
+		$meta=array();
+	}
+	$meta['economic-invoiceId']=$bookId;
+	dbQuery(
+		'update online_store_orders set meta="'.addslashes(json_encode($meta)).'"'
+		.' where id='.$order['id']
+	);
+	// }
+}
+
+// }
+// { OnlineStoreEconomics_cancelTransaction
+
+/**
+	* cancel a transaction
+	*
+	* @param object $PAGEDATA details about the page
+	* @param array  $order    the order to cancel
+	*
+	* @return null
+	*/
+function OnlineStoreEconomics_cancelTransaction($PAGEDATA, $orderId) {
+	global $DBVARS;
+	$OSE=new OnlineStoreEconomics(
+		$DBVARS['economic_agreement_no'],
+		$DBVARS['economic_user_id'],
+		$DBVARS['economic_password']
+	);
+	$order=dbRow('select * from online_store_orders where id='.$orderId);
+	$meta=json_decode($order['meta'], true);
+	$oldInvId=$meta['economic-invoiceId'];
+	$oldInvoice=$OSE->getInvoice($oldInvId);
+	$debtorId=(int)$oldInvoice->DebtorHandle->Number;
+	$currency=$oldInvoice->CurrencyHandle->Code;
+	$amt=$oldInvoice->NetAmount;
+	// { create the credit note
+	$invId=$OSE->createInvoice(
+		$currency,
+		$debtorId
+	);
+	$OSE->addInvoiceLine(
+		$invId,
+		'creditnote'.$oldInvId,
+		'Credit',
+		-$amt,
+		1
+	);
+	// }
+	// { get PDF
+	$pdf=$OSE->getInvoiceAsPdf($invId);
+	require_once SCRIPTBASE.'/ww.incs/mail.php';
+	$dirname=USERBASE.'/ww.cache/online-store/invoices';
+	$fname=$dirname.'/'.$invId.'.pdf';
+	@mkdir($dirname);
+	file_put_contents($fname, $pdf);
+	$details=json_decode($order['form_vals'], true);
+	send_mail(
+		$details['Billing_Email'], 'admin@localhost.localdomain',
+		'Credit Note '.$invId, 'test5', array(
+			array(
+				'tmp_name'=>$fname,
+				'name'=>$invId.'.pdf',
+				'type'=>'application/pdf'
+			)
+		)
+	);
+	// }
+	// { book the invoice
+	$bookId=$OSE->bookInvoice($invId);
+	// }
+	// { record e-conomic invoice ID in order's meta data
+	$meta['economic-invoiceIdOld']=$meta['economic-invoiceId'];
+	$meta['economic-creditNote']=$bookId;
+	unset($meta['economic-invoiceId']);
+	dbQuery(
+		'update online_store_orders set meta="'.addslashes(json_encode($meta)).'"'
+		.' where id='.$order['id']
+	);
 	// }
 }
 

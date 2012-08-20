@@ -63,6 +63,7 @@ $(function(){
 				$this.closest('form').submit();
 			}, 500);
 		});
+	// { on rollover of submit button
 	$('div.products-product form input[type=submit], div.products-product form button').live('mouseover', function(){
 		var inps=[];
 		var $form=$(this).closest('form');
@@ -84,9 +85,21 @@ $(function(){
 				.appendTo($form);
 		}
 	});
+	// }
 	var paddtocart=0;
 	$('form.products-addtocart, form.products-addmanytocart').submit(function(){
 		var $this=$(this);
+		var $amt=$this.find('[name=products-howmany]');
+		if (!$amt.length) {
+			var $wrapper=$(this).closest('.products-product');
+			var amt=+$wrapper.find('[name=products-howmany]').val();
+			if (!amt) {
+				amt=1;
+			}
+			$this.append(
+				'<input type="hidden" name="products-howmany" value="'+amt+'"/>'
+			);
+		}
 		var found=0;
 		var redirect=$this.find('input[name=products_redirect]').val();
 		$this.find('input.required').each(function(){
