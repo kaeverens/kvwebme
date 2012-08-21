@@ -13,7 +13,6 @@
 */
 $plugin = array (
 	'name' =>'Quizzes',
-	'hide_from_admin' => true,
 	'admin'=>array(
 		'menu'=> array (
 			'Misc>Quiz'=>'plugin.php?_plugin=quiz&amp;_page=index'

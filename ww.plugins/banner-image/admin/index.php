@@ -1,11 +1,114 @@
 <?php
-/*
-	Webme Banner Image Plugin
-	File: admin/index.php
-	Developers:  Conor Mac Aoidh  http://macaoidh.name/
-							 Kae Verens       http://verens.com/
-	Report Bugs: kae@verens.com, conor@macaoidh.name
-*/
+/**
+	* WebME Banner-Image plugin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conor@mcaoidh.name>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+// { BannerImage_selectKiddies
+
+/**
+	* blah2
+	*
+	* @param int    $i      whatever
+	* @param int    $n      whatever2
+	* @param array  $s      whatever3
+	* @param int    $id     whatever4
+	* @param string $prefix whatever5
+	*
+	* @return null
+	*/
+function BannerImage_selectKiddies(
+	$i=0, $n=1, $s=array(), $id=0, $prefix=''
+) {
+	$q=dbAll(
+		'select name,id from pages where parent="'.$i.'" and id!="'.$id.'" orde'
+		.'r by ord,name'
+	);
+	if (count($q)<1) {
+		return;
+	}
+	foreach ($q as $r) {
+		if ($r['id']!='') {
+			echo '<option value="'.$r['id'].'" title="'
+				.htmlspecialchars($r['name']).'"';
+			echo in_array($r['id'], $s)?' selected="selected">':'>';
+			$name=strtolower(str_replace(' ', '-', $r['name']));
+			echo htmlspecialchars($prefix.$name).'</option>';
+			BannerImage_selectKiddies($r['id'], $n+1, $s, $id, $name.'/');
+		}
+	}
+}
+
+// }
+// { BannerImage_drawForm
+
+/**
+	* blah
+	*
+	* @param int $id id of the banner
+	*
+	* @return null
+	*/
+function BannerImage_drawForm($id=0) {
+	if (!($id)) {
+		$fdata=array('id'=>0, 'html'=>'', 'name'=>'banner');
+	}
+	else {
+		$fdata=dbRow("select * from banners_images where id=$id");
+	}
+	echo '<form method="post" action="/ww.admin/plugin.php?_plugin=banner-ima'
+		.'ge&amp;_page=index" enctype="multipart/form-data"><input type="hidden'
+		.'" name="id" value="'.(int)$fdata['id'].'" />';
+	echo '<table>';
+	// {
+	echo '<tr><th>Name</th><td><input name="name" value="'
+		.htmlspecialchars($fdata['name']).'" /></td></tr>';
+	// }
+	// { what pages should this be applied to
+	echo '<tr><th>Pages</th><td>This banner will only be shown on the <select'
+		.' name="pages_'.$fdata['id'].'[]" multiple="multiple" style="max-width'
+		.':200px;height:500px">';
+	$ps=dbAll('select * from banners_pages where bannerid='.$fdata['id']);
+	$pages=array();
+	if (count($ps)) {
+		foreach ($ps as $p) {
+			$pages[]=$p['pageid'];
+		}
+	}
+	BannerImage_selectKiddies(0, 1, $pages);
+	echo '</select> pages. <span style="color:red;font-weight:bold">If no pag'
+		.'es are specified, then the banner will be shown on all pages.</span><'
+		.'/td></tr>';
+	// }
+	// { show HTML form
+	echo '<tr><th>Banner</th><td><div id="banner_image_html">'
+		.ckeditor(
+			'html_'.$fdata['id'],
+			Core_unfixImageResizes($fdata['html']),
+			0,
+			'',
+			180
+		)
+		.'</div></td></tr>';
+	// }
+	// { show submit button and end form
+	echo '<tr><td><a href="./plugin.php?_plugin=banner-image&_page=index&dele'
+		.'te_banner='.$fdata['id'].'" onclick="return confirm(\'are you sure yo'
+		.'u want to remove this banner?\');" title="remove banner">[x]</a></td>'
+		.'<td><input type="submit" name="save_banner" value="Update" /></td></tr>';
+	// }
+	echo '</table></form>';
+}
+
+// }
 
 $id=0;
 if (isset($_GET['delete_banner']) && (int)$_GET['delete_banner']) {
@@ -54,78 +157,6 @@ if (!is_dir(USERBASE.'/f/skin_files/banner-image')) {
 	mkdir(USERBASE.'/f/skin_files/banner-image');
 }
 
-function banner_image_selectkiddies(
-	$i=0, $n=1, $s=array(), $id=0, $prefix=''
-) {
-	$q=dbAll(
-		'select name,id from pages where parent="'.$i.'" and id!="'.$id.'" orde'
-		.'r by ord,name'
-	);
-	if (count($q)<1) {
-		return;
-	}
-	foreach ($q as $r) {
-		if ($r['id']!='') {
-			echo '<option value="'.$r['id'].'" title="'
-				.htmlspecialchars($r['name']).'"';
-			echo in_array($r['id'], $s)?' selected="selected">':'>';
-			$name=strtolower(str_replace(' ', '-', $r['name']));
-			echo htmlspecialchars($prefix.$name).'</option>';
-			banner_image_selectkiddies($r['id'], $n+1, $s, $id, $name.'/');
-		}
-	}
-}
-function banner_image_drawForm($id=0) {
-	if (!($id)) {
-		$fdata=array('id'=>0, 'html'=>'', 'name'=>'banner');
-	}
-	else {
-		$fdata=dbRow("select * from banners_images where id=$id");
-	}
-	echo '<form method="post" action="/ww.admin/plugin.php?_plugin=banner-ima'
-		.'ge&amp;_page=index" enctype="multipart/form-data"><input type="hidden'
-		.'" name="id" value="'.(int)$fdata['id'].'" />';
-	echo '<table>';
-	// {
-	echo '<tr><th>Name</th><td><input name="name" value="'
-		.htmlspecialchars($fdata['name']).'" /></td></tr>';
-	// }
-	// { what pages should this be applied to
-	echo '<tr><th>Pages</th><td>This banner will only be shown on the <select'
-		.' name="pages_'.$fdata['id'].'[]" multiple="multiple" style="max-width'
-		.':200px;height:500px">';
-	$ps=dbAll('select * from banners_pages where bannerid='.$fdata['id']);
-	$pages=array();
-	if (count($ps)) {
-		foreach ($ps as $p) {
-			$pages[]=$p['pageid'];
-		}
-	}
-	banner_image_selectkiddies(0, 1, $pages);
-	echo '</select> pages. <span style="color:red;font-weight:bold">If no pag'
-		.'es are specified, then the banner will be shown on all pages.</span><'
-		.'/td></tr>';
-	// }
-	// { show HTML form
-	echo '<tr><th>Banner</th><td><div id="banner_image_html">'
-		.ckeditor(
-			'html_'.$fdata['id'],
-			Core_unfixImageResizes($fdata['html']),
-			0,
-			'',
-			180
-		)
-		.'</div></td></tr>';
-	// }
-	// { show submit button and end form
-	echo '<tr><td><a href="./plugin.php?_plugin=banner-image&_page=index&dele'
-		.'te_banner='.$fdata['id'].'" onclick="return confirm(\'are you sure yo'
-		.'u want to remove this banner?\');" title="remove banner">[x]</a></td>'
-		.'<td><input type="submit" name="save_banner" value="Update" /></td></tr>';
-	// }
-	echo '</table></form>';
-}
-
 // { show left menu
 echo '<div class="sub-nav">';
 $rs=dbAll('select id,name from banners_images');
@@ -142,7 +173,7 @@ if (isset($_REQUEST['id'])) {
 	$id=(int)$_REQUEST['id'];
 }
 
-banner_image_drawForm($id);
+BannerImage_drawForm($id);
 echo '<script src="http://inlinemultiselect.googlecode.com/files/jquery.inl'
 	.'inemultiselect.min.js"></script>';
 echo '<script src="/ww.plugins/banner-image/j/admin.js"></script>';
