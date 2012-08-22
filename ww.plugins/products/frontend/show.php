@@ -112,8 +112,7 @@ function Product_datatableMultiple ($products, $direction) {
 				}
 			}
 			$html.='</tr></tfoot></table>';
-			return $html;
-			// }
+		return $html; // }
 		case 'vertical': // {
 			$html='<table class="product-vertical">';
 			foreach ($headers as $n=>$d) {
@@ -124,8 +123,7 @@ function Product_datatableMultiple ($products, $direction) {
 				$html.='</tr>';
 			}
 			$html.='</table>';
-			return $html;
-			// }
+		return $html; // }
 	}
 }
 
@@ -452,6 +450,9 @@ function Products_getAddToCartWidget($params, $smarty) {
 
 /**
 	* get an input box showing the "Amount" input
+	*
+	* @param array  $params parameters
+	* @param object $smarty smarty object
 	*
 	* @return string the html
 	*/
@@ -919,30 +920,27 @@ function Products_show($PAGEDATA) {
 			if (@$PAGEDATA->vars['products_pagetitleoverride_multiple']) {
 				$PAGEDATA->title=$PAGEDATA->vars['products_pagetitleoverride_multiple'];
 			}
-			return $c
-				.Products_showByType(
-					$PAGEDATA, 0, $start, $limit, $order_by,
-					$order_dir, $search, $locationFilter, $limit_start
-				)
-				.$export;
-			// }
+		return $c
+			.Products_showByType(
+				$PAGEDATA, 0, $start, $limit, $order_by,
+				$order_dir, $search, $locationFilter, $limit_start
+			)
+			.$export; // }
 		case '2': // { by category
 			if (@$PAGEDATA->vars['products_pagetitleoverride_multiple']) {
 				$PAGEDATA->title=$PAGEDATA->vars['products_pagetitleoverride_multiple'];
 			}
-			return $c
-				.Products_showByCategory(
-					$PAGEDATA, 0, $start, $limit, $order_by,
-					$order_dir, $search, $locationFilter, $limit_start
-				)
-				.$export;
-			// }
+		return $c
+			.Products_showByCategory(
+				$PAGEDATA, 0, $start, $limit, $order_by,
+				$order_dir, $search, $locationFilter, $limit_start
+			)
+			.$export; // }
 		case '3': // { by id
 			if (@$PAGEDATA->vars['products_pagetitleoverride_single']) {
 				$PAGEDATA->title=$PAGEDATA->vars['products_pagetitleoverride_single'];
 			}
-			return $c.Products_showById($PAGEDATA, 0, $enabled_filter).$export;
-			// }
+		return $c.Products_showById($PAGEDATA, 0, $enabled_filter).$export; // }
 	}
 	if (@$PAGEDATA->vars['products_pagetitleoverride_multiple']) {
 		$PAGEDATA->title=$PAGEDATA->vars['products_pagetitleoverride_multiple'];
@@ -1652,8 +1650,7 @@ class Products{
 			case 3: // { map view
 				WW_addScript('products');
 				WW_addCSS('/ww.plugins/products/products.css');
-				return '<div id="products-mapview"></div>';
-				// }
+			return '<div id="products-mapview"></div>'; // }
 			case 4: // { carousel
 				WW_addScript('products');
 				$c='<div id="products-carousel"><ul id="products-carousel-slider">';
@@ -1675,8 +1672,7 @@ class Products{
 				$c.='</ul></div>';
 				WW_addScript('/j/jsor-jcarousel-7bb2e0a/jquery.jcarousel.min.js');
 				WW_addCSS('/ww.plugins/products/products.css');
-				return $c;
-				// }
+			return $c; // }
 			default: // { use template
 				if (count($prods)) { // display the first item's header
 					$product=Product::getInstance($prods[0], false, $enabledFilter);

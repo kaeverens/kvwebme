@@ -1162,9 +1162,9 @@ class QRinputItem{
 				$bits = QRinput::estimateBitsModeKanji($this->size);
 			break;
 			case 4:
-				return 20;
+			return 20;
 			default:
-				return 0;
+			return 0;
 		}
 
 		$l = QRspec::lengthIndicator($this->mode, $version);
@@ -1583,23 +1583,16 @@ class QRinput{
 
 		switch($mode) {
 			case QR_MODE_NUM:
-				return self::checkModeNum($size, $data);
-			break;
+			return self::checkModeNum($size, $data);
 			case QR_MODE_AN:
-				return self::checkModeAn($size, $data);
-			break;
+			return self::checkModeAn($size, $data);
 			case QR_MODE_KANJI:
-				return self::checkModeKanji($size, $data);
-			break;
+			return self::checkModeKanji($size, $data);
 			case QR_MODE_8:
-				return true;
-			break;
+			return true;
 			case 4:
-				return true;
-			break;
-
+			return true;
 			default:
-			break;
 		}
 
 		return false;

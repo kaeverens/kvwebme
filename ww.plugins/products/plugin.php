@@ -159,9 +159,9 @@ class Product{
 	/**
 	  * constructor for product instances
 	  *
-	  * @param int $v       the ID of the product that's wanted
-	  * @param int $r       pre-built data to use
-	  * @param int $enabled only retrieve enabled products?
+	  * @param int $v             the ID of the product that's wanted
+	  * @param int $r             pre-built data to use
+	  * @param int $enabledFilter only retrieve enabled products?
 	  *
 	  * @return object the product instance
 	  */
@@ -291,9 +291,13 @@ class Product{
 		if (isset($this->relativeUrl) && $this->relativeUrl) {
 			return $this->relativeUrl;
 		}
-		// { if this product is disabled, then it can only be shown on special pages...
+		// { if this product is disabled, then it can only be shown on special pages
 		if ($this->vals['enabled']=='0') {
-			$pid=dbOne('select page_id from page_vars where name="products_filter_by_status" and value in (1, 2)', 'page_id');
+			$pid=dbOne(
+				'select page_id from page_vars'
+				.' where name="products_filter_by_status" and value in (1, 2)',
+				'page_id'
+			);
 			$page=Page::getInstance($pid);
 			return $page->getRelativeUrl()
 				.'/'.$this->id.'-'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
@@ -444,16 +448,15 @@ class Product{
 				$amt=$this->vals['online-store']['_sale_price'];
 				switch (@$this->vals['online-store']['_sale_price_type']) {
 					case '1': // discount
-						return $this->vals['online-store']['_price']-$amt;
+					return $this->vals['online-store']['_price']-$amt;
 					case '2': // percentage
-						return $this->vals['online-store']['_price']*(100-$amt)/100;
+					return $this->vals['online-store']['_price']*(100-$amt)/100;
 					default: // actual amount
-						return $amt;
+					return $amt;
 				}
 				// }
 			default: // { base
-				return $this->vals['online-store']['_price'];
-				// }
+			return $this->vals['online-store']['_price']; // }
 		}
 	}
 
@@ -474,8 +477,7 @@ class Product{
 			if ($data->n==$name) {
 				switch($data->t) {
 					case 'date': // {
-						return Core_dateM2H($this->vals[$data->n]);
-					break; // }
+					return Core_dateM2H($this->vals[$data->n]); // }
 					case 'checkbox': // {
 						if (isset($this->vals[$data->n]) && $this->vals[$data->n]) {
 							return __('Yes');
@@ -1197,7 +1199,7 @@ function Products_amountInStock($params, $smarty) {
 /**
   * show breadcrumbs for nav
   *
-  * @param string $baseurl
+  * @param string $baseurl base URL
   *
   * @return string the HTML of the breadcrumbs
   */
