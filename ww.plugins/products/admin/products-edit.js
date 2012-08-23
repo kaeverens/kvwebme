@@ -245,7 +245,7 @@ $(function(){
 		var $textarea=$(this);
 		$textarea.css('display','none');
 		var $table=$(
-			'<table><thead><tr><th>Option Name</th><th>£$€</th></tr></thead>'
+			'<table><thead><tr><th>Option Name</th><th>£ $ € DKK</th></tr></thead>'
 			+'<tbody/></table>'
 		).insertAfter($textarea);
 		var rows=$textarea.val().split("\n");

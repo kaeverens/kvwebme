@@ -711,7 +711,7 @@ function OnlineStore_startup() {
 			$GLOBALS['DBVARS']['online_store_currency']='EUR';
 		}
 		$currency=$GLOBALS['DBVARS']['online_store_currency'];
-		$currency_symbols=array('EUR'=>'€', 'GBP'=>'£', 'USD'=>'$');
+		$currency_symbols=array('EUR'=>'€', 'GBP'=>'£', 'USD'=>'$', 'DKK'=>'DKK');
 		$_SESSION['currency']=array(
 			'name'   => $currency,
 			'symbol' => $currency_symbols[$currency],

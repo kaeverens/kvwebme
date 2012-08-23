@@ -718,7 +718,7 @@ function Products_typeEdit(id) {
 		$(
 			'<table id="pfp-type-specific-table" class="wide tight">'
 			+'<tr><th>Option</th>'
-			+'<th title="how much this adds to the price of a product">$£€</th>'
+			+'<th title="how much this adds to the price of a product">$ £ € DKK</th>'
 			+'</tr></table>'
 		).appendTo($td);
 		var rows=e.split("\n");

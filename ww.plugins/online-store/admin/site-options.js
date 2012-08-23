@@ -29,7 +29,8 @@ function os_addCurrency(){
 	var currencies=[
 		['Euro','EUR','€',1],
 		['Sterling','GBP','£',1.14342],
-		['US Dollar','USD','$',.71252]
+		['US Dollar','USD','$',.71252],
+		['Dansk Krone', 'DKK', 'DKK',.13427]
 	];
 	var html='';
 	var $existing=$('input[name="os-currencies_iso[]"]');
