@@ -67,7 +67,7 @@ if ($DBVARS['economic_enabled']) {
 		// }
 		// { products group
 		$productgroups=$OSE->getProductGroups();
-		echo '<tr><th>'.__('Product Group to add new customers to').'</th><td>'
+		echo '<tr><th>'.__('Product Group to add new products to').'</th><td>'
 			.'<select name="productgroup">';
 		foreach ($productgroups as $k=>$v) {
 			echo '<option value="'.$k.'"';
