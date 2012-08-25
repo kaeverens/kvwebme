@@ -240,6 +240,18 @@ if (!is_array($r['address'])) {
 }
 foreach ($r['address'] as $name=>$address) {
 	$select=(@$address['default']=='yes')?' checked="checked"':'';
+	$address=array_merge(
+		array(
+			'street'=>'',
+			'street2'=>'',
+			'town'=>'',
+			'postcode'=>'',
+			'county'=>'',
+			'country'=>'',
+			'phone'=>''
+		),
+		$address
+	);
 	echo '<table class="address-table">'
 		.'<tr><th colspan="2"><input type="radio"'.$select.' name="default-address"'
 		.' value="'.$name.'"/>default '

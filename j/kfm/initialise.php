@@ -32,7 +32,7 @@ function setting_array($str){
     return preg_split('/\s*,\s*/',$str);
 }
 function sql_escape($sql) {
-    $sql = mysql_escape_string($sql);
+	$sql=addslashes($sql);
     if ($GLOBALS['kfm_db_type']=='sqlite'||$GLOBALS['kfm_db_type']=='sqlitepdo')$sql = str_replace("\\'", "''", $sql);
     return $sql;
 }

@@ -1,11 +1,22 @@
 <?php
+/**
+	* blog API
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 // { Blog_commentAdd
 
 /**
 	* add a comment to a blog entry
 	*
-	* return array entry status
+	* @return array entry status
 	*/
 function Blog_commentAdd() {
 	$ret=array();
@@ -94,8 +105,7 @@ function Blog_getPostsList() {
 		'ids'
 	);
 	$totalDisplayRecords=$totalRecords;
-	$sql=
-		'select id, title, cdate, pdate, udate, user_id, status, comments'
+	$sql='select id, title, cdate, pdate, udate, user_id, status, comments'
 		.' from blog_entry where 1'
 		.$userfilter
 		.' order by cdate desc limit '.$startAt.','.$numPerPage;
@@ -143,6 +153,7 @@ function Blog_getPostsList() {
 /**
 	* given an id of a user, it will return the user's name
 	*
+	* @return array usernames
 	*/
 function Blog_getUserName() {
 	$id=(int)@$_REQUEST['id'];
@@ -231,6 +242,11 @@ function Blog_postEdit() {
 // }
 // { Blog_postGet
 
+/**
+	* get a post
+	*
+	* @return array the post
+	*/
 function Blog_postGet() {
 	$id=(int)$_REQUEST['id'];
 	if (Core_isAdmin()) {

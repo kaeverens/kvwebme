@@ -117,7 +117,8 @@ echo '</select>';
 // { Errors
 echo '<input type="hidden" name="errors[]"';
 if (isset($_POST['errors'])) {
-	echo ' value="'.$_POST['errors'].'"';
+	$val=is_array($_POST)?join(', ', $_POST['errors']):$_POST['errors'];
+	echo ' value="'.htmlspecialchars($val).'"';
 }
 echo '/>';
 // }
@@ -277,7 +278,7 @@ function addQuestion () {
 	global $questionID;
 	global $question;
 	// { Question Tab
-	$returnString= $returnString.'<h2>';
+	$returnString='<h2>';
 	if (isset($_GET['questionid'])) {
 		$questionID= addslashes($_GET['questionid']);
 		$returnString= $returnString.'Edit Question';

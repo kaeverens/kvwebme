@@ -1,4 +1,16 @@
 <?php
+/**
+	* plugin page for classified ads
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 // { config
 
 $plugin=array(
@@ -24,8 +36,10 @@ $plugin=array(
 /**
 	* page type admin
 	*
-	* @param object $page
-	* @param array  $vars
+	* @param object $page the page
+	* @param array  $vars any variables
+	*
+	* @return html
 	*/
 function ClassifiedAds_admin($page, $vars) {
 	require SCRIPTBASE.'ww.plugins/classified-ads/admin/page-type.php';
@@ -35,6 +49,13 @@ function ClassifiedAds_admin($page, $vars) {
 // }
 // { ClassifiedAds_frontend
 
+/**
+	* frontend of the classified ads thing
+	*
+	* @param object $PAGEDATA the page object
+	*
+	* @return html
+	*/
 function ClassifiedAds_frontend($PAGEDATA) {
 	global $unused_uri;
 	$html=$PAGEDATA->render();

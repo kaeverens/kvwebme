@@ -69,44 +69,6 @@ class MCAPI{
 		);
 		$this->api_key = $apikey;
 	}
-
-	/**
-		* whatever
-		*
-		* @param whatever $seconds whatever
-		*
-		* @return whatever
-		*/
-	function setTimeout($seconds) {
-		if (is_int($seconds)) {
-			$this->timeout = $seconds;
-			return true;
-		}
-	}
-
-	/**
-		* whatever
-		*
-		* @return whatever
-		*/
-	function getTimeout() {
-		return $this->timeout;
-	}
-
-	/**
-		* whatever
-		*
-		* @param whatever $val whatever
-		*
-		* @return whatever
-		*/
-	function useSecure($val) {
-		if ($val===true) {
-			$this->secure = true;
-		} else {
-			$this->secure = false;
-		}
-	}
 	
 	/**
 	 * Actually connect to the server and call the requested methods,
@@ -331,5 +293,3 @@ class MCAPI{
 		'ping'=>array()
 	);
 }
-
-?>
