@@ -337,8 +337,8 @@ function ckeditor($name, $value='', $height=250, $translatable=0) {
   * @return string sanitised HTML
   */
 function Core_sanitiseHtmlEssential($original_html) {
-	$original_html = str_replace("\n", '{{CARRIAGERETURN}}', $original_html);
-	$original_html = str_replace("\r", '{{LINERETURN}}', $original_html);
+	$original_html = str_replace("\n", '{{N}}', $original_html);
+	$original_html = str_replace("\r", '{{R}}', $original_html);
 	do {
 		$html = $original_html;
 		// { clean old fckeditor stuff
@@ -463,8 +463,8 @@ function Core_sanitiseHtmlEssential($original_html) {
 		$has_changed=$html!=$original_html;
 		$original_html=$html;
 	} while ($has_changed);
-	$html = str_replace('{{CARRIAGERETURN}}', "\n", $html);
-	$html = str_replace('{{LINERETURN}}', "\r", $html);
+	$html = str_replace('{{N}}', "\n", $html);
+	$html = str_replace('{{R}}', "\r", $html);
 	return $html;
 }
 
@@ -481,20 +481,20 @@ function Core_sanitiseHtmlEssential($original_html) {
 function Core_sanitiseHtml($original_html) {
 	$original_html = Core_sanitiseHtmlEssential($original_html);
 	$original_html = Core_fixImageResizes($original_html);
-	$original_html = str_replace("\n", '{{CARRIAGERETURN}}', $original_html);
-	$original_html = str_replace("\r", '{{LINERETURN}}', $original_html);
+	$original_html = str_replace("\n", '{{N}}', $original_html);
+	$original_html = str_replace("\r", '{{R}}', $original_html);
 	do {
 		$html = $original_html;
 		// { clean white-space
 		$html = str_replace(
-			'{{LINERETURN}}{{CARRIAGERETURN}}',
-			"{{CARRIAGERETURN}}",
+			'{{R}}{{N}}',
+			"{{N}}",
 			$html
 		);
-		$html = str_replace('>{{CARRIAGERETURN}}', '>', $html);
+		$html = str_replace('>{{N}}', '>', $html);
 		$html = str_replace(
-			'{{CARRIAGERETURN}}{{CARRIAGERETURN}}',
-			'{{CARRIAGERETURN}}',
+			'{{N}}{{N}}',
+			'{{N}}',
 			$html
 		);
 		$html = preg_replace("/<p>\s*/", '<p>', $html);
@@ -627,8 +627,8 @@ function Core_sanitiseHtml($original_html) {
 		$html=join('', $parts);
 	}
 	// }
-	$html = str_replace('{{CARRIAGERETURN}}', "\n", $html);
-	$html = str_replace('{{LINERETURN}}', "\r", $html);
+	$html = str_replace('{{N}}', "\n", $html);
+	$html = str_replace('{{R}}', "\r", $html);
 	return $html;
 }
 

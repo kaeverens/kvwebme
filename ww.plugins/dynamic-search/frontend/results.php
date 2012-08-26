@@ -19,7 +19,7 @@ function getDescendants($id) {
 	return $s;
 }
 
-function catags($catags, $s, $cat, $limit) {
+function DynamicSearch_catags($catags, $s, $cat, $limit) {
 	if (!in_array($cat, $catags)) {
 		die('Category does not exist.');
 	}
@@ -56,7 +56,7 @@ if ($cat=='Site Wide') {
 	);
 }
 else {
-	$q=catags($catags, $s, $cat, $limit);
+	$q=DynamicSearch_catags($catags, $s, $cat, $limit);
 }
 
 $n=count($q);

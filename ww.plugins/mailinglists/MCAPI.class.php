@@ -11,7 +11,7 @@
 	* @link     http://whatever.com/
 	*/
 
-// taken from MailChimp website
+// { MCAPI class (from Mailchimp website)
 
 /**
 	* dummy comments
@@ -100,8 +100,9 @@ class MCAPI{
 			ini_set("arg_separator.output", "&");
 		}
 		//mutate params
-		$mutate = array();
-		$mutate["apikey"] = $this->api_key;
+		$mutate = array(
+			'apikey'=>$this->api_key
+		);
 		foreach ($params as $k=>$v) {
 			$mutate[$this->function_map[$method][$k]] = $v;
 		}
@@ -111,20 +112,18 @@ class MCAPI{
 		}
 		
 		$payload = "POST " . $this->apiUrl["path"] . "?" 
-			. $this->apiUrl["query"] . "&method=" . $method . " HTTP/1.0\r\n";
-		$payload .= "Host: " . $host . "\r\n";
-		$payload .= "User-Agent: MCAPImini/" . $this->version ."\r\n";
-		$payload .= "Content-type: application/x-www-form-urlencoded\r\n";
-		$payload .= "Content-length: " . strlen($post_vars) . "\r\n";
-		$payload .= "Connection: close \r\n\r\n";
-		$payload .= $post_vars;
+			. $this->apiUrl["query"] . "&method=" . $method . " HTTP/1.0\r\n"
+			."Host: " . $host . "\r\n"
+			."User-Agent: MCAPImini/" . $this->version ."\r\n"
+			."Content-type: application/x-www-form-urlencoded\r\n"
+			."Content-length: " . strlen($post_vars) . "\r\n"
+			."Connection: close \r\n\r\n"
+			.$post_vars;
 		
 		ob_start();
-		if ($this->secure) {
-			$sock = fsockopen("ssl://".$host, 443, $errno, $errstr, 30);
-		} else {
-			$sock = fsockopen($host, 80, $errno, $errstr, 30);
-		}
+		$sock=$this->secure
+			?fsockopen("ssl://".$host, 443, $errno, $errstr, 30)
+			:fsockopen($host, 80, $errno, $errstr, 30);
 		if (!$sock) {
 			$this->errorMessage = "Could not connect (ERR $errno: $errstr)";
 			$this->errorCode = "-99";
@@ -164,23 +163,19 @@ class MCAPI{
 		}
 		
 		$serial = unserialize($response);
-		if ($response && $serial === false) {
-			$response = array(
-				"error" => "Bad Response.  Got This: " . $response, "code" => "-99"
-			);
-		} else {
-			$response = $serial;
-		}
+		$response=$response&&$serial===false
+			?array("error" =>"Bad Response.  Got This: ".$response, "code"=>"-99")
+			:$serial;
 		if ($errored && is_array($response) && isset($response["error"])) {
 			$this->errorMessage = $response["error"];
 			$this->errorCode = $response["code"];
 			return false;
-		} elseif ($errored) {
+		}
+		elseif ($errored) {
 			$this->errorMessage = "No error message was found";
 			$this->errorCode = $error_code;
 			return false;
 		}
-		
 		return $response;
 	}
 	
@@ -293,3 +288,5 @@ class MCAPI{
 		'ping'=>array()
 	);
 }
+
+// }

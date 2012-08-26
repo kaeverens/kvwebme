@@ -136,9 +136,13 @@ $c.='>Yes</option></select></td></tr>';
 $c.='<tr id="products_order_by"><th>'.__('Order By').'</th><td>'
 	.'<select id="products_order_by_select" name="page_vars[products_order_by]">';
 if (!isset($vars['products_order_by'])) {
-	$fs=json_decode(
-		dbOne('select data_fields from products_types limit 1', 'data_fields')
+	$fs=dbOne(
+		'select data_fields from products_types limit 1', 'data_fields'
 	);
+	if (!$fs) {
+		$fs='[{"n":"description"}]';
+	}
+	$fs=json_decode($fs);
 	$c.='<option>'.htmlspecialchars($fs[0]->n).'</option>';
 }
 else {

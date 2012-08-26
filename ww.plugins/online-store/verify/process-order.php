@@ -12,6 +12,8 @@
 	* @link     None
 */
 
+// { OnlineStore_processOrder
+
 /**
 	* marks an order as Paid, sends an invoice, and calls any specified callbacks
 	*
@@ -58,20 +60,20 @@ function OnlineStore_processOrder($id, $order=false) {
 		$from=$page->vars['online_stores_admin_email'];
 		$bcc=$page->vars['online_stores_admin_email'];
 	}
-	if (isset($form_vals->email)) {
-		$form_vals->Email=$form_vals->email;
+	if (isset($form_vals->billing_email)) {
+		$form_vals->Billing_Email=$form_vals->billing_email;
 	}
-	if (!isset($form_vals->Email)) {
-		$form_vals->Email='no-email-supplied@example.com';
+	if (!isset($form_vals->Billing_Email)) {
+		$form_vals->Billing_Email='no-email-supplied@example.com';
 	}
 	$headers='';
 	if ($bcc) {
 		$headers.='BCC: '.$bcc."\r\n";
 	}
 	// }
-	// { invoice
+	// { send invoice
 	Core_mail(
-		$form_vals->Email,
+		$form_vals->Billing_Email,
 		'['.$short_domain.'] invoice #'. $id,
 		$order['invoice'],
 		$from,
@@ -87,22 +89,26 @@ function OnlineStore_processOrder($id, $order=false) {
 		$p=Product::getInstance($item->id);
 		$exportcsv[]=
 			'"'
-			.str_replace('"', '""', @$form_vals->Phone)
+			.str_replace('"', '""', @$form_vals->Billing_Phone)
 			.'","'
-			.str_replace('"', '""', @$form_vals->FirstName.' '.@$form_vals->Surname)
+			.str_replace(
+				'"',
+				'""',
+				@$form_vals->Billing_FirstName.' '.@$form_vals->Billing_Surname
+			)
 			.'","'
-			.str_replace('"', '""', @$form_vals->Street)
+			.str_replace('"', '""', @$form_vals->Billing_Street)
 			.'","'
-			.str_replace('"', '""', @$form_vals->Street2)
+			.str_replace('"', '""', @$form_vals->Billing_Street2)
 			.'","'
-			.str_replace('"', '""', @$form_vals->Postcode)
-			.' '.str_replace('"', '""', @$form_vals->Town)
+			.str_replace('"', '""', @$form_vals->Billing_Postcode)
+			.' '.str_replace('"', '""', @$form_vals->Billing_Town)
 			.'","'
-			.str_replace('"', '""', @$form_vals->Email)
+			.str_replace('"', '""', @$form_vals->Billing_Email)
 			.'","'
-			.str_replace('"', '""', @$p->stock_number)
+			.str_replace('"', '""', @$p->Billing_stock_number)
 			.'","'
-			.$item->amt
+			.$item->Billing_amt
 			.'","'
 			.$item->cost
 			.'","'
@@ -124,7 +130,7 @@ function OnlineStore_processOrder($id, $order=false) {
 			);
 			$html=str_replace(
 				'{{$_recipient}}',
-				$form_vals->Email,
+				$form_vals->Billing_Email,
 				$html
 			);
 			$html=str_replace(
@@ -146,7 +152,7 @@ function OnlineStore_processOrder($id, $order=false) {
 				);
 			}
 			Core_mail(
-				$form_vals->Email,
+				$form_vals->Billing_Email,
 				'['.$short_domain.'] voucher',
 				$html,
 				$from,
@@ -178,11 +184,11 @@ function OnlineStore_processOrder($id, $order=false) {
 				'value'
 			);
 			if (!$customer_filename) {
-				$customer_filename='customer-{{$Email}}.csv';
+				$customer_filename='customer-{{$Billing_Email}}.csv';
 			}
 			$customer_filename=str_replace(array('/', '..'), '', $customer_filename);
 			$bits=preg_match_all(
-				'/{{\$([^}]*)}}/',
+				'/{{\$([^}]*)}}/', // {
 				$customer_filename,
 				$matches,
 				PREG_SET_ORDER
@@ -196,22 +202,26 @@ function OnlineStore_processOrder($id, $order=false) {
 			}
 			$customer_filename=str_replace(array('..', '/'), '', $customer_filename);
 			@mkdir(USERBASE.'/'.$customer, 0777, true);
-			$phone=preg_replace('/[^0-9\(\)\+]/', '', @$form_vals->Phone);
+			$phone=preg_replace('/[^0-9\(\)\+]/', '', @$form_vals->Billing_Phone);
 			file_put_contents(
 				USERBASE.'/'.$customer.'/'.$customer_filename,
 				'"Name","Street","Street 2","Postcode","Email","Phone"'."\n"
 				.'"'
-				.str_replace('"', '""', @$form_vals->FirstName.' '.@$form_vals->Surname)
+				.str_replace(
+					'"',
+					'""',
+					@$form_vals->Billing_FirstName.' '.@$form_vals->Billing_Surname
+				)
 				.'","'
-				.str_replace('"', '""', @$form_vals->Street)
+				.str_replace('"', '""', @$form_vals->Billing_Street)
 				.'","'
-				.str_replace('"', '""', @$form_vals->Street2)
+				.str_replace('"', '""', @$form_vals->Billing_Street2)
 				.'","'
-				.str_replace('"', '""', @$form_vals->Postcode)
+				.str_replace('"', '""', @$form_vals->Billing_Postcode)
 				.'","'
-				.str_replace('"', '""', @$form_vals->Email)
+				.str_replace('"', '""', @$form_vals->Billing_Email)
 				.'","'
-				.str_replace('"', '""', $form_vals->Phone)
+				.str_replace('"', '""', $form_vals->Billing_Phone)
 				.'"'
 			);
 		}
@@ -224,3 +234,5 @@ function OnlineStore_processOrder($id, $order=false) {
 	// }
 	Core_trigger('after-order-processed', array($order));
 }
+
+// }

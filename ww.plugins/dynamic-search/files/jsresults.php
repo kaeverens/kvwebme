@@ -1,11 +1,25 @@
 <?php
-/*
-	Webme Dynamic Search Plugin v0.3
-	File: files/jsresults.php
-	Developer: Conor Mac Aoidh <http://macaoidh.name>
-	Report Bugs: <conor@macaoidh.name>
-*/
+/**
+	* Dynamic Search plugin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conor@macaoidh.name>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
+// { getDescendants
+
+/**
+	* getDescendants
+	*
+	* @param int $id ID
+	*
+	* @return misc
+	*/
 function getDescendants($id) {
 	$s=' or parent='.$id;
 	$q=mysql_query('select id from pages where parent="'.$id.'"');	
@@ -19,7 +33,20 @@ function getDescendants($id) {
 	return $s;
 }
 
-function catags($catags, $s, $cat, $limit) {
+// }
+// { DynamicSearch_catags
+
+/**
+	* DynamicSearch_catags
+	*
+	* @param misc $catags blah
+	* @param misc $s      blah
+	* @param misc $cat    blah
+	* @param misc $limit  blah
+	*
+	* @return misc
+	*/
+function DynamicSearch_catags($catags, $s, $cat, $limit) {
 	$cat_array=explode(',', $catags);
 	if (!in_array($cat, $cat_array)) {
 		die('Category does not exist.');
@@ -34,6 +61,8 @@ function catags($catags, $s, $cat, $limit) {
 	);
 	return $q;
 }
+
+// }
 
 require '../../../.private/config.php';
 
@@ -51,7 +80,9 @@ if ($cat=='') {
 }
 
 $p=$_GET['dynamic_page'];
-if($p==0) $p=1;
+if ($p==0) {
+	$p=1;
+}
 $l=$p*10;
 $m=$l-10;
 $limit=$m.','.$l;
@@ -72,7 +103,7 @@ if ($cat=='Site Wide') {
 	);
 }
 else {
-	$q=catags($catags, $s, $cat, $limit);
+	$q=DynamicSearch_catags($catags, $s, $cat, $limit);
 }
 
 $n=mysql_num_rows($q);
@@ -109,7 +140,7 @@ else {
 		$content=str_replace(
 			$s,
 			'<span class="dynamic_searched">'.$s.'</span>',
-			substr(preg_replace('/<[^>]*>/', '',  $r['body']), 0, 200)
+			substr(preg_replace('/<[^>]*>/', '', $r['body']), 0, 200)
 		);
 		$c.='<p>'.$content.'...';
 		$c.='<br /><a href="/'.urlencode($r['name']).'">/'

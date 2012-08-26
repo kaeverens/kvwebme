@@ -1,10 +1,15 @@
 <?php
-/*
-	Webme Dynamic Search Plugin v0.2
-	File: admin/page.php
-	Developer: Conor Mac Aoidh <http://macaoidh.name>
-	Report Bugs: <conor@macaoidh.name>
-*/
+/**
+	* Webme Dynamic Search Plugin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <conor@macaoidh.name>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 ww_addScript('/ww.plugins/dynamic-search/files/admin.js');
 $q=dbAll('select value from site_vars where name="catags"');
@@ -88,8 +93,8 @@ else {
 		.'l style="width:75%"/><col style="width:15%"/><th style="text-align:le'
 		.'ft">Count</th><th style="text-align:left">Search</th><th style="text-'
 		.'align:left">Category</th>';
-	foreach($q as $r){
-		if ($r['search']!='') 
+	foreach ($q as $r) {
+		if ($r['search']!='') {
 			$html.='<tr><td>'.$r['occurances'].'</td><td>'.$r['search']
 				.'</a></td><td>'.$r['category'].'</td></tr>';
 		}

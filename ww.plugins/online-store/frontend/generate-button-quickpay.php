@@ -56,19 +56,24 @@ $fields = array(
 	'splitpayment'=> 0
 );
 
-// calculate required MD5 checksum
+// { calculate required MD5 checksum
 $md5_word = '';
 foreach ($fields as $key => $value) {
 	$md5_word .= $value;
 }
 $md5_word .= $PAGEDATA->vars['online_stores_quickpay_secret'];
 $fields['md5check'] = md5($md5_word);
+// }
 
-$html='<form id="online-store-quickpay" method="post" action="'
+$html='<form style="display:none" id="online-store-quickpay" method="post" action="'
 	.'https://secure.quickpay.dk/form/">';
 foreach ($fields as $k=>$v) {
 	$html.='<input type="hidden" name="'.htmlspecialchars($k).'" '
 		.'value="'.htmlspecialchars($v).'"/>';
 }
 $html.='<input type="submit" value="Proceed to Payment"/></form>'
-	.'<script defer="defer">$("#online-store-quickpay").submit()</script>';
+	.'<script defer="defer">document.getElementById("online-store-quickpay")'
+	.'.submit()</script>';
+
+echo $html;
+exit;

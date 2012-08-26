@@ -809,10 +809,10 @@ if (isset($PLUGINS['online-store'])) {
 		}
 	}
 	else {
-		echo '<em>'.__(
+		echo '<div id="online-store-fields"><em>'.__(
 			'You must save the product\'s main details before editing anything else'
 		)
-		.'</em>';
+		.'</em></div>';
 	}
 }
 // }
