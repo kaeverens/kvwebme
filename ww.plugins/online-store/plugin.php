@@ -25,6 +25,8 @@ $plugin=array(
 				'plugin.php?_plugin=online-store&amp;_page=vouchers',
 			'Online Store>Options'=>
 				'plugin.php?_plugin=online-store&amp;_page=site-options',
+			'Online Store>Email Templates'=>
+				'plugin.php?_plugin=online-store&amp;_page=emails',
 			'Online Store>Create New Checkout'=>
 				'plugin.php?_plugin=online-store&amp;_page=wizard'
 		),
