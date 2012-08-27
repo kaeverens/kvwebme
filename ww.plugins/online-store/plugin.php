@@ -73,7 +73,8 @@ $plugin=array(
 $online_store_currencies=array(
 	'EUR'=>array('&euro;', 'Euro'),
 	'GBP'=>array('&pound;', 'Pound Sterling'),
-	'USD'=>array('&dollar;', 'Dollar')
+	'USD'=>array('&dollar;', 'Dollar'),
+	'DKK'=>array('DKK', 'Dansk Krone')
 );
 // }
 
