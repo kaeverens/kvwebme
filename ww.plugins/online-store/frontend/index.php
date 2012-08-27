@@ -390,7 +390,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 					.$rs['email_order_made_customer_recipient']['val']."\r\n";
 			}
 			Core_mail(
-				$_REQUEST['Email'],
+				$_REQUEST['Billing_Email'],
 				$rs['email_order_made_customer_subject']['val'],
 				$body,
 				$rs['email_order_made_customer_replyto']['val'],
