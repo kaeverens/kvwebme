@@ -108,7 +108,7 @@ function OnlineStore_processOrder($id, $order=false) {
 			.'","'
 			.str_replace('"', '""', @$p->Billing_stock_number)
 			.'","'
-			.$item->Billing_amt
+			.$item->amt
 			.'","'
 			.$item->cost
 			.'","'
