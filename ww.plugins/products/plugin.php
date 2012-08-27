@@ -777,6 +777,9 @@ class ProductType{
 		}
 		if (!array_key_exists($id, self::$instances)) {
 			new ProductType($id);
+			if (!array_key_exists($id, self::$instances)) {
+				self::$instances[$id]=false;
+			}
 		}
 		return self::$instances[$id];
 	}

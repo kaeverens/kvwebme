@@ -1677,10 +1677,13 @@ class Products{
 				if (count($prods)) { // display the first item's header
 					$product=Product::getInstance($prods[0], false, $enabledFilter);
 					$type=ProductType::getInstance($product->get('product_type_id'));
-					$smarty=Products_setupSmarty();
-					$c.=$smarty->fetch(
-						USERBASE.'/ww.cache/products/templates/types_multiview_'.$type->id.'_header'
-					);
+					if ($type) {
+						$smarty=Products_setupSmarty();
+						$c.=$smarty->fetch(
+							USERBASE.'/ww.cache/products/templates/types_multiview_'
+							.$type->id.'_header'
+						);
+					}
 				}
 				foreach ($prods as $pid) {
 					$product=Product::getInstance($pid, false, $enabledFilter);
@@ -1698,10 +1701,11 @@ class Products{
 						}
 					}
 				}
-				if (count($prods)) { // display the first item's header
+				if ($type && count($prods)) { // display the first item's header
 					$smarty=Products_setupSmarty();
 					$c.=$smarty->fetch(
-						USERBASE.'/ww.cache/products/templates/types_multiview_'.$type->id.'_footer'
+						USERBASE.'/ww.cache/products/templates/types_multiview_'
+						.$type->id.'_footer'
 					);
 				}
 				// }
