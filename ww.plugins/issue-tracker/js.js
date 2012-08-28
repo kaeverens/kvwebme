@@ -1,4 +1,10 @@
 $(function() {
+	var ITStrings={
+		'Project':'Project',
+		'project':'project',
+		'Issues':'Issues',
+		'Issue':'Issue'
+	};
 	var statii=[
 		undefined, 'Open', 'Completed'
 	];
@@ -18,7 +24,8 @@ $(function() {
 		}
 	}
 	if (canedit) {
-		$('<button class="edit" style="display:none;">edit project</button>')
+		$('<button class="edit" style="display:none;">edit '+ITStrings.project
+			+'</button>')
 			.appendTo($('#issuetracker-navbar'))
 			.click(function() {
 				var id=+$('#issuetracker-navbar .project').val();
@@ -54,7 +61,9 @@ $(function() {
 			}
 		}
 		if (userdata.isAdmin) {
-			opts.push('<option value="-1"> -- add new project -- </option>');
+			opts.push(
+				'<option value="-1"> -- add new '+ITStrings.project+' -- </option>'
+			);
 		}
 		$('#issuetracker-navbar .project')
 			.append(opts.join(''))
@@ -70,7 +79,7 @@ $(function() {
 						$('#issuetracker-navbar .edit').hide();
 						editProject({
 							'id':0,
-							'name':'new project',
+							'name':'new '+ITStrings.project,
 							'meta':'{}',
 							'parent_id':0
 						});
@@ -202,9 +211,9 @@ $(function() {
 	function showIssues(pid) {
 		$content.empty();
 		var table='<table style="width:100%">'
-			+'<thead><tr><th>ID</th><th>Status</th>'
+			+'<thead><tr><th>ID</th><th>Scheduled<br/>Date</th><th>Status</th>'
 			+'<th>Name</th><th>Type</th>'
-			+'<th>Project</th>'
+			+'<th>'+ITStrings.Project+'</th>'
 			+'</tr></thead>'
 			+'<tbody></tbody>'
 			+'</table>';
@@ -212,11 +221,19 @@ $(function() {
 			"sAjaxSource": '/a/p=issue-tracker/f=issuesGetDT',
 			"bProcessing":true,
 			"aaSorting":[[1, "asc"]],
+			aoColumns:[
+				{'bVisible':false},
+				null,
+				null,
+				null,
+				null,
+				null
+			],
 			"bJQueryUI":true,
 			"bServerSide":true,
 			"fnRowCallback": function(nRow, aData, iDisplayIndex) {
-				$('td:nth-child(2)', nRow).text(statii[+aData[1]]);
-				$('td:nth-child(4)', nRow).text(vals.types[+aData[3]]);
+				$('td:nth-child(2)', nRow).text(statii[+aData[2]]);
+				$('td:nth-child(4)', nRow).text(vals.types[+aData[4]]);
 				$(nRow).css('cursor', 'pointer').click(function() {
 					showIssue(+aData[0]);
 				});
@@ -233,11 +250,11 @@ $(function() {
 		var $table=$(table).appendTo($content).dataTable(params);
 		$('.dataTables_filter').css('display', 'none');
 		if (userdata.isAdmin) {
-			$('<button>New Issue</button>')
+			$('<button>New '+ITStrings.Issue+'</button>')
 				.click(function() {
 					var $table=$('<table>'
 						+'<tr><th>Name</th><td><input class="name"/></td></tr>'
-						+'<tr><th>Project</th><td><select class="project"/></td></tr>'
+						+'<tr><th>'+ITStrings.Project+'</th><td><select class="project"/></td></tr>'
 						+'<tr><th>Type</th><td><select class="type"/></td></tr>'
 						+'</table>').dialog({
 							'modal':true,
@@ -254,7 +271,7 @@ $(function() {
 										'project_id':$table.find('.project').val()
 									}, function(ret) {
 										$table.remove();
-										issueOpen(ret.id);
+										showIssue(ret.id);
 									});
 								}
 							}
@@ -305,8 +322,9 @@ $(function() {
 			// { set up table HTML
 			var html=
 				'<table style="width:100%"><tr><th>Name</th><td class="name"></td></tr>'
-				+'<tr><th>Created</th><td>'+Core_dateM2H(issue.date_created)+'</td></tr>'
-				+'<tr><th>Modified</th><td>'+Core_dateM2H(issue.date_modified)+'</td></tr>'
+				+'<!-- tr><th>Created</th><td>'+Core_dateM2H(issue.date_created)+'</td></tr>'
+				+'<tr><th>Modified</th><td>'+Core_dateM2H(issue.date_modified)+'</td></tr -->'
+				+'<tr><th>Scheduled Date</th><td class="due_date"></td></tr>'
 				+'<tr><th>Type</th><td>'+ret.type.name+'</td></tr>';
 			$.each(type.fields, function(k, v) {
 				html+='<tr><th>'+v.name+'</th>';
@@ -318,10 +336,13 @@ $(function() {
 			html+='<tr><th>Status</th><td class="status"></td></tr>';
 			html+='</table>';
 			// }
-			console.log(html);
 			$content.html(html);
 			// { set up variables
 			if (allowedEdit || userdata.isAdmin) {
+				var dueDate=$('<input class="dueDate"/>')
+					.val(issue.due_date||'').datepicker({
+						'dateFormat':'yy-mm-dd'
+					});
 				var name=$('<input class="name"/>').val(issue.name);
 				$.each(type.fields, function(k, v) {
 					switch(v.type) {
@@ -351,6 +372,7 @@ $(function() {
 					+'</select>').val(issue.status);
 			}
 			else {
+				var dueDate='<span>'+Core_dateM2H(issue.due_date)+'</span>';
 				var name='<span>'+issue.name+'</span>';
 				$.each(type.fields, function(k, v) {
 					switch(v.type) {
@@ -375,6 +397,7 @@ $(function() {
 				});
 				var istatus=[undefined, 'Open', 'Completed'][issue.status];
 			}
+			$content.find('.due_date').append(dueDate);
 			$content.find('.name').append(name);
 			$content.find('.status').append(istatus);
 			// }
@@ -430,6 +453,7 @@ $(function() {
 						});
 						$.post('/a/p=issue-tracker/f=issueSet', {
 							'id':id,
+							'dueDate':$content.find('input.dueDate').val(),
 							'name':$content.find('input.name').val(),
 							'status':$content.find('select.status').val(),
 							'meta':meta
@@ -440,7 +464,7 @@ $(function() {
 					})
 					.appendTo($content);
 			}
-			$('<button>Return to Issues List</button>')
+			$('<button>Return to '+ITStrings.Issues+' List</button>')
 				.click(function() {
 					$('#issuetracker-navbar .project').change();
 					return false;

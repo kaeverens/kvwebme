@@ -1,4 +1,7 @@
 $(function() {
+	var ITStrings={
+		'issue':'issue'
+	};
 	$.post('/a/p=issue-tracker/f=typesGet', function(ret) {
 		var opts=['<option value="0"> -- choose -- </option>'];
 		$.each(ret, function(k, v) {
@@ -11,10 +14,12 @@ $(function() {
 				var $this=$(this), val=$this.val(), $wrapper=$('#issue-fields-wrapper');
 				switch (val) {
 					case '0': // {
-						$wrapper.html('no issue type chosen');
+						$wrapper.html('no '+ITString.issue+' title chosen');
 					break; // }
 					case '-1': // {
-						var name=prompt('What name should the new issue type have?');
+						var name=prompt(
+							'What name should the new '+ITString.issue+' title have?'
+						);
 						if (!name) {
 							return $('#issue-type').val('0').change();
 						}

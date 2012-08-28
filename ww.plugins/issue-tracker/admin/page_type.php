@@ -21,10 +21,10 @@ $html.= '<ul>'
 // }
 // { main details
 $html.= '<div id="issuetracker-main">'
-	.'<p>Issues should be edited from the front-end of the site.'
+	.'<p>Tasks should be edited from the front-end of the site.'
 	.' This area is for configuration only.</p>';
-$html.='<h2>Edit an issue type.</h2>'
-	.'<table><tr><th>Issue Type</th>'
+$html.='<h2>Edit a job type.</h2>'
+	.'<table><tr><th>Job Title</th>'
 	.'<td><select id="issue-type"></select></td>'
 	.'</tr>'
 	.'<tr><th>Fields</th>'
@@ -32,7 +32,7 @@ $html.='<h2>Edit an issue type.</h2>'
 	.'</table>';
 $html.='<h2>Options</h2><table>';
 // { what groups can see all projects
-$html.='<tr><th>What groups can see all projects</th><td>'
+$html.='<tr><th>What groups can see all premises</th><td>'
 	.'<select name="page_vars[issue_tracker_see_all][]" multiple="multiple"'
 	.' id="it-see-all">';
 $rs=dbAll('select id,name from groups order by name');
@@ -47,7 +47,7 @@ foreach ($rs as $r) {
 $html.='</select></td></tr>';
 // }
 // { what groups can edit all projects
-$html.='<tr><th>What groups can edit all projects</th><td>'
+$html.='<tr><th>What groups can edit all premises</th><td>'
 	.'<select name="page_vars[issue_tracker_edit_all][]" multiple="multiple"'
 	.' id="it-edit-all">';
 $rs=dbAll('select id,name from groups order by name');

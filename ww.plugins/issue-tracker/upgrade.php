@@ -66,3 +66,7 @@ if ($version==6) { // add groups/users to projects table
 	dbQuery('update issuetracker_projects set groups="", users=""');
 	$version=7;
 }
+if ($version==7) {
+	dbQuery('alter table issuetracker_issues add due_date date default "0000-00-00"');
+	$version=8;
+}

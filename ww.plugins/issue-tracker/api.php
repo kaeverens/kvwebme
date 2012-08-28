@@ -127,6 +127,7 @@ function Issuetracker_issueSet() {
 	$id=(int)$_REQUEST['id'];
 	$name=$_REQUEST['name'];
 	$status=(int)$_REQUEST['status'];
+	$dueDate=$_REQUEST['dueDate'];
 	$newMeta=$_REQUEST['meta'];
 	$meta=dbOne('select meta from issuetracker_issues where id='.$id, 'meta');
 	$meta=json_decode($meta, true);
@@ -135,6 +136,7 @@ function Issuetracker_issueSet() {
 	}
 	$sql='update issuetracker_issues set date_modified=now()'
 		.', name="'.addslashes($name).'", status='.$status
+		.', due_date="'.addslashes($dueDate).'"'
 		.', meta="'.addslashes(json_encode($meta)).'"'
 		.' where id='.$id;
 	dbQuery($sql);
@@ -157,17 +159,17 @@ function Issuetracker_issuesGetDT() {
 	$orderby=(int)$_REQUEST['iSortCol_0'];
 	$orderdesc=$_REQUEST['sSortDir_0']=='desc'?'desc':'asc';
 	switch ($orderby) {
-		case 0:
-			$orderby='id';
-		break;
 		case 1:
-			$orderby='status';
+			$orderby='due_date';
 		break;
 		case 2:
+			$orderby='status';
+		break;
+		case 3:
 			$orderby='name';
 		break;
 		default:
-			$orderby='status';
+			$orderby='due_date';
 	}
 	$filters=array('issuetracker_issues.project_id=issuetracker_projects.id');
 	if ($search) {
@@ -215,6 +217,7 @@ function Issuetracker_issuesGetDT() {
 	$sql='select issuetracker_issues.id id'
 		.', type_id, issuetracker_issues.name name, status, project_id'
 		.', issuetracker_projects.name project_name'
+		.', due_date'
 		.' from issuetracker_issues,issuetracker_projects '.$filter
 		.' order by '.$orderby.' '.$orderdesc
 		.' limit '.$start.','.$length;
@@ -234,6 +237,7 @@ function Issuetracker_issuesGetDT() {
 		// { id
 		$row[]=$r['id'];
 		// }
+		$row[]=$r['due_date'];
 		// { status
 		$row[]=(int)$r['status'];
 		// }
@@ -287,9 +291,43 @@ function Issuetracker_projectGet() {
 	* @return array list
 	*/
 function IssueTracker_projectsGet() {
-	return dbAll(
+	$hotels=array();
+	$rs=dbAll(
 		'select id,name,parent_id,meta from issuetracker_projects where parent_id=0'
 	);
+	foreach ($rs as $r) {
+		if (Core_isAdmin()) {
+			$hotels[]=$r;
+			continue;
+		};
+		$p=json_decode($r['meta'], true);
+		if (count($p['groups'])) {
+			$ok=0;
+			foreach ($p['groups'] as $v) {
+				if (in_array($v, $_SESSION['userdata']['groups'])) {
+					$ok=1;
+				}
+			}
+			if (!$ok) {
+				continue;
+			}
+			$hotels[]=$r;
+			continue;
+		}
+		if (count($p['users'])) {
+			$ok=0;
+			if (in_array($_SESSION['userdata']['id'], $p['users'])) {
+				$ok=1;
+			}
+			if (!$ok) {
+				continue;
+			}
+			$hotels[]=$r;
+			continue;
+		}
+		$hotels[]=$r;
+	}
+	return $hotels;
 }
 
 // }
