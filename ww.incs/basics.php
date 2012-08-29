@@ -435,7 +435,7 @@ function Core_mail(
 		$subject,
 		$body,
 		$headers,
-		"-f$from"
+		"-f$from -ODeliveryMode=d"
 	);
 }
 

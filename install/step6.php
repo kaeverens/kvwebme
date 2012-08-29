@@ -22,12 +22,15 @@ require 'header.php';
   * @return string contents of the file
   */
 function curl( $url ) {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $response = curl_exec($ch);
-        curl_close($ch);
-        return $response;
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	$response = curl_exec($ch);
+	if ($response===false) {
+		die('Curl error: '.curl_error($ch));
+	}
+	curl_close($ch);
+	return $response;
 }
 
 if (!$_SESSION['userbase_created']) { // user shouldn't be here
@@ -116,10 +119,11 @@ if (isset($_POST[ 'install-theme' ])) { // install theme if selected
 	}
 
 	$themeapi=DistConfig::get('themes-api');
-	$theme = curl($themeapi.'/api.php?theme='.$id);
+	$themeUrl=$themeapi.'/api.php?theme='.$id;
+	$theme=curl($themeUrl);
 
 	if ( $theme == false ) {
-		die(__('Theme does not exist'));
+		die(__('Theme does not exist. %1', array($themeUrl), 'core'));
 	}
 
 	$theme = json_decode($theme, true);

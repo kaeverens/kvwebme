@@ -447,7 +447,7 @@ $(function(){
 						content.find('.user-guest button').click(function() {
 							$('#online-store-checkout-accordion-wrapper').accordion(
 								'activate',
-								'h2[panel="Delivery Address"]'
+								'h2[panel="Billing Address"]'
 							);
 						});
 					break; // }
