@@ -21,7 +21,7 @@ $plugin=array(
 	'frontend' => array(
 		'page_type' => 'IssueTracker_front'
 	),
-	'version'=>8
+	'version'=>9
 );
 // }
 

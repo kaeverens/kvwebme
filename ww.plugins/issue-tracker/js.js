@@ -322,9 +322,9 @@ $(function() {
 			// { set up table HTML
 			var html=
 				'<table style="width:100%"><tr><th>Name</th><td class="name"></td></tr>'
-				+'<!-- tr><th>Created</th><td>'+Core_dateM2H(issue.date_created)+'</td></tr>'
-				+'<tr><th>Modified</th><td>'+Core_dateM2H(issue.date_modified)+'</td></tr -->'
 				+'<tr><th>Scheduled Date</th><td class="due_date"></td></tr>'
+				+'<tr style="display:none"><th>Recur every</th>'
+				+'<td id="issue-tracker-recurring"></td></tr>'
 				+'<tr><th>Type</th><td>'+ret.type.name+'</td></tr>';
 			$.each(type.fields, function(k, v) {
 				html+='<tr><th>'+v.name+'</th>';
@@ -370,6 +370,19 @@ $(function() {
 					+'<option value="1">Open</option>'
 					+'<option value="2">Completed</option>'
 					+'</select>').val(issue.status);
+				// { recurring
+				var $t=$('#issue-tracker-recurring');
+				$('<input id="issue-tracker-recurring-multiplier" class="number"/>')
+					.val(+issue.recurring_multiplier)
+					.css('max-width', '80px')
+					.appendTo($t);
+				$('<select id="issue-tracker-recurring-type"><option value="day">Day(s)</option>'
+					+'<option value="week">Week(s)</option><option value="month">Month(s)</option>'
+					+'<option value="year">Year(s)</option>')
+					.val(issue.recurring_type)
+					.appendTo($t);
+				$t.closest('tr').css('display', 'table-row');
+				// }
 			}
 			else {
 				var dueDate='<span>'+Core_dateM2H(issue.due_date)+'</span>';
@@ -396,6 +409,11 @@ $(function() {
 					$content.find('.'+v.cname).append(obj);
 				});
 				var istatus=[undefined, 'Open', 'Completed'][issue.status];
+				if (+issue.recurring_multiplier) {
+					var $t=$('#issue-tracker-recurring');
+					$t.html(issue.recurring_multiplier+' '+issue.recurring_type+'(s)');
+					$t.closest('tr').css('display', 'table-row');
+				}
 			}
 			$content.find('.due_date').append(dueDate);
 			$content.find('.name').append(name);
@@ -456,6 +474,8 @@ $(function() {
 							'dueDate':$content.find('input.dueDate').val(),
 							'name':$content.find('input.name').val(),
 							'status':$content.find('select.status').val(),
+							'recurring_multiplier':$('#issue-tracker-recurring-multiplier').val(),
+							'recurring_type':$('#issue-tracker-recurring-type').val(),
 							'meta':meta
 						}, function(ret) {
 							return alert('Saved');

@@ -129,17 +129,38 @@ function Issuetracker_issueSet() {
 	$status=(int)$_REQUEST['status'];
 	$dueDate=$_REQUEST['dueDate'];
 	$newMeta=$_REQUEST['meta'];
-	$meta=dbOne('select meta from issuetracker_issues where id='.$id, 'meta');
-	$meta=json_decode($meta, true);
+	$recurring_multiplier=(int)$_REQUEST['recurring_multiplier'];
+	$recurring_type=$_REQUEST['recurring_type'];
+	$recurring_types=array('day', 'week', 'month', 'year');
+	if (!in_array($recurring_type, $recurring_types)) {
+		$recurring_type='day';
+	}
+	$oldData=dbRow('select * from issuetracker_issues where id='.$id);
+	$meta=json_decode($oldData['meta'], true);
 	foreach ($newMeta as $k=>$v) {
 		$meta[$k]=$v;
 	}
 	$sql='update issuetracker_issues set date_modified=now()'
 		.', name="'.addslashes($name).'", status='.$status
 		.', due_date="'.addslashes($dueDate).'"'
+		.', recurring_type="'.$recurring_type.'"'
+		.', recurring_multiplier='.$recurring_multiplier
 		.', meta="'.addslashes(json_encode($meta)).'"'
 		.' where id='.$id;
 	dbQuery($sql);
+	if ($recurring_multiplier>0 && $oldData['status']=='1' && $status==2) {
+		$sql='insert into issuetracker_issues set date_modified=now()'
+			.', name="'.addslashes($name).'", status=1'
+			.', due_date=date_add("'.addslashes($dueDate).'", interval '.$recurring_multiplier
+			.' '.$recurring_type.')'
+			.', recurring_type="'.$recurring_type.'"'
+			.', recurring_multiplier='.$recurring_multiplier
+			.', meta="'.addslashes(json_encode($meta)).'"'
+			.', type_id='.$oldData['type_id']
+			.', project_id='.$oldData['project_id']
+			.', date_created=now()';
+		dbQuery($sql);
+	}
 	return array('ok'=>1);
 }
 

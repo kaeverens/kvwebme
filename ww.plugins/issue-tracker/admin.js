@@ -1,6 +1,6 @@
 $(function() {
 	var ITStrings={
-		'issue':'issue'
+		'issue':'job'
 	};
 	$.post('/a/p=issue-tracker/f=typesGet', function(ret) {
 		var opts=['<option value="0"> -- choose -- </option>'];
