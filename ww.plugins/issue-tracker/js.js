@@ -204,6 +204,20 @@ $(function() {
 	}
 	function showIssues(pid) {
 		$content.empty();
+		var header='<label>From:<input class="date" id="issue-tracker-date-from"/></label>'
+			+'<label>To:<input class="date" id="issue-tracker-date-to"/></label>';
+		$(header).appendTo($content);
+		$('#issue-tracker-date-from')
+			.val(dateFrom.toYMD());
+		$('#issue-tracker-date-to')
+			.val(dateTo.toYMD());
+		$('#issue-tracker-date-from, #issue-tracker-date-to')
+			.datepicker({
+				'dateFormat':'yy-mm-dd',
+				'onClose':function() {
+					$table.fnDraw(1);
+				}
+			});
 		var table='<table style="width:100%">'
 			+'<thead><tr><th>ID</th><th>Scheduled<br/>Date</th><th>Status</th>'
 			+'<th>Name</th><th>Type</th>'
@@ -234,6 +248,14 @@ $(function() {
 				return nRow;
 			},
 			"fnServerData":function(sSource, aoData, fnCallback) {
+				aoData.push({
+					'name':'date-from',
+					'value':$('#issue-tracker-date-from').val()
+				});
+				aoData.push({
+					'name':'date-to',
+					'value':$('#issue-tracker-date-to').val()
+				});
 				aoData.push({
 					'name':'pid',
 					'value':$('#issuetracker-navbar .project').val()
@@ -523,4 +545,7 @@ $(function() {
 			return false;
 		});
 	}
+	window.dateTo=new Date();
+	window.dateTo.setDate(dateTo.getDate()+7);
+	window.dateFrom=new Date();
 });

@@ -192,7 +192,11 @@ function Issuetracker_issuesGetDT() {
 		default:
 			$orderby='due_date';
 	}
-	$filters=array('issuetracker_issues.project_id=issuetracker_projects.id');
+	$filters=array(
+		'issuetracker_issues.project_id=issuetracker_projects.id',
+		'due_date>="'.addslashes($_REQUEST['date-from']).'"',
+		'due_date<"'.addslashes($_REQUEST['date-to']).' 24"'
+	);
 	if ($search) {
 		$filters[]='name like "%'.addslashes($search).'%"';
 	}
