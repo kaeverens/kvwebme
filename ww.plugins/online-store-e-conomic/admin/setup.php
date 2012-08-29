@@ -1,4 +1,15 @@
 <?php
+/**
+	* e-conomic setup
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	$DBVARS['economic_user_id']=$_REQUEST['user_id'];
@@ -13,7 +24,8 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	Core_configRewrite();
 }
 
-$agreement_no=isset($DBVARS['economic_agreement_no'])?$DBVARS['economic_agreement_no']:'';
+$agreement_no=isset($DBVARS['economic_agreement_no'])
+	?$DBVARS['economic_agreement_no']:'';
 $user_id=isset($DBVARS['economic_user_id'])?$DBVARS['economic_user_id']:'';
 $password=isset($DBVARS['economic_password'])?$DBVARS['economic_password']:'';
 $enabled=isset($DBVARS['economic_enabled'])?(int)$DBVARS['economic_enabled']:0;
@@ -58,7 +70,9 @@ if ($DBVARS['economic_enabled']) {
 			.'<select name="debtorgroup">';
 		foreach ($debtorgroups as $k=>$v) {
 			echo '<option value="'.$k.'"';
-			if (isset($DBVARS['economic_debtorgroup']) && $DBVARS['economic_debtorgroup']==$k) {
+			if (isset($DBVARS['economic_debtorgroup'])
+				&& $DBVARS['economic_debtorgroup']==$k
+			) {
 				echo ' selected="selected"';
 			}
 			echo '>'.htmlspecialchars($v->Name).'</option>';
@@ -71,7 +85,9 @@ if ($DBVARS['economic_enabled']) {
 			.'<select name="productgroup">';
 		foreach ($productgroups as $k=>$v) {
 			echo '<option value="'.$k.'"';
-			if (isset($DBVARS['economic_productgroup']) && $DBVARS['economic_productgroup']==$k) {
+			if (isset($DBVARS['economic_productgroup'])
+				&& $DBVARS['economic_productgroup']==$k
+			) {
 				echo ' selected="selected"';
 			}
 			echo '>'.htmlspecialchars($v->Name).'</option>';
@@ -85,7 +101,8 @@ if ($DBVARS['economic_enabled']) {
 		// }
 	}
 	catch(Exception $e) {
-		echo '<tr><td></td><td class="error">'.__('Error connection to E-Conomic Server').'</td></tr>';
+		echo '<tr><td></td><td class="error">'
+			.__('Error connection to E-Conomic Server').'</td></tr>';
 	}
 }
 echo '</table>';

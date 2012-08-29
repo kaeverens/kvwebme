@@ -411,12 +411,17 @@ function Core_mail(
 	$sep2=md5($sep);
 	$headers.="Content-Type: multipart/related; boundary={$sep}";
 
+	// { body
 	$body="--{$sep}\r\n"
 		."Content-Type: multipart/alternative; boundary={$sep2}\r\n\r\n"
+		."--{$sep2}\r\n"
+		."Content-type: text/plain; charset=UTF-8\r\n\r\n"
+		.preg_replace('/<[^>]*>/', ' ', $html)."\r\n\r\n"
 		."--{$sep2}\r\n"
 		."Content-type: text/html; charset=UTF-8\r\n\r\n"
 		.$html."\r\n\r\n"
 		."--{$sep2}--\r\n";
+	// }
 
 	foreach ($images as $v) {
 		$body.="--{$sep}\r\n"

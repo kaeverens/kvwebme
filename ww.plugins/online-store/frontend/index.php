@@ -353,13 +353,23 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		$tpldir=USERBASE.'/ww.cache/online-store/';
 		@mkdir($tpldir);
 		// { invoice
-		if (!file_exists($tpldir.$PAGEDATA->id)) {
-			file_put_contents(
-				$tpldir.$PAGEDATA->id,
-				dbOne(
-					'select val from online_store_vars where name="email_invoice"', 'val'
-				)
+		if (!file_exists($tpldir.$PAGEDATA->id)
+			|| !filesize($tpldir.$PAGEDATA->id)
+		) {
+			$template=dbOne(
+				'select val from online_store_vars where name="email_invoice"', 'val'
 			);
+			if (!$template) {
+				$template=file_get_contents(
+					dirname(__FILE__).'/../admin/invoice_template_sample.html'
+				);
+				dbQuery('delete from online_store_vars where name="email_invoice"');
+				dbQuery(
+					'insert into online_store_vars set name="email_invoice", val="'
+					.addslashes($template).'"'
+				);
+			}
+			file_put_contents($tpldir.$PAGEDATA->id, $template);
 		}
 		$invoice=addslashes($smarty->fetch($tpldir.$PAGEDATA->id));
 		dbQuery("update online_store_orders set invoice='$invoice' where id=$id");
