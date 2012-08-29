@@ -81,6 +81,7 @@ $html.= ckeditor(
 $html.= '</div>';
 // }
 $html.= '</div>';
+WW_addScript('issue-tracker/str.js');
 WW_addScript('issue-tracker/admin.js');
 WW_addScript('/j/jquery.multiselect/jquery.multiselect.min.js');
 WW_addCSS('/j/jquery.multiselect/jquery.multiselect.css');

@@ -1,7 +1,4 @@
 $(function() {
-	var ITStrings={
-		'issue':'issue'
-	};
 	$.post('/a/p=issue-tracker/f=typesGet', function(ret) {
 		var opts=['<option value="0"> -- choose -- </option>'];
 		$.each(ret, function(k, v) {

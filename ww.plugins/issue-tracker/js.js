@@ -1,10 +1,4 @@
 $(function() {
-	var ITStrings={
-		'Project':'Project',
-		'project':'project',
-		'Issues':'Issues',
-		'Issue':'Issue'
-	};
 	var statii=[
 		undefined, 'Open', 'Completed'
 	];
