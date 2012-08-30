@@ -20,7 +20,7 @@ if ( isset($_REQUEST['action']) && $_REQUEST['action']=='Save') {
 			.', val="'.addslashes($v).'"'
 		);
 	}
-	$_SESSION['onlinestore_prices_shown_post_vat']=(int)$_REQUEST['vat_display'];
+	$_SESSION['onlinestore_prices_shown_post_vat']=(int)@$_REQUEST['vat_display'];
 	// }
 	// { currencies
 	$curs=array();
@@ -57,7 +57,6 @@ if ( isset($_REQUEST['action']) && $_REQUEST['action']=='Save') {
 		}
 	}
 	// }
-	/* TODO - translation /CB */
 	Core_cacheClear('online-store');
 	echo '<em>Saved</em>';
 }
@@ -67,11 +66,9 @@ $os_currencies=dbOne(
 	'value'
 );
 if (!$os_currencies) {
-	/* TODO - translation + more currencies please /CB */
 	$os_currencies='[{"name":"Euro","iso":"Eur","symbol":"€","value":1}]';
 }
 echo '<form method="post" action="'.$_url.'" />';
-/* TODO - translation /CB */
 // { default price display with/without VAT
 echo '<h3>VAT</h3>'
 	.'<p>Prices will be displayed on the frontend by default: '
@@ -87,6 +84,28 @@ if ($postvat) {
 }
 echo '>post-VAT</option></select>.</p>';
 // }
+// { invoices
+echo '<h3>Invoices</h3>'
+	.'<div id="invoices">'
+	.'<select name="online_store_vars[invoices_by_email]">';
+$opts=array(
+	'Invoice should be emailed to customer when the order is Paid',
+	'Invoice should not be emailed at all',
+	'Invoice should be emailed to customer when the order is Paid And Delivered'
+);
+$curval=(int)dbOne(
+	'select value from online_store_vars where name="invoices_by_email"',
+	'value'
+);
+foreach ($opts as $k=>$opt) {
+	echo '<option value="'.$k.'"';
+	if ($k==$curval) {
+		echo ' selected="selected"';
+	}
+	echo '>'.htmlspecialchars(__($opt)).'</option>';
+}
+echo '</select>';
+// }
 // { currencies
 echo '<h3>Currencies</h3>'
 	.'<div id="currencies">'
@@ -95,7 +114,6 @@ echo '<h3>Currencies</h3>'
 	.'</div>';
 // }
 // { discounts
-/* TODO - translation /CB */
 echo '<h3>Group discounts</h3><table>';
 $groups=dbAll('select * from groups order by name');
 foreach ($groups as $group) {
@@ -109,7 +127,6 @@ foreach ($groups as $group) {
 }
 echo '</table>';
 // }
-/* TODO - translation /CB */
 echo '<input type="submit" name="action" value="Save" /></form>';
 WW_addScript('online-store/admin/site-options.js');
 WW_addInlineScript('window.os_currencies='.$os_currencies.';');

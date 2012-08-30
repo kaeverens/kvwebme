@@ -34,6 +34,38 @@ function OnlineStore_processOrder($id, $order=false) {
 		file($order['callback']);
 	}
 	// }
+	Core_trigger('after-order-processed', array($order));
+	OnlineStore_sendInvoiceEmail($id, $order=false);
+}
+
+// }
+// { OnlineStore_sendInvoiceEmail
+
+/**
+	* sends an invoice if the status is right
+	*
+	* @param int   $id    ID of the order
+	* @param array $order details of the order
+	*
+	* @return null
+	*/
+function OnlineStore_sendInvoiceEmail($id, $order=false) {
+	if ($order===false) {
+		$order=dbRow("SELECT * FROM online_store_orders WHERE id=$id");
+	}
+	$sendAt=(int)dbOne(
+		'select val from online_store_vars where name="invoices_by_email"',
+		'val'
+	);
+	if ($sendAt==0 && $order['status']!='1') {
+		return;
+	}
+	if ($sendAt==1) { // never send
+		return;
+	}
+	if ($sendAt==2 && $order['status']!='2') {
+		return;
+	}
 	$form_vals=json_decode($order['form_vals']);
 	$items=json_decode($order['items']);
 	// { start export
@@ -46,7 +78,6 @@ function OnlineStore_processOrder($id, $order=false) {
 		.'"Email","Stock Number","Amt","Price","Item ID"'
 	);
 	// }
-	// { send emails
 	$short_domain=str_replace('www.', '', $_SERVER['HTTP_HOST']);
 	// { work out from/to
 	$page=Page::getInstanceByType('online-store');
@@ -71,6 +102,7 @@ function OnlineStore_processOrder($id, $order=false) {
 		$headers.='BCC: '.$bcc."\r\n";
 	}
 	// }
+	Core_trigger('send-invoice', array($order));
 	// { send invoice
 	Core_mail(
 		$form_vals->Billing_Email,
@@ -231,8 +263,7 @@ function OnlineStore_processOrder($id, $order=false) {
 			join("\n\r", $exportcsv)
 		);
 	}
-	// }
-	Core_trigger('after-order-processed', array($order));
+
 }
 
 // }

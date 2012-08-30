@@ -1182,11 +1182,26 @@ function Core_adminPageEdit() {
 		$original_body='<h1>'.htmlspecialchars($name).'</h1><p>&nbsp;</p>';
 	}
 	else {
+		$lim=(int)@$GLOBALS['DBVARS']['site_page_length_limit'];
 		if (is_array($_REQUEST['body'])) {
+			if ($lim) {
+				foreach ($_REQUEST['body'] as $k=>$v) {
+					if (strlen($v)>$lim) {
+						$_REQUEST['body'][$k]=preg_replace(
+							'/<[^>]*$/', '', substr($v, 0, $lim)
+						);
+					}
+				}
+			}
 			$original_body=json_encode($_REQUEST['body']);
 		}
 		else {
 			$original_body=$_REQUEST['body'];
+			if ($lim && strlen($original_body)>$lim) {
+				$original_body=preg_replace(
+					'/<[^>]*$/', '', substr($original_body, 0, $lim)
+				);
+			}
 		}
 	}
 		

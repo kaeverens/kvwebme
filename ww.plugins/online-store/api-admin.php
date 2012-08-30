@@ -110,8 +110,12 @@ function OnlineStore_adminChangeOrderStatus() {
 	$id=(int)$_REQUEST['id'];
 	$status=(int)$_REQUEST['status'];
 	
+	$invoices_by_email=(int)dbOne(
+		'select value from online_store_vars where name="invoices_by_email"',
+		'value'
+	);
 	if ($status==1) { // paid
-		require dirname(__FILE__).'/verify/process-order.php';
+		require dirname(__FILE__).'/order-status.php';
 		OnlineStore_processOrder($id);
 	}
 	elseif ($status==3) { // cancelled
@@ -123,6 +127,8 @@ function OnlineStore_adminChangeOrderStatus() {
 	}
 	else {
 		dbQuery('update online_store_orders set status='.$status.' where id='.$id);
+		require dirname(__FILE__).'/order-status.php';
+		OnlineStore_sendInvoiceEmail($id);
 	}
 	return array('ok'=>1);
 }

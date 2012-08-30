@@ -65,7 +65,7 @@ if ($result!='00') {
 // }
 // { process payment
 $order=dbRow("SELECT * FROM online_store_orders WHERE id=$id");
-require dirname(__FILE__).'/process-order.php';
+require dirname(__FILE__).'/../order-status.php';
 OnlineStore_processOrder($id, $order);
 // }
 $rid=$p->vars['online_store_redirect_to'];

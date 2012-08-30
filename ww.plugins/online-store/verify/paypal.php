@@ -58,7 +58,7 @@ if (!$fp) {
 			}
 
 			// process payment
-			require dirname(__FILE__).'/process-order.php';
+			require dirname(__FILE__).'/../order-status.php';
 			OnlineStore_processOrder($id, $order);
 		}
 		else if (strcmp($res, "INVALID") == 0) {

@@ -94,7 +94,12 @@ function OnlineStore_checkVoucher($params) {
 	*/
 function OnlineStore_getCountries() {
 	$page_id=(int)$_REQUEST['page_id'];
-	$countries=json_decode(dbOne('select value from page_vars where page_id='.$page_id.' and name="online-store-countries"', 'value'));
+	$countries=json_decode(
+		dbOne(
+			'select value from page_vars where page_id='.$page_id
+			.' and name="online-store-countries"', 'value'
+		)
+	);
 	$c=array();
 	foreach ($countries as $k=>$v) {
 		$c[]=$k;
@@ -170,6 +175,13 @@ function OnlineStore_invoicePdf() {
 // }
 // { OnlineStore_invoiceGet
 
+/**
+	* retrieve an invoice owned by the user
+	*
+	* @param int $id ID of the invoice
+	*
+	* @return string
+	*/
 function OnlineStore_invoiceGet($id) {
 	$inv=dbOne(
 		'select invoice from online_store_orders where id='.$id.' and user_id='
@@ -250,11 +262,13 @@ function OnlineStore_loadSavedList($params) {
 	*/
 function OnlineStore_pandpGetList() {
 	$page_id=(int)$_REQUEST['page_id'];
-	$pandp=json_decode(dbOne(
-		'select value from page_vars where page_id='.$page_id
-		.' and name="online_stores_postage"',
-		'value'
-	));
+	$pandp=json_decode(
+		dbOne(
+			'select value from page_vars where page_id='.$page_id
+			.' and name="online_stores_postage"',
+			'value'
+		)
+	);
 	$c=array();
 	foreach ($pandp as $k=>$v) {
 		$c[]=$v->name;
@@ -351,18 +365,18 @@ function OnlineStore_saveSavedList($params) {
 	* @return array status
 	*/
 function OnlineStore_userRegister() {
-  $email=$_REQUEST['email'];
-  if (!isset($_SESSION['privacy'])) {
-    $_SESSION['privacy']=array();
-  } 
-  $_SESSION['privacy']['registration']=array(
-    'token'=> 'token',
-    'custom'=> array(),
-    'email'=>$email
-  );
-  $_REQUEST['token']='token';
-  require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/api-funcs.php';
-  return Core_register();
+	$email=$_REQUEST['email'];
+	if (!isset($_SESSION['privacy'])) {
+		$_SESSION['privacy']=array();
+	}
+	$_SESSION['privacy']['registration']=array(
+		'token'=> 'token',
+		'custom'=> array(),
+		'email'=>$email
+	);
+	$_REQUEST['token']='token';
+	require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/api-funcs.php';
+	return Core_register();
 }
 
 // }
