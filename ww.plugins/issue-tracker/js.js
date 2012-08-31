@@ -2,6 +2,8 @@ $(function() {
 	var statii=[
 		undefined, 'Open', 'Completed'
 	];
+	var it_edit_all=window.it_edit_all||[];
+	var it_see_all=window.it_see_all||[];
 	var vals={
 		'projects':[],
 		'types':[]

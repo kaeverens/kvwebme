@@ -1,4 +1,23 @@
 <?php
+/**
+	* panels admin API
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+// { Panels_adminSave
+
+/**
+	* save a panel
+	*
+	* @return null
+	*/
 function Panels_adminSave() {
 	$id=(int)$_REQUEST['id'];
 	$widgets=addslashes($_REQUEST['data']);
@@ -6,6 +25,15 @@ function Panels_adminSave() {
 	Core_cacheClear('panels');
 	Core_cacheClear('pages');
 }
+
+// }
+// { Panels_adminVisibilityGet
+
+/**
+	* get visibility of panel
+	*
+	* @return array
+	*/
 function Panels_adminVisibilityGet() {
 	$visible=array();
 	$hidden=array();
@@ -28,11 +56,26 @@ function Panels_adminVisibilityGet() {
 		$hidden=explode(',', $_REQUEST['hidden']);
 	}
 	return array(
-		'visible'=>panel_selectkiddies(0, 1, $visible, 0),
-		'hidden'=>panel_selectkiddies(0, 1, $hidden, 0)
+		'visible'=>Panels_selectChildPages(0, 1, $visible, 0),
+		'hidden'=>Panels_selectChildPages(0, 1, $hidden, 0)
 	);
 }
-function panel_selectkiddies($i=0, $n=1, $s=array(), $id=0, $prefix='') {
+
+// }
+// { Panels_selectChildPages
+
+/**
+	* select list of sub-pages as select options
+	*
+	* @param int   $i      parent ID
+	* @param int   $n      depth of child
+	* @param array $s      don't remember
+	* @param int   $id     already selected page
+	* @param int   $prefix something or other
+	*
+	* @return html
+	*/
+function Panels_selectChildPages($i=0, $n=1, $s=array(), $id=0, $prefix='') {
 	$q=dbAll(
 		'select name,id from pages where parent="'.$i.'" and id!="'.$id
 		.'" order by ord,name'
@@ -48,8 +91,10 @@ function panel_selectkiddies($i=0, $n=1, $s=array(), $id=0, $prefix='') {
 			$html.=(in_array($r['id'], $s))?' selected="selected">':'>';
 			$name=strtolower(str_replace(' ', '-', $r['name']));
 			$html.= htmlspecialchars($prefix.$name).'</option>';
-			$html.=panel_selectkiddies($r['id'], $n+1, $s, $id, $name.'/');
+			$html.=Panels_selectChildPages($r['id'], $n+1, $s, $id, $name.'/');
 		}
 	}
 	return $html;
 }
+
+// }
