@@ -709,7 +709,7 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 		);
 		$OSE->setDebtorPostCode(
 			$uid,
-			$details['Billing_Postcode']
+			isset($details['Billing_Postcode'])?$details['Billing_Postcode']:'N/A'
 		);
 		$OSE->setDebtorCity(
 			$uid,
@@ -773,7 +773,11 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 	);
 	// }
 	// { book the invoice
-	$bookId=$OSE->bookInvoice($invId);
+	if (isset($DBVARS['economic_book_immediately'])
+		&& $DBVARS['economic_book_immediately']
+	) {
+		$bookId=$OSE->bookInvoice($invId);
+	}
 	// }
 	// { record e-conomic invoice ID in order's meta data
 	$meta=json_decode($order['meta'], true);
