@@ -234,7 +234,12 @@ function OnlineStore_adminInvoicesGetAsPdf() {
 				if (!$i) {
 					continue;
 				}
-				file_put_contents($hfile, $i);
+				file_put_contents(
+					$hfile,
+					"\xEF\xBB\xBF".'<html><head><meta http-equiv="Content-Type"'
+						.' content="text/html;'
+						.' charset=UTF-8" /></head><body>'.utf8_encode($i).'</body></html>'
+				);
 			}
 			require_once $_SERVER['DOCUMENT_ROOT']
 				.'/ww.incs/dompdf/dompdf_config.inc.php';
