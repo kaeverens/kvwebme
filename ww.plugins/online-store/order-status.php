@@ -119,7 +119,7 @@ function OnlineStore_sendInvoiceEmail($id, $order=false) {
 			continue;
 		}
 		$p=Product::getInstance($item->id);
-		$exportcsv[]=
+		$exportcsv[]= // { line to export
 			'"'
 			.str_replace('"', '""', @$form_vals->Billing_Phone)
 			.'","'
@@ -145,7 +145,7 @@ function OnlineStore_sendInvoiceEmail($id, $order=false) {
 			.$item->cost
 			.'","'
 			.$item->id
-			.'"';
+			.'"'; // }
 		$pt=ProductType::getInstance($p->vals['product_type_id']);
 		if ($pt->is_voucher) {
 			$html=$pt->voucher_template;
@@ -235,35 +235,18 @@ function OnlineStore_sendInvoiceEmail($id, $order=false) {
 			$customer_filename=str_replace(array('..', '/'), '', $customer_filename);
 			@mkdir(USERBASE.'/'.$customer, 0777, true);
 			$phone=preg_replace('/[^0-9\(\)\+]/', '', @$form_vals->Billing_Phone);
+			$fcontent='"Name","Street","Street 2","Postcode","Email","Phone"'."\n".'"'.str_replace( '"', '""', @$form_vals->Billing_FirstName.' '.@$form_vals->Billing_Surname).'","'.str_replace('"', '""', @$form_vals->Billing_Street).'","'.str_replace('"', '""', @$form_vals->Billing_Street2).'","'.str_replace('"', '""', @$form_vals->Billing_Postcode).'","'.str_replace('"', '""', @$form_vals->Billing_Email).'","'.str_replace('"', '""', $form_vals->Billing_Phone).'"';
 			file_put_contents(
 				USERBASE.'/'.$customer.'/'.$customer_filename,
-				'"Name","Street","Street 2","Postcode","Email","Phone"'."\n"
-				.'"'
-				.str_replace(
-					'"',
-					'""',
-					@$form_vals->Billing_FirstName.' '.@$form_vals->Billing_Surname
-				)
-				.'","'
-				.str_replace('"', '""', @$form_vals->Billing_Street)
-				.'","'
-				.str_replace('"', '""', @$form_vals->Billing_Street2)
-				.'","'
-				.str_replace('"', '""', @$form_vals->Billing_Postcode)
-				.'","'
-				.str_replace('"', '""', @$form_vals->Billing_Email)
-				.'","'
-				.str_replace('"', '""', $form_vals->Billing_Phone)
-				.'"'
+				"\xEF\xBB\xBF".$fcontent
 			);
 		}
 		@mkdir(USERBASE.'/'.$export, 0777, true);
 		file_put_contents(
 			USERBASE.'/'.$export.'/order'.$id.'.csv',
-			join("\n\r", $exportcsv)
+			"\xEF\xBB\xBF".join("\n\r", $exportcsv)
 		);
 	}
-
 }
 
 // }
