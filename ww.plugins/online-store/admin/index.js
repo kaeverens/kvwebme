@@ -1,4 +1,3 @@
-/* TODO - translation /CB */
 window.os_statuses=['Unpaid', 'Paid', 'Paid and Delivered', 'Cancelled'];
 function os_invoice(id, print){
 	var w=$(window), wh=w.height(), ww=w.width(), p=print?'&print=1':'';
@@ -371,35 +370,6 @@ $(function(){
 		$('#onlinestore-customersUsergroup').autocomplete({
 			'source': names
 		});
-	});
-	$('#onlinestore-orders-table').dataTable({
-		'bJQueryUI':true
-	});
-	$('#onlinestore-orders-action').change(function() {
-		var val=+$(this).val();
-		var $inps=$('#onlinestore-orders-table tbody input[type="checkbox"]');
-		var ids=[];
-		$inps.each(function() {
-			if (!$(this).attr('checked')) {
-				return;
-			}
-			var id=+$(this).closest('tr').data('id');
-			ids.push(id);
-		});
-		if (val<4) {
-			for (var j=0;j<ids.length;++j) {
-				var id=ids[j];
-				onlinestoreStatus(id, val-1);
-				$('#os_status_select_'+id).change();
-			}
-		}
-		$(this).val(0);
-	});
-	$('#onlinestore-orders-selectall').click(function() {
-		$('#onlinestore-orders-table input[type=checkbox]').attr(
-			'checked',
-			$(this).attr('checked')?true:false
-		);
 	});
 	var p=$('#postage').val();
 	if (p) {

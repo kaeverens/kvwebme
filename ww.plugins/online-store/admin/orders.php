@@ -112,6 +112,7 @@ if (is_array($rs) && count($rs)) {
 		.'<option value="1">Mark as Unpaid</option>'
 		.'<option value="2">Mark as Paid or Authorised</option>'
 		.'<option value="3">Mark as Delivered</option>'
+		.'<option value="4">Download as PDF</option>'
 		.'</select>';
 }
 /* TODO - translation /CB */

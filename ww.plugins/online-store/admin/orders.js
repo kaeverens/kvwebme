@@ -200,6 +200,9 @@ $(function(){
 				$('#os_status_select_'+id).change();
 			}
 		}
+		if (val==4) {
+			document.location='/a/p=online-store/f=adminInvoicesGetAsPdf&ids='+ids;
+		}
 		$(this).val(0);
 	});
 	$('#onlinestore-orders-selectall').click(function() {

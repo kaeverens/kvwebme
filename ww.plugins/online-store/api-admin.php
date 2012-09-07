@@ -217,3 +217,46 @@ function OnlineStore_adminUserGroupsGet() {
 }
 
 // }
+function OnlineStore_adminInvoicesGetAsPdf() {
+	$ids=explode(',', $_REQUEST['ids']);
+	$files=array();
+	$foundIds=array();
+	foreach ($ids as $id) {
+		$id=(int)$id;
+		$pfile=USERBASE.'/ww.cache/online-store/invoice'.$id.'.pdf';
+		if (!file_exists($pfile)) {
+			$hfile=USERBASE.'/ww.cache/online-store/invoice'.$id;
+			if (!file_exists($hfile) || !filesize($hfile)) {
+				$i=dbOne(
+					'select invoice from online_store_orders where id='.$id,
+					'invoice'
+				);
+				if (!$i) {
+					continue;
+				}
+				file_put_contents($hfile, $i);
+			}
+			require_once $_SERVER['DOCUMENT_ROOT']
+				.'/ww.incs/dompdf/dompdf_config.inc.php';
+			$html=file_get_contents($hfile);
+			$dompdf=new DOMPDF();
+			$dompdf->set_base_path($_SERVER['DOCUMENT_ROOT']);
+			$dompdf->load_html(utf8_decode(str_replace('€', '&euro;', $html)), 'UTF-8');
+			$dompdf->set_paper('a4');
+			$dompdf->render();
+			file_put_contents($pfile, $dompdf->output());
+		}
+		$files[]='invoice'.$id.'.pdf';
+		$foundIds[]=$id;
+	}
+	$zdir=USERBASE.'/ww.cache/online-store/';
+	$zfile=USERBASE.'/ww.cache/online-store/invoices-'.join(',', $foundIds).'.zip';
+	$filesToZip=join(' ', $files);
+	`cd $zdir && zip -D $zfile $filesToZip`;
+	header('Content-type: application/zip');
+	header('Content-Disposition: attachment; filename="invoices.zip"');
+	$fp=fopen($zfile, 'r');
+	fpassthru($fp);
+	fclose($fp);
+	exit;
+}
