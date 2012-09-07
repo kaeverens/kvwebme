@@ -876,6 +876,15 @@ function Products_typeEdit(id) {
 		$('<a href="#" class="docs" page="/ww.plugins/products/docs/codes.html">codes</a>')
 			.appendTo(panel);
 	}
+	function showTemplateExpiredNotification(panel) {
+		$('<p>'+__('This will appear as a popup if someone tries to add a product to their cart which is expired')+'</p>').appendTo(panel);
+		$('<textarea/>')
+			.val(tdata.template_expired_notification)
+			.appendTo(panel)
+			.ckeditor(CKEditor_config);
+		$('<a href="#" class="docs" page="/ww.plugins/products/docs/codes.html">codes</a>')
+			.appendTo(panel);
+	}
 	function showSingleView(panel) {
 		$('<textarea/>')
 			.val(tdata.singleview_template)
@@ -960,6 +969,9 @@ function Products_typeEdit(id) {
 	function updateSingleView() {
 		tdata.singleview_template=$('#t3 textarea').val();
 	}
+	function updateTemplateExpiredNotification() {
+		tdata.template_expired_notification=$('#t4 textarea').val();
+	}
 	function updateValues() {
 		switch(activeTab) {
 			case 0: // { main
@@ -974,6 +986,9 @@ function Products_typeEdit(id) {
 			case 3: // { singleview
 				return updateSingleView();
 				// }
+			case 4: // { expired notification
+				return updateTemplateExpiredNotification();
+				// }
 		}
 	}
 	$.post('/a/p=products/f=typeGet/id='+id, function(res) {
@@ -985,7 +1000,8 @@ function Products_typeEdit(id) {
 			+'<li><a href="#t1">Data Fields</a></li>'
 			+'<li><a href="#t2">Multi-View Template</a></li>'
 			+'<li><a href="#t3">Single-View Template</a></li>'
-			+'</ul><div id="t0"/><div id="t1"/><div id="t2"/><div id="t3"/></div>'
+			+'<li><a href="#t4">Expired Notification Template</a></li>'
+			+'</ul><div id="t0"/><div id="t1"/><div id="t2"/><div id="t3"/><div id="t4"/></div>'
 		)
 			.appendTo($content)
 			.tabs({
@@ -1005,6 +1021,9 @@ function Products_typeEdit(id) {
 							// }
 						case 3: // { singleview
 							return showSingleView(ui.panel);
+							// }
+						case 4: // { expired notification
+							return showTemplateExpiredNotification(ui.panel);
 							// }
 					}
 				}

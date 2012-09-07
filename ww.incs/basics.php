@@ -519,6 +519,50 @@ function Core_siteVar($name, $value=null) {
 }
 
 // }
+// { Core_smartySetup
+
+/**
+	* set up Smarty with common functions
+	*
+	* @param string $compile_dir the caching directory to use
+	*
+	* @return object the Smarty object
+	*/
+function Core_smartySetup($compile_dir) {
+	global $DBVARS, $PLUGINS, $PAGEDATA;
+	$smarty = new Smarty;
+	$smarty->left_delimiter = '{{';
+	$smarty->right_delimiter = '}}';
+	$smarty->assign(
+		'WEBSITE_TITLE',
+		htmlspecialchars($DBVARS['site_title'])
+	);
+	$smarty->assign(
+		'WEBSITE_SUBTITLE',
+		htmlspecialchars($DBVARS['site_subtitle'])
+	);
+	$smarty->assign('GLOBALS', $GLOBALS);
+	$smarty->assign('LANGUAGE', @$_SESSION['language']);
+	$smarty->assign('LOCATIONNAME', @$_SESSION['location']['name']);
+	$smarty->register_function('BREADCRUMBS', 'Template_breadcrumbs');
+	$smarty->register_function('LANGUAGES', 'Core_languagesGetUi');
+	$smarty->register_function('LOCATIONSELECTOR', 'Core_locationsGetUi');
+	$smarty->register_function('LOGO', 'Template_logoDisplay');
+	$smarty->register_function('MENU', 'menuDisplay');
+	$smarty->assign('QRCODE', '/a/f=qrCode/id='.$PAGEDATA->id);
+	$smarty->register_function('nuMENU', 'Core_menuShowFg');
+	foreach ($PLUGINS as $pname=>$plugin) {
+		if (isset($plugin['frontend']['template_functions'])) {
+			foreach ($plugin['frontend']['template_functions'] as $fname=>$vals) {
+				$smarty->register_function($fname, $vals['function']);
+			}
+		}
+	}
+	$smarty->compile_dir=$compile_dir;
+	return $smarty;
+}
+
+// }
 // { Core_trigger
 
 /**

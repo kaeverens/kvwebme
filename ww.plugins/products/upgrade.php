@@ -336,3 +336,7 @@ if ($version==43) { // add Location to watchlists
 	dbQuery('alter table products_watchlists add location_id int default 0');
 	$version=44;
 }
+if ($version==44) { // add expired_notification template
+	dbQuery('alter table products_types add template_expired_notification text');
+	$version=45;
+}

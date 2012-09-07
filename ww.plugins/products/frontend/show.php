@@ -800,24 +800,6 @@ function Products_reviews($params, $smarty) {
 }
 
 // }
-// { Products_setupSmarty
-
-/**
-	* setup Smarty with Products-specific stuff
-	*
-	* @return object the Smarty object
-	*/
-function Products_setupSmarty() {
-	$smarty=Core_smartySetup(USERBASE.'/ww.cache/products/templates_c');
-	$smarty->template_dir='/ww.cache/products/templates';
-	$smarty->assign('PAGEDATA', $GLOBALS['PAGEDATA']);
-	if (isset($_SESSION['userdata'])) {
-		$smarty->assign('USERDATA', $_SESSION['userdata']);
-	}
-	return $smarty;
-}
-
-// }
 // { Products_show
 
 /**

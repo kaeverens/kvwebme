@@ -11,6 +11,38 @@
 	* @link     None
 	*/
 
+function OnlineStore_addProductToCart() {
+	$id=(int)$_REQUEST['product_id'];
+	$p=dbRow('select id,expires_on from products where id='.$id);
+	if ($p && $p['expires_on']>date('Y-m-d')) {
+		return array('ok'=>1);
+	}
+	unset($_SESSION['online-store']['items']['products_'.$id]);
+	if (!$p) {
+		return array('error'=>'does not exist');
+	}
+	return array('error'=>'expired', 'date_expired'=>$p['expires_on']);
+}
+function OnlineStore_getExpiryNotification() {
+	$id=(int)$_REQUEST['id'];
+	$p=dbRow('select * from products where id='.$id);
+	$product=Product::getInstance($id, $p, true);
+	$typeid=$p['product_type_id'];
+	$nfile=USERBASE.'/ww.cache/products/templates/expiry_notification_'.$typeid;
+	if (!file_exists($nfile)) {
+		$t=dbRow('select template_expired_notification from products_types where id='.$typeid);
+		$template=$t['template_expired_notification']
+			?$t['template_expired_notification']
+			:'This product has expired. You cannot add it to the cart.';
+		file_put_contents($nfile, $template);
+	}
+	$smarty=Products_setupSmarty();
+	$smarty->assign('product', $product);
+	$smarty->assign('product_id', $product->get('id'));
+	$smarty->assign('_name', __FromJson($product->name));
+	$smarty->assign('_stock_number', $product->stock_number);
+	return $smarty->fetch($nfile);
+}
 // { OnlineStore_checkQrCode
 
 /**

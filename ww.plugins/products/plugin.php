@@ -136,7 +136,7 @@ $plugin=array(
 		'menu-subpages' => 'Products_getSubCategoriesAsMenu',
 		'menu-subpages-html' => 'Products_getSubCategoriesAsMenuHtml'
 	), // }
-	'version' => '44'
+	'version' => '45'
 );
 // }
 
@@ -839,6 +839,8 @@ class ProductType{
 		$smarty=Products_setupSmarty();
 		$smarty->assign('product', $product);
 		$smarty->assign('product_id', $product->get('id'));
+		$smarty->assign('_name', __FromJson($product->name));
+		$smarty->assign('_stock_number', $product->stock_number);
 		if (!is_array(@$this->data_fields)) {
 			$this->data_fields=array();
 		}
@@ -996,8 +998,6 @@ class ProductType{
 			}
 			$PAGEDATA->title=str_replace('{{$'.$f->n.'}}', $val, $PAGEDATA->title);
 		}
-		$smarty->assign('_name', __FromJson($product->name));
-		$smarty->assign('_stock_number', $product->stock_number);
 		if (isset($product->ean)) {
 			$smarty->assign('_ean', $product->ean);
 		}
@@ -2138,6 +2138,24 @@ function Products_search() {
 	}
 	$c.='</ul>';
 	return $c;
+}
+
+// }
+// { Products_setupSmarty
+
+/**
+	* setup Smarty with Products-specific stuff
+	*
+	* @return object the Smarty object
+	*/
+function Products_setupSmarty() {
+	$smarty=Core_smartySetup(USERBASE.'/ww.cache/products/templates_c');
+	$smarty->template_dir='/ww.cache/products/templates';
+	$smarty->assign('PAGEDATA', $GLOBALS['PAGEDATA']);
+	if (isset($_SESSION['userdata'])) {
+		$smarty->assign('USERDATA', $_SESSION['userdata']);
+	}
+	return $smarty;
 }
 
 // }

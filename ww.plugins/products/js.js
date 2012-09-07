@@ -111,12 +111,26 @@ $(function(){
 			alert('please enter all required fields');
 			return false;
 		}
-		$.post('/a/f=nothing',
+		$.post('/a/p=online-store/f=addProductToCart',
 			$this.serializeArray(),
-			function(){
-				document.location=redirect=='checkout'
-					?'/_r?type=online-store'
-					:document.location.toString().replace('/showcart', '')+'/showcart';
+			function(ret){
+				if (ret && ret.ok) {
+					document.location=redirect=='checkout'
+						?'/_r?type=online-store'
+						:document.location.toString().replace('/showcart', '')+'/showcart';
+					return;
+				}
+				if (ret.error=='expired') {
+					$.post(
+						'/a/p=online-store/f=getExpiryNotification',
+						{'id':$this.find('input[name=product_id]').val()},
+						function(ret) {
+							$('<div>'+ret+'</div>').dialog({
+								'modal':true
+							});
+						}
+					);
+				}
 			}
 		);
 		return false;

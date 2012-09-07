@@ -1217,6 +1217,8 @@ function Products_adminTypeEdit() {
 		.addslashes($d['prices_based_on_usergroup'])
 		.'",multiview_template_header="'
 		.addslashes(Core_sanitiseHtmlEssential($d['multiview_template_header']))
+		.'",template_expired_notification="'
+		.addslashes(Core_sanitiseHtmlEssential($d['template_expired_notification']))
 		.'",multiview_template_footer="'
 		.addslashes(Core_sanitiseHtmlEssential($d['multiview_template_footer']))
 		.'" where id='.(int)$d['id'];
