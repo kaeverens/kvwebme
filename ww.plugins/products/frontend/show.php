@@ -1087,13 +1087,26 @@ function Products_showRelatedProducts($params, $smarty) {
 		array(
 			'mode'=>'table',
 			'type'=>'',
-			'button_text'=>__('Related Products')
+			'button_text'=>__('Related Products'),
+			'template_header'=>false,
+			'template_body'=>false
 		),
 		$params
 	);
 	if ($params['mode']=='popup') {
 		WW_addScript('products/j/products-related-popup.js');
-		return '<button class="products-related-popup">'
+		$button='<button class="products-related-popup"';
+		if ($params['template_body']) {
+			$button.=' data-template-body="'
+				.htmlspecialchars($params['template_body'])
+			.'"';
+		}
+		if ($params['template_header']) {
+			$button.=' data-template-header="'
+				.htmlspecialchars($params['template_header'])
+			.'"';
+		}
+		return $button.'>'
 			.$params['button_text']
 			.'</button>';
 	}
