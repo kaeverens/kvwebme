@@ -1011,7 +1011,7 @@ function Products_adminProductsList() {
 	$ps=dbAll('select id,name from products order by name');
 	$arr=array();
 	foreach ($ps as $v) {
-		$arr[$v['id']]=$v['name'];
+		$arr[$v['id']]=__FromJson($v['name']);
 	}
 	return $arr;
 }

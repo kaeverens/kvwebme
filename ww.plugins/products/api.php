@@ -178,6 +178,44 @@ function Products_getImgs() {
 }
 
 // }
+// { Products_getProductMainDetails
+
+/**
+	* utility function to return an array of common product details
+	*
+	* @param object $p product
+	*/
+function Products_getProductMainDetails($p) {
+	$parr=array(
+		'id'=>$p->id,
+		'name'=>__FromJson($p->name)
+	);
+	if ($p->vals['online-store']) {
+		$o=$p->vals['online-store'];
+		if ($o['_price']) {
+			$parr['_price']=$o['_price'];
+		}
+		if ($o['_sale_price']) {
+			$parr['_sale_price']=$o['_sale_price'];
+		}
+		if ($o['_bulk_price']) {
+			$parr['_bulk_price']=$o['_bulk_price'];
+		}
+		if ($o['_bulk_amount']) {
+			$parr['_bulk_amount']=$o['_bulk_amount'];
+		}
+		if ($o['_sold_amt']) {
+			$parr['_sold_amt']=$o['_sold_amt'];
+		}
+		if ($o['_stock_amt']) {
+			$parr['_stock_amt']=$o['_stock_amt'];
+		}
+	}
+	$parr['link']=$p->getRelativeUrl();
+	return $parr;
+}
+
+// }
 // { Products_getProductOwnersByCoords
 
 /**
@@ -243,6 +281,61 @@ function Products_getProductsByUser() {
 			'name'=>__FromJson($p->name),
 			'url'=>$p->getRelativeUrl()
 		);
+	}
+	return $products;
+}
+
+// }
+// { Products_getProduct
+
+/**
+	* return a single product's main details
+	*
+	* @return array
+	*/
+function Products_getProduct() {
+	$p=Product::getInstance((int)$_REQUEST['id']);
+	if (!$p || !$p->id) {
+		return false;
+	}
+	return Products_getProductMainDetails($p);
+}
+
+// }
+// { Products_getRelatedProducts
+
+/**
+	* return a list of products by relation
+	*/
+function Products_getRelatedProducts() {
+	$pid=(int)$_REQUEST['id'];
+	$rs=dbAll(
+		'select * from products_relations where from_id='.$pid.' or to_id='.$pid
+	);
+	$related=array();
+	$rtypes=array();
+	foreach ($rs as $r) {
+		$rid=(int)$r['relation_id'];
+		if (!isset($rtypes[$rid])) {
+			$rtypes[$rid]=dbOne(
+				'select one_way from products_relation_types where id='.$rid, 'one_way'
+			);
+		}
+		if ($rtypes[$rid]!=1) {
+			$related[]=$r['from_id']==$pid?$r['to_id']:$r['from_id'];
+		}
+		elseif ($r['from_id']==$pid) {
+			$related[]=$r['to_id'];
+		}
+	}
+	$related=array_unique($related);
+	$products=array();
+	foreach ($related as $pid) {
+		$p=Product::getInstance($pid);
+		if (!$p || !$p->id) {
+			continue;
+		}
+		$products[]=Products_getProductMainDetails($p);
 	}
 	return $products;
 }

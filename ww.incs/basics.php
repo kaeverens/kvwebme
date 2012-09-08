@@ -377,7 +377,7 @@ function Core_mail(
 	$html=$smarty->fetch($dirname.'/'.$template.'.tpl'); 
 	$headers ='MIME-Version: 1.0' . "\r\n";
 	$headers.='Reply-to: '.$from."\r\n";
-	$headers.='From-to: '.$from."\r\n";
+	$headers.='From: '.$from."\r\n";
 	$headers.='X-Mailer: PHP/'.phpversion()."\r\n";
 	$headers.=$additional_headers;
 	dbQuery(

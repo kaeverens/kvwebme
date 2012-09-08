@@ -761,14 +761,25 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 	$fname=$dirname.'/'.$invId.'.pdf';
 	@mkdir($dirname);
 	file_put_contents($fname, $pdf);
+	$gs=dbAll('select * from users_groups where groups_id=1', 'user_accounts_id');
+	$emails=array_keys(
+		dbAll(
+			'select email from user_accounts where id in ('
+			.join(',', array_keys($gs)).')',
+			'email'
+		)
+	);
 	send_mail(
-		$details['Billing_Email'], 'admin@localhost.localdomain',
-		'Invoice '.$invId, 'test5', array(
+		$details['Billing_Email'], 'no-reply@'.$_SERVER['HTTP_HOST'],
+		'Invoice '.$invId, 'Your invoice is attached.', array(
 			array(
 				'tmp_name'=>$fname,
 				'name'=>$invId.'.pdf',
 				'type'=>'application/pdf'
 			)
+		),
+		array(
+			'BCC'=>join(',', $emails)
 		)
 	);
 	// }

@@ -1,6 +1,7 @@
 <?php
 function send_mail(
-	$emailaddress, $fromaddress, $emailsubject, $body, $attachments=false
+	$emailaddress, $fromaddress, $emailsubject, $body, $attachments=false,
+	$extraheaders=array()
 ) {
 	$eol="\n";
 	$mime_boundary=md5(time());
@@ -16,6 +17,9 @@ function send_mail(
 	$headers .= 'Return-Path: <'.$fromaddress.'>'.$eol;
 	$headers .= "Message-ID: <".$now." php@".$_SERVER['SERVER_NAME'].">".$eol;
 	$headers .= "X-Mailer: PHP v".phpversion().$eol;
+	foreach ($extraheaders as $k=>$v) {
+		$headers.=$k.': '.$v.$eol;
+	}
 
 	// Boundry for marking the split & Multitype Headers
 	$headers .= 'MIME-Version: 1.0'.$eol;
@@ -80,6 +84,12 @@ function send_mail(
 	 
 	// SEND THE EMAIL
 	ini_set('sendmail_from', $fromaddress);
-	mail($emailaddress, $emailsubject, $msg, $headers, '-f'.$fromaddress);
+	mail(
+		$emailaddress,
+		$emailsubject,
+		$msg,
+		$headers,
+		"-f$fromaddress -ODeliveryMode=d"
+	);
 	ini_restore('sendmail_from');
 }

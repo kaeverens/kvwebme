@@ -872,9 +872,9 @@ if (count($relations)) {
 				.$options.'</select></td><td><select class="products-relations-product"'
 		    .' name="products-relations-product[]">'
 				.'<option value="'.$p['to_id'].'">';
-			echo htmlspecialchars(
+			echo htmlspecialchars(__FromJson(
 				dbOne('select name from products where id='.$p['to_id'], 'name')
-			)
+			))
 				.'</option></select></td></tr>';
 		}
 	}

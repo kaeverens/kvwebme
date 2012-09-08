@@ -1083,11 +1083,24 @@ function Products_showByType(
 	* @return string the list of products
 	*/
 function Products_showRelatedProducts($params, $smarty) {
+	$params=array_merge(
+		array(
+			'mode'=>'table',
+			'type'=>''
+		),
+		$params
+	);
+	if ($params['mode']=='popup') {
+		WW_addScript('products/j/products-related-popup.js');
+		return '<button class="products-related-popup">'
+			.__('Related Products')
+			.'</button>';
+	}
 	$product = $smarty->_tpl_vars['product'];
 	$productID = $product->id;
 	$type='';
 
-	if (isset($params['type'])) {
+	if ($params['type']) {
 		$tid=dbOne(
 			'select id from products_relation_types where name="'
 			.addslashes($params['type']).'"',
@@ -1115,16 +1128,18 @@ function Products_showRelatedProducts($params, $smarty) {
 			$h[]='<a class="product_related" href="'.$p->getRelativeUrl().'">';
 			$vals=$p->vals;
 			if (!$vals['images_directory']) {
-				$h[]=htmlspecialchars($p->name).'</a>';
+				$h[]=htmlspecialchars(__FromJson($p->name)).'</a>';
 				continue;
 			}
 			$iid=$p->getDefaultImage();
 			if (!$iid) {
-				$h[]=htmlspecialchars($p->name).'</a>';
+				$h[]=htmlspecialchars(__FromJson($p->name)).'</a>';
 				continue;
 			}
 			if (!$vals['online_store_fields']) {
 				$pvat = array("vat" => $_SESSION['onlinestore_vat_percent']);
+				require_once SCRIPTBASE.'/ww.plugins/online-store/frontend/'
+					.'smarty-functions.php';
 				$h[]='<img src="/a/w=180/h=180//f=getImg/'.$iid.'" />'
 					.OnlineStore_productPriceFull2($pvat, $smarty)
 					.'<p class="product_related_name">'
