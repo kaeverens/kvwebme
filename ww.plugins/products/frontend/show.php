@@ -1086,14 +1086,15 @@ function Products_showRelatedProducts($params, $smarty) {
 	$params=array_merge(
 		array(
 			'mode'=>'table',
-			'type'=>''
+			'type'=>'',
+			'button_text'=>__('Related Products')
 		),
 		$params
 	);
 	if ($params['mode']=='popup') {
 		WW_addScript('products/j/products-related-popup.js');
 		return '<button class="products-related-popup">'
-			.__('Related Products')
+			.$params['button_text']
 			.'</button>';
 	}
 	$product = $smarty->_tpl_vars['product'];
