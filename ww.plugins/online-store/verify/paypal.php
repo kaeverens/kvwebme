@@ -17,7 +17,7 @@ foreach ($_POST as $key => $value) {
 	$req .= "&$key=$value";
 }
 if ($_POST['payment_status'] == 'Refunded') {
-	exit;
+	Core_quit();
 }
 if ($req=='cmd=_notify-validate') {
 	die('please don\'t access this file directly');
@@ -37,7 +37,7 @@ if (!$fp) {
 			require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 			$id=(int)$_POST['item_number'];
 			if ($id<1) {
-				exit;
+				Core_quit();
 			}
 
 			// check that payment_amount/payment_currency are correct
@@ -54,7 +54,7 @@ if (!$fp) {
 					$str,
 					$eml
 				);
-				exit;
+				Core_quit();
 			}
 
 			// process payment

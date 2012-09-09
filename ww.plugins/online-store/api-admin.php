@@ -1,4 +1,15 @@
 <?php
+/**
+	* online-store admin api
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 // { OnlineStore_adminCapture
 
@@ -88,7 +99,7 @@ function OnlineStore_adminCapture() {
 				default: // {
 					$errors[]=__('unknown error on transaction %1', array($id), 'core')
 						.': '.$switchkey;
-				// }
+					// }
 			}
 		}
 	}
@@ -193,7 +204,7 @@ function OnlineStore_adminRedeemVoucher() {
 		.'" where id='.$oid
 	);
 	echo '<p>'.__('This voucher has been marked as Redeemed.').'</p>';
-	exit;
+	Core_quit();
 }
 
 // }
@@ -205,11 +216,13 @@ function OnlineStore_adminRedeemVoucher() {
 	* @return array
 	*/
 function OnlineStore_adminUserGroupsGet() {
-	$gname=addslashes(dbOne(
-		'select value from page_vars'
-		.' where name="online_stores_customers_usergroup"',
-		'value'
-	));
+	$gname=addslashes(
+		dbOne(
+			'select value from page_vars'
+			.' where name="online_stores_customers_usergroup"',
+			'value'
+		)
+	);
 	return dbAll(
 		'select id,name from groups where name in ("'.$gname.'")'
 		.' order by name'
@@ -217,6 +230,13 @@ function OnlineStore_adminUserGroupsGet() {
 }
 
 // }
+// { OnlineStore_adminInvoicesGetAsPdf
+
+/**
+	* return a fwe invoices as a zipped collection of PDFs
+	*
+	* @return null
+	*/
 function OnlineStore_adminInvoicesGetAsPdf() {
 	$ids=explode(',', $_REQUEST['ids']);
 	$files=array();
@@ -237,8 +257,8 @@ function OnlineStore_adminInvoicesGetAsPdf() {
 				file_put_contents(
 					$hfile,
 					"\xEF\xBB\xBF".'<html><head><meta http-equiv="Content-Type"'
-						.' content="text/html;'
-						.' charset=UTF-8" /></head><body>'.utf8_encode($i).'</body></html>'
+					.' content="text/html;'
+					.' charset=UTF-8" /></head><body>'.utf8_encode($i).'</body></html>'
 				);
 			}
 			require_once $_SERVER['DOCUMENT_ROOT']
@@ -263,5 +283,7 @@ function OnlineStore_adminInvoicesGetAsPdf() {
 	$fp=fopen($zfile, 'r');
 	fpassthru($fp);
 	fclose($fp);
-	exit;
+	Core_quit();
 }
+
+// }

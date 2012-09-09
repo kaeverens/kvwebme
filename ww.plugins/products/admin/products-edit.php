@@ -12,7 +12,7 @@
 	*/
 
 if (!Core_isAdmin()) {
-	exit;
+	Core_quit();
 }
 
 // { Products_showDataField

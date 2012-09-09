@@ -3,11 +3,11 @@ require_once 'basics.php';
 require_once 'Core_getMimeType.php';
 
 if (!isset($_REQUEST['filename'])) {
-	exit;
+	Core_quit();
 }
 $file=THEME_DIR.'/'.$_REQUEST['filename'];
 if (strpos($file, '..')!==false || strpos($file, '/.')!==false) {
-	exit;
+	Core_quit();
 }
 
 if (!file_exists($file) || !is_file($file)) {
@@ -16,7 +16,7 @@ if (!file_exists($file) || !is_file($file)) {
 		$file=$DBVARS['theme_dir_personal'].'/'.$DBVARS['theme'].'/'.$_REQUEST['filename'];
 		if (!file_exists($file) || !is_file($file)) {
 			header("HTTP/1.0 404 Oh No!");
-			exit;
+			Core_quit();
 		}
 	}
 }

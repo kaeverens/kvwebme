@@ -105,7 +105,7 @@ if (isset($_POST['action']) && $_POST['action']=='convert') {
 			'products_categories_products'=>$products_categories_products
 		)
 	);
-	exit;
+	Core_quit();
 }
 
 echo '<form method="post"><table>'

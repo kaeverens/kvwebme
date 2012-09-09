@@ -16,7 +16,7 @@
  * make sure post is set
  */
 if (!isset($_POST[ 'install-theme' ]) && !isset($_POST[ 'delete-theme' ])) {
-	exit;
+	Core_quit();
 }
 
 /**
@@ -24,7 +24,7 @@ if (!isset($_POST[ 'install-theme' ]) && !isset($_POST[ 'delete-theme' ])) {
  */
 $name = @$_POST[ 'theme_name' ];
 if ($name == '') {
-	exit;
+	Core_quit();
 }
 
 /**
@@ -61,4 +61,4 @@ if (isset($_POST[ 'delete-theme' ])) {
  * redirect to themes personal
  */
 echo '<script>document.location="/ww.admin/siteoptions.php?page=themes";</script>';
-exit;
+Core_quit();

@@ -13,7 +13,7 @@
   */
 
 if (!defined('SCRIPTBASE')) { // don't access directly
-	exit;
+	Core_quit();
 }
 
 /**

@@ -51,7 +51,7 @@ function Products_adminCategoriesGetRecursiveList(
 	*/
 function Products_adminCategoryDelete() {
 	if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id'])) {
-		exit;
+		Core_quit();
 	}
 	$id=(int)$_REQUEST['id'];
 	if ($id==1) {
@@ -80,7 +80,7 @@ function Products_adminCategoryEdit() {
 	if (!is_numeric(@$_REQUEST['id']) || @$_REQUEST['name']==''
 		|| strlen(@$_REQUEST['associated_colour'])!=6
 	) {
-		exit;
+		Core_quit();
 	}
 	dbQuery(
 		'update products_categories set name="'.addslashes($_REQUEST['name']).'"'
@@ -152,7 +152,7 @@ function Products_adminCategoryGetFromID($id) {
 	*/
 function Products_adminCategoryGet() {
 	if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id'])) {
-		exit;
+		Core_quit();
 	}
 	return Products_adminCategoryGetFromID($_REQUEST['id']);
 }
@@ -168,7 +168,7 @@ function Products_adminCategoryGet() {
 function Products_adminCategoryNew() {	
 	
 	if (!is_numeric(@$_REQUEST['parent_id']) || @$_REQUEST['name']=='') {	
-		exit;
+		Core_quit();
 	}
 		
 	dbQuery(
@@ -234,7 +234,7 @@ function Products_adminCategoryProductsList() {
 	*/
 function Products_adminCategoryProductsEdit() {
 	if (!is_numeric(@$_REQUEST['id'])) {
-		exit;
+		Core_quit();
 	}
 	dbQuery(
 		'delete from products_categories_products where category_id='
@@ -297,7 +297,7 @@ function Products_adminDatafieldsList() {
 					$arr[]=$r['product_id'];
 				}
 				if (!count($arr)) {
-					exit;
+					Core_quit();
 				}
 				$rs=dbAll(
 					'select distinct product_type_id from products where id in ('
@@ -309,7 +309,7 @@ function Products_adminDatafieldsList() {
 				$arr[]=$r['product_type_id'];
 			}
 			if (!count($arr)) {
-				exit;
+				Core_quit();
 			}
 			$filter=' where id in ('.join(',', $arr).')';
 		}
@@ -409,7 +409,7 @@ function Products_adminExport() {
 	}
 	echo $contents;
 	// }
-	exit;
+	Core_quit();
 }
 
 // }
@@ -713,7 +713,7 @@ function Products_adminProductDatafieldsGet() {
 	$typeID = $_REQUEST['type'];
 	$productID = $_REQUEST['product'];
 	if (!is_numeric($typeID)||!is_numeric($productID)) {
-		exit('Invalid arguments');
+		Core_quit('Invalid arguments');
 	}
 	if (!dbOne('select id from products_types where id = '.$typeID, 'id')) {
 		return array('status'=>0, 'message'=>'Could not find this type');
@@ -1148,7 +1148,7 @@ function Products_adminTypeCopy() {
 	else {
 		$n=$_REQUEST['id'];
 		if (strpos($n, '..')!==false) {
-			exit;
+			Core_quit();
 		}
 		$r=json_decode(
 			file_get_contents(dirname(__FILE__).'/templates/'.$n.'.json'), true
@@ -1218,7 +1218,9 @@ function Products_adminTypeEdit() {
 		.'",multiview_template_header="'
 		.addslashes(Core_sanitiseHtmlEssential($d['multiview_template_header']))
 		.'",template_expired_notification="'
-		.addslashes(Core_sanitiseHtmlEssential($d['template_expired_notification']))
+		.addslashes(Core_sanitiseHtmlEssential(
+			@$d['template_expired_notification'])
+		)
 		.'",multiview_template_footer="'
 		.addslashes(Core_sanitiseHtmlEssential($d['multiview_template_footer']))
 		.'" where id='.(int)$d['id'];
@@ -1252,7 +1254,7 @@ function Products_adminTypeUploadMissingImage() {
 	move_uploaded_file($from, $to);
 	Core_cacheClear();
 	echo '/a/f=getImg/w=64/h=64/products/types/'.$id.'/image-not-found.png';
-	exit;
+	Core_quit();
 }
 
 // }
@@ -1324,7 +1326,7 @@ function Products_adminTypesGetSampleImport() {
 		echo Products_arrayToCSV($row);
 	}
 	// }
-	exit;
+	Core_quit();
 }
 
 // }

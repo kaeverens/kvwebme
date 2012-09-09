@@ -23,7 +23,7 @@
  */
 $rating = @$_GET[ 'rating' ];
 if ($rating != 'true') {
-	exit;
+	Core_quit();
 }
 /**
  * check if count is defined

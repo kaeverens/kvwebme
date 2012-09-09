@@ -24,7 +24,7 @@ if (!$fp) {
 		if (strcmp($res, "VERIFIED") == 0) {
 			$paid=$_POST['mc_gross']-$_POST['mc_fee'];
 			if ($paid<0) {
-				exit;
+				Core_quit();
 			}
 			$GLOBALS['DBVARS']['sitecredits-credits']
 				=((float)$GLOBALS['DBVARS']['sitecredits-credits'])+$paid;

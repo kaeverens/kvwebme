@@ -16,7 +16,7 @@ require 'header.php';
 
 if (!$_SESSION['admin_created']) { // user shouldn't be here
 	header('Location: /install/step3.php');
-	exit;
+	Core_quit();
 }
 
 if (isset($_REQUEST['userbase']) && $_REQUEST['userbase']) {
@@ -48,7 +48,7 @@ if (isset($_REQUEST['userbase']) && $_REQUEST['userbase']) {
 		else {
 			$_SESSION['userbase_created']=true;
 			echo '<script defer="defer">document.location="/install/step5.php";</script>';
-			exit;
+			Core_quit();
 		}
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 
 if (!Core_isAdmin()) {
-	exit;
+	Core_quit();
 }
 
 echo '<h2>Credits</h2><p>You have <strong>'.((int)$GLOBALS['DBVARS']['sitecredits-credits'])

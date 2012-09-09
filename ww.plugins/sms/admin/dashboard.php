@@ -12,7 +12,7 @@
 	*/
 
 if (!Core_isAdmin()) {
-	exit;
+	Core_quit();
 }
 require SCRIPTBASE.'ww.plugins/sms/admin/libs.php';
 

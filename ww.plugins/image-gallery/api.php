@@ -24,7 +24,7 @@ require_once KFM_BASE_PATH.'/initialise.php';
 function ImageGallery_galleryGet() {
 	$page_id=(int)@$_REQUEST['id'];
 	if ($page_id==0) {
-		exit;
+		Core_quit();
 	}
 	$image_dir=@$_REQUEST['image_gallery_directory'];
 	if ($image_dir!=''&&is_dir(USERBASE.'/f'.$image_dir)) { // read from KFM
@@ -140,7 +140,7 @@ function ImageGallery_img() {
 	$url='/a/f=getImg/w='.$width.'/h='.$height.'/image-galleries/'
 		.'imagegallery-'.$r['gallery_id'].'/'.$meta->name;
 	header('Location: '.$url);
-	exit;
+	Core_quit();
 }
 
 /**
@@ -161,11 +161,11 @@ function ImageGallery_frameGet() {
 	$height=$_REQUEST['h']+($padding[0]+$padding[2])/$ratio;
 	$file=USERBASE.'/f/'.$_REQUEST['_remainder'];
 	if (strpos($file, '/.')!==false) {
-		exit;
+		Core_quit();
 	}
 	if (!file_exists($file)) {
 		header('Location: /i/blank.gif');
-		exit;
+		Core_quit();
 	}
 	$md5=md5($_SERVER['REQUEST_URI']);
 	$frame=USERBASE.'/ww.cache/image-gallery-frames/frame-'.$md5.'.png';
@@ -174,7 +174,7 @@ function ImageGallery_frameGet() {
 		$imgO=imagecreatefrompng($file);
 		if ($img0===false) { // not a PNG
 			header('Location: /i/blank.gif');
-			exit;
+			Core_quit();
 		}
 		$imgOsize=getimagesize($file);
 		$imgN=imagecreatetruecolor($width, $height);

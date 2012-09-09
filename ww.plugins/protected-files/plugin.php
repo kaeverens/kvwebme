@@ -86,7 +86,7 @@ function ProtectedFiles_check($vars) {
 								.'">Click here</a> to return to the referring page.</p>'
 							);
 							$smarty->display($template.'.html');
-							exit;
+							Core_quit();
 						}
 						else {
 							cmsMail(
@@ -121,7 +121,7 @@ function ProtectedFiles_check($vars) {
 							.'ter your email address" /></form>'
 						);
 						$smarty->display($template.'.html');
-						exit;
+						Core_quit();
 					}
 				break; // }
 				case 2: // { groups
@@ -143,7 +143,7 @@ function ProtectedFiles_check($vars) {
 						.'to view this page</p>'
 					);
 					$smarty->display($template.'.html');
-					exit;
+					Core_quit();
 					// }
 			}
 		}

@@ -8,8 +8,10 @@ $url='http://textr.mobi/api.php?a=activate'
 
 $res=file_get_contents($url);
 if($res===false){
-	echo '{"status":0,"error":"failed to contact textr.mobi. please wait a short while and try again."}';
-	exit;
+	Core_quit(
+		'{"status":0,"error":"failed to contact textr.mobi. please wait a short'
+		.' while and try again."}'
+	);
 }
 
 echo $res;

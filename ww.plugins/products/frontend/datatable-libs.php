@@ -52,7 +52,7 @@ switch ($PAGEDATA->vars['products_what_to_show']) {
 		);
 	break; //}
 	default:
-		exit;
+		Core_quit();
 }
 
 $total_records=count($products->product_ids);

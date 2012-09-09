@@ -19,7 +19,7 @@ if (!$allowed) {
 	die('You do not have permission to delete this comment');
 }
 if (!is_numeric($id)) {
-	exit('Invalid id');
+	Core_quit('Invalid id');
 }
 dbQuery('delete from comments where id = '.$id);
 Core_cacheClear('comments');

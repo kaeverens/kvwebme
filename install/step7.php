@@ -16,7 +16,7 @@ require 'header.php';
 if (!$_SESSION['theme_selected']&&@$_GET['theme']!='skipped') {
 	// user shouldn't be here
   header('Location: /install/step6.php');
-	exit;
+	Core_quit();
 }
 
 $cmsname=DistConfig::get('cms-name');

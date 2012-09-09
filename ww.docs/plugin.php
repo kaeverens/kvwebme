@@ -2,13 +2,13 @@
 require_once '../ww.incs/basics.php';
 if (!isset($_REQUEST['t']) || !isset($_REQUEST['p'])) {
 	echo __('You must include a plugin name and documentation type.');
-	exit;
+	Core_quit();
 }
 $p=$_REQUEST['p'];
 $t=$_REQUEST['t'];
 if (!in_array($p, $DBVARS['plugins'])) {
 	echo __('You don\'t have that plugin installed.');
-	exit;
+	Core_quit();
 }
 switch ($t) {
 	case 'admin':
@@ -19,11 +19,11 @@ switch ($t) {
 	break;
 	default:
 		echo __('No such documentation type.');
-		exit;
+		Core_quit();
 }
 if (!file_exists('../ww.plugins/'.$p.'/docs/'.$t.'.html')) {
 	echo __('That documentation page does not exist.');
-	exit;
+	Core_quit();
 }
 ?>
 <!doctype html>

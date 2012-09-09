@@ -21,7 +21,7 @@
  */
 $recent = @$_GET[ 'screenshot' ];
 if ($recent != 'true') {
-	exit;
+	Core_quit();
 }
 
 /**
@@ -29,7 +29,7 @@ if ($recent != 'true') {
  */
 $id = (int)@$_GET[ 'id' ];
 if ($id == 0) {
-	exit;
+	Core_quit();
 }
 
 $theme_dir = USERBASE.'/f/themes_api/themes/' . $id . '/' . $id . '/';
@@ -41,7 +41,7 @@ $theme_dir = USERBASE.'/f/themes_api/themes/' . $id . '/' . $id . '/';
 $variant = @$_GET[ 'variant' ];
 if ($variant == '' || !is_dir($theme_dir . 'cs')) {
 	ThemesApi_displayImage($theme_dir . 'screenshot.png');
-	exit;
+	Core_quit();
 }
 
 /**

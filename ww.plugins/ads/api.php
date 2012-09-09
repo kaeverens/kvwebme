@@ -228,7 +228,7 @@ function Ads_go() {
 		$r['target_url']='http://'.$r['target_url'];
 	}
 	header('Location: '. $r['target_url']);
-	exit;
+	Core_quit();
 }
 
 // }

@@ -18,10 +18,10 @@ if (isset($_POST['get_mp3_files'])) { // get mp3 files via ajax
 				'template'=>@$template
 			)
 		);
-		exit;
+		Core_quit();
 	}
 	echo json_encode(array('fields'=>$files, 'id'=>$id, 'template'=>$template));
-	exit;
+	Core_quit();
 }
 if (isset($_POST['mp3_id'])) { // save mp3 files
 	$id=(int)$_POST['mp3_id'];
@@ -65,7 +65,7 @@ if (isset($_POST['mp3_id'])) { // save mp3 files
 	  USERBASE.'/ww.cache/mp3/'.$id,
 	  @$template
 	);
-	exit;
+	Core_quit();
 }
 $id=isset($_REQUEST['id'])?$_REQUEST['id']:0;
 echo '<a href="javascript:;" id="mp3_editlink_'

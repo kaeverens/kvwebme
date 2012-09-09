@@ -16,7 +16,7 @@ if (!Core_isAdmin()) {
 	die('access denied');
 }
 if (!isset($_REQUEST['questionid']) || !is_numeric($_REQUEST['questionid'])) {
-	exit;
+	Core_quit();
 }
 $questionID= $_REQUEST['questionid'];
 dbQuery("DELETE FROM quiz_questions WHERE id = '$questionID'");

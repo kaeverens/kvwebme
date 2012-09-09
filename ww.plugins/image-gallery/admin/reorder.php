@@ -19,7 +19,7 @@ if (!Core_isAdmin()) {
 
 $images=@$_POST['image'];
 if (count($images)==0) {
-	exit;
+	Core_quit();
 }
 
 $query='insert into image_gallery (id,position) values ';

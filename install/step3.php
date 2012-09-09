@@ -16,7 +16,7 @@ require 'header.php';
 
 if (!$_SESSION['db_vars']['db_installed']) { // user shouldn't be here
 	header('Location: /install/step2.php');
-	exit;
+	Core_quit();
 }
 
 $_SESSION['admin_created']=0;
@@ -59,7 +59,7 @@ if (isset($_REQUEST['action'])) {
 		mysql_query("insert into users_groups values(1,1)");
 		$_SESSION['admin_created']=1;
 		echo '<script defer="defer">document.location="/install/step4.php";</script>';
-		exit;
+		Core_quit();
 	}
 }
 if (!isset($_SESSION['user'])) {

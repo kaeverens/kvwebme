@@ -16,7 +16,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	$type=$_REQUEST['onlinestore-emails-type'];
 	if (preg_replace('/[^a-z_]/', '', $type)!=$type) {
 		echo 'no hacking, please';
-		exit;
+		Core_quit();
 	}
 	dbQuery('delete from online_store_vars where name like "email_'.$type.'%"');
 	dbQuery(

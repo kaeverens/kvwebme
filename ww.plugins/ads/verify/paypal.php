@@ -17,7 +17,7 @@ foreach ($_POST as $key => $value) {
 	$req .= "&$key=$value";
 }
 if ($_POST['payment_status'] == 'Refunded') {
-	exit;
+	Core_quit();
 }
 if ($req=='cmd=_notify-validate') {
 	die('please don\'t access this file directly');
@@ -38,7 +38,7 @@ else {
 			require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 			$id=(int)$_POST['item_number'];
 			if ($id<1) {
-				exit;
+				Core_quit();
 			}
 			// create ad
 			$data=dbRow('select * from ads_purchase_orders where id='.$id);

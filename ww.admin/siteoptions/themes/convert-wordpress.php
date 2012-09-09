@@ -35,7 +35,7 @@ function Theme_removeAllPHPFiles($dir) {
 
 $failure_message='';
 if (!isset($theme_folder)) { // called directly. don't do this.
-	exit;
+	Core_quit();
 }
 
 // { build template

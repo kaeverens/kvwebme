@@ -15,7 +15,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 require_once dirname(__FILE__).'/../api.php';
 
 if (!isset($_REQUEST['id'])) {
-	exit;
+	Core_quit();
 }
 $id=(int)$_REQUEST['id'];
 

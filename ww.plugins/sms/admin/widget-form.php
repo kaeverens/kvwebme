@@ -25,7 +25,7 @@ if (!count($cs)) {
 	echo 'no sms_addressbook_ids created. please <'
 		.'a href="/ww.admin/plugin.php?_plugin=sms&_page=sms_addressbook_ids">'
 		.'create one</a> first.';
-	exit;
+	Core_quit();
 }
 else {
 	$ids=explode(',', $sms_addressbook_id);

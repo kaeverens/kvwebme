@@ -18,7 +18,7 @@ require_once dirname(__FILE__).'/../ww.incs/common.php';
 // { if not logged in, show login page
 if (!Core_isAdmin()) {
 	require_once SCRIPTBASE.'ww.incs/login-admin.php';
-	exit;
+	Core_quit();
 }
 // }
 require SCRIPTBASE . 'ww.admin/admin_libs.php';

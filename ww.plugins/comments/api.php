@@ -26,7 +26,7 @@ function Comments_update() {
 		die('You do not have permission to do this');
 	}
 	if (!is_numeric($id)) {
-		exit('Invalid id');
+		Core_quit('Invalid id');
 	}
 	dbQuery(
 		'update comments set comment = "'.addslashes($comment)

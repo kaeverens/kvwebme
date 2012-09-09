@@ -18,12 +18,12 @@ session_id($session_id);
 require '../../../ww.incs/basics.php';
 
 if (!Core_isAdmin()) {
-	exit;
+	Core_quit();
 }
 
 $gallery_id=(int)@$_POST['gallery_id'];
 if (!$gallery_id) {
-	exit;
+	Core_quit();
 }
 
 $dir=dbOne(
@@ -70,4 +70,4 @@ move_uploaded_file(
 );
 
 echo $last_id;
-exit;
+Core_quit();

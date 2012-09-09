@@ -76,4 +76,4 @@ $html.='<input type="submit" value="Proceed to Payment"/></form>'
 	.'.submit()</script>';
 
 echo $html;
-exit;
+Core_quit();

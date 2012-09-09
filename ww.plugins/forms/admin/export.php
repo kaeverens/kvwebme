@@ -24,7 +24,7 @@ else {
 	$id=0;
 }
 if (!$id) {
-	exit;
+	Core_quit();
 }
 $date=$_REQUEST['date'];
 if (!preg_match('/^20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]$/', $date)) {

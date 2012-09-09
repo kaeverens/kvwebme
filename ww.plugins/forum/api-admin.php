@@ -21,7 +21,7 @@
 function Forum_adminForumAdd() {
 	$page = $_REQUEST['page'];
 	if (!is_numeric($page)) {
-		exit('Invalid page id');
+		Core_quit('Invalid page id');
 	}
 	$name = $_REQUEST['name'];
 	dbQuery(
@@ -57,7 +57,7 @@ function Forum_adminForumAdd() {
 function Forum_adminForumDelete() {
 	$id = $_REQUEST['id'];
 	if (!(is_numeric($id))) {
-		exit('Invalid id');
+		Core_quit('Invalid id');
 	}
 	$data = array();
 	$threads = dbAll('select id from forums_threads where forum_id = '.$id);
@@ -119,7 +119,7 @@ function Forum_adminPostApprove() {
 			die('You do not have permission to approve posts for this forum');
 		}
 		if (!is_numeric($id)) {
-			exit('Invalid id '.$id);
+			Core_quit('Invalid id '.$id);
 		}
 	}
 	dbQuery('update forums_posts set moderated = 1 where id ='.$id);
@@ -172,7 +172,7 @@ function Forum_adminPostDelete() {
 		die('You do not have permission to delete posts for this forum');
 	}
 	if (!is_numeric($id)) {
-		exit('Invalid id');
+		Core_quit('Invalid id');
 	}
 	dbQuery('delete from forums_posts where id = '.$id);
 	if (dbOne('select id from forums_posts where id = '.$id, 'id')) {
@@ -189,7 +189,7 @@ function Forum_adminPostDelete() {
 function Forum_adminGroupNew() {
 	$forum = $_REQUEST['forum'];
 	if (!is_numeric($_REQUEST['forum'])) {
-		exit('Invalid forum id');
+		Core_quit('Invalid forum id');
 	}
 	$name = $_REQUEST['name'];
 	dbQuery('insert into groups set name = "'.addslashes($name).'"');
@@ -230,7 +230,7 @@ function Forum_adminGroupModeratorSet() {
 	$action = $_REQUEST['action'];
 	$response = array();
 	if (!(is_numeric($group)&&is_numeric($forum))) {
-		exit('Invalid Parameters');
+		Core_quit('Invalid Parameters');
 	}
 	$sql = 'select moderator_groups from forums where id = '.$forum;
 	$moderatorGroups = array();

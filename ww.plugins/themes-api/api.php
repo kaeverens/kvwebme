@@ -30,33 +30,33 @@ require SCRIPTBASE . 'ww.plugins/themes-api/api/funcs.php';
 
 if (!empty ($_REQUEST['theme'])) {
 	require SCRIPTBASE . 'ww.plugins/themes-api/api/theme.php';
-	exit;
+	Core_quit();
 }
 if (!empty ($_REQUEST['screenshot'])) {
 	require SCRIPTBASE . 'ww.plugins/themes-api/api/screenshot.php';
-	exit;
+	Core_quit();
 }
 if (!empty ($_REQUEST['tags'])) {
         require SCRIPTBASE . 'ww.plugins/themes-api/api/tags.php';
-	exit;
+	Core_quit();
 }
 if (!empty ($_REQUEST['recent'])) {
         require SCRIPTBASE . 'ww.plugins/themes-api/api/recent.php';
-        exit;
+        Core_quit();
 }
 if (!empty ($_REQUEST['rating'])) {
         require SCRIPTBASE . 'ww.plugins/themes-api/api/rating.php';
-        exit;
+        Core_quit();
 }
 if (!empty ($_REQUEST['downloads'])) {
         require SCRIPTBASE . 'ww.plugins/themes-api/api/downloads.php';
-        exit;
+        Core_quit();
 }
 if (!empty ($_REQUEST['name'])) {
         require SCRIPTBASE . 'ww.plugins/themes-api/api/name.php';
-        exit;
+        Core_quit();
 }
 if (!empty($_REQUEST['download'])) {
 	require SCRIPTBASE . 'ww.plugins/themes-api/api/download.php';
-	exit;
+	Core_quit();
 }

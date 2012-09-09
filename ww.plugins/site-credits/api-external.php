@@ -3,20 +3,16 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 require_once dirname(__FILE__).'/libs.php';
 
 if (!isset($PLUGINS['site-credits'])) {
-	echo '{"error":"the site-credits plugin is not installed"}';
-	exit;
+	Core_quit('{"error":"the site-credits plugin is not installed"}');
 }
 if (!isset($DBVARS['sitecredits-apikey'])) {
-	echo '{"error":"the site-credits does not have an API key set"}';
-	exit;
+	Core_quit('{"error":"the site-credits does not have an API key set"}');
 }
 if (!isset($_REQUEST['time'])) {
-	echo '{"error":"you must supply a \'time\' parameter"}';
-	exit;
+	Core_quit('{"error":"you must supply a \'time\' parameter"}');
 }
 if ($_REQUEST['time']<time()-3600) {
-	echo '{"error":"\'time\' parameter too old"}';
-	exit;
+	Core_quit('{"error":"\'time\' parameter too old"}');
 }
 
 function SiteCredits_apiVerify($vars, $sha1) {
@@ -37,14 +33,16 @@ switch ($_REQUEST['action']) {
 			$credits=(float)@$GLOBALS['DBVARS']['sitecredits-credits'];
 			$add=(float)$_REQUEST['credits'];
 			if ($credits+$add<0) {
-				echo '{"error":"this will leave the client with less than 0 credits"}';
-				exit;
+				Core_quit(
+					'{"error":"this will leave the client with less than 0 credits"}'
+				);
 			}
 			$GLOBALS['DBVARS']['sitecredits-credits']=$credits+$add;
 			Core_configRewrite();
 			SiteCredits_recordTransaction('credits added by hosting provider', $add);
-			echo '{"credits":'.(float)$GLOBALS['DBVARS']['sitecredits-credits'].'}';
-			exit;
+			Core_quit(
+				'{"credits":'.(float)$GLOBALS['DBVARS']['sitecredits-credits'].'}'
+			);
 		}
 	break; // }
 	case 'check-credits': // {
@@ -53,8 +51,9 @@ switch ($_REQUEST['action']) {
 			'time'=>$_REQUEST['time']
 		);
 		if (SiteCredits_apiVerify($params, $_REQUEST['sha1'])) {
-			echo '{"credits":'.(float)@$GLOBALS['DBVARS']['sitecredits-credits'].'}';
-			exit;
+			Core_quit(
+				'{"credits":'.(float)@$GLOBALS['DBVARS']['sitecredits-credits'].'}'
+			);
 		}
 	break; // }
 	case 'check-recurring': // {
@@ -74,7 +73,7 @@ switch ($_REQUEST['action']) {
 			else {
 				echo '{"found":"1"}';
 			}
-			exit;
+			Core_quit();
 		}
 	break; // }
 	case 'handle-recurring': // {
@@ -143,7 +142,7 @@ switch ($_REQUEST['action']) {
 				.'order by next_payment_date'
 			);
 			if (!count($rs)) {
-				exit('{"ok":1}');
+				Core_quit('{"ok":1}');
 			}
 			$email="Dear %ADMIN%,\n  your website is due payment for the following "
 				."recurring items within one week:\n\n";
@@ -175,8 +174,7 @@ switch ($_REQUEST['action']) {
 				);
 			}
 			// }
-			echo '{"ok":1,"message":"'.addslashes($email).'"}';
-			exit;
+			Core_quit('{"ok":1,"message":"'.addslashes($email).'"}');
 		}
 	break; // }
 	case 'set-option': // {
@@ -190,8 +188,9 @@ switch ($_REQUEST['action']) {
 				.addslashes($_REQUEST['name']).'", value="'
 				.addslashes($_REQUEST['value']).'"'
 			);
-			echo '{"credits":'.(float)@$GLOBALS['DBVARS']['sitecredits-credits'].'}';
-			exit; // }
+			Core_quit(
+				'{"credits":'.(float)@$GLOBALS['DBVARS']['sitecredits-credits'].'}'
+			); // }
 		}
 	case 'set-hosting-fee': // {
 		$params=array(
@@ -208,13 +207,13 @@ switch ($_REQUEST['action']) {
 				.',start_date="'.addslashes($_REQUEST['cdate']).'",period="1 month"'
 				.',next_payment_date="'.addslashes($_REQUEST['cdate']).'"'
 			);
-			echo '{"ok":1}';
-			exit;
+			Core_quit('{"ok":1}');
 		}
 	break; // }
 	default: // {
-		echo '{"error":"unknown action '.addslashes($_REQUEST['action']).'"}';
-		exit;
+		Core_quit(
+			'{"error":"unknown action '.addslashes($_REQUEST['action']).'"}'
+		);
 		// }
 }
 

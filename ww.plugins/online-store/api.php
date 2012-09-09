@@ -59,17 +59,17 @@ function OnlineStore_checkQrCode() {
 	$pid=@$_REQUEST['pid'];
 	if (!$oid || !$pid) {
 		echo 'product or order ID not found';
-		exit;
+		Core_quit();
 	}
 	$order=dbRow('select * from online_store_orders where id='.$oid);
 	if (!$order) {
 		echo 'order ID not found.';
-		exit;
+		Core_quit();
 	}
 	$md5=$_REQUEST['md5'];
 	if ($md5!=md5($order['invoice'])) {
 		echo 'MD5 check failed. this voucher has been tampered with.';
-		exit;
+		Core_quit();
 	}
 	echo '<h1>Valid Voucher</h1>';
 	$items=json_decode($order['items'], true);
@@ -92,7 +92,7 @@ function OnlineStore_checkQrCode() {
 		echo '<br/><br/><br/><a href="/a/p=online-store/f=adminRedeemVoucher/'
 			.'oid='.$oid.'/pid='.$pid.'">Mark this voucher as redeemed.</a>';
 	}
-	exit;
+	Core_quit();
 }
 
 // }
@@ -165,7 +165,7 @@ function OnlineStore_getQrCode() {
 	header('Pragma:');
 	header('Content-Length: ' . filesize($fname));
 	readfile($fname);
-	exit;
+	Core_quit();
 }
 
 // }
@@ -183,7 +183,7 @@ function OnlineStore_invoicePdf() {
 		.$_SESSION['userdata']['id'], 'invoice'
 	);
 	if (!$inv) {
-		exit;
+		Core_quit();
 	}
 	$pdfFile=USERBASE.'/ww.cache/online-store/invoice-pdf-'.$id;
 	if (!file_exists($pdfFile)) {
@@ -201,7 +201,7 @@ function OnlineStore_invoicePdf() {
 	$fp=fopen($pdfFile, 'r');
 	fpassthru($fp);
 	fclose($fp);
-	exit;
+	Core_quit();
 }
 
 // }

@@ -17,7 +17,7 @@ require 'header.php';
 if (!$_SESSION['db_vars']['passed']) { // user shouldn't be here
 	echo '<script>document.location="/install/step1.php";</script>'
 		.__('Should not be here');
-	exit;
+	Core_quit();
 }
 
 mysql_connect(

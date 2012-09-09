@@ -20,7 +20,7 @@ $action=@$_REQUEST['action'];
 if ($action=='') {
 	// no action was requested.
   echo '{"error":18}';
-  exit;
+  Core_quit();
 }
 /**
 	* require SaorFM core and create an instance
@@ -32,7 +32,7 @@ if ($SaorFM->initErrors != '{}') {
 	// error initialising SaorFM
 	header('Content-type: text/javascript');
 	echo $SaorFM->initErrors;
-	exit;
+	Core_quit();
 }
 /**
 	* switch according to the desired action
@@ -90,7 +90,7 @@ switch($action){
 								}
 								fclose($file);
 							}
-							exit;
+							Core_quit();
 						}
 						else {
 							$error='{"error":29}';

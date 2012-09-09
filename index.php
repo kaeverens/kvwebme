@@ -153,7 +153,7 @@ else {
 	if ($page!='') {
 		redirect('/');
 	}
-	exit(
+	Core_quit(
 		__(
 			'no page loaded. If this is a new site, then please'
 			.' <a href="/ww.admin/">log into the admin area</a> and create your'
@@ -168,7 +168,7 @@ $c=Core_trigger('page-object-loaded');
 if (isset($_REQUEST['_p'])
 	&& isset($PLUGINS[$_REQUEST['_p']]['page-override'])
 ) {
-	exit($PLUGINS[$_REQUEST['_p']]['page-override']($PAGEDATA));
+	Core_quit($PLUGINS[$_REQUEST['_p']]['page-override']($PAGEDATA));
 }
 // }
 // { main content

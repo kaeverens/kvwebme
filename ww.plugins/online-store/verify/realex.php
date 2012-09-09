@@ -60,7 +60,7 @@ if ($result!='00') {
 			'core'
 		)
 		.'</p>';
-	exit;
+	Core_quit();
 }
 // }
 // { process payment

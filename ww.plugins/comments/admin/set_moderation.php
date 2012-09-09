@@ -15,7 +15,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!Core_isAdmin()) {
-	exit ('You do not have permission to do this');
+	Core_quit('You do not have permission to do this');
 }
 
 $set=dbOne(

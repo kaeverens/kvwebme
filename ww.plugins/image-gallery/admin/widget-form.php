@@ -41,7 +41,7 @@ if (isset($_REQUEST['get_image_gallery'])) {
 		);
 	}
 	echo json_encode(array( 'data'=>$r, 'directories'=>$dirs));
-	exit;
+	Core_quit();
 }
 if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	$id=(int)$_REQUEST['id'];
@@ -67,7 +67,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	$ret=array('id'=>$id, 'id_was'=>$id_was);
 	echo json_encode($ret);
 	Core_cacheClear('image-gallery');
-	exit;
+	Core_quit();
 }
 
 if (isset($_REQUEST['id'])) {

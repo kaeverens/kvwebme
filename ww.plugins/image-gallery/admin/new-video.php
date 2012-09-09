@@ -21,7 +21,7 @@ $id=(int)@$_POST['id'];
 $link=@$_POST['link'];
 $image=@$_POST['image'];
 if ($id==0||$link=='') {
-	exit;
+	Core_quit();
 }
 
 if ($image=='http://') {

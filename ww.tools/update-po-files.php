@@ -1,7 +1,7 @@
 <?php
 require_once '../ww.incs/basics.php';
 if (!Core_isAdmin()) {
-	exit;
+	Core_quit();
 }
 require_once '../ww.incs/api-funcs.php';
 

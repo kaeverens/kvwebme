@@ -14,7 +14,7 @@
 
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!isset($_SESSION['userdata']) || !$_SESSION['userdata']['id']) {
-	exit;
+	Core_quit();
 }
 
 dbQuery(

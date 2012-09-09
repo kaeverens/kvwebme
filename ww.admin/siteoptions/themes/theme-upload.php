@@ -67,7 +67,7 @@ if (!isset($_POST[ 'install-theme' ]) && !isset($_POST[ 'upload-theme' ])
 ) {
 	echo '<script>parent.themes_dialog("<em>no theme uploaded. installation '
 		.'failed</em>");</script>';
-	exit;
+	Core_quit();
 }
 // }
 // { make temporary dir and move uploaded file there
@@ -121,7 +121,7 @@ else { // unknown format!
 	echo '<script>parent.themes_dialog("<em>Unknown theme format. Failed to i'
 		.'nstall!</em>");</script>';
 	shell_exec('rm -rf ' . $temp_dir);
-	exit;
+	Core_quit();
 }
 // }
 // { if theme fails check, remove temp dir and throw error
@@ -133,7 +133,7 @@ if ($msg || $failure_message) {
 	shell_exec('rm -rf ' . $temp_dir);
 	echo '<script>parent.themes_dialog("<em>installation failed: '
 		.$failure_message.$msg.'</em>");</script>';
-	exit;
+	Core_quit();
 }
 // }
 // { get variant

@@ -373,7 +373,7 @@ function redirect($addr) {
 	echo '<html><head><script defer="defer" type="text/javascript">'
 		.'setTimeout(function(){document.location="'.$addr.'";},10);</script>'
 		.'</head><body></body></html>';
-	exit;
+	Core_quit();
 }
 
 // }

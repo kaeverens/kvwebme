@@ -12,7 +12,7 @@
 	*/
 
 if (!Core_isAdmin()) {
-	exit;
+	Core_quit();
 }
 // { set up initial variables
 if (isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {

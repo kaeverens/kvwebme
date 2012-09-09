@@ -23,7 +23,7 @@
  */
 $downloads = @$_GET[ 'downloads' ];
 if ($downloads != 'true') {
-	exit;
+	Core_quit();
 }
 
 /**

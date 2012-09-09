@@ -17,11 +17,11 @@ require_once '../../ww.incs/basics.php';
 // { validate input
 $name = addslashes(@$_GET[ 'name' ]);
 if ($name == '') {
-	exit;
+	Core_quit();
 }
 // }
 $votes = dbAll('select * from ratings where name="' . $name . '"');
 $votes = count($votes);
 
 echo __('%1 people have rated this.', array($votes), 'core');
-exit;
+Core_quit();

@@ -26,7 +26,7 @@ else {
 	$blah=1;
 }
 if (strpos($md5, '..')!==false) {
-	exit;
+	Core_quit();
 }
 
 $fname=USERBASE.'/ww.cache/admin/'.$md5;

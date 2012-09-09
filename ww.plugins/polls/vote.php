@@ -13,7 +13,7 @@ if ($r) {
 		'status'=>1,
 		'message'=>'You have already voted in this poll'
 	));
-	exit;
+	Core_quit();
 }
 dbQuery('insert into poll_vote set poll_id='.$id.',ip="'.$ip.'",num='.$vote);
 echo json_encode(array(

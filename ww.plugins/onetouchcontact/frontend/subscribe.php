@@ -41,7 +41,7 @@ if (!$name || $name=='Your Name Here') {
 
 if (count($errors)) {
 	echo '<div class="errors">'.join('<br />', $errors).'</div>';
-	exit;
+	Core_quit();
 }
 
 $url='http://onetouchcontact.com/subscribe.php?mid='.$mid.'&cid='.$cid

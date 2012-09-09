@@ -19,7 +19,7 @@ if (!Core_isAdmin()) {
 
 $id=(int)@$_POST['id'];
 if ($id==0) {
-	exit;
+	Core_quit();
 }
 
 $image=dbRow('select * from image_gallery where id='.$id);

@@ -19,7 +19,7 @@ if (!Core_isAdmin()) {
 
 $id=(int)@$_POST['id'];
 if ($id==0) {
-	exit;
+	Core_quit();
 }
 
 $file=dbRow('select gallery_id,meta from image_gallery where id='.$id);
@@ -29,7 +29,7 @@ $dir=dbOne(
 	'value'
 );
 if ($file==false||$dir==false) {
-	exit;
+	Core_quit();
 }
 $meta=json_decode($file['meta'], true);
 if (file_exists(USERBASE.'/f/'.$dir.'/'.$meta['name'])) {

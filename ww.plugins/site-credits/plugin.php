@@ -52,7 +52,7 @@ function SiteCredits_isActive() {
 			.' Please log into your administration area (and check your email).'
 		)
 			.'</p>';
-		exit;
+		Core_quit();
 	}
 }
 function SiteCredits_adminShowStatus() {

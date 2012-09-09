@@ -17,7 +17,7 @@ require_once '../../ww.incs/basics.php';
 // { get and validate get data 
 $names = @$_GET[ 'names' ];
 if ($names == '') {
-	exit;
+	Core_quit();
 }
 $names = explode(',', $names);
 // }
@@ -56,4 +56,4 @@ if ($ratings!==false) {
 // }
 
 echo json_encode($scores);
-exit;
+Core_quit();

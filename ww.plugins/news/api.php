@@ -18,7 +18,7 @@ function News_getHeadlinesDay() {
 	$d=(int)$_REQUEST['d'];
 	$p=(int)$_REQUEST['pid'];
 	if( $y<1000 || $y>9999 || $m<1 || $m>12 || $d<1 || $d>31) {
-		exit;
+		Core_quit();
 	}
 	$m=sprintf('%02d', $m);
 	
@@ -42,7 +42,7 @@ function News_getHeadlinesMonth() {
 	$m=(int)$_REQUEST['m'];
 	$p=(int)$_REQUEST['pid'];
 	if ($y<1000 || $y>9999 || $m<1 || $m>12) {
-		exit;
+		Core_quit();
 	}
 	$m=sprintf('%02d', $m);
 	

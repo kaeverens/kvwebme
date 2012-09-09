@@ -23,7 +23,7 @@ if (file_exists('../.private/config.php')
 			.'/install directory.'
 		)
 		.'</p>';
-	exit;
+	Core_quit();
 }
 
 $_languages=array(

@@ -1712,7 +1712,8 @@ class Products{
 						}
 					}
 				}
-				if ($type && count($prods)) { // display the first item's header
+				if (isset($type) && $type && count($prods)) {
+					// display first item's header
 					$smarty=Products_setupSmarty();
 					$c.=$smarty->fetch(
 						USERBASE.'/ww.cache/products/templates/types_multiview_'

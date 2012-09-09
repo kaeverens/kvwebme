@@ -35,7 +35,7 @@ function curl( $url ) {
 
 if (!$_SESSION['userbase_created']) { // user shouldn't be here
   header('Location: /install/step4.php');
-  exit;
+  Core_quit();
 }
 
 $ignore_cms_plugins=1;
@@ -115,7 +115,7 @@ if (isset($_POST[ 'install-theme' ])) { // install theme if selected
 	// get id
 	$id = ( int ) @$_POST[ 'theme_id' ];
 	if ( $id == 0 ) {
-	  exit;
+	  Core_quit();
 	}
 
 	$themeapi=DistConfig::get('themes-api');
@@ -157,7 +157,7 @@ if (isset($_POST[ 'install-theme' ])) { // install theme if selected
 	Core_cacheClear('pages');
 	$_SESSION[ 'theme_selected' ] = true;
 	echo '<script defer="defer">document.location="/install/step7.php";</script>';
-	exit;
+	Core_quit();
 }
 
 echo

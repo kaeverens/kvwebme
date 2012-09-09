@@ -15,7 +15,7 @@
 require_once '../../ww.incs/common.php';
 require_once '../admin_libs.php';
 if (!Core_isAdmin()) {
-	exit;
+	Core_quit();
 }
 // }
 // { functions
@@ -105,7 +105,7 @@ if ((!isset($_REQUEST['id']) || $_REQUEST['id']==0)
 	echo WW_getScripts();
 	echo WW_getCss();
 	echo '</body></html>';
-	exit;
+	Core_quit();
 }
 // }
 // { page data

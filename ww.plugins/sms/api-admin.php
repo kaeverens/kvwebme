@@ -87,7 +87,7 @@ function Sms_adminAddressbooksSubscribersGet() {
 function Sms_adminButtonPaypalGet() {
 	$amt=(int)$_REQUEST['amt'];
 	if ($amt<200) {
-		exit;
+		Core_quit();
 	}
 	$return=urlencode(
 		'http://'.$_SERVER['HTTP_HOST']
@@ -105,13 +105,13 @@ function Sms_adminSend() {
 	// { to
 	$to=$_REQUEST['to'];
 	if (!$to || preg_replace('/[^0-9]/', '', $to)!=$to) {
-		exit;
+		Core_quit();
 	}
 	// }
 	// { msg
 	$msg=$_REQUEST['msg'];
 	if (!$msg || preg_replace('/a-zA-Z0-9 !_\-.,:\'"/', '', $msg)!=$msg) {
-		exit;
+		Core_quit();
 	}
 	// }
 	// { to_name
@@ -135,7 +135,7 @@ function Sms_adminSendBulk() {
 	$aid=(int)$_REQUEST['to'];
 	$msg=$_REQUEST['msg'];
 	if (!$msg || preg_replace('/a-zA-Z0-9 !_\-.,:\'"/', '', $msg)!=$msg) {
-		exit;
+		Core_quit();
 	}
 	$tos=array();
 	$to_names=array();

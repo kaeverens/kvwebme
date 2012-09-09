@@ -24,7 +24,7 @@ require_once SCRIPTBASE . 'ww.incs/bb2html.php';
  */
 $user_id = (int)@$_SESSION[ 'userdata' ][ 'id' ];
 if ($user_id == 0) {
-	exit;
+	Core_quit();
 }
 
 $name = reset(explode('.', $_FILES[ 'theme-zip' ][ 'name' ]));

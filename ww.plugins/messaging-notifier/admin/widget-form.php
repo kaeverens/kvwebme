@@ -25,7 +25,7 @@ if (isset($_REQUEST['get_messaging_notifier'])) {
 	}
 	$r['data']=json_decode($r['data']);
 	echo json_encode($r);
-	exit;
+	Core_quit();
 }
 if (@$_REQUEST['action']=='save') {
 	$id=(int)$_REQUEST['id'];
@@ -64,7 +64,7 @@ if (@$_REQUEST['action']=='save') {
 	$ret=array('id'=>$id,'id_was'=>$id_was);
 	echo json_encode($ret);
 	Core_cacheClear('messaging_notifier');
-	exit;
+	Core_quit();
 }
 
 if (isset($_REQUEST['id'])) {

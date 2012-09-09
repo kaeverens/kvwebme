@@ -23,7 +23,7 @@
  */
 $recent = @$_GET[ 'recent' ];
 if ($recent != 'true') {
-	exit;
+	Core_quit();
 }
 
 /**

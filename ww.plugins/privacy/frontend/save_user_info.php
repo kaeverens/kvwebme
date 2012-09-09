@@ -20,7 +20,7 @@ $phone = addslashes(@$_POST[ 'phone' ]);
 $address = addslashes(@$_GET[ 'address' ]);
 $action=@$_GET['action'];
 if ($id == 0) {
-	exit;
+	Core_quit();
 }
 
 $userdata=dbRow('select * from user_accounts where id='.$id);
@@ -31,7 +31,7 @@ if ($action=='delete') {
 	}
 	$add=addslashes(json_encode($add));
 	dbQuery('update user_accounts set address="'.$add.'" where id='.$id);
-	exit;
+	Core_quit();
 }
 if ($action=='update') {
 	$address=json_decode($userdata['address'], true);
@@ -44,7 +44,7 @@ if ($action=='update') {
 	);
 	$address=addslashes(json_encode($address));
 	dbQuery('update user_accounts set address="'.$address.'" where id='.$id);
-	exit;
+	Core_quit();
 }
 if ($action=='default') {
 	$name=@$_GET['name'];	
@@ -57,7 +57,7 @@ if ($action=='default') {
 	}
 	$address=addslashes(json_encode($address));
 	dbQuery('update user_accounts set address="'.$address.'" where id='.$id);
-	exit;
+	Core_quit();
 }
 
 $c=json_decode($userdata['contact'], true);

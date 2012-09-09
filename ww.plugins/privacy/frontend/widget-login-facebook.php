@@ -13,7 +13,7 @@
 
 if (isset($_REQUEST['error']) || !isset($_REQUEST['code'])) {
 	header('Location: /');
-	exit;
+	Core_quit();
 }
 
 list($pid, $wid)=explode(
@@ -49,7 +49,7 @@ foreach ($panel->widgets as $widget) {
 		if (is_null($details)) {	// failed login
 			mail(DistConfig::get('email'), 'Facebook failed data', $details);
 			header('Location: /');
-			exit;
+			Core_quit();
 		}
 		$name= $details->name;
 		$email=$details->email;

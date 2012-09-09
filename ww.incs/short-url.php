@@ -14,7 +14,7 @@
 require 'basics.php';
 
 if (!isset($_GET['s'])) {
-	exit;
+	Core_quit();
 }
 $s=addslashes($_GET['s']);
 $l=dbOne("select long_url from short_urls where short_url='$s'", 'long_url');

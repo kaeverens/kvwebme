@@ -17,7 +17,7 @@
  */
 $recent = @$_GET[ 'download' ];
 if ($recent != 'true') {
-	exit;
+	Core_quit();
 }
 
 /**
@@ -25,7 +25,7 @@ if ($recent != 'true') {
  */
 $id = ( int ) @$_GET[ 'id' ];
 if ($id == 0) {
-	exit;
+	Core_quit();
 }
 
 /**
@@ -39,7 +39,7 @@ $theme = dbRow(
  * make sure theme exists
  */
 if ($theme == false) {
-	exit;
+	Core_quit();
 }
 
 /**

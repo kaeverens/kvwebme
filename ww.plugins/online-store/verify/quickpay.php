@@ -20,7 +20,7 @@ $md5secret=dbOne(
 	'value'
 );
 if (!$md5secret) { // no md5 secret entered
-	exit;
+	Core_quit();
 }
 $expected_md5 = md5(
 	$_REQUEST['msgtype']

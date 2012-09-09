@@ -21,11 +21,11 @@
 function Forms_fileDelete() {
 	$id=@$_REQUEST['id'];
 	if ($id==''||strpos('..', $id)!==false) {
-		exit;
+		Core_quit();
 	}
 	$dir=USERBASE.'/f/.files/forms/'.session_id().'/';
 	if (!is_dir($dir)) {
-		exit;
+		Core_quit();
 	}
 	$dir.=$id;
 	@unlink($dir);

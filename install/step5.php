@@ -16,7 +16,7 @@ require 'header.php';
 
 if (!$_SESSION['userbase_created']) { // user shouldn't be here
 	header('Location: /install/step4.php');
-	exit;
+	Core_quit();
 }
 $privatedir=DistConfig::get('installer-private');
 if (!is_dir($privatedir)) { // create config directory
@@ -38,7 +38,7 @@ if (!is_dir($privatedir)) { // create config directory
 			array($webroot),
 			'core'
 		);
-		exit;
+		Core_quit();
 	}
 }
 
@@ -63,7 +63,7 @@ if (!file_exists($privatedir.'/config.php')) {
 			.'make /.private/ writable for the web server, then reload this page.'
 		)
 		.'</p>';
-	exit;
+	Core_quit();
 }
 
 $_SESSION[ 'config_written' ] = true;

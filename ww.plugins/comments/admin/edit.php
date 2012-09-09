@@ -18,7 +18,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 $id = $_REQUEST['id'];
 
 if (!is_numeric($id)) {
-	exit('The supplied id is invalid');
+	Core_quit('The supplied id is invalid');
 }
 
 dbQuery(

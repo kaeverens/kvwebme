@@ -445,6 +445,24 @@ function Core_mail(
 }
 
 // }
+// { Core_quit
+
+/**
+	* exit(), but it also calls any shut-down scripts that are installed
+	*
+	* @param string $str string to echo
+	*
+	* @return null
+	*/
+function Core_quit($str='') {
+	echo $str;
+	$auto_append_file=ini_get('auto_append_file');
+	if ($auto_append_file) {
+		require_once $auto_append_file;
+	}
+	exit;
+}
+// }
 // { Core_shutdown
 
 /**
@@ -850,7 +868,7 @@ if (!file_exists(SCRIPTBASE . '.private/config.php')) {
 			.'</strong></p>';
 	}
 	echo '</body></html>';
-	exit;
+	Core_quit();
 }
 require SCRIPTBASE . '.private/config.php';
 if (isset($DBVARS['userbase'])) {
@@ -990,7 +1008,7 @@ if (!isset($ignore_cms_plugins)) {
 			Core_configRewrite();
 			Core_cacheClear();
 			header('Location: '.$_SERVER['REQUEST_URI']);
-			exit;
+			Core_quit();
 		}
 		$PLUGINS[$pname]=$plugin;
 		if (isset($plugin['triggers'])) {

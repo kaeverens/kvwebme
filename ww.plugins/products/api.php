@@ -478,7 +478,7 @@ function Products_showDefaultImg() {
 		$iid=$product->getDefaultImage();
 		if ($iid) {
 			header('Location: /a/f=getImg/w='.$w.'/h='.$h.'/'.$iid);
-			exit;
+			Core_quit();
 		}
 	}
 	header('Location: /i/blank.gif');
@@ -514,7 +514,7 @@ function Products_showQrCode() {
 	header('Pragma:');
 	header('Content-Length: ' . filesize($fname));
 	readfile($fname);
-	exit;
+	Core_quit();
 }
 
 // }

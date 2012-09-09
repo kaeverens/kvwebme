@@ -12,7 +12,7 @@
 	*/
 
 if (!Core_isAdmin()) {
-	exit;
+	Core_quit();
 }
 echo '<p>Relation Types describe how products are related to each other. '
 	.'For example, "Also Bought", "Similar", "Part Of".</p>';

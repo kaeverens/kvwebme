@@ -21,7 +21,7 @@
 	*/
 function Forum_post() {
 	if (!isset($_SESSION['userdata']) || !$_SESSION['userdata']['id']) {
-		exit;
+		Core_quit();
 	}
 	$title=$_REQUEST['title'];
 	$body=$_REQUEST['body'];
@@ -142,7 +142,7 @@ function Forum_post() {
 	*/
 function Forum_delete() {
 	if (!isset($_SESSION['userdata']) || !$_SESSION['userdata']['id']) {
-		exit;
+		Core_quit();
 	}
 	$post_id=(int)$_REQUEST['id'];
 	$errs=array();

@@ -21,14 +21,14 @@ require_once SCRIPTBASE . 'ww.plugins/themes-api/api/funcs.php';
  */
 $user_id = (int)@$_SESSION[ 'userdata' ][ 'id' ];
 if ($user_id == 0) {
-	exit;
+	Core_quit();
 }
 /**
  * make sure input is valid
  */
 $id = (int) @$_POST[ 'id' ];
 if ($id == 0) {
-	exit;
+	Core_quit();
 }
 
 echo $id;

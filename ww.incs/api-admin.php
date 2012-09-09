@@ -207,7 +207,7 @@ function Core_adminEmailSentGet() {
 	$id=(int)$_REQUEST['id'];
 	header('Content-type: text/html; charset=utf-8');
 	echo dbOne('select body from emails_sent where id='.$id, 'body');
-	exit;
+	Core_quit();
 }
 
 // }
@@ -227,7 +227,7 @@ function Core_adminEmailTemplateDownload() {
 		'select body from email_templates where name="'.addslashes($name).'"',
 		'body'
 	);
-	exit;
+	Core_quit();
 }
 
 // }
@@ -455,7 +455,7 @@ function Core_adminLanguagesExportPo() {
 		echo 'msgid "'.$r."\"\n";
 		echo "msgstr \"\"\n\n";
 	}
-	exit;
+	Core_quit();
 }
 
 // }

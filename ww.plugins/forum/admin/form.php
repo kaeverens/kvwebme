@@ -69,6 +69,15 @@ $c.='<table id="forum-moderators-table">';
 $c.='<thead><tr><th>Forum</th>';
 $c.='<th>Moderators</th>';
 $c.= '<th>&nbsp;</th></tr></thead><tbody>';
+if (!count($forums)) {
+	require_once dirname(__FILE__).'/../api-admin.php';
+	$_REQUEST=array(
+		'name'=>'Main Forum',
+		'page'=>$page['id']
+	);
+	Forum_adminForumAdd();
+	$forums=dbAll('select name, id from forums where page_id = '.$page['id']);
+}
 foreach ($forums as $forum) {
 	$c.= '<tr id="forum-'.$forum['id'].'"><td>'.htmlspecialchars($forum['name'])
 		.'</td><td>';

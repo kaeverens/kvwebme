@@ -38,7 +38,7 @@ function FaceBook_widgetShow($vars=null) {
 	global $PAGEDATA;
 	switch(@$vars->what_to_show) {
 		case 'like-gateway': // {
-			require_once dirname(__FILE__).'/facebook/facebook.php';
+			require_once SCRIPTBASE.'/ww.external/facebook/facebook.php';
 			$config=array(
 				'appId'=>$vars->app_id,
 				'secret'=>$vars->app_secret
@@ -68,9 +68,9 @@ function FaceBook_widgetShow($vars=null) {
 			$uid=$facebook->getUser();
 			if ($uid==0) { // not logged in
 				echo '<a href="'
-					.$facebook->getLoginUrl(array(
-						'scope'=>'publish_stream'
-					))
+					.$facebook->getLoginUrl(
+						array('scope'=>'publish_stream')
+					)
 					.'">'.$vars->click_message.'</a>';
 			}
 			else {
@@ -81,19 +81,26 @@ function FaceBook_widgetShow($vars=null) {
 					)
 				);
 				$html=$vars->thankyou_message;
-				$gs=dbAll('select * from users_groups where groups_id=1', 'user_accounts_id');
-				$emails=array_keys(dbAll('select email from user_accounts where id in ('.join(',', array_keys($gs)).')', 'email'));
-				$details=$facebook->api('/me','GET');
+				$gs=dbAll(
+					'select * from users_groups where groups_id=1', 'user_accounts_id'
+				);
+				$emails=array_keys(
+					dbAll(
+						'select email from user_accounts where id in ('
+						.join(',', array_keys($gs)).')', 'email'
+					)
+				);
+				$details=$facebook->api('/me', 'GET');
 				Core_mail(
 					join(', ', $emails),
 					'['.$_SERVER['HTTP_HOST'].'] Facebook post',
 					'<p>A customer has clicked the Like gateway on your website,'
-						.' posting to their wall.</p><p>Their details are:</p><ul>'
-						.'<li>Name: '.$details['name'].'</li>'
-						.'<li>Gender: '.$details['gender'].'</li>'
-						.'<li>Facebook Link: '.$details['link'].'</li>'
-						.'</ul>'
-						.'<p>this is an automated email; please do not reply to it.</p>',
+					.' posting to their wall.</p><p>Their details are:</p><ul>'
+					.'<li>Name: '.$details['name'].'</li>'
+					.'<li>Gender: '.$details['gender'].'</li>'
+					.'<li>Facebook Link: '.$details['link'].'</li>'
+					.'</ul>'
+					.'<p>this is an automated email; please do not reply to it.</p>',
 					'no-reply@'.$_SERVER['HTTP_HOST']
 				);
 			}
@@ -119,14 +126,12 @@ function FaceBook_widgetShow($vars=null) {
 				default: // {
 					$vars->layout='box_count';
 					$w=55;
-					$h=65;
-					//}
+					$h=65; //}
 			}
-			return '<iframe src="http://www.facebook.com/widgets/like.php?href='
-				.urlencode('http://'.$_SERVER['HTTP_HOST'].$PAGEDATA->getRelativeURL())
-				.'&layout='.$vars->layout.'&show_faces='.$show_faces
-				.'" scrolling="no" frameborder="0"'
-				.' style="border:none;width:'.$w.'px;height:'.$h.'px"></iframe>';
-		break; // }
+		return '<iframe src="http://www.facebook.com/widgets/like.php?href='
+			.urlencode('http://'.$_SERVER['HTTP_HOST'].$PAGEDATA->getRelativeURL())
+			.'&layout='.$vars->layout.'&show_faces='.$show_faces
+			.'" scrolling="no" frameborder="0"'
+			.' style="border:none;width:'.$w.'px;height:'.$h.'px"></iframe>';
 	}
 }

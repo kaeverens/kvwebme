@@ -9,7 +9,7 @@ if (isset($_REQUEST['get_banner'])) {
 	$o->id=(int)$_REQUEST['get_banner'];
 	$ret=array('content'=>show_banner($o));
 	echo json_encode($ret);
-	exit;
+	Core_quit();
 }
 if (@$_REQUEST['action']=='save') {
 	$id=(int)$_REQUEST['id'];
@@ -28,7 +28,7 @@ if (@$_REQUEST['action']=='save') {
 	$ret=array('id'=>$id,'id_was'=>$id_was);
 	echo json_encode($ret);
 	Core_cacheClear('banner-images');
-	exit;
+	Core_quit();
 }
 
 if (isset($_REQUEST['id'])) {

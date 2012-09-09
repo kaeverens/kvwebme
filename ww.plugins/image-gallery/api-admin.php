@@ -15,7 +15,7 @@
 function ImageGallery_adminDetailsEdit() {
 	$id=(int)@$_REQUEST['id'];
 	if (!$id) {
-		exit;
+		Core_quit();
 	}
 	$meta=dbOne('select meta from image_gallery where id='.$id, 'meta');
 	$meta=json_decode($meta, true);
@@ -29,7 +29,7 @@ function ImageGallery_adminDetailsEdit() {
 function ImageGallery_adminDetailsGet() {
 	$id=(int)@$_REQUEST['id'];
 	if (!$id) {
-		exit;
+		Core_quit();
 	}
 	$meta=dbOne('select meta from image_gallery where id='.$id, 'meta');
 	$meta=json_decode($meta, true);

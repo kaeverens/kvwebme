@@ -37,7 +37,7 @@ if (isset($_REQUEST['get_menu'])) {
 		}
 	}
 	echo json_encode($r);
-	exit;
+	Core_quit();
 }
 if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	$id=(int)$_REQUEST['id'];
@@ -65,7 +65,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	Core_cacheClear('menus');
 	$ret=array('id'=>$id,'id_was'=>$id_was);
 	echo json_encode($ret);
-	exit;
+	Core_quit();
 }
 
 if (isset($_REQUEST['id'])) {

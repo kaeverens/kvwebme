@@ -15,7 +15,7 @@ require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 
 if (!isset($_REQUEST['term']) || $_REQUEST['term']=='') {
 	echo '[]';
-	exit;
+	Core_quit();
 }
 $term=$_REQUEST['term'];
 $rs=dbAll(

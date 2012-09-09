@@ -19,7 +19,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/ww.admin/admin_libs.php';
 
 $password=addslashes($_REQUEST['password']);
 if (!$password) {
-	exit;
+	Core_quit();
 }
 $tmpdir='/tmp/cmsBackup-'.md5($_SERVER['HTTP_HOST'].microtime(true));
 

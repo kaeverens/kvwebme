@@ -17,7 +17,7 @@ if (!Core_isAdmin()) {
 }
 
 if (!isset($_REQUEST['id'])) {
-	exit;
+	Core_quit();
 }
 $id=(int)$_REQUEST['id'];
 

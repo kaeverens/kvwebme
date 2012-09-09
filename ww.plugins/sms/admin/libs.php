@@ -1,6 +1,6 @@
 <?php
 if (!Core_isAdmin()) {
-	exit;
+	Core_quit();
 }
 
 function SMS_callApi($command, $urifrag='') {

@@ -12,19 +12,19 @@
 	*/
 require_once '../ww.incs/basics.php';
 if (!isset($_REQUEST['filename'])) {
-	exit;
+	Core_quit();
 }
 $file=USERBASE.'/f/'.$_REQUEST['filename'];
 if (strpos($file, '..')!==false
 	|| (strpos($file, '/.')!==false
 	&& strpos(preg_replace('#/\.files/#', '/', $file), '/.')!==false)
 ) {
-	exit;
+	Core_quit();
 }
 if (!file_exists($file) || !is_file($file)) {
 	header('HTTP/1.0 404 Not Found');
 	echo __('File does not exist');
-	exit;
+	Core_quit();
 }
 
 foreach ($PLUGINS as $plugin) {

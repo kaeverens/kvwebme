@@ -21,7 +21,7 @@ require SCRIPTBASE.'ww.plugins/themes-api/api/funcs.php';
  */
 $user_id = ( int) @$_SESSION[ 'userdata' ][ 'id' ];
 if ($user_id == 0) {
-	exit;
+	Core_quit();
 }
 
 /**

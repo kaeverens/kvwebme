@@ -15,7 +15,7 @@ require '../../../ww.incs/basics.php';
 
 $id = (int)@$_SESSION[ 'userdata' ][ 'id' ];
 if ($id == 0) {
-	exit;
+	Core_quit();
 }
 
 $user = dbRow('select * from user_accounts where id=' . $id);

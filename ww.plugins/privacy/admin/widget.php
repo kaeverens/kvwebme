@@ -26,7 +26,7 @@ $ua_pages=dbAll(
 if (!count($ua_pages)) {
 	echo 'no User Authentication pages created. please '
 		.'<a href="/ww.admin/pages.php">create one</a> first.';
-	exit;
+	Core_quit();
 }
 // }
 // { registration page

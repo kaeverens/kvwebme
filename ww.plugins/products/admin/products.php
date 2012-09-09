@@ -11,7 +11,7 @@
 	* @link     http://kvsites.ie/
 	*/
 if (!Core_isAdmin()) {
-	exit;
+	Core_quit();
 }
 
 // { links: add product, import products

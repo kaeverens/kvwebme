@@ -17,7 +17,7 @@
  * make sure post is set
  */
 if (!isset($_POST[ 'install-theme' ]) && !isset($_POST[ 'download-theme' ])) {
-	exit;
+	Core_quit();
 }
 
 /**
@@ -25,7 +25,7 @@ if (!isset($_POST[ 'install-theme' ]) && !isset($_POST[ 'download-theme' ])) {
  */
 $id = (int) @$_POST[ 'theme_id' ];
 if ($id == 0) {
-	exit;
+	Core_quit();
 }
 
 /**

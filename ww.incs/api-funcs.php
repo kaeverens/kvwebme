@@ -25,12 +25,12 @@ function Core_directoryCheckName($file) {
 		|| (strpos($file, '/.')!==false
 		&& strpos(preg_replace('#/\.files/#', '/', $file), '/.')!==false)
 	) {
-		exit;
+		Core_quit();
 	}
 	if (!file_exists($file) || !is_dir($file)) {
 		header('HTTP/1.0 404 Not Found');
 		echo 'directory does not exist';
-		exit;
+		Core_quit();
 	}
 }
 
@@ -49,12 +49,12 @@ function Core_fileCheckName($file) {
 		|| (strpos($file, '/.')!==false
 		&& strpos(preg_replace('#/\.files/#', '/', $file), '/.')!==false)
 	) {
-		exit;
+		Core_quit();
 	}
 	if (!file_exists($file) || !is_file($file)) {
 		header('HTTP/1.0 404 Not Found');
 		echo 'file does not exist';
-		exit;
+		Core_quit();
 	}
 }
 
@@ -125,7 +125,7 @@ function Core_getImg() {
 		if (@fopen($f, 'r')!=true) {
 			header("HTTP/1.0 404 Not Found");
 			echo 'file does not exist';
-			exit;
+			Core_quit();
 		}
 	}
 	else {
@@ -133,7 +133,7 @@ function Core_getImg() {
 		if (!file_exists($f)) { 
 			header("HTTP/1.0 404 Not Found");
 			echo 'file does not exist';
-			exit;
+			Core_quit();
 		}
 	}
 	$ext=strtolower(preg_replace('/.*\./', '', $f));
@@ -145,7 +145,7 @@ function Core_getImg() {
 		break; // }
 		default: // {
 			echo 'unhandled image extension '.$ext;
-			exit;
+			Core_quit();
 			// }
 	}
 	if (strpos($f, '/.')!=false) {
@@ -184,7 +184,7 @@ function Core_getImg() {
 	header('Pragma:');
 	header('Content-Length: ' . filesize($f));
 	readfile($f);
-	exit;
+	Core_quit();
 }
 
 // }
@@ -379,7 +379,7 @@ function Core_locationsGetFull() {
 function Core_login() {
 	// { variables
 	if (!isset($_REQUEST['email']) || !isset($_REQUEST['password'])) {
-		exit(
+		Core_quit(
 			'{"error":"'.addslashes(
 				__('missing email address or password')
 			).'"}'
@@ -395,9 +395,9 @@ function Core_login() {
 		$r['password']=$password;
 		$_SESSION['userdata'] = $r;
 		dbQuery('update user_accounts set last_login=now() where id='.$r['id']);
-		exit('{"ok":1}');
+		Core_quit('{"ok":1}');
 	}
-	exit('{"error":"either the email address or the password are incorrect"}');
+	Core_quit('{"error":"either the email address or the password are incorrect"}');
 }
 
 // }
@@ -454,7 +454,7 @@ function Core_qrCode() {
 	header('Pragma:');
 	header('Content-Length: ' . filesize($fname));
 	readfile($fname);
-	exit;
+	Core_quit();
 }
 
 // }
@@ -538,9 +538,9 @@ function Core_sendLoginToken() {
 			'Your token is: '.$token,
 			$email
 		);
-		exit('{"ok":1}');
+		Core_quit('{"ok":1}');
 	}
-	exit('{"error":"that email address not found in the users table"}');
+	Core_quit('{"error":"that email address not found in the users table"}');
 }
 
 // }
@@ -598,15 +598,15 @@ function Core_sendRegistrationToken() {
 function Core_updateUserPasswordUsingToken() {
 	$email=$_REQUEST['email'];
 	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-		exit('{"error":"please enter a properly formatted email address"}');
+		Core_quit('{"error":"please enter a properly formatted email address"}');
 	}
 	$token=addslashes($_REQUEST['token']);
 	if ($token=='') {
-		exit('{"error":"no token entered"}');
+		Core_quit('{"error":"no token entered"}');
 	}
 	$password=$_REQUEST['password'];
 	if ($password=='') {
-		exit('{"error":"no new password entered"}');
+		Core_quit('{"error":"no new password entered"}');
 	}
 	$u=dbRow(
 		"SELECT * FROM user_accounts WHERE email='$email' "
@@ -618,9 +618,9 @@ function Core_updateUserPasswordUsingToken() {
 			"UPDATE user_accounts SET password='$password',"
 			."verification_hash='' WHERE email='$email'"
 		);
-		exit('{"ok":1}');
+		Core_quit('{"ok":1}');
 	}
-	exit('{"error":"user not found, or verification token is out of date"}');
+	Core_quit('{"error":"user not found, or verification token is out of date"}');
 }
 
 // }

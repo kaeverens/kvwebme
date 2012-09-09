@@ -55,7 +55,7 @@ if (isset($_REQUEST['action'])) {
 		else {
 			$_SESSION['db_vars']['passed']=1;
 			echo '<script defer="defer">document.location="/install/step2.php";</script>';
-			exit;
+			Core_quit();
 		}
 	}
 }

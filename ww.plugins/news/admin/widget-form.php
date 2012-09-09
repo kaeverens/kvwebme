@@ -33,7 +33,7 @@ $news_pages=dbAll(
 if (!count($news_pages)) {
 	echo 'no News pages created. please <a href="/ww.admin/pages.php">create '
 		.'one</a> first.';
-	exit;
+	Core_quit();
 }
 echo '<select name="id"><option value=""> -- choose your news page -- '
 	.'</option>';
