@@ -514,7 +514,7 @@ var Gallery={
 		}
 		$.extend(this.options, opts);
 		// { thumbsize
-		var ts=this.options.thumbsize.replace(/[^0-9\.x]/g, '').split('x');
+		var ts=(''+this.options.thumbsize).replace(/[^0-9\.x]/g, '').split('x');
 		this.options.thumbsizex=+ts[0];
 		if (ts.length>1) {
 			this.options.thumbsizey=+ts[1];
