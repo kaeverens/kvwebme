@@ -247,11 +247,22 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		foreach ($_REQUEST as $key=>$val) {
 			$smarty->assign($key, $val);
 		}
+		// { check to see if stock number should be shown
+		$showStockNumber=false;
+		foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
+			if ($item['stock_number']) {
+				$showStockNumber=true;
+			}
+		}
+		// }
 		// { table of items
 		$table='<table id="onlinestore-invoice" style="clear:both" width="100%">'
 			.'<tr><th class="quantityheader">'.__('Quantity').'</th>'
-			.'<th class="descriptionheader">'.__('Description').'</th>'
-			.'<th class="unitamountheader">'.__('Unit Price').'</th>'
+			.'<th class="descriptionheader">'.__('Description').'</th>';
+		if ($showStockNumber) {
+			$table.='<th class="stockNumberHeader">'.__('Stock Number').'</th>';
+		}
+		$table.='<th class="unitamountheader">'.__('Unit Price').'</th>'
 			.'<th class="amountheader">'.__('Amount').'</th>'
 			.'</tr>';
 		$user_is_vat_free=0;
@@ -271,7 +282,11 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$table.='<tr><td class="quantitycell">'.$item['amt']
 				.'</td><td class="descriptioncell"><a href="'.$item['url'].'">'
 				.preg_replace('/<[^>]*>/', '', $item['short_desc'])
-				.'</td><td class="unitamountcell">'
+				.'</td>';
+			if ($showStockNumber) {
+				$table.='<td class="stockNumberCell">'.$item['stock_number'].'</td>';
+			}
+			$table.='<td class="unitamountcell">'
 				.OnlineStore_numToPrice($item['cost'])
 				.'</td><td class="amountcell">'
 				.OnlineStore_numToPrice($totalItemCost)
@@ -291,7 +306,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			}
 		}
 		$table.='<tr class="os_basket_totals">'
-			.'<td colspan="2" class="nobord">&nbsp;</td>'
+			.'<td colspan="'.($showStockNumber?3:2).'" class="nobord">&nbsp;</td>'
 			.'<td style="text-align:right">'.__('Subtotal', 'core')
 			.'</td><td class="totals amountcell">'
 			.OnlineStore_numToPrice($grandTotal)
@@ -301,7 +316,8 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$code=$_REQUEST['os_voucher'];
 			$voucher_amount=OnlineStore_voucherAmount($code, $email, $grandTotal);
 			if ($voucher_amount) {
-				$table.='<tr class="os_basket_totals"><td colspan="2" class="nobord">&nbsp;</td>'
+				$table.='<tr class="os_basket_totals"><td colspan="'
+					.($showStockNumber?3:2).'" class="nobord">&nbsp;</td>'
 					.'<td class="voucher" style="text-align: right;">'
 					.'<span>'.__('Voucher', 'core').'</span> '
 					.'('.htmlspecialchars($code).')</td><td class="totals amountcell">-'
@@ -312,7 +328,8 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		}
 		if ($group_discount) { // group discount
 			$discount_amount=$grandTotal*($group_discount/100);
-			$table.='<tr class="os_basket_totals"><td colspan="2" class="nobord">'
+			$table.='<tr class="os_basket_totals"><td colspan="'
+				.($showStockNumber?3:2).'" class="nobord">'
 				.'&nbsp;</td><td class="group-discount" style="text-align:right;">'
 				.'<span>'.__('Group Discount', 'core')
 				.'</span> ('.$group_discount.'%)</td><td class="totals">-'
@@ -323,7 +340,8 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		$postage=OnlineStore_getPostageAndPackaging($deliveryTotal, '', 0);
 		if ($postage['total']) {
 			$grandTotal+=$postage['total'];
-			$table.='<tr class="os_basket_totals"><td colspan="2" class="nobord">'
+			$table.='<tr class="os_basket_totals"><td colspan="'
+				.($showStockNumber?3:2).'" class="nobord">'
 				.'&nbsp;</td><td class="p_a'
 				.'nd_p __" lang-context="core" style="text-align: right;">'
 				.'Postage and Packaging (P&amp;P)</td><td class="amountcell">'
@@ -331,7 +349,8 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		}
 		// }
 		if ($vattable && $_SESSION['onlinestore_vat_percent']) {
-			$table.='<tr class="os_basket_totals"><td colspan="2" class="nobord">&nbsp;</td>'
+			$table.='<tr class="os_basket_totals"><td colspan="'
+				.($showStockNumber?3:2).'" class="nobord">&nbsp;</td>'
 				.'<td style="text-align:right" class="vat">'
 				.'<span>'.__('VAT', 'core').'</span> '
 				.'('.$_SESSION['onlinestore_vat_percent'].'% on '
@@ -341,7 +360,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			$grandTotal+=$vat;
 		}
 		$table.='<tr class="os_basket_totals os_basket_amountcell">'
-			.'<td colspan="2" class="nobord">&nbsp;</td>'
+			.'<td colspan="'.($showStockNumber?3:2).'" class="nobord">&nbsp;</td>'
 			.'<td class="totalcell __" lang-context="core" '
 			.'style="text-align: right;">Total Due</td>'
 			.'<td class="amountcell">'.OnlineStore_numToPrice($grandTotal)
@@ -535,13 +554,24 @@ if (!$submitted) {
 			$group_discount=$user->getGroupHighest('discount');
 		}
 		// }
+		// { check to see if stock number should be shown
+		$showStockNumber=false;
+		foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
+			if ($item['stock_number']) {
+				$showStockNumber=true;
+			}
+		}
+		// }
 		// { show headers
-		$c.='<table id="onlinestore-checkout" width="100%"><tr>';
-		$c.='<th style="width:60%">'.__('Item', 'core').'</th>';
-		$c.='<th>'.__('Price', 'core').'</th>';
-		$c.='<th>'.__('Amount', 'core').'</th>';
-		$c.='<th class="totals __" lang-context="core">Total</th>';
-		$c.='</tr>';
+		$c.='<table id="onlinestore-checkout" width="100%"><tr>'
+			.'<th style="width:60%">'.__('Item', 'core').'</th>';
+		if ($showStockNumber) {
+			$c.='<th>'.__('Stock Number').'</th>';
+		}
+		$c.='<th>'.__('Price', 'core').'</th>'
+			.'<th>'.__('Amount', 'core').'</th>'
+			.'<th class="totals">'.__('Total').'</th>'
+			.'</tr>';
 		// }
 		// { set up variables
 		$grandTotal = 0;
@@ -578,6 +608,11 @@ if (!$submitted) {
 				$has_vatfree=true;
 			}
 			$c.='</td>';
+			// }
+			// { stock number
+			if ($showStockNumber) {
+				$c.='<td>'.$item['stock_number'].'</td>';
+			}
 			// }
 			// { cost per item
 			$c.='<td>'.OnlineStore_numToPrice($item['cost']).'</td>';

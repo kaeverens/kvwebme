@@ -1158,7 +1158,8 @@ function Products_addToCart() {
 		$id,
 		(int)(@$product->vals['online-store']['_deliver_free']),
 		(int)(@$product->vals['online-store']['_not_discountable']),
-		$max_allowed
+		$max_allowed,
+		$product->stock_number
 	);
 }
 

@@ -94,12 +94,14 @@ $online_store_currencies=array(
 	* @param boolean $delivery_free is this product's delivery free
 	* @param boolean $no_discount   does this product ignore discounts
 	* @param int     $max_allowed   max allowed per purchase
+	* @param string  $stock_number  company stock code of the product
 	*
 	* @return null
 	*/
 function OnlineStore_addToCart(
 	$cost=0, $amt=0, $short_desc='', $long_desc='', $md5='', $url='',
-	$vat=true, $id=0, $delivery_free=false, $no_discount=false, $max_allowed=0
+	$vat=true, $id=0, $delivery_free=false, $no_discount=false, $max_allowed=0,
+	$stock_number=''
 ) {
 	// { add item to session
 	if (!isset($_SESSION['online-store'])) {
@@ -123,6 +125,7 @@ function OnlineStore_addToCart(
 	$item['id']=$id;
 	$item['delivery_free']=$delivery_free;
 	$item['not_discountable']=$no_discount;
+	$item['stock_number']=$stock_number;
 	$_SESSION['online-store']['items'][$md5]=$item;
 	// }
 	require dirname(__FILE__).'/libs.php';
