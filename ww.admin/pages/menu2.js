@@ -403,6 +403,9 @@ function Reports_visitorStats($el) {
 				'axes':{
 					'xaxis': {
 						'renderer':$.jqplot.DateAxisRenderer
+					},
+					'yaxis': {
+						'min':0
 					}
 				},
 				'series':[
