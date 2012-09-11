@@ -1160,6 +1160,7 @@ function Products_showRelatedProducts($params, $smarty) {
 					.htmlspecialchars(__fromJSON($p->name)).'</p></a>';
 				continue;
 			}
+			
 			$h[]='<img src="/a/w=180/h=180/f=getImg/'.$iid.'"/>'
 				.'<br/>'.htmlspecialchars(__fromJSON($p->name)).'</a>';
 		}

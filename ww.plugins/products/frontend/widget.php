@@ -70,16 +70,23 @@ switch ($widget_type) {
 		foreach ($products->product_ids as $pid) {
 			$product=Product::getInstance($pid);
 			$iid=$product->getDefaultImage();
+			
 			$img=$iid
-				?'<a href="'.$product->getRelativeURL().'"><img src="/a/w=100/h=100/'
+				?'<a href="'.$product->getRelativeURL().'"><img src="/a/w=200/h=auto/' // Changed from w=100/h=100 to w=200/h=auto //DA 29-08-12
 				.'/f=getImg/'.$iid.'"/></a>'
 				:'';
+				$pvat = array("vat" => $_SESSION['onlinestore_vat_percent']);
 			$html.='<table class="product"><tr><td rowspan="2">'.$img.'</td>'
 				.'<td><strong>'.htmlspecialchars(__FromJson($product->name)).'</strong>'
-				.'<p class="base-price">was: '.$_SESSION['currency']['symbol']
+				/*.'<p class="base-price">was: '.$_SESSION['currency']['symbol']
 				.$product->vals['online-store']['_price'].'</p>'
 				.'<p class="sale-price">now: '.$_SESSION['currency']['symbol']
-				.$product->getPrice('sale').'</p>'
+				.$product->getPrice('sale').'</p>'*/
+				
+				.'<div class="products_listview_price"><p class="price_related">'
+					.OnlineStore_numToPrice(($product->vals['online-store']['_price'])*(1+($pvat['vat'])/100))
+				.'</p></div>'
+				//End
 				.'</td></tr>'
 				.'<tr><td><a href="'.$product->getRelativeURL().'">more info</a>'
 				.'</td></tr></table>';
