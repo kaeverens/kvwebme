@@ -181,7 +181,7 @@ $(function(){
 	});
 	$('#onlinestore-orders-table').dataTable({
 		'bJQueryUI':true,
-		"iDisplayLength": 100;
+		"iDisplayLength": 100
 	});
 	$('#onlinestore-orders-action').change(function() {
 		var val=+$(this).val();
