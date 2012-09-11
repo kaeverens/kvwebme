@@ -1,6 +1,6 @@
 $(function() {
 	var $table=$('#products-list').dataTable({
-		"iDisplayLength":10,
+		"iDisplayLength":100,
 		"bProcessing": true,
 		"bJQueryUI": true,
 		"bServerSide": true,

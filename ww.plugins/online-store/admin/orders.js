@@ -180,7 +180,8 @@ $(function(){
 		});
 	});
 	$('#onlinestore-orders-table').dataTable({
-		'bJQueryUI':true
+		'bJQueryUI':true,
+		"iDisplayLength": 100;
 	});
 	$('#onlinestore-orders-action').change(function() {
 		var val=+$(this).val();
