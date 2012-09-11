@@ -244,7 +244,7 @@ function OnlineStore_sendInvoiceEmail($id, $order=false) {
 		@mkdir(USERBASE.'/'.$export, 0777, true);
 		file_put_contents(
 			USERBASE.'/'.$export.'/order'.$id.'.csv',
-			"\xEF\xBB\xBF".join("\n\r", $exportcsv)
+			"\xEF\xBB\xBF".join("\r\n", $exportcsv)
 		);
 	}
 }

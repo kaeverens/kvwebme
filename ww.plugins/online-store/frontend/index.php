@@ -591,7 +591,7 @@ if (!$submitted) {
 					if ($img) {
 						$c.='<a href="/f/'.$img.'" target="popup" '
 							.'class="online-store-thumb-wrapper">'
-							.'<img src="/a/f=getImg/w=32/h=32/'.$img.'"/>'
+							.'<img src="/a/f=getImg/w=auto/h=125/'.$img.'"/>' //h:125 w: auto
 							.'</a>';
 					}
 				}

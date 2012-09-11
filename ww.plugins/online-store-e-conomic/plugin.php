@@ -25,7 +25,7 @@ $plugin=array(
 	), // }
 	'description'=>function() {
 		return __(
-			'Add e-conomic.co.uk integration to online store.'
+			'Add e-conomic integration to online store.'
 		);
 	},
 	'frontend' => array( // {
