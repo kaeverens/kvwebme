@@ -68,9 +68,10 @@ $os_currencies=dbOne(
 if (!$os_currencies) {
 	$os_currencies='[{"name":"Euro","iso":"Eur","symbol":"€","value":1}]';
 }
-echo '<form method="post" action="'.$_url.'" />';
+echo '<form method="post" action="'.$_url.'" />'
+	.'<div class="accordion">';
 // { default price display with/without VAT
-echo '<h3>VAT</h3>'
+echo '<h2><a href="#">VAT</a></h2><div>'
 	.'<p>Prices will be displayed on the frontend by default: '
 	.'<select name="online_store_vars[vat_display]">'
 	.'<option value="0">pre-VAT</option>'
@@ -82,10 +83,10 @@ $postvat=(int)dbOne(
 if ($postvat) {
 	echo ' selected="selected"';
 }
-echo '>post-VAT</option></select>.</p>';
+echo '>post-VAT</option></select>.</p></div>';
 // }
 // { invoices
-echo '<h3>Invoices</h3>'
+echo '<h2><a href="#">Invoices</a></h2>'
 	.'<div id="invoices">'
 	.'<select name="online_store_vars[invoices_by_email]">';
 $opts=array(
@@ -104,17 +105,81 @@ foreach ($opts as $k=>$opt) {
 	}
 	echo '>'.htmlspecialchars(__($opt)).'</option>';
 }
-echo '</select>';
+echo '</select></div>';
+// }
+// { exports
+echo '<h2><a href="#">Automated Exports</a></h2>'
+	.'<div id="exports">'
+	.'<table>';
+// { export at what point
+echo '<tr><th>'.__('Export at what point').'</th><td>'
+	.'<select name="online_store_vars[export_at_what_point]">';
+$opts=array(
+	'Export details to file when the order is Paid',
+	'Do not export details to file at all',
+	'Export details to file when the order is Paid And Delivered'
+);
+$curval=(int)dbOne(
+	'select val from online_store_vars where name="export_at_what_point"',
+	'val'
+);
+foreach ($opts as $k=>$opt) {
+	echo '<option value="'.$k.'"';
+	if ($k==$curval) {
+		echo ' selected="selected"';
+	}
+	echo '>'.htmlspecialchars(__($opt)).'</option>';
+}
+echo '</select></td></tr>';
+// }
+// { Orders Directory
+echo '<tr><th>'.__('Orders Directory').'</th>'
+	.'<td><input name="online_store_vars[export_dir]" value="'
+	.htmlspecialchars(
+		dbOne(
+			'select val from online_store_vars where name="export_dir"',
+			'val'
+		)
+	)
+	.'" placeholder="'
+	.'/f/orders"/></td></tr>';
+// }
+// { Customers Directory
+echo '<tr><th>'.__('Customers Directory').'</th><td>'
+	.'<input name="online_store_vars[export_customers]" value="'
+	.htmlspecialchars(
+		dbOne(
+			'select val from online_store_vars where name="export_customers"',
+			'val'
+		)
+	)
+	.'" placeholder="'
+	.'/f/customers"/></td></td></tr>';
+// }
+// { Customers Filename
+echo '<tr><th>'.__('Customers Filename').'</th>'
+	.'<td><input name="online_store_vars[export_customer_filename]" value="'
+	.htmlspecialchars(
+		dbOne(
+			'select val from online_store_vars'
+			.' where name="export_customer_filename"',
+			'val'
+		)
+	)
+	.'"'
+	.' placeholder="customer-{{$Email}}.csv"/></td></tr>';
+// }
+echo '</table></div>';
 // }
 // { currencies
-echo '<h3>Currencies</h3>'
+echo '<h2><a href="#">Currencies</a></h2>'
 	.'<div id="currencies">'
 	.'<p>The top row is the default currency of the website.'
 	.' To change the default, please drag a different row to the top.</p>'
 	.'</div>';
 // }
 // { discounts
-echo '<h3>Group discounts</h3><table>';
+echo '<h2><a href="#">Group discounts</a></h2><div><table>';
 $groups=dbAll('select * from groups order by name');
 foreach ($groups as $group) {
 	if ($group['meta']=='') {
@@ -125,9 +190,10 @@ foreach ($groups as $group) {
 		.'<input type="number" name="discounts['.$group['id']
 		.']" min="0" max="100" value="'.((float)@$meta['discount']).'"/></td></tr>';
 }
-echo '</table>';
+echo '</table></div>';
 // }
-echo '<input type="submit" name="action" value="Save" /></form>';
+echo '</div>'
+	.'<input type="submit" name="action" value="Save" /></form>';
 WW_addScript('online-store/admin/site-options.js');
 WW_addInlineScript('window.os_currencies='.$os_currencies.';');
 WW_addCSS('/ww.plugins/online-store/admin/site-options.css');

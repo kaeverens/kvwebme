@@ -35,7 +35,8 @@ function OnlineStore_processOrder($id, $order=false) {
 	}
 	// }
 	Core_trigger('after-order-processed', array($order));
-	OnlineStore_sendInvoiceEmail($id, $order=false);
+	OnlineStore_sendInvoiceEmail($id, $order);
+	OnlineStore_exportToFile($id, $order);
 }
 
 // }
@@ -68,16 +69,6 @@ function OnlineStore_sendInvoiceEmail($id, $order=false) {
 	}
 	$form_vals=json_decode($order['form_vals']);
 	$items=json_decode($order['items']);
-	// { start export
-	$export=dbOne(
-		'select value from page_vars where name="online_stores_exportdir"',
-		'value'
-	);
-	$exportcsv=array(
-		'"Phone Number","Customer Name","Address 1","Address 2","Postcode",'
-		.'"Email","Stock Number","Amt","Price","Item ID"'
-	);
-	// }
 	$short_domain=str_replace('www.', '', $_SERVER['HTTP_HOST']);
 	// { work out from/to
 	$page=Page::getInstanceByType('online-store');
@@ -119,33 +110,6 @@ function OnlineStore_sendInvoiceEmail($id, $order=false) {
 			continue;
 		}
 		$p=Product::getInstance($item->id);
-		$exportcsv[]= // { line to export
-			'"'
-			.str_replace('"', '""', @$form_vals->Billing_Phone)
-			.'","'
-			.str_replace(
-				'"',
-				'""',
-				@$form_vals->Billing_FirstName.' '.@$form_vals->Billing_Surname
-			)
-			.'","'
-			.str_replace('"', '""', @$form_vals->Billing_Street)
-			.'","'
-			.str_replace('"', '""', @$form_vals->Billing_Street2)
-			.'","'
-			.str_replace('"', '""', @$form_vals->Billing_Postcode)
-			.' '.str_replace('"', '""', @$form_vals->Billing_Town)
-			.'","'
-			.str_replace('"', '""', @$form_vals->Billing_Email)
-			.'","'
-			.str_replace('"', '""', @$p->Billing_stock_number)
-			.'","'
-			.$item->amt
-			.'","'
-			.$item->cost
-			.'","'
-			.$item->id
-			.'"'; // }
 		$pt=ProductType::getInstance($p->vals['product_type_id']);
 		if ($pt->is_voucher) {
 			$html=$pt->voucher_template;
@@ -204,16 +168,94 @@ function OnlineStore_sendInvoiceEmail($id, $order=false) {
 	}
 	Core_cacheClear('products');
 	// }
+}
+
+// }
+// { OnlineStore_exportToFile
+
+/**
+	* exports to file if the status is right
+	*
+	* @param int   $id    ID of the order
+	* @param array $order details of the order
+	*
+	* @return null
+	*/
+function OnlineStore_exportToFile($id, $order=false) {
+	if ($order===false) {
+		$order=dbRow("SELECT * FROM online_store_orders WHERE id=$id");
+	}
+	$sendAt=(int)dbOne(
+		'select val from online_store_vars where name="export_at_what_point"',
+		'val'
+	);
+	if ($sendAt==0 && $order['status']!='1') {
+		return;
+	}
+	if ($sendAt==1) { // never send
+		return;
+	}
+	if ($sendAt==2 && $order['status']!='2') {
+		return;
+	}
+	$form_vals=json_decode($order['form_vals']);
+	$items=json_decode($order['items']);
+	// { start export
+	$export=dbOne(
+		'select val from online_store_vars where name="export_dir"',
+		'val'
+	);
+	$exportcsv=array(
+		'"Phone Number","Customer Name","Address 1","Address 2","Postcode",'
+		.'"Email","Stock Number","Amt","Price","Item ID"'
+	);
+	// }
+	// { handle item-specific stuff (vouchers, stock control)
+	foreach ($items as $item_index=>$item) {
+		if (!$item->id) {
+			continue;
+		}
+		$p=Product::getInstance($item->id);
+		$exportcsv[]= // { line to export
+			'"'
+			.str_replace('"', '""', @$form_vals->Billing_Phone)
+			.'","'
+			.str_replace(
+				'"',
+				'""',
+				@$form_vals->Billing_FirstName.' '.@$form_vals->Billing_Surname
+			)
+			.'","'
+			.str_replace('"', '""', @$form_vals->Billing_Street)
+			.'","'
+			.str_replace('"', '""', @$form_vals->Billing_Street2)
+			.'","'
+			.str_replace('"', '""', @$form_vals->Billing_Postcode)
+			.' '.str_replace('"', '""', @$form_vals->Billing_Town)
+			.'","'
+			.str_replace('"', '""', @$form_vals->Billing_Email)
+			.'","'
+			.str_replace('"', '""', @$p->Billing_stock_number)
+			.'","'
+			.$item->amt
+			.'","'
+			.$item->cost
+			.'","'
+			.$item->id
+			.'"'; // }
+		// }
+	}
+	Core_cacheClear('products');
 	if ($export && strpos($export, '..')===false) {
 		$customer=dbOne(
-			'select value from page_vars where name="online_stores_exportcustomers"',
-			'value'
+			'select val from online_store_vars where name="export_customers"',
+			'val'
 		);
 		if ($customer && strpos($customer, '..')===false) {
 			$customer_filename=dbOne(
-				'select value from page_vars'
-				.' where name="online_stores_exportcustomer_filename"',
-				'value'
+				'select val from online_store_vars'
+				.' where name="export_customer_filename"',
+				'val'
 			);
 			if (!$customer_filename) {
 				$customer_filename='customer-{{$Billing_Email}}.csv';
@@ -235,7 +277,33 @@ function OnlineStore_sendInvoiceEmail($id, $order=false) {
 			$customer_filename=str_replace(array('..', '/'), '', $customer_filename);
 			@mkdir(USERBASE.'/'.$customer, 0777, true);
 			$phone=preg_replace('/[^0-9\(\)\+]/', '', @$form_vals->Billing_Phone);
-			$fcontent='"Name","Street","Street 2","Postcode","Email","Phone"'."\n".'"'.str_replace( '"', '""', @$form_vals->Billing_FirstName.' '.@$form_vals->Billing_Surname).'","'.str_replace('"', '""', @$form_vals->Billing_Street).'","'.str_replace('"', '""', @$form_vals->Billing_Street2).'","'.str_replace('"', '""', @$form_vals->Billing_Postcode).'","'.str_replace('"', '""', @$form_vals->Billing_Email).'","'.str_replace('"', '""', $form_vals->Billing_Phone).'"';
+			$fcontent='"Name","Street","Street 2","Postcode","Email","Phone"'."\n"
+				.'"'.str_replace(
+					'"',
+					'""',
+					@$form_vals->Billing_FirstName.' '.@$form_vals->Billing_Surname
+				)
+				.'","'.str_replace(
+					'"',
+					'""',
+					@$form_vals->Billing_Street
+				)
+				.'","'.str_replace(
+					'"',
+					'""',
+					@$form_vals->Billing_Street2
+				)
+				.'","'.str_replace(
+					'"',
+					'""',
+					@$form_vals->Billing_Postcode
+				)
+				.'","'.str_replace(
+					'"',
+					'""',
+					@$form_vals->Billing_Email
+				)
+				.'","'.str_replace('"', '""', $form_vals->Billing_Phone).'"';
 			file_put_contents(
 				USERBASE.'/'.$customer.'/'.$customer_filename,
 				"\xEF\xBB\xBF".$fcontent

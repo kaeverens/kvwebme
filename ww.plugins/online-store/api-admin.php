@@ -140,6 +140,7 @@ function OnlineStore_adminChangeOrderStatus() {
 		dbQuery('update online_store_orders set status='.$status.' where id='.$id);
 		require dirname(__FILE__).'/order-status.php';
 		OnlineStore_sendInvoiceEmail($id);
+		OnlineStore_exportToFile($id);
 	}
 	return array('ok'=>1);
 }

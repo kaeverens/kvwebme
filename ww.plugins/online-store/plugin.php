@@ -66,7 +66,7 @@ $plugin=array(
 	), // }
 	'do-not-delete' => true,
 	'only-one-page-instance' => true,
-	'version' => '15'
+	'version' => '16'
 );
 // }
 // { currency symbols

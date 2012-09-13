@@ -506,29 +506,6 @@ foreach ($continents as $continent=>$countries) {
 }
 $c.='</div></div>';
 // }
-// { export
-$c.='<div id="online-store-export">'
-	// { automated exports
-	.'<h3>'.__('Automated exports').'</h3>'
-	.'<p>'
-	.__('Fill these in if you want paid orders to be automatically exported.')
-	.'</p>'
-	.'<table><tr><th>'.__('Orders Directory').'</th>'
-	.'<td><input name="page_vars[online_stores_exportdir]" value="'
-	.htmlspecialchars(@$vars['online_stores_exportdir']).'" placeholder="'
-	.'/f/orders"/></td></tr>'
-	.'<tr><th>'.__('Customers Directory').'</th><td>'
-	.'<input name="page_vars[online_stores_exportcustomers]" value="'
-	.htmlspecialchars(@$vars['online_stores_exportcustomers']).'" placeholder="'
-	.'/f/customers"/></td></td></tr>'
-	.'<tr><th>'.__('Customers Filename').'</th>'
-	.'<td><input name="page_vars[online_stores_exportcustomer_filename]" value="'
-	.htmlspecialchars(@$vars['online_stores_exportcustomer_filename']).'"'
-	.' placeholder="customer-{{$Email}}.csv"/></td></tr>'
-	.'</table>';
-	// }
-$c.='</div>';
-// }
 $c.='</div>';
 WW_addScript('online-store/admin/index.js');
 WW_addScript('/j/jquery.inlinemultiselect.js');

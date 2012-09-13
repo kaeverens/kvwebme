@@ -176,3 +176,46 @@ if ($version==14) { // no longer using page_vars for invoices
 	);
 	$version=15;
 }
+if ($version==15) { // no longer using page_vars for export variables
+	// { export_dir
+	$val=dbOne(
+		'select value from page_vars where name="online_stores_exportdir"', 'value'
+	);
+	dbQuery(
+		'insert into online_store_vars set name="export_dir"'
+		.', val="'.addslashes($val).'"'
+	);
+	// }
+	// { export_customers
+	$val=dbOne(
+		'select value from page_vars where name="online_stores_exportcustomers"',
+		'value'
+	);
+	dbQuery(
+		'insert into online_store_vars set name="export_customers"'
+		.', val="'.addslashes($val).'"'
+	);
+	// }
+	// { export_customers_filename
+	$val=dbOne(
+		'select value from page_vars'
+		.' where name="online_stores_exportcustomers_filename"',
+		'value'
+	);
+	dbQuery(
+		'insert into online_store_vars set name="export_customers_filename"'
+		.', val="'.addslashes($val).'"'
+	);
+	// }
+	// { export_at_what_point
+	$val=(int)dbOne(
+		'select val from online_store_vars where name="invoices_by_email"',
+		'val'
+	);
+	dbQuery(
+		'insert into online_store_vars set name="export_at_what_point"'
+		.', val="'.addslashes($val).'"'
+	);
+	// }
+	$version=16;
+}

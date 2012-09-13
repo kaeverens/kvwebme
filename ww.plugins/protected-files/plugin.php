@@ -1,10 +1,31 @@
 <?php
+/**
+	* definition file for Protexted Files plugin
+	*
+	* PHP version 5
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     None
+	*/
+
+// { config
+
 $plugin=array(
-	'name'=>'protected files',
-	'description'=>'Protect files by requiring either a login or an email address',
+	'name'=>function() {
+		return __('protected files');
+	},
+	'description' =>function() {
+		return __(
+			'Protect files by requiring either a login or an email address.'
+		);
+	},
 	'admin'=>array(
 		'menu'=>array(
-			'Site Options>Protected Files'=>'plugin.php?_plugin=protected-files&amp;_page=index'
+			'Site Options>Protected Files'=>
+				'plugin.php?_plugin=protected-files&amp;_page=index'
 		)
 	),
 	'frontend'=>array(
@@ -12,6 +33,20 @@ $plugin=array(
 	),
 	'version'=>6
 );
+
+// }
+// { ProtectedFiles_log
+
+/**
+	* log the file request
+	*
+	* @param string $fname   file name
+	* @param int    $success was it successful
+	* @param string $email   email address of the requester
+	* @param int    $pf_id   ID
+	*
+	* @return null
+	*/
 function ProtectedFiles_log($fname, $success, $email='', $pf_id=0) {
 	$i=$_SERVER['REMOTE_ADDR'];
 	if (!isset($_SESSION['session_md5'])) {
@@ -28,6 +63,17 @@ function ProtectedFiles_log($fname, $success, $email='', $pf_id=0) {
 		."),success=$success,email='$e',session_md5='$m',pf_id=$pf_id"
 	);
 }
+
+// }
+// { ProtectedFiles_check
+
+/**
+	* check that a file can be accessed
+	*
+	* @param array $vars array
+	*
+	* @return null
+	*/
 function ProtectedFiles_check($vars) {
 	global $PAGEDATA;
 	$fname=$vars['requested_file'];
@@ -149,6 +195,17 @@ function ProtectedFiles_check($vars) {
 		}
 	}
 }
+
+// }
+// { ProtectedFiles_getTemplate
+
+/**
+	* get template
+	*
+	* @param string $templateString template
+	*
+	* @return array
+	*/
 function ProtectedFiles_getTemplate($templateString) {
 	if (file_exists(THEME_DIR.'/'.THEME.'/h/'.$templateString.'.html')) {
 		$template=THEME_DIR.'/'.THEME.'/h/'.$templateString.'.html';
@@ -179,3 +236,5 @@ function ProtectedFiles_getTemplate($templateString) {
 	$smarty->template_dir = THEME_DIR.'/'.THEME.'/h/';
 	return array($smarty, str_replace('.html', '', $template));
 }
+
+// }

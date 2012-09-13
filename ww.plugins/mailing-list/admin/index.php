@@ -20,6 +20,8 @@ echo Core_adminSideMenu(
 	)
 );
 
+echo '<em>This plugin is deprecated.'
+	.' Please use the Mailinglist (no hyphen) plugin instead.</em>';
 echo '<div class="pages_iframe">';
 
 $page=isset($_GET['mailing_list'])?$_GET['mailing_list']:'';
