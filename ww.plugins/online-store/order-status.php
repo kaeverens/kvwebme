@@ -181,10 +181,8 @@ function OnlineStore_sendInvoiceEmail($id, $order=false) {
 	*
 	* @return null
 	*/
-function OnlineStore_exportToFile($id, $order=false) {
-	if ($order===false) {
-		$order=dbRow("SELECT * FROM online_store_orders WHERE id=$id");
-	}
+function OnlineStore_exportToFile($id) {
+	$order=dbRow("SELECT * FROM online_store_orders WHERE id=$id");
 	$sendAt=(int)dbOne(
 		'select val from online_store_vars where name="export_at_what_point"',
 		'val'
@@ -243,8 +241,8 @@ function OnlineStore_exportToFile($id, $order=false) {
 			.'","'
 			.$item->id
 			.'"'; // }
-		// }
 	}
+	// }
 	Core_cacheClear('products');
 	if ($export && strpos($export, '..')===false) {
 		$customer=dbOne(
