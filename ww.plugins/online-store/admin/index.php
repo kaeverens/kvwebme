@@ -34,7 +34,6 @@ $c.= '<ul>'
 	.'</li>'
 	.'<li><a href="#online-stores-fields">'.__('Fields').'</a></li>'
 	.'<li><a href="#online-store-countries">'.__('Countries').'</a></li>'
-	.'<li><a href="#online-store-export">'.__('Export').'</a></li>'
 	.'</ul>';
 // }
 // { postage and packaging
