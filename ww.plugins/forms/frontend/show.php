@@ -292,6 +292,16 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 				}
 				$d.='</select>';
 			break; // }
+			case 'signature': // {
+				$d='<div class="signature-wrapper">'
+					.'<canvas class="signature-pad" width="300" height="150">'
+					.'</canvas>'
+					.'<a href="#" class="signature-clear">clear</a>'
+					.'<input type="hidden" name="'.$name.'"/>'
+					.'</div>';
+				WW_addScript('forms/j/jquery.signaturepad.js');
+				WW_addScript('forms/j/field-type-signature.js');
+			break; // }
 			case 'textarea': // {
 				if (!$r2['extra']) {
 					$r2['extra']='0,0';

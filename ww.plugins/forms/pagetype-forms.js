@@ -337,7 +337,7 @@ function Forms_Pagetype_forms() {
 			'hidden':'hidden message', 'ccdate':'credit card expiry date',
 			'html-block':'html block', 'page-next':'next page link',
 			'page-previous':'previous page link', 'page-break':'page break',
-			'file': 'file-upload'
+			'file': 'file-upload', 'signature': 'signature'
 		};
 		$(html+'</div>')
 			.appendTo(panel)
