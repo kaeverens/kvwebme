@@ -1788,7 +1788,6 @@ function Products_importFile($vars=false) {
 		}
 		$name=$data[$headers['_name']];
 		$ean=$data[$headers['_ean']];
-		$categories=$data[$headers['_categories']];
 		if ($stocknumber) {
 			$id=(int)dbOne(
 				'select id from products where stock_number="'
