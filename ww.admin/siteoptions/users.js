@@ -160,7 +160,8 @@ $(function(){
 					var safe=name.replace(" ","-");
           var street=$('input[name="add-street"]').val();
           var street2=$('input[name="add-street2"]').val();
-          var town=$('input[name="add-town"]').val();
+          var postcode=$('input[name="add-postcode"]').val();
+		  var town=$('input[name="add-town"]').val();
           var county=$('input[name="add-county"]').val();
           var country=$('input[name="add-country"]').val();
 					$('#add-content').append(
@@ -174,6 +175,8 @@ $(function(){
 							+ '<td><input type="text" name="street-'+safe+'" value="'+street+'"/></td>'
 							+ '</tr><tr><th>Street 2</th>'
 							+ '<td><input type="text" name="street2-'+safe+'" value="'+street2+'"/></td>'
+							+ '</tr><tr><th>Postcode</th>'
+							+ '<td><input type="text" name="postcode-'+safe+'" value="'+postcode+'"/></td>'
 							+ '</tr><tr><th>Town</th>'
 							+ '<td><input type="text" name="town-'+safe+'" value="'+town+'"/></td>'
 							+ '</tr><tr><th>County</th>'
@@ -204,6 +207,10 @@ $(function(){
 			+ '<tr>'
 				+ '<th>Street 2</th>'
 				+ '<td><input type="text" name="add-street2"/></td>'
+			+ '</tr>'
+			+ '<tr>'
+				+ '<th>Postcode</th>'
+				+ '<td><input type="text" name="add-postcode"/></td>'
 			+ '</tr>'
 			+ '<tr>'
 				+ '<th>Town</th>'
