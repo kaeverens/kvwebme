@@ -121,7 +121,7 @@ $c.='</ul>';
 // { paypal
 $c.='<div id="online-store-payments-paypal">';
 $c.='<table>';
-$c.='<tr><th>Email Address</th>';
+$c.='<tr><th>'.__('Email Address').'</th>';
 $c.='<td><input type="email" name="page_vars[online_stores_paypal_address]"';
 if (isset($vars['online_stores_paypal_address'])) {
 	$c.=' value="'.htmlspecialchars($vars['online_stores_paypal_address']).'"';
@@ -276,7 +276,7 @@ $c.=' </table></div>';
 $c.='<div id="online-store-payments-quickpay">'
 	.'<table>';
 // { Merchant ID
-$c.='<tr><th>Merchant ID</th><td>'
+$c.='<tr><th>'.__('Merchant ID').'</th><td>'
 	.'<input name="page_vars[online_stores_quickpay_merchantid]"';
 if (isset($vars['online_stores_quickpay_merchantid'])) {
 	$c.=' value="'.htmlspecialchars($vars['online_stores_quickpay_merchantid'])
@@ -338,7 +338,7 @@ $c.='>'.__('Yes').'</option></select></td></tr>';
 // { test mode
 $c.='<tr><th>'.__('Mode').'</th><td>'
 	.'<select name="page_vars[online_stores_quickpay_testmode]">'
-	.'<option value="test">Test Mode</option>'
+	.'<option value="test">'.__('Test Mode').'</option>'
 	.'<option value="live"';
 if (isset($vars['online_stores_quickpay_testmode'])
 	&& $vars['online_stores_quickpay_testmode']=='live'

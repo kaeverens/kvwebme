@@ -20,6 +20,7 @@ if ($_POST['payment_status'] == 'Refunded') {
 	Core_quit();
 }
 if ($req=='cmd=_notify-validate') {
+	// TODO: translation needed
 	die('please don\'t access this file directly');
 }
 // post back to PayPal system to validate
@@ -47,6 +48,7 @@ if (!$fp) {
 				foreach ($_POST as $key => $value) {
 					$str.=$key." = ". $value."\n";
 				}
+				// TODO: you should be able to edit the email address here - e.g. test domains will have a strange email address
 				$eml='info@'.preg_replace('/^www\./', '', $_SERVER['HTTP_HOST']);
 				Core_mail(
 					$eml,

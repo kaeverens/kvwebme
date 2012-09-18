@@ -18,7 +18,7 @@ if (isset($_POST['wizard-login'])) { // validate post data
 	$email=$_POST['wizard-email'];
 	if ($email=='') {
 		die(
-			'the email is a required field. <input type="submit" value="Back" cla'
+			__('The email is a required field').'. <input type="submit" value="'.htmlspecialchars(__('Back')).'" cla'
 			.'ss="back-link"/>'
 		);
 	}
@@ -60,70 +60,70 @@ if (isset($_POST['wizard-login'])) { // validate post data
 	}
 }
 
-echo '<h2>Company Details</h2>
-<i>These details are used to populate the invoice sent to customers.
-Fields left blank will simply not appear on the invoice</i>
+echo '<h2>'.__('Company Details').'</h2>
+<i>'.__('These details are used to populate the invoice sent to customers.
+Fields left blank will simply not appear on the invoice').'</i>
 <div style="height:300px;overflow:auto">
 <table>';
 
 // { company name
 echo '<tr>
-	<th>Company Name</th>
+	<th>'.__('Company Name').'</th>
 	<td><input type="text" name="wizard-company-name"/></td>
 ';
 // }
 // { company telephone
 echo '
-	<th>Telephone</th>
+	<th>'.__('Telephone').'</th>
 	<td><input type="text" name="wizard-company-telephone"/></td>
 </tr>';
 // }
 // { company address
 echo '<tr>
-	<th>Address</th>
+	<th>'.__('Address').'</th>
 	<td rowspan="3"><textarea name="wizard-company-address" style="width:95%">'
 	.'</textarea></td>';
 // }
 // { company fax
 echo '
-	<th>Fax</th>
+	<th>'.__('Fax').'</th>
 	<td><input type="text" name="wizard-company-fax"/></td>
 </tr>';
 // }
 // { company email
 echo '<tr>
 	<td colspan="2"></td>
-	<th>Email</th>
+	<th>'.__('Email').'</th>
 	<td><input type="email" name="wizard-company-email"></td>
 </tr>';
 // }
 // { VAT NO
 echo '<tr>
 	<td colspan="2"></td>
-	<th>VAT Number</th>
+	<th>'.__('VAT Number').'</th>
 	<td><input type="text" name="wizard-company-vat-number"></td>
 </tr>';
 // }
 // { invoice selection
 echo '<tr>
-	<th colspan="2">Which invoice format would you like?</th>
+	<th colspan="2">'.__('Which invoice format would you like?').'</th>
 	<td colspan="2"></td>
 </tr>
 <tr>
 	<td colspan="2">
 			<input type="radio" name="wizard-company-invoice" value="1" checked="checked"/>
-			Standard
-			<button class="preview-invoice" id="1">Preview</button>
+			'.__('Standard').'
+			<button class="preview-invoice k-button" id="1">'.__('Preview').'</button>
 	</td>
 	<td colspan="2">
 	    <input type="radio" name="wizard-company-invoice" value="2"/>
-			Business
-			<button class="preview-invoice" id="2">Preview</button>
+			'.__('Business').'
+			<button class="preview-invoice k-button" id="2">'.__('Preview').'</button>
 	</td>
 </tr>
 ';
 // }
 
 echo '</table></div>';
-echo '<input type="submit" value="Back" class="back-link"/>'
-. '<input type="submit" value="Next" class="next-link" style="float:right"/>';
+echo '<input type="submit" value="'.htmlspecialchars(__('Back')).'" class="back-link"/>'
+. '<input type="submit" value="'.htmlspecialchars(__('Next')).'" class="next-link" style="float:right"/>';

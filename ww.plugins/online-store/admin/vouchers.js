@@ -23,11 +23,10 @@ $(function(){
 				};
 			}
 			var user_checkboxes='';
-			/* TODO - translation /CB */
-			var table='<table><tr><th>Users</th><th>Email addresses</th>'
-				+'<td rowspan="2" style="width:100px">Select which users are allowed to use this '
+			var table='<table><tr><th>'+__('Users')+'</th><th>'+__('Email addresses')+'</th>'
+				+'<td rowspan="2" style="width:100px">'+__('Select which users are allowed to use this '
 				+'voucher, and/or add a list of email addresses of people that'
-				+' are allowed to use this voucher.</td></tr>'
+				+' are allowed to use this voucher')+'</td></tr>'
 				+'<tr><td><ul id="os-vouchers-users">'+user_checkboxes+'</ul></td>'
 				+'<td id="os-vouchers-emails"><textarea style="width:400px" name="user_emails">'
 				+users.emails.join("\n")+'</textarea></td></tr></table>';

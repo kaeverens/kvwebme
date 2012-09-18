@@ -33,7 +33,7 @@ function OnlineStore_getExpiryNotification() {
 		$t=dbRow('select template_expired_notification from products_types where id='.$typeid);
 		$template=$t['template_expired_notification']
 			?$t['template_expired_notification']
-			:'This product has expired. You cannot add it to the cart.';
+			:''.__('This product has expired. You cannot add it to the cart.').'';
 		file_put_contents($nfile, $template);
 	}
 	$smarty=Products_setupSmarty();
@@ -58,39 +58,41 @@ function OnlineStore_checkQrCode() {
 	$oid=(int)@$_REQUEST['oid'];
 	$pid=@$_REQUEST['pid'];
 	if (!$oid || !$pid) {
-		echo 'product or order ID not found';
+		echo ''.__('Product or order ID not found').'';
 		Core_quit();
 	}
 	$order=dbRow('select * from online_store_orders where id='.$oid);
 	if (!$order) {
-		echo 'order ID not found.';
+		echo ''.__('Order ID not found.').'';
 		Core_quit();
 	}
 	$md5=$_REQUEST['md5'];
 	if ($md5!=md5($order['invoice'])) {
-		echo 'MD5 check failed. this voucher has been tampered with.';
+		echo ''.__('MD5 check failed. this voucher has been tampered with.').'';
 		Core_quit();
 	}
-	echo '<h1>Valid Voucher</h1>';
+	echo '<h1>'.__('Valid Voucher').'</h1>';
 	$items=json_decode($order['items'], true);
 	$item=$items[$pid];
 	echo '<h2>'.$item['short_desc'].'</h2>'.$item['long_desc'];
 	if (!isset($item['voucher_redeemed'])) {
-		echo '<em>This voucher has not yet been redeemed. To redeem this voucher,'
-			.' please hand it in to the retailer with your purchase.</em>';
+		echo '<em>'.__('This voucher has not yet been redeemed. To redeem this voucher,'
+			.' please hand it in to the retailer with your purchase.</em>').'';
 	}
 	else {
+		// TODO: translation needed. maybe we should remove the inline styling and put it in the css
 		echo '<p style="text-decoration:underline;color:red"><strong style="tex'
-			.'t-decoration:blink">warning</strong>: this voucher has already been'
+			.'t-decoration:blink">Warning</strong>: This voucher has already been'
 			.' redeemed.</p>';
 	}
 	if (!Core_isAdmin()) {
-		echo '<br/><br/><br/><p style="font-size:small">if you are the retailer, '
+		// TODO: translation needed. maybe we should remove the inline styling and put it in the css
+		echo '<br/><br/><br/><p style="font-size:small">If you are the retailer, '
 			.'please <a href="/ww.admin/">log in</a>, then scan the QR code again.';
 	}
 	else {
 		echo '<br/><br/><br/><a href="/a/p=online-store/f=adminRedeemVoucher/'
-			.'oid='.$oid.'/pid='.$pid.'">Mark this voucher as redeemed.</a>';
+			.'oid='.$oid.'/pid='.$pid.'">'.__('Mark this voucher as redeemed.').'</a>';
 	}
 	Core_quit();
 }
@@ -328,7 +330,7 @@ function OnlineStore_paymentTypesList() {
 			$page=Page::getInstanceByType('online-store');
 			if (!$page) {
 				return array(
-					'error'=>'No online-store page created.'
+					'error'=>'.'.__('No online-store page created').'.'
 				);
 			}
 			$page->initValues();
@@ -337,20 +339,22 @@ function OnlineStore_paymentTypesList() {
 	// { build list of payment methods
 	$arr=array();
 	if (@$page->vars['online_stores_quickpay_merchantid']) {
-		$arr['QuickPay']='Credit Card';
+		// TODO: please check whether this works! :-)
+		$arr['QuickPay']='.'.__('Credit Card').'.';
 	}
 	if (@$page->vars['online_stores_realex_sharedsecret']) {
-		$arr['Realex']='Credit Card';
+		$arr['Realex']='.'.__('Credit Card').'.';
 	}
 	if (@$page->vars['online_stores_paypal_address']) {
-		$arr['PayPal']='PayPal';
+		$arr['PayPal']='.'.__('PayPal').'.';
 	}
 	if (@$page->vars['online_stores_bank_transfer_account_number']) {
-		$arr['Bank Transfer']='Bank Transfer';
+		$arr['Bank Transfer']='.'.__('Bank Transfer').'.';
 	}
 	// }
 	if (!count($arr)) {
 		return array(
+			// TODO: translation needed
 			'error'=>'No payment methods have been defined.'
 		);
 	}

@@ -28,10 +28,9 @@ $has_authrs=count($authrs)?1:0;
 
 $c='<div class="tabs">';
 $c.= '<ul>'
-	/* TODO - translation /CB */
-	.'<li><a href="#online-store-orders">Orders</a></li>';
+	.'<li><a href="#online-store-orders">'.__('Orders').'</a></li>';
 if ($has_authrs) { // show authorised payments (for retrieval)
-	$c.='<li><a href="#online-store-authorised">Authorised Payments</a></li>';
+	$c.='<li><a href="#online-store-authorised">'.__('Authorised Payments').'</a></li>';
 }
 $c.='</ul>';
 // { orders
@@ -45,10 +44,10 @@ if (!isset($_SESSION['online-store']['status'])) {
 if (isset($_REQUEST['online-store-status'])) {
 	$_SESSION['online-store']['status']=(int)$_REQUEST['online-store-status'];
 }
-/* TODO - translation /CB */
 $c.='<p>'
-	.'This list shows orders with the status: '
+	.__('This list shows orders with the status: ')
 	.'<select id="online-store-status">';
+/* TODO: translation of statusses needed */
 $statii=array('Unpaid', 'Paid or Authorised', 'Delivered', 'Cancelled');
 foreach ($statii as $k=>$v) {
 	$c.='<option value="'.$k.'"';
@@ -72,16 +71,15 @@ $rs=dbAll(
 );
 if (is_array($rs) && count($rs)) {
 	$c.='<div style="margin:0 10%">'
-	/* TODO - translation /CB */
 		.'<table id="onlinestore-orders-table" width="100%" class="desc"><thead><tr>'
 		.'<th><input type="checkbox" id="onlinestore-orders-selectall"/></th>'
-		.'<th>ID</th>'
-		.'<th>Date</th>'
-		.'<th>Amount</th>'
-		.'<th>Items</th>'
-		.'<th>Invoice</th>'
-		.'<th>Checkout Form</th>'
-		.'<th>Status</th>'
+		.'<th>'.__('ID').'</th>'
+		.'<th>'.__('Date').'</th>'
+		.'<th>'.__('Amount').'</th>'
+		.'<th>'.__('Items').'</th>'
+		.'<th>'.__('Invoice').'</th>'
+		.'<th>'.__('Checkout Form').'</th>'
+		.'<th>'.__('Status').'</th>'
 		.'</tr></thead><tbody>';
 	foreach ($rs as $r) {
 		$c.='<tr data-id="'.$r['id'].'">'
@@ -91,49 +89,46 @@ if (is_array($rs) && count($rs)) {
 			.Core_dateM2H($r['date_created']).'</td><td>'
 			.$csym.sprintf('%.2f', $r['total'])
 			.'</td>'
-			/* TODO - translation /CB */
-			.'<td><a href="javascript:os_listItems('.$r['id'].')">Items</a></td>'
-			.'<td><a href="javascript:os_invoice('.$r['id'].')">Invoice</a>'
-			.' (<a href="javascript:os_invoice('.$r['id'].',true)">Print</a>)</td>'
+			.'<td><a href="javascript:os_listItems('.$r['id'].')">'.__('Items').'</a></td>'
+			.'<td><a href="javascript:os_invoice('.$r['id'].')">'.__('Invoice').'</a>'
+			.' (<a href="javascript:os_invoice('.$r['id'].',true)">'.__('Print').'</a>)</td>'
 			.'<td>'
-			.'<a href="javascript:onlinestoreFormValues('.$r['id'].')">Checkout Form</a>'
+			.'<a href="javascript:onlinestoreFormValues('.$r['id'].')">'.__('Checkout Form').'</a>'
 			.'</td>'
 			.'<td><a href="javascript:onlinestoreStatus('.$r['id'].','
 			.(int)$r['status'].')" '
 			.'id="os_status_'.$r['id'].'">'
 			.htmlspecialchars($statii[(int)$r['status']]).'</a>';
 		if ($r['authorised']) {
-			$c.=' <strong>Authorised</strong>';
+			$c.=' <strong>'.__('Authorised').'</strong>';
 		}
 		$c.='</td></tr>';
 	}
 	$c.='</tbody></table></div>'
 		.'<select id="onlinestore-orders-action"><option value="0"> -- </option>'
-		.'<option value="1">Mark as Unpaid</option>'
-		.'<option value="2">Mark as Paid or Authorised</option>'
-		.'<option value="3">Mark as Delivered</option>'
-		.'<option value="4">Download as PDF</option>'
+		.'<option value="1">'.__('Mark as Unpaid').'</option>'
+		.'<option value="2">'.__('Mark as Paid or Authorised').'</option>'
+		.'<option value="3">'.__('Mark as Delivered').'</option>'
+		.'<option value="4">'.__('Download as PDF').'</option>'
 		.'</select>';
 }
-/* TODO - translation /CB */
 else {
-	$c.='<em>No orders with this status exist.</em>';
+	$c.='<em>'.__('No orders with this status exist').'</em>';
 }
 $c.='</div>';
 // }
 // { authorised payments
 if ($has_authrs) {
 	$c.='<div id="online-store-authorised"><table class="wide"><tr><th>'
-		/* TODO - translation /CB */
-		.'<input type="checkbox"/></th><th>ID</th><th>Date</th><th>Total</th>'
-		.'<th>Status</th></tr>';
+		.'<input type="checkbox"/></th><th>'.__('ID').'</th><th>'.__('Date').'</th><th>'.__('Total').'</th>'
+		.'<th>'.__('Status').'</th></tr>';
 	foreach ($authrs as $r) {
 		$c.='<tr id="capture'.$r['id'].'"><td><input type="checkbox" id="auth'
 			.$r['id'].'"/></td>'
 			.'<td>'.$r['id'].'</td><td>'.Core_dateM2H($r['date_created']).'</td>'
 			.'<td>'.$r['total'].'</td><td>'.$statii[(int)$r['status']].'</td></tr>';
 	}
-	/* TODO - translation /CB */
+/* TODO: translation needed */
 	$c.='</table><input type="button" value="Capture selected transactions"/>';
 	$c.='</div>';
 }

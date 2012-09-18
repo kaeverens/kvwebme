@@ -1,3 +1,4 @@
+// TODO - translation of statuses needed 
 window.os_statuses=['Unpaid', 'Paid', 'Paid and Delivered', 'Cancelled'];
 function os_invoice(id, print){
 	var w=$(window), wh=w.height(), ww=w.width(), p=print?'&print=1':'';
@@ -11,8 +12,7 @@ function os_invoice(id, print){
 	}).width(ww-130).height(wh-130);    
 }
 function os_listItems(id){
-	/* TODO - translation /CB */
-	var $d=$('<p>Getting list of ordered items - please wait...</p>').dialog({
+	var $d=$(__('<p>Getting list of ordered items - please wait...</p>')).dialog({
 		"modal":true
 	});
 	$.post('/a/p=online-store/f=adminOrderItemsList/id='+id, function(ret){
@@ -20,8 +20,7 @@ function os_listItems(id){
 		if (ret.error) {
 			return alert(ret.error);
 		}
-		/* TODO - translation /CB */
-		var html='<table><tr><th>Name</th><th>Amount</th></tr>', i=0;
+		var html='<table><tr><th>'+__('Name')+'</th><th>'+__('Amount')+'</th></tr>', i=0;
 		for (;i<ret.length;++i) {
 			html+='<tr><td>'+ret[i].name+'</td><td>'+ret[i].amt+'</td></tr>';
 		}
@@ -73,13 +72,11 @@ function onlinestoreFields(force){
 	}
 	$wrapper.empty();
 	if(!c){
-	/* TODO - translation /CB */
-		$wrapper.append('<em>No fields defined. Please create a form in the Form tab.</em>');
+		$wrapper.append('<em>'+__('No fields defined. Please create a form in the Form tab')+'</em>');
 	}
 	else{
-		/* TODO - translation /CB */
 		var table='<table id="online_stores_fields_table" style="width:100%">'
-			+'<tr><th>Name</th><th>Required</th></tr>',
+			+'<tr><th>'+__('Name')+'</th><th>'+__('Required')+'</th></tr>',
 			$rows, $row, $cells;
 		for(i=0;i<c;++i){
 			table+='<tr><td></td><td></td><td></td></tr>';
@@ -134,21 +131,20 @@ function onlinestoreStatus(id, current_status){
 	target.remove();
 }
 function pandp_add_top(i, data){
-	/* TODO - translation /CB */
+// TODO: Translate
 	var text='hide';
 	var name=$('<input id="pandp_name_'+i+'" />')
 		.val(data.name || '')
 	var constraint=$('<div class="pand-constraint" id="pandp_constraint_wrapper_'+i+'"></div>');
 	if(!pandp_open[i]){
-		/* TODO - translation /CB */
+// TODO: Translate
 		text='show';
 		constraint.css('display', 'none');
 	}
-	/* TODO - translation /CB */
+// TODO: Translate
 	var users_only=$('<input type="checkbox" id="pandp_users_only_'+i+'"'+(data.users_only?' checked="checked"':'')+' title="Tick if this postage method is only available to logged-in users" />');
 	var opener=$('<a id="pandp_opener_'+i+'" href="javascript:pandp_showhide('+i+', '+(pandp_open[i]?0:1)+')">'+text+'</a>');
-	/* TODO - translation /CB */
-	var row=$('<div class="pandp_row">Postage Name: </div>')
+	var row=$('<div class="pandp_row">'+__('Postage Name: ')+'</div>')
 		.append(name)
 		.append(users_only)
 		.append(opener)
@@ -160,7 +156,6 @@ function pandp_showhide(i, v){
 	pandp_open[i]=v;
 	$('#pandp_constraint_wrapper_'+i).css('display', v?'block':'none');
 	$('#pandp_opener_'+i)
-	/* TODO - translation /CB */
 		.replaceWith('<a id="pandp_opener_'+i+'" href="javascript:pandp_showhide('+i+', '+(pandp_open[i]?0:1)+')">'+(pandp_open[i]?'hide':'show')+'</a>');
 }
 function pandp_rebuild_constraints(prefix){
@@ -231,7 +226,7 @@ function pandp_show_constraints(i, constraints_old){
 			j=constraints_old.length;
 		}
 	}
-	/* TODO - translation /CB */
+// TODO: Translate
 	var options=[
 		['set_value', 'set postage to'],
 		['total_less_than_or_equal_to', 'if total <='],
@@ -423,10 +418,10 @@ $(function(){
 
 function onlinestoreCustomers() {
 	var $dialog=$('<div><select id="users-group-filter"/>'
-		+'<button>add new user</button>'
+		+'<button>'+__('add new user')+'</button>'
 		+'<table id="users-list"><thead>'
-		+'<tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th>'
-		+'<th>Date Created</th><th>Groups</th><th>&nbsp;</th></tr>'
+		+'<tr><th>'+__('ID')+'</th><th>'+__('Name')+'</th><th>'+__('Email')+'</th><th>'+__('Phone')+'</th>'
+		+'<th>'+__('Date Created')+'</th><th>'+__('Groups')+'</th><th>&nbsp;</th></tr>'
 		+'</thead><tbody></tbody></table></div>')
 		.dialog({
 			'modal':true,
@@ -448,6 +443,7 @@ function onlinestoreCustomers() {
 		}
 		$('#users-group-filter')
 			.html(
+				// TODO: translation needed
 				'<option value="'+all+'"> -- filter by group -- </option>'
 				+gopts.join('')
 			)
@@ -467,7 +463,7 @@ function onlinestoreCustomers() {
 				$('td:nth-child(4)', nRow).addClass('editable');
 				$('td:nth-child(7)', nRow)
 					.html('<a target="_top" href="/ww.admin/siteoptions.php'
-						+'?page=users&id='+id+'">edit</a>');
+						+'?page=users&id='+id+'">'+__('edit')+'</a>');
 				return nRow;
 			},
 			"fnServerData":function(sSource, aoData, fnCallback) {

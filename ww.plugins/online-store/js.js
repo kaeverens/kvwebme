@@ -7,27 +7,26 @@ $(function(){
 			if (i) {
 				tables+='<tr><td colspan="4"><hr /></td></tr>';
 			}
-			tables+='<tr><th>Street</th><td>'
+			tables+='<tr><th>'+__('Street')+'</th><td>'
 				+htmlspecialchars(addr.street)+'</td>'
-				+'<th>Postcode</th><td>'+htmlspecialchars(addr.postcode)
+				+'<th>'+__('Postcode')+'</th><td>'+htmlspecialchars(addr.postcode)
 				+'</td></tr>'
-				+'<tr><th>Street 2</th><td>'+htmlspecialchars(addr.street2)
+				+'<tr><th>'+__('Street 2')+'</th><td>'+htmlspecialchars(addr.street2)
 				+'</td>'
-				+'<th>County</th><td>'+htmlspecialchars(addr.county)
+				+'<th>'+__('County')+'</th><td>'+htmlspecialchars(addr.county)
 				+'</td></tr>'
-				+'<tr><th>Town</th><td>'+htmlspecialchars(addr.town)
+				+'<tr><th>'+__('Town')+'</th><td>'+htmlspecialchars(addr.town)
 				+'</td>'
-				+'<th>Country</th><td>'+htmlspecialchars(addr.country)
+				+'<th>'+__('Country')+'</th><td>'+htmlspecialchars(addr.country)
 				+'</td></tr>'
-				+'<th>Phone</th><td>'+htmlspecialchars(addr.phone)
+				+'<th>'+__('Phone')+'</th><td>'+htmlspecialchars(addr.phone)
 				+'</td></tr>'
 				+'<tr>'
-				+'<th colspan="2"><button aid="'+i+'" class="__"'
-				+' lang-context="core">Choose Address</button></th>'
+				+'<th colspan="2"><button aid="'+i+'" >'+_('Choose Address')+'</button></th>'
 				+'<th colspan="2"><input type="checkbox" aid="'+i+'"'
 				+(addr['default']=='yes'?' checked="checked"':'')
 				+'/>'
-				+'<span class="__" lang-context="core">default address</span>'
+				+'<span>'+__('Default address')+'</span>'
 				+'</th>'
 				+'</tr>'
 		}
@@ -172,8 +171,8 @@ $(function(){
 			function(user){
 				$.extend(userdata, user);		
 				if (userdata.address && userdata.address.length) {
-					var addressButton='<a class="__ ui-button address-picker" '
-						+'lang-context="core" href="#">Choose Address</a>';
+					var addressButton='<a class="ui-button address-picker" '
+						+' href="#">'+__('Choose Address')+'</a>';
 					html+='<tr><td colspan="2">'+addressButton+'</td></tr>';
 					$('.shoppingcartCheckout tr:first').before(html);
 					$('.address-picker').click(addressPicker);
@@ -221,6 +220,7 @@ $(function(){
 		case 2: case 3: // { 5-step
 			// { list of panels
 			var tabs=[];
+			// TODO: translation of tab names
 			tabs.push('Login');
 			tabs.push('Billing Address');
 			tabs.push('Delivery Address');
@@ -283,42 +283,42 @@ $(function(){
 							// { login
 							+'<td class="user-login">'
 							+'<label class="email">'
-							+'<span class="__" lang-context="core">Email</span>'
+							+'<span>'+__('Email')+'</span>'
 							+'<input type="email"/>'
 							+'</label>'
 							+'<label class="password">'
-							+'<span class="__" lang-context="core">Password</span>'
+							+'<span>'+__('Password')+'</span>'
 							+'<input type="password"/>'
 							+'</label>'
 							+'<label>'
 							+'<span>&nbsp;</span>'
-							+'<button class="__" lang-context="core">Login</button>'
+							+'<button>'+__('Login')+'</button>'
 							+'</label>'
 							+'</td>'
 							// }
 							// { or
-							+'<td class="__ or" lang-context="core">or</td>'
+							+'<td>'+__('or')+'</td>'
 							// }
 							// { register
 							+'<td class="user-register">'
 							+'<label class="email">'
-							+'<span class="__" lang-context="core">Email</span>'
+							+'<span>'+__('Email')+'</span>'
 							+'<input type="email"/>'
 							+'</label>'
 							+'<label>'
 							+'<span>&nbsp;</span>'
-							+'<button class="__" lang-context="core">Register</button>'
+							+'<button>'+__('Register')+'</button>'
 							+'</label>'
 							+'</td>'
 							// }
 							// { or
-							+'<td class="__ or" lang-context="core">or</td>'
+							+'<td>'+__('or')+'</td>'
 							// }
 							// { checkout as guest
 							+'<td class="user-guest">'
 							+'<label>'
 							+'<span>&nbsp;</span>'
-							+'<button class="__" lang-context="core">Checkout as guest'
+							+'<button>'+__('Checkout as guest')+'
 							+'</button></label></td>'
 							// }
 							+'</tr></table>'; // }
@@ -347,17 +347,16 @@ $(function(){
 								}, function(ret) {
 									if (+ret.uid) {
 										return alert(
+											// TODO: translation needed
 											'That user account already exists.'
 											+' Please login instead'
 										);
 									}
 									var $dialog=$('<div class="online-store">'
-										+'<p>Please enter the password you want to use.</p>'
-										+'<label class="password"><span class="__" '
-										+'lang-context="core">Password</span>'
+										+'<p>'+__('Please enter the password you want to use.')+'</p>'
+										+'<label class="password"><span>'+('Password')+'</span>'
 										+'<input type="password" id="form-pass1"/></label>'
-										+'<label class="repeat-password"><span class="__" '
-										+'lang-context="core">Repeat Password</span>'
+										+'<label class="repeat-password"><span>'+__('Repeat Password')+'</span>'
 										+'<input type="password" id="form-pass2"/></label>'
 										+'</div>'
 									).dialog({
@@ -371,6 +370,7 @@ $(function(){
 												var pass1=$('#form-pass1').val(),
 													pass2=$('#form-pass2').val();
 												if (!pass1 || pass1!=pass2) {
+													// TODO: translation needed
 													return alert('Passwords must be equal');
 												}
 												$.post('/a/p=online-store/f=userRegister', {
@@ -380,6 +380,7 @@ $(function(){
 													if (ret.error) {
 														return alert(ret.error);
 													}
+													// TODO: translation needed
 													alert('Thank you. We are logging you in now.');
 													$.post('/a/f=login', {
 														'email':email,
@@ -399,19 +400,14 @@ $(function(){
 										return alert(ret.error);
 									}
 									var $dialog=$('<div class="online-store">'
-										+'<h2 class="__" lang-context="core">'
-										+'Verify your email address</h2>'
-										+'<p class="__" lang-context="core">We have send a 5-digit '
-										+'token to your email address to verify it. Please check '
+										+'<h2>'+__('Verify your email address')+'</h2>'
+										+'<p>'+__('We have send a 5-digit token to your email address to verify it. Please check '
 										+'your email, then enter the token below. Then enter a '
-										+'password you want to use for this site.</p>'
-										+'<label class="token"><span class="__" lang-context="core">'
-										+'Token</span><input id="form-token"/></label>'
-										+'<label class="password"><span class="__" '
-										+'lang-context="core">Password</span>'
+										+'password you want to use for this site.')+'</p>'
+										+'<label class="token"><span>'+__('Token')+'</span><input id="form-token"/></label>'
+										+'<label class="password"><span>'+__('Password')+'</span>'
 										+'<input type="password" id="form-pass1"/></label>'
-										+'<label class="repeat-password"><span class="__" '
-										+'lang-context="core">Repeat Password</span>'
+										+'<label class="repeat-password"><span>'+__('Repeat Password')+'</span>'
 										+'<input type="password" id="form-pass2"/></label>'
 										+'</div>'
 									).dialog({
@@ -426,9 +422,11 @@ $(function(){
 													pass1=$('#form-pass1').val(),
 													pass2=$('#form-pass2').val();
 												if (token.length!=5) {
+													// TODO: translation needed
 													return alert('Token must be 5 digits in length');
 												}
 												if (!pass1 || pass1!=pass2) {
+													// TODO: translation needed
 													return alert('Passwords must be equal');
 												}
 												$.post('/a/f=register', {
@@ -438,6 +436,7 @@ $(function(){
 													if (ret.error) {
 														return alert(ret.error);
 													}
+													// TODO: translation needed
 													alert('Thank you. We are logging you in now.');
 													$.post('/a/f=login', {
 														'email':email,
@@ -460,43 +459,42 @@ $(function(){
 					case 'Billing Address': // {
 						var addressButton='';
 						if (userdata.address) {
-							addressButton='<button class="__ address-picker" '
-								+'lang-context="core">Choose Address</button>';
+							addressButton='<button class="address-picker">'+__('Choose Address')+'</button>';
 						}
 						var html= // { html
 							'<div id="online-store-billing">'
 							// { contact info
 							+'<div id="online-store-billing-personal">'
 							+addressButton
-							+'<label><span class="__" lang-context="core">First Name</span>'
+							+'<label><span>'+__('First Name')+'</span>'
 							+'<input id="online-store-FirstName"/></label>'
-							+'<label><span class="__" lang-context="core">Surname</span>'
+							+'<label><span>'+__('Surname')+'</span>'
 							+'<input id="online-store-Surname"/></label>'
-							+'<label><span class="__" lang-context="core">Phone</span>'
+							+'<label><span>'+__('Phone')+'</span>'
 							+'<input id="online-store-Phone"/></label>'
-							+'<label><span class="__" lang-context="core">Email</span>'
+							+'<label><span>'+__('Email')+'</span>'
 							+'<input id="online-store-Email"/></label>'
 							+'</div>'
 							// }
 							// { address
 							+'<div id="online-store-billing-address">'
-							+'<label><span class="__" lang-context="core">Street</span>'
+							+'<label><span>'+__('Street')+'</span>'
 							+'<input id="online-store-Street"/></label>'
-							+'<label><span class="__" lang-context="core">Street 2</span>'
+							+'<label><span>'+__('Street 2')+'</span>'
 							+'<input id="online-store-Street2"/></label>'
-							+'<label><span class="__" lang-context="core">Town</span>'
+							+'<label><span>'+__('Town')+'</span>'
 							+'<input id="online-store-Town"/></label>'
-							+'<label><span class="__" lang-context="core">Postcode</span>'
+							+'<label><span>'+__('Postcode')+'</span>'
 							+'<input id="online-store-Postcode"/></label>'
-							+'<label><span class="__" lang-context="core">County</span>'
+							+'<label><span>'+__('County')+'</span>'
 							+'<input id="online-store-County"/></label>'
-							+'<label><span class="__" lang-context="core">Country</span>'
+							+'<label><span>'+__('Country')+'</span>'
 							+'<select id="online-store-Country"><option/></select></label>'
 							+'</div>'
 							// }
 							// { next
 							+'<div id="online-store-billing-next">'
-							+'<button class="__ next" lang-context="core">Next</button>'
+							+'<button class="next">'+__('Next')+'</button>'
 							+'</div>'
 							// }
 							+'</div>'; // }
@@ -538,43 +536,44 @@ $(function(){
 						});
 						// }
 					break; // }
+					// TODO: translation needed
 					case 'Delivery Address': // {
 						var html= // { form
 							'<div id="online-store-delivery">'
 							+'<div style="display:block;">'
-							+'<input type="checkbox" id="dadd-is-diff"/> Is delivery address'
-							+' different from billing address?</div>'
+							+'<input type="checkbox" id="dadd-is-diff"/>'+__('Is delivery address'
+							+' different from billing address?')+'</div>'
 							// { contact info
 							+'<div id="online-store-delivery-personal">'
-							+'<label><span class="__" lang-context="core">First Name</span>'
+							+'<label><span>'+__('First Name')+</span>'
 							+'<input id="online-store-FirstName"/></label>'
-							+'<label><span class="__" lang-context="core">Surname</span>'
+							+'<label><span>'+__('Surname')+'</span>'
 							+'<input id="online-store-Surname"/></label>'
-							+'<label><span class="__" lang-context="core">Phone</span>'
+							+'<label><span>'+__('Phone')+'</span>'
 							+'<input id="online-store-Phone"/></label>'
-							+'<label><span class="__" lang-context="core">Email</span>'
+							+'<label><span>'+__('Email')+'</span>'
 							+'<input id="online-store-Email"/></label>'
 							+'</div>'
 							// }
 							// { address
 							+'<div id="online-store-delivery-address">'
-							+'<label><span class="__" lang-context="core">Street</span>'
+							+'<label><span>'+__('Street')+'</span>'
 							+'<input id="online-store-Street"/></label>'
-							+'<label><span class="__" lang-context="core">Street 2</span>'
+							+'<label><span>'+__('Street 2')+'</span>'
 							+'<input id="online-store-Street2"/></label>'
-							+'<label><span class="__" lang-context="core">Town</span>'
+							+'<label><span>'+__('Town')+'</span>'
 							+'<input id="online-store-Town"/></label>'
-							+'<label><span class="__" lang-context="core">Postcode</span>'
+							+'<label><span>'+__('Postcode')+'</span>'
 							+'<input id="online-store-Postcode"/></label>'
-							+'<label><span class="__" lang-context="core">County</span>'
+							+'<label><span>'+__('County')+'</span>'
 							+'<input id="online-store-County"/></label>'
-							+'<label><span class="__" lang-context="core">Country</span>'
+							+'<label><span>'+__('Country')+'</span>'
 							+'<select id="online-store-Country"><option/></select></label>'
 							+'</div>'
 							// }
 							// { next
 							+'<div id="online-store-delivery-next">'
-							+'<button class="__ next" lang-context="core">Next</button>'
+							+'<button class="next">'+__('Next')+'</button>'
 							+'</div>'
 							// }
 							+'</div>';
@@ -645,6 +644,7 @@ $(function(){
 						// }
 						$('#online-store-delivery button.next').click(function() {
 							if (checkDeliveryAddress()) {
+								// TODO: tranlation needed
 								var next=$('h2[panel="Delivery Options"]').length
 									?'Delivery Options':'Payment';
 								$accordion.accordion(
@@ -662,10 +662,11 @@ $(function(){
 							}, 500);
 						}
 					break; // }
+					// TODO: translation needed
 					case 'Delivery Options': // {
 						content.html(
 							'<div id="online-store-pandp"><select/>'
-							+'<button class="__" lang-context="core">Next</button></div>'
+							+'<button>'+__('Next')+'</button></div>'
 						);
 						$.get('/a/p=online-store/f=pandpGetList/page_id='+pagedata.id,
 							function(ret) {
@@ -685,6 +686,7 @@ $(function(){
 						);
 						$('#online-store-pandp button').click(function() {
 							$accordion.accordion(
+								// TODO: translation needed
 								'activate',
 								'h2[panel="Payment"]'
 							);
@@ -692,6 +694,7 @@ $(function(){
 						if (!checkBillingAddress()) {
 							setTimeout(function() {
 								$accordion.accordion(
+									// TODO: translation needed
 									'activate',
 									'h2[panel="Billing Address"]'
 								);
@@ -701,7 +704,7 @@ $(function(){
 					case 'Payment': // {
 						content.html(
 							'<div id="online-store-payment-method"><select/>'
-							+'<button class="__" lang-context="core">Proceed to Payment'
+							+'<button>'+__('Proceed to Payment')+'
 							+'</button></div>'
 						);
 						if (+os_post_vars._viewtype==3 && os_post_vars._hidebasket) {
@@ -752,21 +755,27 @@ $(function(){
 			}
 			function checkBillingAddress() {
 				var errs=[];
+				// TODO: translation needed
 				if (!$('input[name=Billing_FirstName]').val()) {
 					errs.push('You must fill in your first name');
 				}
+				// TODO: translation needed
 				if (!$('input[name=Billing_Surname]').val()) {
 					errs.push('You must fill in your surname');
 				}
+				// TODO: translation needed
 				if (!$('input[name=Billing_Email]').val()) {
 					errs.push('You must fill in your email address');
 				}
+				// TODO: translation needed
 				if (!$('input[name=Billing_Phone]').val()) {
 					errs.push('You must fill in your phone');
 				}
+				// TODO: translation needed
 				if (!$('input[name=Billing_Street]').val()) {
 					errs.push('You must fill in your street');
 				}
+				// TODO: translation needed
 				if (!$('input[name=Billing_Country]').val()) {
 					errs.push('You must fill in your country');
 				}

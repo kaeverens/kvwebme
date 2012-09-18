@@ -203,6 +203,7 @@ function OnlineStore_exportToFile($id) {
 		'select val from online_store_vars where name="export_dir"',
 		'val'
 	);
+	// TODO: ability to edit these values in the admin
 	$exportcsv=array(
 		'"Phone Number","Customer Name","Address 1","Address 2","Postcode",'
 		.'"Email","Stock Number","Amt","Price","Item ID"'
@@ -275,6 +276,7 @@ function OnlineStore_exportToFile($id) {
 			$customer_filename=str_replace(array('..', '/'), '', $customer_filename);
 			@mkdir(USERBASE.'/'.$customer, 0777, true);
 			$phone=preg_replace('/[^0-9\(\)\+]/', '', @$form_vals->Billing_Phone);
+			// TODO: must be able to edit values in the admin
 			$fcontent='"Name","Street","Street 2","Postcode","Email","Phone"'."\n"
 				.'"'.str_replace(
 					'"',

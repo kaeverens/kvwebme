@@ -1,4 +1,4 @@
-/* TODO - translation /CB */
+// TODO: translation of statusses needed
 window.os_statuses=['Unpaid', 'Paid', 'Paid and Delivered', 'Cancelled'];
 function os_invoice(id, print){
 	var w=$(window), wh=w.height(), ww=w.width(), p=print?'&print=1':'';
@@ -12,8 +12,7 @@ function os_invoice(id, print){
 	}).width(ww-130).height(wh-130);    
 }
 function os_listItems(id){
-	/* TODO - translation /CB */
-	var $d=$('<p>Getting list of ordered items - please wait...</p>').dialog({
+	var $d=$('<p>'+__('Getting list of ordered items - please wait...')+'</p>').dialog({
 		"modal":true
 	});
 	$.post('/a/p=online-store/f=adminOrderItemsList/id='+id, function(ret){
@@ -21,8 +20,7 @@ function os_listItems(id){
 		if (ret.error) {
 			return alert(ret.error);
 		}
-		/* TODO - translation /CB */
-		var html='<table><tr><th>Name</th><th>Amount</th></tr>', i=0;
+		var html='<table><tr><th>'+__('Name')+'</th><th>'+__('Amount')+'</th></tr>', i=0;
 		for (;i<ret.length;++i) {
 			html+='<tr><td>'+ret[i].name+'</td><td>'+ret[i].amt+'</td></tr>';
 		}
@@ -74,13 +72,13 @@ function onlinestoreFields(force){
 	}
 	$wrapper.empty();
 	if(!c){
-	/* TODO - translation /CB */
+		// TODO: translation needed
 		$wrapper.append('<em>No fields defined. Please create a form in the Form tab.</em>');
 	}
 	else{
-		/* TODO - translation /CB */
+		// TODO: translation needed
 		var table='<table id="online_stores_fields_table" style="width:100%">'
-			+'<tr><th>Name</th><th>Required</th></tr>',
+			+'<tr><th>'+__('Name')+'</th><th>'+__('Required')+'</th></tr>',
 			$rows, $row, $cells;
 		for(i=0;i<c;++i){
 			table+='<tr><td></td><td></td><td></td></tr>';
@@ -161,7 +159,7 @@ $(function(){
 	$('#online-store-export-button').click(function() {
 		var cdate=$('#online-store-export-from').val();
 		if (!cdate) {
-			/* TODO - translation /CB */
+			// TODO: translation needed
 			return alert('You must enter a date');
 		}
 		document.location='/a/p=online-store/f=adminOrdersExport/cdate='+cdate;
@@ -224,6 +222,7 @@ $(function(){
 			txns.push($(this).attr('id').replace(/auth/, ''));
 		});
 		if (!txns.length) {
+			// TODO: translation needed
 			return alert('no transactions selected');
 		}
 		$.post('/a/p=online-store/f=adminCapture/ids='+txns, function(ret) {
@@ -232,7 +231,7 @@ $(function(){
 				for (;i<ok.length;++i) {
 					$('#capture'+ok[i]).remove();
 				}
-				/* TODO - translation /CB */
+				// TODO: translation needed
 				alert(ok.length+' transactions successfully captured');
 			}
 			if (ret.errors.length) {
@@ -254,10 +253,10 @@ $(function(){
 
 function onlinestoreCustomers() {
 	var $dialog=$('<div><select id="users-group-filter"/>'
-		+'<button>add new user</button>'
+		+'<button>'+__('Add new user')+'</button>'
 		+'<table id="users-list"><thead>'
-		+'<tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th>'
-		+'<th>Date Created</th><th>Groups</th><th>&nbsp;</th></tr>'
+		+'<tr><th>'+__('ID')+'</th><th>'+__('Name')+'</th><th>'+__('Email')+'</th><th>'+__('Phone')+'</th>'
+		+'<th>'+__('Date Created')+'</th><th>'+__('Groups')+'</th><th>&nbsp;</th></tr>'
 		+'</thead><tbody></tbody></table></div>')
 		.dialog({
 			'modal':true,
@@ -279,6 +278,7 @@ function onlinestoreCustomers() {
 		}
 		$('#users-group-filter')
 			.html(
+				// TODO: translation needed
 				'<option value="'+all+'"> -- filter by group -- </option>'
 				+gopts.join('')
 			)
@@ -298,7 +298,7 @@ function onlinestoreCustomers() {
 				$('td:nth-child(4)', nRow).addClass('editable');
 				$('td:nth-child(7)', nRow)
 					.html('<a target="_top" href="/ww.admin/siteoptions.php'
-						+'?page=users&id='+id+'">edit</a>');
+						+'?page=users&id='+id+'">'+__('Edit')+'</a>');
 				return nRow;
 			},
 			"fnServerData":function(sSource, aoData, fnCallback) {

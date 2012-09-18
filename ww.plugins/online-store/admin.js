@@ -4,10 +4,10 @@ function OnlineStore_screen(page) {
 function OnlineStore_screenCustomerList() {
 	var $content=$('#content');
 	$('#content').html('<div><select id="users-group-filter"/>'
-		+'<button>add new user</button>'
+		+'<button>'+__('Add new user')+'</button>'
 		+'<table id="users-list"><thead>'
-		+'<tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th>'
-		+'<th>Date Created</th><th>Groups</th><th>&nbsp;</th></tr>'
+		+'<tr><th>'+__('ID')+'</th><th>'+__('Name')+'</th><th>'+__('Email')+'</th><th>'+__('Phone')+'</th>'
+		+'<th>'+__('Date Created')+'</th><th>'+__('Groups')+'</th><th>&nbsp;</th></tr>'
 		+'</thead><tbody></tbody></table></div>')
 	$('button', $content).click(function() {
 		window.top.location="/ww.admin/siteoptions.php?page=users&id=-1";
@@ -21,6 +21,7 @@ function OnlineStore_screenCustomerList() {
 		}
 		$('#users-group-filter')
 			.html(
+				// TODO: translation needed
 				'<option value="'+all+'"> -- filter by group -- </option>'
 				+gopts.join('')
 			)

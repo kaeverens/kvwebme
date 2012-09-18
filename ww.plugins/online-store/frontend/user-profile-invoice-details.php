@@ -34,17 +34,17 @@ $html='<h2>'.__('Online Store - Order History - Invoice', 'core')
 	.'<a href="'.$PAGEDATA->getRelativeUrl().'">'.__('back to profile', 'core')
 	.'</a>'
 	.'<table class="onlinestore-purchase-details">'
-	.'<tr><th>Invoice ID</th><td>'.$iid['id'].'</td></tr>'
-	.'<tr><th>Date</th><td>'
+	.'<tr><th>'.__('Invoice ID').'</th><td>'.$iid['id'].'</td></tr>'
+	.'<tr><th>'.__('Date').'</th><td>'
 	.Core_DateM2H($iid['date_created'], 'datetime').'</td></tr>'
-	.'<tr><th>Total</th><td>'.OnlineStore_numToPrice($iid['total']).'</td></tr>'
-	.'<tr><th>Status</th><td>'.$status.'</td></tr>'
-	.'<tr><th>Invoice</th><td><a href="/a/p=online-store/f=invoicePdf/id='
-	.$iid['id'].'">PDF</a></td></tr>';
+	.'<tr><th>'.__('Total').'</th><td>'.OnlineStore_numToPrice($iid['total']).'</td></tr>'
+	.'<tr><th>'.__('Status').'</th><td>'.$status.'</td></tr>'
+	.'<tr><th>'.__('Invoice').'</th><td><a href="/a/p=online-store/f=invoicePdf/id='
+	.$iid['id'].'">'.__('PDF').'</a></td></tr>';
 // { list of items
-$html.='<tr><th>Items Purchased</th><td>'
-	.'<table class="onlinestore-item-details"><tr><th>Description</th>'
-	.'<th>Amount</th><th>Cost</th></tr>';
+$html.='<tr><th>'.__('Items Purchased').'</th><td>'
+	.'<table class="onlinestore-item-details"><tr><th>'.__('Description').'</th>'
+	.'<th>'.__('Amount').'</th><th>'.__('Cost').'</th></tr>';
 $items=json_decode($iid['items'], true);
 foreach ($items as $item) {
 	$desc=$item['short_desc'];

@@ -71,10 +71,10 @@ if (!$os_currencies) {
 echo '<form method="post" action="'.$_url.'" />'
 	.'<div class="accordion">';
 // { default price display with/without VAT
-echo '<h2><a href="#">VAT</a></h2><div>'
-	.'<p>Prices will be displayed on the frontend by default: '
+echo '<h2><a href="#">'.__('VAT').'</a></h2><div>'
+	.'<p>'.__('Prices will be displayed on the frontend by default:')
 	.'<select name="online_store_vars[vat_display]">'
-	.'<option value="0">pre-VAT</option>'
+	.'<option value="0">'.__('pre-VAT').'</option>'
 	.'<option value="1"';
 $postvat=(int)dbOne(
 	'select val from online_store_vars where name="vat_display"',
@@ -83,13 +83,14 @@ $postvat=(int)dbOne(
 if ($postvat) {
 	echo ' selected="selected"';
 }
-echo '>post-VAT</option></select>.</p></div>';
+echo '>'.__('post-VAT').'</option></select>.</p></div>';
 // }
 // { invoices
-echo '<h2><a href="#">Invoices</a></h2>'
+echo '<h2><a href="#">'.__('Invoices').'</a></h2>'
 	.'<div id="invoices">'
 	.'<select name="online_store_vars[invoices_by_email]">';
-$opts=array(
+	// TODO: Translate
+	$opts=array(
 	'Invoice should be emailed to customer when the order is Paid',
 	'Invoice should not be emailed at all',
 	'Invoice should be emailed to customer when the order is Paid And Delivered'
@@ -108,12 +109,13 @@ foreach ($opts as $k=>$opt) {
 echo '</select></div>';
 // }
 // { exports
-echo '<h2><a href="#">Automated Exports</a></h2>'
+echo '<h2><a href="#">'.__('Automated Exports').'</a></h2>'
 	.'<div id="exports">'
 	.'<table>';
 // { export at what point
 echo '<tr><th>'.__('Export at what point').'</th><td>'
 	.'<select name="online_store_vars[export_at_what_point]">';
+// TODO: Translate
 $opts=array(
 	'Export details to file when the order is Paid',
 	'Do not export details to file at all',
@@ -172,14 +174,14 @@ echo '<tr><th>'.__('Customers Filename').'</th>'
 echo '</table></div>';
 // }
 // { currencies
-echo '<h2><a href="#">Currencies</a></h2>'
+echo '<h2><a href="#">'.__('Currencies').'</a></h2>'
 	.'<div id="currencies">'
-	.'<p>The top row is the default currency of the website.'
-	.' To change the default, please drag a different row to the top.</p>'
+	.'<p>'.__('The top row is the default currency of the website.'
+	.' To change the default, please drag a different row to the top.').'</p>'
 	.'</div>';
 // }
 // { discounts
-echo '<h2><a href="#">Group discounts</a></h2><div><table>';
+echo '<h2><a href="#">'.__('Group discounts').'</a></h2><div><table>';
 $groups=dbAll('select * from groups order by name');
 foreach ($groups as $group) {
 	if ($group['meta']=='') {
@@ -193,6 +195,7 @@ foreach ($groups as $group) {
 echo '</table></div>';
 // }
 echo '</div>'
+// TODO: translation needed
 	.'<input type="submit" name="action" value="Save" /></form>';
 WW_addScript('online-store/admin/site-options.js');
 WW_addInlineScript('window.os_currencies='.$os_currencies.';');

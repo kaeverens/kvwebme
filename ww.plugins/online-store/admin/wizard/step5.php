@@ -264,7 +264,7 @@ if ($body!='') {
 
 Core_cacheClear();
 
-echo '<h2>Wizard Complete</h2>'
-	.'Your store has been created! Please click '
+echo '<h2>'.__('Wizard Complete').'</h2>'
+	.__('Your store has been created! Please click '
 	.'<a href="/ww.admin/plugin.php?_plugin=products&_page=products-edit">here</a> '
-	.'to start adding products.';
+	.'to start adding products');

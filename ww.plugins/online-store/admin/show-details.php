@@ -26,12 +26,12 @@ $vals
 		'select form_vals from online_store_orders where id='.$id, 
 		'form_vals'
 	);
-	/* TODO - remove inline styling and replace with CSS in styleheet /CB */
+/* TODO: Remove inline styling and replace with CSS in styleheet */
 echo '<html><head><style type="text/css">div{display:inline-block;width:170px;'
 	.'margin:5px}</style></head><body>';
 $vals=json_decode($vals);
 foreach ($vals as $k=>$v) {
-	/* TODO - remove inline styling <strong> and replace with CSS in stylesheet /CB */
+/* TODO: Remove inline styling <strong> and replace with CSS in stylesheet */
 	echo '<div>'.htmlspecialchars($k).'<br /><strong>'.htmlspecialchars($v)
 		.'</strong></div>';
 }

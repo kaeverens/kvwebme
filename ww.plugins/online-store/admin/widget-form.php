@@ -13,12 +13,12 @@
 
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if (!Core_isAdmin()) {
-	die('access denied');
+	die(__('access denied'));
 }
 
 // { slide-down
 /* TODO - translation /CB */
-echo '<strong>Slide-down cart</strong><br/>'
+echo '<strong>'.__('Slide-down cart').'</strong><br/>'
 	.'<input type="checkbox" name="slidedown"';
 if (@$_REQUEST['slidedown']) {
 	echo ' checked="checked"';
@@ -30,7 +30,7 @@ if (!@$_REQUEST['slidedown']) {
 }
 echo '>';
 /* TODO - translation /CB */
-echo '<strong>Slide animation</strong><br />'
+echo '<strong>'.__('Slide animation').'</strong><br />'
 	.'<select name="slidedown_animation">';
 /* TODO - translation /CB */
 $arr=array(
@@ -46,16 +46,16 @@ foreach ($arr as $v) {
 }
 echo '</select><br />';
 /* TODO - translation /CB */
-echo '<strong>Slide up auto-slider (in seconds)</strong>';
+echo '<strong>'.__('Slide up auto-slider (in seconds)').'</strong>';
 $s=(float)@$_REQUEST['slideup_delay'];
 echo '<input name="slideup_delay" value="'.$s.'"/><br />';
 echo '</div>';
 // }
 /* TODO - translation /CB */
 // { template
-echo '<strong>Template (leave blank to use a default one)</strong><br />'
+echo '<strong>'.__('Template (leave blank to use a default one)').'</strong><br />'
 	.'<textarea class="small" name="template">'
 	.htmlspecialchars(@$_REQUEST['template']).'</textarea>'
 	/* TODO - translation /CB */
-	.'<a href="#" class="docs" page="/ww.plugins/online-store/docs/codes.html">codes</a>';
+	.'<a href="#" class="docs" page="/ww.plugins/online-store/docs/codes.html">'.__('Codes').'</a>';
 // }

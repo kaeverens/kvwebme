@@ -14,20 +14,20 @@
 
 $p=Pages::getInstancesByType('online-store');
 if (@count($p->pages)) {
-	echo '<em>You already have an online-store checkout page created.</em>';
-	echo '<p>Maybe you want to <a href="./plugin.php?_plugin=products&_page='
-		.'products-edit">add a new product</a> instead?</p>';
+	echo '<em>'.__('You already have an online-store checkout page created').'</em>';
+	echo '<p>'.__('Maybe you want to').' <a href="./plugin.php?_plugin=products&_page='
+		.'products-edit">'.__('add a new product').'</a> '.__('instead?').'</p>';
 }
 
 WW_addScript('online-store/admin/wizard.js');
-echo '<h1>Online Store Wizard</h1>
+echo '<h1>'.__('Online Store Wizard').'</h1>
 <div id="preview-dialog"></div>
 <ul class="sub-nav" id="register-progress" style="list-style-type:none">
-  <li>Store</li>
-	<li>Payment Details</li>
-	<li>Company Details</li>
-	<li>Products</li>
-	<li>Finish</li>
+  <li>'.__('Store').'</li>
+	<li>'.__('Payment Details').'</li>
+	<li>'.__('Company Details').'</li>
+	<li>'.__('Products').'</li>
+	<li>'.__('Finish').'</li>
 </ul>
 </div>
 <p id="error"></p>

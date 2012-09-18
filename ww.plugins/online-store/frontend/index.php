@@ -344,7 +344,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 				.($showStockNumber?3:2).'" class="nobord">'
 				.'&nbsp;</td><td class="p_a'
 				.'nd_p __" lang-context="core" style="text-align: right;">'
-				.'Postage and Packaging (P&amp;P)</td><td class="amountcell">'
+				.__('Postage and Packaging (P&amp;P)').'</td><td class="amountcell">'
 				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
 		}
 		// }
@@ -710,7 +710,7 @@ if (!$submitted) {
 			$grandTotal+=$postage['total'];
 			$c.='<tr class="os_basket_totals"><td class="p_and_p __" lang-context="core" '
 				.'style="text-align: right;" colspan="3">'
-				.'Postage and Packaging (P&amp;P)</td><td class="totals">'
+				.__('Postage and Packaging (P&amp;P)').'</td><td class="totals">'
 				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
 		}
 		// }

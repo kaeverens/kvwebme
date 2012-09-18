@@ -71,7 +71,7 @@ foreach ($fields as $k=>$v) {
 	$html.='<input type="hidden" name="'.htmlspecialchars($k).'" '
 		.'value="'.htmlspecialchars($v).'"/>';
 }
-$html.='<input type="submit" value="Proceed to Payment"/></form>'
+$html.='<input type="submit" value="'.htmlspecialchars(__('Proceed to Payment')).'"/></form>'
 	.'<script defer="defer">document.getElementById("online-store-quickpay")'
 	.'.submit()</script>';
 

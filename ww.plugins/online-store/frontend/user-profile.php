@@ -48,11 +48,11 @@ foreach ($history as $order) {
 		.'<td>' . $status . '</td>'
 		.'<td>'
 		.'<a href="'.$PAGEDATA->getRelativeUrl().'?onlinestore_iid='.$order['id']
-		.'">Details</a> | '
-		.'<a href="javascript:os_invoice('.$order['id'].', \'html\')">Invoice</a>'
+		.'">'.__('Details').'</a> | '
+		.'<a href="javascript:os_invoice('.$order['id'].', \'html\')">'.__('Invoice').'</a>'
 		.' (<a href="javascript:os_invoice('.$order['id'].', \'html\', true)">'
-		.'print</a> | '
-		.'<a href="javascript:os_invoice('.$order['id'].', \'pdf\', true)">PDF</a>)'
+		.__('print').'</a> | '
+		.'<a href="javascript:os_invoice('.$order['id'].', \'pdf\', true)">'.__('PDF').'</a>)'
 		.'</td></tr>';
 }  
 

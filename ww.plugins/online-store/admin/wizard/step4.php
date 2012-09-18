@@ -30,11 +30,11 @@ if (isset($_POST['wizard-company-name'])) { // validate post data
 }
 
 echo '
-<h2>Products</h2>
+<h2>'.__('Products').'</h2>
 <div style="height:300px;overflow:auto">
 <table>
 	<tr>
-		<th>What type of products are you selling?</th>
+		<th>'.__('What type of products are you selling?').'</th>
 		<td><select name="wizard-products-type">';
 
 foreach ($types as $type=>$template) {
@@ -48,14 +48,14 @@ echo '</select></td>
 <div id="preview-template">
 <table>
 	<tr>
-			<th>Single View Template:</th>
+			<th>'.__('Single View Template:').'</th>
 			<td><button mode="single" class="preview-template-mode" id="default">
-			Preview</button></td>
+			'.__('Preview').'</button></td>
   </tr>
   <tr>
-		<th>Multi View Template:</th>
+		<th>'.__('Multi View Template:').'</th>
 		<td><button mode="multi" class="preview-template-mode" id="default">
-		Preview</button></td>
+		'.__('Preview').'</button></td>
 	</tr>
 </table>
 </div></div>

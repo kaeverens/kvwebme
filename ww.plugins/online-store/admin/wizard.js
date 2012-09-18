@@ -32,16 +32,16 @@ $(function(){
 		var type=$(this).val();
 		var html='<table>'
 			+ '<tr>'
-				+ '<th>Single View Template:</th>'
+				+ '<th>'+__('Single View Template:')+'</th>'
 				+ '<td><button mode="single" class="preview-template-mode" id="'
 					+type+'">'
-					+ 'Preview</button></td>'
+					+ __('Preview')+'</button></td>'
 			+ '</tr>'
 			+ '<tr>'
-				+ '<th>Multi View Template:</th>'
+				+ '<th>'+__('Multi View Template:')+'</th>'
 				+ '<td><button mode="multi" class="preview-template-mode" id="'
 					+type+'">'
-					+ 'Preview</button></td>'
+					+ __('Preview')+'</button></td>'
 			+ '</tr>'
 		+ '</table>';
 		$('#preview-template').html(html);
@@ -92,7 +92,7 @@ var Wizard={
 			case 1:
 				var name=$('input[name="wizard-name"]').val();
 				if(name==""){
-					$('#error').html('Name is required');
+					$('#error').html(__('Name is required'));
 					return false;
 				}
 				this.queryString={
