@@ -11,7 +11,9 @@
 	* @link     http://kvsites.ie/
 	*/
 
-if (isset($_REQUEST['action']) && $_REQUEST['action']=='login') {
+if (isset($_REQUEST['action']) && $_REQUEST['action']=='login'
+	&& isset($_REQUEST['email']) && isset($_REQUEST['password'])
+) {
 	// { variables
 	$email=$_REQUEST['email'];
 	$password=$_REQUEST['password'];

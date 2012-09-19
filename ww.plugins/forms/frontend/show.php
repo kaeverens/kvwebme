@@ -193,7 +193,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 				WW_addScript('forms/j/swfobject.js');
 				WW_addScript('forms/j/uploadify.jquery.min.js');
 				WW_addCSS('/ww.plugins/forms/j/uploadify.css');
-				$opts=explode(':', $r2['extra']);
+				$opts=isset($r2['extra'])?explode(':', $r2['extra']):array();
 				if (!isset($opts[0])||!isset($opts[1])) {
 					$opts=array(
 						'off',
@@ -346,7 +346,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 	if (@$vars['forms_captcha_required']) {
 		require_once SCRIPTBASE.'ww.incs/recaptcha.php';
 		$row=$vals_2col_start.Recaptcha_getHTML().$vals_2col_end;
-		if ($vars['forms_template']) {
+		if (isset($vars['forms_template']) && $vars['forms_template']) {
 			$vars['forms_template'].=$vals_wrapper_start.$row.$vals_wrapper_end;
 		}
 		else {

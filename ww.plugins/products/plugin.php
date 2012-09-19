@@ -299,6 +299,9 @@ class Product{
 				'page_id'
 			);
 			$page=Page::getInstance($pid);
+			if (!$page) {
+				return '/';
+			}
 			return $page->getRelativeUrl()
 				.'/'.$this->id.'-'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
 		}

@@ -11,7 +11,7 @@ foreach ($rs as $k=>$v) {
 	$options[$v['name']]=$v['value'];
 }
 if (!(@$options['payment-recipient'])) {
-	$cr=DistCongif::get('credits-email');
+	$cr=DistConfig::get('credits-email');
 	$options['payment-recipient']=$cr;
 	dbQuery(
 		'insert into sitecredits_options values("payment-recipient", "'.$cr.'")'
