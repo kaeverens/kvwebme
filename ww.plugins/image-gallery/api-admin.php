@@ -49,3 +49,23 @@ function ImageGallery_adminFrameUpload() {
 	`convert $from $to`;
 	return array('done'=>1);
 }
+function ImageGallery_adminAddVideo() {
+	$id=(int)@$_REQUEST['id'];
+	$link=@$_REQUEST['link'];
+	$image=@$_REQUEST['image'];
+	if ($id==0||$link=='') {
+		Core_quit(__('ID or Link is missing'));
+	}
+	if ($image=='http://') {
+		$image='';
+	}
+	$meta=json_encode(
+		array(
+			'href'=>$link,
+			'image'=>$image,
+		)
+	);
+	$query='insert into image_gallery (gallery_id,position,media,meta) values '
+		.'('.$id.',"9999","video","'.addslashes($meta).'")';
+	dbQuery($query);
+}

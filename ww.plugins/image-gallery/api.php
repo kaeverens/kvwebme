@@ -16,6 +16,8 @@ $kfm_do_not_save_session=true;
 require_once KFM_BASE_PATH.'/api/api.php';
 require_once KFM_BASE_PATH.'/initialise.php';
 
+// { ImageGallery_galleryGet
+
 /**
   * script for retrieving a JSON array of images/videos in a gallery
 	*
@@ -125,6 +127,9 @@ function ImageGallery_galleryGet() {
 	);
 }
 
+// }
+// { ImageGallery_img
+
 /**
 	* retrieve an image from the database
 	*
@@ -142,6 +147,9 @@ function ImageGallery_img() {
 	header('Location: '.$url);
 	Core_quit();
 }
+
+// }
+// { ImageGallery_frameGet
 
 /**
 	* get a frame for images
@@ -245,3 +253,5 @@ function ImageGallery_frameGet() {
 	header('Content-Length: ' . filesize($frame));
 	readfile($frame);
 }
+
+// }

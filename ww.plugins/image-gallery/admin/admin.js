@@ -98,8 +98,8 @@ $(function(){
 				Save:function(){
 					var link=$('#link').val();
 					var image=$('#image').val();
-					var id=$('#id').val();
-					$.post('/ww.plugins/image-gallery/admin/new-video.php',
+					var id=$('input[name=id]').val();
+					$.post('/a/p=image-gallery/f=adminAddVideo',
 						{ 'link':link,"id":id,"image":image }
 					);
 					if(image==''||image=='http://') {

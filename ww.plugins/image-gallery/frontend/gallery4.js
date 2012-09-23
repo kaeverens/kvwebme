@@ -205,7 +205,6 @@ var Gallery={
 			if (Gallery.options.hidesidebar) {
 				$('#sidebar1').toggle().attr('id', 'sidebar1_bak');
 			}
-
 		}
 		var $img=$imgwrap.find('img');
 		var files=this.images;
@@ -306,16 +305,22 @@ var Gallery={
 					var width=Gallery.options.imageWidth;
 					var height=Gallery.options.imageHeight;
 					if (!$imgwrap.is('.wholepage')) {
-						$imgwrap=$imgwrap.find('.wholepage');
+						var $tmp=$imgwrap.find('.wholepage');
+						if ($tmp.length) {
+							$imgwrap=$tmp;
+						}
 					}
-					$imgwrap.css({'width':width+'px','height':height+'px'});
+					$imgwrap.css({
+						'width':width+'px',
+						'height':height+'px'
+					});
 					$img
 						.hide()
 						.attr('src','')
 						.attr('title','')
 						.attr('num',e)
 						.attr('sequence',sequence);
-					$imgwrap.append('<div id="image-gallery-video" style="display:none"></div>');
+					$imgwrap.append('<div id="image-gallery-video" style="display:none">');
 					jwplayer('image-gallery-video').setup({
 						'flashplayer':'/ww.plugins/image-gallery/frontend/player.swf',
 						'file':files[e].href,
