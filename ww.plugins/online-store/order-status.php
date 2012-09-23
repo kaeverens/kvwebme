@@ -28,6 +28,7 @@ function OnlineStore_processOrder($id, $order=false) {
 	}
 	// { mark order as paid
 	dbQuery("UPDATE online_store_orders SET status='1' WHERE id=$id");
+	$order['status']=1;
 	// }
 	// { call the callback if it's supplied
 	if ($order['callback']) {
