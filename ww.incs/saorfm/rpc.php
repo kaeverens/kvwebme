@@ -20,6 +20,7 @@ $action=@$_REQUEST['action'];
 if ($action=='') {
 	// no action was requested.
   echo '{"error":18}';
+	require_once '../../ww.incs/basics.php';
   Core_quit();
 }
 /**

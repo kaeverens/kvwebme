@@ -11,6 +11,9 @@
 	* @license  GPL 2.0
 	* @link     None
 */
+
+require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
+
 $req = 'cmd=_notify-validate';
 foreach ($_POST as $key => $value) {
 	$value = urlencode(stripslashes($value));

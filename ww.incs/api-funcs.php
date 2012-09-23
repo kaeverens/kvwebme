@@ -393,9 +393,18 @@ function Core_login() {
 	$r=dbRow($sql);
 	if ($r && count($r)) {
 		$r['password']=$password;
-		$_SESSION['userdata'] = $r;
+		$_SESSION['userdata']=$r;
 		dbQuery('update user_accounts set last_login=now() where id='.$r['id']);
-		Core_quit('{"ok":1}');
+		$ret=array('ok'=>1);
+		if (isset($_REQUEST['return_groups'])) {
+			$groups=dbAll(
+				'select groups_id as id,name from users_groups,groups'
+				.' where groups.id=groups_id'
+				.' and user_accounts_id='.$_SESSION['userdata']['id']
+			);
+			$ret['groups']=$groups;
+		}
+		Core_quit(json_encode($ret));
 	}
 	Core_quit('{"error":"either the email address or the password are incorrect"}');
 }
