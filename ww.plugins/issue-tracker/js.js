@@ -20,7 +20,7 @@ $(function() {
 		}
 	}
 	if (canedit) {
-		$('<button class="edit" style="display:none;">edit '+ITStrings.project
+		$('<button class="edit" style="display:none;">Edit '+ITStrings.project
 			+'</button>')
 			.appendTo($('#issuetracker-navbar'))
 			.click(function() {
@@ -33,7 +33,7 @@ $(function() {
 	}
 	var $content=$('<div id="issuetracker-content"></div>').appendTo($wrapper);
 	$.post('/a/p=issue-tracker/f=projectsGet', function(ret) {
-		var opts=['<option value="0"> -- all -- </option>']
+		var opts=['<option value="0"> -- All -- </option>']
 		var validOpts=0, lastValid=0;
 		for (var i=0;i<ret.length;++i) {
 			var meta=eval('('+ret[i].meta+')')||{};

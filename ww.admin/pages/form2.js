@@ -46,6 +46,7 @@ function pages_check_page_length(maxLength) {
 		var contents = $(textAreas[i]).val();
 		if (contents.length>maxLength) {
 			return confirm(
+				// TODO: translation needed
 				'This page has more characters than the set limit. This may cause '
 				+'problems\nDo you want to save the page anyway?'
 			);
@@ -58,6 +59,7 @@ function pages_validate(){
 	if (ok) {
 		return true;
 	}
+	// TODO: translation needed
 	alert('Your form has errors. Hover the mouse over any inputs marked as errors to see explanations of those errors.');
 	return false;
 }
@@ -67,16 +69,20 @@ function pages_validate_name(){
 	var name=$name.val();
 	var errors=[];
 	if (name.length<3) {
+		// TODO: translation needed
 		errors.push('name must be at least 2 characters in length');
 	}
 	else {
 		if (/^[^0-9\w\u00C0-\u00FF]/.test(name)) {
+			// TODO: translation needed
 			errors.push('Begins with non-alphanumeric character');
 		}
 		if (/[^0-9\w\u00C0-\u00FF]$/.test(name)) {
+			// TODO: translation needed
 			errors.push('Ends with non-alphanumeric character');
 		}
 		if (name.replace(/[\-',\/0-9_ \w\u00C0-\u00FF]/g,'')!='') {
+			// TODO: translation needed
 			errors.push('Only use alphanumeric characters, spaces, hyphens or underscores');
 		}
 	}

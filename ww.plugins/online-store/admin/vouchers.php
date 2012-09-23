@@ -73,17 +73,14 @@ if (isset($_REQUEST['voucher_id'])) {
 	echo '<form method="post" action="'.$_url.'&amp;voucher_id='.$v_id.'">'
 		.'<table id="onlinestore-vouchers-table">'
 	// { name
-		/* TODO - translation /CB */
 		.'<tr><th>'.__('Name').'</th><td><input name="name" value="'
 		.htmlspecialchars($r['name']).'"/></td></tr>'
 	// }
 	// { code
-		/* TODO - translation /CB */
 		.'<tr><th>'.__('Code').'</th><td><input name="code" value="'
 		.htmlspecialchars($r['code']).'"/></td></tr>'
 	// }
 	// { user constraints
-		/* TODO - translation /CB */
 		.'<tr><th>'.__('Usable by').'</th><td><select name="user_constraints">';
 	$user_constraints=array(
 		/* TODO - translation /CB */

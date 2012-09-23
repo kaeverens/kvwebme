@@ -787,21 +787,27 @@ $(function(){
 			}
 			function checkDeliveryAddress() {
 				var errs=[];
+				// TODO: translation needed
 				if (!$('input[name=FirstName]').val()) {
 					errs.push('You must fill in your first name');
 				}
+				// TODO: translation needed
 				if (!$('input[name=Surname]').val()) {
 					errs.push('You must fill in your surname');
 				}
+				// TODO: translation needed
 				if (!$('input[name=Email]').val()) {
 					errs.push('You must fill in your email address');
 				}
+				// TODO: translation needed
 				if (!$('input[name=Phone]').val()) {
 					errs.push('You must fill in your phone');
 				}
+				// TODO: translation needed
 				if (!$('input[name=Street]').val()) {
 					errs.push('You must fill in your street');
 				}
+				// TODO: translation needed
 				if (!$('input[name=Country]').val()) {
 					errs.push('You must fill in your country');
 				}
@@ -872,10 +878,11 @@ $(function(){
 			"code" : code
 		}, function(ret) {
 			if (ret.error) {
-				if (ret.error=='your email address is not associated with this voucher') {
-					var $dialog=$('<div><p class="__" lang-context="core">'
-						+'This voucher is for a specific email address.'
-						+' Please enter the correct email address below.'
+				// TODO: translation needed
+				if (ret.error=='Your email address is not associated with this voucher') {
+					var $dialog=$('<div><p>'
+						+'.'+__('This voucher is for a specific email address.'
+						+' Please enter the correct email address below.')+'
 						+'<br/><input id="dialog-email"/></div>')
 						.dialog({
 							'modal':true,

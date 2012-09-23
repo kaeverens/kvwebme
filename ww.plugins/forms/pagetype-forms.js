@@ -387,6 +387,7 @@ function Forms_Pagetype_forms() {
 					// }
 					// { delete button
 					$('#pfp-delete').click(function() {
+						// TODO: translation needed
 						if (!confirm('are you sure you want to remove this?')) {
 							return;
 						}
@@ -428,8 +429,9 @@ function Forms_Pagetype_forms() {
 					showFormFields(panel, -1); // page_vars.forms_fields.length-1);
 				}
 			});
-		$('<button>add field</button>')
+		$('<button>'+__('Add field')+'</button>')
 			.click(function() {
+				// TODO: translation needed
 				var name=prompt('What do you want to name this field?', 'fieldname');
 				if (name===false) {
 					return;

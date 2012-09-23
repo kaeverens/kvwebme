@@ -418,7 +418,7 @@ $(function(){
 
 function onlinestoreCustomers() {
 	var $dialog=$('<div><select id="users-group-filter"/>'
-		+'<button>'+__('add new user')+'</button>'
+		+'<button>'+__('Add new user')+'</button>'
 		+'<table id="users-list"><thead>'
 		+'<tr><th>'+__('ID')+'</th><th>'+__('Name')+'</th><th>'+__('Email')+'</th><th>'+__('Phone')+'</th>'
 		+'<th>'+__('Date Created')+'</th><th>'+__('Groups')+'</th><th>&nbsp;</th></tr>'
@@ -444,7 +444,7 @@ function onlinestoreCustomers() {
 		$('#users-group-filter')
 			.html(
 				// TODO: translation needed
-				'<option value="'+all+'"> -- filter by group -- </option>'
+				'<option value="'+all+'"> -- Filter by group -- </option>'
 				+gopts.join('')
 			)
 			.change(function() {

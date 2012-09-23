@@ -96,6 +96,7 @@ function os_addCurrency(){
 }
 function os_deleteCurrency(iso) {
 	if($('#os-currencies-ul>li').length<2) {
+		// TODO: translation needed
 		return alert('Cannot remove default currency');
 	}
 	$('#os-currency-'+iso)

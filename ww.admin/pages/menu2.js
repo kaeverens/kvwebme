@@ -23,8 +23,9 @@ $(function(){
 	function pageNew(node) {
 		var pid=node[0]?node[0].id.replace(/.*_/,''):0;
 		$('<table id="newpage-dialog">'
-			+'<tr><th>Name</th><td><input name="name"/></td></tr>'
-			+'<tr><th>Page Type</th><td><select name="type">'
+			+'<tr><th'+__('Name')+'</th><td><input name="name"/></td></tr>'
+			+'<tr><th>'+__('Page Type')+'</th><td><select name="type">'
+			// TODO: translation needed
 			+'<option value="0">normal</option></select></td></tr>'
 			+'</table>'
 		).dialog({
@@ -33,9 +34,11 @@ $(function(){
 				$('#newpage-dialog').remove();
 			},
 			buttons:{
+				// TODO: translation needed
 				'Create Page': function() {
 					var name=$('#newpage-dialog input[name="name"]').val();
 					if (name=='') {
+						// TODO: translation needed
 						return alert('Name must be provided');
 					}
 					$.post('/a/f=adminPageEdit', {
@@ -52,6 +55,7 @@ $(function(){
 					});
 					$(this).dialog('close');
 				},
+				// TODO: translation needed
 				'Cancel': function() {
 					$(this).dialog('close');
 				}
@@ -113,6 +117,7 @@ $(function(){
 					'rename':false,
 					'ccp':false,
 					'create' : {
+						// TODO: translation needed
 						'label'	: "Create Page", 
 						'visible'	: function (NODE, TREE_OBJ) { 
 							if (NODE.length != 1) {
@@ -124,6 +129,7 @@ $(function(){
 						'separator_after' : true
 					},
 					'remove' : {
+						// TODO: translation needed
 						'label'	: "Delete Page", 
 						'visible':function (NODE, TREE_OBJ) { 
 							if (NODE.length != 1) {
@@ -132,6 +138,7 @@ $(function(){
 							return TREE_OBJ.check("deletable", NODE); 
 						}, 
 						'action':function(node,tree){
+							// TODO: translation needed
 							if (!confirm("Are you sure you want to delete this page?")) {
 								return;
 							}
@@ -151,6 +158,7 @@ $(function(){
 						'separator_after' : true
 					},
 					'copy' : {
+						// TODO: translation needed
 						'label'	: "Copy Page", 
 						'visible'	: function (NODE, TREE_OBJ) { 
 							return true;
@@ -165,6 +173,7 @@ $(function(){
 						}
 					},
 					'view' : {
+						// TODO: translation needed
 						'label' : "View Page",
 						'action':function(node) {
 							window.open(
@@ -214,7 +223,7 @@ $(function(){
 			},1);
 		});
 	var div=$('<div><i>right-click for options</i><br /><br /></div>');
-	$('<button>add main page</button>')
+	$('<button>'+__('Add main page')+'</button>')
 		.click(pageNew)
 		.appendTo(div);
 	div.appendTo('div.sub-nav');
@@ -257,6 +266,7 @@ $(function(){
 			reports_ordered=eval('('+adminVars.dashboardReportsOrder+')');
 		}
 		var available_reports=[
+			// TODO: translation needed
 			['visitorStats', 'Visitor Stats'],
 			['popularPages', 'Popular Pages']
 		];
@@ -325,9 +335,9 @@ function Reports_popularPages($el) {
 	$.post('/a/f=adminReportsPopularPages', function(ret) {
 		var table='<table style="width:100%" class="report-two-column">'
 			+'<thead><tr>'
-			+'<th colspan="2" class="__" lang-context="core">Today</th>'
-			+'<th colspan="2" class="__" lang-context="core">7 Days</th>'
-			+'<th colspan="2" class="__" lang-context="core">31 Days</th>'
+			+'<th colspan="2">'+__('Today')+'</th>'
+			+'<th colspan="2">'+__('7 Days')+'</th>'
+			+'<th colspan="2">'+__('31 Days')+'</th>'
 			+'</tr></thead>'
 			+'<tbody>';
 		for (var i=0;i<50;++i) {
@@ -358,9 +368,9 @@ function Reports_visitorStats($el) {
 		if (!from) {
 			var d=new Date();
 			$('<table class="wide smalltext"><tr>'
-				+'<th class="__" lang-context="core">From</th>'
+				+'<th>'+__('From')+'</th>'
 				+'<td><input class="date" id="reports-visitors-from"/></td>'
-				+'<th class="__" lang-context="core">To</th>'
+				+'<th>'+__('To')+'</th>'
 				+'<td><input class="date" id="reports-visitors-to"/></td>'
 				+'</tr></table>'
 				+'<div id="reports-visitors-chart" style="position:absolute;left:0;'
@@ -397,7 +407,8 @@ function Reports_visitorStats($el) {
 			$('#reports-visitors-chart').empty();
 			if (line1.length<2) {
 				return $('#reports-visitors-chart')
-					.html('not enough data to create a chart');
+					// TODO: translation needed
+					.html('Not enough data to create a chart');
 			}
 			var plot1=$.jqplot('reports-visitors-chart', [line1], {
 				'axes':{
