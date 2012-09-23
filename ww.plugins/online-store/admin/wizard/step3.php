@@ -18,8 +18,9 @@ if (isset($_POST['wizard-login'])) { // validate post data
 	$email=$_POST['wizard-email'];
 	if ($email=='') {
 		die(
-			__('The email is a required field').'. <input type="submit" value="'.htmlspecialchars(__('Back')).'" cla'
-			.'ss="back-link"/>'
+			__('The email is a required field')
+			.'. <input type="submit" value="'.htmlspecialchars(__('Back'))
+			.'" class="back-link"/>'
 		);
 	}
 	$login=$_POST['wizard-login'];
@@ -60,11 +61,13 @@ if (isset($_POST['wizard-login'])) { // validate post data
 	}
 }
 
-echo '<h2>'.__('Company Details').'</h2>
-<i>'.__('These details are used to populate the invoice sent to customers.
-Fields left blank will simply not appear on the invoice').'</i>
-<div style="height:300px;overflow:auto">
-<table>';
+require_once '../../../../ww.incs/basics.php';
+echo '<h2>'.__('Company Details').'</h2><i>'
+	.__(
+		'These details are used to populate the invoice sent to customers.'
+	 .' Fields left blank will simply not appear on the invoice'
+	)
+	.'</i><div style="height:300px;overflow:auto"><table>';
 
 // { company name
 echo '<tr>
@@ -124,6 +127,8 @@ echo '<tr>
 ';
 // }
 
-echo '</table></div>';
-echo '<input type="submit" value="'.htmlspecialchars(__('Back')).'" class="back-link"/>'
-. '<input type="submit" value="'.htmlspecialchars(__('Next')).'" class="next-link" style="float:right"/>';
+echo '</table></div>'
+	.'<input type="submit" value="'.htmlspecialchars(__('Back'))
+	.'" class="back-link"/>'
+	. '<input type="submit" value="'.htmlspecialchars(__('Next'))
+	.'" class="next-link" style="float:right"/>';

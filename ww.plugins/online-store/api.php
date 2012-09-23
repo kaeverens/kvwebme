@@ -11,6 +11,14 @@
 	* @link     None
 	*/
 
+// { OnlineStore_addProductToCart
+
+/**
+	* checks that a product got successfully added to a cart.
+	* or removes it if the item has expired.
+	*
+	* @return status
+	*/
 function OnlineStore_addProductToCart() {
 	$id=(int)$_REQUEST['product_id'];
 	$p=dbRow('select id,expires_on from products where id='.$id);
@@ -23,6 +31,15 @@ function OnlineStore_addProductToCart() {
 	}
 	return array('error'=>'expired', 'date_expired'=>$p['expires_on']);
 }
+
+// }
+// { OnlineStore_getExpiryNotification
+
+/**
+	* retrieve message for when someone tries to add an expired item to cart
+	*
+	* @return string message
+	*/
 function OnlineStore_getExpiryNotification() {
 	$id=(int)$_REQUEST['id'];
 	$p=dbRow('select * from products where id='.$id);
@@ -30,7 +47,10 @@ function OnlineStore_getExpiryNotification() {
 	$typeid=$p['product_type_id'];
 	$nfile=USERBASE.'/ww.cache/products/templates/expiry_notification_'.$typeid;
 	if (!file_exists($nfile)) {
-		$t=dbRow('select template_expired_notification from products_types where id='.$typeid);
+		$t=dbRow(
+			'select template_expired_notification from products_types where id='
+			.$typeid
+		);
 		$template=$t['template_expired_notification']
 			?$t['template_expired_notification']
 			:''.__('This product has expired. You cannot add it to the cart.').'';
@@ -43,6 +63,8 @@ function OnlineStore_getExpiryNotification() {
 	$smarty->assign('_stock_number', $product->stock_number);
 	return $smarty->fetch($nfile);
 }
+
+// }
 // { OnlineStore_checkQrCode
 
 /**
@@ -76,19 +98,23 @@ function OnlineStore_checkQrCode() {
 	$item=$items[$pid];
 	echo '<h2>'.$item['short_desc'].'</h2>'.$item['long_desc'];
 	if (!isset($item['voucher_redeemed'])) {
-		echo '<em>'.__('This voucher has not yet been redeemed. To redeem this voucher,'
-			.' please hand it in to the retailer with your purchase.</em>').'';
+		echo '<em>'
+			.__(
+				'This voucher has not yet been redeemed. To redeem this voucher,'
+				.' please hand it in to the retailer with your purchase.'
+			)
+			.'</em>';
 	}
 	else {
-		// TODO: translation needed. maybe we should remove the inline styling and put it in the css
-		echo '<p style="text-decoration:underline;color:red"><strong style="tex'
-			.'t-decoration:blink">Warning</strong>: This voucher has already been'
-			.' redeemed.</p>';
+		echo '<p class="warning">'
+			.__('Warning: This voucher has already been redeemed.').'</p>';
 	}
 	if (!Core_isAdmin()) {
-		// TODO: translation needed. maybe we should remove the inline styling and put it in the css
-		echo '<br/><br/><br/><p style="font-size:small">If you are the retailer, '
-			.'please <a href="/ww.admin/">log in</a>, then scan the QR code again.';
+		echo '<br/><br/><br/>'
+			.__(
+				'If you are the retailer, please <a href="/ww.admin/">log in</a>,'
+				.' then scan the QR code again.'
+			);
 	}
 	else {
 		echo '<br/><br/><br/><a href="/a/p=online-store/f=adminRedeemVoucher/'

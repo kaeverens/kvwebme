@@ -19,13 +19,19 @@ $apacheversion = $ver[ 1 ] . ' ' . $ver[ 2 ];
 
 echo '<div id="dialog" style="display:none" title="'
 	.__('Help - Write Access').'">'
-	.'<p>'.__('The quickest way to get this working is to execute the following command, but it is also the <strong>least secure</strong> method:')
+	.'<p>'
+	.__(
+		'The quickest way to get this working is to execute the following'
+		.' command, but it is also the <strong>least secure</strong> method:'
+	)
 	.'</p>'
 	.'<i>chmod -R 777 '.$home_dir.'</i></div>'
 	.'<h3>'.__('Installation Requirements').'</h3>'
 	.'<p><i style="clear:none">'
 	.__(
-		'The requirements below are the minimum specifications needed to run the system reliably. You may install without meeting all of these requirements, but some aspects of the system may not function properly.'
+		'The requirements below are the minimum specifications needed to run the'
+		.' system reliably. You may install without meeting all of these'
+		.' requirements, but some aspects of the system may not function properly.'
 	)
 	.'</i></p>'
 	.'<table class="row-color"><tr><th>'
@@ -44,9 +50,11 @@ echo '<tr><td>'.__('Write Access').'</td>'
 // }
 // { php version
 $php=($phpversion<'5.3')
-	?'<span class="error">'.$phpversion.' '.__('you need PHP 5.3 or PECL json 1.2').'</span>'
+	?'<span class="error">'.$phpversion.' '
+	.__('you need PHP 5.3 or PECL json 1.2').'</span>'
 	:'OK: '.$phpversion;
-echo '<tr><td>'.__('PHP Version:').'</td><td>'.__('5.3 required').'</td><td>'.$php.'</td></tr>';
+echo '<tr><td>'.__('PHP Version:').'</td><td>'.__('5.3 required').'</td><td>'
+	.$php.'</td></tr>';
 // }
 // { PHP PDO
 $ok=class_exists('PDO');

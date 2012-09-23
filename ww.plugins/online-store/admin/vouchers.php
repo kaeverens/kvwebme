@@ -12,7 +12,6 @@
 	*/
 
 if (isset($_REQUEST['voucher_id'])) {
-	/* TODO - translation /CB */
 	echo '<a href="'.$_url.'">'.__('list all vouchers').'</a>'
 		.'<h3>'.__('Edit Voucher').'</h3>';
 	$v_id=(int)$_REQUEST['voucher_id'];
@@ -101,7 +100,6 @@ if (isset($_REQUEST['voucher_id'])) {
 		.htmlspecialchars($r['users_list']).'"></td></tr>';
 	// }
 	// { value, value type
-	/* TODO - translation /CB */
 	echo '<tr><th>'.__('Value').'</th><td><input name="value" value="'
 		.htmlspecialchars($r['value']).'"/> <select name="value_type">';
 	$value_types=array(
@@ -119,35 +117,36 @@ if (isset($_REQUEST['voucher_id'])) {
 	echo '</select></td></tr>';
 	// }
 	// { usages per person
-	/* TODO - translation /CB */
-	echo '<tr><th>'.__('Uses allowed per person').'</th><td><input name="usages_per_user" '
-		.'value="'.htmlspecialchars($r['usages_per_user']).'"/>'.__('(leave at 0 '
-		.'for no limit)').'</td></tr>';
+	echo '<tr><th>'.__('Uses allowed per person').'</th><td>'
+		.'<input name="usages_per_user" value="'
+		.htmlspecialchars($r['usages_per_user']).'"/>'
+		.__('(leave at 0 for no limit)').'</td></tr>';
 	// }
 	// { usages in total
-	/* TODO - translation /CB */
-	echo '<tr><th>'.__('Uses allowed in total').'</th><td><input name="usages_in_total" '
-		.'value="'.htmlspecialchars($r['usages_in_total']).'"/>'.__('(leave at 0 '
-		.'for no limit)').'</td></tr>';
+	echo '<tr><th>'.__('Uses allowed in total').'</th><td>'
+		.'<input name="usages_in_total" value="'
+		.htmlspecialchars($r['usages_in_total']).'"/>'
+		.__('(leave at 0 for no limit)').'</td></tr>';
 	// }
 	// { date range
-	/* TODO - translation /CB */
-	echo '<tr><th>'.__('Valid Dates').'</th><td>'.__('Valid from the morning of').' <input class='
-		.'"date-human" name="start_date" value="'.$r['start_date'].'"/>'
+	echo '<tr><th>'.__('Valid Dates').'</th><td>'
+		.__('Valid from the morning of')
+		.' <input class="date-human" name="start_date" value="'
+		.$r['start_date'].'"/>'
 		.__('Expiring the morning of').' <input class="date-human" '
 		.'name="end_date" value="'.$r['end_date'].'"/></td></tr>';
 	// }
-	/* TODO - translation /CB */
-	echo '<tr><th colspan="2"><input type="submit" name="action" value="'.htmlspecialchars(__('Save')).'"/>'
-		.'</th></tr>';
+	echo '<tr><th colspan="2"><input type="submit" name="action" value="'
+		.htmlspecialchars(__('Save')).'"/></th></tr>';
 	echo '</table></form>';
 }
 else {
 	echo '<div style="width:400px;">'
 		.'<table id="onlinestore-vouchers" style="width:100%">'
-		/* TODO - translation /CB */
-		.'<thead><tr><th>'.__('Name').'</th><th>'.__('Value').'</th><th>'.__('Expiry Date').'</th></tr></thead>'
+		.'<thead><tr><th>'.__('Name').'</th><th>'.__('Value').'</th>'
+		.'<th>'.__('Expiry Date').'</th></tr></thead>'
 		.'<tbody></tbody></table>'
-		.'<a href="'.$_url.'&amp;voucher_id=0">'.__('Create a voucher').'</a></div>';
+		.'<a href="'.$_url.'&amp;voucher_id=0">'.__('Create a voucher')
+		.'</a></div>';
 }
 WW_addScript('online-store/admin/vouchers.js');
