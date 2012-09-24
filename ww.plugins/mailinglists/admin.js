@@ -10,7 +10,7 @@ function Mailinglists_screenDashboard() {
 	$.post('/a/p=mailinglists/f=adminGetDashboardInfo', function(ret) {
 		var table='<table>';
 		// { lists
-		table+='<tr><th>Lists</th><td>'
+		table+='<tr><th>'+__('Lists')+'</th><td>'
 		if (ret.numlists) {
 			table+='<strong>'+ret.numlists+'</strong> <a href="javascript:Core_screen(\'mailinglists\', \'Lists\');">[edit]</a>';
 		}
@@ -20,7 +20,7 @@ function Mailinglists_screenDashboard() {
 		table+='</td></tr>';
 		// }
 		// { subscribers
-		table+='<tr><th>Subscribers</th><td>'
+		table+='<tr><th>'+__('Subscribers')+'</th><td>'
 		if (ret.numpeople) {
 		}
 		else {
@@ -43,16 +43,20 @@ function Mailinglists_screenDashboard() {
 }
 function Mailinglists_screenLists(ret) {
 	$.post('/a/p=mailinglists/f=adminListsList', function(ret) {
-		var html='<a href="javascript:Mailinglists_editList(0);">[add new list]</a>'
-			+'<table id="mailinglists-table"><tr><th>Name</th><th>Subscribers</th>'
+		var html='<a href="javascript:Core_screen(\'mailinglists\',\'Dashboard\');">'
+			+__('Return to Dashboard')+'</a>'
+			+'<table id="mailinglists-table"><tr><th>'+__('Name')+'</th>'
+			+'<th>'+__('Subscribers')+'</th><th>'+__('Mail Engine')+'</th>'
 			+'<th>&nbsp;</th></tr>';
 		for (var i=0;i<ret.length;++i) {
 			html+='<tr data-mid="'+ret[i].id+'"><th>'+ret[i].name+'</th>'
 				+'<td>'+ret[i].subscribers+'</td>'
+				+'<td>'+ret[i].meta.engine+'</td>'
 				+'<td><a href="#" class="edit">edit</a>'
 				+' | <a href="#" class="delete">delete</a></td></tr>'
 		}
-		html+='</table>';
+		html+='<tr data-mid="0"><td colspan="4"><button class="edit">'
+			+__('Add New List')+'</button></td></tr></table>';
 		$('#content').empty().append(html);
 		$('#mailinglists-table').on('click', '.edit', function() {
 			var id=$(this).closest('tr').data('mid');

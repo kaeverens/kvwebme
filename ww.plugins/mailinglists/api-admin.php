@@ -120,13 +120,14 @@ function Mailinglists_adminListsGetUbivox() {
 	* @return list
 	*/
 function Mailinglists_adminListsList() {
-	$lists=dbAll('select id,name from mailinglists_lists order by name');
+	$lists=dbAll('select id,name,meta from mailinglists_lists order by name');
 	foreach ($lists as $k=>$v) {
 		$lists[$k]['subscribers']=dbOne(
 			'select count(people_id) as subscribers'
 			.' from mailinglists_lists_people where lists_id='.$v['id'],
 			'subscribers'
 		);
+		$lists[$k]['meta']=json_decode($lists[$k]['meta']);
 	}
 	return $lists;
 }
