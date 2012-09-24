@@ -44,13 +44,33 @@ function Mailinglists_screenDashboard() {
 function Mailinglists_screenLists(ret) {
 	$.post('/a/p=mailinglists/f=adminListsList', function(ret) {
 		var html='<a href="javascript:Mailinglists_editList(0);">[add new list]</a>'
-			+'<ul>';
+			+'<table id="mailinglists-table"><tr><th>Name</th><th>Subscribers</th>'
+			+'<th>&nbsp;</th></tr>';
 		for (var i=0;i<ret.length;++i) {
-			html+='<li><a href="javascript:Mailinglists_editList('+ret[i].id+')">'
-				+ret[i].name+': '+ret[i].subscribers+' subscribers</a></li>';
+			html+='<tr data-mid="'+ret[i].id+'"><th>'+ret[i].name+'</th>'
+				+'<td>'+ret[i].subscribers+'</td>'
+				+'<td><a href="#" class="edit">edit</a>'
+				+' | <a href="#" class="delete">delete</a></td></tr>'
 		}
-		html+='</ul>';
+		html+='</table>';
 		$('#content').empty().append(html);
+		$('#mailinglists-table').on('click', '.edit', function() {
+			var id=$(this).closest('tr').data('mid');
+			Mailinglists_editList(id);
+		});
+		$('#mailinglists-table').on('click', '.delete', function() {
+			var $row=$(this).closest('tr');
+			var id=$row.data('mid');
+			if (!confirm('Are you sure you want to remove this mailing list?')) {
+				return;
+			}
+			$.post(
+				'/a/p=mailinglists/f=adminListDelete/id='+id,
+				function() {
+					$row.remove();
+				}
+			);
+		});
 	});
 }
 function Mailinglists_editList(ret) {
