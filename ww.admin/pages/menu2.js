@@ -23,7 +23,7 @@ $(function(){
 	function pageNew(node) {
 		var pid=node[0]?node[0].id.replace(/.*_/,''):0;
 		$('<table id="newpage-dialog">'
-			+'<tr><th'+__('Name')+'</th><td><input name="name"/></td></tr>'
+			+'<tr><th>'+__('Name')+'</th><td><input name="name"/></td></tr>'
 			+'<tr><th>'+__('Page Type')+'</th><td><select name="type">'
 			// TODO: translation needed
 			+'<option value="0">normal</option></select></td></tr>'
