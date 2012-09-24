@@ -26,14 +26,14 @@ echo '<input type="checkbox" id="no_moderation"';
 if ($noModeration) {
 	echo ' checked = "checked"';
 }
-echo ' onchange="set_moderation();" /></td></tr>';
+echo ' /></td></tr>';
 // }
 // { moderator email address
 echo '<tr><th>Moderator email address</th><td><input id="comments_moderatorEmail"';
 if (isset($DBVARS['comments_moderatorEmail'])) {
 	echo ' value="'.htmlspecialchars($DBVARS['comments_moderatorEmail']).'"';
 }
-echo ' onchange="set_moderatorEmail();" /></td><tr>';
+echo ' /></td><tr>';
 // }
 // { use captchas
 echo '<tr><th>Don\'t use captchas for spam filtering?</th>';
@@ -46,7 +46,7 @@ echo '<td><input type="checkbox" id="no_captchas"';
 if ($noCaptchas) {
 	echo ' checked = "checked"';
 }
-echo ' onchange="set_captchas();" /></td></tr>';
+echo ' /></td></tr>';
 // }
 echo '</table>';
 // }

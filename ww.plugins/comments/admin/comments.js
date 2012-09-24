@@ -7,6 +7,50 @@ $(function() {
 	if (noModeration) {
 		my_table.fnSetColumnVis(5, false);
 	}
+	$('#no_moderation').change(function() {
+		var $this=$(this);
+		var val=$this.attr('checked');
+		$.post('/ww.plugins/comments/admin/set_moderation.php',
+			{
+				"value":val
+			},
+			function(ret) {
+				update_table_columns(ret);
+				$('<span>'+__('saved')+'</span>').insertAfter($this).fadeOut('slow', function()	{
+					$(this).remove();
+				});
+			},
+			"json"
+		);
+	});
+	$('#comments_moderatorEmail').change(function() {
+		var $this=$('#comments_moderatorEmail');
+		var val = $this.val();
+		$.post('/ww.plugins/comments/admin/set_moderatorEmail.php',
+			{
+				"email":val
+			},
+			function(){
+				$('<span>'+__('saved')+'</span>').insertAfter($this).fadeOut('slow', function()	{
+					$(this).remove();
+				});
+			}
+		);
+	});
+	$('#no_captchas').change(function() {
+		var $this=$('#no_captchas');
+		var val=$this.attr('checked');
+		$.post('/a/p=comments/f=adminCaptchasSet',
+			{
+				"value":val
+			},
+			function() {
+				$('<span>'+__('saved')+'</span>').insertAfter($this).fadeOut('slow', function()	{
+					$(this).remove();
+				});
+			}
+		);
+	});
 });
 function start_edit(id, comment) {
 	$('<textarea id="comment-edit">'+comment+'</textarea>')
@@ -56,34 +100,6 @@ function update_comment(data) {
 		6
 	);
 	$('#comment-edit').remove();
-}
-function set_moderation() {
-	var val = $('#no_moderation').attr('checked');
-	$.post('/ww.plugins/comments/admin/set_moderation.php',
-		{
-			"value":val
-		},
-		update_table_columns,
-		"json"
-	);
-}
-function set_moderatorEmail() {
-	var val = $('#comments_moderatorEmail').val();
-	$.post('/ww.plugins/comments/admin/set_moderatorEmail.php',
-		{
-			"email":val
-		},
-		function(){
-		}
-	);
-}
-function set_captchas() {
-	var val = $('#no_captchas').attr('checked');
-	$.post('/a/p=comments/f=adminCaptchasSet',
-		{
-			"value":val
-		}
-	);
 }
 function update_table_columns(data) {
 	switch (data.value) {
