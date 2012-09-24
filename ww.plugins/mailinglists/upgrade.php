@@ -39,3 +39,17 @@ if ($version==1) {
 	);
 	$version=2;
 }
+if ($version==2) {
+	dbQuery(
+		'create table mailinglists_issues_automated('
+		.'id int auto_increment not null primary key'
+		.', list_id int'
+		.', period text'
+		.', next_issue_date date'
+		.', template text'
+		.', active smallint default 0'
+		.', mode smallint default 0'
+		.') default charset=utf8'
+	);
+	$version=3;
+}

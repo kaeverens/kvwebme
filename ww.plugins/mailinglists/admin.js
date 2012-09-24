@@ -28,8 +28,17 @@ function Mailinglists_screenDashboard() {
 		}
 		table+='</td></tr>';
 		// }
+		// { automated issue creation
+		table+='<tr><th>Automated issue creation</th><td>'
+			+'<table id="mailinglists-automated-issue-sending">'
+			+'<tr><th>Period</th><th>List</th><th>Template</th><th>&nbsp;</th></tr>'
+			+'</table></td></tr>';
+		// }
 		table+='</table>';
 		$('#content').html(table);
+		function updateRows(ret) {
+		}
+		$.post('/a/p=mailinglists/f=automatedIssuesList', updateRows);
 	});
 }
 function Mailinglists_screenLists(ret) {

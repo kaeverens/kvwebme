@@ -789,6 +789,9 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 	) {
 		$bookId=$OSE->bookInvoice($invId);
 	}
+	else {
+		$bookId=0;
+	}
 	// }
 	// { record e-conomic invoice ID in order's meta data
 	$meta=json_decode($order['meta'], true);

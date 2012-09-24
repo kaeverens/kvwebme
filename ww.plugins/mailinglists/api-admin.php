@@ -94,7 +94,6 @@ function Mailinglists_adminListsGetUbivox() {
 	foreach ($data as $list) {
 		$lists[$list['id'].'|'.$list['title']]=$list['title'];
 	}
-	$lists['zzz']='add new...';
 	return $lists;
 }
 

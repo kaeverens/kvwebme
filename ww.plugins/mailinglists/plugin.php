@@ -22,7 +22,7 @@ $plugin=array(
 	'frontend' => array(
 		'widget' => 'MailingLists_widget'
 	),
-	'version' => '2'
+	'version' => '3'
 );
 
 function MailingLists_widget($vars) {
