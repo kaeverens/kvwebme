@@ -11,7 +11,9 @@ $(function() {
 					return alert(ret.error);
 				}
 				$('#mailinglists-subscribe input').val('');
-				return alert('Thank you. Please check your email to verify the subscription');
+				return alert(
+					'Thank you. Please check your email to verify the subscription'
+				);
 			}
 		);
 	});

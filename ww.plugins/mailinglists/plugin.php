@@ -11,6 +11,8 @@
 	* @link     http://kvsites.ie/
 	*/
 
+// { plugin config
+
 $plugin=array(
 	'name' => 'Mailing Lists',
 	'admin' => array(
@@ -22,9 +24,18 @@ $plugin=array(
 	'frontend' => array(
 		'widget' => 'MailingLists_widget'
 	),
-	'version' => '3'
+	'version' => '4'
 );
 
+// }
+
+// { MailingLists_widget
+
+/**
+	* widget for mailing lists
+	*
+	* @return html
+	*/
 function MailingLists_widget($vars) {
 	$html='<div id="mailinglists-subscribe">'
 		.'<input type="email" placeholder="'.__('enter email address').'"/>';
@@ -41,6 +52,15 @@ function MailingLists_widget($vars) {
 	WW_addScript('mailinglists/js.js');
 	return $html;
 }
+
+// }
+// { Mailinglists_xmlrpcClient
+
+/**
+	* XML RPC client for UbiVox
+	*
+	* @return data
+	*/
 function Mailinglists_xmlrpcClient($username, $password, $request) {
 	$url='https://'.$username.'.clients.ubivox.com/xmlrpc/';
 	$header=array('Content-type: text/xml', 'Content-length: '.strlen($request));
@@ -67,3 +87,5 @@ function Mailinglists_xmlrpcClient($username, $password, $request) {
 		return $data;
 	}
 }
+
+// }

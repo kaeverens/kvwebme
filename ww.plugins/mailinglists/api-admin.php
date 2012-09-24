@@ -11,6 +11,37 @@
 	* @link     http://kvsites.ie/
 	*/
 
+// { Mailinglists_adminAutomatedIssueDelete
+
+/**
+	* delete an automated issue
+	*
+	* @return status
+	*/
+function Mailinglists_adminAutomatedIssueDelete() {
+	$id=(int)$_REQUEST['id'];
+	dbQuery('delete from mailinglists_issues_automated where id='.$id);
+}
+
+// }
+// { Mailinglists_adminAutomatedIssuesEdit
+
+/**
+	* edit an automated issue
+	*
+	* @return status
+	*/
+function Mailinglists_adminAutomatedIssuesEdit() {
+	$id=(int)$_REQUEST['id'];
+	if ($id<0) {
+		dbQuery(
+			'insert into mailinglists_issues_automated set period=5'
+			.', next_issue_date=date_add(now(), interval 1 year), active=0, list_id=0'
+		);
+	}
+}
+
+// }
 // { Mailinglists_adminGetDashboardInfo
 
 /**
@@ -152,6 +183,65 @@ function Mailinglists_adminListSave() {
 		dbQuery('insert into '.$sql);
 	}
 	return array('ok'=>1);
+}
+
+// }
+// { Mailinglists_adminAutomatedIssuesListDT
+
+/**
+	* get a list of automated issues
+	*
+	* @return array
+	*/
+function Mailinglists_adminAutomatedIssuesListDT() {
+	$start=(int)$_REQUEST['iDisplayStart'];
+	$length=(int)$_REQUEST['iDisplayLength'];
+	$orderby=(int)$_REQUEST['iSortCol_0'];
+	$orderdesc=$_REQUEST['sSortDir_0']=='desc'?'desc':'asc';
+	switch ($orderby) {
+		case 1:
+			$orderby='period';
+		break;
+		case 2:
+			$orderby='list_name';
+		break;
+		case 3:
+			$orderby='template';
+		break;
+		case 4:
+			$orderby='next_issue_date';
+		break;
+		case 5:
+			$orderby='active';
+		break;
+		default:
+			$orderby='period';
+	}
+	$sql='select period, mailinglists_lists.name as list_name, template'
+		.', next_issue_date, active, mailinglists_issues_automated.id as id'
+		.' from mailinglists_issues_automated left join mailinglists_lists'
+		.' on mailinglists_issues_automated.list_id=mailinglists_lists.id'
+		.' order by '.$orderby.' '.$orderdesc.' limit '.$start.','.$length;
+	$rs=dbAll($sql);
+	$result=array();
+	$result['sEcho']=intval($_GET['sEcho']);
+	$result['iTotalRecords']=dbOne(
+		'select count(id) as ids from mailinglists_issues_automated', 'ids'
+	);
+	$result['iTotalDisplayRecords']=$result['iTotalRecords'];
+	$arr=array();
+	foreach ($rs as $r) {
+		$arr[]=array(
+			$r['period'],
+			$r['list_name'],
+			$r['template'],
+			$r['next_issue_date'],
+			$r['active'],
+			$r['id']
+		);
+	}
+	$result['aaData']=$arr;
+	return $result;
 }
 
 // }

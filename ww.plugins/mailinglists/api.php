@@ -1,5 +1,12 @@
 <?php
 
+// { Mailinglists_subscribe
+
+/**
+	* subscribe to a mailinglist
+	*
+	* @return status
+	*/
 function Mailinglists_subscribe() {
 	$list=(int)$_REQUEST['list'];
 	$email=$_REQUEST['email'];
@@ -36,3 +43,5 @@ function Mailinglists_subscribe() {
 	}
 	return array('ok'=>true);
 }
+
+// }

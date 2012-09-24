@@ -8,7 +8,7 @@ function Mailinglists_screen(page) {
 }
 function Mailinglists_screenDashboard() {
 	$.post('/a/p=mailinglists/f=adminGetDashboardInfo', function(ret) {
-		var table='<table>';
+		var table='<table style="width:100%">';
 		// { lists
 		table+='<tr><th>'+__('Lists')+'</th><td>'
 		if (ret.numlists) {
@@ -30,15 +30,54 @@ function Mailinglists_screenDashboard() {
 		// }
 		// { automated issue creation
 		table+='<tr><th>Automated issue creation</th><td>'
-			+'<table id="mailinglists-automated-issue-sending">'
-			+'<tr><th>Period</th><th>List</th><th>Template</th><th>&nbsp;</th></tr>'
-			+'</table></td></tr>';
+			+'<table id="mailinglists-automated-issue-sending" style="width:100%">'
+			+'<thead><tr><th>Period</th><th>List</th><th>Template</th>'
+			+'<th>Next Issue</th><th>Active</th><th>&nbsp;</th></thead><tbody/></tr>'
+			+'</table><button id="automated-issue-create">'
+			+__('Add New Automated Issue')+'</button></td></tr>';
 		// }
 		table+='</table>';
 		$('#content').html(table);
 		function updateRows(ret) {
+			console.log(ret);
 		}
-		$.post('/a/p=mailinglists/f=automatedIssuesList', updateRows);
+		$('#automated-issue-create').click(function() {
+			$.post('/a/p=mailinglists/f=adminAutomatedIssuesEdit/id=-1', function() {
+				$automatedIssuesTable.fnDraw(1);
+			});
+		});
+		var params={
+			"sAjaxSource": '/a/p=mailinglists/f=adminAutomatedIssuesListDT',
+			"bFilter":false,
+			"bProcessing":true,
+			"bJQueryUI":true,
+			"bServerSide":true,
+			"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+				$('td:nth-child(1)', nRow)
+					.html(__(['', 'Hour', 'Day', 'Week', 'Month', 'Year'][+aData[0]]));
+				$('td:nth-child(5)', nRow).html(__(aData[4]=='0'?'No':'Yes'));
+				$('td:nth-child(6)', nRow).html(
+					'<a href="#" class="edit">'+__('Edit')+'</a>'
+					+'&nbsp;|&nbsp;<a href="#" class="delete">'+__('[x]')+'</a>'
+				);
+				$(nRow).data('id', aData[5]);
+				return nRow;
+			}
+		};
+		var $automatedIssuesTable=$('#mailinglists-automated-issue-sending')
+			.dataTable(params);
+		$automatedIssuesTable.on('click', '.delete', function() {
+			var id=$(this).closest('tr').data('id');
+			if (!confirm('Are you sure you want to remove this automated issue?')) {
+				return;
+			}
+			$.post(
+				'/a/p=mailinglists/f=adminAutomatedIssueDelete/id='+id,
+				function() {
+					$automatedIssuesTable.fnDraw(1);
+				}
+			);
+		});
 	});
 }
 function Mailinglists_screenLists(ret) {

@@ -53,3 +53,18 @@ if ($version==2) {
 	);
 	$version=3;
 }
+if ($version==3) {
+	dbQuery('alter table mailinglists_issues_automated drop mode');
+	dbQuery(
+		'alter table mailinglists_issues_automated change period period smallint'
+	);
+	dbQuery(
+		'alter table mailinglists_issues_automated change template template int'
+	);
+	dbQuery(
+		'create table mailinglists_templates('
+		.'id int auto_increment not null primary key'
+		.', name text, meta text)default charset=utf8'
+	);
+	$version=4;
+}
