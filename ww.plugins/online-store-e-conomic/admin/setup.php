@@ -59,7 +59,7 @@ if ($DBVARS['economic_enabled']) {
 			$DBVARS['economic_user_id'],
 			$DBVARS['economic_password']
 		);
-		try {
+		if (method_exists($OSE, 'getCashBooks')) {
 			// { cashbook
 			$books=$OSE->getCashBooks();
 			echo '<tr><th>'.__('CashBook to record sales in').'</th><td>'
@@ -104,8 +104,14 @@ if ($DBVARS['economic_enabled']) {
 			echo '</select></td></tr>';
 			// }
 		}
-		catch (Exception $e) {
-			echo '<tr><th colspan="2">'.__('Error connecting to E-Conomic Server').'</th></tr>';
+		else {
+			echo '<tr><td></td><td class="error">'
+				.__(
+					'Error connecting to E-Conomic Server. Make sure the details above'
+					.' are correct, and that you have enabled the API module in your'
+					.' E-Conomic setup.'
+				)
+				.'</td></tr>';
 		}
 		// { login button
 		echo '<tr><th></th><td>'
