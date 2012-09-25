@@ -691,7 +691,7 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 	else { // make customer number from the phone number
 		$uid=preg_replace('/^[0-9]/', '', $details['Phone']);
 		$uid=preg_replace('/^0*/', '', $uid);
-		$uid=-(int)$uid;
+		$uid=$uid;
 	}
 	$customer=$OSE->getDebtorByNumber($uid);
 	if ($customer==false) { // record the customer

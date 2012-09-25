@@ -16,7 +16,7 @@ $html = '<h2>'.__('Online Store - Order History', 'core').'</h2>';
 
 $history = array();
 $orders = dbAll(
-	'select id,status,total,user_id,date_created from online_store_orders'
+	'select meta,id,status,total,user_id,date_created from online_store_orders'
 	.' order by date_created desc'
 );
 foreach ($orders as $order) {
@@ -31,8 +31,7 @@ if (count($history) == 0) {
 
 WW_addScript('online-store/frontend/user-profile.js');
 
-$html .= '<table id="online_store_orders" style="border:1px solid #ccc;'
-	.'margin:10px">
+$html .= '<table id="online_store_orders">
 	<tr>
 		<th>'.__('Date', 'core').'</th>
 		<th>'.__('Amount',  'core').'</th>
@@ -42,18 +41,26 @@ $html .= '<table id="online_store_orders" style="border:1px solid #ccc;'
 
 foreach ($history as $order) {
 	$status = ( $order[ 'status' ] == 1 ) ? 'Paid' : 'Unpaid';
+	$meta=json_decode($order['meta'], true);
+	$oid=$order['id'];
 	$html .= '<tr>'
 		.'<td>' . Core_dateM2H($order[ 'date_created' ]) . '</td>'
 		.'<td>' . $order[ 'total' ] . '</td>'
 		.'<td>' . $status . '</td>'
 		.'<td>'
-		.'<a href="'.$PAGEDATA->getRelativeUrl().'?onlinestore_iid='.$order['id']
-		.'">'.__('Details').'</a> | '
-		.'<a href="javascript:os_invoice('.$order['id'].', \'html\')">'.__('Invoice').'</a>'
-		.' (<a href="javascript:os_invoice('.$order['id'].', \'html\', true)">'
-		.__('print').'</a> | '
-		.'<a href="javascript:os_invoice('.$order['id'].', \'pdf\', true)">'.__('PDF').'</a>)'
-		.'</td></tr>';
+		.'<a href="'.$PAGEDATA->getRelativeUrl().'?onlinestore_iid='.$oid
+		.'">'.__('Details').'</a> | ';
+	if (isset($meta['invoice-type']) && $meta['invoice-type']=='pdf') {
+		$html.='<a href="javascript:os_invoice('.$oid.', \'pdf\', true)">PDF</a>';
+	}
+	else {
+		$html.='<a href="javascript:os_invoice('.$oid.', \'html\')">'
+			.__('Invoice').'</a>'
+			.' (<a href="javascript:os_invoice('.$oid.', \'html\', true)">'
+			.__('print').'</a> | '
+			.'<a href="javascript:os_invoice('.$oid.', \'pdf\', true)">PDF</a>)';
+	}
+	$html.='</td></tr>';
 }  
 
 $html .= '</table>';

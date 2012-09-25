@@ -233,6 +233,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			. @$_SESSION[ 'userdata' ][ 'id' ] . "' )"
 		);
 		$id=dbOne('select last_insert_id() as id', 'id');
+		$_SESSION['online_store_last_order_id']=$id;
 		 // }
 		// { generate emails
 		require_once SCRIPTBASE . 'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';

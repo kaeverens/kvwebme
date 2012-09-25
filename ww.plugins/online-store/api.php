@@ -206,13 +206,24 @@ function OnlineStore_getQrCode() {
 	*/
 function OnlineStore_invoicePdf() {
 	$id=(int)$_REQUEST['id'];
-	$inv=dbOne(
-		'select invoice from online_store_orders where id='.$id.' and user_id='
-		.$_SESSION['userdata']['id'], 'invoice'
+	$order=dbRow(
+		'select invoice, meta from online_store_orders where id='.$id
+		.' and user_id='.$_SESSION['userdata']['id']
 	);
-	if (!$inv) {
+	if (!$order) {
 		Core_quit();
 	}
+	$inv=$order['invoice'];
+	// { check if it's already stored as a PDF
+	$meta=json_decode($order['meta'], true);
+	if (isset($meta['invoice-type']) && $meta['invoice-type']=='pdf') {
+		$pdf=base64_decode($inv);
+		header('Content-type: application/pdf');
+		echo $pdf;
+		Core_quit();
+	}
+	// }
+	// { else generate a PDF and output it
 	$pdfFile=USERBASE.'/ww.cache/online-store/invoice-pdf-'.$id;
 	if (!file_exists($pdfFile)) {
 		$html=OnlineStore_invoiceGet($id);
@@ -230,6 +241,7 @@ function OnlineStore_invoicePdf() {
 	fpassthru($fp);
 	fclose($fp);
 	Core_quit();
+	// }
 }
 
 // }

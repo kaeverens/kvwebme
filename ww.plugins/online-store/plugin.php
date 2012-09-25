@@ -13,8 +13,9 @@
 
 // { define $plugin
 $plugin=array(
-	// TODO: translation needed - name and menu
-	'name' => 'Online Store',
+	'name' => function() {
+		return __('Online Store');
+	},
 	'admin' => array( // {
 		'page_type' => 'OnlineStore_adminPageForm',
 		'menu' => array(
