@@ -318,7 +318,7 @@ $(function(){
 							+'<td class="user-guest">'
 							+'<label>'
 							+'<span>&nbsp;</span>'
-							+'<button>'+__('Checkout as guest')+'
+							+'<button>'+__('Checkout as guest')
 							+'</button></label></td>'
 							// }
 							+'</tr></table>'; // }
@@ -545,7 +545,7 @@ $(function(){
 							+' different from billing address?')+'</div>'
 							// { contact info
 							+'<div id="online-store-delivery-personal">'
-							+'<label><span>'+__('First Name')+</span>'
+							+'<label><span>'+__('First Name')+'</span>'
 							+'<input id="online-store-FirstName"/></label>'
 							+'<label><span>'+__('Surname')+'</span>'
 							+'<input id="online-store-Surname"/></label>'
@@ -704,7 +704,7 @@ $(function(){
 					case 'Payment': // {
 						content.html(
 							'<div id="online-store-payment-method"><select/>'
-							+'<button>'+__('Proceed to Payment')+'
+							+'<button>'+__('Proceed to Payment')
 							+'</button></div>'
 						);
 						if (+os_post_vars._viewtype==3 && os_post_vars._hidebasket) {
@@ -882,7 +882,7 @@ $(function(){
 				if (ret.error=='Your email address is not associated with this voucher') {
 					var $dialog=$('<div><p>'
 						+'.'+__('This voucher is for a specific email address.'
-						+' Please enter the correct email address below.')+'
+						+' Please enter the correct email address below.')
 						+'<br/><input id="dialog-email"/></div>')
 						.dialog({
 							'modal':true,

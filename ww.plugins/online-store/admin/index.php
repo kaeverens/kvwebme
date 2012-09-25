@@ -233,7 +233,7 @@ if (isset($vars['online_store_redirect_to'])
 	&& $vars['online_store_redirect_to']
 ) {
 	$parent=Page::getInstance($vars['online_store_redirect_to']);
-	$c.='<option value="'.$parent->id.'">'.htmlspecialchars($parent->name).'</option>';
+	$c.='<option value="'.$parent->id.'">'.htmlspecialchars(__FromJson($parent->name)).'</option>';
 }
 else{
 	$vars['online_store_redirect_to']=0;
@@ -301,7 +301,7 @@ if (isset($vars['online_store_quickpay_redirect_to'])
 	&& $vars['online_store_quickpay_redirect_to']
 ) {
 	$parent=Page::getInstance($vars['online_store_quickpay_redirect_to']);
-	$c.='<option value="'.$parent->id.'">'.htmlspecialchars($parent->name).'</option>';
+	$c.='<option value="'.$parent->id.'">'.htmlspecialchars(__FromJson($parent->name)).'</option>';
 }
 else{
 	$vars['online_store_quickpay_redirect_to']=0;
@@ -317,7 +317,7 @@ if (isset($vars['online_store_quickpay_redirect_failed'])
 	&& $vars['online_store_quickpay_redirect_failed']
 ) {
 	$parent=Page::getInstance($vars['online_store_quickpay_redirect_failed']);
-	$c.='<option value="'.$parent->id.'">'.htmlspecialchars($parent->name).'</option>';
+	$c.='<option value="'.$parent->id.'">'.htmlspecialchars(__FromJson($parent->name)).'</option>';
 }
 else{
 	$vars['online_store_quickpay_redirect_failed']=0;
