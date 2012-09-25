@@ -356,7 +356,7 @@ function OnlineStore_paymentTypesList() {
 			$page=Page::getInstanceByType('online-store');
 			if (!$page) {
 				return array(
-					'error'=>'.'.__('No online-store page created').'.'
+					'error'=>__('No online-store page created')
 				);
 			}
 			$page->initValues();
@@ -365,17 +365,16 @@ function OnlineStore_paymentTypesList() {
 	// { build list of payment methods
 	$arr=array();
 	if (@$page->vars['online_stores_quickpay_merchantid']) {
-		// TODO: please check whether this works! :-)
-		$arr['QuickPay']='.'.__('Credit Card').'.';
+		$arr['QuickPay']=__('Credit Card');
 	}
 	if (@$page->vars['online_stores_realex_sharedsecret']) {
-		$arr['Realex']='.'.__('Credit Card').'.';
+		$arr['Realex']=__('Credit Card');
 	}
 	if (@$page->vars['online_stores_paypal_address']) {
-		$arr['PayPal']='.'.__('PayPal').'.';
+		$arr['PayPal']=__('PayPal');
 	}
 	if (@$page->vars['online_stores_bank_transfer_account_number']) {
-		$arr['Bank Transfer']='.'.__('Bank Transfer').'.';
+		$arr['Bank Transfer']=__('Bank Transfer');
 	}
 	// }
 	if (!count($arr)) {

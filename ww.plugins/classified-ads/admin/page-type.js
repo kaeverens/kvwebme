@@ -240,7 +240,7 @@ $(function() {
 								'creation_date':$('#popup-creation_date').val(),
 								'paid':$('#popup-paid').val(),
 								'user_id':$('#popup-user_id').val(),
-								'cost':$('#popup-cost')
+								'cost':$('#popup-cost').val()
 							},
 							function(ret) {
 								console.log(ret);

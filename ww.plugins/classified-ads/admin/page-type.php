@@ -58,7 +58,7 @@ $c.='<div id="ads-categories"></div>';
 // { payment details
 $c.='<div id="ads-payment-details">'
 	.'<p>Paypal address: <input name="page_vars[classified-ads-paypal]" value="'
-	.htmlspecialchars($vars['classified-ads-paypal']).'" type="email" /></p>'
+	.htmlspecialchars(@$vars['classified-ads-paypal']).'" type="email" /></p>'
 	.'</div>';
 // }
 $c.='</div>';

@@ -793,14 +793,16 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 		$bookId=0;
 	}
 	// }
-	// { record e-conomic invoice ID in order's meta data
+	// { record e-conomic invoice ID in order's meta data and store invoice PDF
 	$meta=json_decode($order['meta'], true);
 	if (!is_array($meta)) {
 		$meta=array();
 	}
 	$meta['economic-invoiceId']=$bookId;
+	$meta['invoice-type']='pdf';
 	dbQuery(
-		'update online_store_orders set meta="'.addslashes(json_encode($meta)).'"'
+		'update online_store_orders set invoice="'.base64_encode($pdf).'"'
+		.', meta="'.addslashes(json_encode($meta)).'"'
 		.' where id='.$order['id']
 	);
 	// }
