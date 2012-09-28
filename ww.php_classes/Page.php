@@ -409,8 +409,8 @@ class Page{
 		}
 		$smarty=Core_smartySetup(USERBASE.'/ww.cache/pages');
 		global $_languages;
-		$fname=USERBASE.'/ww.cache/pages/template_'.$this->id.'|'
-			.join(',', $_languages);
+		$fname=USERBASE.'/ww.cache/pages/template_'
+			.md5($this->id.'|'.join(',', $_languages));
 		if (!file_exists($fname) || !filesize($fname)) {
 			file_put_contents(
 				$fname,
