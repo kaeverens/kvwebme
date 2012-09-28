@@ -562,17 +562,17 @@ function Core_smartySetup($compile_dir) {
 	$smarty->assign('GLOBALS', $GLOBALS);
 	$smarty->assign('LANGUAGE', @$_SESSION['language']);
 	$smarty->assign('LOCATIONNAME', @$_SESSION['location']['name']);
-	$smarty->register_function('BREADCRUMBS', 'Template_breadcrumbs');
-	$smarty->register_function('LANGUAGES', 'Core_languagesGetUi');
-	$smarty->register_function('LOCATIONSELECTOR', 'Core_locationsGetUi');
-	$smarty->register_function('LOGO', 'Template_logoDisplay');
-	$smarty->register_function('MENU', 'menuDisplay');
+	$smarty->registerPlugin('function', 'BREADCRUMBS', 'Template_breadcrumbs');
+	$smarty->registerPlugin('function', 'LANGUAGES', 'Core_languagesGetUi');
+	$smarty->registerPlugin('function', 'LOCATIONSELECTOR', 'Core_locationsGetUi');
+	$smarty->registerPlugin('function', 'LOGO', 'Template_logoDisplay');
+	$smarty->registerPlugin('function', 'MENU', 'menuDisplay');
 	$smarty->assign('QRCODE', '/a/f=qrCode/id='.$PAGEDATA->id);
-	$smarty->register_function('nuMENU', 'Core_menuShowFg');
+	$smarty->registerPlugin('function', 'nuMENU', 'Core_menuShowFg');
 	foreach ($PLUGINS as $pname=>$plugin) {
 		if (isset($plugin['frontend']['template_functions'])) {
 			foreach ($plugin['frontend']['template_functions'] as $fname=>$vals) {
-				$smarty->register_function($fname, $vals['function']);
+				$smarty->registerPlugin('function', $fname, $vals['function']);
 			}
 		}
 	}
@@ -857,7 +857,7 @@ $_language_notfound=array(); // for recording missing language strings
 // }
 // { set up constants
 define('SCRIPTBASE', $_SERVER['DOCUMENT_ROOT'] . '/');
-require_once SCRIPTBASE . '/ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
+require_once SCRIPTBASE . '/ww.incs/Smarty-3.1.12/libs/Smarty.class.php';
 if (!file_exists(SCRIPTBASE . '.private/config.php')) {
 	echo '<html><body><p>'.__('No configuration file found').'</p>';
 	if (file_exists('install/index.php')) {

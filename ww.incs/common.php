@@ -230,8 +230,8 @@ function Core_menuShowFg ($opts=array()) {
 							return '<ul>'.join('', $items).'</ul>';
 			}
 			// }
+			$s='';
 			if ($options['style_from']=='1') {
-				$s='';
 				if ($options['background']) {
 					$s.='background:'.$options['background'].';';
 				}
@@ -244,7 +244,7 @@ function Core_menuShowFg ($opts=array()) {
 			}
 			// { return 1-column sub-menu
 			if ($options['columns']<2) {
-							return '<ul'.$s.'>'.join('', $items).'</ul>';
+				return '<ul'.$s.'>'.join('', $items).'</ul>';
 			}
 			// }
 			// { return multi-column submenu
@@ -307,7 +307,7 @@ function Core_menuShowFg ($opts=array()) {
 	}
 	switch ($options['type']) {
 		case 2: // { tree
-			$c.='<div class="menu-tree'.$class.'">'.$html.'</div>';
+			$c.='<div class="menu-tree">'.$html.'</div>';
 		break; // }
 		case 1: // { accordion
 			WW_addScript('/j/menu-accordion/menu.js');

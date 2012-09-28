@@ -61,16 +61,21 @@ function ImageGallery_show($PAGEDATA) {
 		}
 		// }
 		// { display the template
-		require_once SCRIPTBASE.'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
-		require_once SCRIPTBASE.'ww.plugins/image-gallery/frontend/template-functions.php';
+		require_once SCRIPTBASE.'ww.incs/Smarty-3.1.12/libs/Smarty.class.php';
+		require_once SCRIPTBASE
+			.'ww.plugins/image-gallery/frontend/template-functions.php';
 		$smarty=new Smarty;
 		$smarty->compile_dir=USERBASE.'/ww.cache/templates_c';
 		@mkdir(USERBASE.'/ww.cache/templates_c'); 
 		@mkdir(USERBASE.'/ww.cache/templates_c/image-gallery');
 		$smarty->assign('pagedata', $PAGEDATA);
-		$smarty->register_function('GALLERY_IMAGE',  'ImageGallery_templateImage');
-		$smarty->register_function('GALLERY_IMAGES', 'ImageGallery_templateImages');
-		$smarty->register_function('GALLERY_NAV',    'ImageGallery_nav');
+		$smarty->registerPlugin(
+			'function', 'GALLERY_IMAGE', 'ImageGallery_templateImage'
+		);
+		$smarty->registerPlugin(
+			'function', 'GALLERY_IMAGES', 'ImageGallery_templateImages'
+		);
+		$smarty->registerPlugin('function', 'GALLERY_NAV', 'ImageGallery_nav');
 		$smarty->left_delimiter='{{';
 		$smarty->right_delimiter='}}';
 		$c.=$smarty->fetch(
@@ -99,7 +104,7 @@ function ImageGallery_show($PAGEDATA) {
 	*
 	* @return html
 	*/
-function GalleryWidget_show($vars){
+function GalleryWidget_show($vars) {
 	$id=$vars->id;
 	if (!$vars->id) {
 		return '';
@@ -131,9 +136,8 @@ function GalleryWidget_show($vars){
 				$vars['gallery_type']='grid';
 			}
 			$thtml=file_get_contents(
-				SCRIPTBASE.'ww.plugins/image-gallery/admin/types/'.
-					strtolower($vars['gallery_type'])
-				.'.tpl'
+				SCRIPTBASE.'ww.plugins/image-gallery/admin/types/'
+				.strtolower($vars['gallery_type']).'.tpl'
 			);
 			if (!$thtml) {
 				$thtml=file_get_contents(dirname(__FILE__).'/../admin/types/list.tpl');
@@ -145,14 +149,19 @@ function GalleryWidget_show($vars){
 		}
 		// }
 		// { display the template
-		require_once SCRIPTBASE.'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
-		require_once SCRIPTBASE.'ww.plugins/image-gallery/frontend/template-functions.php';
+		require_once SCRIPTBASE.'ww.incs/Smarty-3.1.12/libs/Smarty.class.php';
+		require_once SCRIPTBASE
+			.'ww.plugins/image-gallery/frontend/template-functions.php';
 		$smarty=new Smarty;
 		$smarty->compile_dir=USERBASE.'/ww.cache/templates_c';
 		@mkdir(USERBASE.'/ww.cache/templates_c'); 
 		@mkdir(USERBASE.'/ww.cache/templates_c/image-gallery-widget');
-		$smarty->register_function('GALLERY_IMAGE', 'ImageGallery_templateImage');
-		$smarty->register_function('GALLERY_IMAGES', 'ImageGallery_templateImages');
+		$smarty->registerPlugin(
+			'function', 'GALLERY_IMAGE', 'ImageGallery_templateImage'
+		);
+		$smarty->registerPlugin(
+			'function', 'GALLERY_IMAGES', 'ImageGallery_templateImages'
+		);
 		$smarty->left_delimiter='{{';
 		$smarty->right_delimiter='}}';
 		$c.=$smarty->fetch($template);

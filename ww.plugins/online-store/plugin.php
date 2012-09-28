@@ -223,6 +223,33 @@ function OnlineStore_generateRealexButton($PAGEDATA, $id, $total, $return='') {
 }
 
 // }
+// { OnlineStore_getCountriesSelectbox
+
+/**
+  * function for showing list of countries selected
+  *
+	* @param array  $params  Smarty parameters
+	* @param object &$smarty Smarty object
+	*
+  * @return string the HTML
+  */
+function OnlineStore_getCountriesSelectbox($params, &$smarty) {
+	$page=Page::getInstance($_SESSION['onlinestore_checkout_page']);
+	$cjson=$page->vars['online-store-countries'];
+	$required=@$params['prefix']?'':' required="required"';
+	/* TODO - translation /CB */
+	$countries='<select name="'.(@$params['prefix']).'Country"'.$required.'>'
+		.'<option value=""> -- '.__('Choose').' -- </option>';
+	if ($cjson) {
+		$cjson=json_decode($cjson);
+		foreach ($cjson as $country=>$val) {
+			$countries.='<option>'.htmlspecialchars($country).'</option>';
+		}
+	}
+	return $countries.'</select>';
+}
+
+// }
 // { OnlineStore_getFinalTotal
 
 /**
@@ -649,6 +676,20 @@ function OnlineStore_showBasketWidget($vars=null) {
 	$html.='</div>';
 	WW_addScript('online-store/j/basket.js');
 	return $html;
+}
+
+// }
+// { OnlineStore_showVoucherInput
+
+/**
+  * function for showing HTML of a voucher input
+  *
+  * @return string the HTML
+  */
+function OnlineStore_showVoucherInput() {
+	$code=@$_REQUEST['os_voucher'];
+	return '<div id="os-voucher"><span>'.__('Voucher Code').':</span> '
+		.'<input name="os_voucher" value="'.htmlspecialchars($code).'"/></div>';
 }
 
 // }

@@ -31,7 +31,7 @@ function OnlineStore_productPriceFull2($params, $smarty) {
 	if (!$params['vat'] && $_SESSION['onlinestore_prices_shown_post_vat']) {
 		$params['vat']=1;
 	}
-	$pid=$smarty->_tpl_vars['product']->id;
+	$pid=$smarty->smarty->tpl_vars['product']->value->id;
 	$product=Product::getInstance($pid);
 	if (!isset($product->vals['online-store'])) {
 		$product->vals['online-store']=array(

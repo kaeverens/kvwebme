@@ -1167,6 +1167,21 @@ function Products_addToCart() {
 }
 
 // }
+// { Products_addTemplateToField
+
+/**
+	* add template details to a field
+	*
+	* @param array  $params Smarty parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return whatever
+	*/
+function Products_addTemplateToField($params, $smarty) {
+	var_dump($params);
+}
+
+// }
 // { Products_adminPage
 
 /**
@@ -1214,17 +1229,110 @@ function Products_breadcrumbs($baseurl) {
 	global $PAGEDATA;
 	$breadcrumbs='';
 	Products_frontendVarsSetup($PAGEDATA);
-	if ($_REQUEST['product_cid']) {
+	if (isset($_REQUEST['product_cid']) && $_REQUEST['product_cid']) {
 		$c=ProductCategory::getInstance($_REQUEST['product_cid']);
 		$breadcrumbs.=' &raquo; <a class="product-category" href="'
 			.$c->getRelativeUrl().'">'.htmlspecialchars($c->vals['name']).'</a>';
 	}
-	if ($_REQUEST['product_id']) {
+	if (isset($_REQUEST['product_id']) && $_REQUEST['product_id']) {
 		$c=Product::getInstance($_REQUEST['product_id'], false, 1);
 		$breadcrumbs.=' &raquo; <a class="product-product" href="'
 			.$c->getRelativeUrl().'">'.htmlspecialchars($c->get('_name')).'</a>';
 	}
 	return $breadcrumbs;
+}
+
+// }
+// { Products_categories
+
+/**
+	* get a list of product categories
+	*
+	* @param array  $params Smarty parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string the list
+	*/
+function Products_categories ($params, $smarty) {
+	$product = $smarty->smarty->tpl_vars['product']->value;
+	$productID = $product->id;
+	$categoryIDs=dbAll(
+		'select category_id from products_categories_products where product_id='
+		.$productID
+	);
+	if ($categoryIDs) {
+		$query='select count(id) from products_categories where enabled = 1 and'
+			.' id in (';
+		foreach ($categoryIDs as $catID) {
+			$query.= (int)$catID['category_id'].', ';
+		}
+		$query= substr_replace($query, '', -2);
+		$query.=')';
+		$numEnabledCats = dbOne($query, 'count(id)'); 	
+	}
+	if ($numEnabledCats==0) {
+		return '<div class="products-categories">'
+			.__('No Categories exist for this product').'</div>';
+	}
+	$c= '<ul>';
+	$directCategoryPages=dbAll(
+		'select page_id from page_vars where name= "products_what_to_show" and '
+		.'value=2'
+	); 
+	foreach ($categoryIDs as $catID) {
+		$pageFound = false;
+		$cid = $catID['category_id'];
+		$catDetails=dbRow(
+			'select name, enabled, parent_id from products_categories where id='.$cid
+		);
+		$catIsEnabled = $catDetails['enabled'];
+		$catName = $catDetails['name'];
+		if ($catIsEnabled==1) {
+			foreach ($directCategoryPages as $catPage) {
+				$pageID = $catPage['page_id'];
+				$shownCat=dbOne(
+					'select value from page_vars where name = "products_category_to_s'
+					.'how" and page_id='.$pageID, 'value'
+				);
+				if ($shownCat==$cid) {
+					$page=  Page::getInstance($pageID);
+					$c.='<li><a href="'.$page->getRelativeUrl().'">'
+						.htmlspecialchars($catName).'</a></li>';
+					$pageFound= true;
+					break;
+				}
+			}
+			if (!$pageFound) {
+				$parent = $catDetails['parent_id'];
+				while ($parent>0) {
+					foreach ($directCategoryPages as $catPage) {
+						$pageID= $catPage['page_id'];
+						$shownCat=dbOne(
+							'select value from page_vars where name = "prod'
+							.'ucts_category_to_show" and page_id= '.$pageID, 'value'
+						);
+						if ($parent==$shownCat) {
+							$page = Page::getInstance($pageID);
+							$c.= '<li><a href="'.$page->getRelativeUrl().'?product_cid='
+								.$cid.'">'.htmlspecialchars($catName).'</a></li>';
+							$pageFound= true;
+							break;
+						}
+					}	
+					$parent=dbOne(
+						'select parent_id from products_categories where id = '.$parent,
+						'parent_id'
+					);
+				}
+			}
+			if (!$pageFound) {
+				$c.='<li><a href="/_r?type=products&amp;product_cid='.$cid.'">'
+					.htmlspecialchars($catName).'</a></li>';
+			}
+		}
+	}
+	$c.= '</ul>';
+	return $c;
 }
 
 // }
@@ -1349,6 +1457,115 @@ function Products_cronGetNext() {
 }
 
 // }
+// { Products_datatable
+
+/**
+	* display a table in simple table format
+	*
+	* @param array  $params Smarty parameters
+	* @param object $smarty the Smarty object
+	*
+	* @return string the table
+	*/
+function Products_datatable ($params, $smarty) {
+	$product= $smarty->smarty->tpl_vars['product']->value;
+	$ptid=$product->get('product_type_id');
+	$type= ProductType::getInstance($ptid);
+	if (!$type) {
+		return __('Missing Product Type: %1', array($ptid), 'core');
+	}
+	$datafields= $type->data_fields;
+	if (!is_array($datafields)) {
+		$datafields=array();
+	}
+	$c = '<table>';
+	if (!isset($params['align']) || $params['align']!='horizontal') {
+		foreach ($datafields as $data) {
+			$name = $data->ti
+				?$data->ti
+				:ucwords(str_replace('_', ' ', $data->n));
+			$c.= '<tr><th class="left">';
+			$c.= htmlspecialchars(ucfirst($name));
+			$c.= '</th><td>';
+			if (!isset($product->vals[$data->n])) {
+				$product->vals[$data->n]='';
+			}
+			switch($data->t) {
+				case 'date': // {
+					$c.=Core_dateM2H($product->vals[$data->n]);
+				break; // }
+				case 'checkbox': // {
+					if ($product->vals[$data->n]) {
+						$c.=__('Yes');
+					}
+					else {
+						$c.=__('No');
+					}
+				break; // }
+				case 'textarea': // {
+					$c.=__FromJson($product->vals[$data->n]);
+				break; // }
+				default: // {
+					if (isset($product->vals[$data->n])) {
+						$c.=htmlspecialchars(__FromJson($product->vals[$data->n]));
+					}
+					else {
+						$c.= '&nbsp;';
+					}
+					// }
+			}
+			$c.='</td></tr>';
+		}
+	}
+	else {
+		$c.= '<thead>';
+		$c.= '<tr>';
+		foreach ($datafields as $data) {
+			$name = $data->ti
+				?$data->ti
+				:ucwords(str_replace('_', ' ', $data->n));
+			$c.= '<th>'.htmlspecialchars(ucfirst($name)).'</th>';
+		}
+		$c.= '</tr>';
+		$c.= '</thead>';
+		$c.='<tbody>';
+		$c.= '<tr>';
+		foreach ($datafields as $data) {
+			$c.= '<td>';
+			switch ($data->t) {
+				case 'date' : // {
+					$c.= Core_dateM2H($product->vals[$data->n]);
+				break; // }
+				case 'checkbox': // {
+					if (isset($product->vals[$data->n])) {
+						$c.=__('Yes');
+					}
+					else{ 
+						$c.=__('No');
+					}
+				break; // }
+				case 'textarea': // {
+					$c.= $product->vals[$data->n];
+				break; // }
+				default: // {
+					if (isset($product->vals[$data->n])) {
+						$c.=htmlspecialchars($product->vals[$data->n]);
+					}
+					else {
+						$c.='&nbsp;';
+					}
+					// }
+			}
+			$c.='</td>';
+		}
+		$c.= '</tr>';
+		$c.= '</tbody>';
+	}
+	$c.= '</table>';
+	return $c;
+}
+
+// }
 // { Products_expiryClock
 
 /**
@@ -1364,7 +1581,7 @@ function Products_expiryClock($params, $smarty) {
 	if ($unlimited=='') {
 		$unlimited='no expiry date';
 	}
-	$pid=$smarty->_tpl_vars['product']->id;
+	$pid=$smarty->smarty->tpl_vars['product']->value->id;
 	$product=Product::getInstance($pid, false, 1);
 	return '<div class="products-expiry-clock" unlimited="'
 		.htmlspecialchars($unlimited).'">'.$product->vals['expires_on'].'</div>';
@@ -1455,6 +1672,135 @@ function Products_frontendVarsSetup($PAGEDATA) {
 		$PAGEDATA->vars['products_what_to_show']=3;
 		$PAGEDATA->vars['products_product_to_show']=(int)$_REQUEST['product_id'];
 	}
+}
+
+// }
+// { Products_getAddManyToCartWidget
+
+/**
+	* get a button for adding multiple items to a cart
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the HTML
+	*/
+function Products_getAddManyToCartWidget($params, $smarty) {
+	$params=array_merge(
+		array(
+			'text'=>__('Add to Cart'),
+			'redirect'=>'same',
+			'type'=>'input',
+			'min'=>0,
+			'max'=>0
+		),
+		$params
+	);
+	if ($params['type']=='select' && $params['max']==0) {
+		$params['max']=50;
+	}
+	$p=$smarty->smarty->tpl_vars['product']->value;
+	$instock=(int)$p->vals['stockcontrol_total'];
+	$stockcontrol=$instock
+		?'<input type="hidden" class="stock-control-total" value="'
+		.((int)$p->vals['stockcontrol_total']).'"'
+		.' details="'.htmlspecialchars($p->vals['stockcontrol_details']).'"/>'
+		:'';
+	$redirect=$params['redirect']=='checkout'
+		?'<input type="hidden" name="products_redirect" value="checkout"/>'
+		:'';
+	$howmany=Products_getAmountToAddWidget($params, $smarty);
+	return '<form method="POST" class="products-addmanytocart">'
+		.$redirect
+		.'<input type="hidden" name="products_action" value="add_to_cart"/>'
+		.$howmany
+		.$stockcontrol
+		.Products_getAddToCartButton(
+			$params['text'],
+			(float)$p->vals['online-store']['_price'],
+			(float)$p->vals['online-store']['_sale_price']
+		)
+		.'<input type="hidden" name="product_id" value="'
+		. $smarty->smarty->tpl_vars['product']->value->id .'"/></form>';
+}
+
+// }
+// { Products_getAddToCartWidget
+
+/**
+	* get a button for adding single items to a cart
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the HTML
+	*/
+function Products_getAddToCartWidget($params, $smarty) {
+	$params=array_merge(
+		array(
+			'text'=>__('Add to Cart'),
+			'redirect'=>'same',
+		),
+		$params
+	);
+	$p=$smarty->smarty->tpl_vars['product']->value;
+	$instock=(int)$p->vals['stockcontrol_total'];
+	$stockcontrol=$instock
+		?'<input type="hidden" class="stock-control-total" value="'
+		.((int)$p->vals['stockcontrol_total']).'"'
+		.' details="'.htmlspecialchars($p->vals['stockcontrol_details']).'"/>'
+		:'';
+	$redirect=$params['redirect']=='checkout'
+		?'<input type="hidden" name="products_redirect" value="checkout"/>'
+		:'';
+	return '<form method="POST" class="products-addtocart">'
+		.'<input type="hidden" name="products_action" value="add_to_cart" />'
+		.$redirect
+		.$stockcontrol
+		.Products_getAddToCartButton(
+			$params['text'],
+			(float)$p->vals['online-store']['_price'],
+			(float)$p->vals['online-store']['_sale_price']
+		)
+		.'<input type="hidden" name="product_id" value="'
+		. $smarty->smarty->tpl_vars['product']->value->id .'" /></form>';
+}
+
+// }
+// { Products_getAmountToAddWidget
+
+/**
+	* get an input box showing the "Amount" input
+	*
+	* @param array  $params parameters
+	* @param object $smarty smarty object
+	*
+	* @return string the html
+	*/
+function Products_getAmountToAddWidget($params, $smarty) {
+	$params=array_merge(
+		array(
+			'type'=>'input',
+			'min'=>0,
+			'max'=>0
+		),
+		$params
+	);
+	switch ($params['type']) {
+		case 'select': // {
+			$howmany='<select name="products-howmany"'
+				.' class="add_multiple_widget_amount">';
+			for ($i=$params['min'];$i<$params['max'];++$i) {
+				$howmany.='<option>'.$i.'</option>';
+			}
+			$howmany.='</select>';
+		break; // }
+		default: // {
+			$howmany='<input name="products-howmany" value="1"'
+				.' class="add_multiple_widget_amount" style="width:50px"/>';
+		break; // }
+	}
+	return $howmany;
 }
 
 // }
@@ -1645,6 +1991,118 @@ function Products_getSubCategoriesAsMenuHtml(
 	$c.='</ul></td></tr></table>';
 	return $c;
 	// }
+}
+
+// }
+// { Products_image
+
+/**
+	* display the default product image
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the HTML
+	*/
+function Products_image($params, $smarty) {
+	$params=array_merge(
+		array(
+			'width'=>200,
+			'height'=>200,
+			'zoom'=>0,
+			'zoompos'=>'right'
+		),
+		$params
+	);
+	$imgclasses=array();
+	// { zoom
+	if ($params['zoom']) {
+		WW_addScript('products/zoom.js');
+		$imgclasses[]='zoom';
+		$imgclasses[]='zoom-pos-'.$params['zoompos'];
+	}
+	// }
+	$product=$smarty->smarty->tpl_vars['product']->value;
+	$iid=$product->getDefaultImage();
+	if (!$iid) {
+		return Products_imageNotFound($params, $smarty);
+	}
+	list($link1, $link2)=@$params['nolink']
+		?array('', '')
+		:array('<a href="/a/f=getImg/'.$iid.'" target="popup">', '</a>');
+	$imgclasses=count($imgclasses)?' class="'.join(' ', $imgclasses).'"':'';
+	return '<div class="products-image" style="width:'.$params['width']
+		.'px;height:'.$params['height']
+		.'px">'.$link1.'<img'.$imgclasses.' src="/a/f=getImg/w='
+		.$params['width'].'/h='
+		.$params['height'].'/'.$iid.'"/>'
+		.$link2.'</div>';
+}
+
+// }
+// { Products_images
+
+/**
+	* get a list of images for a product
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the images HTML
+	*/
+function Products_images($params, $smarty) {
+	$params=array_merge(
+		array(
+			'thumbsize'=>60,
+			'display'=>'list',
+			'hover'=>'opacity',
+			'columns'=>3,
+			'rows'=>1,
+		),
+		$params
+	);
+	// { make sure there is at least one image
+	$product=$smarty->smarty->tpl_vars['product']->value;
+	$defaultImage=$product->getDefaultImage();
+	if (!$defaultImage) {
+		return Products_imageNotFound($params, $smarty);
+	}
+	// }
+	$vals=$product->vals;
+	if (!$vals['images_directory']) {
+		return Products_imageNotFound($params, $smarty);
+	}
+	$directory = $vals['images_directory'];
+	$numfiles=0;
+	$files=new DirectoryIterator(USERBASE.'/f/'.$directory);
+	foreach ($files as $f) {
+		if ($f->isDot()) {
+			continue;
+		}
+		$numfiles++;
+		if ($numfiles>1) {
+			break;
+		}
+	}
+	$carousel=$numfiles>1?' carousel jcarousel-skin-bland':'';
+	$html='<ul class="products-images'.$carousel.'" thumbsize="'
+		.$params['thumbsize'].'">';
+	$files=new DirectoryIterator(USERBASE.'/f/'.$directory);
+	foreach ($files as $image) {
+		if ($image->isDot()) {
+			continue;
+		}
+		$html.='<li><img src="/i/blank.gif" style="width:'.$params['thumbsize'].'px;'
+			.'height:'.$params['thumbsize'].'px;background:url(\'/a/f=getImg/w='
+			.$params['thumbsize'].'/h='.$params['thumbsize'].'/'.$directory.'/'
+			.urlencode($image->getFilename()).'\') no-repeat center center"/></li>';
+	}
+	$html.='</ul>';
+	if ($carousel) {
+		WW_addScript('/j/jsor-jcarousel-7bb2e0a/jquery.jcarousel.min.js');
+		WW_addCSS('/j/jsor-jcarousel-7bb2e0a/bland/skin.css');
+	}
+	return $html;
 }
 
 // }
@@ -1957,6 +2415,21 @@ function Products_importFromCron() {
 }
 
 // }
+// { Products_link
+
+/**
+	* get a URL for a product page
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the URL
+	*/
+function Products_link($params, $smarty) {
+	return $smarty->smarty->tpl_vars['product']->value->getRelativeURL();
+}
+
+// }
 // { Products_listCategories
 
 /**
@@ -2018,6 +2491,26 @@ function Products_map($params, $smarty) {
 function Products_owner($params, $smarty) {
 	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
 	return Products_owner2($params, $smarty);
+}
+
+// }
+// { Products_plusVat
+
+/**
+	* if VAT applies to the product, return '+ VAT'
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string VAT string
+	*/
+function Products_plusVat($params, $smarty) {
+	$product= $smarty->smarty->tpl_vars['product']->value;
+	if (!isset($product->vals['online-store']['_vatfree'])
+		|| $product->vals['online-store']['_vatfree'] == '0'
+	) {
+		return __('+ VAT');
+	}
 }
 
 // }
@@ -2117,6 +2610,101 @@ function Products_qrCode($params, $smarty) {
 }
 
 // }
+// { Products_reviews
+
+/**
+	* display a list of reviews for the product
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the list of reviews
+	*/
+function Products_reviews($params, $smarty) {
+	WW_addScript('products/frontend/delete.js');
+	WW_addScript('products/frontend/products-edit-review.js');
+	$userid = (int)$_SESSION['userdata']['id'];
+	$product = $smarty->smarty->tpl_vars['product']->value;
+	$productid = (int)$product->id;
+	$c='';
+	$numReviews=dbOne(
+		'select count(id) from products_reviews where product_id='.$productid,
+		'count(id)'
+	);
+	if ($numReviews) {
+		$reviews=dbAll(
+			'select * from products_reviews where product_id='.$productid
+		);
+		$query = 'select avg(rating),product_id from products_reviews '
+			.'where product_id='.$productid.' group by product_id';
+		$average = dbOne($query, 'avg(rating)');
+		$c.= '<div id="reviews_display">';
+		$c.= '<div id="average'.$productid.'">';
+		$c.=__(
+			'The average rating for this product over %1 review(s) was %2',
+			array(count($reviews), $average), 'core'
+		);
+		$c.='</div>';
+		foreach ($reviews as $review) {
+			$name=dbOne(
+				'select name from user_accounts where id='.(int)$review['user_id'], 
+				'name'
+			);
+			$c.= '<div id="'.$review['id'].'">';
+			$date = $review['cdate'];
+			$date = substr_replace($date, '', strpos($date, ' '));
+			$c.=__('Posted by %1 on %2', array(htmlspecialchars($name), $date), 'core');
+			$body = htmlspecialchars($body);
+			$body = str_replace("\n", '<br />', $review['body']);
+			$c.= '   ';
+			$c.= '<b>'.__('Rated').': </b>'.$review['rating'].'<br/>';
+			$c.= ($body).'<br/>';
+			if (Core_isAdmin()|| $userid==$review['user_id']) {
+				// { Edit Review Link
+				$timeReviewMayBeEditedUntil=dbOne(
+					'select date_add("'.$review['cdate'].'", interval 15 minute) '
+					.'as last_edit_time',
+					'last_edit_time'
+				);
+				$reviewMayBeEdited=dbOne(
+					'select "'.$timeReviewMayBeEditedUntil.'">now() as can_edit_review',
+					'can_edit_review'
+				);
+				if ($reviewMayBeEdited) {
+					$c.='<a href="javascript:;" onClick="edit_review('.$review['id']
+						.', \''.addslashes($body).'\', '.$review['rating'].', \''
+						.addslashes($review['cdate']).'\');">'.__('Edit').'</a> ';
+				}
+				// }
+				// { Delete Review Link
+				$c.= '<a href="javascript:;" onClick="delete_review('
+					.$review['id'].', '.$review['user_id'].', '.$productid
+					.');">'.__('[x]').'</a><br/>';
+				// }
+			}
+			$c.= '<br/></div>';
+		}
+		$c.= '</div>';
+		$userHasNotReviewedThisProduct=!dbOne(
+			'select id from products_reviews where user_id='.$userid
+			.' and product_id='.$productid,
+			'id'
+		);
+		if (isset($_SESSION['userdata']) && $userHasNotReviewedThisProduct) {
+			$c.= Products_submitReviewForm($productid, $userid);
+		}
+	}
+	else {
+		$c.= '<em>'.__('Nobody has reviewed this product yet').'</em>';
+		$c.= '<br/>';
+		if (isset($_SESSION['userdata'])) {
+			$c.= Products_submitReviewForm($productid, $userid);
+		}
+	}
+	return $c;
+}
+
+// }
 // { Products_search
 
 /**
@@ -2158,7 +2746,114 @@ function Products_setupSmarty() {
 	if (isset($_SESSION['userdata'])) {
 		$smarty->assign('USERDATA', $_SESSION['userdata']);
 	}
+	$smarty->registerPlugin(
+		'modifier',
+		'template',
+		'Products_addTemplateToField'
+	);
 	return $smarty;
+}
+
+// }
+// { Products_showRelatedProducts
+
+/**
+	* get a list of products that are related and show them
+	*
+	* @param array  $params array of parameters passed to the Smarty function
+	* @param object $smarty the current Smarty object
+	*
+	* @return string the list of products
+	*/
+function Products_showRelatedProducts($params, $smarty) {
+	$params=array_merge(
+		array(
+			'mode'=>'table',
+			'type'=>'',
+			'button_text'=>__('Related Products'),
+			'template_header'=>false,
+			'template_body'=>false
+		),
+		$params
+	);
+	if ($params['mode']=='popup') {
+		WW_addScript('products/j/products-related-popup.js');
+		$button='<button class="products-related-popup"';
+		if ($params['template_body']) {
+			$button.=' data-template-body="'
+				.htmlspecialchars($params['template_body'])
+			.'"';
+		}
+		if ($params['template_header']) {
+			$button.=' data-template-header="'
+				.htmlspecialchars($params['template_header'])
+			.'"';
+		}
+		return $button.'>'
+			.$params['button_text']
+			.'</button>';
+	}
+	$product = $smarty->smarty->tpl_vars['product']->value;
+	$productID = $product->id;
+	$type='';
+
+	if ($params['type']) {
+		$tid=dbOne(
+			'select id from products_relation_types where name="'
+			.addslashes($params['type']).'"',
+			'id'
+		);
+		if ($tid) {
+			$type=' and relation_id='.$tid;
+		}
+	}
+	$rs=dbAll(
+		'select to_id from products_relations where from_id='.$productID.$type
+	);
+	if (count($rs)) {
+		$h=array();
+		$ids=array();
+		foreach ($rs as $r) {
+			$ids[]=$r['to_id'];
+		}
+		$products=Products::getbyIds($ids);
+		foreach ($products->product_ids as $r) {
+			$p=Product::getInstance($r);
+			if (!$p || !isset($p->id)) {
+				continue;
+			}
+			$h[]='<a class="product_related" href="'.$p->getRelativeUrl().'">';
+			$vals=$p->vals;
+			if (!$vals['images_directory']) {
+				$h[]=htmlspecialchars(__FromJson($p->name)).'</a>';
+				continue;
+			}
+			$iid=$p->getDefaultImage();
+			if (!$iid) {
+				$h[]=htmlspecialchars(__FromJson($p->name)).'</a>';
+				continue;
+			}
+			if (!$vals['online_store_fields']) {
+				$pvat = array("vat" => $_SESSION['onlinestore_vat_percent']);
+				require_once SCRIPTBASE.'/ww.plugins/online-store/frontend/'
+					.'smarty-functions.php';
+				$h[]='<img src="/a/w=180/h=180//f=getImg/'.$iid.'" />'
+					.OnlineStore_productPriceFull2($pvat, $smarty)
+					.'<p class="product_related_name">'
+					.htmlspecialchars(__fromJSON($p->name)).'</p></a>';
+				continue;
+			}
+			
+			$h[]='<img src="/a/w=180/h=180/f=getImg/'.$iid.'"/>'
+				.'<br/>'.htmlspecialchars(__fromJSON($p->name)).'</a>';
+		}
+		return count($h)
+			?'<div class="products_related_all">'
+			.'<div class="product_list products_'.htmlspecialchars($params['type'])
+			.'">'.join('', $h).'</div></div>'
+			:__('none yet');
+	}
+	return '<p class="no_products_related">'.__('none yet').'</p>';
 }
 
 // }

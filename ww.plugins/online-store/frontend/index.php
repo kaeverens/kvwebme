@@ -11,48 +11,6 @@
 	* @link     None
 	*/
 
-// { OnlineStore_getCountriesSelectbox
-
-/**
-  * function for showing list of countries selected
-  *
-	* @param array  $params  Smarty parameters
-	* @param object &$smarty Smarty object
-	*
-  * @return string the HTML
-  */
-function OnlineStore_getCountriesSelectbox($params, &$smarty) {
-	$page=Page::getInstance($_SESSION['onlinestore_checkout_page']);
-	$cjson=$page->vars['online-store-countries'];
-	$required=@$params['prefix']?'':' required="required"';
-	/* TODO - translation /CB */
-	$countries='<select name="'.(@$params['prefix']).'Country"'.$required.'>'
-		.'<option value=""> -- '.__('Choose').' -- </option>';
-	if ($cjson) {
-		$cjson=json_decode($cjson);
-		foreach ($cjson as $country=>$val) {
-			$countries.='<option>'.htmlspecialchars($country).'</option>';
-		}
-	}
-	return $countries.'</select>';
-}
-
-// }
-// { OnlineStore_showVoucherInput
-
-/**
-  * function for showing HTML of a voucher input
-  *
-  * @return string the HTML
-  */
-function OnlineStore_showVoucherInput() {
-	$code=@$_REQUEST['os_voucher'];
-	return '<div id="os-voucher"><span>'.__('Voucher Code').':</span> '
-		.'<input name="os_voucher" value="'.htmlspecialchars($code).'"/></div>';
-}
-
-// }
-
 // { setup
 if (isset($PAGEDATA->vars['online_stores_requires_login'])
 	&& $PAGEDATA->vars['online_stores_requires_login']
@@ -236,7 +194,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		$_SESSION['online_store_last_order_id']=$id;
 		 // }
 		// { generate emails
-		require_once SCRIPTBASE . 'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
+		require_once SCRIPTBASE . 'ww.incs/Smarty-3.1.12/libs/Smarty.class.php';
 		$smarty = new Smarty;
 		$smarty->compile_dir=USERBASE.'/ww.cache/templates_c';
 		$smarty->left_delimiter = '{{';
@@ -244,7 +202,6 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		if (!file_exists(USERBASE.'/ww.cache/templates_c')) {
 			mkdir(USERBASE.'/ww.cache/templates_c');
 		}
-		$smarty->register_function('INVOICETABLE', 'online_store_invoice_table');
 		foreach ($_REQUEST as $key=>$val) {
 			$smarty->assign($key, $val);
 		}

@@ -11,7 +11,7 @@
 	* @link     http://kvsites.ie/
 	*/
 
-$html.='<form action="#"><input name="search" class="search';
+$html='<form action="#"><input name="search" class="search';
 if (isset($_REQUEST['search'])) {
 	$html.='" value="'.htmlspecialchars($_REQUEST['search']);
 }

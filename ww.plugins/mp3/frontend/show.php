@@ -11,6 +11,7 @@
 	* @link     http://kvsites.ie/
 	*/
 
+// { MP3_frontendWidget
 
 /**
 	* show frontend widget
@@ -39,7 +40,7 @@ function MP3_frontendWidget($vars=null) {
 	}
 	// }
 	// { display the template
-	require_once SCRIPTBASE.'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
+	require_once SCRIPTBASE.'ww.incs/Smarty-3.1.12/libs/Smarty.class.php';
 	$smarty=new Smarty;
 	$smarty->compile_dir=USERBASE.'/ww.cache/templates_c';
 	if (!file_exists(USERBASE.'/ww.cache/templates_c')) {
@@ -48,12 +49,12 @@ function MP3_frontendWidget($vars=null) {
 	if (!file_exists(USERBASE.'/ww.cache/templates_c/image-gallery')) {
 		mkdir(USERBASE.'/ww.cache/templates_c/image-gallery');
 	}
-	$smarty->register_function('LIST', 'MP3_list');
-	$smarty->register_function('PLAY', 'mp3_play');
-	$smarty->register_function('PROGRESS', 'MP3_progress');
+	$smarty->registerPlugin('function', 'LIST', 'MP3_list');
+	$smarty->registerPlugin('function', 'PLAY', 'mp3_play');
+	$smarty->registerPlugin('function', 'PROGRESS', 'MP3_progress');
 	$smarty->left_delimiter='{{';
 	$smarty->right_delimiter='}}';
-	$smarty->_tpl_vars['mp3_files']=$files;
+	$smarty->smarty->tpl_vars['mp3_files']->value=$files;
 	$html=$smarty->fetch(
 		USERBASE.'/ww.cache/mp3/'.$vars->id
 	);
@@ -62,6 +63,9 @@ function MP3_frontendWidget($vars=null) {
 	// }
 	return $html;
 }
+
+// }
+// { MP3_list
 
 /**
 	* show list of MP3s
@@ -72,7 +76,7 @@ function MP3_frontendWidget($vars=null) {
 	* @return null
 	*/
 function MP3_list($params, $smarty) {
-	$files=$smarty->_tpl_vars['mp3_files'];
+	$files=$smarty->smarty->tpl_vars['mp3_files']->value;
 	$opts=array(
 		'play_button'=>false,
 		'link_to_play'=>false,
@@ -100,6 +104,9 @@ function MP3_list($params, $smarty) {
 	echo '</ul>';
 }
 
+// }
+// { MP3_play
+
 /**
 	* get play link
 	*
@@ -124,6 +131,9 @@ function MP3_play($params, $smarty) {
 	echo '</a>';
 }
 
+// }
+// { MP3_progress
+
 /**
 	* show MP3 progress wrapper
 	*
@@ -146,3 +156,5 @@ function MP3_progress($params, $smarty) {
 		echo	'</div>';
 	}
 }
+
+// }

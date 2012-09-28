@@ -219,7 +219,7 @@ function Menu_show($b) {
 	else {
 		$vals['spans']=1;
 	}
-	$ajaxmenu=$vals['nodropdowns']?'':' ajaxmenu ';
+	$ajaxmenu=isset($vals['nodropdowns']) && $vals['nodropdowns']?'':' ajaxmenu ';
 	$c='<div id="ajaxmenu'.$parent.'" class="menuBar'.$align.$ajaxmenu
 		.$classes.' parent'.$parent.'">';
 	$rs=Menu_getChildren($parent, $PAGEDATA->id, 0, $parent);

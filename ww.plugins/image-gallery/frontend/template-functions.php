@@ -41,7 +41,7 @@ function ImageGallery_nav($params, $smarty) {
   * @return string HTML of the gallery wrapper
   */
 function ImageGallery_templateImages($params, $smarty) {
-	$pagedata=$smarty->_tpl_vars['pagedata'];
+	$pagedata=$smarty->smarty->tpl_vars['pagedata']->value;
 	$args=array(
 		'image_gallery_x'=>'cols',
 		'image_gallery_y'=>'rows',
@@ -81,7 +81,7 @@ function ImageGallery_templateImages($params, $smarty) {
   * @return string HTML of the image and its wrapper
   */
 function ImageGallery_templateImage($params, $smarty) {
-	$pagedata=$smarty->_tpl_vars['pagedata'];
+	$pagedata=$smarty->smarty->tpl_vars['pagedata']->value;
 	$width=(empty($pagedata->vars['image_gallery_image_x']))
 		?''
 		:' imageWidth="'.$pagedata->vars['image_gallery_image_x'].'"';

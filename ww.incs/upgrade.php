@@ -575,6 +575,9 @@ if ($version==54) { // locations can have sublocations
 	);
 	$version=55;
 }
+if ($version==55) { // dummy step
+	$version=56; // just forcing a Core_cacheClear, after upgrading Smarty
+}
 
 $DBVARS['version']=$version;
 Core_configRewrite();

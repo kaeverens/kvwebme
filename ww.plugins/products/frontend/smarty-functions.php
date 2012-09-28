@@ -22,7 +22,7 @@
 	* @return int number in stock
 	*/
 function Products_amountInStock2($params, $smarty) {
-	$pid=$smarty->_tpl_vars['product']->id;
+	$pid=$smarty->smarty->tpl_vars['product']->value->id;
 	$product=Product::getInstance($pid);
 	return (int)$product->vals['stockcontrol_total'];
 }
@@ -46,7 +46,7 @@ function Products_map2($params, $smarty) {
 		),
 		$params
 	);
-	$pid=$smarty->_tpl_vars['product']->id;
+	$pid=$smarty->smarty->tpl_vars['product']->value->id;
 	$product=Product::getInstance($pid);
 	$uid=(int)$product->vals['user_id'];
 	if (!$uid) {
@@ -86,7 +86,7 @@ function Products_owner2($params, $smarty) {
 		$params
 	);
 	// { set up user object
-	$pid=$smarty->_tpl_vars['product']->id;
+	$pid=$smarty->smarty->tpl_vars['product']->value->id;
 	$product=Product::getInstance($pid);
 	$uid=(int)$product->vals['user_id'];
 	if (!$uid) {
@@ -112,7 +112,7 @@ function Products_owner2($params, $smarty) {
 	* @return string the price
 	*/
 function Products_priceBase2($params, $smarty) {
-	$pid=$smarty->_tpl_vars['product']->id;
+	$pid=$smarty->smarty->tpl_vars['product']->value->id;
 	if (!$params['vat'] && $_SESSION['onlinestore_prices_shown_post_vat']) {
 		$params['vat']=1;
 	}
@@ -139,7 +139,7 @@ function Products_priceBase2($params, $smarty) {
 	* @return string the price
 	*/
 function Products_priceBulk2($params, $smarty) {
-	$pid=$smarty->_tpl_vars['product']->id;
+	$pid=$smarty->smarty->tpl_vars['product']->value->id;
 	if (!$params['vat'] && $_SESSION['onlinestore_prices_shown_post_vat']) {
 		$params['vat']=1;
 	}
@@ -167,7 +167,7 @@ function Products_priceBulk2($params, $smarty) {
 	* @return string HTML
 	*/
 function Products_priceDiscount2($params, $smarty) {
-	$pid=$smarty->_tpl_vars['product']->id;
+	$pid=$smarty->smarty->tpl_vars['product']->value->id;
 	if (!$params['vat'] && $_SESSION['onlinestore_prices_shown_post_vat']) {
 		$params['vat']=1;
 	}
@@ -195,7 +195,7 @@ function Products_priceDiscount2($params, $smarty) {
 	* @return string HTML
 	*/
 function Products_priceDiscountPercent2($params, $smarty) {
-	$pid=$smarty->_tpl_vars['product']->id;
+	$pid=$smarty->smarty->tpl_vars['product']->value->id;
 	$product=Product::getInstance($pid);
 	if (!isset($product->vals['online-store'])) {
 		return '0';
@@ -219,7 +219,7 @@ function Products_priceDiscountPercent2($params, $smarty) {
 	* @return string HTML
 	*/
 function Products_priceSale2($params, $smarty) {
-	$pid=$smarty->_tpl_vars['product']->id;
+	$pid=$smarty->smarty->tpl_vars['product']->value->id;
 	if (!$params['vat'] && $_SESSION['onlinestore_prices_shown_post_vat']) {
 		$params['vat']=1;
 	}
@@ -249,9 +249,9 @@ function Products_priceSale2($params, $smarty) {
 	* @return string image
 	*/
 function Products_qrCode2($params, $smarty) {
-	if (@$smarty->_tpl_vars['isvoucher']!=1) {
+	if (@$smarty->smarty->tpl_vars['isvoucher']->value!=1) {
 		return '<img src="/a/p=products/f=showQrCode/pid='
-			.$smarty->_tpl_vars['product']->id.'"/>';
+			.$smarty->smarty->tpl_vars['product']->value->id.'"/>';
 	}
 	return 'test';
 }
@@ -276,7 +276,7 @@ function Products_soldAmount2($params, $smarty) {
 		),
 		$params
 	);
-	$pid=$smarty->_tpl_vars['product']->id;
+	$pid=$smarty->smarty->tpl_vars['product']->value->id;
 	$product=Product::getInstance($pid);
 	if (!isset($product->vals['online-store'])) {
 		return '';
@@ -303,7 +303,7 @@ function Products_soldAmount2($params, $smarty) {
 	* @return string HTML
 	*/
 function Products_user2($params, $smarty) {
-	$pid=$smarty->_tpl_vars['product']->id;
+	$pid=$smarty->smarty->tpl_vars['product']->value->id;
 	$product=Product::getInstance($pid);
 	$uid=(int)$product->get($params['pfield']);
 	$user=User::getInstance($uid, false, false);
