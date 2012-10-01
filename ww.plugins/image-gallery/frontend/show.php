@@ -105,10 +105,10 @@ function ImageGallery_show($PAGEDATA) {
 	* @return html
 	*/
 function GalleryWidget_show($vars) {
-	$id=$vars->id;
-	if (!$vars->id) {
+	if (!isset($vars->id) || !$vars->id) {
 		return '';
 	}
+	$id=$vars->id;
 	// { get data from widget db
 	$vars=dbRow('select * from image_gallery_widget where id="'.$id.'"');
 	// }

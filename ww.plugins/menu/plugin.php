@@ -26,7 +26,7 @@ $plugin=array(
 
 require_once SCRIPTBASE.'ww.incs/menus.php';
 function menu_showWidget($vars=null) {
-	if ($vars && $vars->id) {
+	if ($vars && isset($vars->id) && $vars->id) {
 		$id=$vars->id;
 		$vars=Core_cacheLoad('menus', $id, -1);
 		if ($vars===-1) {

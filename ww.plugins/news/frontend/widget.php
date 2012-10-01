@@ -25,6 +25,7 @@ $rs=Core_cacheLoad('pages', 'news|'.$vars->id.'|'.$vars->stories_to_show);
 if ($rs===false) {
 	$rs=dbAll(
 		'select id from pages where parent='.$vars->id
+		.' and date_publish<now() and date_unpublish>now()'
 		.' order by associated_date desc,cdate desc limit '.$vars->stories_to_show
 	);
 	if ($rs!==false) {
@@ -39,10 +40,12 @@ $links=array();
 foreach ($rs as $r) {
 	$page=Page::getInstance($r['id']);
 	$thumb='';
-	if ($vars->thumbnail || $vars->characters_shown) {
+	if ((isset($vars->thumbnail) && $vars->thumbnail)
+		|| $vars->characters_shown
+	) {
 		$pagerendered=$page->render();
 	}
-	if ($vars->thumbnail) {
+	if (isset($vars->thumbnail) && $vars->thumbnail) {
 		$img=preg_replace('/.*<img/', '<img', str_replace(array("\n", "\r"), ' ', $pagerendered));
 		if (strpos($img, '<img')===0) {
 			$img=preg_replace('/>.*/', '', $img);

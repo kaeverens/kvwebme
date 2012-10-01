@@ -65,6 +65,7 @@ function ImageTransition_show($vars) {
 			if (!count($imgs)) {
 				return '<em>'.__('No images in selected directory.').'</em>';
 			}
+			$html='';
 			if ($r['trans_type']=='3dCarousel') {
 				$html.='<div id="k3dCarousel'.$vars->id.'" style="height:'
 					.($height+30).'px"><img style="display:none" src="'

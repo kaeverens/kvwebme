@@ -9,6 +9,7 @@
 */
 
 function show_banner($vars) {
+	$banner=false;
 	if (!is_array($vars) && @$vars->id) {
 		$b=Core_cacheLoad('banner-images', 'id'.$vars->id);
 		if ($b===false) {
@@ -32,7 +33,8 @@ function show_banner($vars) {
 			);
 			Core_cacheSave('banner-images', 'bypage'.$GLOBALS['PAGEDATA']->id, $b);
 		}
-		$b=$b[rand(0, count($b)-1)];
+		$i=rand(0, count($b)-1);
+		$b=isset($b[$i])?$b[$i]:false;
 		if ($b && count($b) && !$b['html']) {
 			$b['html']=BannerImage_getImgHtml($b['id']);
 			dbQuery(
@@ -47,7 +49,8 @@ function show_banner($vars) {
 			$b=dbAll('select * from banners_images');
 			Core_cacheSave('banner-image', 'all', $b);
 		}
-		$b=$b[rand(0, count($b)-1)];
+		$i=rand(0, count($b)-1);
+		$b=isset($b[$i])?$b[$i]:false;
 	}
 	if ($b && count($b)) {
 		$banner=$b['html'];

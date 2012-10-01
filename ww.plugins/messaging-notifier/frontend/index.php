@@ -85,8 +85,8 @@ function Aggregator_parse($data, $vars) {
 		}
 		$altogether=array_merge($altogether, $f);
 	}
-	$html='<div id="messaging-notifier-'.$vars->id.'"'.$height
-		.'><ul class="messaging-notifier">';
+	$html='<div id="messaging-notifier-'.$vars->id.'">'
+		.'<ul class="messaging-notifier">';
 	$i=0;
 	$ordered=array();
 	foreach ($altogether as $r) {
@@ -132,7 +132,7 @@ function Aggregator_parse($data, $vars) {
 				});</script>';
 		}
 	}
-	$height=$vars->height_in_px
+	$height=isset($vars->height_in_px) && $vars->height_in_px
 		?' style="height:'.((int)$vars->height_in_px).'px"'
 		:'';
 	return $html;

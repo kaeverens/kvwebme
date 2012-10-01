@@ -13,6 +13,8 @@
   * @link       www.kvweb.me
  */
 
+// { config
+
 $plugin=array(
 	'name' => function() {
 		return __('News');
@@ -33,6 +35,10 @@ $plugin=array(
 	'version'=>1
 );
 
+// }
+
+// { News_admin
+
 /**
   * show the news admin page
   *
@@ -46,6 +52,8 @@ function News_admin($page, $vars) {
 	return $c;
 }
 
+// }
+// { News_frontend
 
 /**
   * show the news widget
@@ -61,6 +69,9 @@ function News_frontend($PAGEDATA) {
 		.@$PAGEDATA->vars['footer'];
 }
 
+// }
+// { News_showWidget
+
 /**
   * show the news widget
   *
@@ -72,3 +83,5 @@ function News_showWidget($vars) {
 	require SCRIPTBASE.'ww.plugins/news/frontend/widget.php';
 	return '<div class="news-wrapper">'.$html.'</div>';
 }
+
+// }

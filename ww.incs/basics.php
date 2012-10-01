@@ -195,11 +195,13 @@ function Core_cacheClear($type='') {
 		if (is_dir(USERBASE.'/ww.cache/'.$type.'/'.$f)) {
 			Core_cacheClear($type.'/'.$f);
 			if (is_dir(USERBASE.'/ww.cache/'.$type.'/'.$f)) {
-				rmdir(USERBASE.'/ww.cache/'.$type.'/'.$f);
+				@rmdir(USERBASE.'/ww.cache/'.$type.'/'.$f);
 			}
 		}
 		else {
-			unlink(USERBASE.'/ww.cache/'.$type.'/'.$f);
+			if (file_exists(USERBASE.'/ww.cache/'.$type.'/'.$f)) {
+				@unlink(USERBASE.'/ww.cache/'.$type.'/'.$f);
+			}
 		}
 	}
 }
