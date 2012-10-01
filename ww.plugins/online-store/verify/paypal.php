@@ -38,7 +38,6 @@ if (!$fp) {
 	while (!feof($fp)) {
 		$res = fgets($fp, 1024);
 		if (strcmp($res, "VERIFIED") == 0) {
-			require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 			$id=(int)$_POST['item_number'];
 			if ($id<1) {
 				Core_quit();

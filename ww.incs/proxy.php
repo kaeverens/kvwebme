@@ -21,7 +21,7 @@
 	* @link     http://kvsites.ie/
 	*/
 
-require 'basics.php';
+require_once 'basics.php';
 require SCRIPTBASE . 'ww.admin/admin_libs.php';
 
 $url = @$_GET[ 'url' ];

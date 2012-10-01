@@ -39,7 +39,7 @@ if (!$_SESSION['userbase_created']) { // user shouldn't be here
 }
 
 $ignore_cms_plugins=1;
-require '../ww.incs/basics.php';
+require_once '../ww.incs/basics.php';
 
 
 //Here starts the actual content of the page

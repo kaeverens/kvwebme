@@ -32,8 +32,10 @@ if ($size>52428800) { // greater than 50mb
 	Core_quit(__('Deleted'));
 }
 // }
-move_uploaded_file(
-	$_FILES['file-upload']['tmp_name'],
-	$dir.$_FILES['file-upload']['name']
-);
+if (isset($_FILES['file-upload'])) {
+	move_uploaded_file(
+		$_FILES['file-upload']['tmp_name'],
+		$dir.$_FILES['file-upload']['name']
+	);
+}
 echo __('Upload');

@@ -25,7 +25,7 @@
 	* @link     http://kvsites.ie/
 	*/
 
-require '../../ww.incs/basics.php';
+require_once '../../ww.incs/basics.php';
 require SCRIPTBASE . 'ww.plugins/themes-api/api/funcs.php';
 
 if (!empty ($_REQUEST['theme'])) {

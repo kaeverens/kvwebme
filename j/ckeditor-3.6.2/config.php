@@ -1,6 +1,6 @@
 ﻿<?php
 
-require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 
 $plugins=array();
 foreach($PLUGINS as $plugin){

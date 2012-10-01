@@ -11,7 +11,7 @@
 	* @link     http://kvsites.ie/
 	*/
 
-require '../../ww.incs/basics.php';
+require_once '../../ww.incs/basics.php';
 
 // { get and validate get data
 $name = addslashes(@$_GET[ 'name' ]);

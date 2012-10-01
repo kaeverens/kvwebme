@@ -11,7 +11,7 @@
 	* @link     http://kvsites.ie/
 	*/
 
-require 'basics.php';
+require_once 'basics.php';
 
 if (!isset($_GET['s'])) {
 	Core_quit();
