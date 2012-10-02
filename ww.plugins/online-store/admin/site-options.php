@@ -89,11 +89,13 @@ echo '>'.__('post-VAT').'</option></select>.</p></div>';
 echo '<h2><a href="#">'.__('Invoices').'</a></h2>'
 	.'<div id="invoices">'
 	.'<select name="online_store_vars[invoices_by_email]">';
-	// TODO: Translate
-	$opts=array(
-	'Invoice should be emailed to customer when the order is Paid',
-	'Invoice should not be emailed at all',
-	'Invoice should be emailed to customer when the order is Paid And Delivered'
+$opts=array(
+	__('Invoice should be emailed to customer when the order is Paid'),
+	__('Invoice should not be emailed at all'),
+	__(
+		'Invoice should be emailed to customer when the order is Delivered'
+	),
+	__('Invoice should be emailed when the payment is Authorised')
 );
 $curval=(int)dbOne(
 	'select value from online_store_vars where name="invoices_by_email"',

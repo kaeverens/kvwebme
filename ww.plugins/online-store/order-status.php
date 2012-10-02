@@ -68,6 +68,9 @@ function OnlineStore_sendInvoiceEmail($id, $order=false) {
 	if ($sendAt==2 && $order['status']!='2') {
 		return;
 	}
+	if ($sendAt==3 && $order['status']!='4') {
+		return;
+	}
 	$form_vals=json_decode($order['form_vals']);
 	$items=json_decode($order['items']);
 	$short_domain=str_replace('www.', '', $_SERVER['HTTP_HOST']);
@@ -195,6 +198,9 @@ function OnlineStore_exportToFile($id) {
 		return;
 	}
 	if ($sendAt==2 && $order['status']!='2') {
+		return;
+	}
+	if ($sendAt==3 && $order['status']!='4') {
 		return;
 	}
 	$form_vals=json_decode($order['form_vals']);
