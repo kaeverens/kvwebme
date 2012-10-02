@@ -16,7 +16,8 @@ $errors = array();
 if ($kfm->setting('allow_file_upload')) {
 	$fids     = array();
 	$files    = array();
-	$fdata    = isset($_FILES['kfm_file'])?$_FILES['kfm_file']:$_FILES['Filedata'];
+	$fdata    = isset($_FILES['kfm_file'])?
+		$_FILES['kfm_file']:@$_FILES['Filedata'];
 	if(is_array($fdata['name'])){
 		for($i=0;$i<count($fdata['name']);++$i){
 			$files[]=array(

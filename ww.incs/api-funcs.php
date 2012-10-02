@@ -489,7 +489,7 @@ function Core_register() {
 	}
 	if ($token && $token==@$reg['token']) {
 		$latlngsql='';
-		if ($_REQUEST['custom']) {
+		if (isset($_REQUEST['custom']) && is_array($_REQUEST['custom'])) {
 			foreach ($_REQUEST['custom'] as $k=>$v) {
 				$custom[$k]=$v;
 			}
