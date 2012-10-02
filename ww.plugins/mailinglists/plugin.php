@@ -17,7 +17,8 @@ $plugin=array(
 	'name' => 'Mailing Lists',
 	'admin' => array(
 		'menu' => array(
-			'Communication>Mailing Lists'=>'javascript:Core_screen(\'mailinglists\',\'Dashboard\')'
+			'Communication>Mailing Lists'
+				=>'javascript:Core_screen(\'mailinglists\',\'Dashboard\')'
 		)
 	),
 	'description' => 'Mailing lists',
@@ -33,6 +34,8 @@ $plugin=array(
 
 /**
 	* widget for mailing lists
+	*
+	* @param array $vars parameters
 	*
 	* @return html
 	*/
@@ -58,6 +61,10 @@ function MailingLists_widget($vars) {
 
 /**
 	* XML RPC client for UbiVox
+	*
+	* @param string $username username
+	* @param string $password password
+	* @param string $request  request
 	*
 	* @return data
 	*/

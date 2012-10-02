@@ -47,14 +47,19 @@ if (isset($_REQUEST['online-store-status'])) {
 $c.='<p>'
 	.__('This list shows orders with the status: ')
 	.'<select id="online-store-status">';
-/* TODO: translation of statusses needed */
-$statii=array('Unpaid', 'Paid or Authorised', 'Delivered', 'Cancelled');
+$statii=array(
+	'0'=>__('Unpaid'),
+	'4'=>__('Authorised'),
+	'1'=>__('Paid'),
+	'2'=>__('Delivered'),
+	'3'=>__('Cancelled')
+);
 foreach ($statii as $k=>$v) {
 	$c.='<option value="'.$k.'"';
-	if ($k==$_SESSION['online-store']['status']) {
+	if ($k===$_SESSION['online-store']['status']) {
 		$c.=' selected="selected"';
 	}
-	$c.='">'.htmlspecialchars($v).'</option>';
+	$c.='>'.htmlspecialchars($v).'</option>';
 }
 $c.='</select></p>';
 // { filter for SQL
@@ -107,7 +112,7 @@ if (is_array($rs) && count($rs)) {
 	$c.='</tbody></table></div>'
 		.'<select id="onlinestore-orders-action"><option value="0"> -- </option>'
 		.'<option value="1">'.__('Mark as Unpaid').'</option>'
-		.'<option value="2">'.__('Mark as Paid or Authorised').'</option>'
+		.'<option value="2">'.__('Mark as Paid').'</option>'
 		.'<option value="3">'.__('Mark as Delivered').'</option>'
 		.'<option value="4">'.__('Download as PDF').'</option>'
 		.'</select>';

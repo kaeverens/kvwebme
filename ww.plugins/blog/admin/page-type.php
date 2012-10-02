@@ -42,8 +42,11 @@ $excerpt_length=(int)$vars['blog_excerpt_length'];
 if (!$excerpt_length) {
 	$excerpt_length=200;
 }
-$c.='<p>'.__(
-	'If no excerpt is provided for a blog entry, then one will be automatically created by clipping the main article body after a number of characters. How many?'
+$c.='<p>'
+	.__(
+		'If no excerpt is provided for a blog entry, then one will be automatically'
+		.' created by clipping the main article body after a number of characters.'
+		.' How many?'
 	)
 	.'</p>'
 	.'<input class="small" name="page_vars[blog_excerpt_length]"'
@@ -73,8 +76,12 @@ $c.='</div>';
 // { groups access
 $groups=dbAll('select * from groups where id!=1');
 if (count($groups)) {
-	$c.='<h2><a href="#">user blog rights</a></h2>'
-		.'<div><p>Along with administrators, what user groups should be allowed to create blog entries?</p>';
+	$c.='<h2><a href="#">'.__('User blog rights').'</a></h2>'
+		.'<div><p>'.__(
+			'Along with administrators, what user groups should be allowed to'
+			.' create blog entries?'
+		)
+		.'</p>';
 	$allowed=array();
 	if ($vars['blog_groupsAllowedToPost']) {
 		$allowed=json_decode($vars['blog_groupsAllowedToPost'], true);
@@ -82,7 +89,8 @@ if (count($groups)) {
 	$c.='<ul>';
 	foreach ($groups as $g) {
 		$c.='<li>'
-			.'<input type="checkbox" name="page_vars[blog_groupsAllowedToPost]['.$g['id'].']"';
+			.'<input type="checkbox" name="page_vars[blog_groupsAllowedToPost]['
+			.$g['id'].']"';
 		if (@$allowed[$g['id']]) {
 			$c.=' checked="checked"';
 		}

@@ -22,6 +22,7 @@ $md5secret=dbOne(
 if (!$md5secret) { // no md5 secret entered
 	Core_quit();
 }
+// { calculate expected MD5
 $expected_md5 = md5(
 	$_REQUEST['msgtype']
 	.$_REQUEST['ordernumber']
@@ -45,10 +46,12 @@ $expected_md5 = md5(
 	.$_REQUEST['fee']
 	.$md5secret
 );
+// }
 if (strtolower($expected_md5) == strtolower($_REQUEST['md5check'])) {
 	$id=(int)preg_replace('/^0*/', '', $_REQUEST['ordernumber']);
 	dbQuery(
-		'update online_store_orders set meta="'.addslashes(json_encode($_REQUEST))
-		.'", authorised=1 where id='.$id
+		'update online_store_orders set status=4'
+		.', meta="'.addslashes(json_encode($_REQUEST)).'"'
+		.', authorised=1 where id='.$id
 	);
 }

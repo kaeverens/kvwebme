@@ -25,11 +25,15 @@ function OnlineStore_adminCapture() {
 	foreach ($ids as $id) {
 		$id=(int)$id;
 		$r=dbRow(
-			'select total,status, authorised, meta from online_store_orders'
+			'select total, status, authorised, meta from online_store_orders'
 			.' where id='.$id
 		);
 		if ($r['authorised']!=1) {
-			$errors[]=__('Transaction %1 is no longer authorised.', array($id), 'core')
+			$errors[]=__(
+				'Transaction %1 is no longer authorised.',
+				array($id),
+				'core'
+			)
 				.' '.__('Maybe it was already captured?');
 			continue;
 		}
@@ -70,11 +74,14 @@ function OnlineStore_adminCapture() {
 		curl_close($ch);
 		if (strpos($response, 'qpstat>000<')!==false) {
 			$meta['qpsuccess']=$response;
-			$status=$r['status']<1?1:$r['status'];
+			$status=($r['status']<1||$r['status']==4)?1:$r['status'];
 			dbQuery(
 				'update online_store_orders set status='.$status.', authorised=0,'
 				.'meta="'.addslashes(json_encode($meta)).'" where id='.$id
 			);
+			require_once dirname(__FILE__).'/order-status.php';
+			OnlineStore_sendInvoiceEmail($id);
+			OnlineStore_exportToFile($id);
 			$ok[]=$id;
 		}
 		else {

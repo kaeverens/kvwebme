@@ -1,5 +1,11 @@
 // TODO: translation of statusses needed
-window.os_statuses=['Unpaid', 'Paid', 'Paid and Delivered', 'Cancelled'];
+window.os_statuses=[
+	[0, 'Unpaid'],
+	[4, 'Authorised'],
+	[1, 'Paid'],
+	[2, 'Delivered'],
+	[3, 'Cancelled']
+];
 function os_invoice(id, print){
 	var w=$(window), wh=w.height(), ww=w.width(), p=print?'&print=1':'';
 	$('<iframe id="externalSite" class="externalSite" src="/ww.plugins/online-store/admin/show-invoice.php?id='+id+p+'" />').dialog({
@@ -109,20 +115,23 @@ function onlinestoreFieldsUpdate(){
 function onlinestoreStatus(id, current_status){
 	var options=[];
 	for(var i=0;i<window.os_statuses.length;++i){
-		var html='<option value="'+i+'"';
-		if(i==current_status){
+		var key=window.os_statuses[i][0], val=window.os_statuses[i][1];
+		var html='<option value="'+key+'"';
+		if(key==current_status){
 			html+=' selected="selected"';
 		}
-		html+='>'+window.os_statuses[i]+'</option>';
+		html+='>'+__(val)+'</option>';
 		options.push(html);
 	}
 	var target=$('#os_status_'+id);
 	$('<select id="os_status_select_'+id+'">'+options.join('')+'</select>')
 		.change(function(){
+			var text=$(this).find(':selected').text();
 			var id=this.id.replace(/os_status_select_/, ''), val=+$(this).val();
 			$.post('/a/p=online-store/f=adminChangeOrderStatus/id='+id+'/status='+val, function(){
 				$('#os_status_select_'+id).replaceWith(
-					$('<a id="os_status_'+id+'" href="javascript:;">'+window.os_statuses[val]+'</a>')
+					$('<a id="os_status_'+id+'" href="javascript:;">'
+						+text+'</a>')
 						.click(function(){
 							onlinestoreStatus(id, val);
 						})
