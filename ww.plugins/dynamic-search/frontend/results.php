@@ -1,11 +1,26 @@
 <?php
-/*
-	Webme Dynamic Search Plugin v0.3
-	File: frontend/results.php
-	Developer: Conor Mac Aoidh <http://macaoidh.name>
-	Report Bugs: <conor@macaoidh.name>
-*/
+/**
+	* search results
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Conor Mac Aoidh <conor@macaoidh.name>
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
+// { getDescendants
+
+/**
+	* getDescendants
+	*
+	* @param int $id ID
+	*
+	* @return whatever
+	*/
 function getDescendants($id) {
 	$s=' or parent='.$id;
 	$q=dbAll('select id from pages where parent="'.$id.'"');
@@ -19,6 +34,19 @@ function getDescendants($id) {
 	return $s;
 }
 
+// }
+// { DynamicSearch_catags
+
+/**
+	* DynamicSearch_catags
+	*
+	* @param array  $catags categories
+	* @param string $s      search string
+	* @param string $cat    category to search
+	* @param int    $limit  how many results to return
+	*
+	* @return array
+	*/
 function DynamicSearch_catags($catags, $s, $cat, $limit) {
 	if (!in_array($cat, $catags)) {
 		die('Category does not exist.');
@@ -32,6 +60,8 @@ function DynamicSearch_catags($catags, $s, $cat, $limit) {
 	return $q;
 }
 
+// }
+
 $s=addslashes($_GET['dynamic_search']);
 $cat=addslashes($_GET['dynamic_category']);
 if ($cat=='') {
@@ -39,7 +69,9 @@ if ($cat=='') {
 }
 
 $p=$_GET['dynamic_page'];
-if($p==0) $p=1;
+if ($p==0) {
+	$p=1;
+}
 $l=$p*10;
 $m=$l-10;
 $limit=$m.','.$l;

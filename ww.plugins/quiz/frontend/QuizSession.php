@@ -105,26 +105,22 @@ class QuizSession{
 		global $questionsToBeAsked;
 		$quizString='<form method="post"><ol>';
 		for ($i=0; $i<count($questionsToBeAsked); $i++) {
-			$quizString = $quizString.'<li>'.$questionsToBeAsked[$i]['question'].'</li>';
-			$quizString= $quizString.'<ul>';
+			$quizString.='<li>'.$questionsToBeAsked[$i]['question'];
+			$quizString.='<ul>';
 			for ($j=1; $j<5; $j++) {
 				$answerNum='answer'.$j;
 				$answer=$questionsToBeAsked[$i][$answerNum];
 				if (!empty($answer)) {
 					$quizString= $quizString.'<li>'
-					$quizString= $quizString.'<input type="radio" 
-												name="'.$questionsToBeAsked[$i]['id'].'" 
-												value="'.$j.'"/>'.htmlspecialchars($answer).
-											'</li>';
+						.'<input type="radio" name="'.$questionsToBeAsked[$i]['id']
+						.'" value="'.$j.'"/>'.htmlspecialchars($answer)
+						.'</li>';
 				}
 			}
-			$quizString=$quizString. '</ul>';
+			$quizString.='</ul></li>';
 		}
-		$quizString=$quizString.'</ol>'
-		$quizString=$quizString.'<input type="submit" 
-										name="check" 
-										value="Submit Answers"
-								/></form>';
+		$quizString.='</ol>'
+			.'<input type="submit" name="check" value="Submit Answers" /></form>';
 		return $quizString;
 	}
 

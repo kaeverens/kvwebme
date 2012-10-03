@@ -161,10 +161,8 @@ function Forum_delete() {
 		return array('errors'=>$errs);
 	}
 	dbQuery('delete from forums_posts where id='.$post_id);
-	if ((int)dbOne(
-		'select count(id) from forums_posts where thread_id='.$post['author_id'],
-		'count(id)'
-	)<1) {
+	$sql='select count(id) from forums_posts where thread_id='.$post['author_id'];
+	if ((int)dbOne($sql, 'count(id)')<1) {
 		dbQuery('delete from forums_threads where id='.$post['thread_id']);
 	}
 	dbQuery(

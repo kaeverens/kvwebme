@@ -14,6 +14,8 @@
 
 require_once '../../../ww.incs/basics.php';
 
+// { Theme_findErrors
+
 /**
   * checks themes for php files
   *
@@ -22,23 +24,29 @@ require_once '../../../ww.incs/basics.php';
   * @return mixed errors, or false if no errors
   */
 function Theme_findErrors($dir) {
-	$files = scandir($dir);
+	if (!file_exists($dir) || !is_dir($dir)) {
+		return false;
+	}
+	$files=new DirectoryIterator($dir);
 	foreach ($files as $file) {
-		if ($file == '.' || $file == '..') {
+		if ($file->isDot()) {
 			continue;
 		}
-		if (is_dir($file)) {
-			$check=Theme_findErrors($file);
+		if ($file->isDir()) {
+			$check=Theme_findErrors($dir.'/'.$file->getFilename());
 			if ($check) {
 				return $check;
 			}
 		}
-		if (preg_match('/\.php(\.|$)/', $file)) {
+		if (preg_match('/\.php(\.|$)/', $file->getFilename())) {
 			return 'archive contains PHP files';
 		}
 	}
 	return false;
 }
+
+// }
+// { Theme_getFirstVariant
 
 /**
   * find a variant
@@ -59,6 +67,8 @@ function Theme_getFirstVariant($dir) {
 	}
 	return false;
 }
+
+// }
 
 // { make sure post is set and files are uploaded
 if (!isset($_POST[ 'install-theme' ]) && !isset($_POST[ 'upload-theme' ])
@@ -87,7 +97,8 @@ if (!file_exists($theme_folder)) { // argh... why do people do this?
 	$files=new DirectoryIterator($temp_dir);
 	mkdir($theme_folder);
 	foreach ($files as $file) {
-		if ($file->isDot() || $file->getFilename()==$name.'.zip') {
+		$fname=$file->getFilename();
+		if ($file->isDot() || $fname==$name.'.zip' || $fname==$name) {
 			continue;
 		}
 		rename($file->getPathname(), $theme_folder.'/'.$file->getFilename());
@@ -115,7 +126,6 @@ elseif (file_exists($theme_folder.'/index.html')
 	echo '<script>parent.themes_dialog("<p>freecsstemplates.org theme detecte'
 		.'d. Trying to convert.</p>");</script>';
 	require 'convert-freecsstemplates.org.php';
-	shell_exec('rm -rf ' . $temp_dir);
 }
 else { // unknown format!
 	echo '<script>parent.themes_dialog("<em>Unknown theme format. Failed to i'

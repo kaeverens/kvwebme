@@ -1,6 +1,6 @@
 <?php
 /**
-	* convert a freecsstempaltes.org theme
+	* convert a freecsstemplates.org theme
 	*
 	* PHP version 5.2
 	*
@@ -209,25 +209,25 @@ foreach ($files as $file) {
 		$css=file_get_contents($file->getPathname());
 		// { menus
 		$css=preg_replace(
-			'/(#menu1\s*){/',
-			'\1,#menu-fg-0,.fg-menu-container{',
+			'/(#menu1\s*){/', // }
+			'\1,#menu-fg-0,.fg-menu-container{', // }
 			$css
 		);
 		$css=str_replace(array("\n", "\r", "\t"), ' ', $css);
 		$css=preg_replace('/\s+/', ' ', $css);
 		$css=preg_replace(
-			'/(#menu1\s*ul\s*){/',
-			'\1,#menu-fg-0 ul,.fg-menu-container ul{',
+			'/(#menu1\s*ul\s*){/', // }
+			'\1,#menu-fg-0 ul,.fg-menu-container ul{', // }
 			$css
 		);
 		$css=preg_replace(
-			'/(#menu1\s*li\s*){/',
-			'\1,#menu-fg-0 li,.fg-menu-container li{',
+			'/(#menu1\s*li\s*){/', // }
+			'\1,#menu-fg-0 li,.fg-menu-container li{', // }
 			$css
 		);
 		$css=preg_replace(
-			'/(#menu1\s*a\s*){/',
-			'\1,#menu-fg-0 a,.fg-menu-container a{',
+			'/(#menu1\s*a\s*){/', // }
+			'\1,#menu-fg-0 a,.fg-menu-container a{', // }
 			$css
 		);
 		$css=preg_replace(
@@ -249,6 +249,6 @@ foreach ($files as $file) {
 		// }
 		file_put_contents($file->getPathname(), $css);
 	}
-	rename($file->getPathname(), $theme_folder.'/c/'.$n);
+	@rename($file->getPathname(), $theme_folder.'/c/'.$n);
 }
 // }

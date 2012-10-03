@@ -66,12 +66,11 @@ if ($version==3) { // replace FIELD{blah} with blah
 if ($version==4) { // copy forms fields to page_vars
 	$rs=dbAll('select distinct formsId from forms_fields');
 	foreach ($rs as $r) {
+		$json='select name, type, isrequired, extra from forms_fields'
+			.' where formsId='.$r['formsId'].' order by id';
 		dbQuery(
 			'insert into page_vars set name="forms_fields", page_id='.$r['formsId']
-			.', value="'.addslashes(json_encode(dbAll(
-				'select name, type, isrequired, extra from forms_fields where '
-				.'formsId='.$r['formsId'].' order by id'
-			))).'"'
+			.', value="'.addslashes(json_encode(dbAll($json))).'"'
 		);
 	}
 	Core_cacheClear();

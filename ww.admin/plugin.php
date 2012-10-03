@@ -22,24 +22,6 @@ if (!isset($PLUGINS[$pname])) {
 }
 $plugin=$PLUGINS[$pname];
 $_url='/ww.admin/plugin.php?_plugin='.urlencode($pname).'&amp;_page='.$pagename;
-WW_addScript('/ww.admin/j/plugins.js');
-// { help pages
-$help=array();
-if (file_exists(SCRIPTBASE.'/ww.plugins/'.$pname.'/docs/admin.html')) {
-	$help[]=array('admin', 'documentation');
-}
-if (file_exists(SCRIPTBASE.'/ww.plugins/'.$pname.'/docs/design.html')) {
-	$help[]=array('design', 'design docs');
-}
-if (count($help)) {
-	echo '<div id="nav-help" style="width:150px;">';
-	foreach ($help as $h) {
-		echo '<a href="javascript:show_help(\''.$pname.'\',\''.$h[0].'\')">'
-			.__($h[1], 'plugins').'</a>';
-	}
-	echo '</div>';
-}
-// }
 // { display the plugin
 echo '<h1>'.htmlspecialchars(__($pname, 'plugins')).'</h1>';
 if (!file_exists(SCRIPTBASE.'/ww.plugins/'.$pname.'/admin/'.$pagename.'.php')) {
