@@ -12,6 +12,6 @@ foreach ($ads as $ad) {
 		.'<td><a href="#" class="edit">edit</a>'
 		.' | <a href="#" class="delete">[x]</a></td></tr>';
 }
-echo '</tbody></table><button class="new-ads-type">New Ads Type</button>';
+echo '</tbody></table><button class="new-ads-type">'.__('New Ads Type').'</button>';
 
 WW_addScript('/ww.plugins/ads/admin.js');

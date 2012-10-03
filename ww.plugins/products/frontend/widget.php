@@ -55,7 +55,7 @@ switch ($widget_type) {
 	case 'Pie Chart': // { Pie Chart
 		$id='products_categories_'.md5(rand());
 		$html.='<div id="'.$id.'" class="products-widget" style="width:'.$diameter
-			.'px;height:'.($diameter+30).'px">loading...</div>'
+			.'px;height:'.($diameter+30).'px">'.__('Loading...').'</div>'
 			.'<script defer="defer">$(function(){'
 			.'products_widget("'.$id.'",'.json_encode($cats).');'
 			.'});</script>';
@@ -72,26 +72,20 @@ switch ($widget_type) {
 			$iid=$product->getDefaultImage();
 			
 			$img=$iid
-				?'<a href="'.$product->getRelativeURL().'"><img src="/a/w=200/h=auto/' // Changed from w=100/h=100 to w=200/h=auto //DA 29-08-12
+				?'<a class="product-widget-imglink" href="'.$product->getRelativeURL().'">
+				<img class="product-widget-img" src="/a/w=200/h=auto/' // Changed from w=100/h=100 to w=200/h=auto //DA 29-08-12
 				.'/f=getImg/'.$iid.'"/></a>'
 				:'';
 				$pvat = array("vat" => $_SESSION['onlinestore_vat_percent']);
-			$html.='<table class="product"><tr><td rowspan="2">'.$img.'</td>'
-				.'<td><strong>'.htmlspecialchars(__FromJson($product->name)).'</strong>'
-				/*.'<p class="base-price">was: '.$_SESSION['currency']['symbol']
-				.$product->vals['online-store']['_price'].'</p>'
-				.'<p class="sale-price">now: '.$_SESSION['currency']['symbol']
-				.$product->getPrice('sale').'</p>'*/
-				
-				.'<div class="products_listview_price"><p class="price_related">'
+			$html.='<div class="products-widget-inner">'.$img
+				.'<p class="products-widget-name">'.htmlspecialchars(__FromJson($product->name)).'</p>'				
+				.'<div class="products-widget-price">
+					<p class="products-widget-price-inner">'
 					.OnlineStore_numToPrice(($product->vals['online-store']['_price'])*(1+($pvat['vat'])/100))
 				.'</p></div>'
-				//End
-				.'</td></tr>'
-				.'<tr><td><a href="'.$product->getRelativeURL().'">more info</a>'
-				.'</td></tr></table>';
+				.'<a class="product-widget-link" href="'.$product->getRelativeURL().'">'.__('more info').'</a>';
 		}
-		$html.='</div>';
+		$html.='</div></div>';
 	break; // }
 	case 'Tree View': // { Tree View
 		$html='<div class="product-categories-tree"><ul>';

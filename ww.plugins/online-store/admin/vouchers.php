@@ -12,7 +12,7 @@
 	*/
 
 if (isset($_REQUEST['voucher_id'])) {
-	echo '<a href="'.$_url.'">'.__('list all vouchers').'</a>'
+	echo '<a href="'.$_url.'">'.__('List all vouchers').'</a>'
 		.'<h3>'.__('Edit Voucher').'</h3>';
 	$v_id=(int)$_REQUEST['voucher_id'];
 	if (isset($_REQUEST['action']) && $_REQUEST['action']=='Save') {
