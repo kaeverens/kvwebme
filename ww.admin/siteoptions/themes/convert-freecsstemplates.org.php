@@ -11,6 +11,8 @@
 	* @link     http://kvsites.ie/
 	*/
 
+// { Theme_emptyElement
+
 /**
 	* function for removing all content from an element
 	*
@@ -28,6 +30,8 @@ function Theme_emptyElement($dom, $id) {
 	}
 	return $dom;
 }
+
+// }
 
 $failure_message='';
 if (!isset($theme_folder)) { // called directly. don't do this.

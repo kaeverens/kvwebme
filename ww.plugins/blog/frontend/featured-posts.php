@@ -1,11 +1,23 @@
 <?php
+/**
+	* featured posts
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
 $howmany=(int)$PAGEDATA->vars['blog_featured_posts'];
 $tmpconstraints=$constraints
 	?$constraints.' and'
 	:' where';
 $rs=dbAll(
-	'select * from blog_entry'.$tmpconstraints.' featured order by pdate desc limit 0,'.$howmany
+	'select * from blog_entry'.$tmpconstraints.' featured'
+	.' order by pdate desc limit 0,'.$howmany
 );
 if (!count($rs)) {
 	return;
@@ -20,14 +32,19 @@ foreach ($rs as $r) {
 	$c.='>';
 	// { image
 	if (!$r['excerpt_image']) {
-		$img=preg_replace('/.*<img.*?src="([^"]*)".*/m', '\1', str_replace(array("\n", "\r"), ' ', $r['body']));
+		$img=preg_replace(
+			'/.*<img.*?src="([^"]*)".*/m',
+			'\1',
+			str_replace(array("\n", "\r"), ' ', $r['body'])
+		);
 		if (strpos($img, '/f')===0) {
 			$r['excerpt_image']=preg_replace('#^/f/#', '', $img);
 		}
 	}
 	$img='';
 	if ($r['excerpt_image']) {
-		$img='<img class="blog-excerpt-image" src="/a/f=getImg/w=320/h=200/'.$r['excerpt_image'].'"/>';
+		$img='<img class="blog-excerpt-image" src="/a/f=getImg/w=320/h=200/'
+			.$r['excerpt_image'].'"/>';
 	}
 	// }
 	$c.=$img;

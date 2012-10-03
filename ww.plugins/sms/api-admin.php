@@ -12,6 +12,32 @@
 	*/
 
 require_once SCRIPTBASE.'ww.plugins/sms/admin/libs.php';
+
+// { Sms_adminActivate
+
+/**
+	* activate the SMS account
+	*
+	* @return array result
+	*/
+function Sms_adminActivate() {
+	$url='http://textr.mobi/api.php?a=activate'
+		.'&email='.urlencode($DBVARS['sms_email'])
+		.'&activation='.urlencode($_REQUEST['key']);
+	$res=file_get_contents($url);
+	if ($res===false) {
+		return array(
+			'status'=>0,
+			'error'=>'failed to contact textr.mobi. please wait a short while '
+			.'and try again.'
+		);
+	}
+	return json_decode($res);
+}
+
+// }
+// { Sms_adminAddressbookDelete
+
 /**
 	* delete an addressbook
 	*
@@ -20,8 +46,27 @@ require_once SCRIPTBASE.'ww.plugins/sms/admin/libs.php';
 function Sms_adminAddressbookDelete() {
 	$id=(int)$_REQUEST['id'];
 	dbQuery('delete from sms_addressbooks where id='.$id);
-	return ('err'=>0, 'id'=>$id);
+	return array('err'=>0, 'id'=>$id);
 }
+
+// }
+// { Sms_adminAddressbooksGet
+
+/**
+	* get details about an addressbook
+	*
+	* @return array result
+	*/
+function Sms_adminAddressbooksGet() {
+	$id=isset($_REQUEST['id'])?(int)$_REQUEST['id']:0;
+	$r=dbRow('select id,name,subscribers from sms_addressbooks where id='.$id);
+	$r['subscribers']=json_decode($r['subscribers']);
+	return $r;
+}
+
+// }
+// { Sms_adminAddressbooksSave
+
 /**
 	* update addressbook
 	*
@@ -51,17 +96,10 @@ function Sms_adminAddressbooksSave() {
 	}
 	return array('err'=>0);
 }
-/**
-	* get details about an addressbook
-	*
-	* @return array result
-	*/
-function Sms_adminAddressbooksGet() {
-	$id=(int)$_REQUEST['id'];
-	$r=dbRow('select id,name,subscribers from sms_addressbooks where id='.$id);
-	$r['subscribers']=json_decode($r['subscribers']);
-	return $r;
-}
+
+// }
+// { Sms_adminAddressbooksSubscribersGet
+
 /**
 	* get details of all subscribers in an addressbook
 	*
@@ -79,6 +117,10 @@ function Sms_adminAddressbooksSubscribersGet() {
 	}
 	return $rs;
 }
+
+// }
+// { Sms_adminButtonPaypalGet
+
 /**
 	* get a paypal button for paying for credits
 	*
@@ -96,6 +138,10 @@ function Sms_adminButtonPaypalGet() {
 	$ret=SMS_callApi('order-credits', '&credits='.$amt.'&return='.$return);
 	return $ret;
 }
+
+// }
+// { Sms_adminSend
+
 /**
 	* send a single sms
 	*
@@ -126,6 +172,10 @@ function Sms_adminSend() {
 	);
 	return $ret;
 }
+
+// }
+// { Sms_adminSendBulk
+
 /**
 	* send a load of SMSes
 	*
@@ -158,6 +208,10 @@ function Sms_adminSendBulk() {
 	);
 	return $ret;
 }
+
+// }
+// { Sms_adminSubscribe
+
 /**
 	* add a subscriber to an addressbook
 	*
@@ -193,6 +247,10 @@ function Sms_adminSubscribe() {
 	}
 	return $json;
 }
+
+// }
+// { Sms_adminSubscribersDelete
+
 /**
 	* delete a subscriber from an addressbook
 	*
@@ -221,6 +279,10 @@ function Sms_adminSubscribersDelete() {
 	dbQuery('delete from sms_subscribers where id='.$id);
 	echo '{"err":0,"id":'.$id.'}';
 }
+
+// }
+// { Sms_adminSubscribersGet
+
 /**
 	* get details of a subscriber
 	*
@@ -231,6 +293,10 @@ function Sms_adminSubscribersGet() {
 		?dbRow('select * from sms_subscribers where id='.$_REQUEST['id'])
 		:dbAll('select id,name from sms_subscribers order by name');
 }
+
+// }
+// { Sms_adminSubscribersSave
+
 /**
 	* edit details of a subscriber
 	*
@@ -262,22 +328,5 @@ function Sms_adminSubscribersSave() {
 	}
 	return array('err'=>0);
 }
-/**
-	* activate the SMS account
-	*
-	* @return array result
-	*/
-function Sms_adminActivate() {
-	$url='http://textr.mobi/api.php?a=activate'
-		.'&email='.urlencode($DBVARS['sms_email'])
-		.'&activation='.urlencode($_REQUEST['key']);
-	$res=file_get_contents($url);
-	if ($res===false) {
-		return array(
-			'status'=>0,
-			'error'=>'failed to contact textr.mobi. please wait a short while '
-			.'and try again.'
-		);
-	}
-	return json_decode($res);
-}
+
+// }

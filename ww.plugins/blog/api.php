@@ -96,8 +96,9 @@ function Blog_getPostsList() {
 	if (!isset($_SESSION['userdata'])) {
 		return array('error'=>'cannot retrieve list of posts');
 	}
-	$numPerPage=(int)$_REQUEST['iDisplayLength'];
-	$startAt=(int)$_REQUEST['iDisplayStart'];
+	$numPerPage=isset($_REQUEST['iDisplayLength'])
+		?(int)$_REQUEST['iDisplayLength']:25;
+	$startAt=isset($_REQUEST['iDisplayStart'])?(int)$_REQUEST['iDisplayStart']:0;
 	$userfilter=Core_isAdmin()
 		?'':' and user_id='.$_SESSION['userdata']['id'];
 	$totalRecords=dbOne(
