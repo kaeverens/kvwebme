@@ -344,9 +344,12 @@ if ($PAGEDATA->description) {
 	$c.='<meta http-equiv="description" content="'
 		.htmlspecialchars($PAGEDATA->description).'"/>';
 }
-if (@$PAGEDATA->vars['google-site-verification']) {
+if (isset($PAGEDATA->vars['google-site-verification'])) {
 	$c.='<meta name="google-site-verification" content="'
 		.htmlspecialchars($PAGEDATA->vars['google-site-verification']).'" />';
+}
+if (isset($PAGEDATA->vars['header_html'])) {
+	$c.=$PAGEDATA->vars['header_html'];
 }
 $smarty->assign(
 	'pagename',
