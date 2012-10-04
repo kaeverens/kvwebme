@@ -80,7 +80,6 @@ function Core_languagesGetUi($params=null) {
 				$ui.='>'.htmlspecialchars($language['name']).'</a></li>';
 			}
 			$ui.='</ul>';
-			WW_addScript('/j/lang.js');
 			// }
 	}
 	return $ui;

@@ -21,7 +21,8 @@ header('Content-type: text/javascript;');
 
 $files=array(
 	'jquery.json-2.2.min.js',
-	'js.js'
+	'js.js',
+	'lang.js'
 );
 if (isset($_REQUEST['extra'])) {
 	$fs=explode('*', $_REQUEST['extra']);

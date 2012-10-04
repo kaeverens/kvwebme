@@ -113,7 +113,9 @@ function Products_owner2($params, $smarty) {
 	*/
 function Products_priceBase2($params, $smarty) {
 	$pid=$smarty->smarty->tpl_vars['product']->value->id;
-	if (!$params['vat'] && $_SESSION['onlinestore_prices_shown_post_vat']) {
+	if ((!isset($params['vat']) || !$params['vat'])
+		&& $_SESSION['onlinestore_prices_shown_post_vat']
+	) {
 		$params['vat']=1;
 	}
 	$product=Product::getInstance($pid);
@@ -220,7 +222,9 @@ function Products_priceDiscountPercent2($params, $smarty) {
 	*/
 function Products_priceSale2($params, $smarty) {
 	$pid=$smarty->smarty->tpl_vars['product']->value->id;
-	if (!$params['vat'] && $_SESSION['onlinestore_prices_shown_post_vat']) {
+	if ((!isset($params['vat']) || !$params['vat'])
+		&& $_SESSION['onlinestore_prices_shown_post_vat']
+	) {
 		$params['vat']=1;
 	}
 	$product=Product::getInstance($pid);

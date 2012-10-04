@@ -1177,7 +1177,7 @@ function Products_addToCart() {
 	*
 	* @return whatever
 	*/
-function Products_addTemplateToField($str, $tpl) {
+function Products_addTemplateToField($str, $tplBody='', $tplHeader='') {
 	WW_addScript('products/j/variants-popup.js');
 	$str=preg_replace(
 		'/^(<[^>]*class=")/', '\1product-variants-popup ', $str, 1, $c
@@ -1185,7 +1185,17 @@ function Products_addTemplateToField($str, $tpl) {
 	if (!$c) {
 		$str=preg_replace('/>/', ' class="product-variants-popup">', $str, 1);
 	}
-	return preg_replace('/>/', ' data-variants-template="'.$tpl.'">', $str, 1);
+	if ($tplBody) {
+		$str=preg_replace(
+			'/>/', ' data-variants-template="'.$tplBody.'">', $str, 1
+		);
+	}
+	if ($tplHeader) {
+		$str=preg_replace(
+			'/>/', ' data-variants-template-header="'.$tplHeader.'">', $str, 1
+		);
+	}
+	return $str;
 }
 
 // }

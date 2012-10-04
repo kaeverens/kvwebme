@@ -1,16 +1,21 @@
 $(function() {
 	$('.product-variants-popup').each(function() {
-		var $this=$(this);
 		var $sel=$(this);
+		var $productEl=$sel.closest('.products-product');
 		$sel.css('display', 'none');
 		var html='<button/>';
-		var tplId=$sel.data('variants-template');
-		if (tplId) {
-			$('#'+tplId).css('display', 'none');
+		var tplBody=$sel.data('variants-template'),
+			tplHeader=$sel.data('variants-template-header');
+		if (tplBody) {
+			$('#'+tplBody).css('display', 'none');
+		}
+		if (tplHeader) {
+			$('#'+tplHeader).css('display', 'none');
 		}
 		var $this=$(html)
 			.insertAfter($sel).text($sel.find(':selected').text()+' ▾')
-			.data('template-body', tplId);
+			.data('template-body', tplBody)
+			.data('template-header', tplHeader);
 		$this.click(function() {
 			if ($this.data('template-body')) {
 				var template_body=$('#'+$this.data('template-body')).outerHTML();
@@ -21,19 +26,22 @@ $(function() {
 					+'<td><a data-product-link="1">Read more</a></td></tr>'
 					+'</table>';
 			}
-			alert(template_body);
+			var template_header='<h2 data-product-val="name"/>';
+			if ($this.data('template-header')) {
+				template_header=$('#'+$this.data('template-header')).outerHTML();
+			}
 			var pid=+$(this).closest('.products-product').attr('id')
 				.replace('products-', '');
 			var $popup=$('<div id="popup-wrapper">'
+				+'<div id="popup-header"></div>'
 				+'<div id="popup-body"></div>'
 				+'</div>');
 			function populate($el, ret) {
-				$el.css('display', 'block').removeAttr('id');
+				$el.show().removeAttr('id');
 				$el.find('*').each(function() {
 					var $this=$(this);
 					if ($this.data('product-val')) {
 						var name=$this.data('product-val');
-						console.log(name);
 						if (ret[name]!=undefined) {
 							$this.text(ret[name]);
 						}
@@ -43,6 +51,74 @@ $(function() {
 					}
 				});
 			}
+			$.post(
+				'/a/p=products/f=getProduct/id='+pid,
+				function(ret) {
+					var $tplHeader=$(template_header);
+					var $head=$popup.find('#popup-header');
+					$head.append($tplHeader);
+					populate($head.find('>*'), ret);
+					var $body=$popup.find('#popup-body');
+					var addToBasePrice=0;
+					var thisName=$sel.attr('name').replace('products_values_', '');
+					$productEl.find('input,select').each(function() {
+						var $this=$(this);
+						var name=$this.attr('name');
+						if (name==thisName || !(/^products_values_/.test(name))
+							|| $this.is('form input, form select')
+						) {
+							return;
+						}
+						var val=$this.val();
+						if ($this.is('select') && /\|[0-9]/.test(val)) {
+							addToBasePrice+=+val.replace(/.*\|/, '');
+							val=val.replace(/\|.*/, '');
+						}
+						ret[name.replace('products_values_', '')]=val;
+					});
+					$sel.find('option').each(function() {
+						var addToBasePrice2=0;
+						var $entry=$(template_body);
+						var val=$(this).attr('value');
+						// { "Add to Cart" button
+						var $select=$('<button>'+__('Add to Cart')+'</button>')
+							.click((function(variant, val){
+								return function() {
+									$sel.val(val).change();
+									$this.text($sel.find(':selected').text()+' ▾');
+									setTimeout(function() {
+										$productEl.find('form').trigger('submit');
+									}, 1);
+									return $popup.remove();
+								}
+							})(thisName, val));
+						$entry.find('.products-add-to-cart').append($select);
+						// }
+						// { "Select Variant" button
+						var $select=$('<button>'+__('Select Variant')+'</button>')
+							.click((function(variant, val){
+								return function() {
+									$sel.val(val).change();
+									$this.text($sel.find(':selected').text()+' ▾');
+									return $popup.remove();
+								}
+							})(thisName, val));
+						$entry.find('.products-select-variant').append($select);
+						// }
+						if (/\|[0-9]/.test(val)) {
+							addToBasePrice2+=+val.replace(/.*\|/, '');
+							val=val.replace(/\|.*/, '');
+						}
+						ret[thisName]=val
+						populate($entry, ret);
+						$body.append($entry);
+					});
+					$popup.dialog({
+						'modal':true,
+						'width':'80%'
+					});
+				}
+			);
 			return false;
 		});
 	});
