@@ -395,7 +395,7 @@ echo '<tr><th>'.__('Google Site Verification').'</th><td><input name="page_'
 // { other <head> HTML
 echo '<tr><th>'.__('other &lt;head&gt; HTML').'</th>'
 	.'<td><textarea class="large" name="page_vars[header_html]">'
-	.htmlspecialchars($page_vars['header_html']).'</textarea></td></tr>';
+	.htmlspecialchars(@$page_vars['header_html']).'</textarea></td></tr>';
 // }
 echo '</table></div>';
 // }

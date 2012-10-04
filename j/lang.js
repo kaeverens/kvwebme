@@ -77,5 +77,5 @@ function __(str, params, context) {
 		context='core';
 	}
 	setTimeout(__langInit, 1);
-	return '<span class="__" lang-context="'+context+'">'+str+'</span>';
+	return '<translation class="__" lang-context="'+context+'">'+str+'</translation>';
 }

@@ -368,9 +368,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 				.' where name like "email_order_made_customer%"',
 				'name'
 			);
-			$body=addslashes(
-				$smarty->fetch($tpldir.$PAGEDATA->id.'-order_made_customer')
-			);
+			$body=$smarty->fetch($tpldir.$PAGEDATA->id.'-order_made_customer');
 			$additional_headers='';
 			if ($rs['email_order_made_customer_recipient']['val']) {
 				$additional_headers='BCC: '
@@ -403,9 +401,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 				.' where name like "email_order_made_admin%"',
 				'name'
 			);
-			$body=addslashes(
-				$smarty->fetch($tpldir.$PAGEDATA->id.'-order_made_admin')
-			);
+			$body=$smarty->fetch($tpldir.$PAGEDATA->id.'-order_made_admin');
 			Core_mail(
 				$rs['email_order_made_admin_recipient']['val'],
 				$rs['email_order_made_admin_subject']['val'],

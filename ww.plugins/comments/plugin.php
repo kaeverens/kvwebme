@@ -80,7 +80,7 @@ function Comments_getRssLink($PAGEDATA) {
 		?false
 		:array(
 			'Comments for '.$PAGEDATA->name,
-			$PAGEDATA->getRelativeURL().'?_p=rss&p=comments'
+			$PAGEDATA->getRelativeURL().'?_p=rss&amp;p=comments'
 		);
 }
 

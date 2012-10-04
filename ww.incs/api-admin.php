@@ -145,7 +145,7 @@ function Core_adminEmailsSentDT() {
 	$length=(int)$_REQUEST['iDisplayLength'];
 	$search=$_REQUEST['sSearch'];
 	$orderby=(int)$_REQUEST['iSortCol_0'];
-	$orderdesc=$_REQUEST['sSortDir_0']=='desc'?'desc':'asc';
+	$orderdesc=$_REQUEST['sSortDir_0']=='asc'?'asc':'desc';
 	switch ($orderby) {
 		case 1:
 			$orderby='to_email';
@@ -153,11 +153,8 @@ function Core_adminEmailsSentDT() {
 		case 2:
 			$orderby='subject';
 		break;
-		case 3:
-			$orderby='cdate';
-		break;
 		default:
-			$orderby='to_email';
+			$orderby='cdate';
 	}
 	$filters=array();
 	if ($search) {

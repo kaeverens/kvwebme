@@ -903,8 +903,9 @@ function CoreSiteoptions_screenEmails() {
 	function showEmailsSent(panel) {
 		var $panel=$(panel).empty()
 			.html('<div><table id="emails-sent-datatable">'
-				+'<thead><tr><th>'+__('Date')+'</th><th>'+__('Recipient')+'</th><th>'+__('Subject')+'</th><th></th>'
-				+'</tr></thead>'
+				+'<thead>'
+				+'<tr><th>'+__('Date')+'</th><th>'+__('Recipient')+'</th><th>'+__('Subject')+'</th><th/></tr>'
+				+'</thead>'
 				+'<tbody/></table></div>');
 		var params={
 			"sAjaxSource":'/a/f=adminEmailsSentDT',
@@ -931,7 +932,7 @@ function CoreSiteoptions_screenEmails() {
 				return nRow;
 			}
 		};
-		var datatable=$('#emails-sent-datatable').dataTable(params);
+		$('#emails-sent-datatable').dataTable(params);
 	}
 	function showTemplates(panel) {
 		var $panel=$(panel).empty();
@@ -1063,7 +1064,7 @@ function CoreSiteoptions_screenEmails() {
 				}
 			});
 	}
-	var $content=$('#content').empty().append('<h1>'+_('Emails')+'</h1>');
+	var $content=$('#content').empty().append('<h1>'+__('Emails')+'</h1>');
 	// { show tabs
 	$('<div><ul>'
 		+'<li><a href="#tab-emails-sent">'+__('Emails Sent')+'</a></li>'

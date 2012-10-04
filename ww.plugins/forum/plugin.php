@@ -127,7 +127,7 @@ function Forum_getRssLink($PAGEDATA) {
 	return $PAGEDATA->type=='forum'
 		?array(
 			'Posts for '.$PAGEDATA->name,
-			$PAGEDATA->getRelativeURL().'?_p=rss&p=forum'
+			$PAGEDATA->getRelativeURL().'?_p=rss&amp;p=forum'
 		)
 		:false;
 }
