@@ -1172,13 +1172,20 @@ function Products_addToCart() {
 /**
 	* add template details to a field
 	*
-	* @param array  $params Smarty parameters
-	* @param object $smarty the Smarty object
+	* @param string $str string to manipulate
+	* @param string $tpl template to use
 	*
 	* @return whatever
 	*/
-function Products_addTemplateToField($params, $smarty) {
-	var_dump($params);
+function Products_addTemplateToField($str, $tpl) {
+	WW_addScript('products/j/variants-popup.js');
+	$str=preg_replace(
+		'/^(<[^>]*class=")/', '\1product-variants-popup ', $str, 1, $c
+	);
+	if (!$c) {
+		$str=preg_replace('/>/', ' class="product-variants-popup">', $str, 1);
+	}
+	return preg_replace('/>/', ' data-variants-template="'.$tpl.'">', $str, 1);
 }
 
 // }
