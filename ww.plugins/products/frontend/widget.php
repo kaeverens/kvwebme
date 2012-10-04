@@ -83,9 +83,9 @@ switch ($widget_type) {
 					<p class="products-widget-price-inner">'
 					.OnlineStore_numToPrice(($product->vals['online-store']['_price'])*(1+($pvat['vat'])/100))
 				.'</p></div>'
-				.'<a class="product-widget-link" href="'.$product->getRelativeURL().'">'.__('more info').'</a>';
+				.'<a class="product-widget-link" href="'.$product->getRelativeURL().'">'.__('more info').'</a></div>';
 		}
-		$html.='</div></div>';
+		$html.='</div>';
 	break; // }
 	case 'Tree View': // { Tree View
 		$html='<div class="product-categories-tree"><ul>';

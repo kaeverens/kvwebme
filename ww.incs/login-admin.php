@@ -16,22 +16,22 @@
 	<body>
 		<div id="tabs" style="width:350px;margin:0 auto;">
 			<ul>
-				<li><a href="#admin-login">Login</a></li>
-				<li><a href="#admin-forgotten-password">Forgotten Password</a></li>
+				<li><a href="#admin-login">'.__('Login').'</a></li>
+				<li><a href="#admin-forgotten-password">'.__('Forgotten Password').'</a></li>
 			</ul>
 			<form id="admin-login" action="./" method="post">
 				<table>
 					<tr>
-						<th class="__" lang-context="core">Email</th>
+						<th>'.__('Email').'</th>
 						<td><input id="email" type="email" /></td>
 					</tr>
 					<tr>
-						<th class="__" lang-context="core">Password</th>
+						<th>'.__('Password').'</th>
 						<td><input type="password" id="password" /></td>
 					</tr>
 					<tr>
 						<th colspan="2" style="text-align:right;">
-							<button id="login" class="__" lang-context="core">Log In</button>
+							<button id="login">'.__('Log In').'</button>
 						</th>
 					</tr>
 				</table>
@@ -44,13 +44,13 @@
 					</tr>
 					<tr>
 						<th colspan="2" style="text-align:right;">
-							<button id="send-token" class="__">Send Token</button>
+							<button id="send-token">'.__('Send Token').'</button>
 						</th>
 					</tr>
 				</table>
-				<p class="__">If you've forgotten your password, use the form above
+				<p >'.__('If you've forgotten your password, use the form above
 					to send a token for creating a new password, then use the token
-					below to change your password</p>
+					below to change your password').'</p>
 				<table>
 					<tr><th class="__">Token</th><td><input id="token"/></td></tr>
 					<tr>
@@ -58,11 +58,11 @@
 						<td><input id="password2" type="password"/></td>
 					</tr>
 					<tr>
-						<th class="__">(repeat)</th>
+						<th>'.__('Repeat Password').'</th>
 						<td><input id="password3" type="password"/></td>
 					</tr>
 					<tr><th colspan="2" style="text-align:right;">
-						<button id="change-password" class="__">Change Password</button>
+						<button id="change-password">'.__('Change Password').'</button>
 					</th></tr>
 				</table>
 			</form>
@@ -77,7 +77,7 @@
 				$('#login').click(function(){
 					var email=$('#email').val(), pass=$('#password').val();
 					if (email=='' || pass=='') {
-						return alert('<?php echo __('both email and password must be filled in'); ?>');
+						return alert('<?php echo __('Both email and password must be filled in'); ?>');
 					}
 					$.post('/a/f=login', {
 						'email':   email,
@@ -97,7 +97,7 @@
 				$('#send-token').click(function(){
 					var email=$('#email-r').val();
 					if (email=='') {
-						return alert('<?php echo __('the email must be filled in'); ?>');
+						return alert('<?php echo __('The email must be filled in'); ?>');
 					}
 					$.post('/a/f=sendLoginToken', {
 						'email':   email
@@ -107,7 +107,7 @@
 						}
 						alert('<?php
 echo __(
-	'please check your email, then use the form below to reset '
+	'Please check your email, then use the form below to reset '
 	.'your password'
 );
 					?>');
@@ -119,11 +119,11 @@ echo __(
 						pass2=$('#password2').val(), pass3=$('#password3').val();
 					if (email=='' || token=='' || pass2=='' || pass3=='') {
 						return alert('<?php
-							echo __('email, token and passwords must be filled in');
+							echo __('Email, token and passwords must be filled in');
 							?>');
 					}
 					if (pass2!=pass3) {
-						return alert('<?php echo __('passwords do not match'); ?>');
+						return alert('<?php echo __('Passwords do not match'); ?>');
 					}
 					$.post('/a/f=updateUserPasswordUsingToken', {
 						'email':   email,
@@ -135,7 +135,7 @@ echo __(
 						}
 						$('#email').val(email);
 						$('#password').val(pass2);
-						alert('<?php echo __('password updated. you can log in now.'); ?>');
+						alert('<?php echo __('Password updated. you can log in now.'); ?>');
 						$('#login').click();
 					});
 					return false;

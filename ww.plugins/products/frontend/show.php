@@ -165,7 +165,7 @@ function Products_getAddToCartButton($text, $baseprice=0, $saleprice=0) {
 	*/
 function Products_imageNotFound($params, $smarty) {
 	$params=array_merge(
-		array('width'=>64, 'height'=>64),
+		array('width'=>200, 'height'=>200),
 		$params
 	);
 	$s=$params['width']<$params['height']?$params['width']:$params['height'];
