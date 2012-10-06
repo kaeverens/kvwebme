@@ -3,7 +3,7 @@ $(function() {
 		var $sel=$(this);
 		var $productEl=$sel.closest('.products-product');
 		$sel.css('display', 'none');
-		var html='<button/>';
+		var html='<button class="products-variant-selector"/>';
 		var tplBody=$sel.data('variants-template'),
 			tplHeader=$sel.data('variants-template-header');
 		if (tplBody) {
@@ -117,6 +117,7 @@ $(function() {
 						'modal':true,
 						'width':'80%'
 					});
+					$('.ui-dialog').addClass('products-variants-popup');
 				}
 			);
 			return false;
