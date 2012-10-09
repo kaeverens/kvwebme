@@ -109,7 +109,24 @@ $(function() {
 							addToBasePrice2+=+val.replace(/.*\|/, '');
 							val=val.replace(/\|.*/, '');
 						}
-						ret[thisName]=val
+						ret[thisName]=val;
+						ret._amt_in_stock=0;
+						if (ret.stockcontrol && ret.stockcontrol.length) {
+							for (var j=0;j<ret.stockcontrol.length;++j) {
+								var found=true;
+								$.each(ret.stockcontrol[j], function(k, v) {
+									if (k=='_amt') {
+										return;
+									}
+									if (ret[k]!=v) {
+										found=false;
+									}
+								});
+								if (found) {
+									ret._amt_in_stock=ret.stockcontrol[j]._amt;
+								}
+							}
+						}
 						populate($entry, ret);
 						$body.append($entry);
 					});

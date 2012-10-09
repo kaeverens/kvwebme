@@ -298,7 +298,16 @@ function Products_getProduct() {
 	if (!$p || !$p->id) {
 		return false;
 	}
-	return Products_getProductMainDetails($p);
+	$mainDetails=Products_getProductMainDetails($p);
+	if ($p->vals['stockcontrol_details']) {
+		$mainDetails['stockcontrol']=json_decode(
+			$p->vals['stockcontrol_details'], true
+		);
+	}
+	else {
+		$mainDetails['stockcontrol']=false;
+	}
+	return $mainDetails;
 }
 
 // }
