@@ -2787,6 +2787,8 @@ function Products_showRelatedProducts($params, $smarty) {
 		array(
 			'mode'=>'table',
 			'type'=>'',
+			'thumb_width'=>180,
+			'thumb_height'=>180,
 			'button_text'=>__('Related Products'),
 			'template_header'=>false,
 			'template_body'=>false
@@ -2825,7 +2827,7 @@ function Products_showRelatedProducts($params, $smarty) {
 		}
 	}
 	$rs=dbAll(
-		'select to_id from products_relations where from_id='.$productID.$type
+		'select distinct to_id from products_relations where from_id='.$productID.$type
 	);
 	if (count($rs)) {
 		$h=array();
@@ -2850,18 +2852,20 @@ function Products_showRelatedProducts($params, $smarty) {
 				$h[]=htmlspecialchars(__FromJson($p->name)).'</a>';
 				continue;
 			}
-			if (!$vals['online_store_fields']) {
+			if (!isset($vals['online_store_fields']) || !$vals['online_store_fields']) {
 				$pvat = array("vat" => $_SESSION['onlinestore_vat_percent']);
 				require_once SCRIPTBASE.'/ww.plugins/online-store/frontend/'
 					.'smarty-functions.php';
-				$h[]='<img src="/a/w=180/h=180//f=getImg/'.$iid.'" />'
+				$h[]='<img src="/a/w='.$params['thumb_width'].'/h='.$params['thumb_height']
+					.'/f=getImg/'.$iid.'" />'
 					.OnlineStore_productPriceFull2($pvat, $smarty)
 					.'<p class="product_related_name">'
 					.htmlspecialchars(__fromJSON($p->name)).'</p></a>';
 				continue;
 			}
 			
-			$h[]='<img src="/a/w=180/h=180/f=getImg/'.$iid.'"/>'
+			$h[]='<img src="/a/w='.$params['thumb_width'].'/h='.$params['thumb_height']
+				.'/f=getImg/'.$iid.'"/>'
 				.'<br/>'.htmlspecialchars(__fromJSON($p->name)).'</a>';
 		}
 		return count($h)

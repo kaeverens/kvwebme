@@ -36,7 +36,11 @@ $plugin=array(
 );
 // }
 
+// { MailingList_showForm
+
 function MailingList_showForm(){
 	require_once SCRIPTBASE.'ww.plugins/mailing-list/frontend/mailing-list.php';
 	return Mailinglist_showForm2();
 }
+
+// }
