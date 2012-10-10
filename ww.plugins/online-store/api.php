@@ -51,11 +51,12 @@ function OnlineStore_getExpiryNotification() {
 			'select template_expired_notification from products_types where id='
 			.$typeid
 		);
-		$template=$t['template_expired_notification']
+		$template=strlen($t['template_expired_notification'])>4
 			?$t['template_expired_notification']
 			:''.__('This product has expired. You cannot add it to the cart.').'';
 		file_put_contents($nfile, $template);
 	}
+	require_once SCRIPTBASE.'/ww.incs/common.php';
 	$smarty=Products_setupSmarty();
 	$smarty->assign('product', $product);
 	$smarty->assign('product_id', $product->get('id'));
