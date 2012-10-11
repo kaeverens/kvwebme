@@ -11,31 +11,7 @@
 	* @link     http://kvsites.ie/
 	*/
 
-/**
-	* show alert
-	*
-	* @param string $text text to alert
-	*
-	* @return null
-	*/
-function Mailinglist_showAlert($text) {
-	return '<script defer="defer">fAlert(\''.$text.'\');</script>';
-}
-
-/**
-	* check person's email and name
-	*
-	* @param string $email email address to check format of
-	* @param string $name  name to check
-	*
-	* @return null
-	*/
-function Mailinglist_checkNameAndEmail($email, $name) {
-	if ($name=='') {
-		return false;
-	}
-	return filter_var($email, FILTER_VALIDATE_EMAIL);
-}
+// { Mailinglist_addPersonToDatabase
 
 /**
 	* add a person to the database
@@ -62,38 +38,26 @@ function Mailinglist_addPersonToDatabase($email, $name, $mobile) {
 	return $hash;
 }
 
+// }
+// { Mailinglist_checkNameAndEmail
+
 /**
-	* send a confirmation email
+	* check person's email and name
 	*
-	* @param string $email email address to send the confirmation to
-	* @param string $hash  hash key for verification
+	* @param string $email email address to check format of
+	* @param string $name  name to check
 	*
 	* @return null
 	*/
-function Mailinglist_sendConfirmation($email, $hash) {
-	$data=dbAll('select name,value from mailing_list_options');
-	foreach ($data as $d) {
-		$EMAIL[$d['name']]=$d['value'];
+function Mailinglist_checkNameAndEmail($email, $name) {
+	if ($name=='') {
+		return false;
 	}
-	if ($_SERVER['HTTPS']=='on') {
-		$http='https';
-	}
-	else {
-		$http='http';
-	}
-	$url = $http.'://'.$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
-	$EMAIL['body']=str_replace(
-		'%link%',
-		$url.'?mailing_list_hash='.$hash,
-		$EMAIL['body']
-	);
-	Core_mail(
-		$email,
-		$EMAIL['subject'],
-		$EMAIL['body'],
-		$EMAIL['from']
-	);
+	return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
+
+// }
+// { Mailinglist_createForm
 
 /**
 	* function for creating the form for the mailinglist
@@ -130,6 +94,59 @@ function Mailinglist_createForm() {
 	$f.='</form>';
 	return $f;
 }
+
+// }
+// { Mailinglist_sendConfirmation
+
+/**
+	* send a confirmation email
+	*
+	* @param string $email email address to send the confirmation to
+	* @param string $hash  hash key for verification
+	*
+	* @return null
+	*/
+function Mailinglist_sendConfirmation($email, $hash) {
+	$data=dbAll('select name,value from mailing_list_options');
+	foreach ($data as $d) {
+		$EMAIL[$d['name']]=$d['value'];
+	}
+	if ($_SERVER['HTTPS']=='on') {
+		$http='https';
+	}
+	else {
+		$http='http';
+	}
+	$url = $http.'://'.$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+	$EMAIL['body']=str_replace(
+		'%link%',
+		$url.'?mailing_list_hash='.$hash,
+		$EMAIL['body']
+	);
+	Core_mail(
+		$email,
+		$EMAIL['subject'],
+		$EMAIL['body'],
+		$EMAIL['from']
+	);
+}
+
+// }
+// { Mailinglist_showAlert
+
+/**
+	* show alert
+	*
+	* @param string $text text to alert
+	*
+	* @return null
+	*/
+function Mailinglist_showAlert($text) {
+	return '<script defer="defer">fAlert(\''.$text.'\');</script>';
+}
+
+// }
+// { Mailinglist_showForm2
 
 /**
 	* function for showing the form for the mailinglist
@@ -182,3 +199,5 @@ function Mailinglist_showForm2() {
 	}
 	return $html;
 }
+
+// }

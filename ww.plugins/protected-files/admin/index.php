@@ -20,7 +20,7 @@ function get_subdirs($base, $dir) {
 	}
 	return $arr;
 }
-$id=(int)$_REQUEST['id'];
+$id=(int)@$_REQUEST['id'];
 if (isset($_REQUEST['action'])) {
 	if ($_REQUEST['action']=='Save Protected Files') {
 		$details=array(
@@ -50,7 +50,7 @@ if (isset($_REQUEST['action'])) {
 
 $r=dbRow('select * from protected_files where id='.$id);
 $details=json_decode($r['details'], true);
-switch ($_REQUEST['view']) {
+switch (@$_REQUEST['view']) {
 	case 'log': // {
 		echo '<table><tr><th>Filename</th><th>Completed</th><th>Email</th><th>D'
 			.'ate/Time</th></tr>';
@@ -100,9 +100,9 @@ switch ($_REQUEST['view']) {
 		}
 		echo '</tr>';
 		// { email to send alerts to
-		echo '<tr><th>Email to send download alerts to</th><td><input name="rec'
-			.'ipient_email" value="'.htmlspecialchars($r['recipient_email'])
-			.'" /></td>';
+		echo '<tr><th>Email to send download alerts to</th><td>'
+			.'<input name="recipient_email" value="'
+			.htmlspecialchars(@$r['recipient_email']).'" /></td>';
 		// }
 		// { page template
 		echo '<th>Page Template</th><td>';
@@ -133,7 +133,7 @@ switch ($_REQUEST['view']) {
 		// }
 		// { message
 		echo '<tr><th>Message</th><td colspan="3">'
-			.ckeditor('message', $r['message'], 0, 0, 150).'</td></tr>';
+			.ckeditor('message', @$r['message'], 0, 0, 150).'</td></tr>';
 		// }
 		// { save
 		echo '<tr><th colspan="2"><input type="hidden" name="id" value="'.$id

@@ -136,6 +136,11 @@ function OnlineStore_checkQrCode() {
 	*/
 function OnlineStore_checkVoucher($params) {
 	require_once dirname(__FILE__).'/frontend/voucher-libs.php';
+	if (!isset($params['code']) || !isset($params['email'])) {
+		return array(
+			'error'=>__('Invalid or missing parameters')
+		);
+	}
 	$valid=OnlineStore_voucherCheckValidity($params['code'], $params['email']);
 	if ($valid['error']) {
 		return $valid;

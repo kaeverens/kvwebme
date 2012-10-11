@@ -82,10 +82,8 @@ function IssueTracker_adminTypeNew() {
 	if (!$name) {
 		return array('error'=>'no name provided');
 	}
-	if (dbOne(
-		'select id from issuetracker_types where name="'.addslashes($name).'"',
-		'id'
-	)) {
+	$sql='select id from issuetracker_types where name="'.addslashes($name).'"';
+	if (dbOne($sql), 'id') {
 		return array('error'=>'an issue type with that name already exists');
 	}
 	dbQuery(

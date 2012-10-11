@@ -12,6 +12,13 @@
   * @link       www.kvweb.me
  */
 
+// {
+
+/**
+	* ImageGallery_adminDetailsEdit
+	*
+	* @return status
+	*/
 function ImageGallery_adminDetailsEdit() {
 	$id=(int)@$_REQUEST['id'];
 	if (!$id) {
@@ -26,6 +33,16 @@ function ImageGallery_adminDetailsEdit() {
 	dbQuery('update image_gallery set meta="'.addslashes($meta).'" where id='.$id);
 	return array('ok'=>1);
 }
+
+// }
+// { ImageGallery_adminDetailsGet
+
+/**
+	* ImageGallery_adminDetailsGet
+	* get details of a gallery
+	*
+	* @return details of the gallery
+	*/
 function ImageGallery_adminDetailsGet() {
 	$id=(int)@$_REQUEST['id'];
 	if (!$id) {
@@ -35,6 +52,15 @@ function ImageGallery_adminDetailsGet() {
 	$meta=json_decode($meta, true);
 	return $meta;
 }
+
+// }
+// { ImageGallery_adminFrameUpload
+
+/**
+	* upload a frame to the gallery
+	*
+	* @return status
+	*/
 function ImageGallery_adminFrameUpload() {
 	$gallery_id=(int)$_REQUEST['id'];
 	if (!$gallery_id) {
@@ -49,6 +75,15 @@ function ImageGallery_adminFrameUpload() {
 	`convert $from $to`;
 	return array('done'=>1);
 }
+
+// }
+// { ImageGallery_adminAddVideo
+
+/**
+	* add a video to a gallery
+	*
+	* @return null
+	*/
 function ImageGallery_adminAddVideo() {
 	$id=(int)@$_REQUEST['id'];
 	$link=@$_REQUEST['link'];
@@ -69,3 +104,5 @@ function ImageGallery_adminAddVideo() {
 		.'('.$id.',"9999","video","'.addslashes($meta).'")';
 	dbQuery($query);
 }
+
+// }

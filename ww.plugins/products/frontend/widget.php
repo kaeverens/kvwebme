@@ -59,8 +59,8 @@ switch ($widget_type) {
 			.'<script defer="defer">$(function(){'
 			.'products_widget("'.$id.'",'.json_encode($cats).');'
 			.'});</script>';
-		$html.='<!--[if IE]><script defer="defer" src="/ww.plugins/products/frontend/excanvas.js">'
-			.'</script><![endif]-->';
+		$html.='<!--[if IE]><script defer="defer" src="/ww.plugins/products/'
+			.'frontend/excanvas.js"></script><![endif]-->';
 		WW_addScript('products/frontend/jquery.canvas.js');
 		WW_addScript('products/frontend/widget.js');
 	break; // }
@@ -72,18 +72,22 @@ switch ($widget_type) {
 			$iid=$product->getDefaultImage();
 			
 			$img=$iid
-				?'<a class="product-widget-imglink" href="'.$product->getRelativeURL().'">
-				<img class="product-widget-img" src="/a/w=200/h=auto/' // Changed from w=100/h=100 to w=200/h=auto //DA 29-08-12
+				?'<a class="product-widget-imglink" href="'.$product->getRelativeURL()
+				.'"><img class="product-widget-img" src="/a/w=200/h=auto/'
 				.'/f=getImg/'.$iid.'"/></a>'
 				:'';
 				$pvat = array("vat" => $_SESSION['onlinestore_vat_percent']);
 			$html.='<div class="products-widget-inner">'.$img
-				.'<p class="products-widget-name">'.htmlspecialchars(__FromJson($product->name)).'</p>'				
-				.'<div class="products-widget-price">
-					<p class="products-widget-price-inner">'
-					.OnlineStore_numToPrice(($product->vals['online-store']['_price'])*(1+($pvat['vat'])/100))
+				.'<p class="products-widget-name">'
+				.htmlspecialchars(__FromJson($product->name)).'</p>'				
+				.'<div class="products-widget-price">'
+				.'<p class="products-widget-price-inner">'
+				.OnlineStore_numToPrice(
+					($product->vals['online-store']['_price'])*(1+($pvat['vat'])/100)
+				)
 				.'</p></div>'
-				.'<a class="product-widget-link" href="'.$product->getRelativeURL().'">'.__('more info').'</a></div>';
+				.'<a class="product-widget-link" href="'.$product->getRelativeURL().'">'
+				.__('more info').'</a></div>';
 		}
 		$html.='</div>';
 	break; // }

@@ -12,6 +12,10 @@
   * @link     http://kvsites.ie/
   */
 require_once '../ww.incs/basics.php';
+$themes_personal = USERBASE.'/themes-personal/';
+$temp_dir = USERBASE.'/themes-personal/temp_dir/';
+
+// { Theme_findErrors
 
 /**
   * checks themes for php files
@@ -21,23 +25,29 @@ require_once '../ww.incs/basics.php';
   * @return mixed errors, or false if no errors
   */
 function Theme_findErrors($dir) {
-	$files = scandir($dir);
+	if (!file_exists($dir) || !is_dir($dir)) {
+		return false;
+	}
+	$files=new DirectoryIterator($dir);
 	foreach ($files as $file) {
-		if ($file == '.' || $file == '..') {
+		if ($file->isDot()) {
 			continue;
 		}
-		if (is_dir($file)) {
-			$check=Theme_findErrors($file);
+		if ($file->isDir()) {
+			$check=Theme_findErrors($dir.'/'.$file->getFilename());
 			if ($check) {
 				return $check;
 			}
 		}
-		if (preg_match('/\.php(\.|$)/', $file)) {
+		if (preg_match('/\.php(\.|$)/', $file->getFilename())) {
 			return 'archive contains PHP files';
 		}
 	}
 	return false;
 }
+
+// }
+// { Theme_getFirstVariant
 
 /**
   * find a variant
@@ -59,6 +69,8 @@ function Theme_getFirstVariant($dir) {
 	return false;
 }
 
+// }
+
 // { make sure post is set and files are uploaded
 if (!isset($_POST[ 'install-theme' ]) && !isset($_POST[ 'upload-theme' ])
 	|| !isset($_FILES[ 'theme-zip' ][ 'tmp_name' ])
@@ -70,17 +82,15 @@ if (!isset($_POST[ 'install-theme' ]) && !isset($_POST[ 'upload-theme' ])
 }
 // }
 // { make temporary dir and move uploaded file there
-$themes_personal = USERBASE.'themes-personal/';
 
-//makes the $themes_personal folder if it does not exist
-if(!is_dir($themes_personal))
-  shell_exec('mkdir '. $themes_personal);
+@mkdir($themes_personal);
 
-$temp_dir = USERBASE.'themes-personal/temp_dir/';
-echo $temp_dir;
 shell_exec('rm -rf ' . $temp_dir); // start fresh
 shell_exec('mkdir ' . $temp_dir);
-move_uploaded_file($_FILES[ 'theme-zip' ][ 'tmp_name' ],$temp_dir . $_FILES[ 'theme-zip' ][ 'name' ]);
+move_uploaded_file(
+	$_FILES['theme-zip']['tmp_name'],
+	$temp_dir . $_FILES['theme-zip']['name']
+);
 
 echo '<script>parent.themes_dialog("<p>unzipping archive</p>");</script>';
 shell_exec('cd ' . $temp_dir . ' && unzip ' . $_FILES[ 'theme-zip' ][ 'name' ]);
@@ -90,7 +100,8 @@ if (!file_exists($theme_folder)) { // argh... why do people do this?
 	$files=new DirectoryIterator($temp_dir);
 	mkdir($theme_folder);
 	foreach ($files as $file) {
-		if ($file->isDot() || $file->getFilename()==$name.'.zip') {
+		$fname=$file->getFilename();
+		if ($file->isDot() || $fname==$name.'.zip' || $fname==$name) {
 			continue;
 		}
 		rename($file->getPathname(), $theme_folder.'/'.$file->getFilename());
@@ -118,7 +129,6 @@ elseif (file_exists($theme_folder.'/index.html')
 	echo '<script>parent.themes_dialog("<p>freecsstemplates.org theme detecte'
 		.'d. Trying to convert.</p>");</script>';
 	require '../ww.admin/siteoptions/themes/convert-freecsstemplates.org.php';
-	shell_exec('rm -rf ' . $temp_dir);
 }
 else { // unknown format!
 	echo '<script>parent.themes_dialog("<em>Unknown theme format. Failed to i'

@@ -13,6 +13,8 @@
   */
 
 require_once '../../../ww.incs/basics.php';
+$themes_personal = USERBASE.'/themes-personal/';
+$temp_dir = USERBASE.'/themes-personal/temp_dir/';
 
 // { Theme_findErrors
 
@@ -81,13 +83,11 @@ if (!isset($_POST[ 'install-theme' ]) && !isset($_POST[ 'upload-theme' ])
 }
 // }
 // { make temporary dir and move uploaded file there
-$themes_personal = USERBASE.'/themes-personal/';
-$temp_dir = USERBASE.'/themes-personal/temp_dir/';
 shell_exec('rm -rf ' . $temp_dir); // start fresh
 shell_exec('mkdir ' . $temp_dir);
 move_uploaded_file(
-	$_FILES[ 'theme-zip' ][ 'tmp_name' ],
-	$temp_dir . $_FILES[ 'theme-zip' ][ 'name' ]
+	$_FILES['theme-zip']['tmp_name'],
+	$temp_dir . $_FILES['theme-zip']['name']
 );
 echo '<script>parent.themes_dialog("<p>unzipping archive</p>");</script>';
 shell_exec('cd ' . $temp_dir . ' && unzip ' . $_FILES[ 'theme-zip' ][ 'name' ]);
