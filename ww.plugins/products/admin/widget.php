@@ -42,6 +42,15 @@ else {
 }
 echo '</select><br/>';
 // }
+// { show products
+echo '<div class="show-products"><strong>Show Products</strong><br/>'
+	.'<select name="show_products"><option value="0">No</option>'
+	.'<option value="1"';
+if (isset($_REQUEST['show_products']) && $_REQUEST['show_products']=='1') {
+	echo ' selected="selected"';
+}
+echo '>Yes</select></div>';
+// }
 // { diameter
 echo '<div class="diameter"><strong>Diameter (for Pie Chart)</strong>';
 $diameter=(isset($_REQUEST['diameter']) && $_REQUEST['diameter'])

@@ -110,7 +110,20 @@ switch ($widget_type) {
 				.preg_replace('/[^a-zA-Z0-9\-_]/', '', $name).'">'
 				.'<a data-cid="'.$c['id'].'"'
 				.' href="/_r?type=products&product_cid='.$c['id'].'">'
-				.$name.'</a></li>';
+				.$name.'</a>';
+			if (isset($vars->show_products) && $vars->show_products=='1') {
+				$sql='select id,name from products,products_categories_products'
+					.' where product_id=products.id and category_id='.$c['id'];
+				$ps=dbAll($sql);
+				$html.='<ul class="products-products">';
+				foreach ($ps as $p) {
+					$html.='<li><a data-pid="'.$p['id'].'" href="/_r?type=products'
+						.'&amp;product_cid='.$c['id'].'&amp;product_id='.$p['id'].'">'
+						.htmlspecialchars(__FromJson($p['name'])).'</a></li>';
+				}
+				$html.='</ul>';
+			}
+			$html.='</li>';
 		}
 		$html.='</ul>';
 		if (@$_SESSION['userdata']['id']) {
