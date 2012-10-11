@@ -60,7 +60,6 @@ $(function(){
 				$.each(opts, function(k, v) {
 					vals.push($(v).val());
 				});
-				console.log(vals);
 				$('#pc_edit_products').val(vals);
 				$.post(
 					'/a/p=products/f=adminCategoryProductsEdit/id='+window.selected_cat,

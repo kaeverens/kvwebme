@@ -54,6 +54,7 @@ $(function() {
 			$.post(
 				'/a/p=products/f=getProduct/id='+pid,
 				function(ret) {
+					ret._base_price=ret._price;
 					var $tplHeader=$(template_header);
 					var $head=$popup.find('#popup-header');
 					$head.append($tplHeader);
@@ -84,12 +85,16 @@ $(function() {
 						var $select=$('<button>'+__('Add to Cart')+'</button>')
 							.click((function(variant, val){
 								return function() {
-									$sel.val(val).change();
+									$sel.val(val);
 									$this.text($sel.find(':selected').text()+' ▾');
+									$popup.remove();
+									$sel.change();
 									setTimeout(function() {
-										$productEl.find('form').trigger('submit');
+										$productEl.find('input[type=submit],button.submit-button')
+											.trigger('mouseover')
+											.trigger('click');
 									}, 1);
-									return $popup.remove();
+									return false;
 								}
 							})(thisName, val));
 						$entry.find('.products-add-to-cart').append($select);
@@ -110,6 +115,7 @@ $(function() {
 							val=val.replace(/\|.*/, '');
 						}
 						ret[thisName]=val;
+						ret._price=+ret._base_price + +addToBasePrice2;
 						ret._amt_in_stock=0;
 						if (ret.stockcontrol && ret.stockcontrol.length) {
 							for (var j=0;j<ret.stockcontrol.length;++j) {

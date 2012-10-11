@@ -29,7 +29,6 @@ $(function() {
 					var $this=$(this);
 					if ($this.data('product-val')) {
 						var name=$this.data('product-val');
-						console.log(name);
 						if (ret[name]!=undefined) {
 							$this.text(ret[name]);
 						}
