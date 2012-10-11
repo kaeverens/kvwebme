@@ -117,8 +117,9 @@ switch ($widget_type) {
 				$ps=dbAll($sql);
 				$html.='<ul class="products-products">';
 				foreach ($ps as $p) {
-					$html.='<li><a data-pid="'.$p['id'].'" href="/_r?type=products'
-						.'&amp;product_cid='.$c['id'].'&amp;product_id='.$p['id'].'">'
+					$product=Product::getInstance($p['id']);
+					$html.='<li><a data-pid="'.$p['id'].'" href="'
+						.$product->getRelativeUrl().'">'
 						.htmlspecialchars(__FromJson($p['name'])).'</a></li>';
 				}
 				$html.='</ul>';

@@ -324,15 +324,14 @@ class Product{
 		// { Is there a page intended to display its category?
 		$cs=Core_cacheLoad('products', 'categories_for_product_'.$this->id);
 		if ($cs===false) {
-			$cs=dbAll(
-				'select category_id from products_categories_products '
-				.'where category_id!=0 and product_id='.$this->id
-			);
+			$sql='select category_id from products_categories_products '
+				.'where category_id!=0 and product_id='.$this->id;
+			$cs=dbAll($sql);
 			Core_cacheSave('products', 'categories_for_product_'.$this->id, $cs);
 		}
 		$productCats=array_merge(
-			array(array('category_id'=>$this->default_category)),
-			$cs
+			$cs,
+			array(array('category_id'=>$this->default_category))
 		);
 		if (count($productCats)) {
 			$pcats=array();
@@ -344,11 +343,10 @@ class Product{
 				'pages_with_categories_'.join(',', $pcats)
 			);
 			if ($rs===false) {
-				$rs=dbAll(
-					'select page_id from page_vars where '
+				$sql='select page_id from page_vars where '
 					.'name="products_category_to_show" and value in ('
-					.join(',', $pcats).')'
-				);
+					.join(',', $pcats).')';
+				$rs=dbAll($sql);
 				Core_cacheSave(
 					'products',
 					'pages_with_categories_'.join(',', $pcats),
@@ -382,8 +380,11 @@ class Product{
 			$cat=(int)$_REQUEST['product_cid'];
 		}
 		if ($cat) {
-			$cat=ProductCategory::getInstance($cat);
-			return $cat->getRelativeUrl()
+			$category=ProductCategory::getInstance($cat);
+			$catdir=$category
+				?$category->getRelativeUrl()
+				:'/missing-category-'.$cat;
+			return $catdir
 				.'/'.$this->id.'-'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
 		}
 		if (preg_match('/^products(\||$)/', $PAGEDATA->type)) { // TODO
