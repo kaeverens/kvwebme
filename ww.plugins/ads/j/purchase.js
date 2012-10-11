@@ -2,17 +2,26 @@ $(function() {
 	var $wrapper=$('#ads-purchase-wrapper');
 	var types=[];
 	var chosenType=false;
+	var user=userdata.id
+		?''
+		:'<tr><th>Email address</th><td><input type="email" id="ads-purchase-email"'
+		+'/></td></tr>';
 	var html='<table>'
+		+user
 		+'<tr><th>Ad Type</th><td><select id="ads-purchase-type_id"/></td></tr>'
 		+'<tr><th>Price</th><td id="ads-purchase-price_per_day"></td></tr>'
-		+'<tr><th>How many Days?</th><td><input type="number" style="width:60px" id="ads-purchase-days-wanted" value="7"/></td></tr>'
+		+'<tr><th>How many Days?</th><td><input type="number" style="width:60px"'
+		+' id="ads-purchase-days-wanted" value="7"/></td></tr>'
 		+'<tr><th>Target Type</th><td><select id="ads-purchase-target_type">'
 		+'<option value="0">Website</option><option value="1">Poster image</option>'
 		+'</select></td></tr>'
 		+'<tr><th id="ads-purchase-target_url-header">Target URL</th><td>'
 		+'<input id="ads-purchase-target_url" style="width:300px"'
-		+' value="http://yourwebsiteaddress/" /><div id="ads-purchase-poster-wrapper"><span id="ads-purchase-poster"/><span id="ads-purchase-poster-preview"/></div></tr>'
-		+'<tr><th>Your Image</th><td><span id="ads-purchase-image"/><span id="ads-purchase-size"/></td></tr>'
+		+' value="http://yourwebsiteaddress/" />'
+		+'<div id="ads-purchase-poster-wrapper"><span id="ads-purchase-poster"/>'
+		+'<span id="ads-purchase-poster-preview"/></div></tr>'
+		+'<tr><th>Your Image</th><td><span id="ads-purchase-image"/>'
+		+'<span id="ads-purchase-size"/></td></tr>'
 		+'<tr><th>Preview</th><td id="ads-purchase-preview"></td></tr>'
 		+'<tr><th>Subtotal</th><td id="ads-purchase-subtotal"></td></tr>'
 		+'<tr><th>Purchase</th><td id="ads-purchase-purchase"></td></tr>'
@@ -46,7 +55,8 @@ $(function() {
 				+'<input type="hidden" value="Ads Purchase" name="item_name"/>'
 				+'<input type="hidden" id="paypal-order-id" value="" name="item_number"/>'
 				+'<input type="hidden" value="'+subtotal+'" name="amount"/>'
-				+'<input type="hidden" value="EUR" name="currency_code"/><input type="hidden" value="1" name="no_shipping"/>'
+				+'<input type="hidden" value="EUR" name="currency_code"/>'
+				+'<input type="hidden" value="1" name="no_shipping"/>'
 				+'<input type="hidden" value="1" name="no_note"/>'
 				+'<input type="hidden" name="return" value="'+site_url+'" />'
 				+'<input type="hidden" value="'+site_url
@@ -64,7 +74,8 @@ $(function() {
 					'type_id':$('#ads-purchase-type_id').val(),
 					'days':$('#ads-purchase-days-wanted').val(),
 					'target_url':$('#ads-purchase-target_url').val(),
-					'target_type':$('#ads-purchase-target_type').val()
+					'target_type':$('#ads-purchase-target_type').val(),
+					'email':$('#ads-purchase-email').val()
 				}, function(ret) {
 					$('#paypal-order-id').val(ret.id).closest('form').submit();
 				});
@@ -111,6 +122,28 @@ $(function() {
 				}
 			})
 			.change();
+		$('#ads-purchase-email').change(function() {
+			$.post('/a/f=userGetUid', {
+				'email':$(this).val()
+			}, function(ret) {
+				if (ret.error) {
+					return alert(ret.error);
+				}
+				if (ret.uid) {
+					var html='<p>This email address is already registered in the'
+						+' database. Please <a href="/_r?type=loginpage">Log In</a>'
+						+' before creating an ad.</p>';
+					return $(html).dialog({
+						'modal': true,
+						'buttons':{
+							'Login': function() {
+								document.location='/_r?type=loginpage';
+							}
+						}
+					});
+				}
+			});
+		});
 	});
 	Core_uploader('#ads-purchase-image', {
 		'serverScript': '/a/p=ads/f=fileUpload',

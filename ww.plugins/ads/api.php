@@ -177,9 +177,19 @@ function Ads_getTmpImage() {
 	*/
 function Ads_makePurchaseOrder() {
 	if (!isset($_SESSION['userdata']['id'])) {
-		return array('error'=>__('not logged in'));
+		$email=$_REQUEST['email'];
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			return array('error'=>__('invalid email address'));
+		}
+		dbQuery(
+			'insert into user_accounts set email="'.addslashes($email).'",'
+			.'name="'.addslashes($email).'",active=1,date_created=now()'
+		);
+		$user_id=dbLastInsertId();
 	}
-	$user_id=$_SESSION['userdata']['id'];
+	else {
+		$user_id=$_SESSION['userdata']['id'];
+	}
 	$type_id=(int)$_REQUEST['type_id'];
 	$days=(int)$_REQUEST['days'];
 	$target_url=$_REQUEST['target_url'];

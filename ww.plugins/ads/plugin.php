@@ -96,12 +96,6 @@ function Ads_widget($params) {
 	* @return string
 	*/
 function Ads_frontend($PAGEDATA) {
-	if (!isset($_SESSION['userdata']['id'])) {
-		return $PAGEDATA->render()
-			.'<p>'.__('You must be logged in to use this page.').'</p>'
-			.'<p><a href="/_r?type=login">'.__('Login').'</a> '.__('or')
-			.' <a href="/_r?type=register">'.__('Register').'</a></p>';
-	}
 	$html='<div id="ads-purchase-wrapper"></div>';
 	WW_addInlineScript(
 		'var ads_paypal="'.addslashes($PAGEDATA->vars['ads-paypal']).'";'

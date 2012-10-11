@@ -720,7 +720,7 @@ function Core_userSetDefaultAddress() {
 function Core_userGetUid() {
 	$email=@$_REQUEST['email'];
 	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-		return array('error'=>'invalid email address');
+		return array('error'=>__('invalid email address'));
 	}
 	$sql='select id from user_accounts where email="'.addslashes($email).'"';
 	$id=(int)dbOne($sql, 'id');
