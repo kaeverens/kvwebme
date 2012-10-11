@@ -54,7 +54,7 @@ $(function() {
 			$.post(
 				'/a/p=products/f=getProduct/id='+pid,
 				function(ret) {
-					ret._base_price=ret._price;
+					ret._base_price=+ret._price;
 					var $tplHeader=$(template_header);
 					var $head=$popup.find('#popup-header');
 					$head.append($tplHeader);
@@ -115,7 +115,12 @@ $(function() {
 							val=val.replace(/\|.*/, '');
 						}
 						ret[thisName]=val;
-						ret._price=+ret._base_price + +addToBasePrice2;
+						if (ret._sale_price && ret._sale_price<ret._base_price) {
+							ret._price=+ret._sale_price+addToBasePrice2;
+						}
+						else {
+							ret._price=ret._base_price+addToBasePrice2;
+						}
 						ret._amt_in_stock=0;
 						if (ret.stockcontrol && ret.stockcontrol.length) {
 							for (var j=0;j<ret.stockcontrol.length;++j) {
