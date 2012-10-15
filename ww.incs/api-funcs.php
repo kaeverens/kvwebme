@@ -282,6 +282,7 @@ function Core_languagesAddStrings() {
 			.'lang="'.addslashes($_languages[0]).'"'
 		);
 		$added[]=$str[0];
+		Core_cacheClear('languages');
 	}
 	return $added;
 }
@@ -295,7 +296,13 @@ function Core_languagesAddStrings() {
 	* @return array the list of languages
 	*/
 function Core_languagesGet() {
-	return dbAll('select * from language_names order by is_default desc, name');
+	$sql='select * from language_names order by is_default desc, name';
+	$names=Core_cacheLoad('languages', 'languagenames', -1);
+	if ($names===-1) {
+		$names=dbAll($sql);
+		Core_cacheSave('languages', 'languagenames', $names);
+	}
+	return $names;
 }
 
 // }
@@ -742,10 +749,14 @@ function Core_translationsGet() {
 	if (1 || $strings==false) {
 		$strings=array();
 		for ($i=count($_languages)-1;$i>=0;--$i) {
-			$rs=dbAll(
-				'select * from languages where lang="'.$_languages[$i]
-				.'" and context="'.addslashes($context).'"'
-			);
+			$sql='select * from languages where lang="'.$_languages[$i]
+				.'" and context="'.addslashes($context).'"';
+			$md5=md5($sql);
+			$rs=Core_cacheLoad('languages', $md5, -1);
+			if ($rs===-1) {
+				$rs=dbAll($sql);
+				Core_cacheSave('languages', $md5, $rs);
+			}
 			foreach ($rs as $r) {
 				$strings[$r['str']]=$r['trstr'];
 			}

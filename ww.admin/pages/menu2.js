@@ -1,3 +1,4 @@
+/*global __,adminVars*/
 $(function(){
 	function pageAddNode(name,id,pid){
 		var pel=null;
@@ -8,10 +9,10 @@ $(function(){
 		else{
 			pel='#pages-wrapper';
 		}
-		var node=$jstree.jstree(
+		$jstree.jstree(
 			'create',
 			pel,
-			"last",
+			'last',
 			{'attr':{'id':'page_'+id},'data':name},
 			function(){
 				$jstree.jstree('deselect_all');
@@ -22,12 +23,12 @@ $(function(){
 	}
 	function pageNew(node) {
 		var pid=node[0]?node[0].id.replace(/.*_/,''):0;
-		$('<table id="newpage-dialog">'
-			+'<tr><th>'+__('Name')+'</th><td><input name="name"/></td></tr>'
-			+'<tr><th>'+__('Page Type')+'</th><td><select name="type">'
+		$('<table id="newpage-dialog">'+
+			'<tr><th>'+__('Name')+'</th><td><input name="name"/></td></tr>'+
+			'<tr><th>'+__('Page Type')+'</th><td><select name="type">'+
 			// TODO: translation needed
-			+'<option value="0">normal</option></select></td></tr>'
-			+'</table>'
+			'<option value="0">normal</option></select></td></tr>'+
+			'</table>'
 		).dialog({
 			modal:true,
 			close:function(){
@@ -37,7 +38,7 @@ $(function(){
 				// TODO: translation needed
 				'Create Page': function() {
 					var name=$('#newpage-dialog input[name="name"]').val();
-					if (name=='') {
+					if (name==='') {
 						// TODO: translation needed
 						return alert('Name must be provided');
 					}
@@ -46,8 +47,9 @@ $(function(){
 						'name':name,
 						'type':$('#newpage-dialog select[name="type"]').val()
 					}, function(ret) {
-						if(ret.error)
+						if (ret.error) {
 							alert(ret.error);
+						}
 						else{
 						pageAddNode(ret.alias, ret.id, ret.pid);
 						pageOpen(ret.id);
@@ -69,8 +71,8 @@ $(function(){
 		var $rw=$('#reports-wrapper');
 		var $pfw=$('#page-form-wrapper');
 		if (!$pfw.length) {
-			$pfw=$('<iframe id="page-form-wrapper" name="page-form-wrapper" '
-				+' src="about:blank"></iframe>')
+			$pfw=$('<iframe id="page-form-wrapper" name="page-form-wrapper" '+
+				' src="about:blank"></iframe>')
 				.insertAfter($rw);
 		}
 		$pfw.attr('src', '/ww.admin/pages/form.php?id='+id);
@@ -101,12 +103,12 @@ $(function(){
 		}, 1000);
 	}
 	function reportsShow(funcname, name, open, width, height) {
-		var $portlet=$(
-			'<div class="portlet" data-func="'+funcname+'" data-open="'+(open?1:0)+'">'
-			+'<div class="portlet-header">'+name+'</div>'
-			+'<div class="portlet-content"'
-			+' style="width:'+width+'px;height:'+height+'px"/>'
-			+'</div>'
+		$(
+			'<div class="portlet" data-func="'+funcname+'" data-open="'+(open?1:0)+'">'+
+			'<div class="portlet-header">'+name+'</div>'+
+			'<div class="portlet-content"'+
+			' style="width:'+width+'px;height:'+height+'px"/>'+
+			'</div>'
 		).appendTo('#reports-wrapper');
 	}
 	$.jstree._themes='/j/jstree/themes/';
@@ -118,33 +120,34 @@ $(function(){
 					'ccp':false,
 					'create' : {
 						// TODO: translation needed
-						'label'	: "Create Page", 
-						'visible'	: function (NODE, TREE_OBJ) { 
+						'label'	: 'Create Page',
+						'visible'	: function (NODE, TREE_OBJ) {
 							if (NODE.length != 1) {
 								return 0;
 							}
-							return TREE_OBJ.check("creatable", NODE); 
-						}, 
+							return TREE_OBJ.check('creatable', NODE);
+						},
 						'action':pageNew,
 						'separator_after' : true
 					},
 					'remove' : {
 						// TODO: translation needed
-						'label'	: "Delete Page", 
-						'visible':function (NODE, TREE_OBJ) { 
+						'label'	: 'Delete Page',
+						'visible':function (NODE, TREE_OBJ) {
 							if (NODE.length != 1) {
 								return 0;
 							}
-							return TREE_OBJ.check("deletable", NODE); 
-						}, 
-						'action':function(node,tree){
+							return TREE_OBJ.check('deletable', NODE);
+						},
+						'action':function(node){
 							// TODO: translation needed
-							if (!confirm("Are you sure you want to delete this page?")) {
+							if (!confirm('Are you sure you want to delete this page?')) {
 								return;
 							}
 							$.post('/a/f=adminPageDelete/id='+node[0].id.replace(/.*_/, ''), function(ret){
-								if(ret.error)
+								if(ret.error) {
 									alert(ret.error);
+								}
 								else{
 									if (node.find('li').length) {
 										document.location=document.location.toString();
@@ -159,11 +162,11 @@ $(function(){
 					},
 					'copy' : {
 						// TODO: translation needed
-						'label'	: "Copy Page", 
-						'visible'	: function (NODE, TREE_OBJ) { 
+						'label'	: 'Copy Page',
+						'visible'	: function () {
 							return true;
-						}, 
-						'action':function(node, tree) {
+						},
+						'action':function(node) {
 							$.post('/a/f=adminPageCopy', {
 								'id':node[0].id.replace(/.*_/,'')
 							}, function(ret){
@@ -174,7 +177,7 @@ $(function(){
 					},
 					'view' : {
 						// TODO: translation needed
-						'label' : "View Page",
+						'label' : 'View Page',
 						'action':function(node) {
 							window.open(
 								'/?pageid='+node[0].id.replace(/.*_/,''),
@@ -188,18 +191,18 @@ $(function(){
 				'drag_target': false,
 				'drop_target': false
 			},
-			"json_data" : {
-				"ajax" : {
-					"url" : "/a/f=adminPageChildnodes",
-					"data" : function (n) {
-						return { id : n.attr ? n.attr("id") : 0 };
+			'json_data' : {
+				'ajax' : {
+					'url' : '/a/f=adminPageChildnodes',
+					'data' : function (n) {
+						return { id : n.attr ? n.attr('id') : 0 };
 					}
 				},
-				"progressive_render" : true,
-				"progressive_unload" : true
+				'progressive_render' : true,
+				'progressive_unload' : true
 			},
 			'plugins': [
-				"themes", "json_data", "ui", "crrm", "contextmenu", "dnd"
+				'themes', 'json_data', 'ui', 'crrm', 'contextmenu', 'dnd'
 			]
 		})
 		.bind('move_node.jstree',function(e, ref){
@@ -262,7 +265,7 @@ $(function(){
 	else {
 		// { show list of reports
 		var reports_ordered=[];
-		if (adminVars.dashboardReportsOrder!=undefined) {
+		if (adminVars.dashboardReportsOrder!==undefined) {
 			reports_ordered=eval('('+adminVars.dashboardReportsOrder+')');
 		}
 		var available_reports=[
@@ -270,10 +273,11 @@ $(function(){
 			['visitorStats', 'Visitor Stats'],
 			['popularPages', 'Popular Pages']
 		];
-		for (var i=0;i<reports_ordered.length;++i) {
+		var repAvail, i;
+		for (i=0;i<reports_ordered.length;++i) {
 			var repOrd=reports_ordered[i];
 			for (var j=0;j<available_reports.length;++j) {
-				var repAvail=available_reports[j];
+				repAvail=available_reports[j];
 				if (repAvail[0]==repOrd[0]) {
 					repAvail[2]=1;
 					reportsShow(repOrd[0], repAvail[1], repOrd[1], repOrd[2], repOrd[3]);
@@ -281,9 +285,9 @@ $(function(){
 				}
 			}
 		}
-		for (var i=0;i<available_reports.length;++i) {
-			var repAvail=available_reports[i];
-			if (repAvail[2]==undefined) {
+		for (i=0;i<available_reports.length;++i) {
+			repAvail=available_reports[i];
+			if (repAvail[2]===undefined) {
 				reportsShow(repAvail[0], repAvail[1], 0, 200, 200);
 			}
 		}
@@ -291,20 +295,20 @@ $(function(){
 			'update':reportsSave
 		});
 		$('.portlet')
-			.addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )
-			.find( ".portlet-header" )
-			.addClass( "ui-widget-header ui-corner-all" )
-			.prepend( "<span class='ui-icon ui-icon-minusthick'></span>")
+			.addClass( 'ui-widget ui-widget-content ui-helper-clearfix ui-corner-all' )
+			.find( '.portlet-header' )
+			.addClass( 'ui-widget-header ui-corner-all' )
+			.prepend( '<span class="ui-icon ui-icon-minusthick"></span>')
 			.end()
-			.find( ".portlet-content" );
-		$( ".portlet-header .ui-icon" )
+			.find( '.portlet-content' );
+		$( '.portlet-header .ui-icon' )
 			.click(function() {
 				var $this=$(this);
 				var $parent=$this.closest('.portlet');
 				var $content=$parent.find('.portlet-content');
 				$this
-					.toggleClass( "ui-icon-minusthick" )
-					.toggleClass( "ui-icon-plusthick" );
+					.toggleClass( 'ui-icon-minusthick' )
+					.toggleClass( 'ui-icon-plusthick' );
 				$content
 					.toggle();
 				if ($content.css('display')=='block') {
@@ -333,27 +337,27 @@ $(function(){
 
 function Reports_popularPages($el) {
 	$.post('/a/f=adminReportsPopularPages', function(ret) {
-		var table='<table style="width:100%" class="report-two-column">'
-			+'<thead><tr>'
-			+'<th colspan="2">'+__('Today')+'</th>'
-			+'<th colspan="2">'+__('7 Days')+'</th>'
-			+'<th colspan="2">'+__('31 Days')+'</th>'
-			+'</tr></thead>'
-			+'<tbody>';
+		var table='<table style="width:100%" class="report-two-column">'+
+			'<thead><tr>'+
+			'<th colspan="2">'+__('Today')+'</th>'+
+			'<th colspan="2">'+__('7 Days')+'</th>'+
+			'<th colspan="2">'+__('31 Days')+'</th>'+
+			'</tr></thead>'+
+			'<tbody>';
 		for (var i=0;i<50;++i) {
 			var day=ret.day[i]||false, week=ret.week[i]||false,
 				month=ret.month[i]||false;
 			if (!day&&!week&&!month) {
 				continue;
 			}
-			table+='<tr>'
-				+'<td class="amt day">'+(day?day.amt:'')+'</td>'
-				+'<td class="page day">'+(day?day.page:'')+'</td>'
-				+'<td class="amt week">'+(week?week.amt:'')+'</td>'
-				+'<td class="page week">'+(week?week.page:'')+'</td>'
-				+'<td class="amt month">'+(month?month.amt:'')+'</td>'
-				+'<td class="page month">'+(month?month.page:'')+'</td>'
-				+'</tr>';
+			table+='<tr>'+
+				'<td class="amt day">'+(day?day.amt:'')+'</td>'+
+				'<td class="page day">'+(day?day.page:'')+'</td>'+
+				'<td class="amt week">'+(week?week.amt:'')+'</td>'+
+				'<td class="page week">'+(week?week.page:'')+'</td>'+
+				'<td class="amt month">'+(month?month.amt:'')+'</td>'+
+				'<td class="page month">'+(month?month.page:'')+'</td>'+
+				'</tr>';
 		}
 		table+='</tbody></table>';
 		$el.find('>table').remove();
@@ -367,14 +371,14 @@ function Reports_visitorStats($el) {
 			to=$('#reports-visitors-to').val();
 		if (!from) {
 			var d=new Date();
-			$('<table class="wide smalltext"><tr>'
-				+'<th>'+__('From')+'</th>'
-				+'<td><input class="date" id="reports-visitors-from"/></td>'
-				+'<th>'+__('To')+'</th>'
-				+'<td><input class="date" id="reports-visitors-to"/></td>'
-				+'</tr></table>'
-				+'<div id="reports-visitors-chart" style="position:absolute;left:0;'
-				+'bottom:0;right:0;top:25px"/>'
+			$('<table class="wide smalltext"><tr>'+
+				'<th>'+__('From')+'</th>'+
+				'<td><input class="date" id="reports-visitors-from"/></td>'+
+				'<th>'+__('To')+'</th>'+
+				'<td><input class="date" id="reports-visitors-to"/></td>'+
+				'</tr></table>'+
+				'<div id="reports-visitors-chart" style="position:absolute;left:0;'+
+				'bottom:0;right:0;top:25px"/>'
 			).appendTo($content);
 			to=$('#reports-visitors-to')
 				.val(d.toYMD())
@@ -410,7 +414,7 @@ function Reports_visitorStats($el) {
 					// TODO: translation needed
 					.html('Not enough data to create a chart');
 			}
-			var plot1=$.jqplot('reports-visitors-chart', [line1], {
+			$.jqplot('reports-visitors-chart', [line1], {
 				'axes':{
 					'xaxis': {
 						'renderer':$.jqplot.DateAxisRenderer

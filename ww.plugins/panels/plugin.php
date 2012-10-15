@@ -1,4 +1,16 @@
 <?php
+/**
+	* config for plugins
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 // { plugin configuration
 $plugin=array(
 	'name'=>function() {
@@ -15,7 +27,7 @@ $plugin=array(
 	'frontend'=>array(
 		'template_functions'=>array(
 			'PANEL'=>array(
-				'function' => 'panels_show'
+				'function' => 'Panels_show'
 			)
 		)
 	),
@@ -23,7 +35,16 @@ $plugin=array(
 );
 // }
 
-function panels_show($vars) {
+// { Panels_show
+
+/**
+	* panels_show
+	*
+	* @param array $vars parameters
+	*
+	* @return text
+	*/
+function Panels_show($vars) {
 	$name=isset($vars['name'])?$vars['name']:'';
 	// { load panel data
 	$p=Core_cacheLoad('panels', md5($name));
@@ -106,7 +127,8 @@ function panels_show($vars) {
 			}
 		}
 		else {
-			$file=$_SERVER['DOCUMENT_ROOT'].'/ww.plugins/panels/built-in/'.$widget->type.'.php';
+			$file=$_SERVER['DOCUMENT_ROOT'].'/ww.plugins/panels/built-in/'
+				.$widget->type.'.php';
 			if (file_exists($file)) {
 				require $file;
 			}
@@ -129,3 +151,5 @@ function panels_show($vars) {
 	$name=preg_replace('/[^a-z0-9\-]/', '-', $name);
 	return '<div class="panel panel-'.$name.'">'.$h.'</div>';
 }
+
+// }

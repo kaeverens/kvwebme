@@ -87,6 +87,7 @@ function Mailinglists_adminListDetails() {
 function Mailinglists_adminListDelete() {
 	$id=(int)$_REQUEST['id'];
 	dbQuery('delete from mailinglists_lists where id='.$id);
+	Core_cacheClear('mailinglists');
 	return array('ok'=>1);
 }
 
@@ -182,6 +183,7 @@ function Mailinglists_adminListSave() {
 	else {
 		dbQuery('insert into '.$sql);
 	}
+	Core_cacheClear('mailinglists');
 	return array('ok'=>1);
 }
 

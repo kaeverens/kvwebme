@@ -192,10 +192,14 @@ function Core_menuShowFg ($opts=array()) {
 				}
 			}
 			// }
-			$rs=dbAll(
-				"select id,name,type from pages where parent='".$parentid
-				."' and !(special&2) order by $order"
-			);
+			$sql="select id,name,type from pages where parent='".$parentid
+				."' and !(special&2) order by $order";
+			$md5=md5($sql);
+			$rs=Core_cacheLoad('pages', $md5, -1);
+			if ($rs===-1) {
+				$rs=dbAll($sql);
+				Core_cacheSave('pages', $md5, $rs);
+			}
 			if ($rs===false || !count($rs)) {
 				return '';
 			}

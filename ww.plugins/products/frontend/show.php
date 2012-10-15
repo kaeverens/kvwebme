@@ -344,12 +344,13 @@ function Products_show($PAGEDATA) {
 			if (@$PAGEDATA->vars['products_pagetitleoverride_multiple']) {
 				$PAGEDATA->title=$PAGEDATA->vars['products_pagetitleoverride_multiple'];
 			}
-		return $c
-			.Products_showByCategory(
-				$PAGEDATA, 0, $start, $limit, $order_by,
-				$order_dir, $search, $locationFilter, $limit_start
-			)
-			.$export; // }
+			$ret=$c
+				.Products_showByCategory(
+					$PAGEDATA, 0, $start, $limit, $order_by,
+					$order_dir, $search, $locationFilter, $limit_start
+				)
+				.$export;
+		return $ret; // }
 		case '3': // { by id
 			if (@$PAGEDATA->vars['products_pagetitleoverride_single']) {
 				$PAGEDATA->title=$PAGEDATA->vars['products_pagetitleoverride_single'];
@@ -359,7 +360,7 @@ function Products_show($PAGEDATA) {
 	if (@$PAGEDATA->vars['products_pagetitleoverride_multiple']) {
 		$PAGEDATA->title=$PAGEDATA->vars['products_pagetitleoverride_multiple'];
 	}
-	return $c
+	$ret=$c
 		.Products_showAll(
 			$PAGEDATA,
 			$start,
@@ -372,6 +373,7 @@ function Products_show($PAGEDATA) {
 			$enabled_filter
 		)
 		.$export;
+	return $ret;
 }
 
 // }
@@ -439,9 +441,10 @@ function Products_showByCategory(
 	$products=Products::getByCategory(
 		$id, $search, array(), '', 'asc', $location
 	);
-	return $products->render(
+	$ret=$products->render(
 		$PAGEDATA, $start, $limit, $order_by, $order_dir, $limit_start
 	);
+	return $ret;
 }
 
 // }
@@ -715,7 +718,12 @@ class Products{
 			$sql='select id from products,products_categories_products'
 				.' where id=product_id'.$locFilter.' and enabled and category_id='.$id;
 			if ($search=='' && !count($search_arr)) {
-				$rs=dbAll($sql);
+				$md5_2=md5($sql);
+				$rs=Core_cacheLoad('products', $md5_2, -1);
+				if ($rs===-1) {
+					$rs=dbAll($sql);
+					Core_cacheSave('products', $md5_2, $rs);
+				}
 			}
 			else {
 				if ($search!='') {
@@ -735,11 +743,16 @@ class Products{
 				$product_ids[]=$r['id'];
 			}
 			new Products($product_ids, $md5, $search, $search_arr);
-			$pcs=Core_cacheLoad('products', 'productcategoriesenabled_parent_'.$id);
-			if (!$pcs) {
+			$pcs=Core_cacheLoad(
+				'products', 'productcategoriesenabled_parent_'.$id, -1
+			);
+			if ($pcs===-1) {
 				$pcs=dbAll(
 					'select id,name from products_categories where parent_id='.$id
 					.' and enabled order by name'
+				);
+				Core_cacheSave(
+					'products', 'productcategoriesenabled_parent_'.$id, $pcs
 				);
 			}
 			self::$instances[$md5]->subCategories=$pcs;
@@ -1072,7 +1085,6 @@ class Products{
 		}
 		return $categories.$prevnext.'<div class="products">'.$c.'</div>'.$prevnext;
 	}
-
 	// }
 }
 

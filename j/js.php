@@ -80,4 +80,11 @@ if (!file_exists(USERBASE.'/ww.cache/j/js-'.$name)) {
 	}
 	file_put_contents(USERBASE.'/ww.cache/j/js-'.$name, $js);
 }
+// { send timing header
+global $starttimeCount, $starttime;
+header(
+	'X-RenderTime-'.($starttimeCount++).'-totalSetup: '.((microtime(true)-$starttime)*1000)
+);
+$starttime=microtime(true);
+// }
 readfile(USERBASE.'/ww.cache/j/js-'.$name);

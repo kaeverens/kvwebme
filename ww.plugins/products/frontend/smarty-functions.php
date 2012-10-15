@@ -257,7 +257,7 @@ function Products_qrCode2($params, $smarty) {
 		return '<img src="/a/p=products/f=showQrCode/pid='
 			.$smarty->smarty->tpl_vars['product']->value->id.'"/>';
 	}
-	return 'test';
+	return '';
 }
 
 // }

@@ -907,7 +907,6 @@ class ProductType{
 					}
 				break; // }
 				case 'hidden': // {
-					$val=__FromJson($val);
 					$smarty->assign(
 						$f->n,
 						'<input type="hidden" name="products_values_'.$f->n
@@ -966,7 +965,7 @@ class ProductType{
 				break; // }
 				case 'textarea': // { textarea
 					if (@$f->u) {
-						$val=trim(preg_replace('/<[^>]*>/', '', __FromJson($val)));
+						$val=trim(preg_replace('/<[^>]*>/', '', $val));
 						$smarty->assign(
 							$f->n,
 							'<textarea class="product-field '.$f->n.$required
@@ -976,7 +975,6 @@ class ProductType{
 						);
 					}
 					else {
-						$val=__FromJson($val);
 						$smarty->assign($f->n, $val);
 					}
 				break; // }
@@ -986,7 +984,6 @@ class ProductType{
 					$smarty->assign($f->n, $val);
 				break; // }
 				default: // { everything else
-					$val=__FromJson($val);
 					if (@$f->u) {
 						$smarty->assign(
 							$f->n,
@@ -1005,6 +1002,7 @@ class ProductType{
 		if (isset($product->ean)) {
 			$smarty->assign('_ean', $product->ean);
 		}
+		// { $_name, $_stock_number, $_ean
 		$PAGEDATA->title=str_replace(
 			array('{{$_name}}', '{{$_stock_number}}', '{{$_ean}}'),
 			array(
@@ -1013,6 +1011,7 @@ class ProductType{
 			),
 			$PAGEDATA->title
 		);
+		// }
 		$html='';
 		if ($add_wrapper) {
 			$classes=array('products-product');
@@ -1080,91 +1079,7 @@ function Products_addToCart() {
 	if (!isset($_REQUEST['products_action'])) {
 		return;
 	}
-	$id=(int)$_REQUEST['product_id'];
-	require_once dirname(__FILE__).'/frontend/show.php';
-	$product=Product::getInstance($id);
-	if (!$product) {
-		return;
-	}
-	$amount=1;
-	if (isset($_REQUEST['products-howmany'])) {
-		$amount=(int)$_REQUEST['products-howmany'];
-	}
-	// { find "custom" values
-	$price_amendments=0;
-	$vals=array();
-	$md5='';
-	$product_type=ProductType::getInstance($product->vals['product_type_id']);
-	$long_desc='';
-	foreach ($_REQUEST as $k=>$v) {
-		if (strpos($k, 'products_values_')===0) {
-			$n=str_replace('products_values_', '', $k);
-			$data_field=$product_type->getField($n);
-			if ($data_field === false // not a real field
-				|| $data_field->u!=1    // not a user-choosable field
-			) {
-				continue;
-			}
-			switch ($data_field->t) {
-				case 'selectbox': // {
-					$ok=0;
-					if (@$product->vals[$n]) { // if product has custom values
-						$strs=explode("\n", $product->vals[$n]);
-						foreach ($strs as $a=>$b) {
-							$strs[$a]=trim($b);
-						}
-					}
-					else { // else use the product type defaults
-						$strs=explode("\n", $data_field->e);
-					}
-					if (in_array($v, $strs)) {
-						if (strpos($v, '|')!==false) {
-							$bits=explode('|', $v);
-							$price_amendments+=(float)$bits[1];
-						}
-						$ok=1;
-					}
-					if (!$ok) {
-						continue;
-					}
-				break; // }
-				case 'selected-image': // {
-					$v='http://'.$_SERVER['HTTP_HOST'].'/kfmget/'.$v;
-					$long_desc='<img style="float:left" src="'.$v.',width=60,height=60"/>';
-				break; // }
-			}
-			$vals[]='<div class="products-desc-'
-				.preg_replace('/[^a-zA-Z0-9]/', '', $k).'">'
-				.'<span class="__">'.$n.'</span>: '.$v.'</div>';
-		}
-	}
-	if (count($vals)) {
-		$long_desc.=join("\n", $vals).'<br style="clear:left"/>';
-		$md5=','.md5($long_desc.'products_'.$id);
-	}
-	// }
-	list($price, $amount, $vat)=Products_getProductPrice(
-		$product, $amount, $md5
-	);
-	// { does the amount requested bring it over the maximum allowed per purchase
-	$max_allowed=isset($product->vals['online-store']['_max_allowed'])
-		?(int)$product->vals['online-store']['_max_allowed']
-		:0;
-	// }
-	OnlineStore_addToCart(
-		$price+$price_amendments,
-		$amount,
-		__FromJson($product->get('name')),
-		$long_desc,
-		'products_'.$id.$md5,
-		$_SERVER['HTTP_REFERER'],
-		$vat,
-		$id,
-		(int)(@$product->vals['online-store']['_deliver_free']),
-		(int)(@$product->vals['online-store']['_not_discountable']),
-		$max_allowed,
-		$product->stock_number
-	);
+	require_once dirname(__FILE__).'/frontend/addToCart.php';
 }
 
 // }
@@ -1211,8 +1126,6 @@ function Products_addTemplateToField($str, $tplBody='', $tplHeader='') {
   * @return HTML of the form
   */
 function Products_adminPage($page, $vars) {
-	$id=$page['id'];
-	$c='';
 	require_once dirname(__FILE__).'/admin/page-form.php';
 	return $c;
 }
@@ -1244,19 +1157,7 @@ function Products_amountInStock($params, $smarty) {
   * @return string the HTML of the breadcrumbs
   */
 function Products_breadcrumbs($baseurl) {
-	global $PAGEDATA;
-	$breadcrumbs='';
-	Products_frontendVarsSetup($PAGEDATA);
-	if (isset($_REQUEST['product_cid']) && $_REQUEST['product_cid']) {
-		$c=ProductCategory::getInstance($_REQUEST['product_cid']);
-		$breadcrumbs.=' &raquo; <a class="product-category" href="'
-			.$c->getRelativeUrl().'">'.htmlspecialchars($c->vals['name']).'</a>';
-	}
-	if (isset($_REQUEST['product_id']) && $_REQUEST['product_id']) {
-		$c=Product::getInstance($_REQUEST['product_id'], false, 1);
-		$breadcrumbs.=' &raquo; <a class="product-product" href="'
-			.$c->getRelativeUrl().'">'.htmlspecialchars($c->get('_name')).'</a>';
-	}
+	require dirname(__FILE__).'/incs/breadcrumbs.php';
 	return $breadcrumbs;
 }
 
@@ -1486,100 +1387,7 @@ function Products_cronGetNext() {
 	* @return string the table
 	*/
 function Products_datatable ($params, $smarty) {
-	$product= $smarty->smarty->tpl_vars['product']->value;
-	$ptid=$product->get('product_type_id');
-	$type= ProductType::getInstance($ptid);
-	if (!$type) {
-		return __('Missing Product Type: %1', array($ptid), 'core');
-	}
-	$datafields= $type->data_fields;
-	if (!is_array($datafields)) {
-		$datafields=array();
-	}
-	$c = '<table>';
-	if (!isset($params['align']) || $params['align']!='horizontal') {
-		foreach ($datafields as $data) {
-			$name = $data->ti
-				?$data->ti
-				:ucwords(str_replace('_', ' ', $data->n));
-			$c.= '<tr><th class="left">';
-			$c.= htmlspecialchars(ucfirst($name));
-			$c.= '</th><td>';
-			if (!isset($product->vals[$data->n])) {
-				$product->vals[$data->n]='';
-			}
-			switch($data->t) {
-				case 'date': // {
-					$c.=Core_dateM2H($product->vals[$data->n]);
-				break; // }
-				case 'checkbox': // {
-					if ($product->vals[$data->n]) {
-						$c.=__('Yes');
-					}
-					else {
-						$c.=__('No');
-					}
-				break; // }
-				case 'textarea': // {
-					$c.=__FromJson($product->vals[$data->n]);
-				break; // }
-				default: // {
-					if (isset($product->vals[$data->n])) {
-						$c.=htmlspecialchars(__FromJson($product->vals[$data->n]));
-					}
-					else {
-						$c.= '&nbsp;';
-					}
-					// }
-			}
-			$c.='</td></tr>';
-		}
-	}
-	else {
-		$c.= '<thead>';
-		$c.= '<tr>';
-		foreach ($datafields as $data) {
-			$name = $data->ti
-				?$data->ti
-				:ucwords(str_replace('_', ' ', $data->n));
-			$c.= '<th>'.htmlspecialchars(ucfirst($name)).'</th>';
-		}
-		$c.= '</tr>';
-		$c.= '</thead>';
-		$c.='<tbody>';
-		$c.= '<tr>';
-		foreach ($datafields as $data) {
-			$c.= '<td>';
-			switch ($data->t) {
-				case 'date' : // {
-					$c.= Core_dateM2H($product->vals[$data->n]);
-				break; // }
-				case 'checkbox': // {
-					if (isset($product->vals[$data->n])) {
-						$c.=__('Yes');
-					}
-					else{ 
-						$c.=__('No');
-					}
-				break; // }
-				case 'textarea': // {
-					$c.= $product->vals[$data->n];
-				break; // }
-				default: // {
-					if (isset($product->vals[$data->n])) {
-						$c.=htmlspecialchars($product->vals[$data->n]);
-					}
-					else {
-						$c.='&nbsp;';
-					}
-					// }
-			}
-			$c.='</td>';
-		}
-		$c.= '</tr>';
-		$c.= '</tbody>';
-	}
-	$c.= '</table>';
+	require dirname(__FILE__).'/incs/datatable.php';
 	return $c;
 }
 
@@ -1623,9 +1431,10 @@ function Products_frontend($PAGEDATA) {
 	}
 	// render the products, in case the page needs to know what template was used
 	$producthtml=Products_show($PAGEDATA);
-	return $PAGEDATA->render()
+	$ret=$PAGEDATA->render()
 		.$producthtml
 		.__FromJson($PAGEDATA->vars['footer']);
+	return $ret;
 }
 
 // }
@@ -2639,86 +2448,7 @@ function Products_qrCode($params, $smarty) {
 	* @return string the list of reviews
 	*/
 function Products_reviews($params, $smarty) {
-	WW_addScript('products/frontend/delete.js');
-	WW_addScript('products/frontend/products-edit-review.js');
-	$userid = (int)$_SESSION['userdata']['id'];
-	$product = $smarty->smarty->tpl_vars['product']->value;
-	$productid = (int)$product->id;
-	$c='';
-	$numReviews=dbOne(
-		'select count(id) from products_reviews where product_id='.$productid,
-		'count(id)'
-	);
-	if ($numReviews) {
-		$reviews=dbAll(
-			'select * from products_reviews where product_id='.$productid
-		);
-		$query = 'select avg(rating),product_id from products_reviews '
-			.'where product_id='.$productid.' group by product_id';
-		$average = dbOne($query, 'avg(rating)');
-		$c.= '<div id="reviews_display">';
-		$c.= '<div id="average'.$productid.'">';
-		$c.=__(
-			'The average rating for this product over %1 review(s) was %2',
-			array(count($reviews), $average), 'core'
-		);
-		$c.='</div>';
-		foreach ($reviews as $review) {
-			$name=dbOne(
-				'select name from user_accounts where id='.(int)$review['user_id'], 
-				'name'
-			);
-			$c.= '<div id="'.$review['id'].'">';
-			$date = $review['cdate'];
-			$date = substr_replace($date, '', strpos($date, ' '));
-			$c.=__('Posted by %1 on %2', array(htmlspecialchars($name), $date), 'core');
-			$body = htmlspecialchars($body);
-			$body = str_replace("\n", '<br />', $review['body']);
-			$c.= '   ';
-			$c.= '<b>'.__('Rated').': </b>'.$review['rating'].'<br/>';
-			$c.= ($body).'<br/>';
-			if (Core_isAdmin()|| $userid==$review['user_id']) {
-				// { Edit Review Link
-				$timeReviewMayBeEditedUntil=dbOne(
-					'select date_add("'.$review['cdate'].'", interval 15 minute) '
-					.'as last_edit_time',
-					'last_edit_time'
-				);
-				$reviewMayBeEdited=dbOne(
-					'select "'.$timeReviewMayBeEditedUntil.'">now() as can_edit_review',
-					'can_edit_review'
-				);
-				if ($reviewMayBeEdited) {
-					$c.='<a href="javascript:;" onClick="edit_review('.$review['id']
-						.', \''.addslashes($body).'\', '.$review['rating'].', \''
-						.addslashes($review['cdate']).'\');">'.__('Edit').'</a> ';
-				}
-				// }
-				// { Delete Review Link
-				$c.= '<a href="javascript:;" onClick="delete_review('
-					.$review['id'].', '.$review['user_id'].', '.$productid
-					.');">'.__('[x]').'</a><br/>';
-				// }
-			}
-			$c.= '<br/></div>';
-		}
-		$c.= '</div>';
-		$userHasNotReviewedThisProduct=!dbOne(
-			'select id from products_reviews where user_id='.$userid
-			.' and product_id='.$productid,
-			'id'
-		);
-		if (isset($_SESSION['userdata']) && $userHasNotReviewedThisProduct) {
-			$c.= Products_submitReviewForm($productid, $userid);
-		}
-	}
-	else {
-		$c.= '<em>'.__('Nobody has reviewed this product yet').'</em>';
-		$c.= '<br/>';
-		if (isset($_SESSION['userdata'])) {
-			$c.= Products_submitReviewForm($productid, $userid);
-		}
-	}
+	require dirname(__FILE__).'/incs/reviews.php';
 	return $c;
 }
 
@@ -2758,18 +2488,25 @@ function Products_search() {
 	* @return object the Smarty object
 	*/
 function Products_setupSmarty() {
-	$smarty=Core_smartySetup(USERBASE.'/ww.cache/products/templates_c');
-	$smarty->template_dir='/ww.cache/products/templates';
-	$smarty->assign('PAGEDATA', $GLOBALS['PAGEDATA']);
-	if (isset($_SESSION['userdata'])) {
-		$smarty->assign('USERDATA', $_SESSION['userdata']);
+	global $Products_smartyInstance;
+	if (!isset($Products_smartyInstance)) {
+		$Products_smartyInstance=Core_smartySetup(
+			USERBASE.'/ww.cache/products/templates_c'
+		);
 	}
-	$smarty->registerPlugin(
-		'modifier',
-		'template',
-		'Products_addTemplateToField'
-	);
-	return $smarty;
+	$Products_smartyInstance->template_dir='/ww.cache/products/templates';
+	$Products_smartyInstance->assign('PAGEDATA', $GLOBALS['PAGEDATA']);
+	if (isset($_SESSION['userdata'])) {
+		$Products_smartyInstance->assign('USERDATA', $_SESSION['userdata']);
+	}
+	if (!isset($Products_smartyInstance->registered_plugins['modifier']['template'])) {
+		$Products_smartyInstance->registerPlugin(
+			'modifier',
+			'template',
+			'Products_addTemplateToField'
+		);
+	}
+	return $Products_smartyInstance;
 }
 
 // }

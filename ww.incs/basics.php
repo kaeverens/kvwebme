@@ -11,6 +11,8 @@
 	* @link     http://kvsites.ie/
 	*/
 
+$starttime=microtime(true);
+$starttimeCount=100;
 if (isset($_REQUEST['PHPSESSID'])) {
 	@session_id($_REQUEST['PHPSESSID']);
 }
@@ -141,6 +143,9 @@ if (!function_exists('Core_autoload')) {
 	*/
 function __FromJson($str, $first_result=false, $specific_lang=false) {
 	global $_languages;
+	if (substr($str, 0, 1)!=='{') { // }
+		return $str;
+	}
 	$s=json_decode($str, true);
 	if ($s===null || !is_array($s)) {
 		return $str;
@@ -368,6 +373,7 @@ function Core_mail(
 			file_put_contents($dirname.'/'.$r['name'].'.tpl', $r['body']);
 		}
 	}
+	require_once SCRIPTBASE . '/ww.incs/Smarty-3.1.12/libs/Smarty.class.php';
 	$smarty=new Smarty;
 	$smarty->left_delimiter = '{{';
 	$smarty->right_delimiter = '}}';
@@ -550,6 +556,7 @@ function Core_siteVar($name, $value=null) {
 	*/
 function Core_smartySetup($compile_dir) {
 	global $DBVARS, $PLUGINS, $PAGEDATA;
+	require_once SCRIPTBASE . '/ww.incs/Smarty-3.1.12/libs/Smarty.class.php';
 	$smarty = new Smarty;
 	$smarty->left_delimiter = '{{';
 	$smarty->right_delimiter = '}}';
@@ -859,7 +866,6 @@ $_language_notfound=array(); // for recording missing language strings
 // }
 // { set up constants
 define('SCRIPTBASE', $_SERVER['DOCUMENT_ROOT'] . '/');
-require_once SCRIPTBASE . '/ww.incs/Smarty-3.1.12/libs/Smarty.class.php';
 if (!file_exists(SCRIPTBASE . '.private/config.php')) {
 	echo '<html><body><p>'.__('No configuration file found').'</p>';
 	if (file_exists('install/index.php')) {

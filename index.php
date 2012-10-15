@@ -373,6 +373,13 @@ if (file_exists(USERBASE.'/f/skin_files/favicon.png')) {
 // }
 $smarty->assign('METADATA', $c.Core_trigger('building-metadata'));
 // }
+// { send timing header
+global $starttimeCount, $starttime;
+header(
+	'X-RenderTime-'.($starttimeCount++).'-totalSetup: '.((microtime(true)-$starttime)*1000)
+);
+$starttime=microtime(true);
+// }
 // { display the document
 ob_start();
 if (strpos($template, '/')===false) {

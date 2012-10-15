@@ -76,7 +76,6 @@ function Meetings_formSubmit() {
 	}
 	$id=(int)$_REQUEST['id'];
 	$values=$_REQUEST['values'];
-	mail('kae.verens@gmail.com', 'test', print_r($_REQUEST, true));
 	dbQuery(
 		'update meetings set form_values="'
 		.addslashes($values).'" where id='.$id

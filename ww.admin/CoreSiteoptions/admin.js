@@ -1,17 +1,18 @@
+/*global __,google,CodeMirror,htmlspecialchars*/
 function CoreSiteoptions_screen(page) {
 	window['CoreSiteoptions_screen'+page]();
 }
 function CoreSiteoptions_screenCron() {
 	var $content=$('#content').empty();
 	$.post('/a/f=adminCronGet', function(ret) {
-		var table='<table><thead><tr><th>'+__('Name')+'</th><th>'+__('Period')+'</th>'
-			+'<th>'+__('Next')+'</th><th>'+__('Description')+'</th></tr></thead>'
-			+'<tbody>';
+		var table='<table><thead><tr><th>'+__('Name')+'</th><th>'+__('Period')+'</th>'+
+			'<th>'+__('Next')+'</th><th>'+__('Description')+'</th></tr></thead>'+
+			'<tbody>';
 		for (var i=0;i<ret.length;++i) {
 			var cron=ret[i];
-			table+='<tr cid="'+cron.id+'"><td>'+cron.name+'</td><td class="clickable">'
-				+cron.period_multiplier+' '+cron.period+'</td><td class="clickable"'
-				+'>'+cron.next_date+'</td><td>'+cron.notes+'</td></tr>';
+			table+='<tr cid="'+cron.id+'"><td>'+cron.name+'</td><td class="clickable">'+
+				cron.period_multiplier+' '+cron.period+'</td><td class="clickable"'+
+				'>'+cron.next_date+'</td><td>'+cron.notes+'</td></tr>';
 		}
 		table+='</tbody></table>';
 		var $table=$(table)
@@ -63,7 +64,7 @@ function CoreSiteoptions_screenCron() {
 					.datetimepicker({
 						dateFormat: 'yy-mm-dd',
 						timeFormat: 'hh:mm',
-						onClose: function(dateText, inst){
+						onClose: function(dateText){
 							var url='/a/f=adminCronSave/id='+id+'/field=next_date';
 							$.post(url+'/value='+dateText);
 							$this.html(dateText).removeAttr('clicked');
@@ -91,20 +92,20 @@ function CoreSiteoptions_screenLanguages() {
 	function showLanguages() {
 		$content.empty();
 		$.post('/a/f=languagesGet', function(languages) {
-			var table='<table id="languages-table"><thead>'
-				+'<tr><th>'+__('Name')+'</th><th>'+__('Code')+'</th>'
-				+'<th>'+__('Default')+'</th><th>&nbsp;</th></tr></thead>'
-				+'<tbody>';
+			var table='<table id="languages-table"><thead>'+
+				'<tr><th>'+__('Name')+'</th><th>'+__('Code')+'</th>'+
+				'<th>'+__('Default')+'</th><th>&nbsp;</th></tr></thead>'+
+				'<tbody>';
 			for (var i=0;i<languages.length;++i) {
 				var lang=languages[i];
 				var links=['<a href="#" class="edit">'+__('Edit')+'</a>'];
 				if (!(+lang.is_default)) {
 					links.push('<a href="#" class="delete">'+__('[x]')+'</a>');
 				}
-				table+='<tr cid="'+lang.id+'"><td>'+lang.name+'</td>'
+				table+='<tr cid="'+lang.id+'"><td>'+lang.name+'</td>'+
 					// TODO: translation of yes/no needed
-					+'<td>'+lang.code+'</td><td>'+(+lang.is_default?'Yes':'')+'</td>'
-					+'<td>'+links.join(', ')+'</td></tr>';
+					'<td>'+lang.code+'</td><td>'+(+lang.is_default?'Yes':'')+'</td>'+
+					'<td>'+links.join(', ')+'</td></tr>';
 			}
 			table+='</tbody></table>';
 			var $table=$(table)
@@ -113,12 +114,12 @@ function CoreSiteoptions_screenLanguages() {
 			);
 			$('<a href="#">'+__('Add Language')+'</a>')
 				.click(function() {
-					$('<form id="languages-form"><table>'
-						+'<tr><th>'+__('Name')+'</th><td><input name="name"/></td></tr>'
-						+'<tr><th>'+__('Code')+' <a href="'+__('http://en.wikipedia.org/wiki/List_of_ISO_63'
-						+'9-1_codes')+'" target="_blank">#</a></th><td>'
-						+'<input name="code" class="small"/></td></tr>'
-						+'</table></form>'
+					$('<form id="languages-form"><table>'+
+						'<tr><th>'+__('Name')+'</th><td><input name="name"/></td></tr>'+
+						'<tr><th>'+__('Code')+' <a href="'+__('http://en.wikipedia.org/wiki/List_of_ISO_63'+
+						'9-1_codes')+'" target="_blank">#</a></th><td>'+
+						'<input name="code" class="small"/></td></tr>'+
+						'</table></form>'
 					)
 						.dialog({
 							'modal':true,
@@ -163,15 +164,15 @@ function CoreSiteoptions_screenLanguages() {
 						language=languages[i];
 					}
 				}
-				$('<form id="languages-form"><input name="id" type="hidden"/><table>'
-					+'<tr><th>'+__('Name')+'</th><td><input name="name"/></td></tr>'
-					+'<tr><th>'+__('Code')+' <a href="'+__('http://en.wikipedia.org/wiki/List_of_ISO_63'
-					+'9-1_codes')+'" target="_blank">#</a></th><td>'
-					+'<input name="code" class="small"/></td></tr>'
-					+'<tr><th>'+__('Is Default')+'</th><td><select name="is_default">'
-					+'<option value="0">'+__('No')+'</option><option value="1">'+__('Yes')+'</option>'
-					+'</select></td></tr>'
-					+'</table></form>'
+				$('<form id="languages-form"><input name="id" type="hidden"/><table>'+
+					'<tr><th>'+__('Name')+'</th><td><input name="name"/></td></tr>'+
+					'<tr><th>'+__('Code')+' <a href="'+__('http://en.wikipedia.org/wiki/List_of_ISO_63'+
+					'9-1_codes')+'" target="_blank">#</a></th><td>'+
+					'<input name="code" class="small"/></td></tr>'+
+					'<tr><th>'+__('Is Default')+'</th><td><select name="is_default">'+
+					'<option value="0">'+__('No')+'</option><option value="1">'+__('Yes')+'</option>'+
+					'</select></td></tr>'+
+					'</table></form>'
 				)
 					.dialog({
 						'modal':true,
@@ -203,7 +204,7 @@ function CoreSiteoptions_screenLanguages() {
 	function showTranslations() {
 		function changeLanguage() {
 			var lang=$(this).val();
-			if (lang=='') {
+			if (lang==='') {
 				$languagestable.find('.context')
 					// TODO: translation needed
 					.text('-- choose a language --')
@@ -221,7 +222,7 @@ function CoreSiteoptions_screenLanguages() {
 			});
 		}
 		function updateVisibleTranslations() {
-			if ($languages.val()=='') {
+			if ($languages.val()==='') {
 				return;
 			}
 			var trs=$languagestable.find('tbody tr');
@@ -242,11 +243,11 @@ function CoreSiteoptions_screenLanguages() {
 			}
 		}
 		// { header
-		var $header=$(
-			'<table><tr><td id="lang-selector"/><td>'+__('Export')+':</td>'
-			+'<td id="lang-export"/>'
-			+'<td>'+__('or')+' '+__('import')+':</td><td id="lang-import"/>'
-			+'</tr></table>'
+		$(
+			'<table><tr><td id="lang-selector"/><td>'+__('Export')+':</td>'+
+			'<td id="lang-export"/>'+
+			'<td>'+__('or')+' '+__('import')+':</td><td id="lang-import"/>'+
+			'</tr></table>'
 		)
 			.appendTo($content.empty());
 			// TODO: translation needed
@@ -268,17 +269,16 @@ function CoreSiteoptions_screenLanguages() {
 			$languages.html(opts).change(changeLanguage);
 		});
 		$.post('/a/f=adminLanguagesGetStrings', function(strings) {
-			var table='<table id="languages-table"><thead>'
-				+'<tr><th>'+__('String')+'</th><th>'+__('Context')+'</th>'
-				+'<th>'+__('Translation')+'</th></tr></thead>'
-				+'<tbody>';
-			var links=[];
+			var table='<table id="languages-table"><thead>'+
+				'<tr><th>'+__('String')+'</th><th>'+__('Context')+'</th>'+
+				'<th>'+__('Translation')+'</th></tr></thead>'+
+				'<tbody>';
 			for (var i=0;i<strings.length;++i) {
 				var str=strings[i];
-				table+='<tr><td>'+htmlspecialchars(str.str)+'</td>'
+				table+='<tr><td>'+htmlspecialchars(str.str)+'</td>'+
 					// TODO: translation
-					+'<td>'+str.context+'</td><td class="context">-- choose a language --</td>'
-					+'</tr>';
+					'<td>'+str.context+'</td><td class="context">-- choose a language --</td>'+
+					'</tr>';
 			}
 			table+='</tbody></table>';
 			$languagestable=$(table)
@@ -287,10 +287,10 @@ function CoreSiteoptions_screenLanguages() {
 					fnDrawCallback:function() {
 						setTimeout(updateVisibleTranslations, 1);
 					},
-					"aoColumns": [
-						{ "sWidth": "46%" },
-						{ "sWidth": "8%" },
-						{ "sWidth": "46%"}
+					'aoColumns': [
+						{ 'sWidth': '46%' },
+						{ 'sWidth': '8%' },
+						{ 'sWidth': '46%'}
 					]
 				});
 			$languagestable.on('click', 'tbody td:last-child', function() {
@@ -337,16 +337,16 @@ function CoreSiteoptions_screenLanguages() {
 			document.location='/a/f=adminLanguagesExportPo?lang='+lang
 		});
 		$import.click(function() {
-			var $dialog=$('<table>'
-				+'<tr><th>'+__('Language')+':</th><td><select id="popup-lang"/>'
-				+'</td></tr>'
-				+'<tr><th>'+__('Context')+':</th><td><select id="popup-context"/></td>'
-				+'</tr>'
-				+'<tr><th>'+__('File')+':</th><td><input type="button" class="upload"'
+			var $dialog=$('<table>'+
+				'<tr><th>'+__('Language')+':</th><td><select id="popup-lang"/>'+
+				'</td></tr>'+
+				'<tr><th>'+__('Context')+':</th><td><select id="popup-context"/></td>'+
+				'</tr>'+
+				'<tr><th>'+__('File')+':</th><td><input type="button" class="upload"'+
 				// TODO: translation needed
-		    +' id="popup-file" value="Select and Upload"/>'
-				+'</td></tr>'
-				+'</table>'
+		    +' id="popup-file" value="Select and Upload"/>'+
+				'</td></tr>'+
+				'</table>'
 			).dialog({
 				'close':function() {
 					$dialog.remove();
@@ -365,9 +365,8 @@ function CoreSiteoptions_screenLanguages() {
 					'multi':false,
 					'buttonImage':'/i/choose-file.png',
 					'uploader':'/a/f=adminLanguagesImportPo',
-					'onUploadSuccess':function(file, data, response){
-					console.log(data);
-						ret=eval('('+data+')');
+					'onUploadSuccess':function(file, data){
+						var ret=eval('('+data+')');
 						if (ret.error) {
 							return alert(ret.error);
 						}
@@ -376,7 +375,7 @@ function CoreSiteoptions_screenLanguages() {
 					},
 					'onUploadStart':function() {
 						$('#popup-file').uploadify('settings', 'formData', {
-							'PHPSESSID':sessid,
+							'PHPSESSID':window.sessid,
 							'lang':$('#popup-lang').val(),
 							'context':$('#popup-context').val()
 						});
@@ -398,11 +397,11 @@ function CoreSiteoptions_screenLanguages() {
 function CoreSiteoptions_screenLocations() {
 	var $content=$('#content').empty();
 	$.post('/a/f=locationsGet', function(locations) {
-		var table='<table id="locations-table"><thead>'
-			+'<tr><th>'+__('Name')+'</th><th>'+__('Lat')+'</th><th>'+__('Lng')+'</th>'
-			+'<th>'+__('Located In')+'</th>'
-			+'<th>'+__('Default')+'</th><th>&nbsp;</th></tr></thead>'
-			+'<tbody>';
+		var table='<table id="locations-table"><thead>'+
+			'<tr><th>'+__('Name')+'</th><th>'+__('Lat')+'</th><th>'+__('Lng')+'</th>'+
+			'<th>'+__('Located In')+'</th>'+
+			'<th>'+__('Default')+'</th><th>&nbsp;</th></tr></thead>'+
+			'<tbody>';
 		function getParent(parent_id) {
 			if (parent_id) {
 				for (var i=0;i<locations.length;++i) {
@@ -421,12 +420,12 @@ function CoreSiteoptions_screenLocations() {
 				links.push('<a href="#" class="delete">'+__('[x]')+'</a>');
 			}
 			var located_in=getParent(+loc.parent_id).replace(/\/ $/, '') || ' - ';
-			table+='<tr cid="'+loc.id+'"><td>'+loc.name+'</td>'
-				+'<td>'+loc.lat+'</td><td>'+loc.lng+'</td>'
-				+'<td>'+located_in+'</td>'
+			table+='<tr cid="'+loc.id+'"><td>'+loc.name+'</td>'+
+				'<td>'+loc.lat+'</td><td>'+loc.lng+'</td>'+
+				'<td>'+located_in+'</td>'+
 				// TODO: translation needed
-				+'<td>'+(+loc.is_default?'Yes':'')+'</td>'
-				+'<td>'+links.join(', ')+'</td></tr>';
+				'<td>'+(+loc.is_default?'Yes':'')+'</td>'+
+				'<td>'+links.join(', ')+'</td></tr>';
 		}
 		table+='</tbody></table>';
 		var $table=$(table)
@@ -434,15 +433,15 @@ function CoreSiteoptions_screenLocations() {
 		$table.dataTable();
 		$('<a href="#">'+__('Add Location')+'</a>')
 			.click(function() {
-				$('<form id="locations-form"><table>'
-					+'<tr><th>'+__('Name')+'</th><td><input name="name"/></td></tr>'
-					+'<tr><th>'+__('Map')+'</th><td><a href="#" class="map-opener" '
-					+'lat="#location-lat" lng="#location-lng">'+__('Click to open')+'</a></td></tr>'
-					+'<tr><th>'+__('Latitude')+'</th><td><input id="location-lat" name="lat"/></td></tr>'
-					+'<tr><th>'+__('Longitude')+'</th><td><input id="location-lng" name="lng"/></td></tr>'
-					+'<tr><th>'+__('Located In')+'</th><td><select id="location-locatedin">'
-					+'</select></td></tr>'
-					+'</table></form>'
+				$('<form id="locations-form"><table>'+
+					'<tr><th>'+__('Name')+'</th><td><input name="name"/></td></tr>'+
+					'<tr><th>'+__('Map')+'</th><td><a href="#" class="map-opener" '+
+					'lat="#location-lat" lng="#location-lng">'+__('Click to open')+'</a></td></tr>'+
+					'<tr><th>'+__('Latitude')+'</th><td><input id="location-lat" name="lat"/></td></tr>'+
+					'<tr><th>'+__('Longitude')+'</th><td><input id="location-lng" name="lng"/></td></tr>'+
+					'<tr><th>'+__('Located In')+'</th><td><select id="location-locatedin">'+
+					'</select></td></tr>'+
+					'</table></form>'
 				)
 					.dialog({
 						'modal':true,
@@ -499,18 +498,18 @@ function CoreSiteoptions_screenLocations() {
 				opt+=name+'</option>';
 				parents.push(opt);
 			}
-			$('<form id="locations-form"><input name="id" type="hidden"/><table>'
-				+'<tr><th>'+__('Name')+'</th><td><input name="name"/></td></tr>'
-				+'<tr><th>'+__('Map')+'</th><td><a href="#" class="map-opener" '
-				+'lat="#location-lat" lng="#location-lng">'+__('Click to open')+'</a></td></tr>'
-				+'<tr><th>'+__('Latitude')+'</th><td><input id="location-lat" name="lat"/></td></tr>'
-				+'<tr><th>'+__('Longitude')+'</th><td><input id="location-lng" name="lng"/></td></tr>'
-				+'<tr><th>'+__('Located In')+'</th><td><select id="location-parent_id"'
-				+' name="parent_id">'+parents.join('')+'</select></td></tr>'
-				+'<tr><th>'+__('Is Default')+'</th><td><select name="is_default">'
-				+'<option value="0">'+__('No')+'</option><option value="1">'+__('Yes')+'</option>'
-				+'</select></td></tr>'
-				+'</table></form>'
+			$('<form id="locations-form"><input name="id" type="hidden"/><table>'+
+				'<tr><th>'+__('Name')+'</th><td><input name="name"/></td></tr>'+
+				'<tr><th>'+__('Map')+'</th><td><a href="#" class="map-opener" '+
+				'lat="#location-lat" lng="#location-lng">'+__('Click to open')+'</a></td></tr>'+
+				'<tr><th>'+__('Latitude')+'</th><td><input id="location-lat" name="lat"/></td></tr>'+
+				'<tr><th>'+__('Longitude')+'</th><td><input id="location-lng" name="lng"/></td></tr>'+
+				'<tr><th>'+__('Located In')+'</th><td><select id="location-parent_id"'+
+				' name="parent_id">'+parents.join('')+'</select></td></tr>'+
+				'<tr><th>'+__('Is Default')+'</th><td><select name="is_default">'+
+				'<option value="0">'+__('No')+'</option><option value="1">'+__('Yes')+'</option>'+
+				'</select></td></tr>'+
+				'</table></form>'
 			)
 				.dialog({
 					'modal':true,
@@ -590,8 +589,8 @@ function CoreSiteoptions_screenMenus() {
 			var ord=val._ord||0;
 			var cols=[
 				'',
-				'<a class="menuname" href="#" data-ord="'+ord+'"'
-				+' data-path="'+path+key+'">'+key+'</a>',
+				'<a class="menuname" href="#" data-ord="'+ord+
+				'" data-path="'+path+key+'">'+key+'</a>',
 				''
 			];
 			if (val._icon) {
@@ -601,19 +600,19 @@ function CoreSiteoptions_screenMenus() {
 				cols[0]='<img style="width:20px;height:20px" src="/i/blank.gif"/>';
 			}
 			if (hasSubItems(val)) {
-				cols[2]='<a class="subitems" href="#" data-path="'+path+key+'">'
-					+'&raquo;</a>'
+				cols[2]='<a class="subitems" href="#" data-path="'+path+key+'">'+
+					'&raquo;</a>'
 			}
 			else {
-				cols[2]='<a class="subitems faded" href="#" data-path="'+path+key+'">'
-					+'&raquo;</a>'
+				cols[2]='<a class="subitems faded" href="#" data-path="'+path+key+'">'+
+					'&raquo;</a>'
 			}
 			menuItems.push(
-				'<tr>'
-				+'<td style="width:20px">'+cols[0]+'</td>'
-				+'<td>'+cols[1]+'</td>'
-				+'<td style="width:20px">'+cols[2]+'</td>'
-				+'</tr>'
+				'<tr>'+
+				'<td style="width:20px">'+cols[0]+'</td>'+
+				'<td>'+cols[1]+'</td>'+
+				'<td style="width:20px">'+cols[2]+'</td>'+
+				'</tr>'
 			);
 			menuOrds.push(ord);
 		});
@@ -672,17 +671,17 @@ function CoreSiteoptions_screenMenus() {
 	function showDetails(path) {
 		if (path=='') {
 			$('#menu-details').html(
-				'<div><h3>'+__('No menu item selected')+'</h3>'
-				+'<p>'+__('Click an item in the left menu to select it.')+'</p></div>'
+				'<div><h3>'+__('No menu item selected')+'</h3>'+
+				'<p>'+__('Click an item in the left menu to select it.')+'</p></div>'
 			);
-			$list=$('<ul>');
+			var $list=$('<ul>');
 			$list.append(
 				$('<li><a href="#">'+__('Set this menu as the default admin menu.')+'</a></li>')
 					.click(function() {
 						// TODO: translation needed
 						if (!confirm(
-							'This will set the default admin menu to this one.'
-							+' Are you sure?'
+							'This will set the default admin menu to this one.'+
+							' Are you sure?'
 						)) {
 							return;
 						}
@@ -695,8 +694,8 @@ function CoreSiteoptions_screenMenus() {
 					.click(function() {
 						// TODO: translation needed
 						if (!confirm(
-							'This will remove any changes you have made, and reset your'
-							+' menu to the default admin menu. Are you sure?'
+							'This will remove any changes you have made, and reset your'+
+							' menu to the default admin menu. Are you sure?'
 						)) {
 							return;
 						}
@@ -710,8 +709,8 @@ function CoreSiteoptions_screenMenus() {
 					.click(function() {
 						if (!confirm(
 							// TODO: translation needed
-							'This will clear all admin\'s menus and set them'
-							+' to the default admin menu. Are you sure?'
+							'This will clear all admin\'s menus and set them'+
+							' to the default admin menu. Are you sure?'
 						)) {
 							return;
 						}
@@ -725,8 +724,8 @@ function CoreSiteoptions_screenMenus() {
 					.click(function() {
 						// TODO: translation needed
 						if (!confirm(
-							'This will reset all menus to the factory default. You probably'
-							+' DON\'T want to do this. Are you sure?'
+							'This will reset all menus to the factory default. You probably'+
+							' DON\'T want to do this. Are you sure?'
 						)) {
 							return;
 						}
@@ -755,15 +754,15 @@ function CoreSiteoptions_screenMenus() {
 		var imgSrc=currentTop._icon
 			?'/a/f=getImg/w=20/h=20/'+currentTop._icon
 			:'/i/blank.gif';
-		var table='<div>'+deleteLink+'<table>'
-			+'<tr><th>'+__('Name')+'</th><td><input name="_name"/></td></tr>'
-			+'<tr><th>'+__('Link')+'</th><td><input name="_link"/></td></tr>'
-			+'<tr><th>'+___('Icon')+'</th><td><img class="menu-icon"'
-			+' src="'+imgSrc+'"/>'
-			+'<input class="_icon" name="_icon"/></td></tr>'
-			+'<tr><th>'+__('Target')+'</th><td><select name="_target"><option></option>'
-			+'<option value="_blank">'+__('New page')+'</option></select></td></tr>'
-			+'</table></div>';
+		var table='<div>'+deleteLink+'<table>'+
+			'<tr><th>'+__('Name')+'</th><td><input name="_name"/></td></tr>'+
+			'<tr><th>'+__('Link')+'</th><td><input name="_link"/></td></tr>'+
+			'<tr><th>'+__('Icon')+'</th><td><img class="menu-icon"'+
+			' src="'+imgSrc+'"/>'+
+			'<input class="_icon" name="_icon"/></td></tr>'+
+			'<tr><th>'+__('Target')+'</th><td><select name="_target"><option></option>'+
+			'<option value="_blank">'+__('New page')+'</option></select></td></tr>'+
+			'</table></div>';
 		// }
 		var $details=$('#menu-details');
 		$details.html(table);
@@ -818,21 +817,21 @@ function CoreSiteoptions_screenMenus() {
 		// { "copy details from"
 		var $copy=$(
 			// TODO: translation needed
-			'<select class="menu-copy"><option value="">Copy details from...'
-			+'</option></select>'
+			'<select class="menu-copy"><option value="">Copy details from...'+
+			'</option></select>'
 		).appendTo($details);
 		function getOpts(menuItems, path, depth) {
 			var html='';
 			if (path) {
 				path+='|';
 			}
-			$.each(menuItems, function(key, val) {
+			$.each(menuItems, function(key) {
 				if (/^_/.test(key)) {
 					return;
 				}
-				html+='<option value="'+path+key+'">'
-					+(new Array(depth+1)).join(' > ')+key
-					+'</option>';
+				html+='<option value="'+path+key+'">'+
+					(new Array(depth+1)).join(' > ')+key+
+					'</option>';
 				html+=getOpts(menuItems[key], path+key, depth+1);
 			});
 			return html;
@@ -847,7 +846,7 @@ function CoreSiteoptions_screenMenus() {
 				) {
 					return;
 				}
-				$.each(currentTop, function(key, val) {
+				$.each(currentTop, function(key) {
 					if (!/^_/.test(key) || key=='_ord' || key=='_name') {
 						return;
 					}
@@ -858,7 +857,7 @@ function CoreSiteoptions_screenMenus() {
 				for (var i=0;i<bits.length;++i) {
 					obj=obj[bits[i]];
 				}
-				$.each(obj, function(key, val) {
+				$.each(obj, function(key) {
 					if (!/^_/.test(key) || key=='_ord' || key=='_name') {
 						return;
 					}
@@ -881,10 +880,10 @@ function CoreSiteoptions_screenMenus() {
 			showMenuNames()
 		});
 	});
-	var html='<table id="menus-wrapper">'
-		+'<tr style="height:20px;"><td id="menu-current-top" colspan="2"></td></tr>'
-		+'<tr><td id="menu-items"></td><td id="menu-details"></td></tr></table>';
-	var $wrapper=$(html).appendTo($content);
+	var html='<table id="menus-wrapper">'+
+		'<tr style="height:20px;"><td id="menu-current-top" colspan="2"></td></tr>'+
+		'<tr><td id="menu-items"></td><td id="menu-details"></td></tr></table>';
+	$(html).appendTo($content);
 	$('#menu-current-top').on('click', 'a', function() {
 		var path=$(this).data('path');
 		showMenuNames(path);
@@ -901,25 +900,26 @@ function CoreSiteoptions_screenMenus() {
 }
 function CoreSiteoptions_screenEmails() {
 	function showEmailsSent(panel) {
-		var $panel=$(panel).empty()
-			.html('<div><table id="emails-sent-datatable">'
-				+'<thead>'
-				+'<tr><th>'+__('Date')+'</th><th>'+__('Recipient')+'</th><th>'+__('Subject')+'</th><th/></tr>'
-				+'</thead>'
-				+'<tbody/></table></div>');
+		$(panel).empty()
+			.html('<div><table id="emails-sent-datatable">'+
+				'<thead>'+
+				'<tr><th>'+__('Date')+'</th><th>'+__('Recipient')+
+				'</th><th>'+__('Subject')+'</th><th/></tr>'+
+				'</thead>'+
+				'<tbody/></table></div>');
 		var params={
-			"sAjaxSource":'/a/f=adminEmailsSentDT',
-			"bProcessing":true,
-			"bJQueryUI":true,
-			"bServerSide":true,
-			"fnRowCallback":function( nRow, aData, iDisplayIndex ) {
+			'sAjaxSource':'/a/f=adminEmailsSentDT',
+			'bProcessing':true,
+			'bJQueryUI':true,
+			'bServerSide':true,
+			'fnRowCallback':function( nRow, aData) {
 				$('<a href="javascript:" data-id="'+aData[3]+'">'+__('View')+'</a>')
 					.appendTo($('td:nth-child(4)', nRow).empty())
 					.click(function() {
 						var w=$(window).width(), h=$(window).height();
-						var html='<div><iframe style="width:100%;height:100%"'
-							+' src="/a/f=adminEmailSentGet/id='+$(this).data('id')
-							+'"></iframe></div>';
+						var html='<div><iframe style="width:100%;height:100%"'+
+							' src="/a/f=adminEmailSentGet/id='+$(this).data('id')+
+							'"></iframe></div>';
 						var $iframe=$(html).dialog({
 							'modal':true,
 							'width':w-100,
@@ -936,13 +936,13 @@ function CoreSiteoptions_screenEmails() {
 	}
 	function showTemplates(panel) {
 		var $panel=$(panel).empty();
-		var html='<select id="email-templates-list">'
+		var html='<select id="email-templates-list">'+
 			// TODO: translation needed
-			+'<option>-- choose --</option></select>'
-			+'<button disabled id="email-templates-download">'+__('Download')+'</button>'
-			+'<textarea disabled id="email-templates-source"></textarea>'
-			+'<button disabled id="email-templates-upload">'+__('Upload')+'</button>'
-			+'<button disabled id="email-templates-save">'+__('Save')+'</button>';
+			'<option>-- choose --</option></select>'+
+			'<button disabled id="email-templates-download">'+__('Download')+'</button>'+
+			'<textarea disabled id="email-templates-source"></textarea>'+
+			'<button disabled id="email-templates-upload">'+__('Upload')+'</button>'+
+			'<button disabled id="email-templates-save">'+__('Save')+'</button>';
 		$.post('/a/f=adminEmailTemplatesList', function(ret) {
 			// TODO: translation needed
 			var opts='<option>-- choose --</option>';
@@ -1054,10 +1054,10 @@ function CoreSiteoptions_screenEmails() {
 				'width':91,
 				'uploader':'/a/f=adminEmailTemplateUpload',
 				'postData':{
-					'PHPSESSID':sessid
+					'PHPSESSID':window.sessid
 				},
-				'upload_success_handler':function(file, data, response){
-					ret=eval('('+data+')');
+				'upload_success_handler':function(file, data){
+					var ret=eval('('+data+')');
 					if (ret.ok) {
 						$('#email-templates-list').change();
 					}
@@ -1066,12 +1066,12 @@ function CoreSiteoptions_screenEmails() {
 	}
 	var $content=$('#content').empty().append('<h1>'+__('Emails')+'</h1>');
 	// { show tabs
-	$('<div><ul>'
-		+'<li><a href="#tab-emails-sent">'+__('Emails Sent')+'</a></li>'
-		+'<li><a href="#tab-templates">'+__('Templates')+'</a></li>'
-		+'</ul>'
-		+'<div id="tab-emails-sent"/><div id="tab-templates"/>'
-		+'</div>')
+	$('<div><ul>'+
+		'<li><a href="#tab-emails-sent">'+__('Emails Sent')+'</a></li>'+
+		'<li><a href="#tab-templates">'+__('Templates')+'</a></li>'+
+		'</ul>'+
+		'<div id="tab-emails-sent"/><div id="tab-templates"/>'+
+		'</div>')
 		.appendTo($content)
 		.tabs({
 			'show':function(e, ui) {
@@ -1091,8 +1091,8 @@ $(document).on('click', '.map-opener', function() {
 	var $this=$(this);
 	var $lat=$($this.attr('lat')), $lng=$($this.attr('lng'));
 	if (!window.google || !google.maps) {
-		$('<script src="http://maps.googleapis.com/maps/api/js?sensor=false&c'
-			+'allback=Core_siteOptions_mapinit"></script>')
+		$('<script src="http://maps.googleapis.com/maps/api/js?sensor=false&c'+
+			'allback=Core_siteOptions_mapinit"></script>')
 			.appendTo(document.body);
 		return;
 	}
@@ -1151,7 +1151,7 @@ $(document).on('click', '.map-opener', function() {
 		var ctr=map.getCenter();
 		geocoder.geocode({
 			'latLng': new google.maps.LatLng(ctr.lat(), ctr.lng())
-		}, function(res, status) {
+		}, function(res) {
 			addressWindow.close();
 			if (res && res[1]) {
 				addressWindow.setContent(res[1].formatted_address);

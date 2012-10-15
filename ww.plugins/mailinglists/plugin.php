@@ -42,7 +42,13 @@ $plugin=array(
 function MailingLists_widget($vars) {
 	$html='<div id="mailinglists-subscribe">'
 		.'<input type="email" placeholder="'.__('enter email address').'"/>';
-	$lists=dbAll('select * from mailinglists_lists');
+	$sql='select * from mailinglists_lists';
+	$md5=md5($sql);
+	$lists=Core_cacheLoad('mailinglists', $md5, -1);
+	if ($lists===-1) {
+		$lists=dbAll($sql);
+		Core_cacheSave('mailinglists', $md5, $lists);
+	}
 	if (count($lists)>1) {
 		$html.='<select><option value="">'.__('Mailing List').'</option>';
 		foreach ($lists as $list) {

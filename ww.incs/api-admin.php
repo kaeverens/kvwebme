@@ -338,6 +338,7 @@ function Core_adminLanguagesAdd() {
 		.',code="'.addslashes($code).'",is_default=0'
 	);
 	Core_cacheClear('core');
+	Core_cacheClear('languages');
 	return array('ok'=>1);
 }
 
@@ -353,6 +354,7 @@ function Core_adminLanguagesDelete() {
 	$id=(int)$_REQUEST['id'];
 	dbQuery('delete from language_names where id='.$id);
 	Core_cacheClear('core');
+	Core_cacheClear('languages');
 	return array('ok'=>1);
 }
 
@@ -389,6 +391,7 @@ function Core_adminLanguagesEdit() {
 		.' where id='.$id
 	);
 	Core_cacheClear('core');
+	Core_cacheClear('languages');
 	return array('ok'=>1);
 }
 
@@ -415,6 +418,7 @@ function Core_adminLanguagesEditString() {
 		.addslashes($trstr).'"'
 	);
 	Core_cacheClear('core');
+	Core_cacheClear('languages');
 	return array('ok'=>1);
 }
 
@@ -540,6 +544,7 @@ function Core_adminLanguagesImportPo() {
 			dbQuery($sql);
 		}
 	}
+	Core_cacheClear('languages');
 	return true;
 }
 
