@@ -41,14 +41,17 @@ $tdir=USERBASE.'/themes-personal';
 $theme=$DBVARS['theme'];
 `cd $ubase  && zip -r $dir/theme.zip themes-personal/$theme`;
 
-$data=array();
 $tables=dbAll('show tables');
 foreach ($tables as $table) {
 	foreach ($table as $k=>$v) {
-		$data[$v]=dbAll('select * from `'.$v.'`');
+		mkdir($dir.'/'.$v);
+		$count=dbOne('select count(*) as cnt from '.$v, 'cnt');
+		for ($i=0;$i<$count;$i+=100) {
+			$data=dbAll('select * from `'.$v.'` limit '.$i.', 100');
+			file_put_contents($dir.'/'.$v.'/'.($i/100).'.json', json_encode($data));
+		}
 	}
 }
-file_put_contents($dir.'/db.json', json_encode($data));
 
 require CONFIG_FILE;
 unset($DBVARS['username']);
