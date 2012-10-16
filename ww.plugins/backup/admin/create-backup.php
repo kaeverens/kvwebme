@@ -47,7 +47,7 @@ foreach ($tables as $table) {
 	foreach ($table as $k=>$v) {
 		mkdir($dir.'/db/'.$v);
 		$count=dbOne('select count(*) as cnt from '.$v, 'cnt');
-		for ($i=0;$i<$count;$i+=100) {
+		for ($i=1;$i<=$count;$i+=100) {
 			$data=dbAll('select * from `'.$v.'` limit '.$i.', 100');
 			file_put_contents(
 				$dir.'/db/'.$v.'/'.($i/100).'.json', json_encode($data)
