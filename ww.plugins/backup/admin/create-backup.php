@@ -42,13 +42,16 @@ $theme=$DBVARS['theme'];
 `cd $ubase  && zip -r $dir/theme.zip themes-personal/$theme`;
 
 $tables=dbAll('show tables');
+mkdir($dir.'/db');
 foreach ($tables as $table) {
 	foreach ($table as $k=>$v) {
-		mkdir($dir.'/'.$v);
+		mkdir($dir.'/db/'.$v);
 		$count=dbOne('select count(*) as cnt from '.$v, 'cnt');
 		for ($i=0;$i<$count;$i+=100) {
 			$data=dbAll('select * from `'.$v.'` limit '.$i.', 100');
-			file_put_contents($dir.'/'.$v.'/'.($i/100).'.json', json_encode($data));
+			file_put_contents(
+				$dir.'/db/'.$v.'/'.($i/100).'.json', json_encode($data)
+			);
 		}
 	}
 }
