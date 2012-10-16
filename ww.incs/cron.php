@@ -28,7 +28,9 @@ function Core_pagesCronHandle() {
 	Core_cacheClear('pages,menus');
 }
 
-while (!isset($DBVARS['cron-next']) || $DBVARS['cron-next']<date('Y-m-d H:i:s')) {
+while (!isset($DBVARS['cron-next'])
+	|| ($DBVARS['cron-next']!=false && $DBVARS['cron-next']<date('Y-m-d H:i:s'))
+) {
 	$rs=dbAll('select * from cron where next_date<now()');
 	// { update existing cron entries
 	foreach ($rs as $r) {

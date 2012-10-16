@@ -892,17 +892,41 @@ class Products{
 			$md5,
 			-1
 		);
-		
 		if ($order_dir==2) {
 			$tmpprods=-1;
 		}
-		
 		if ($tmpprods==-1) {
 			if ($order_by!='') {
 				$tmpprods1=array();
 				$prods=$this->product_ids;
+				$sql='select id,data_fields from products where id in ('
+					.join(', ', $this->product_ids).')';
+				if ($enabledFilter==0) {
+					$sql.=' and enabled';
+				}
+				if ($enabledFilter==1) {
+					$sql='';
+				}
+				if ($enabledFilter==2) {
+					$sql.=' and !enabled';
+				}
+				$values=dbAll($sql);
+				foreach ($values as $v) {
+					$vals=json_decode($v['data_fields'], true);
+					$key2='';
+					foreach ($vals as $v2) {
+						if ($v2['n']==$order_by) {
+							$key2=__FromJSON($v2['v']);
+						}
+					}
+					if (!isset($tmpprods1[$key2])) {
+						$tmpprods1[$key2]=array();
+					}
+					$tmpprods1[$key2][]=$v['id'];
+				}
+				/*
 				foreach ($prods as $key=>$pid) {
-					$prod=$product=Product::getInstance($pid, false, $enabledFilter);
+					$product=Product::getInstance($pid, false, $enabledFilter);
 					if ($product->get($order_by)) {
 						$key2=__FromJSON($product->get($order_by));
 						if (!isset($tmpprods1[$key2])) {
@@ -912,6 +936,7 @@ class Products{
 						unset($prods[$key]);
 					}
 				}
+				*/
 				if ($order_dir==1) {
 					krsort($tmpprods1);
 				}

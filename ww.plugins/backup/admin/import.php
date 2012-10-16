@@ -17,7 +17,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 	mkdir($tmpdir);
 	$uname=$_FILES['file']['tmp_name'];
 	$password=addslashes($_POST['password']);
-	`cd $tmpdir && unzip -oP "$password" "$uname"`;
+	$cmd='cd '.$tmpdir.' && unzip -oP "'.$password.'" "'.$uname.'"';
+	`$cmd`;
 	if (!file_exists($tmpdir.'/site')) {
 		echo '<em>unzipping failed. incorrect password?</em>';
 	}
@@ -63,17 +64,43 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 		file_get_contents('http://'.$_SERVER['HTTP_HOST'].'/');
 
 		echo 'extracting database...<br />';
-		$dbbackup=json_decode(file_get_contents($tmpdir.'/site/db.json'));
-		foreach ($dbbackup as $name=>$vals) {
-			dbQuery('delete from '.addslashes($name));
-			foreach ($vals as $row) {
-				$parts=array();
-				foreach ($row as $key=>$val) {
-					$parts[]='`'.addslashes($key).'` = "'.addslashes($val).'" ';
+		if (file_exists($tmpdir.'/site/db.json')) { // old version
+			$dbbackup=json_decode(file_get_contents($tmpdir.'/site/db.json'));
+			foreach ($dbbackup as $name=>$vals) {
+				dbQuery('delete from '.addslashes($name));
+				foreach ($vals as $row) {
+					$parts=array();
+					foreach ($row as $key=>$val) {
+						$parts[]='`'.addslashes($key).'` = "'.addslashes($val).'" ';
+					}
+					$query='insert into `'.addslashes($name).'` set '.join(',', $parts);
+					dbQuery($query);
 				}
-				$query='insert into `'.addslashes($name).'` set '.join(',', $parts);
-				dbQuery($query);
 			}
+		}
+		else { // new version
+			$tables=new DirectoryIterator($tmpdir.'/site/db');
+			foreach ($tables as $table) {
+				if ($table->isDot()) {
+					continue;
+				}
+				echo $table.' ';
+				dbQuery('delete from `'.addslashes($table).'`');
+				$tmpdir2=$tmpdir.'/site/db/'.$table.'/';
+				for ($i=0; file_exists($tmpdir2.$i.'.json'); $i++) {
+					$rows=json_decode(file_get_contents($tmpdir2.$i.'.json'));
+					foreach ($rows as $row) {
+						$parts=array();
+						foreach ($row as $key=>$val) {
+							$parts[]='`'.addslashes($key).'` = "'.addslashes($val).'" ';
+						}
+						$query='insert into `'.addslashes($table).'` set '
+							.join(',', $parts);
+						dbQuery($query);
+					}
+				}
+			}
+			echo '<br/>';
 		}
 
 		echo 'cleaning up.<br />';
