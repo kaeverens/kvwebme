@@ -381,13 +381,20 @@ class Product{
 		}
 		if ($cat) {
 			$category=ProductCategory::getInstance($cat);
-			$catdir=$category
-				?$category->getRelativeUrl()
-				:'/missing-category-'.$cat;
+			if ($category) {
+				$catdir=$category->getRelativeUrl();
+			}
+			else {
+				$catdir='/missing-category-'.$cat;
+				dbQuery(
+					'delete from products_categories_products where category_id='.$cat
+				);
+				return $this->getRelativeUrl();
+			}
 			return $catdir
 				.'/'.$this->id.'-'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
 		}
-		if (preg_match('/^products(\||$)/', $PAGEDATA->type)) { // TODO
+		if (preg_match('/^products(\||$)/', $PAGEDATA->type)) {
 			return $PAGEDATA->getRelativeUrl()
 				.'/'.$this->id.'-'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
 		}
@@ -670,7 +677,7 @@ class ProductCategory{
 		// { or if there's a category parent, return its URL plus the name appended
 		if ($this->vals['parent_id']!=0) {
 			$cat=ProductCategory::getInstance($this->vals['parent_id']);
-			return $cat->getRelativeUrl().'/'.urlencode($this->vals['name']);
+			return $cat->getRelativeUrl().'/'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->vals['name']);
 		}
 		// }
 		// { or get at least any product page
