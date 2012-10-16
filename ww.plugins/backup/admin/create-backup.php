@@ -50,7 +50,7 @@ foreach ($tables as $table) {
 		for ($i=1;$i<=$count;$i+=100) {
 			$data=dbAll('select * from `'.$v.'` limit '.$i.', 100');
 			file_put_contents(
-				$dir.'/db/'.$v.'/'.($i/100).'.json', json_encode($data)
+				$dir.'/db/'.$v.'/'.(($i-1)/100).'.json', json_encode($data)
 			);
 		}
 	}
