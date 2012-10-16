@@ -30,6 +30,7 @@ RewriteRule ^_r$ /ww.incs/redirector.php [QSA,L]
 RewriteRule ^_s/(.*)$ /ww.incs/short-url.php?s=$1 [L]
 RewriteRule ^([^./]{2}[^.&]*)\&(.*)$ /index.php?page=$1&$2 [QSA,L]
 RewriteRule ^([^./]{2}[^.]*)$ /index.php?page=$1 [QSA,L]
+RewriteRule ^.svn(.*) /index.php [L]
 
 ErrorDocument 404 /ww.incs/404.php
 
