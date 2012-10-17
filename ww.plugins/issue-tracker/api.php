@@ -194,8 +194,9 @@ function Issuetracker_issuesGetDT() {
 	}
 	$filters=array(
 		'issuetracker_issues.project_id=issuetracker_projects.id',
-		'due_date>="'.addslashes($_REQUEST['date-from']).'"',
-		'due_date<"'.addslashes($_REQUEST['date-to']).' 24"'
+		'((due_date>="'.addslashes($_REQUEST['date-from']).'"'
+		.' and due_date<"'.addslashes($_REQUEST['date-to']).' 24")'
+		.' or due_date="0000-00-00")'
 	);
 	if ($search) {
 		$filters[]='name like "%'.addslashes($search).'%"';

@@ -11,11 +11,11 @@ $(function() {
 				var $this=$(this), val=$this.val(), $wrapper=$('#issue-fields-wrapper');
 				switch (val) {
 					case '0': // {
-						$wrapper.html('no '+ITString.issue+' title chosen');
+						$wrapper.html('no '+ITStrings.issue+' title chosen');
 					break; // }
 					case '-1': // {
 						var name=prompt(
-							'What name should the new '+ITString.issue+' title have?'
+							'What name should the new '+ITStrings.issue+' title have?'
 						);
 						if (!name) {
 							return $('#issue-type').val('0').change();

@@ -336,6 +336,9 @@ $(function() {
 			$('#issuetracker-navbar').hide();
 			var issue=ret.issue, type=ret.type;
 			type.fields=eval('('+type.fields+')');
+			if (type.fields===null) {
+				type.fields=[];
+			}
 			issue.meta=eval('('+issue.meta+')');
 			// { set up table HTML
 			var html=
@@ -522,7 +525,9 @@ $(function() {
 				+'<tr><th>Name</th><td>'+ret[i].name+'</td></tr>'
 				+'<tr><th>Date</th><td>'+Core_dateM2H(ret[i].cdate, 'datetime')
 				+'</td></tr>'
-				+'<tr><th>Comment</th><td>'+htmlspecialchars(ret[i].body)+'</td></tr>'
+				+'<tr><th>'+__('Comment')+'</th>'
+				+'<td>'+htmlspecialchars(ret[i].body).replace(/\n/g, '<br/>')
+				+'</td></tr>'
 				+'</table><hr/></div>'
 			);
 		}
