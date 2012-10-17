@@ -115,7 +115,7 @@ function UserAuthentication_redirect(){
 		return;
 	}
 	if (isset($PAGEDATA->vars['non_logged_in_redirect_to'])
-		&& $PAGEDATA->vars['non_logged_in_redirect_to']
+		&& (int)$PAGEDATA->vars['non_logged_in_redirect_to']
 	) {
 		$p=Page::getInstance($PAGEDATA->vars['non_logged_in_redirect_to']);
 		redirect($p->getAbsoluteUrl());
