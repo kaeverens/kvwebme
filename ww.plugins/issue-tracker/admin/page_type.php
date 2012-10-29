@@ -65,7 +65,7 @@ $html.='</table>';
 $html.= '</div>';
 // }
 // { header
-$html.= '<div id="issuetracker-header">';
+$html.= '<div id="issuetracker-header"><p>incepe</p>';
 $html.= '<p>Text to be shown above the product/product list</p>';
 $html.= ckeditor('body', $page['body'], null, 1);
 $html.= '</div>';

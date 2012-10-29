@@ -243,7 +243,7 @@ function Issuetracker_issuesGetDT() {
 	$sql='select issuetracker_issues.id id'
 		.', type_id, issuetracker_issues.name name, status, project_id'
 		.', issuetracker_projects.name project_name'
-		.', due_date'
+		.', issuetracker_issues.meta meta, due_date'
 		.' from issuetracker_issues,issuetracker_projects '.$filter
 		.' order by '.$orderby.' '.$orderdesc
 		.' limit '.$start.','.$length;
@@ -275,6 +275,40 @@ function Issuetracker_issuesGetDT() {
 		// }
 		// { project
 		$row[]=$r['project_name'];
+		// }
+		// { credits
+		
+		$freeCredits=json_decode($r['meta'])->{'credits'};
+		$paidCredits=json_decode($r['meta'])->{'paid_credits'};
+		$metaArray=array();
+		$metaFlag=false;
+		
+
+		if($freeCredits==null){
+		  //this means we initialise the meta for the first time
+		  //i.e. issue was just added
+		  $metaArray['credits']=0;
+		  $metaFlag=true;
+		  }
+		else{
+		  $metaArray['credits']=json_decode($r['meta'])->{'credits'};
+		}
+
+		if($paidCredits==null){
+		  //same thing here
+		  $metaArray['paid_credits']=0;
+		  $metaFlag=true;
+		  }
+		else{
+		 $metaArray['paid_credits']=json_decode($r['meta'])->{'paid_credits'};		
+		}
+
+		if($metaFlag)
+		  {$sql = "update issuetracker_issues set meta='".json_encode($metaArray)."' where id=".$r['id'];	
+		   dbQuery($sql);
+		}
+
+		$row[]=(json_decode($r['meta'])->{'credits'}!=null?json_decode($r['meta'])->{'credits'}:0);
 		// }
 		$arr[]=$row;
 	}
@@ -377,3 +411,109 @@ function IssueTracker_issueFileUpload() {
 }
 
 // }
+
+function IssueTracker_addVote()
+{
+if(!$_SESSION['userdata']['id'])
+	return "You must log in first";
+
+$extras = dbOne("select extras from user_accounts where id=".$_SESSION['userdata']['id'],"extras");
+$votesLeft  = (int)json_decode($extras)->{'free-credits'};
+
+if($extras=="[]"){
+  $extras=json_decode($extras,true);
+  //this user hasn't been initialised
+  $extras['free-credits']=(int)dbOne('select * from site_vars where name="max-free-credits"','value');
+  $votesLeft=$extras['free-credits'];
+  $extras['paid-credits']=0;
+  }
+
+if($votesLeft>=1)
+  {
+  //substract 1 from free-credits
+  
+  $votesLeft -=1;
+  $paidCreditsLeft = json_decode($extras)->{'paid_credits'};
+
+  //votesToId represents how many votes the user gave to the id issue
+  
+  $votesToId = json_decode($extras)->{'votesTo-'.$_REQUEST['id']};
+
+  if(($votesToId)==null)
+  {
+  //this is the first time the user votes
+  $votesToId = 1;
+  }
+  else{
+  //increase it with 1
+  $votesToId=$votesToId+1;
+  }
+
+  $extras=json_decode($extras,true);
+  
+  $extras['free-credits']=$votesLeft;
+  $extras['paid_credits']=$paidCreditsLeft==null?0:$paidCreditsLeft;
+  $extras['votesTo-'.$_REQUEST['id']]=$votesToId;
+  dbQuery("update user_accounts set extras='".json_encode($extras)."' where id=".$_SESSION['userdata']['id']);
+  
+  //add a vote to the project
+  $meta  = dbOne('select meta from issuetracker_issues where id='.$_REQUEST['id'],'meta');
+  
+  $votes = (int)json_decode($meta)->{"credits"};
+  $votes+=1;
+
+  $paidCredits = json_decode($meta)->{"paid_credits"};
+  
+  $meta=array("credits"=>$votes, "paid_credits"=>$paidCredits);
+  dbQuery('UPDATE issuetracker_issues set meta="'.addslashes(json_encode($meta)).'" WHERE id='.$_REQUEST['id']);
+  return $votes;
+  }
+else
+  return "You don't have enough free credits";
+}
+
+function IssueTracker_substractVote()
+{
+if(!$_SESSION['userdata']['id'])
+	return "You must log in first";
+
+$extras = dbOne("select extras from user_accounts where id=".$_SESSION['userdata']['id'],"extras");
+if($extras==null){
+  //this user hasn't been initialised
+  $extras['free-credits']=dbOne('select * from site_vars where name="max-free-credits"','value');
+  $extras['paid-credits']=0;
+  }
+$votesLeft  = (int)json_decode($extras)->{'free-credits'};
+$votesToId = (int)json_decode($extras)->{'votesTo-'.$_REQUEST['id']};
+
+if($votesToId==null || $votesToId==0){
+  //the user didn't vote here
+  return "You can't do that";
+}
+else{
+  //add 1 to free-credits
+  
+  $votesLeft +=1;
+  $paidCreditsLeft = json_decode($extras)->{'paid_credits'};
+  $extras=json_decode($extras,true);
+  $extras['free-credits']=$votesLeft;
+  $extras['paid_credits']=$paidCreditsLeft==null?0:$paidCreditsLeft;
+  $extras['votesTo-'.$_REQUEST['id']]= $votesToId-1;
+
+  dbQuery("update user_accounts set extras='".json_encode($extras)."' where id=".$_SESSION['userdata']['id']);
+  
+  //substract a vote from the project
+  $meta  = dbOne('select meta from issuetracker_issues where id='.$_REQUEST['id'],'meta');
+  
+  $votes = (int)json_decode($meta)->{"credits"};
+  $votes-=1;
+
+  $paidCredits = json_decode($meta)->{"paid_credits"};
+  
+  $meta=json_decode($meta,true);
+  $meta['credits']=$votes;
+  $meta['paid_credits']=$paidCredits;  
+  dbQuery('UPDATE issuetracker_issues set meta="'.addslashes(json_encode($meta)).'" WHERE id='.$_REQUEST['id']);
+  return $votes;
+ } 
+}

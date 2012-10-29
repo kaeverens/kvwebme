@@ -42,6 +42,7 @@ if (!function_exists('__')) {
 		* @return string the translated string
 		*/
 	function __($str, $param1='core', $param2=null) {
+	
 		if (is_string($param1)) {
 			$context=$param1;
 			$params=array();

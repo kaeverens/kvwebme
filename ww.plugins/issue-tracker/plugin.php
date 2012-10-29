@@ -15,7 +15,10 @@
 $plugin=array(
 	'name' => 'Issue Tracker',
 	'admin' => array(
-		'page_type' => 'IssueTracker_admin'
+		'page_type' => 'IssueTracker_admin',
+		'menu' => array(
+			'Site Options>Issue Tracker'=>'plugin.php?_plugin=issue-tracker&amp;_page=issue-tracker'
+			),
 	),
 	'description' => 'project management, issue tracking, task management',
 	'frontend' => array(

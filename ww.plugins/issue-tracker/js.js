@@ -1,3 +1,23 @@
+function addVote(id)
+{
+$.post('/a/p=issue-tracker/f=addVote', { "id": id},function(ret) {
+	if(isNaN(ret))
+	  alert(ret);
+	else
+	  $("#votesNumber").text(ret);
+	});
+}
+
+function substractVote(id)
+{
+$.post('/a/p=issue-tracker/f=substractVote', { "id": id},function(ret) {
+	if(isNaN(ret))
+	  alert(ret);
+	else
+	  $("#votesNumber").text(ret);
+	});
+}
+
 $(function() {
 	var statii=[
 		undefined, 'Open', 'Completed'
@@ -112,6 +132,9 @@ $(function() {
 			vals.types[+ret[i].id]=ret[i].name;
 		}
 	});
+
+	
+		
 	function editProject(prj) {
 		prj.meta=eval('('+prj.meta+')');
 		if (!prj.meta) {
@@ -224,6 +247,7 @@ $(function() {
 			+'<thead><tr><th>ID</th><th>Scheduled<br/>Date</th><th>Status</th>'
 			+'<th>Name</th><th>Type</th>'
 			+'<th>'+ITStrings.Project+'</th>'
+			+'<th>Votes</th>'
 			+'</tr></thead>'
 			+'<tbody></tbody>'
 			+'</table>';
@@ -233,6 +257,7 @@ $(function() {
 			"aaSorting":[[1, "asc"]],
 			aoColumns:[
 				{'bVisible':false},
+				null,
 				null,
 				null,
 				null,
@@ -355,6 +380,9 @@ $(function() {
 			});
 			html+='<tr><th>Attached Files</th><td class="files"></td></tr>';
 			html+='<tr><th>Status</th><td class="status"></td></tr>';
+			html+='<tr><th>Votes</th><td class="votes"><span id="votesNumber">'+issue.meta['credits']+'</span>&nbsp;&nbsp;<a href="javascript:addVote('+issue.id+')"><span style="background-image:url(\'/i/icon_plus.gif\');width:15px;height:15px;display:inline-block;">&nbsp</span></a>&nbsp;';
+			html+='<a href="javascript:substractVote('+issue.id+')"><span style="background-image:url(\'/i/icon_minus.jpg\');width:15px;height:15px;display:inline-block;">&nbsp</span></a>';
+			html+='</td></tr>';
 			html+='</table>';
 			// }
 			$content.html(html);
@@ -516,7 +544,8 @@ $(function() {
 				'id':id
 			}, showComments);
 		});
-	}
+	}	
+	
 	function showComments(ret) {
 		var comments=[];
 		for (var i=0;i<ret.length;++i) {
