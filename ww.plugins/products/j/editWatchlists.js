@@ -14,7 +14,9 @@ window.Products_editWatchlists=function() {
 		return;
 	}
 	$.post('/a/p=products/f=watchlistsGet', function(ret) {
-		var html='<p>This lists the categories that you are currently watching</p>'
+		var html='<div>'
+			+'<p>'+__('This lists the categories that you are currently watching.')
+			+'</p>'
 			+'<table style="width:100%">'
 			+'<thead><tr><th>Category</th><th>Located</th></tr></thead><tbody>';
 		var cats=Products_editWatchlists.categories,
@@ -39,10 +41,15 @@ window.Products_editWatchlists=function() {
 			});
 			html+='</select></td></tr>';
 		}
-		html+='</tbody></table>';
-		var $dialog=$('<div>'+html+'</div>').dialog({
+		html+='</tbody></table></div>';
+		$dialog=$(html);
+		if (window.ProductsWatchlistTemplate) { // apply custom template to html
+			ProductsWatchlistTemplate($dialog);
+		}
+		var $dialog=$($dialog).dialog({
 			'modal':true,
-			'width':500,
+			'position':['center', 100],
+			'width':'600px',
 			'close':function() {
 				$dialog.remove();
 			},

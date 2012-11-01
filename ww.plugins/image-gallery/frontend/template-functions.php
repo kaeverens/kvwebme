@@ -16,6 +16,8 @@ $kfm_do_not_save_session=true;
 require_once KFM_BASE_PATH.'/api/api.php';
 require_once KFM_BASE_PATH.'/initialise.php';
 
+// { ImageGallery_nav
+
 /**
 	* function for showing a list of gallery pages, as well as left/right arrows
 	*
@@ -31,6 +33,9 @@ function ImageGallery_nav($params, $smarty) {
 		.'<td style="text-align:right"><div id="next-link"/></td></tr>'
 		.'</table></div>';
 }
+
+// }
+// { ImageGallery_templateImages
 
 /**
   * function for returning a gallery wrapper with embedded HTML parameters
@@ -72,6 +77,9 @@ function ImageGallery_templateImages($params, $smarty) {
 	return $html;
 }
 
+// }
+// { ImageGallery_templateImage
+
 /**
   * function for returning a single image to the image gallery
   *
@@ -100,3 +108,5 @@ function ImageGallery_templateImage($params, $smarty) {
 		.'</div>';
 	return $html;
 }
+
+// }
