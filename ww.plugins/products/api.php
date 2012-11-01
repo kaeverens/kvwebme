@@ -192,11 +192,10 @@ function Products_getProductMainDetails($p) {
 	);
 	if ($p->vals['online-store']) {
 		$o=$p->vals['online-store'];
-		if ($o['_price']) {
-			$parr['_price']=$o['_price'];
-		}
-		if ($o['_sale_price']) {
-			$parr['_sale_price']=$o['_sale_price'];
+		$parr['_price']=$p->getPriceBase();
+		$sale_price=$p->getPriceSale();
+		if ($sale_price) {
+			$parr['_sale_price']=$sale_price;
 		}
 		if ($o['_bulk_price']) {
 			$parr['_bulk_price']=$o['_bulk_price'];

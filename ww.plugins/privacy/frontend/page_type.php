@@ -681,16 +681,27 @@ function Privacy_profileGet() {
 		'select groups_id from users_groups where user_accounts_id=' . $uid
 	);
 	
-	$remainingCreditsJson = dbOne('select * from user_accounts where id=' . $uid . ' limit 1','extras');
+	$remainingCreditsJson=dbOne(
+		'select * from user_accounts where id='.$uid.' limit 1',
+		'extras'
+	);
 	$remainingCredits = (int)json_decode($remainingCreditsJson)->{'free-credits'};
 	
-	if($remainingCredits==0){
-	  //the user has not been initialised	  
-	  $remainingCredits=dbOne("SELECT * FROM `site_vars` WHERE `name` = 'max-free-credits'",'value');
-	  $extras=dbOne('select * from user_accounts where id=' . $uid . ' limit 1','extras');
-	  $extras=json_decode($extras,true);
-	  $extras['free-credits']=$remainingCredits;
-	  dbQuery("update user_accounts set extras='".json_encode($extras)."' where id=".$user['id']);
+	if ($remainingCredits==0) { // the user has not been initialised	  
+		$remainingCredits=dbOne(
+			'SELECT * FROM `site_vars` WHERE `name`="max-free-credits"',
+			'value'
+		);
+		$extras=dbOne(
+			'select * from user_accounts where id='.$uid.' limit 1',
+			'extras'
+		);
+		$extras=json_decode($extras, true);
+		$extras['free-credits']=$remainingCredits;
+		dbQuery(
+			'update user_accounts set extras="'.json_encode($extras).'" where id='
+			.$user['id']
+		);
 	}
 	foreach ($group_ids as $key => $id) {
 		array_push(
@@ -699,46 +710,30 @@ function Privacy_profileGet() {
 		);
 	}
 	$groups = implode(',', $groups);	
-	$html='<a class="logout" href="/?logout=1" style="float:right"'
-		.'>'.__('Logout').'</a>
-	<h2>' . htmlspecialchars($user[ 'name' ]) . '</h2>
-	<div id="tabs">
-		<ul>
-			<li><a href="#details">'.__('User Details', 'core').'</a></li>
-			<li><a href="#address">'.__('Address', 'core').'</a></li>
-		</ul>
-		<div id="details">
-
-	<p style="float:right">
-	<a href="javascript:edit_user_dialog('.$user['id']
-	.');" id="edit-user-info">'.__('Edit Details', 'core').'</a>
-	<a href="javascript:change_password_dialog(' . $user[ 'id' ] . ');"
-	id="user-change-password" style="diplay:inline">'
-	.__('Change Password', 'core').'</a></p>
-	<table id="user-info" style="border:1px solid #ccc;margin:10px">
-		<tr>
-			<th>'.__('Email', 'core').'</th><td>'
-				. htmlspecialchars($user[ 'email' ]) . '</td>
-		</tr>
-		<tr>
-			<th>'.__('Phone', 'core').'</th><td>' . $phone . '</td>
-		</tr>
-		<tr>
-			<th>'.__('Avatar', 'core')
-			.'</th><td><span id="avatar-wrapper" data-uid="'.$uid.'"></span></td>
-		</tr>
-		<tr>
-			<th>'.__('RemainingCredits','core').'</th>
-			<td>'.$remainingCredits.'</td>
-		</tr>
-		';
-
-	$html .= '</table></div> <div id="address"><a id="new-address" href="java'
-		.'script:add_address();" style="float:right">[+] '
-		.__('Add Address')
-		.'</a> <div id="address-container">'
-		.'<table>';
-
+	$html='<a class="logout" href="/?logout=1" style="float:right">'.__('Logout')
+		.'</a><h2>'.htmlspecialchars($user['name']).'</h2>'
+		.'<div id="tabs"><ul>'
+		.'<li><a href="#details">'.__('User Details', 'core').'</a></li>'
+		.'<li><a href="#address">'.__('Address', 'core').'</a></li>'
+		.'</ul>'
+		.'<div id="details"><p style="float:right">'
+		.'<a href="javascript:edit_user_dialog('.$user['id'].');"'
+		.' id="edit-user-info">'.__('Edit Details', 'core').'</a>'
+		.' <a href="javascript:change_password_dialog('.$user['id'].');"'
+		.' id="user-change-password" style="diplay:inline">'
+		.__('Change Password', 'core').'</a></p>'
+		.'<table id="user-info" style="border:1px solid #ccc;margin:10px">'
+		.'<tr><th>'.__('Email', 'core').'</th><td>'.htmlspecialchars($user['email'])
+		.'</td></tr>'
+		.'<tr><th>'.__('Phone', 'core').'</th><td>'.$phone.'</td></tr>'
+		.'<tr><th>'.__('Avatar', 'core').'</th><td><span id="avatar-wrapper"'
+		.' data-uid="'.$uid.'"></span></td></tr>'
+		.'<tr><th>'.__('RemainingCredits', 'core').'</th><td>'.$remainingCredits
+		.'</td></tr>'
+		.'</table></div>'
+		.'<div id="address"><a id="new-address" href="javascript:add_address();"'
+		.' style="float:right">[+]'.__('Add Address').'</a>'
+		.'<div id="address-container"><table>';
 	if ($addresses=json_decode(@$user['address'], true)) {
 		foreach ($addresses as $name=>$address) {
 		  $select=(@$address['default']=='yes')?' checked="checked"':'';

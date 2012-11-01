@@ -35,9 +35,9 @@ function showCats($id) {
 	echo '</ul>';
 }
 
-echo '<table><tr>'
+echo '<table style="width:100%"><tr>'
 	.'<th style="width:300px">'.__('Categories').'</th>'
-	.'<th style="width:300px">'.__('Attributes').'</th>'
+	.'<th>'.__('Attributes').'</th>'
 	.'</tr><tr><td><div id="categories-wrapper">';
 $rs=dbAll('select * from products_categories order by sortNum');
 $cats=array();
@@ -67,5 +67,8 @@ WW_addCSS('/ww.plugins/image-gallery/files/uploadify.css');
 WW_addScript('products/admin/categories.js');
 WW_addScript('products/admin/create-page.js');
 WW_addScript('image-gallery/files/swfobject.js');
+WW_addScript('/j/chosen/chosen.jquery.js');
+WW_addCSS('/j/chosen/chosen.css');
+WW_addCSS('/ww.plugins/products/admin/categories.css');
 echo '<script src="/ww.plugins/products/admin/get-product-names-js.php">'
 	.'</script>';

@@ -887,13 +887,13 @@ class Products{
 			'ps-sorted-'.join(',', $this->product_ids).'|'.$order_by.'|'
 			.$order_dir.'|'.$enabledFilter
 		);
-		$tmpprods=Core_cacheLoad(
-			'products',
-			$md5,
-			-1
-		);
-		if ($order_dir==2) {
-			$tmpprods=-1;
+		$tmpprods=-1;
+		if ($order_dir!=2) {
+			$tmpprods=Core_cacheLoad(
+				'products',
+				$md5,
+				-1
+			);
 		}
 		if ($tmpprods==-1) {
 			if ($order_by!='') {
@@ -910,51 +910,54 @@ class Products{
 				if ($enabledFilter==2) {
 					$sql.=' and !enabled';
 				}
-				$values=dbAll($sql);
-				foreach ($values as $v) {
-					$vals=json_decode($v['data_fields'], true);
-					$key2='';
-					foreach ($vals as $v2) {
-						if ($v2['n']==$order_by) {
-							$key2=__FromJSON($v2['v']);
-						}
+				if (substr($order_by, 0, 1)==='_') {
+					$sql.=' order by '.substr($order_by, 1, strlen($order_by)-1);
+					if ($order_dir==1) {
+						$sql.=' desc';
 					}
-					if (!isset($tmpprods1[$key2])) {
-						$tmpprods1[$key2]=array();
-					}
-					$tmpprods1[$key2][]=$v['id'];
 				}
-				/*
-				foreach ($prods as $key=>$pid) {
-					$product=Product::getInstance($pid, false, $enabledFilter);
-					if ($product->get($order_by)) {
-						$key2=__FromJSON($product->get($order_by));
+				$values=dbAll($sql);
+				if (substr($order_by, 0, 1)==='_') {
+					$tmpprods=array();
+					foreach ($values as $v) {
+						$tmpprods[]=$v['id'];
+					}
+					if ($order_dir==2) {
+						shuffle($tmpprods);
+					}
+				}
+				else {
+					foreach ($values as $v) {
+						$vals=json_decode($v['data_fields'], true);
+						$key2='';
+						foreach ($vals as $v2) {
+							if ($v2['n']==$order_by) {
+								$key2=__FromJSON($v2['v']);
+							}
+						}
 						if (!isset($tmpprods1[$key2])) {
 							$tmpprods1[$key2]=array();
 						}
-						$tmpprods1[$key2][]=$pid;
-						unset($prods[$key]);
+						$tmpprods1[$key2][]=$v['id'];
 					}
-				}
-				*/
-				if ($order_dir==1) {
-					krsort($tmpprods1);
-				}
-				else if ($order_dir==0) {
-					ksort($tmpprods1);
-				}
-				else if ($order_dir==2) {
-					shuffle($tmpprods1);
-				}
-
-				$tmpprods=array();
-				foreach ($tmpprods1 as $pids) {
-					foreach ($pids as $pid) {
+					if ($order_dir==1) {
+						krsort($tmpprods1);
+					}
+					else if ($order_dir==0) {
+						ksort($tmpprods1);
+					}
+					else if ($order_dir==2) {
+						shuffle($tmpprods1);
+					}
+					$tmpprods=array();
+					foreach ($tmpprods1 as $pids) {
+						foreach ($pids as $pid) {
+							$tmpprods[]=$pid;
+						}
+					}
+					foreach ($prods as $key=>$pid) {
 						$tmpprods[]=$pid;
 					}
-				}
-				foreach ($prods as $key=>$pid) {
-					$tmpprods[]=$pid;
 				}
 			}
 			else {
@@ -995,7 +998,7 @@ class Products{
 			if ($start>$limit_start) {
 				$prevnext.='<a class="products-prev" href="'
 					.$PAGEDATA->getRelativeUrl().'?start='.($start-$limit)
-					.'">&lt;-- prev</a>';
+					.'">'.__('Previous').'</a>';
 			}
 			if ($limit && $start+$limit<$cnt) {
 				if ($start) {
@@ -1094,13 +1097,13 @@ class Products{
 		$categories='';
 		if (!isset($_REQUEST['products-search'])) {
 			if (isset($this->subCategories) && count($this->subCategories)) {
-				$categories='<ul class="categories">';
+				$categories='<ul class="products-categories categories">';
 				foreach ($this->subCategories as $cr) {
 					$cat=ProductCategory::getInstance($cr['id']);
 					$categories.='<li><a href="'.$cat->getRelativeUrl().'">';
-					$icon='/f/products/categories/'.$cr['id'].'/icon.png';
-					if (file_exists(USERBASE.$icon)) {
-						$categories.='<img src="'.$icon.'"/>';
+					$icon='/products/categories/'.$cr['id'].'/icon.png';
+					if (file_exists(USERBASE.'f'.$icon)) {
+						$categories.='<img src="/a/f=getImg/w=120/h=120'.$icon.'"/>';
 					}
 					$categories.='<span>'.htmlspecialchars($cr['name']).'</span>'
 						.'</a></li>';

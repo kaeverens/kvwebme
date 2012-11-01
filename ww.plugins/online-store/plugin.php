@@ -599,8 +599,9 @@ function OnlineStore_showBasketWidget($vars=null) {
 	else {
 		if (count($_SESSION['online-store']['items'])) {
 			$html.='<table class="os_basket">';
-			$html.='<tr class="os_basket_titles"><th>.'.__('Price').'</th><th>.'.__('Amt').'</th>'
-				.'<th>.'.__('Total').'</th></tr>';
+			$html.='<tr class="os_basket_titles"><th>'.__('Price').'</th><th>'
+				.__('Amt').'</th>'
+				.'<th>'.__('Total').'</th></tr>';
 			foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
 				// { name
 				$html.='<tr class="os_basket_itemTitle" product="'.$md5.'">'
@@ -649,7 +650,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 			if ($_SESSION['onlinestore_prices_shown_post_vat']) {
 				$total*=(100+$_SESSION['onlinestore_vat_percent'])/100;
 			}
-			$html.='<tr class="os_basket_totals"><th colspan="2">.'.__('Total').'</th>'
+			$html.='<tr class="os_basket_totals"><th colspan="2">'.__('Total').'</th>'
 				.'<td class="total">'
 				.OnlineStore_numToPrice($total)
 				.'</td></tr>'

@@ -122,11 +122,12 @@ function Products_priceBase2($params, $smarty) {
 	if (!isset($product->vals['online-store'])) {
 		return '0';
 	}
-	$p=$product->vals['online-store'];
 	$vat=isset($params['vat']) && $params['vat']
 		?(100+$_SESSION['onlinestore_vat_percent'])/100
 		:1;
-	return OnlineStore_numToPrice($p['_price']*$vat, true, (int)@$params['round']);
+	return OnlineStore_numToPrice(
+		$product->getPriceBase()*$vat, true, (int)@$params['round']
+	);
 }
 
 // }
@@ -153,7 +154,7 @@ function Products_priceBulk2($params, $smarty) {
 	$vat=isset($params['vat']) && $params['vat']
 		?(100+$_SESSION['onlinestore_vat_percent'])/100
 		:1;
-	$price=$p['_bluk_price']?$p['_bluk_price']:$p['_price'];
+	$price=$p['_bulk_price']?$p['_bulk_price']:$product->getPriceBase();
 	return OnlineStore_numToPrice($price*$vat, true, (int)@$params['round']);
 }
 
@@ -177,8 +178,7 @@ function Products_priceDiscount2($params, $smarty) {
 	if (!isset($product->vals['online-store'])) {
 		return '0';
 	}
-	$p=$product->vals['online-store'];
-	$discount=$p['_price']-$product->getPrice('sale');
+	$discount=$product->getPriceBase()-$product->getPrice('sale');
 	$vat=isset($params['vat']) && $params['vat']
 		?(100+$_SESSION['onlinestore_vat_percent'])/100
 		:1;

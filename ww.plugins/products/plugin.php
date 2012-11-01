@@ -453,25 +453,98 @@ class Product{
 	function getPrice($type='base') {
 		switch ($type) {
 			case 'sale': // {
-				if (!$this->vals['online-store']['_sale_price']) {
-					return 0;
-				}
-				$amt=$this->vals['online-store']['_sale_price'];
-				switch (@$this->vals['online-store']['_sale_price_type']) {
-					case '1': // discount
-					return $this->vals['online-store']['_price']-$amt;
-					case '2': // percentage
-					return $this->vals['online-store']['_price']*(100-$amt)/100;
-					default: // actual amount
-					return $amt;
-				}
-				// }
+			return $this->getPriceSale(); // }
 			default: // { base
-			return $this->vals['online-store']['_price']; // }
+			return $this->getPriceBase(); // }
 		}
 	}
 
 	// }
+	function getPriceBase() {
+		$bp=$this->vals['online-store']['_price'];
+		if (!is_object($bp)) {
+			$bp=(object)array('_default'=>$bp);
+			$this->vals['online-store']['_price']=$bp;
+		}
+		$lowest=$bp->_default;
+		if (!isset($_SESSION['userdata'])) {
+			return $lowest;
+		}
+		foreach ($bp as $k=>$v) {
+			if ($k=='_default') {
+				continue;
+			}
+			if (!isset($_SESSION['userdata']['groups'][$k])) {
+				continue;
+			}
+			if ($v<$lowest) {
+				$lowest=$v;
+			}
+		}
+		return $lowest;
+	}
+	function getPriceSale() {
+		$bp=$this->vals['online-store']['_sale_price'];
+		if (!is_object($bp)) {
+			$bp=(object)array('_default'=>$bp);
+			$this->vals['online-store']['_sale_price']=$bp;
+		}
+		$lowest=$bp->_default;
+		if (isset($_SESSION['userdata'])) {
+			foreach ($bp as $k=>$v) {
+				if ($k=='_default') {
+					continue;
+				}
+				if (!isset($_SESSION['userdata']['groups'][$k])) {
+					continue;
+				}
+				if ($v<$lowest) {
+					$lowest=$v;
+				}
+			}
+		}
+		switch (@$this->vals['online-store']['_sale_price_type']) {
+			case '1': // discount
+			return $this->getPriceBase()-$lowest;
+			case '2': // percentage
+			return $this->getPriceBase()*(100-$lowest)/100;
+			default: // actual amount
+			return $lowest;
+		}
+	}
+	function getPriceBulkAll() {
+		$ba=$this->vals['online-store']['_bulk_amount'];
+		if (!is_object($ba)) {
+			$ba=(object)array('_default'=>$bp);
+			$this->vals['online-store']['_bulk_amount']=$bp;
+		}
+		$bp=$this->vals['online-store']['_bulk_price'];
+		if (!is_object($bp)) {
+			$bp=(object)array('_default'=>$bp);
+			$this->vals['online-store']['_bulk_price']=$bp;
+		}
+		$lowest=$bp->_default;
+		$lowestAmt=$ba->_default;
+		if (isset($_SESSION['userdata'])) {
+			foreach ($bp as $k=>$v) {
+				if ($k=='_default') {
+					continue;
+				}
+				$amt=$ba->{$k};
+				if (!$amt) {
+					continue;
+				}
+				if (!isset($_SESSION['userdata']['groups'][$k])) {
+					continue;
+				}
+				if ($v<$lowest) {
+					$lowest=$v;
+					$lowestAmt=$amt;
+				}
+			}
+		}
+		return array($lowest, $lowestAmt);
+	}
 	// { getString
 
 	/**
@@ -677,7 +750,8 @@ class ProductCategory{
 		// { or if there's a category parent, return its URL plus the name appended
 		if ($this->vals['parent_id']!=0) {
 			$cat=ProductCategory::getInstance($this->vals['parent_id']);
-			return $cat->getRelativeUrl().'/'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->vals['name']);
+			return $cat->getRelativeUrl()
+				.'/'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->vals['name']);
 		}
 		// }
 		// { or get at least any product page
@@ -694,7 +768,7 @@ class ProductCategory{
 		}
 		return $url=='/#no-url-available'
 			?'/#no-url-available'
-			:$url.urlencode($this->vals['name']);
+			:$url.preg_replace('/[^a-zA-Z0-9]/', '-', $this->vals['name']);
 		// }
 	}
 
@@ -1087,6 +1161,7 @@ function Products_addToCart() {
 		return;
 	}
 	require_once dirname(__FILE__).'/frontend/addToCart.php';
+	return $_SESSION;
 }
 
 // }
@@ -1551,8 +1626,8 @@ function Products_getAddManyToCartWidget($params, $smarty) {
 		.$stockcontrol
 		.Products_getAddToCartButton(
 			$params['text'],
-			(float)$p->vals['online-store']['_price'],
-			(float)$p->vals['online-store']['_sale_price']
+			(float)$p->getPriceBase(),
+			(float)$p->getPriceSale()
 		)
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->smarty->tpl_vars['product']->value->id .'"/></form>';
@@ -1593,8 +1668,8 @@ function Products_getAddToCartWidget($params, $smarty) {
 		.$stockcontrol
 		.Products_getAddToCartButton(
 			$params['text'],
-			(float)$p->vals['online-store']['_price'],
-			(float)$p->vals['online-store']['_sale_price']
+			(float)$p->getPriceBase(),
+			(float)$p->getPriceSale()
 		)
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->smarty->tpl_vars['product']->value->id .'" /></form>';
@@ -1631,7 +1706,7 @@ function Products_getAmountToAddWidget($params, $smarty) {
 		break; // }
 		default: // {
 			$howmany='<input name="products-howmany" value="1"'
-				.' class="add_multiple_widget_amount" style="width:50px"/>';
+				.' class="add_multiple_widget_amount" style="max-width:50px"/>';
 		break; // }
 	}
 	return $howmany;
@@ -1666,16 +1741,14 @@ function Products_getProductPrice(
 	// { get price
 	if (isset($product->vals['online-store'])) {
 		$p=$product->vals['online-store'];
-		$price=(float)$p['_price'];
-		if (@$p['_sale_price']) {
-			$price=$product->getPrice('sale');
+		$price=(float)$product->getPriceBase();
+		$sale_price=$product->getPriceSale();
+		if ($sale_price) {
+			$price=$sale_price;
 		}
-		if (isset($p['_bulk_price'])
-			&& $p['_bulk_price']>0
-			&& $p['_bulk_price']<$price
-			&& $amount>=$p['_bulk_amount']
-		) {
-			$price=$p['_bulk_price'];
+		list($bp, $ba)=$product->getPriceBulkAll();
+		if ($bp>0 && $bp<$price && $amount>=$ba) {
+			$price=$bp;
 		}
 		$vat=(isset($p['_vatfree']) && $p['_vatfree']=='1')?false:true;
 	}

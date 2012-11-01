@@ -262,7 +262,7 @@ function Products_adminCategorySetIcon() {
 	$cat_id=(int)$_REQUEST['cat_id'];
 	$dir=USERBASE.'/f/products/categories/'.$cat_id;
 	@mkdir($dir, 0777, true);
-	$tmpname=$_FILES['file_upload']['tmp_name'];
+	$tmpname=$_FILES['Filedata']['tmp_name'];
 	CoreGraphics::resize($tmpname, $dir.'/icon.png', 128, 128);
 	return array('ok'=>1);
 }

@@ -83,7 +83,7 @@ switch ($widget_type) {
 				.'<div class="products-widget-price">'
 				.'<p class="products-widget-price-inner">'
 				.OnlineStore_numToPrice(
-					($product->vals['online-store']['_price'])*(1+($pvat['vat'])/100)
+					$product->getPriceBase()*(1+($pvat['vat'])/100)
 				)
 				.'</p></div>'
 				.'<a class="product-widget-link" href="'.$product->getRelativeURL().'">'
