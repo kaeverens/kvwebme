@@ -49,9 +49,6 @@ function OnlineStore_productPriceFull2($params, $smarty) {
 	$p=$product->vals['online-store'];
 	$vat=$params['vat']?(100+$_SESSION['onlinestore_vat_percent'])/100:1;
 	$vatclass=$params['vat']?' vat':'';
-	foreach ($p as $k=>$v) {
-		$p[$k]=(float)$v;
-	}
 	$sale_price=$product->getPriceSale();
 	if ($sale_price) {
 		$tmp='<strike class="os_price">'
