@@ -379,7 +379,7 @@ class Product{
 		$ba=$this->vals['online-store']['_bulk_amount'];
 		if (!is_object($ba)) {
 			$ba=(object)array('_default'=>$ba);
-			$this->vals['online-store']['_bulk_amount']=$bp;
+			$this->vals['online-store']['_bulk_amount']=$ba;
 		}
 		$bp=$this->vals['online-store']['_bulk_price'];
 		if (!is_object($bp)) {
