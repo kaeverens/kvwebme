@@ -1023,6 +1023,7 @@ class Products{
 		if (!isset($PAGEDATA->vars['products_show_multiple_with'])) {
 			$PAGEDATA->vars['products_show_multiple_with']=0;
 		}
+		$prods=array_unique($prods);
 		switch ($PAGEDATA->vars['products_show_multiple_with']) {
 			case 1: // { horizontal table, headers on top
 				$c.=Product_datatableMultiple($prods, 'horizontal');
