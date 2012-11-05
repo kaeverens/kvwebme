@@ -1,4 +1,4 @@
-/*global __,google,CodeMirror,htmlspecialchars*/
+/*global __,google,CodeMirror,htmlspecialchars,Core_menuShow,Core_prompt*/
 function CoreSiteoptions_screen(page) {
 	window['CoreSiteoptions_screen'+page]();
 }
@@ -30,15 +30,15 @@ function CoreSiteoptions_screenCron() {
 		var id=+$tr.attr('cid');
 		switch ($tr.find('td').index($this)) {
 			case 1: // {
-				var parts=$this.text().split(' ');
+				var parts=$this.text().split(' '), i;
 				// TODO: translations of periods
 				var periods=['never', 'minute', 'hour', 'day', 'week', 'month', 'year'];
 				var html='<select>';
-				for (var i=1;i<32;++i) {
+				for (i=1;i<32;++i) {
 					html+='<option>'+i+'</option>';
 				}
 				html+='</select><select>';
-				for (var i=0;i<periods.length;++i) {
+				for (i=0;i<periods.length;++i) {
 					html+='<option>'+periods[i]+'</option>';
 				}
 				html+='</select>';
@@ -73,7 +73,7 @@ function CoreSiteoptions_screenCron() {
 					.focus();
 				break; // }
 		}
-		$this.attr('clicked', 1)
+		$this.attr('clicked', 1);
 	}
 }
 function CoreSiteoptions_screenLanguages() {
@@ -99,11 +99,10 @@ function CoreSiteoptions_screenLanguages() {
 			for (var i=0;i<languages.length;++i) {
 				var lang=languages[i];
 				var links=['<a href="#" class="edit">'+__('Edit')+'</a>'];
-				if (!(+lang.is_default)) {
+				if (+lang.is_default===0) {
 					links.push('<a href="#" class="delete">'+__('[x]')+'</a>');
 				}
 				table+='<tr cid="'+lang.id+'"><td>'+lang.name+'</td>'+
-					// TODO: translation of yes/no needed
 					'<td>'+lang.code+'</td><td>'+(+lang.is_default?'Yes':'')+'</td>'+
 					'<td>'+links.join(', ')+'</td></tr>';
 			}
@@ -294,7 +293,7 @@ function CoreSiteoptions_screenLanguages() {
 					]
 				});
 			$languagestable.on('click', 'tbody td:last-child', function() {
-				if ($languages.val()=='') {
+				if ($languages.val()==='') {
 					return;
 				}
 				var $this=$(this);
@@ -334,7 +333,7 @@ function CoreSiteoptions_screenLanguages() {
 			if (!lang) {
 				return;
 			}
-			document.location='/a/f=adminLanguagesExportPo?lang='+lang
+			document.location='/a/f=adminLanguagesExportPo?lang='+lang;
 		});
 		$import.click(function() {
 			var $dialog=$('<table>'+
@@ -343,8 +342,7 @@ function CoreSiteoptions_screenLanguages() {
 				'<tr><th>'+__('Context')+':</th><td><select id="popup-context"/></td>'+
 				'</tr>'+
 				'<tr><th>'+__('File')+':</th><td><input type="button" class="upload"'+
-				// TODO: translation needed
-		    +' id="popup-file" value="Select and Upload"/>'+
+				' id="popup-file" value="Select and Upload"/>'+
 				'</td></tr>'+
 				'</table>'
 			).dialog({
@@ -416,7 +414,7 @@ function CoreSiteoptions_screenLocations() {
 		for (var i=0;i<locations.length;++i) {
 			var loc=locations[i];
 			var links=['<a href="#" class="edit">'+__('Edit')+'</a>'];
-			if (!(+loc.is_default)) {
+			if (+loc.is_default===0) {
 				links.push('<a href="#" class="delete">'+__('[x]')+'</a>');
 			}
 			var located_in=getParent(+loc.parent_id).replace(/\/ $/, '') || ' - ';
@@ -485,14 +483,14 @@ function CoreSiteoptions_screenLocations() {
 		});
 		$('#locations-table').on('click', '.edit', function() {
 			var id=$(this).closest('tr').attr('cid');
-			var loc;
-			for (var i=0;i<locations.length;++i) {
+			var loc, i;
+			for (i=0;i<locations.length;++i) {
 				if (locations[i].id==id) {
 					loc=locations[i];
 				}
 			}
 			var parents=['<option value="0"> - </option>'];
-			for (var i=0;i<locations.length;++i) {
+			for (i=0;i<locations.length;++i) {
 				var opt='<option value="'+locations[i].id+'">';
 				var name=getParent(+locations[i].parent_id)+locations[i].name;
 				opt+=name+'</option>';
@@ -544,7 +542,9 @@ function CoreSiteoptions_screenMenus() {
 			'val':$.toJSON(menus)
 		}, function() {
 			Core_menuShow(menus);
-			callback && callback();
+			if (callback) {
+				callback();
+			}
 		});
 	}
 	function hasSubItems(obj) {
@@ -562,12 +562,12 @@ function CoreSiteoptions_screenMenus() {
 			path='';
 		}
 		var $menuCurrentTop=$('#menu-current-top').empty();
-		var currentTop=menus;
+		var currentTop=menus, i;
 		var links=['<a href="#" data-path="">top</a>'];
 		if (path) {
 			var bits=path.split('|');
 			var tmpPath='';
-			for (var i=0;i<bits.length;++i) {
+			for (i=0;i<bits.length;++i) {
 				var name=bits[i];
 				currentTop=currentTop[name];
 				tmpPath=tmpPath+name;
@@ -579,7 +579,7 @@ function CoreSiteoptions_screenMenus() {
 		var $wrapper=$('#menu-items');
 		// { draw menu items
 		var menuItems=[], menuOrds=[];
-		if (path!='') {
+		if (path!=='') {
 			path+='|';
 		}
 		$.each(currentTop, function(key, val) {
@@ -601,11 +601,11 @@ function CoreSiteoptions_screenMenus() {
 			}
 			if (hasSubItems(val)) {
 				cols[2]='<a class="subitems" href="#" data-path="'+path+key+'">'+
-					'&raquo;</a>'
+					'&raquo;</a>';
 			}
 			else {
 				cols[2]='<a class="subitems faded" href="#" data-path="'+path+key+'">'+
-					'&raquo;</a>'
+					'&raquo;</a>';
 			}
 			menuItems.push(
 				'<tr>'+
@@ -616,7 +616,7 @@ function CoreSiteoptions_screenMenus() {
 			);
 			menuOrds.push(ord);
 		});
-		for (var i=0;i<menuOrds.length-1;++i) {
+		for (i=0;i<menuOrds.length-1;++i) {
 			for (var j=i+1;j<menuOrds.length;++j) {
 				if (menuOrds[j]<menuOrds[i]) {
 					var tmp=menuOrds[i];
@@ -669,7 +669,7 @@ function CoreSiteoptions_screenMenus() {
 		}
 	}
 	function showDetails(path) {
-		if (path=='') {
+		if (path==='') {
 			$('#menu-details').html(
 				'<div><h3>'+__('No menu item selected')+'</h3>'+
 				'<p>'+__('Click an item in the left menu to select it.')+'</p></div>'
@@ -749,11 +749,12 @@ function CoreSiteoptions_screenMenus() {
 			currentTop=currentTop[name];
 		}
 		// { details table
-		var deleteLink=hasSubItems(currentTop)
-			?'':'<a href="#" class="delete">'+__('[x]')+'</a>';
-		var imgSrc=currentTop._icon
-			?'/a/f=getImg/w=20/h=20/'+currentTop._icon
-			:'/i/blank.gif';
+		var deleteLink=hasSubItems(currentTop)?
+			'':
+			'<a href="#" class="delete">'+__('[x]')+'</a>';
+		var imgSrc=currentTop._icon?
+			'/a/f=getImg/w=20/h=20/'+currentTop._icon:
+			'/i/blank.gif';
 		var table='<div>'+deleteLink+'<table>'+
 			'<tr><th>'+__('Name')+'</th><td><input name="_name"/></td></tr>'+
 			'<tr><th>'+__('Link')+'</th><td><input name="_link"/></td></tr>'+
@@ -840,9 +841,7 @@ function CoreSiteoptions_screenMenus() {
 			.append(getOpts(menusDefault, '', 0))
 			.change(function() {
 				var val=$(this).val();
-				if (val==''
-					// TODO: translation needed
-					|| !confirm('Are you sure you want to over-write this item?')
+				if (val==='' || !confirm('Are you sure you want to over-write this item?')
 				) {
 					return;
 				}
@@ -877,7 +876,7 @@ function CoreSiteoptions_screenMenus() {
 		Core_menuShow(menus);
 		$.post('/a/f=adminMenusGetDefault', function(ret) {
 			menusDefault=ret;
-			showMenuNames()
+			showMenuNames();
 		});
 	});
 	var html='<table id="menus-wrapper">'+
@@ -959,32 +958,34 @@ function CoreSiteoptions_screenEmails() {
 				editor.setValue('');
 				editor.setOption('readOnly', true);
 				$('button', $panel).attr('disabled', true);
-				var valid, name='';
-				do {
-					valid=true;
-					// TODO: translation needed
-					name=prompt("What should the new template be named?", name);
-					if (!name) {
-						return;
+				$('#email-templates-list').val('');
+				return Core_prompt(
+					'What should the new template be named?',
+					name,
+					function(name) {
+						if (name==='') {
+							return false;
+						}
+						if (name.replace(/[^a-zA-Z0-9]/g, '')!=name) {
+							alert('Invalid name. Please use only letters and numbers.');
+							return false;
+						}
+						return true;
+					},
+					function(name) {
+						$.post('/a/f=adminEmailTemplateSet', {
+							'name': name,
+							'body': ''
+						}, function(ret) {
+							if (ret.error) {
+								return alert(ret.error);
+							}
+							$('<option value="'+name+'">'+name+'</option>')
+								.insertAfter('#email-templates-list option:first-child');
+							$('#email-templates-list').val(name).change();
+						});
 					}
-					if (name.replace(/[^a-zA-Z0-9]/g, '')!=name) {
-						valid=false;
-						// TODO: translation needed
-						alert('Invalid name. Please use only letters and numbers.');
-					}
-				} while(!valid);
-				$.post('/a/f=adminEmailTemplateSet', {
-					'name': name,
-					'body': ''
-				}, function(ret) {
-					if (ret.error) {
-						return alert(ret.error);
-					}
-					$('<option value="'+name+'">'+name+'</option>')
-						.insertAfter('#email-templates-list option:first-child');
-					$('#email-templates-list').val(name).change();
-				});
-				return;
+				);
 			}
 			// TODO: translation needed
 			if (val=='-- choose --') {
@@ -1005,9 +1006,9 @@ function CoreSiteoptions_screenEmails() {
 		var editor = CodeMirror
 			.fromTextArea($textarea[0], {
 				mode: {
-					name: "smarty",
-					leftDelimiter: "{{",
-					rightDelimiter: "}}"
+					name: 'smarty',
+					leftDelimiter: '{{',
+					rightDelimiter: '}}'
 				},
 				indentUnit: 1,
 				indentWithTabs: true,

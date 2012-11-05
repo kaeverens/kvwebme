@@ -257,6 +257,44 @@ class Product{
 	}
 
 	// }
+	// { getDefaultImage
+
+	/**
+		* get default image
+		*
+		* @return int ID of the image
+		*/
+	function getDefaultImage() {
+		if (isset($this->default_image)) {
+			return $this->default_image;
+		}
+		$vals=$this->vals;
+		if (!$vals['images_directory']) {
+			$this->default_image=false;
+			return false;
+		}
+		$iid=false;
+		if ($vals['image_default']
+			&& file_exists(USERBASE.'/f/'.$vals['image_default'])
+		) {
+			return $vals['image_default'];
+		}
+		$directory = $vals['images_directory'];
+		if (file_exists(USERBASE.'/f/'.$directory)) {
+			$files=new DirectoryIterator(USERBASE.'/f/'.$directory);
+			foreach ($files as $file) {
+				if ($file->isDot()) {
+					continue;
+				}
+				$this->default_image=$directory.'/'.$file->getFilename();
+				return $this->default_image;
+			}
+		}
+		$this->default_image=false;
+		return false;
+	}
+
+	// }
 	// { getInstance
 
 	/**
@@ -276,6 +314,137 @@ class Product{
 			return new Product($id, $r, $enabled);
 		}
 		return self::$instances[$id];
+	}
+
+	// }
+	// { getPrice
+
+	/**
+		* get price
+		*
+		* @param string $type type of price (base, sale, bulk)
+		*
+		* @return float price value
+		*/
+	function getPrice($type='base') {
+		switch ($type) {
+			case 'sale': // {
+			return $this->getPriceSale(); // }
+			default: // { base
+			return $this->getPriceBase(); // }
+		}
+	}
+
+	// }
+	// { getPriceBase
+
+	/**
+		* get base price
+		*
+		* @return float
+		*/
+	function getPriceBase() {
+		$bp=$this->vals['online-store']['_price'];
+		if (!is_object($bp)) {
+			$bp=(object)array('_default'=>$bp);
+			$this->vals['online-store']['_price']=$bp;
+		}
+		$lowest=$bp->_default;
+		if (!isset($_SESSION['userdata'])) {
+			return $lowest;
+		}
+		foreach ($bp as $k=>$v) {
+			if ($k=='_default') {
+				continue;
+			}
+			if (!isset($_SESSION['userdata']['groups'][$k])) {
+				continue;
+			}
+			if ($v<$lowest) {
+				$lowest=$v;
+			}
+		}
+		return $lowest;
+	}
+	
+	// }
+	// { getPriceBulkAll
+
+	/**
+		* get bulk prices
+		*
+		* @return array
+		*/
+	function getPriceBulkAll() {
+		$ba=$this->vals['online-store']['_bulk_amount'];
+		if (!is_object($ba)) {
+			$ba=(object)array('_default'=>$bp);
+			$this->vals['online-store']['_bulk_amount']=$bp;
+		}
+		$bp=$this->vals['online-store']['_bulk_price'];
+		if (!is_object($bp)) {
+			$bp=(object)array('_default'=>$bp);
+			$this->vals['online-store']['_bulk_price']=$bp;
+		}
+		$lowest=$bp->_default;
+		$lowestAmt=$ba->_default;
+		if (isset($_SESSION['userdata'])) {
+			foreach ($bp as $k=>$v) {
+				if ($k=='_default') {
+					continue;
+				}
+				$amt=$ba->{$k};
+				if (!$amt) {
+					continue;
+				}
+				if (!isset($_SESSION['userdata']['groups'][$k])) {
+					continue;
+				}
+				if ($v<$lowest) {
+					$lowest=$v;
+					$lowestAmt=$amt;
+				}
+			}
+		}
+		return array($lowest, $lowestAmt);
+	}
+
+	// }
+	// { getPriceSale
+
+	/**
+		* get sale price
+		*
+		* @return float
+		*/
+	function getPriceSale() {
+		$bp=$this->vals['online-store']['_sale_price'];
+		if (!is_object($bp)) {
+			$bp=(object)array('_default'=>$bp);
+			$this->vals['online-store']['_sale_price']=$bp;
+		}
+		$lowest=$bp->_default;
+		if (isset($_SESSION['userdata'])) {
+			foreach ($bp as $k=>$v) {
+				if ($k=='_default') {
+					continue;
+				}
+				if (!isset($_SESSION['userdata']['groups'][$k])) {
+					continue;
+				}
+				if ($v<$lowest) {
+					$lowest=$v;
+				}
+			}
+		}
+		switch (@$this->vals['online-store']['_sale_price_type']) {
+			case '1': // discount
+			return $this->getPriceBase()-$lowest;
+			case '2': // percentage
+			return $this->getPriceBase()*(100-$lowest)/100;
+			default: // actual amount
+			return $lowest;
+		}
 	}
 
 	// }
@@ -403,148 +572,6 @@ class Product{
 	}
 
 	// }
-	// { getDefaultImage
-
-	/**
-		* get default image
-		*
-		* @return int ID of the image
-		*/
-	function getDefaultImage() {
-		if (isset($this->default_image)) {
-			return $this->default_image;
-		}
-		$vals=$this->vals;
-		if (!$vals['images_directory']) {
-			$this->default_image=false;
-			return false;
-		}
-		$iid=false;
-		if ($vals['image_default']
-			&& file_exists(USERBASE.'/f/'.$vals['image_default'])
-		) {
-			return $vals['image_default'];
-		}
-		$directory = $vals['images_directory'];
-		if (file_exists(USERBASE.'/f/'.$directory)) {
-			$files=new DirectoryIterator(USERBASE.'/f/'.$directory);
-			foreach ($files as $file) {
-				if ($file->isDot()) {
-					continue;
-				}
-				$this->default_image=$directory.'/'.$file->getFilename();
-				return $this->default_image;
-			}
-		}
-		$this->default_image=false;
-		return false;
-	}
-
-	// }
-	// { getPrice
-
-	/**
-		* get price
-		*
-		* @param string $type type of price (base, sale, bulk)
-		*
-		* @return float price value
-		*/
-	function getPrice($type='base') {
-		switch ($type) {
-			case 'sale': // {
-			return $this->getPriceSale(); // }
-			default: // { base
-			return $this->getPriceBase(); // }
-		}
-	}
-
-	// }
-	function getPriceBase() {
-		$bp=$this->vals['online-store']['_price'];
-		if (!is_object($bp)) {
-			$bp=(object)array('_default'=>$bp);
-			$this->vals['online-store']['_price']=$bp;
-		}
-		$lowest=$bp->_default;
-		if (!isset($_SESSION['userdata'])) {
-			return $lowest;
-		}
-		foreach ($bp as $k=>$v) {
-			if ($k=='_default') {
-				continue;
-			}
-			if (!isset($_SESSION['userdata']['groups'][$k])) {
-				continue;
-			}
-			if ($v<$lowest) {
-				$lowest=$v;
-			}
-		}
-		return $lowest;
-	}
-	function getPriceSale() {
-		$bp=$this->vals['online-store']['_sale_price'];
-		if (!is_object($bp)) {
-			$bp=(object)array('_default'=>$bp);
-			$this->vals['online-store']['_sale_price']=$bp;
-		}
-		$lowest=$bp->_default;
-		if (isset($_SESSION['userdata'])) {
-			foreach ($bp as $k=>$v) {
-				if ($k=='_default') {
-					continue;
-				}
-				if (!isset($_SESSION['userdata']['groups'][$k])) {
-					continue;
-				}
-				if ($v<$lowest) {
-					$lowest=$v;
-				}
-			}
-		}
-		switch (@$this->vals['online-store']['_sale_price_type']) {
-			case '1': // discount
-			return $this->getPriceBase()-$lowest;
-			case '2': // percentage
-			return $this->getPriceBase()*(100-$lowest)/100;
-			default: // actual amount
-			return $lowest;
-		}
-	}
-	function getPriceBulkAll() {
-		$ba=$this->vals['online-store']['_bulk_amount'];
-		if (!is_object($ba)) {
-			$ba=(object)array('_default'=>$bp);
-			$this->vals['online-store']['_bulk_amount']=$bp;
-		}
-		$bp=$this->vals['online-store']['_bulk_price'];
-		if (!is_object($bp)) {
-			$bp=(object)array('_default'=>$bp);
-			$this->vals['online-store']['_bulk_price']=$bp;
-		}
-		$lowest=$bp->_default;
-		$lowestAmt=$ba->_default;
-		if (isset($_SESSION['userdata'])) {
-			foreach ($bp as $k=>$v) {
-				if ($k=='_default') {
-					continue;
-				}
-				$amt=$ba->{$k};
-				if (!$amt) {
-					continue;
-				}
-				if (!isset($_SESSION['userdata']['groups'][$k])) {
-					continue;
-				}
-				if ($v<$lowest) {
-					$lowest=$v;
-					$lowestAmt=$amt;
-				}
-			}
-		}
-		return array($lowest, $lowestAmt);
-	}
 	// { getString
 
 	/**
@@ -1170,8 +1197,9 @@ function Products_addToCart() {
 /**
 	* add template details to a field
 	*
-	* @param string $str string to manipulate
-	* @param string $tpl template to use
+	* @param string $str       string to manipulate
+	* @param string $tplBody   template to use
+	* @param string $tplHeader template header
 	*
 	* @return whatever
 	*/

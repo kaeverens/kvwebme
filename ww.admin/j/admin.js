@@ -112,58 +112,6 @@ function Core_createTranslatableInputs() {
 		// }
 	});
 }
-function Core_saveAdminVars(name, val) {
-	adminVars[name]=val;
-	$.post('/a/f=adminAdminVarsSave', {
-		'name':name,
-		'val':val
-	});
-}
-function Core_sidemenu(links, plugin, currentpage) {
-	var html='<ul>';
-	for (var i=0;i<links.length;++i) {
-		html+='<li><a href="javascript:Core_screen(\''
-			+plugin+'\', \''+(links[i].replace(/[^a-zA-Z]/g, ''))+'\')"'
-			+' lang-context="core" class="__';
-		if (links[i]==currentpage) {
-			html+=' current-page';
-		}
-		html+='">'+links[i]+'</a></li>';
-	}
-	$('#sidebar1').html(html+'</ul>');
-}
-function Core_screen(plugin, page) {
-	var bits=plugin.split(/[^a-zA-Z]/);
-	for (var fname='', i=0;i<bits.length;++i) {
-		fname+=bits[i].charAt(0).toUpperCase()+bits[i].slice(1);
-	}
-	fname+='_screen';
-	if (window[fname]) {
-		$('#wrapper').html('<div id="content"/>');
-		window.current_screen=plugin+'|'+page;
-		return window[fname](page.replace(/^js:/, ''));
-	}
-	if (/^Core[A-Z]/.test(plugin)) {
-		$('head')
-			.append('<link rel="stylesheet" href="/ww.admin/'+plugin+'/admin.css"/>');
-		$.getScript('/ww.admin/'+plugin+'/admin.js?'+(new Date()).getTime(), function(){
-			if (!window[fname]) {
-				return;
-			}
-			Core_screen(plugin, page);
-		});
-	}
-	else {
-		$('head')
-			.append('<link rel="stylesheet" href="/ww.plugins/'+plugin+'/admin.css"/>');
-		$.getScript('/ww.plugins/'+plugin+'/admin.js?'+(new Date()).getTime(), function(){
-			if (!window[fname]) {
-				return;
-			}
-			Core_screen(plugin, page);
-		});
-	}
-}
 function Core_menuShow2(items, name, prefix, depth) {
 	function numSubItems(obj) {
 		var subitems=0;
@@ -248,6 +196,79 @@ function Core_menuShowInitEvents() {
 			flyOutOnState: ''
 		});
 	});
+}
+function Core_prompt(text, val, validator, callback) {
+	var html='<div class="prompt"><p>'+text+'</p><input/></div>';
+	var $prompt=$(html).dialog({
+		'close':function() {
+			$prompt.remove();
+		},
+		'modal':true,
+		'buttons':{
+			'OK':function() {
+				var val=$inp.val();
+				if (validator && !validator(val)) {
+					return;
+				}
+				$prompt.remove();
+				callback(val);
+			}
+		}
+	});
+	var $inp=$prompt.find('input');
+	$inp.val(val);
+}
+function Core_saveAdminVars(name, val) {
+	adminVars[name]=val;
+	$.post('/a/f=adminAdminVarsSave', {
+		'name':name,
+		'val':val
+	});
+}
+function Core_screen(plugin, page) {
+	var bits=plugin.split(/[^a-zA-Z]/);
+	for (var fname='', i=0;i<bits.length;++i) {
+		fname+=bits[i].charAt(0).toUpperCase()+bits[i].slice(1);
+	}
+	fname+='_screen';
+	if (window[fname]) {
+		$('#wrapper').html('<div id="content"/>');
+		window.current_screen=plugin+'|'+page;
+		return window[fname](page.replace(/^js:/, ''));
+	}
+	if (/^Core[A-Z]/.test(plugin)) {
+		$('head')
+			.append('<link rel="stylesheet" href="/ww.admin/'+plugin+'/admin.css"/>');
+		$.getScript('/ww.admin/'+plugin+'/admin.js?'+(new Date()).getTime(), function(){
+			if (!window[fname]) {
+				return;
+			}
+			Core_screen(plugin, page);
+		});
+	}
+	else {
+		$('head')
+			.append('<link rel="stylesheet" href="/ww.plugins/'+plugin+'/admin.css"/>');
+		$.getScript('/ww.plugins/'+plugin+'/admin.js?'+(new Date()).getTime(), function(){
+			if (!window[fname]) {
+				return;
+			}
+			Core_screen(plugin, page);
+		});
+	}
+}
+function Core_sidemenu(links, plugin, currentpage) {
+	var html='<ul>';
+	for (var i=0;i<links.length;++i) {
+		html+='<li><a href="javascript:Core_screen(\''
+			+plugin+'\', \''+(links[i].replace(/[^a-zA-Z]/g, ''))+'\')"'
+			+' lang-context="core" class="__';
+		if (links[i]==currentpage) {
+			html+=' current-page';
+		}
+		html+='">'+links[i]+'</a></li>';
+	}
+	$('#sidebar1').html(html+'</ul>');
 }
 $(function(){
 	$.post('/a/f=adminLoadJSVars', function(ret) {

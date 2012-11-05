@@ -1,4 +1,16 @@
 <?php
+/**
+	* definition file for Polls plugin
+	*
+	* PHP version 5.4.6
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     None
+	*/
+
 $plugin=array(
 	'name' => 'Polls',
 	'admin' => array(
@@ -10,13 +22,23 @@ $plugin=array(
 	'frontend' => array(
 		'template_functions' => array(
 			'POLL' => array(
-				'function' => 'pollDisplay'
+				'function' => 'Polls_pollDisplay'
 			)
 		),
-		'widget' => 'pollDisplay'
+		'widget' => 'Polls_pollDisplay'
 	)
 );
-function pollDisplay(){
-	include_once SCRIPTBASE . 'ww.plugins/polls/frontend/polls.php';
+
+// { Polls_pollDisplay
+
+/**
+	* display a poll
+	*
+	* @return null
+	*/
+function Polls_pollDisplay() {
+	require_once SCRIPTBASE . 'ww.plugins/polls/frontend/polls.php';
 	return poll_display();
 }
+
+// }
