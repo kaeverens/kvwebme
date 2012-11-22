@@ -91,10 +91,9 @@ function Ads_typesGet() {
 	* @return status
 	*/
 function Ads_fileUpload() {
-	if (!isset($_SESSION['userdata']['id'])) {
-		return array('error'=>__('not logged in'));
-	}
-	$id=$_SESSION['userdata']['id'];
+	$id=isset($_SESSION['userdata']['id'])
+		?$_SESSION['userdata']['id']
+		:$_SESSION['tmpUID'];
 	$fname=USERBASE.'/f/userfiles/'.$id.'/ads-upload/'.$_FILES['Filedata']['name'];
 	if (strpos($fname, '..')!==false) {
 		return array('message'=>'invalid file url');
@@ -152,19 +151,21 @@ function Ads_posterUpload() {
 	* @return url of the temporary image
 	*/
 function Ads_getTmpImage() {
-	if (!isset($_SESSION['userdata']['id'])) {
-		return array('error'=>__('not logged in'));
+	$id=isset($_SESSION['userdata']['id'])
+		?$_SESSION['userdata']['id']
+		:$_SESSION['tmpUID'];
+	$dirname=USERBASE.'/f/userfiles/'.$id.'/ads-upload';
+	if (!file_exists($dirname)) {
+		mkdir($dirname, 0777, true);
 	}
-	$id=$_SESSION['userdata']['id'];
-	$url=false;
-	$dir=new DirectoryIterator(USERBASE.'/f/userfiles/'.$id.'/ads-upload');
+	$dir=new DirectoryIterator($dirname);
 	foreach ($dir as $file) {
 		if ($file->isDot()) {
 			continue;
 		}
-		$url='userfiles/'.$id.'/ads-upload/'.$file->getFilename();
+		return 'userfiles/'.$id.'/ads-upload/'.$file->getFilename();
 	}
-	return $url;
+	return false;
 }
 
 // }
@@ -186,6 +187,17 @@ function Ads_makePurchaseOrder() {
 			.'name="'.addslashes($email).'",active=1,date_created=now()'
 		);
 		$user_id=dbLastInsertId();
+		$dirname=USERBASE.'/f/userfiles/'.$user_id.'/ads-upload';
+		mkdir($dirname, 0777, true);
+		$olddirname=USERBASE.'/f/userfiles/'.$_SESSION['tmpUID'].'/ads-upload';
+		$dir=new DirectoryIterator($olddirname);
+		foreach ($dir as $file) {
+			if ($file->isDot()) {
+				continue;
+			}
+			$fname=$file->getFilename();
+			copy($olddirname.'/'.$fname, $dirname.'/'.$fname);
+		}
 	}
 	else {
 		$user_id=$_SESSION['userdata']['id'];

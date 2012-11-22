@@ -77,6 +77,12 @@ if (count($vals)) {
 list($price, $amount, $vat)=Products_getProductPrice(
 	$product, $amount, $md5
 );
+if (isset($_REQUEST['products_values__custom-price'])
+	&& (float)$_REQUEST['products_values__custom-price']
+	&& $product_type->has_userdefined_price
+) {
+	$price=(float)$_REQUEST['products_values__custom-price'];
+}
 // { does the amount requested bring it over the maximum allowed per purchase
 $max_allowed=isset($product->vals['online-store']['_max_allowed'])
 	?(int)$product->vals['online-store']['_max_allowed']

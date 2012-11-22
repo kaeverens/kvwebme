@@ -65,6 +65,9 @@ $plugin=array(
 			'PRODUCTS_CATEGORIES' => array( // {
 				'function' => 'Products_categories'
 			), // }
+			'PRODUCTS_CUSTOM_PRICE' => array( // {
+				'function' => 'Products_customPrice'
+			), // }
 			'PRODUCTS_DATATABLE' => array( // {
 				'function' => 'Products_datatable'
 			), // }
@@ -136,7 +139,7 @@ $plugin=array(
 		'menu-subpages' => 'Products_getSubCategoriesAsMenu',
 		'menu-subpages-html' => 'Products_getSubCategoriesAsMenuHtml'
 	), // }
-	'version' => '45'
+	'version' => '46'
 );
 // }
 
@@ -868,6 +871,7 @@ class ProductType{
 		$this->stock_control=(int)@$r['stock_control'];
 		$this->voucher_template=@$r['voucher_template'];
 		$this->default_category=(int)$r['default_category'];
+		$this->has_userdefined_price=(int)$r['has_userdefined_price'];
 		self::$instances[$this->id] =& $this;
 		return $this;
 	}
@@ -1483,6 +1487,20 @@ function Products_cronGetNext() {
 			.'next_date="'.$n.'", func="Products_cronHandle"'
 		);
 	}
+}
+
+// }
+// { Products_customPrice
+
+/**
+	* custom price
+	*
+	* @return string
+	*/
+function Products_customPrice() {
+	WW_addScript('/ww.plugins/products/j/custom-price.js');
+	return '<input class="products-custom-price"'
+		.' name="products_values__custom-price"/>';
 }
 
 // }

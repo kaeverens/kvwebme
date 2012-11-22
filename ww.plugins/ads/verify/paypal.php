@@ -50,14 +50,15 @@ else {
 			$ad_id=dbLastInsertId();
 			// { poster 
 			$url=false;
-			$dir=new DirectoryIterator(
-				USERBASE.'/f/userfiles/'.$data['user_id'].'/ads-upload-poster'
-			);
+			$dirname=USERBASE.'/f/userfiles/'.$data['user_id'].'/ads-upload-poster';
+			if (file_exists($dirname)) {
+			$dir=new DirectoryIterator($dirname);
 			foreach ($dir as $file) {
 				if ($file->isDot()) {
 					continue;
 				}
 				$url='userfiles/'.$data['user_id'].'/ads-upload-poster/'.$file->getFilename();
+			}
 			}
 			$newName='/f/userfiles/'.$data['user_id'].'/ad-poster-'.$ad_id.'.'
 				.preg_replace('/.*\./', '', $url);

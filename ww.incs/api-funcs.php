@@ -731,6 +731,12 @@ function Core_userGetUid() {
 	}
 	$sql='select id from user_accounts where email="'.addslashes($email).'"';
 	$id=(int)dbOne($sql, 'id');
+	if (!$id) {
+		$id=isset($_SESSION['tmpUID'])
+			?$_SESSION['tmpUID']
+			:'tmp-'.md5(microtime(true));
+		$_SESSION['tmpUID']=$id;
+	}
 	return array('uid'=>$id);
 }
 // }

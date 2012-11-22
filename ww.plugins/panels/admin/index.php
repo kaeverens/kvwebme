@@ -11,7 +11,6 @@
 	* @link     http://kvsites.ie/
 	*/
 
-echo '<div class="pages_iframe">';
 echo '<table style="width:95%"><tr><td class="splitter-panel-left">'
 	.'<h3>'.__('Widgets').'</h3><p>'
 	.__('Drag a widget into a panel on the right.')
@@ -20,7 +19,6 @@ echo '<table style="width:95%"><tr><td class="splitter-panel-left">'
 	.'<td style="width:220px"><h3>'.__('Panels').'</h3>'
 	.'<p>'.__('Click a header to open it.').'</p>'
 	.'<div id="panels"></div><br style="clear:both" /></td></tr></table>'
-	.'</div>'
 	.'<link rel="stylesheet" href="/ww.plugins/panels/c/admin.css"/>';
 // { panel and widget data
 echo '<script>';

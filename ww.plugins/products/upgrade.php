@@ -340,3 +340,9 @@ if ($version==44) { // add expired_notification template
 	dbQuery('alter table products_types add template_expired_notification text');
 	$version=45;
 }
+if ($version==45) { // add has_userdefined_price
+	dbQuery(
+		'alter table products_types add has_userdefined_price smallint default 0'
+	);
+	$version=46;
+}

@@ -129,7 +129,7 @@ $(function() {
 				if (ret.error) {
 					return alert(ret.error);
 				}
-				if (ret.uid) {
+				if (ret.uid && !(/tmp-/.test(ret.uid))) {
 					var html='<p>This email address is already registered in the'
 						+' database. Please <a href="/_r?type=loginpage">Log In</a>'
 						+' before creating an ad.</p>';

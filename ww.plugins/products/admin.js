@@ -765,7 +765,7 @@ function Products_typeEdit(id) {
 		$('<table class="wide">'
 			+'<tr><th>Name</th><td id="pte1"></td></tr>'
 			+'<tr><th>Are products of this type for sale?</th>'
-			+'<td id="pte2"></td></tr><tr id="pte4"/><tr id="pte5"/>'
+			+'<td id="pte2"></td></tr><tr id="pte4"/><tr id="pte5"/><tr id="pte7"/>'
 			+'<tr><th>Default Category</th><td><select id="pte6"/></td></tr>'
 			+'<tr><th>If no image is uploaded for the product, what image should '
 			+'be shown?</th><td id="pte3"></td></tr>'
@@ -784,9 +784,10 @@ function Products_typeEdit(id) {
 				if (+tdata.is_for_sale) {
 					addIsVoucher();
 					addStockControl();
+					addUserDefinedPrice();
 				}
 				else {
-					$('#pte4,#pte5').empty();
+					$('#pte4,#pte5,#pte7').empty();
 				}
 			})
 			.val(tdata.is_for_sale)
@@ -826,9 +827,21 @@ function Products_typeEdit(id) {
 				})
 				.val(tdata.stock_control);
 		}
+		function addUserDefinedPrice() {
+			$('<th>Customer defines price</th><td><select>'
+				+'<option value="0">No</option><option value="1">Yes</option>'
+				+'</select></td>')
+				.appendTo('#pte7');
+			$('#pte7 select')
+				.change(function() {
+					tdata.user_defined_price=$(this).val();
+				})
+				.val(tdata.user_defined_price);
+		}
 		if (+tdata.is_for_sale) {
 			addIsVoucher();
 			addStockControl();
+			addUserDefinedPrice();
 		}
 		// }
 		// { default category
@@ -957,6 +970,7 @@ function Products_typeEdit(id) {
 		tdata.is_for_sale=+$('#pte2 select').val();
 		tdata.stock_control=+$('#pte5 select').val();
 		tdata.default_category=+$('#pte6').val();
+		tdata.user_defined_price=+$('#pte7 select').val();
 		if (tdata.is_for_sale) {
 			tdata.is_voucher=+$('#pte4 select').val();
 		}
