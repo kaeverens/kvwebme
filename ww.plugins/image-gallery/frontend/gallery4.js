@@ -261,7 +261,7 @@ var Gallery={
 						var marginTop=0;
 						var spanheight=$img.closest('span').height();
 						var $wrapper=$imgwrap.closest('#gallery-image');
-						if (spanheight==0) {
+						if (spanheight<50) {
 							spanheight=newheight;
 						}
 						if (newheight<spanheight) {
@@ -530,9 +530,10 @@ var Gallery={
 		if (this.options.slideshow) {
 			this.options.slideshowTime=$gallery.attr('slideshowtime');
 		}
-		var opts={}, names=["imageHeight","imageWidth","effect"];
+		var opts={}, names=["imageHeight","imageWidth","effect"],
+			$galleryImage=$('#gallery-image');
 		for(var k in names) {
-			var val=$('#gallery-image').attr(names[k]);
+			var val=$galleryImage.attr(names[k]);
 			if(val) {
 				opts[names[k]]=val;
 			}
@@ -671,12 +672,12 @@ var Gallery={
 					}
 				});
 		}
-		$('#gallery-image').css({
+		$galleryImage.css({
 			'height':Gallery.options.imageHeight+'px',
 			'width':Gallery.options.imageWidth+'px'
 		});
 		setTimeout(function() {
-			$('#gallery-image').addClass('imagegallery-converted');
+			$galleryImage.addClass('imagegallery-converted');
 		}, 1000);
 	},
 	loadPage:function(num) { // shift the display to a specific page
