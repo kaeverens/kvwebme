@@ -406,7 +406,6 @@ function Forms_Pagetype_forms() {
 				},
 				'active':false,
 				'autoHeight':false,
-				'animated':false,
 				'collapsible':true,
 				'create':function() {
 					if (index) {
@@ -428,7 +427,8 @@ function Forms_Pagetype_forms() {
 					page_vars.forms_fields=newFields;
 					showFormFields(panel, -1); // page_vars.forms_fields.length-1);
 				}
-			});
+			})
+			.css('height', 'auto');
 		$('<button>'+__('Add field')+'</button>')
 			.click(function() {
 				// TODO: translation needed

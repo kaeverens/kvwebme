@@ -419,6 +419,7 @@ function Form_validate(&$vars, &$form_fields) {
 			);
 		}
 		if ($r2['type']=='email'
+			&& $_REQUEST[$name]
 			&& !filter_var(@$_REQUEST[$name], FILTER_VALIDATE_EMAIL)
 		) {
 			$n=$r2['name'];
