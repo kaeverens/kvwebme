@@ -1,32 +1,77 @@
-var ITStrings={
+<?php
+function curPageURL() {
+ $pageURL = 'http';
+ if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+ $pageURL .= "://";
+ if ($_SERVER["SERVER_PORT"] != "80") {
+  $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+ } else {
+  $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+ }
+ return $pageURL;
+}
+$paypalAddress = dbOne("SELECT * FROM `site_vars` WHERE `name`='paypal_address'","value");
+
+?>
+<html>
+<head>
+        <script type="text/javascript">
+        function validateEmail(email) { 
+        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+        }
+ 
+        var ITStrings={
 	'Project':'Project',
 	'project':'project',
 	'Issues':'Issues',
 	'Issue':'Issue',
 	'issue':'issue'
-};
+        };
 
-function addVote(id)
-{
-$.post('/a/p=issue-tracker/f=addVote', { "id": id},function(ret) {
-	if(isNaN(ret))
-	  alert(ret);
-	else
-	  $("#votesNumber").text(ret);
-	});
-}
+	$(function() {
+        var issueId; // used when completing the issue        
+        $( "#dialog" ).dialog({autoOpen:false});
+        $("#pay").click(function(){
+        if($("#to").val()){
+        var amount;
+        $.post('/a/p=issue-tracker/f=getDepositedValue', {'id':issueId},function(ret){
+          amount = ret;
+        });
+          if(validateEmail($("#to").val())){
+            $.post('/a/p=issue-tracker/f=payMoney',{
+               'email': $("#to").val(),
+               'amount': amount,
+               'issue_number':issueId
+               },function(ret)
+                 {
+                 alert(ret);
+                 if(1){  // TODO
+                   $.post('/a/p=issue-tracker/f=finishIssue',{'id':issueId});
+                   $("to").val("");
+                   $("#dialog").dialog("close");
 
-function substractVote(id)
-{
-$.post('/a/p=issue-tracker/f=substractVote', { "id": id},function(ret) {
-	if(isNaN(ret))
-	  alert(ret);
-	else
-	  $("#votesNumber").text(ret);
-	});
-}
-
-$(function() {
+                   //reload the page
+                   window.location.href = window.location;
+                   }
+                 });
+            } else{
+             alert("Please insert a valid email address");
+            }
+         }
+        else  // if the e-mail input it's empty
+          alert("Please insert an email address");          
+        });
+       
+        $("#setAddress").click(function(){
+          $.post('/a/p=issue-tracker/f=setPaypalAddress',{
+            'email': $("#paypal-address").val()
+          });
+          alert("Email set");
+        });             
+          
+       
+	$("#tabs").tabs();
 	var statii=[
 		undefined, 'Open', 'Completed'
 	];
@@ -41,41 +86,6 @@ $(function() {
 	var navbar=$('<div id="issuetracker-navbar" style="text-align:right">'
 		+'<select class="project"/></div>')
 		.appendTo($wrapper);
-        var $depositFundsDialog = $("<div id='depositFunds' style='display:none;'>"
-                                    +"Amount:"
-                                    +"<input id='amount' type='text' name='creditAmount' value='0' />"
-                                    +"<br/>"
-                                    +"<br/>"
-                                    +"<button id='depositCredits'>Deposit</button>"
-                                    +"</div>"
-                                   )
-                                  .appendTo($wrapper);                             
-                                
-        $depositFundsDialog.dialog({autoOpen : false, resizable : false, height:115, title:"Deposit credits"});
-
-        $("#depositCredits").click(function(){
-                                  if($.isNumeric($("#amount").val())){
-                                    $.post('/a/p=issue-tracker/f=depositValue',{
-                                      'id':issueId,
-                                      'amount':$("#amount").val()                                  
-                                     },
-                                       function(ret){
-                                         alert(ret);
-                                         $depositFundsDialog.dialog('destroy');
-                                         $depositFundsDialog.dialog({autoOpen : false, resizable : false, height:115, title:"Deposit credits"});
-                                         $.get("/a/p=issue-tracker/f=getDepositedValue",
-                                               {
-                                               'id':issueId
-                                               },function(ret){
-                                            $("#numberOfCredits").html(ret);
-                                            $("#amount").val(0);
-                                          });     
-                                       });
-                                    }else{
-                                      alert("Please insert a numeric value");
-                                    }      
-                                });
-       
 	var canedit=false;
 	for (var i=0;i<it_edit_all.length;++i) {
 		if ($.inArray(+it_edit_all[i], userdata.groups)!=-1) {
@@ -286,11 +296,11 @@ $(function() {
 					$table.fnDraw(1);
 				}
 			});
-		var table='<table style="width:100%">'
+		var table='<table style="width:100%!important;">'
 			+'<thead><tr><th>ID</th><th>Scheduled<br/>Date</th><th>Status</th>'
 			+'<th>Name</th><th>Type</th>'
 			+'<th>'+ITStrings.Project+'</th>'
-			+'<th>Votes</th>'                        
+			+'<th>Votes</th>'                       
 			+'</tr></thead>'
 			+'<tbody></tbody>'
 			+'</table>';
@@ -305,16 +315,21 @@ $(function() {
 				null,
 				null,
 				null,
-				null                                
+				null
 			],
 			"bJQueryUI":true,
 			"bServerSide":true,
 			"fnRowCallback": function(nRow, aData, iDisplayIndex) {
-				$('td:nth-child(2)', nRow).text(statii[+aData[2]]);
+                                $('td:nth-child(2)', nRow).text(statii[+aData[2]]);
 				$('td:nth-child(4)', nRow).text(vals.types[+aData[4]]);
-				$(nRow).css('cursor', 'pointer').click(function() {
-					showIssue(+aData[0]);
-				});
+                                $button = $('<button class="edit"> Complete </button>').click(function(){
+                                  issueId = aData[0];
+                                  $( "#dialog" ).dialog("open");
+                                });
+                                
+                                //if issue not completed
+                                if(aData[2]!=2)
+                                  $('td:nth-child(2)', nRow).append($button);
 				return nRow;
 			},
 			"fnServerData":function(sSource, aoData, fnCallback) {
@@ -333,7 +348,7 @@ $(function() {
 				$.getJSON(sSource, aoData, fnCallback);
 			}
 		};
-		var $table=$(table).appendTo($content).dataTable(params);
+		var $table=$(table).attr("id","issue-table").appendTo($content).dataTable(params);                
 		$('.dataTables_filter').css('display', 'none');
 		if (userdata.isAdmin) {
 			$('<button>New '+ITStrings.Issue+'</button>')
@@ -410,7 +425,7 @@ $(function() {
 			issue.meta=eval('('+issue.meta+')');
 			// { set up table HTML
 			var html=
-				'<table style="width:100%"><tr><th>Name</th><td class="name"></td></tr>'
+				'<table style="width:100%!important;"><tr><th>Name</th><td class="name"></td></tr>'
 				+'<tr><th>Scheduled Date</th><td class="due_date"></td></tr>'
 				+'<tr style="display:none"><th>Recur every</th>'
 				+'<td id="issue-tracker-recurring"></td></tr>'
@@ -423,9 +438,8 @@ $(function() {
 			});
 			html+='<tr><th>Attached Files</th><td class="files"></td></tr>';
 			html+='<tr><th>Status</th><td class="status"></td></tr>';
-			html+='<tr><th>Votes</th><td class="votes"><span id="votesNumber">'+((issue.meta['credits']!=undefined)?issue.meta['credits']:'0')+'</span>&nbsp;&nbsp;<a href="javascript:addVote('+issue.id+')"><span style="background-image:url(\'/i/icon_plus.jpg\');width:15px;height:15px;display:inline-block;">&nbsp</span></a>&nbsp;';                        
+			html+='<tr><th>Votes</th><td class="votes"><span id="votesNumber">'+((issue.meta['credits']!=undefined)?issue.meta['credits']:'0')+'</span>&nbsp;&nbsp;<a href="javascript:addVote('+issue.id+')"><span style="background-image:url(\'/i/icon_plus.jpg\');width:15px;height:15px;display:inline-block;">&nbsp</span></a>&nbsp;';
 			html+='<a href="javascript:substractVote('+issue.id+')"><span style="background-image:url(\'/i/icon_minus.png\');width:15px;height:15px;display:inline-block;">&nbsp</span></a>';
-                        html+='<tr><th>Credits:</th><td><span id="numberOfCredits">'+(issue.meta['paid_credits']!=undefined?issue.meta['paid_credits']:'0')+'</span></td></tr>';
 			html+='</td></tr>';
 			html+='</table>';
 			// }
@@ -577,20 +591,13 @@ $(function() {
 					})
 					.appendTo($content);
 			}
-                        $('<button>Deposit Credits</button>')
-                              .click(function(){
-                                issueId = id;
-                                $depositFundsDialog.dialog('open');                             
-                              })
-                                .appendTo($content);
-			
 			$('<button>Return to '+ITStrings.Issues+' List</button>')
 				.click(function() {
 					$('#issuetracker-navbar .project').change();
 					return false;
 				})
 				.appendTo($content);
-                        // }
+			// }
 			$.post('/a/p=issue-tracker/f=commentsGet', {
 				'id':id
 			}, showComments);
@@ -636,3 +643,34 @@ $(function() {
 	window.dateTo.setDate(dateTo.getDate()+7);
 	window.dateFrom=new Date();
 });
+	</script>
+</head>
+
+<body>
+<h2>Issue tracker</h2>
+<div id="tabs">
+    <ul>
+        <li><a href="#tabs-1">Free Credits</a></li>
+        <li><a href="#tabs-2">Paid Credits</a></li>
+        <li><a href="#tabs-3">Issues List</a></li>   
+    </ul>
+    <div id="tabs-1">
+        <p>Proin elit arcu, rutrum commodo, vehicula tempus, commodo a, risus. Curabitur nec arcu. Donec sollicitudin mi sit amet mauris. Nam elementum quam ullamcorper ante. Etiam aliquet massa et lorem. Mauris dapibus lacus auctor risus. Aenean tempor ullamcorper leo. Vivamus sed magna quis ligula eleifend adipiscing. Duis orci. Aliquam sodales tortor vitae ipsum. Aliquam nulla. Duis aliquam molestie erat. Ut et mauris vel pede varius sollicitudin. Sed ut dolor nec orci tincidunt interdum. Phasellus ipsum. Nunc tristique tempus lectus.</p>
+    </div>
+    <div id="tabs-2">	
+	Paypal address:<input id="paypal-address" type="text" value="<?php echo $paypalAddress; ?>" />
+        <button id="setAddress">Set</button>
+    </div>
+    <div id="tabs-3">
+    <h3>List</h3>
+      <div id="issuetracker-wrapper"></div>
+    </div>
+       
+	<div id="dialog" title="Make Payment">
+   	  Email address:&nbsp;<input type="text" id="to" /><br/><br/>
+          <button id="pay">Make Payment</button>
+        </div>
+    <div>
+    </div>
+</body>    
+</html>

@@ -184,6 +184,7 @@ echo '<tr><th>Active</th><td><select name="active"><option value="0">No</'
 	.'option><option value="1"'.($r['active']?' selected="selected"':'')
 	.'>Yes</option></select></td></tr>';
 // }
+echo '<tr><th>Credits</th><td>'.json_decode($r['extras']).'</td></tr>';
 echo '</table></td>';
 // }
 // { contact details

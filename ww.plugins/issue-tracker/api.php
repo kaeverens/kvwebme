@@ -19,23 +19,22 @@
 	*
 	* @return array status
 	*/
-function Issuetracker_commentAdd() {
-	$iid=(int)$_REQUEST['issue_id'];
-	$body=$_REQUEST['body'];
-	$uid=@$_SESSION['userdata']['id'];
-	if (!$uid) {
-		return array(
-			'error'=>__('you are not logged in')
-		);
-	}
-	dbQuery(
-		'insert into issuetracker_comments'
-		.' set user_id='.$uid.', body="'.addslashes($body).'"'
-		.', cdate=now(), issue_id='.$iid
-	);
-	return array(
-		'ok'=>1
-	);
+function Issuetracker_commentAdd() 
+{
+    $iid=(int)$_REQUEST['issue_id'];
+    $body=$_REQUEST['body'];
+    $uid=@$_SESSION['userdata']['id'];
+    if (!$uid) {
+        return array('error'=>__('you are not logged in'));
+    }
+    dbQuery(
+        'insert into issuetracker_comments'
+        .' set user_id='.$uid.', body="'.addslashes($body).'"'
+        .', cdate=now(), issue_id='.$iid
+    );
+    return array(
+    'ok'=>1
+    );
 }
 
 // }
@@ -46,18 +45,19 @@ function Issuetracker_commentAdd() {
 	*
 	* @return array status
 	*/
-function Issuetracker_commentsGet() {
-	$iid=(int)$_REQUEST['id'];
-	$rs=dbAll(
-		'select * from issuetracker_comments where issue_id='.$iid
-		.' order by cdate'
-	);
-	foreach ($rs as $k=>$r) {
-		$rs[$k]['name']=dbOne(
-			'select name from user_accounts where id='.$r['user_id'], 'name'
-		);
-	}
-	return $rs;
+function Issuetracker_commentsGet() 
+{
+    $iid=(int)$_REQUEST['id'];
+    $rs=dbAll(
+        'select * from issuetracker_comments where issue_id='.$iid
+        .' order by cdate'
+    );
+    foreach ($rs as $k=>$r) {
+        $rs[$k]['name']=dbOne(
+            'select name from user_accounts where id='.$r['user_id'], 'name'
+        );
+    }
+    return $rs;
 }
 
 // }
@@ -68,21 +68,22 @@ function Issuetracker_commentsGet() {
 	*
 	* @return array status
 	*/
-function Issuetracker_issueCreate() {
-	$name=$_REQUEST['name'];
-	$type_id=(int)$_REQUEST['type_id'];
-	$project_id=(int)$_REQUEST['project_id'];
-	$sql='insert into issuetracker_issues'
-		.' set name="'.addslashes($name).'"'
-		.', type_id='.$type_id
-		.', project_id='.$project_id
-		.', meta="{}"'
-		.', date_created=now()'
-		.', date_modified=now()'
-		.', status=1';
-	dbQuery($sql);
-	$id=dbLastInsertId();
-	return array('id'=>$id);
+function Issuetracker_issueCreate() 
+{
+    $name=$_REQUEST['name'];
+    $type_id=(int)$_REQUEST['type_id'];
+    $project_id=(int)$_REQUEST['project_id'];
+    $sql='insert into issuetracker_issues'
+        .' set name="'.addslashes($name).'"'
+        .', type_id='.$type_id
+        .', project_id='.$project_id
+        .', meta="{}"'
+        .', date_created=now()'
+        .', date_modified=now()'
+        .', status=1';
+    dbQuery($sql);
+    $id=dbLastInsertId();
+    return array('id'=>$id);
 }
 
 // }
@@ -93,26 +94,27 @@ function Issuetracker_issueCreate() {
 	*
 	* @return array
 	*/
-function Issuetracker_issueGet() {
-	$id=(int)$_REQUEST['id'];
-	$issue=dbRow('select * from issuetracker_issues where id='.$id);
-	$files=array();
-	if (file_exists(USERBASE.'/f/issue-tracker-files/'.$id)) {
-		$dir=new DirectoryIterator(USERBASE.'/f/issue-tracker-files/'.$id);
-		foreach ($dir as $file) {
-			if ($file->isDot()) {
-				continue;
-			}
-			$files[]=$file->getFilename();
-		}
-	}
-	return array(
-		'issue'=>$issue,
-		'files'=>$files,
-		'type'=>dbRow(
-			'select * from issuetracker_types where id='.$issue['type_id']
-		)
-	);
+function Issuetracker_issueGet() 
+{
+    $id=(int)$_REQUEST['id'];
+    $issue=dbRow('select * from issuetracker_issues where id='.$id);
+    $files=array();
+    if (file_exists(USERBASE.'/f/issue-tracker-files/'.$id)) {
+        $dir=new DirectoryIterator(USERBASE.'/f/issue-tracker-files/'.$id);
+        foreach ($dir as $file) {
+            if ($file->isDot()) {
+                continue;
+            }
+            $files[]=$file->getFilename();
+        }
+    }
+    return array(
+        'issue'=>$issue,
+        'files'=>$files,
+        'type'=>dbRow(
+            'select * from issuetracker_types where id='.$issue['type_id']
+        )
+    );
 }
 
 // }
@@ -123,45 +125,47 @@ function Issuetracker_issueGet() {
 	*
 	* @return array
 	*/
-function Issuetracker_issueSet() {
-	$id=(int)$_REQUEST['id'];
-	$name=$_REQUEST['name'];
-	$status=(int)$_REQUEST['status'];
-	$dueDate=$_REQUEST['dueDate'];
-	$newMeta=$_REQUEST['meta'];
-	$recurring_multiplier=(int)$_REQUEST['recurring_multiplier'];
-	$recurring_type=$_REQUEST['recurring_type'];
-	$recurring_types=array('day', 'week', 'month', 'year');
-	if (!in_array($recurring_type, $recurring_types)) {
-		$recurring_type='day';
-	}
-	$oldData=dbRow('select * from issuetracker_issues where id='.$id);
-	$meta=json_decode($oldData['meta'], true);
-	foreach ($newMeta as $k=>$v) {
-		$meta[$k]=$v;
-	}
-	$sql='update issuetracker_issues set date_modified=now()'
-		.', name="'.addslashes($name).'", status='.$status
-		.', due_date="'.addslashes($dueDate).'"'
-		.', recurring_type="'.$recurring_type.'"'
-		.', recurring_multiplier='.$recurring_multiplier
-		.', meta="'.addslashes(json_encode($meta)).'"'
-		.' where id='.$id;
-	dbQuery($sql);
-	if ($recurring_multiplier>0 && $oldData['status']=='1' && $status==2) {
-		$sql='insert into issuetracker_issues set date_modified=now()'
-			.', name="'.addslashes($name).'", status=1'
-			.', due_date=date_add("'.addslashes($dueDate).'", interval '.$recurring_multiplier
-			.' '.$recurring_type.')'
-			.', recurring_type="'.$recurring_type.'"'
-			.', recurring_multiplier='.$recurring_multiplier
-			.', meta="'.addslashes(json_encode($meta)).'"'
-			.', type_id='.$oldData['type_id']
-			.', project_id='.$oldData['project_id']
-			.', date_created=now()';
-		dbQuery($sql);
-	}
-	return array('ok'=>1);
+function Issuetracker_issueSet() 
+{
+    $id=(int)$_REQUEST['id'];
+    $name=$_REQUEST['name'];
+    $status=(int)$_REQUEST['status'];
+    $dueDate=$_REQUEST['dueDate'];
+    $newMeta=$_REQUEST['meta'];
+    $recurring_multiplier=(int)$_REQUEST['recurring_multiplier'];
+    $recurring_type=$_REQUEST['recurring_type'];
+    $recurring_types=array('day', 'week', 'month', 'year');
+    if (!in_array($recurring_type, $recurring_types)) {
+        $recurring_type='day';
+    }
+    $oldData=dbRow('select * from issuetracker_issues where id='.$id);
+    $meta=json_decode($oldData['meta'], true);
+    foreach ($newMeta as $k=>$v) {
+        $meta[$k]=$v;
+    }
+    $sql='update issuetracker_issues set date_modified=now()'
+        .', name="'.addslashes($name).'", status='.$status
+        .', due_date="'.addslashes($dueDate).'"'
+        .', recurring_type="'.$recurring_type.'"'
+        .', recurring_multiplier='.$recurring_multiplier
+        .', meta="'.addslashes(json_encode($meta)).'"'
+        .' where id='.$id;
+    dbQuery($sql);
+    if ($recurring_multiplier>0 && $oldData['status']=='1' && $status==2) {
+        $sql='insert into issuetracker_issues set date_modified=now()'
+        .', name="'.addslashes($name).'", status=1'
+        .', due_date=date_add("'.addslashes($dueDate).'", interval '
+        .$recurring_multiplier
+        .' '.$recurring_type.')'
+        .', recurring_type="'.$recurring_type.'"'
+        .', recurring_multiplier='.$recurring_multiplier
+        .', meta="'.addslashes(json_encode($meta)).'"'
+        .', type_id='.$oldData['type_id']
+        .', project_id='.$oldData['project_id']
+        .', date_created=now()';
+        dbQuery($sql);
+    }
+    return array('ok'=>1);
 }
 
 // }
@@ -172,7 +176,8 @@ function Issuetracker_issueSet() {
 	*
 	* @return array
 	*/
-function Issuetracker_issuesGetDT() {
+function Issuetracker_issuesGetDT() 
+{
 	$pid=(int)$_REQUEST['pid'];
 	$start=(int)$_REQUEST['iDisplayStart'];
 	$length=(int)$_REQUEST['iDisplayLength'];
@@ -214,7 +219,7 @@ function Issuetracker_issuesGetDT() {
 			if (strlen($p['groups'])>1) {
 				if (!isset($_SESSION['userdata'])) {
 					continue;
-				}
+                        }
 				$ok=0;
 				foreach ($_SESSION['userdata']['groups'] as $k=>$v) {
 					if (strpos($p['groups'], '|'.$v.'|')!==false) {
@@ -278,9 +283,7 @@ function Issuetracker_issuesGetDT() {
 		$row[]=(int)$r['type_id'];
 		// }
 		// { project
-		$row[]=$r['project_name'];
-		// }
-		// { credits
+		$row[]=$r['project_name'];		
 		
 		$freeCredits=$rMeta->{'credits'};
 		$paidCredits=$rMeta->{'paid_credits'};
@@ -325,8 +328,9 @@ function Issuetracker_issuesGetDT() {
 	*
 	* @return array list
 	*/
-function IssueTracker_typesGet() {
-	return dbAll('select id,name from issuetracker_types order by name');
+function IssueTracker_typesGet() 
+{
+    return dbAll('select id,name from issuetracker_types order by name');
 }
 
 // }
@@ -337,10 +341,11 @@ function IssueTracker_typesGet() {
 	*
 	* @return array
 	*/
-function Issuetracker_projectGet() {
-	$id=(int)$_REQUEST['id'];
-	$project=dbRow('select * from issuetracker_projects where id='.$id);
-	return $project;
+function Issuetracker_projectGet() 
+{
+    $id=(int)$_REQUEST['id'];
+    $project=dbRow('select * from issuetracker_projects where id='.$id);
+    return $project;
 }
 
 // }
@@ -351,44 +356,45 @@ function Issuetracker_projectGet() {
 	*
 	* @return array list
 	*/
-function IssueTracker_projectsGet() {
-	$hotels=array();
-	$rs=dbAll(
-		'select id,name,parent_id,meta from issuetracker_projects where parent_id=0'
-	);
-	foreach ($rs as $r) {
-		if (Core_isAdmin()) {
-			$hotels[]=$r;
-			continue;
-		};
-		$p=json_decode($r['meta'], true);
-		if (count($p['groups'])) {
-			$ok=0;
-			foreach ($p['groups'] as $v) {
-				if (in_array($v, $_SESSION['userdata']['groups'])) {
-					$ok=1;
-				}
-			}
-			if (!$ok) {
-				continue;
-			}
-			$hotels[]=$r;
-			continue;
-		}
-		if (count($p['users'])) {
-			$ok=0;
-			if (in_array($_SESSION['userdata']['id'], $p['users'])) {
-				$ok=1;
-			}
-			if (!$ok) {
-				continue;
-			}
-			$hotels[]=$r;
-			continue;
-		}
-		$hotels[]=$r;
-	}
-	return $hotels;
+function IssueTracker_projectsGet() 
+{
+    $hotels=array();
+    $rs=dbAll(
+        'select id,name,parent_id,meta from issuetracker_projects where parent_id=0'
+    );
+    foreach ($rs as $r) {
+        if (Core_isAdmin()) {
+        $hotels[]=$r;
+        continue;
+        };
+    $p=json_decode($r['meta'], true);
+        if (count($p['groups'])) {
+            $ok=0;
+            foreach ($p['groups'] as $v) {
+                if (in_array($v, $_SESSION['userdata']['groups'])) {
+                    $ok=1;
+                }
+            }
+    if (!$ok) {
+        continue;
+    }
+    $hotels[]=$r;
+    continue;
+    }
+    if (count($p['users'])) {
+        $ok=0;
+        if (in_array($_SESSION['userdata']['id'], $p['users'])) {
+            $ok=1;
+        }
+        if (!$ok) {
+            continue;
+            }
+        $hotels[]=$r;
+            continue;
+        }
+    $hotels[]=$r;
+    }
+    return $hotels;
 }
 
 // }
@@ -400,8 +406,8 @@ function IssueTracker_projectsGet() {
 	* @return status
 	*/
 function IssueTracker_issueFileUpload() {
-	$id=(int)$_REQUEST['id'];
-	$fname=USERBASE.'/f/issue-tracker-files/'.$id.'/'.$_FILES['Filedata']['name'];
+    $id=(int)$_REQUEST['id'];
+    $fname=USERBASE.'/f/issue-tracker-files/'.$id.'/'.$_FILES['Filedata']['name'];
 	if (strpos($fname, '..')!==false) {
 		return array('message'=>'invalid file url');
 	}
@@ -419,74 +425,72 @@ function IssueTracker_issueFileUpload() {
 	*
 	* @return null
 	*/
-function IssueTracker_addVote() {
-	$id=(int)$_REQUEST['id'];
-	if (!$_SESSION['userdata']['id']) {
-		return "You must log in first";
-	}
+function IssueTracker_addVote() 
+{
+    $id=(int)$_REQUEST['id'];
+    if (!$_SESSION['userdata']['id']) {
+        return "You must log in first";
+    }
 	
-	$extras = dbOne(
-		'select extras from user_accounts where id='.$_SESSION['userdata']['id'],
-		'extras'
-	);
-	$votesLeft  = (int)json_decode($extras)->{'free-credits'};
+    $extras = dbOne(
+        'select extras from user_accounts where id='.$_SESSION['userdata']['id'],
+        'extras'
+    );
+        
+    $extras=json_decode($extras, true);
+    $votesLeft = $extras['free-credits'];
 	
-	if ($extras=='[]') {
-		$extras=array();
-		//this user hasn't been initialised
-		$extras['free-credits']=(int)dbOne(
-			'select * from site_vars where name="max-free-credits"',
-			'value'
-		);
-		$votesLeft=$extras['free-credits'];
-		$extras['paid-credits']=0;
-	}
-	
-	if ($votesLeft>=1) {
-		//substract 1 from free-credits
-		
-		$votesLeft -=1;
-		$paidCreditsLeft = json_decode($extras)->{'paid_credits'};
+    if (!array_key_exists('free-credits',$extras)) {
+        //the user hasn't been initialised
+        $extras['free-credits']=(int)dbOne(
+        'select * from site_vars where name="max-free-credits"',
+        'value'
+        );
+    $votesLeft = $extras['free-credits'];
+    }
 
-		//votesToId represents how many votes the user gave to the id issue
+    if ($votesLeft>=1) {
+    //substract 1 from free-credits
 		
-		$votesToId = json_decode($extras)->{'votesTo-'.$id};
+    $votesLeft -=1;
+    //echo "<br/>".$votesLeft."<br/>";
+    $paidCreditsLeft = json_decode($extras)->{'paid_credits'};
 
-		if (($votesToId)==null) { //this is the first time the user votes
-			$votesToId = 1;
-		}
-		else { //increase it with 1
-			$votesToId=$votesToId+1;
-		}
+    //votesToId represents how many votes the user gave to the id issue
+		
+    $votesToId = $extras['votesTo-'.$id];
 
-		$extras=json_decode($extras, true);
-		
-		$extras['free-credits']=$votesLeft;
-		$extras['paid_credits']=$paidCreditsLeft==null?0:$paidCreditsLeft;
-		$extras['votesTo-'.$id]=$votesToId;
-		dbQuery(
-			'update user_accounts set extras="'.json_encode($extras)
-			.'" where id='.$_SESSION['userdata']['id']
-		);
-		
-		//add a vote to the project
-		$meta=dbOne('select meta from issuetracker_issues where id='.$id, 'meta');
-		
-		$votes = (int)json_decode($meta)->{"credits"};
-		$votes+=1;
+    if (($votesToId)==null) { //this is the first time the user votes
+        $votesToId = 1;
+        } else { //increase it with 1
+        $votesToId=(int)$votesToId+1;
+    }			
+    $extras['free-credits'] = $votesLeft;
+    $extras['paid_credits'] = $paidCreditsLeft==null?0:$paidCreditsLeft;
+    $extras['votesTo-'.$id] = $votesToId;
+                
+    dbQuery('update user_accounts set extras=\''.json_encode($extras)
+    .'\' where id='.$_SESSION['userdata']['id']);
 
-		$paidCredits = json_decode($meta)->{"paid_credits"};
-		
-		$meta=array("credits"=>$votes, "paid_credits"=>$paidCredits);
-		dbQuery(
-			'UPDATE issuetracker_issues set meta="'.addslashes(json_encode($meta))
-			.'" WHERE id='.$id
-		);
-		return $votes;
-	}
-	else {
-		return "You don't have enough free credits";
-	}
+    //add a vote to the project
+                
+    $meta = dbOne('select meta from issuetracker_issues where id='.$id, 'meta');
+    $meta = json_decode($meta,true);
+    $meta["credits"] += 1;
+    if (array_key_exists("votesFrom-".$_SESSION['userdata']['id'],$meta)) {
+        $meta["votesFrom-".$_SESSION['userdata']['id']] += 1;
+    } else {
+    $meta["votesFrom-".$_SESSION['userdata']['id']] = 1;
+    }
+
+    dbQuery(
+        'UPDATE issuetracker_issues set meta="'.addslashes(json_encode($meta))
+        .'" WHERE id='.$id
+    );
+    return $meta['credits'];
+    } else {
+    return "You don't have enough free credits";
+    }
 }
 
 // }
@@ -497,60 +501,330 @@ function IssueTracker_addVote() {
 	*
 	* @return null
 	*/
-function IssueTracker_substractVote() {
-	$id=(int)$_REQUEST['id'];
-	if (!$_SESSION['userdata']['id']) {
-		return "You must log in first";
-	}
-	
-	$extras=dbOne(
-		'select extras from user_accounts where id='.$_SESSION['userdata']['id'],
-		'extras'
-	);
-	if ($extras==null) { //this user hasn't been initialised
-		$extras['free-credits']=dbOne(
-			'select * from site_vars where name="max-free-credits"',
-			'value'
-		);
-		$extras['paid-credits']=0;
-	}
-	$jExtras=json_decode($extras);
-	$votesLeft  = (int)$jExtras->{'free-credits'};
-	$votesToId = (int)$jExtras->{'votesTo-'.$id};
-	
-	if ($votesToId==null || $votesToId==0) {
-			//the user didn't vote here
-			return "You can't do that";
-	}
-	else {
-		// { add 1 to free-credits
-		$votesLeft+=1;
-		$paidCreditsLeft=$jExtras->{'paid_credits'};
-		$extras=json_decode($extras, true);
-		$extras['free-credits']=$votesLeft;
-		$extras['paid_credits']=$paidCreditsLeft==null?0:$paidCreditsLeft;
-		$extras['votesTo-'.$id]= $votesToId-1;
+function IssueTracker_substractVote() 
+{
+    $id=(int)$_REQUEST['id'];
+    if (!$_SESSION['userdata']['id']) {
+        return "You must log in first";
+    }
 
-		dbQuery(
-			"update user_accounts set extras='".json_encode($extras)."' where id="
-			.$_SESSION['userdata']['id']
-		);
-		// }
-		// { substract a vote from the project
-		$meta=dbOne('select meta from issuetracker_issues where id='.$id, 'meta');
-		$jMeta=json_decode($meta, true);
-		$votes=(int)$jMeta['credits'];
-		$votes-=1;
-		$paidCredits=$jMeta['paid_credits'];
-		$jMeta['credits']=$votes;
-		$jMeta['paid_credits']=$paidCredits;  
-		dbQuery(
-			'UPDATE issuetracker_issues set meta="'.addslashes(json_encode($jMeta))
-			.'" WHERE id='.$id
-		);
-		// }
-		return $votes;
-	}
+    $extras=dbOne(
+        'select extras from user_accounts where id='.$_SESSION['userdata']['id'],
+        'extras'
+    );
+    if ($extras==null) { //this user hasn't been initialised
+        $extras['free-credits']=dbOne(
+        'select * from site_vars where name="max-free-credits"',
+        'value'
+    );
+    $extras['paid-credits']=0;
+    }
+    $jExtras = json_decode($extras);
+    $votesLeft = (int)$jExtras->{'free-credits'};
+    $votesToId = (int)$jExtras->{'votesTo-'.$id};
+	
+    if ($votesToId==null || $votesToId==0) {
+        //the user didn't vote here
+        return "You can't do that";
+    }
+    else {
+        // { add 1 to free-credits
+        $votesLeft+=1;
+        $paidCreditsLeft=$jExtras->{'paid_credits'};
+        $extras=json_decode($extras, true);
+        $extras['free-credits']=$votesLeft;
+        $extras['paid_credits']=$paidCreditsLeft==null?0:$paidCreditsLeft;
+        $extras['votesTo-'.$id]= $votesToId-1;
+
+        dbQuery(
+            "update user_accounts set extras='".json_encode($extras)."' where id="
+             .$_SESSION['userdata']['id']
+        );
+        // }
+        // { substract a vote from the project
+        $meta = dbOne('select meta from issuetracker_issues where id='.$id, 'meta');
+        $jMeta = json_decode($meta, true);
+        $jMeta['credits'] = $jMeta['credits']-1;
+        $jMeta['votesFrom-'.$_SESSION['userdata']['id']] -= 1;
+        if ($jMeta['votesFrom-'.$_SESSION['userdata']['id']] == 0){
+            unset($jMeta['votesFrom-'.$_SESSION['userdata']['id']]);
+            dbQuery (
+                'UPDATE issuetracker_issues set meta="'.addslashes(json_encode($jMeta))
+                .'" WHERE id='.$id
+            );
+        }
+    // }
+    return $jMeta['credits'];
+    }
+}
+
+  /**
+   * Send HTTP POST Request
+   *
+   * @param	string	The API method name
+   * @param	string	The POST Message fields in &name=value pair format
+   * @param     string  The environment i.e live or sandbox
+   * @return	array	Parsed HTTP Response body
+
+   */
+function PPHttpPost($methodName_, $nvpStr_, $environment) 
+{
+    global $environment;
+
+    // Set up your API credentials, PayPal end point, and API version.
+    $API_UserName = urlencode('k_ounu_1352645404_biz_api1.yahoo.com');
+    $API_Password = urlencode('1352645423');
+    $API_Signature = urlencode('AWTh1QaXzqTsshBiWRQudg8pQwR8AI2SjDZAq60ymfHzw2yy4zfCkXI4 ');
+    $API_Endpoint = "https://api-3t.paypal.com/nvp";
+    if("sandbox" === $environment || "beta-sandbox" === $environment) {
+        $API_Endpoint = "https://api-3t.$environment.paypal.com/nvp";
+    }
+    $version = urlencode('51.0');
+
+    // Set the curl parameters.
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_HTTPHEADER,array('Content-type: application/x-www-form-urlencoded;charset=UTF-8'));
+    curl_setopt($ch, CURLOPT_URL, $API_Endpoint);        
+    curl_setopt($ch, CURLOPT_VERBOSE, 1);
+
+    // Turn off the server and peer verification (TrustManager Concept).
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_POST, 1);
+
+    // Set the API operation, version, and API signature in the request.
+    $nvpreq = "METHOD=$methodName_&VERSION=$version&PWD=$API_Password&USER=$API_UserName&SIGNATURE=$API_Signature$nvpStr_";
+
+    // Set the request as a POST FIELD for curl.
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $nvpreq);
+
+    // Get response from the server.
+    $httpResponse = curl_exec($ch);
+
+    if (!$httpResponse) {
+    //exit("$methodName_ failed: ".curl_error($ch).'('.curl_errno($ch).')');
+    return "$methodName_ failed: ".curl_error($ch).'('.curl_errno($ch).')';
+    }
+
+    // Extract the response details.
+    $httpResponseAr = explode("&", $httpResponse);
+
+    $httpParsedResponseAr = array();
+    foreach ($httpResponseAr as $i => $value) {
+        $tmpAr = explode("=", $value);
+        if(sizeof($tmpAr) > 1) {
+            $httpParsedResponseAr[$tmpAr[0]] = $tmpAr[1];
+        }
+    }
+
+    if((0 == sizeof($httpParsedResponseAr)) || !array_key_exists('ACK', 
+    $httpParsedResponseAr)) {
+        return "Invalid HTTP Response for POST request($nvpreq) to $API_Endpoint.";
+    }
+
+    return $httpParsedResponseAr;
 }
 
 // }
+// { IssueTracker_setPaypalAddress()
+/**
+* sets the email where the money will be deposited
+*
+* @return null
+*/
+function IssueTracker_setPaypalAddress()
+{
+    $email=$_REQUEST['email'];
+    $email_site_vars=dbOne("SELECT * FROM `site_vars` WHERE `name`='paypal_address'",'value');
+    if($email_site_vars) {
+    dbQuery('UPDATE site_vars SET `value`="'.$_REQUEST['email'].'" WHERE `name`="paypal_address"');
+    } else {
+    dbQuery('INSERT INTO `site_vars` (`name`,`value`) VALUES(
+    "paypal_address","'.$_REQUEST['email'].'")');
+    }
+}
+
+// }
+// { IssueTracker_setPaypalAddress()
+	/**
+	* returns the email where the money will be deposited
+	*
+	* @return string
+	*/
+
+function IssueTracker_getPaypalAddress()
+{
+  $email=dbOne("SELECT * FROM site_vars WHERE `name`='paypal_address'",'value');
+  return $email;
+}
+
+
+// }
+// { IssueTracker_payMoney()
+	/**
+	* pays money to address
+	*
+	* @return null
+	*/
+function IssueTracker_payMoney(){
+  $environment = 'sandbox';	// or 'beta-sandbox' or 'live'  
+
+  // Set request-specific fields.
+  
+  $paypal_address=dbOne("SELECT * FROM `site_vars` WHERE `name`='paypal_address'",'value');
+  $emailSubject =urlencode($paypal_address);
+  $receiverType = urlencode('EmailAddress');
+  $currency = urlencode('EUR'); 	// or other currency ('GBP', 'EUR', 'JPY', 'CAD', 'AUD')
+
+  // Add request-specific fields to the request string.
+  //$nvpStr="&EMAILSUBJECT=$emailSubject&RECEIVERTYPE=$receiverType&CURRENCYCODE=$currency";
+  $nvpStr="&EMAILSUBJECT=$emailSubject&RECEIVERTYPE=$receiverType&CURRENCYCODE=$currency&METHOD=MassPay";
+  
+
+  $receiversArray = array();
+
+  $receiverData = array('receiverEmail' => $_REQUEST['email'],
+			'amount' => $_REQUEST['amount'],
+			//'uniqueID' => "example_unique_id",
+			'note' => "This is a payment for completing issue number ".$_REQUEST['issue_number']);
+    
+  //foreach($receiversArray as $i => $receiverData) {
+	$receiverEmail = urlencode($receiverData['receiverEmail']);
+	$amount = urlencode($receiverData['amount']);
+	//$uniqueID = urlencode($receiverData['uniqueID']);
+	$note = urlencode($receiverData['note']);
+	$nvpStr .= "&L_EMAIL$i=$receiverEmail&L_Amt$i=$amount&L_UNIQUEID$i=$uniqueID&L_NOTE$i=$note";
+  //}
+
+  // Execute the API operation;
+  $httpParsedResponseAr = PPHttpPost('MassPay', $nvpStr);
+  if(!is_array($httpParsedResponseAr))
+    return $httpParsedResponseAr;
+
+  if("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])) {
+	return 'MassPay Completed Successfully: '.print_r($httpParsedResponseAr, true);
+  } else  {
+  	return 'MassPay failed: ' . print_r($httpParsedResponseAr, true);
+  }
+}
+// }
+
+// }
+// { IssueTracker_finishIssue()
+	/**
+	* marks the Issue as Complete
+	* and returns the votes to users
+	* @return null
+	*/
+function IssueTracker_finishIssue()
+{
+    $id = $_REQUEST['id'];
+    $meta = dbOne('SELECT * FROM issuetracker_issues WHERE id='.$id,'meta');
+
+    $meta = json_decode($meta,true);
+  
+    //we return the votes to each user
+    foreach($meta as $k=>$v) {
+        if (strpos($k, 'votesFrom-') !== false) {
+            $pieces = explode("-", $k);
+            $userId = $pieces[1];
+            //echo $userId." ";
+
+            if ($userId) {
+            $extras = dbOne("SELECT * FROM `user_accounts` WHERE `id`=".$userId,'extras');
+            $extras = json_decode($extras,true);
+            unset($extras['votesTo-'.$id]);
+            $extras['free-credits'] += $v;
+            print_r($extras);
+
+            dbQuery (
+            "UPDATE `user_accounts` SET `extras`='".json_encode($extras)
+            ."' WHERE `id`=".$userId
+            );
+            }
+        }
+    }
+
+    //mark the issue as complete
+    dbQuery("UPDATE `issuetracker_issues` set `status`=2 WHERE id=".$id);
+        
+    //unset the extras field
+    dbQuery("UPDATE `issuetracker_issues` set `meta`='".json_encode(array())."' WHERE `id`=".$id);
+}
+
+// }
+// { IssueTracker_getDepositedValue()
+/**
+* returns the amount of money that a issue has
+*
+* @return null
+*/
+function IssueTracker_depositValue()
+{
+    $id = $_REQUEST['id'];
+    $amount = $_REQUEST['amount'];
+    $from = $_SESSION['userdata']['id'];
+
+    if (!$from) {
+        return 'Please log in';
+    }
+
+    $extras = dbOne("SELECT `extras` FROM `user_accounts` WHERE `id`=".$from, 'extras');
+    $extras = json_decode($extras, true);
+
+    if((int)$extras['paid_credits'] < (int)$amount)
+        return 'You do not have enough credits for this operation';
+
+    if($amount < 0)
+        return 'Please insert a valid number';
+
+    if(!is_numeric($amount))
+        return 'Please insert a number';
+
+    $extras['paid_credits'] -= $amount;
+    dbQuery(
+        "UPDATE `user_accounts` SET `extras`='".json_encode($extras)
+        ."' WHERE `id`=".$from
+    );
+
+    $meta = dbOne("SELECT `meta` FROM `issuetracker_issues` WHERE `id`=".$id, 'meta');
+    $meta = json_decode($meta, true);
+
+    $status = dbOne("SELECT `status` FROM `issuetracker_issues` WHERE `id`=".$id,'status');
+    if($status == 2) {
+        return "This issue has 'complete' status"; 
+    } 
+  
+    if(array_key_exists('paid_credits',$meta)){
+        $meta['paid_credits'] += $amount;
+    } else {
+    $meta['paid_credits'] = $amount;
+    }
+  
+    dbQuery("UPDATE `issuetracker_issues` SET `meta`='". json_encode($meta) 
+    ."' WHERE `id`=".$id);
+    return "OK";
+}
+
+// }
+// { IssueTracker_getDepositedValue()
+/**
+* returns the amount of money that a issue has
+*
+* @return null
+*/
+function IssueTracker_getDepositedValue()
+{
+    $id = $_REQUEST['id'];
+    $amount = 0;
+
+    $meta = dbOne("SELECT `meta` FROM `issuetracker_issues` WHERE `id`=".$id, 'meta');
+    $meta = json_decode($meta, true);
+
+    if (array_key_exists('paid_credits', $meta)) {
+        $amount = $meta['paid_credits'];    
+    }
+    return $amount;
+}

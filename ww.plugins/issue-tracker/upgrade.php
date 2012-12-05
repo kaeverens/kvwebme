@@ -72,6 +72,6 @@ if ($version==7) { // add due_date
 }
 if ($version==8) { // add recurring tasks
 	dbQuery('alter table issuetracker_issues add recurring_multiplier smallint default 0');
-	dbQuery('alter table issuetracker_issues add recurring_type text');
+	dbQuery('alter table issuetracker_issues add recurring_type text');       
 	$version=9;
 }

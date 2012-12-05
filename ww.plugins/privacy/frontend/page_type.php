@@ -681,28 +681,24 @@ function Privacy_profileGet() {
 		'select groups_id from users_groups where user_accounts_id=' . $uid
 	);
 	
-	$remainingCreditsJson=dbOne(
+	$extras=dbOne(
 		'select * from user_accounts where id='.$uid.' limit 1',
 		'extras'
 	);
-	$remainingCredits = (int)json_decode($remainingCreditsJson)->{'free-credits'};
+	$extras=json_decode($extras,true);
+	$remainingCredits = $extras['free-credits'];
+	$remainingPaidCredits = $extras['paid_credits'];	
 	
-	if ($remainingCredits==0) { // the user has not been initialised	  
+	if (!array_key_exists('free-credits',$extras)) { // the user has not been initialised	  
 		$remainingCredits=dbOne(
 			'SELECT * FROM `site_vars` WHERE `name`="max-free-credits"',
 			'value'
 		);
-		$extras=dbOne(
-			'select * from user_accounts where id='.$uid.' limit 1',
-			'extras'
-		);
-		$extras=json_decode($extras, true);
 		$extras['free-credits']=$remainingCredits;
-		dbQuery(
-			'update user_accounts set extras="'.json_encode($extras).'" where id='
-			.$user['id']
-		);
+		
+		dbQuery("update user_accounts set extras='".json_encode($extras)."' where id=".$uid);              
 	}
+	
 	foreach ($group_ids as $key => $id) {
 		array_push(
 			$groups,
@@ -729,6 +725,9 @@ function Privacy_profileGet() {
 		.'<tr><th>'.__('Avatar', 'core').'</th><td><span id="avatar-wrapper"'
 		.' data-uid="'.$uid.'"></span></td></tr>'
 		.'<tr><th>'.__('RemainingCredits', 'core').'</th><td>'.$remainingCredits
+		.'</td></tr>'
+		.'<tr><th>'.__('PaidCredits','core').'</th><td>'.$remainingPaidCredits
+		.'&nbsp;<button id="buy-credits">Buy Credits</button>'
 		.'</td></tr>'
 		.'</table></div>'
 		.'<div id="address"><a id="new-address" href="javascript:add_address();"'

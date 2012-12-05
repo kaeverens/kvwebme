@@ -10,7 +10,6 @@
 	* @license  GPL 2.0
 	* @link     http://kvsites.ie/
 	*/
-
 echo '<h2>'.__('Users').'</h2>';
 echo '<a href="./siteoptions.php?page=users">'.__('List Users').'</a>'
 	.' | <a href="./siteoptions.php?page=users&amp;tab=options">'

@@ -39,7 +39,7 @@ $plugin=array(
 	* @return string HTML of the admin form
 	*/
 function IssueTracker_admin($page, $page_vars) {
-	require SCRIPTBASE.'ww.plugins/issue-tracker/admin/page_type.php';
+        require SCRIPTBASE.'ww.plugins/issue-tracker/admin/page_type.php';
 	return $html;
 }
 
