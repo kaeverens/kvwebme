@@ -4,6 +4,7 @@
 // layouts/types
 // @author Conor Mac Aoidh <conormacaoidh@gmail.com>
 var Gallery={
+	tagPlugins:[],
 	options:{ // default options for the gallery
 		display:'list',	// list, grid or custom
 		items:6,	// columns, rows

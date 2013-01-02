@@ -79,14 +79,17 @@ function ImageGallery_galleryGet() {
 						'height'=>$meta['height'],
 						'url'=>'/a/f=getImg/'.$dir.'/'.$meta['name']
 					);
-					if (@$meta['author']) {
+					if (isset($meta['author'])) {
 						$arr['author']=$meta['author'];
 					}
-					if (@$meta['caption']) {
+					if (isset($meta['caption'])) {
 						$arr['caption']=$meta['caption'];
 					}
-					if (@$meta['description']) {
+					if (isset($meta['description'])) {
 						$arr['description']=$meta['description'];
+					}
+					if (isset($meta['tags'])) {
+						$arr['tags']=$meta['tags'];
 					}
 					$f[]=$arr;
 				break; // }
@@ -146,6 +149,32 @@ function ImageGallery_img() {
 		.'imagegallery-'.$r['gallery_id'].'/'.$meta->name;
 	header('Location: '.$url);
 	Core_quit();
+}
+
+// }
+// { ImageGallery_tagsUpdate
+
+/**
+	* update the tags on an image
+	*
+	* @return status
+	*/
+function ImageGallery_tagsUpdate() {
+	$id=(int)$_REQUEST['id'];
+	$tags=$_REQUEST['tags'];
+	$meta=dbOne('select meta from image_gallery where id='.$id, 'meta');
+	if ($meta) {
+		$meta=json_decode($meta, true);
+	}
+	else {
+		$meta=array();
+	}
+	$meta['tags']=$tags;
+	dbQuery(
+		'update image_gallery set meta="'.addslashes(json_encode($meta)).'"'
+		.' where id='.$id
+	);
+	return array('ok'=>1);
 }
 
 // }

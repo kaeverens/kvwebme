@@ -136,3 +136,19 @@
 #image-gallery-nav #next-link,#image-gallery-nav #prev-link{
 	position:static!important;
 }
+.ad-image .tag{
+	position:absolute;
+	display:block;
+	width:100px;
+	height:100px;
+}
+.ad-image:hover .tag{
+	border:1px solid #666;
+	border:1px solid rgba(0,0,0,.1);
+	cursor:pointer;
+}
+.ad-image .tag:hover{
+	border:1px solid #333;
+	border:1px solid rgba(0,0,0,.3);
+	cursor:pointer;
+}

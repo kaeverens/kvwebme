@@ -81,7 +81,13 @@ function ImageGallery_show($PAGEDATA) {
 		$c.=$smarty->fetch(
 			USERBASE.'/ww.cache/image-gallery/'.$PAGEDATA->id
 		);
-		WW_addScript('image-gallery/frontend/gallery4.js');
+		if (Core_isAdmin()) {
+			WW_addScript('/j/jquery.ui.selectmenu/jquery.ui.selectmenu.js');
+			WW_addCSS('/j/jquery.ui.selectmenu/jquery.ui.selectmenu.css');
+			WW_addScript('/j/jquery.contextMenu/jquery.contextMenu.js');
+			WW_addCSS('/j/jquery.contextMenu/jquery.contextMenu.css');
+		}
+		WW_addScript('image-gallery/frontend/gallery.js');
 		WW_addCSS('/ww.plugins/image-gallery/frontend/gallery.css');
 		// }
 		return $c.$vars['footer'];
