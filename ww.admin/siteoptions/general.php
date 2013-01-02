@@ -36,6 +36,16 @@ if ($action=='Save') {
 	else {
 		unset($DBVARS['canonical_name']);
 	}
+	if (@$_REQUEST['cdn']) {
+		$DBVARS['cdn']=preg_replace(
+			'/^https?:\/\/([^\/]*)/',
+			'\1',
+			$_REQUEST['cdn']
+		);
+	}
+	else {
+		unset($DBVARS['cdn']);
+	}
 	$DBVARS['site_subtitle']=$_REQUEST['site_subtitle'];
 	$DBVARS['site_thousands_sep']=$_REQUEST['site_thousands_sep'];
 	$DBVARS['site_dec_point']=$_REQUEST['site_dec_point'];
@@ -233,6 +243,14 @@ echo '<tr><th>'.__('Number Format').'</th><td>'
 	.' value="'.htmlspecialchars($DBVARS['site_dec_point']).'"'
 	.' style="width:10px;height:1em;text-align:center" />'
 	.'99</td></tr>';
+// }
+// { CDN
+echo '<tr><th>'.__('Content Delivery Network').'</th>';
+echo '<td><input type="text" name="cdn"';
+if (isset($DBVARS['cdn'])) {
+	echo ' value="'.$DBVARS['cdn'].'"';
+}
+echo ' /></td></tr>';
 // }
 echo '</table><input type="hidden" name="action" value="Save"/>'
 	.'<input type="submit" value="'.__('Save').'" /></form>';

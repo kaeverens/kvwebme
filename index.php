@@ -386,11 +386,18 @@ if (strpos($template, '/')===false) {
 	$template=THEME_DIR.'/'.THEME.'/h/'.$template.'.html';
 }
 $t=$smarty->fetch($template);
-echo str_replace(
+$t=str_replace(
 	array('WW_SCRIPTS_GO_HERE', 'WW_CSS_GOES_HERE', '</body>'),
 	array(WW_getScripts(), WW_getCSS(), WW_getInlineScripts().'</body>'),
 	$t
 );
+if (isset($DBVARS['cdn'])) {
+	$t=str_replace('href="/f/', 'href="//'.$DBVARS['cdn'].'/f/', $t);
+	$t=str_replace('src="/f/', 'src="//'.$DBVARS['cdn'].'/f/', $t);
+	$t=str_replace('src="/js/', 'src="//'.$DBVARS['cdn'].'/js/', $t);
+}
+
+echo $t;
 
 Core_flushBuffer('page', 'Content-type: text/html; Charset=utf-8');
 // }
