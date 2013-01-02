@@ -127,7 +127,7 @@ if (!function_exists('Core_autoload')) {
 	  * @return null
 	  */
 	function Core_autoload($name) {
-		@include $name . '.php';
+		@include $name.'.php';
 	}
 	spl_autoload_register('Core_autoload');
 }
@@ -609,7 +609,11 @@ function Core_trigger($trigger_name, $params = null) {
 	$c='';
 	foreach ($PLUGIN_TRIGGERS[$trigger_name] as $fn) {
 		if ($params == null) {
-			$c.=$fn($PAGEDATA);
+			$res=$fn($PAGEDATA);
+			if (is_array($res)) {
+				return $res;
+			}
+			$c.=$res;
 		}
 		else {
 			if (is_array($params)) {

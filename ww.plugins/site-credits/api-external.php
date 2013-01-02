@@ -1,4 +1,16 @@
 <?php
+/**
+	* site credits api
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 require_once dirname(__FILE__).'/libs.php';
 
@@ -15,12 +27,24 @@ if ($_REQUEST['time']<time()-3600) {
 	Core_quit('{"error":"\'time\' parameter too old"}');
 }
 
+// { SiteCredits_apiVerify
+
+/**
+	* verify an api
+	*
+	* @param array  $vars params
+	* @param string $sha1 key
+	*
+	* @return hash
+	*/
 function SiteCredits_apiVerify($vars, $sha1) {
 	ksort($vars);
 	$vars['time']=(int)$vars['time'];
 	$json=json_encode($vars);
 	return sha1($json.'|'.$GLOBALS['DBVARS']['sitecredits-apikey']) == $sha1;
 }
+
+// }
 
 switch ($_REQUEST['action']) {
 	case 'add-credits': // {
@@ -116,7 +140,9 @@ switch ($_REQUEST['action']) {
 				$email.="\n\nYour new total is $cur_total credits.";
 				$subject=' credits updated';
 				if ($cur_total<0) {
-					$email.="\n\nYOUR SITE HAS BEEN DISABLED BECAUSE YOUR CREDITS ARE BELOW 0.\n\nYour credits are below 0. You must bring your credits back to 0 or higher.";
+					$email.="\n\nYOUR SITE HAS BEEN DISABLED BECAUSE YOUR CREDITS"
+						." ARE BELOW 0.\n\nYour credits are below 0. You must bring"
+						." your credits back to 0 or higher.";
 					$subject=' SITE DISABLED.'.$subject;
 				}
 				$email.="\n\nPlease note that this is an automated email.\n\nThank you\n"
@@ -126,7 +152,8 @@ switch ($_REQUEST['action']) {
 						$admin['email'],
 						'['.$domain.'] credits updated',
 						str_replace('%ADMIN%', $admin['name'], $email),
-						"Bcc: kae.verens@gmail.com\r\nFrom: no-reply@$domain\r\nReply-To: no-reply@$domain"
+						"Bcc: kae.verens@gmail.com\r\nFrom: no-reply@$domain\r\n"
+						."Reply-To: no-reply@$domain"
 					);
 				}
 				$GLOBALS['DBVARS']['sitecredits-credits']=$cur_total;

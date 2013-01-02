@@ -152,6 +152,9 @@ function Forum_delete() {
 	$post=dbRow(
 		'select author_id,thread_id from forums_posts where id='.$post_id
 	);
+	if (!$post) {
+		return array('error'=>'post does not exist');
+	}
 	if (!Core_isAdmin()
 		&& $post['author_id'] != $_SESSION['userdata']['id']
 	) {

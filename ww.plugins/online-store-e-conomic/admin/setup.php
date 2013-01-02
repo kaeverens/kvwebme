@@ -52,7 +52,7 @@ echo '<form method="post" action="'.$_url.'" id="e-conomic-setup"><table>'
 	.__('No').'</option><option value="1"'
 	.($book_immediately?' selected="selected"':'').'>'.__('Yes')
 	.'</option></select></td></tr>';
-if ($DBVARS['economic_enabled']) {
+if (isset($DBVARS['economic_enabled']) && $DBVARS['economic_enabled']) {
 	try{
 		$OSE=new OnlineStoreEconomics(
 			$DBVARS['economic_agreement_no'],

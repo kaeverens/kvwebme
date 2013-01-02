@@ -1593,18 +1593,23 @@ function Core_adminPluginsGetAvailable() {
 	* @return array of plugins
 	*/
 function Core_adminPluginsGetInstalled() {
-	global $PLUGINS;
-	$installed = array();
-	foreach ($PLUGINS as $name => $plugin) {
-		// exclude hidden plugins
+	$installed=array();
+	foreach ($GLOBALS['PLUGINS'] as $name=>$plugin) {
+		// { exclude hidden plugins
 		if (isset($plugin[ 'hide_from_admin' ]) && $plugin['hide_from_admin']) {
 			continue;
 		}
-		$installed[ $name ] = array(
-			'name' => is_string($plugin['name'])?$plugin['name']:$plugin['name'](),
+		// }
+		$installed[$name] = array(
+			'name'=>is_string($plugin['name'])
+				?$plugin['name']
+				:$plugin['name'](),
 			'description'=>is_string($plugin['description'])
-				?$plugin['description']:$plugin['description'](),
-			'version' => ( @$plugin[ 'version' ] == 0 ) ? '0' : $plugin[ 'version' ]
+				?$plugin['description']
+				:$plugin['description'](),
+			'version' => !isset($plugin['version'])
+				?'0'
+				:$plugin['version']
 		);
 	}
 	return $installed;

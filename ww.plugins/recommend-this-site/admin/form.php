@@ -13,7 +13,7 @@
  */
 
 // { tabs nav
-$c.= '<div class="tabs">'
+$c= '<div class="tabs">'
 	.'<ul>'
 	.'<li><a href="#f-header">Header</a></li>'
 	.'<li><a href="#footer">Footer</a></li>'
@@ -33,8 +33,7 @@ $c.='<div id="footer"><p>Text to appear below the form.</p>';
 $c.=ckeditor(
 	'page_vars[footer]',
 	(isset($vars['footer'])?$vars['footer']:''),
-	0,
-	$cssurl
+	0
 );
 $c.='</div>';
 // }

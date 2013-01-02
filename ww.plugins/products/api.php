@@ -72,6 +72,14 @@ function Products_categoriesOptionsGet() {
 	*/
 function Products_categoriesGetFull() {
 	$pid=(int)$_REQUEST['pid'];
+	/**
+		* getFull
+		*
+		* @param int    $pid    parent ID
+		* @param string $prefix prefix
+		*
+		* @return array
+		*/
 	function getFull($pid, $prefix='') {
 		$rs=dbAll('select name,id from products_categories where parent_id='.$pid);
 		$cats=array();
@@ -184,6 +192,8 @@ function Products_getImgs() {
 	* utility function to return an array of common product details
 	*
 	* @param object $p product
+	*
+	* @return array
 	*/
 function Products_getProductMainDetails($p) {
 	$parr=array(
@@ -314,6 +324,8 @@ function Products_getProduct() {
 
 /**
 	* return a list of products by relation
+	*
+	* @return array
 	*/
 function Products_getRelatedProducts() {
 	$pid=(int)$_REQUEST['id'];

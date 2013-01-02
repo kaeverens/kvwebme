@@ -37,36 +37,33 @@
 		$.get(
 			config.rpc+'?action=listFiles&directory='+$el.data('directory'),
 			function(ret){
-				var $wrapper=$(
-					'<ul class="saorfm-menu"></ul>'
-				);
-				var $parent=$el.is('.saorfm-button')
-					?$($el.data('input'))
-					:$el;
+				var $li;
+				var $wrapper=$('<ul class="saorfm-menu"></ul>');
+				var $parent=$el.is('.saorfm-button')?$($el.data('input')):$el;
 				var offset=$parent.offset();
 				// { check is this a top-level menu
 				if ($el.is('.saorfm-button')) {
 					$wrapper[0].id='saorfm-menu-wrapper-'+(saorfm_id++);
 					$wrapper
 						.css({
-							"top":  offset.top+$parent.outerHeight(),
-							"left": offset.left
-						})
+							'top':offset.top+$parent.outerHeight(),
+							'left':offset.left
+						});
 					if (config.download || config['delete']) {
 						var fname=$(el).prev().val();
 						if (fname && /^\/.*[^\/]$/.test(fname)) {
 							if (config.download) {
 								$(
-									'<li class="saorfm-clickable" id="'
-									+$wrapper[0].id+'-download'
-									+'">download file</li>'
+									'<li class="saorfm-clickable" id="'+
+									$wrapper[0].id+'-download'+
+									'">download file</li>'
 								)
 									.click(function(){
 										stopClearAll();
 										$(
-											'<iframe src="'+config.rpc+'?action=get&file='+fname
-											+'&forcedownload" '
-											+'style="border:0;width:0;height:0;"></iframe>'
+											'<iframe src="'+config.rpc+'?action=get&file='+fname+
+											'&forcedownload" '+
+											'style="border:0;width:0;height:0;"></iframe>'
 										)
 											.insertAfter(this);
 									})
@@ -74,9 +71,9 @@
 							}
 							if (config['delete']) {
 								$(
-									'<li class="saorfm-clickable" id="'
-									+$wrapper[0].id+'-delete'
-									+'">delete file</li>'
+									'<li class="saorfm-clickable" id="'+
+									$wrapper[0].id+'-delete'+
+									'">delete file</li>'
 								)
 									.click(function(){
 										stopClearAll();
@@ -92,9 +89,9 @@
 												}
 												else {
 													$(
-														'<div id="saorfm-error"><h2>Error</h2>'
-														+'<p>'+result.error+'</p></div>'
-													).dialog({"modal":true});
+														'<div id="saorfm-error"><h2>Error</h2>'+
+														'<p>'+result.error+'</p></div>'
+													).dialog({'modal':true});
 												}
 											},
 											'json'
@@ -111,9 +108,9 @@
 					$wrapper[0].id=$parent[0].id+'-menu';
 					$wrapper
 						.css({
-							"top":  offset.top,
-							"left": offset.left+$parent.outerWidth()
-						})
+							'top':offset.top,
+							'left':offset.left+$parent.outerWidth()
+						});
 				}
 				// }
 				// { if no files or directories, show "Empty"
@@ -122,25 +119,26 @@
 				}
 				// }
 				// { else show list of files and directories
+				var menuClick=function() {
+					menuToggle(this, config);
+				};
 				for(var i=0;i<ret.length;++i){
 					var f=ret[i];
 					if (f.d) { // this is a directory
-						var $li=$('<li class="saorfm-directory">')
+						$li=$('<li class="saorfm-directory">')
 							.text(f.n)
 							.data('directory',$el.data('directory')+f.n+'/')
 							.data('input',$el.data('input'))
-							.click(function(){
-								menuToggle(this,config);
-							})
+							.click(menuClick)
 							.append(
-								'<span class="ui-icon ui-icon-triangle-1-e '
-								+'saorfm-directory-icon">&nbsp;</span>'
+								'<span class="ui-icon ui-icon-triangle-1-e '+
+								'saorfm-directory-icon">&nbsp;</span>'
 							)
 							.attr('id',$wrapper[0].id+'-'+i)
 							.appendTo($wrapper);
 					}
 					else { // it's a file
-						var $li=$('<li class="saorfm-file">')
+						$li=$('<li class="saorfm-file">')
 							.text(f.n)
 							.appendTo($wrapper);
 						if (config.select&1) {
@@ -161,23 +159,23 @@
 				// }
 				// { add file uploader if applicable
 				if (config.upload) {
-					var $li=$(
-						'<li class="saorfm-clickable" id="'
-						+$wrapper[0].id+'-upload'
-						+'"><form style="position:relative;overflow:hidden;padding:0;'
-						+'margin:0" target="saorfm-iframe-'+saorfm_iframes
-						+'" enctype="multipart/form-data" method="post" '
-						+'action="'+config.rpc+'">'
-						+'<input name="action" type="hidden" value="upload" />'
-						+'<input name="directory" type="hidden" value="'
-						+$el.data('directory')+'" />'
-						+'upload file</form>'
-						+'<iframe style="display:none" name="saorfm-iframe-'
-						+(saorfm_iframes++)+'" /></li>'
-					)
+					$li=$(
+						'<li class="saorfm-clickable" id="'+
+						$wrapper[0].id+'-upload'+
+						'"><form style="position:relative;overflow:hidden;padding:0;'+
+						'margin:0" target="saorfm-iframe-'+saorfm_iframes+
+						'" enctype="multipart/form-data" method="post" '+
+						'action="'+config.rpc+'">'+
+						'<input name="action" type="hidden" value="upload" />'+
+						'<input name="directory" type="hidden" value="'+
+						$el.data('directory')+'" />'+
+						'upload file</form>'+
+						'<iframe style="display:none" name="saorfm-iframe-'+
+						(saorfm_iframes++)+'" /></li>'
+					);
 					$(
-						'<input type="file" style="position:absolute;left:0;'
-						+'top:0;right:0;bottom:0;opacity:0;" name="file" value="" />'
+						'<input type="file" style="position:absolute;left:0;'+
+						'top:0;right:0;bottom:0;opacity:0;" name="file" value="" />'
 					)
 						.click(function() {
 							stopClearAll();
@@ -204,9 +202,8 @@
 				// { add directory selector if applicable
 				if (config.select&2) {
 					$(
-						'<li class="saorfm-clickable" id="'
-						+$wrapper[0].id+'-dirselect'
-						+'">select directory</li>'
+						'<li class="saorfm-clickable" id="'+$wrapper[0].id+'-dirselect'+
+						'">select directory</li>'
 					)
 						.click(function(){
 							stopClearAll();
@@ -250,13 +247,13 @@
 		this.each(function() {
 			if (!config.rpc) {
 				return $(
-					'<div id="saorfm-error"><h2>no path to the SaorFM RPC url.</h2>'
-					+'<p>please add an "rpc" parameter.</p></div>'
-				).dialog({"modal":true});
+					'<div id="saorfm-error"><h2>no path to the SaorFM RPC url.</h2>'+
+					'<p>please add an "rpc" parameter.</p></div>'
+				).dialog({'modal':true});
 			}
 			var $this=$(this);
-			var width=$this.outerWidth(), height=$this.outerHeight();
-			var $wrapper=$this
+			var height=$this.outerHeight();
+			$this
 				.wrap('<div class="saorfm"></div>')
 				.css({
 					'height':height+'px'
@@ -265,11 +262,8 @@
 			$wrapper.css({
 				'height':height+'px'
 			});
-			var button=$(
-					'<button class="saorfm-button">'
-					+'<span class="ui-icon ui-icon-triangle-1-s">&nbsp;</span>'
-					+'</button>'
-				)
+			$('<button class="saorfm-button">'+
+				'<span class="ui-icon ui-icon-triangle-1-s">&nbsp;</span></button>')
 				.css({
 					'height':(height+2)+'px'
 				})

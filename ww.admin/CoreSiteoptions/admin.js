@@ -1,4 +1,5 @@
-/*global __,google,CodeMirror,htmlspecialchars,Core_menuShow,Core_prompt*/
+/*global __,google,CodeMirror,htmlspecialchars,Core_menuShow,Core_prompt */
+/*global Core_alert */
 function CoreSiteoptions_screen(page) {
 	window['CoreSiteoptions_screen'+page]();
 }
@@ -366,7 +367,7 @@ function CoreSiteoptions_screenLanguages() {
 					'onUploadSuccess':function(file, data){
 						var ret=eval('('+data+')');
 						if (ret.error) {
-							return alert(ret.error);
+							return Core_alert(ret.error);
 						}
 						updateVisibleTranslations();
 						$dialog.remove();
@@ -474,7 +475,7 @@ function CoreSiteoptions_screenLocations() {
 				'/a/f=adminLocationDelete/id='+id,
 				function(ret) {
 					if (ret.error) {
-						return alert(ret.error);
+						return Core_alert(ret.error);
 					}
 					CoreSiteoptions_screenLocations();
 				}
@@ -687,7 +688,7 @@ function CoreSiteoptions_screenMenus() {
 						}
 						$.post('/a/f=adminMenuSetMineAsDefault', function() {
 							// TODO: translation needed
-							return alert('Saved');
+							return Core_alert('Saved');
 						});
 					}),
 				$('<li><a href="#">'+__('Reset my menu to the default admin menu.')+'</a></li>')
@@ -702,7 +703,7 @@ function CoreSiteoptions_screenMenus() {
 						$.post('/a/f=adminMenuClearMine', function() {
 							CoreSiteoptions_screenMenus();
 							// TODO: translation needed
-							return alert('Saved');
+							return Core_alert('Saved');
 						});
 					}),
 				$('<li><a href="#">'+__('Reset all admin menus to the default admin menu.')+'</a></li>')
@@ -717,7 +718,7 @@ function CoreSiteoptions_screenMenus() {
 						$.post('/a/f=adminMenuClearAllAdmins', function() {
 							CoreSiteoptions_screenMenus();
 							// TODO: translation needed
-							return alert('Saved');
+							return Core_alert('Saved');
 						});
 					}),
 				$('<li><a href="#">'+__('Reset all admin menus to "factory default"')+'</a></li>')
@@ -732,7 +733,7 @@ function CoreSiteoptions_screenMenus() {
 						$.post('/a/f=adminMenuClearAll', function() {
 							CoreSiteoptions_screenMenus();
 							// TODO: translation needed
-							return alert('Saved');
+							return Core_alert('Saved');
 						});
 					})
 			);
@@ -967,8 +968,9 @@ function CoreSiteoptions_screenEmails() {
 							return false;
 						}
 						if (name.replace(/[^a-zA-Z0-9]/g, '')!=name) {
-							alert('Invalid name. Please use only letters and numbers.');
-							return false;
+							return Core_alert(
+								'Invalid name. Please use only letters and numbers.'
+							);
 						}
 						return true;
 					},
@@ -978,7 +980,7 @@ function CoreSiteoptions_screenEmails() {
 							'body': ''
 						}, function(ret) {
 							if (ret.error) {
-								return alert(ret.error);
+								return Core_alert(ret.error);
 							}
 							$('<option value="'+name+'">'+name+'</option>')
 								.insertAfter('#email-templates-list option:first-child');
@@ -1032,7 +1034,7 @@ function CoreSiteoptions_screenEmails() {
 				'body': body
 			}, function() {
 				// TODO: translation needed
-				alert('Saved');
+				Core_alert('Saved');
 			});
 		});
 		$('#email-templates-download').click(function() {

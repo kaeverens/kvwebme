@@ -42,23 +42,26 @@ else {
 			}
 			// create ad
 			$data=dbRow('select * from ads_purchase_orders where id='.$id);
-			dbQuery('insert into ads set name="ad",customer_id='.$data['user_id']
+			dbQuery(
+				'insert into ads set name="ad",customer_id='.$data['user_id']
 				.',target_url="'.addslashes($data['target_url']).'",cdate=now()'
 				.',target_type="'.addslashes($data['target_type']).'"'
 				.',is_active=1,type_id='.$data['type_id']
-				.',date_expire=date_add(now(), interval '.$data['days'].' day)');
+				.',date_expire=date_add(now(), interval '.$data['days'].' day)'
+			);
 			$ad_id=dbLastInsertId();
 			// { poster 
 			$url=false;
 			$dirname=USERBASE.'/f/userfiles/'.$data['user_id'].'/ads-upload-poster';
 			if (file_exists($dirname)) {
-			$dir=new DirectoryIterator($dirname);
-			foreach ($dir as $file) {
-				if ($file->isDot()) {
-					continue;
+				$dir=new DirectoryIterator($dirname);
+				foreach ($dir as $file) {
+					if ($file->isDot()) {
+						continue;
+					}
+					$url='userfiles/'.$data['user_id'].'/ads-upload-poster/'
+						.$file->getFilename();
 				}
-				$url='userfiles/'.$data['user_id'].'/ads-upload-poster/'.$file->getFilename();
-			}
 			}
 			$newName='/f/userfiles/'.$data['user_id'].'/ad-poster-'.$ad_id.'.'
 				.preg_replace('/.*\./', '', $url);

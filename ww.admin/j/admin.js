@@ -218,6 +218,20 @@ function Core_prompt(text, val, validator, callback) {
 	var $inp=$prompt.find('input');
 	$inp.val(val);
 }
+function Core_alert(text) {
+	var $alert=$('<div>'+htmlspecialchars(text)+'</div>').dialog({
+		'modal':true,
+		'close':function() {
+			$alert.remove();
+		},
+		'buttons':{
+			'OK':function() {
+				$alert.remove();
+			}
+		}
+	});
+	return false;
+}
 function Core_saveAdminVars(name, val) {
 	adminVars[name]=val;
 	$.post('/a/f=adminAdminVarsSave', {

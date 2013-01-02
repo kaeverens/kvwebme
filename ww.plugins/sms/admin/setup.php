@@ -1,7 +1,21 @@
 <?php
-if(!Core_isAdmin())Core_quit();
+/**
+	* sms admin setup
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
 
-if(isset($_REQUEST['account']) && $_REQUEST['account']=='new'){
+if (!Core_isAdmin()) {
+	Core_quit();
+}
+
+if (isset($_REQUEST['account']) && $_REQUEST['account']=='new') {
 	echo '<table id="sms_account_setup">'
 		.'<tr><th>Admin\'s email address</th><td><input id="sms_email" /></td></tr>'
 		.'<tr><th>Preferred Password</th><td><input id="sms_password" /></td></tr>'

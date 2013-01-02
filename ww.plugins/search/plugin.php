@@ -1,4 +1,16 @@
 <?php
+/**
+	* search
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
 $plugin=array(
 	'name' => 'Search',
 	'admin' => array(
@@ -8,12 +20,23 @@ $plugin=array(
 	),
 	'description' => 'Add a search box to a panel.',
 	'frontend' => array(
-		'widget' => 'search_displayInputBox'
+		'widget' => 'Search_displayInputBox'
 	),
 	'version'=>0
 );
 
-function search_displayInputBox($vars) {
+// { Search_displayInputBox
+
+/**
+	* Search_displayInputBox
+	*
+	* @param array $vars variables
+	*
+	* @return html
+	*/
+function Search_displayInputBox($vars) {
 	require SCRIPTBASE.'ww.plugins/search/frontend/widget.php';
 	return $html;
 }
+
+// }

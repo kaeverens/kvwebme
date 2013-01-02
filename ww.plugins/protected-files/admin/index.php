@@ -1,11 +1,33 @@
 <?php
-function get_subdirs($base, $dir) {
+/**
+	* protected files admin
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@kvsites.ie>
+	* @license  GPL 2.0
+	* @link     http://kvsites.ie/
+	*/
+
+// { ProtectedFiles_getSubdirs
+
+/**
+	* ProtectedFiles_getSubdirs
+	*
+	* @param string $base base directory
+	* @param string $dir  directory
+	*
+	* @return array
+	*/
+function ProtectedFiles_getSubdirs($base, $dir) {
 	$arr=array();
 	$D=new DirectoryIterator($base.$dir);
 	$ds=array();
 	foreach ($D as $dname) {
-		$d=$dname.'';
-		if ($d{0}=='.') {
+		$d=$dname->getFilename();
+		if ($dname->isDot()) {
 			continue;
 		}
 		if (!is_dir($base.$dir.'/'.$d)) {
@@ -16,10 +38,13 @@ function get_subdirs($base, $dir) {
 	asort($ds);
 	foreach ($ds as $d) {
 		$arr[]=$dir.'/'.$d;
-		$arr=array_merge($arr, get_subdirs($base, $dir.'/'.$d));
+		$arr=array_merge($arr, ProtectedFiles_getSubdirs($base, $dir.'/'.$d));
 	}
 	return $arr;
 }
+
+// }
+
 $id=(int)@$_REQUEST['id'];
 if (isset($_REQUEST['action'])) {
 	if ($_REQUEST['action']=='Save Protected Files') {
