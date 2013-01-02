@@ -392,9 +392,21 @@ $t=str_replace(
 	$t
 );
 if (isset($DBVARS['cdn'])) {
-	$t=str_replace('href="/f/', 'href="//'.$DBVARS['cdn'].'/f/', $t);
-	$t=str_replace('src="/f/', 'src="//'.$DBVARS['cdn'].'/f/', $t);
-	$t=str_replace('src="/js/', 'src="//'.$DBVARS['cdn'].'/js/', $t);
+	$t=str_replace(
+		array(
+			'href="/f/', 'src="/f/', 'src="/js/', 'href="/ww.skins/',
+			'url(/f/', 'src="/a/f=getImg/'
+		),
+		array(
+			'href="//'.$DBVARS['cdn'].'/f/',
+			'src="//'.$DBVARS['cdn'].'/f/',
+			'src="//'.$DBVARS['cdn'].'/js/',
+			'href="//'.$DBVARS['cdn'].'/ww.skins/',
+			'url(//'.$DBVARS['cdn'].'/f/',
+			'src="//'.$DBVARS['cdn'].'/a/f=getImg/'
+		),
+		$t
+	);
 }
 
 echo $t;
