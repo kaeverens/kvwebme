@@ -25,9 +25,9 @@ $(function() {
 		window._am=_am;
 	}
 	function initialise(p){
-		var a=window._am.menus[p];
 		var _am=window._am;
-		if (a) {
+		if (_am.menus[p]) {
+			var a=_am.menus[p];
 			var e=document.getElementById('ajaxmenu'+p), i;
 			if (!e) {
 				return;
@@ -294,7 +294,7 @@ $(function() {
 		return openSubMenus(window.pagedata.id);
 	};
 	window.menu_cache=[];
-	initialise(_am.topMenu);
 	window._am=_am;
 	window.m=m;
+	initialise(_am.topMenu);
 });
