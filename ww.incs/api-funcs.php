@@ -300,6 +300,9 @@ function Core_languagesGet() {
 	$names=Core_cacheLoad('languages', 'languagenames', -1);
 	if ($names===-1) {
 		$names=dbAll($sql);
+		if (!is_array($names)) {
+			$names=array();
+		}
 		Core_cacheSave('languages', 'languagenames', $names);
 	}
 	return $names;
@@ -761,6 +764,9 @@ function Core_translationsGet() {
 			$rs=Core_cacheLoad('languages', $md5, -1);
 			if ($rs===-1) {
 				$rs=dbAll($sql);
+				if (!is_array($rs)) {
+					$rs=array();
+				}
 				Core_cacheSave('languages', $md5, $rs);
 			}
 			foreach ($rs as $r) {

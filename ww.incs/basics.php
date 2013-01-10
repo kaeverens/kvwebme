@@ -370,8 +370,10 @@ function Core_mail(
 	if (!file_exists($dirname.'/'.$template.'.tpl')) {
 		$rs=dbAll('select * from email_templates');
 		@mkdir($dirname);
-		foreach ($rs as $r) {
-			file_put_contents($dirname.'/'.$r['name'].'.tpl', $r['body']);
+		if (is_array($rs)) {
+			foreach ($rs as $r) {
+				file_put_contents($dirname.'/'.$r['name'].'.tpl', $r['body']);
+			}
 		}
 	}
 	require_once SCRIPTBASE . '/ww.incs/Smarty-3.1.12/libs/Smarty.class.php';

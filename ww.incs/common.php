@@ -22,7 +22,7 @@ require_once dirname(__FILE__).'/basics.php';
 	*/
 function Core_getJQueryScripts() {
 	global $DBVARS;
-	$jquery_versions=array('1.8.2', '1.9.0');
+	$jquery_versions=array('1.8.3', '1.9.2');
 	if (@$DBVARS['offline']) {
 		require SCRIPTBASE.'/ww.incs/get-offline-files.php';
 		$jurls=Core_getOfflineJQueryScripts($jquery_versions);

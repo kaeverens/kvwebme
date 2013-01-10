@@ -196,9 +196,8 @@ foreach ($groups as $group) {
 }
 echo '</table></div>';
 // }
-echo '</div>'
-// TODO: translation needed
-	.'<input type="submit" name="action" value="Save" /></form>';
+echo '</div>';
+echo '<input type="submit" name="action" value="Save" /></form>';
 WW_addScript('online-store/admin/site-options.js');
 WW_addInlineScript('window.os_currencies='.$os_currencies.';');
 WW_addCSS('/ww.plugins/online-store/admin/site-options.css');

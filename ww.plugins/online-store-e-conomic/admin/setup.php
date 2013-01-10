@@ -18,9 +18,12 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	$DBVARS['economic_enabled']=$_REQUEST['enabled'];
 	$DBVARS['economic_book_immediately']=$_REQUEST['book-immediately'];
 	if ($DBVARS['economic_enabled']) {
-		$DBVARS['economic_cashbook']=$_REQUEST['cashbook'];
-		$DBVARS['economic_debtorgroup']=$_REQUEST['debtorgroup'];
-		$DBVARS['economic_productgroup']=$_REQUEST['productgroup'];
+		$DBVARS['economic_cashbook']=isset($_REQUEST['cashbook'])
+			?$_REQUEST['cashbook']:'';
+		$DBVARS['economic_debtorgroup']=isset($_REQUEST['debtorgroup'])
+			?$_REQUEST['debtorgroup']:'';
+		$DBVARS['economic_productgroup']=isset($_REQUEST['productgroup'])
+			?$_REQUEST['productgroup']:'';
 	}
 	Core_configRewrite();
 }

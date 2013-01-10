@@ -23,9 +23,9 @@ $(function(){
 	os_setSortable();
 	$('.accordion')
 		.accordion({
-			'autoHeight':false,
+			'active':true,
 			'collapsible':true,
-			'active':true
+			'heightStyle':'content'
 		});
 });
 function os_addCurrency(){

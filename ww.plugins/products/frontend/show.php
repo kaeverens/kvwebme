@@ -919,11 +919,13 @@ class Products{
 				$values=dbAll($sql);
 				if (substr($order_by, 0, 1)==='_') {
 					$tmpprods=array();
-					foreach ($values as $v) {
-						$tmpprods[]=$v['id'];
-					}
-					if ($order_dir==2) {
-						shuffle($tmpprods);
+					if (is_array($values)) {
+						foreach ($values as $v) {
+							$tmpprods[]=$v['id'];
+						}
+						if ($order_dir==2) {
+							shuffle($tmpprods);
+						}
 					}
 				}
 				else {

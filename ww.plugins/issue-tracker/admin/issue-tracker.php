@@ -1,76 +1,86 @@
 <?php
+/**
+	* current page URL
+	*
+	* @return returns the current page URL
+	*/
 function curPageURL() {
- $pageURL = 'http';
- if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
- $pageURL .= "://";
- if ($_SERVER["SERVER_PORT"] != "80") {
-  $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
- } else {
-  $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
- }
- return $pageURL;
+	$pageURL = 'http';
+	if ($_SERVER["HTTPS"] == "on") {
+		$pageURL .= "s";
+	}
+	$pageURL .= "://";
+	if ($_SERVER["SERVER_PORT"] != "80") {
+		$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"]
+			.$_SERVER["REQUEST_URI"];
+	}
+	else {
+		$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+	}
+	return $pageURL;
 }
-$paypalAddress = dbOne("SELECT * FROM `site_vars` WHERE `name`='paypal_address'","value");
-
+$paypalAddress = dbOne(
+	"SELECT * FROM `site_vars` WHERE `name`='paypal_address'", "value"
+);
 ?>
 <html>
 <head>
-        <script type="text/javascript">
-        function validateEmail(email) { 
-        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(email);
-        }
+<script type="text/javascript">
+function validateEmail(email) { 
+	var re=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	return re.test(email);
+}
  
-        var ITStrings={
+var ITStrings={
 	'Project':'Project',
 	'project':'project',
 	'Issues':'Issues',
 	'Issue':'Issue',
 	'issue':'issue'
-        };
+};
 
 	$(function() {
-        var issueId; // used when completing the issue        
-        $( "#dialog" ).dialog({autoOpen:false});
-        $("#pay").click(function(){
-        if($("#to").val()){
-        var amount;
-        $.post('/a/p=issue-tracker/f=getDepositedValue', {'id':issueId},function(ret){
-          amount = ret;
-        });
-          if(validateEmail($("#to").val())){
-            $.post('/a/p=issue-tracker/f=payMoney',{
-               'email': $("#to").val(),
-               'amount': amount,
-               'issue_number':issueId
-               },function(ret)
-                 {
-                 alert(ret);
-                 if(1){  // TODO
-                   $.post('/a/p=issue-tracker/f=finishIssue',{'id':issueId});
-                   $("to").val("");
-                   $("#dialog").dialog("close");
+				var issueId; // used when completing the issue				
+				$( "#dialog" ).dialog({autoOpen:false});
+				$("#pay").click(function(){
+				if($("#to").val()){
+				var amount;
+				$.post('/a/p=issue-tracker/f=getDepositedValue', {'id':issueId},function(ret){
+					amount = ret;
+				});
+					if(validateEmail($("#to").val())){
+						$.post('/a/p=issue-tracker/f=payMoney',{
+							 'email': $("#to").val(),
+							 'amount': amount,
+							 'issue_number':issueId
+							 },function(ret)
+								 {
+								 alert(ret);
+								 if(1){	// TODO
+									 $.post('/a/p=issue-tracker/f=finishIssue',{'id':issueId});
+									 $("to").val("");
+									 $("#dialog").dialog("close");
 
-                   //reload the page
-                   window.location.href = window.location;
-                   }
-                 });
-            } else{
-             alert("Please insert a valid email address");
-            }
-         }
-        else  // if the e-mail input it's empty
-          alert("Please insert an email address");          
-        });
-       
-        $("#setAddress").click(function(){
-          $.post('/a/p=issue-tracker/f=setPaypalAddress',{
-            'email': $("#paypal-address").val()
-          });
-          alert("Email set");
-        });             
-          
-       
+									 //reload the page
+									 window.location.href = window.location;
+									 }
+								 });
+						} else{
+						 alert("Please insert a valid email address");
+						}
+				 }
+				else	// if the e-mail input it's empty
+					alert("Please insert an email address");					
+				});
+			 
+				$("#setAddress").click(function(){
+					$.post('/a/p=issue-tracker/f=setPaypalAddress',{
+						'email': $("#paypal-address").val()
+					});
+					alert("Email set");
+				});						 
+					
+			 
 	$("#tabs").tabs();
 	var statii=[
 		undefined, 'Open', 'Completed'
@@ -282,7 +292,8 @@ $paypalAddress = dbOne("SELECT * FROM `site_vars` WHERE `name`='paypal_address'"
 	}
 	function showIssues(pid) {
 		$content.empty();
-		var header='<label>From:<input class="date" id="issue-tracker-date-from"/></label>'
+		var header='<label>From:<input class="date" id="issue-tracker-date-from"/>'
+			+'</label>'
 			+'<label>To:<input class="date" id="issue-tracker-date-to"/></label>';
 		$(header).appendTo($content);
 		$('#issue-tracker-date-from')
@@ -300,7 +311,7 @@ $paypalAddress = dbOne("SELECT * FROM `site_vars` WHERE `name`='paypal_address'"
 			+'<thead><tr><th>ID</th><th>Scheduled<br/>Date</th><th>Status</th>'
 			+'<th>Name</th><th>Type</th>'
 			+'<th>'+ITStrings.Project+'</th>'
-			+'<th>Votes</th>'                       
+			+'<th>Votes</th>'											 
 			+'</tr></thead>'
 			+'<tbody></tbody>'
 			+'</table>';
@@ -320,16 +331,16 @@ $paypalAddress = dbOne("SELECT * FROM `site_vars` WHERE `name`='paypal_address'"
 			"bJQueryUI":true,
 			"bServerSide":true,
 			"fnRowCallback": function(nRow, aData, iDisplayIndex) {
-                                $('td:nth-child(2)', nRow).text(statii[+aData[2]]);
+				$('td:nth-child(2)', nRow).text(statii[+aData[2]]);
 				$('td:nth-child(4)', nRow).text(vals.types[+aData[4]]);
-                                $button = $('<button class="edit"> Complete </button>').click(function(){
-                                  issueId = aData[0];
-                                  $( "#dialog" ).dialog("open");
-                                });
-                                
-                                //if issue not completed
-                                if(aData[2]!=2)
-                                  $('td:nth-child(2)', nRow).append($button);
+				$button = $('<button class="edit"> Complete </button>').click(function(){
+				issueId = aData[0];
+				$( "#dialog" ).dialog("open");
+				});
+				
+				//if issue not completed
+				if(aData[2]!=2)
+				$('td:nth-child(2)', nRow).append($button);
 				return nRow;
 			},
 			"fnServerData":function(sSource, aoData, fnCallback) {
@@ -348,7 +359,8 @@ $paypalAddress = dbOne("SELECT * FROM `site_vars` WHERE `name`='paypal_address'"
 				$.getJSON(sSource, aoData, fnCallback);
 			}
 		};
-		var $table=$(table).attr("id","issue-table").appendTo($content).dataTable(params);                
+		var $table=$(table).attr("id","issue-table")
+			.appendTo($content).dataTable(params);								
 		$('.dataTables_filter').css('display', 'none');
 		if (userdata.isAdmin) {
 			$('<button>New '+ITStrings.Issue+'</button>')
@@ -425,7 +437,8 @@ $paypalAddress = dbOne("SELECT * FROM `site_vars` WHERE `name`='paypal_address'"
 			issue.meta=eval('('+issue.meta+')');
 			// { set up table HTML
 			var html=
-				'<table style="width:100%!important;"><tr><th>Name</th><td class="name"></td></tr>'
+				'<table style="width:100%!important;"><tr><th>Name</th>'
+				+'<td class="name"></td></tr>'
 				+'<tr><th>Scheduled Date</th><td class="due_date"></td></tr>'
 				+'<tr style="display:none"><th>Recur every</th>'
 				+'<td id="issue-tracker-recurring"></td></tr>'
@@ -438,8 +451,14 @@ $paypalAddress = dbOne("SELECT * FROM `site_vars` WHERE `name`='paypal_address'"
 			});
 			html+='<tr><th>Attached Files</th><td class="files"></td></tr>';
 			html+='<tr><th>Status</th><td class="status"></td></tr>';
-			html+='<tr><th>Votes</th><td class="votes"><span id="votesNumber">'+((issue.meta['credits']!=undefined)?issue.meta['credits']:'0')+'</span>&nbsp;&nbsp;<a href="javascript:addVote('+issue.id+')"><span style="background-image:url(\'/i/icon_plus.jpg\');width:15px;height:15px;display:inline-block;">&nbsp</span></a>&nbsp;';
-			html+='<a href="javascript:substractVote('+issue.id+')"><span style="background-image:url(\'/i/icon_minus.png\');width:15px;height:15px;display:inline-block;">&nbsp</span></a>';
+			html+='<tr><th>Votes</th><td class="votes"><span id="votesNumber">'
+				+((issue.meta['credits']!=undefined)?issue.meta['credits']:'0')
+				+'</span>&nbsp;&nbsp;<a href="javascript:addVote('+issue.id+')">'
+				+'<span style="background-image:url(\'/i/icon_plus.jpg\');width:15px;'
+				+'height:15px;display:inline-block;">&nbsp</span></a>&nbsp;';
+			html+='<a href="javascript:substractVote('+issue.id+')">'
+				+'<span style="background-image:url(\'/i/icon_minus.png\');width:15px;'
+				+'height:15px;display:inline-block;">&nbsp</span></a>';
 			html+='</td></tr>';
 			html+='</table>';
 			// }
@@ -464,7 +483,10 @@ $paypalAddress = dbOne("SELECT * FROM `site_vars` WHERE `name`='paypal_address'"
 								.val(issue.meta[v.name]||'');
 						break; // }
 						case 'textarea': // {
-							var obj=$('<textarea style="width:100%;min-height:100px;" class="'+v.cname+'"/>')
+							var obj=$(
+								'<textarea style="width:100%;min-height:100px;" class="'+
+								v.cname+'"/>'
+							)
 								.val(issue.meta[v.name]||'');
 						break; // }
 						default: // {
@@ -645,28 +667,27 @@ $paypalAddress = dbOne("SELECT * FROM `site_vars` WHERE `name`='paypal_address'"
 });
 	</script>
 </head>
-
-<body>
-<h2>Issue tracker</h2>
-<div id="tabs">
-    <ul>        
-        <li><a href="#tabs-1">Paid Credits</a></li>
-        <li><a href="#tabs-2">Issues List</a></li>   
-    </ul>    
-    <div id="tabs-1">	
-	Paypal address:<input id="paypal-address" type="text" value="<?php echo $paypalAddress; ?>" />
-        <button id="setAddress">Set</button>
-    </div>
-    <div id="tabs-2">
-    <h3>List</h3>
-      <div id="issuetracker-wrapper"></div>
-    </div>
-       
-	<div id="dialog" title="Make Payment">
-   	  Email address:&nbsp;<input type="text" id="to" /><br/><br/>
-          <button id="pay">Make Payment</button>
-        </div>
-    <div>
-    </div>
-</body>    
+	<body>
+		<h2>Issue tracker</h2>
+		<div id="tabs">
+			<ul>				
+				<li><a href="#tabs-1">Paid Credits</a></li>
+				<li><a href="#tabs-2">Issues List</a></li>	 
+			</ul>		
+			<div id="tabs-1">	
+				Paypal address:<input id="paypal-address" type="text" value="<?php
+				echo $paypalAddress;
+				?>" />
+				<button id="setAddress">Set</button>
+			</div>
+			<div id="tabs-2">
+				<h3>List</h3>
+				<div id="issuetracker-wrapper"></div>
+			</div>
+			<div id="dialog" title="Make Payment">
+				Email address:&nbsp;<input type="text" id="to" /><br/><br/>
+				<button id="pay">Make Payment</button>
+			<div>
+		</div>
+	</body>		
 </html>

@@ -22,7 +22,7 @@ $(function(){
 				+'<th>'+__('Phone')+'</th><td>'+htmlspecialchars(addr.phone)
 				+'</td></tr>'
 				+'<tr>'
-				+'<th colspan="2"><button aid="'+i+'" >'+_('Choose Address')+'</button></th>'
+				+'<th colspan="2"><button aid="'+i+'" >'+__('Choose Address')+'</button></th>'
 				+'<th colspan="2"><input type="checkbox" aid="'+i+'"'
 				+(addr['default']=='yes'?' checked="checked"':'')
 				+'/>'
@@ -51,22 +51,22 @@ $(function(){
 		$table.find('button').click(function() {
 			var addr=userdata.address[+$(this).attr('aid')];
 			console.log(addr.street2);
-			$('#Street,input[name=Billing_Street]')
+			$('#online-store-Street,input[name=Billing_Street]')
 				.val(addr.street||'');
-			$('#Street2,input[name=Billing_Street2]')
+			$('#online-store-Street2,input[name=Billing_Street2]')
 				.val(addr.street2||'');
-			$('#Town,input[name=Billing_Town]')
+			$('#online-store-Town,input[name=Billing_Town]')
 				.val(addr.town||'');
-			$('#Postcode,input[name=Billing_Postcode]')
+			$('#online-store-Postcode,input[name=Billing_Postcode]')
 				.val(addr.postcode||'');
-			$('#County,input[name=Billing_County]')
+			$('#online-store-County,input[name=Billing_County]')
 				.val(addr.county||'');
-			$('select[name=Country],select[name=Billing_Country]')
+			$('#online-store-Country,select[name=Billing_Country]')
 				.val(addr.country||'');
-			$('#Phone,input[name=Billing_Phone]')
+			$('#online-store-Phone,input[name=Billing_Phone]')
 				.val(addr.phone||'');
 			$table.remove();
-			$('#Country').change();
+			$('#online-store-Country').change();
 		});
 		return false;
 	};

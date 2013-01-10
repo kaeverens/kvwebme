@@ -421,7 +421,8 @@ class Product{
 		* @return float
 		*/
 	function getPriceSale() {
-		$bp=$this->vals['online-store']['_sale_price'];
+		$bp=isset($this->vals['online-store']['_sale_price'])
+			?$this->vals['online-store']['_sale_price']:0;
 		if (!is_object($bp)) {
 			$bp=(object)array('_default'=>$bp);
 			$this->vals['online-store']['_sale_price']=$bp;

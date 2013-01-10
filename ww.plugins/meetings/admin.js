@@ -17,7 +17,7 @@ $(function() {
 			'id':id
 		}, function() {
 			document.location=
-				"/ww.admin/plugin.php?_plugin=meetings&_page=meetings";
+				'/ww.admin/plugin.php?_plugin=meetings&_page=meetings';
 		});
 	});
 	$('#meetings-create').click(function() {
@@ -32,14 +32,14 @@ $(function() {
 	});
 	function meeting_edit(m) {
 		// { $dialog
-		var html='<table>'
-			+'<tr><th>Meeting Time</th><td><input id="meeting-time"'
-			+' class="datetime"/></td></tr>'
-			+'<tr><th>Who</th><td><select id="meeting-user_id"/></td></tr>'
-			+'<tr><th>Is Meeting Who</th><td><select id="meeting-customer_id"/>'
-			+'</td></tr>'
-			+'<tr><th>Question List</th><td><select id="meeting-form_id"/></td></tr>'
-			+'</table>';
+		var html='<table>'+
+			'<tr><th>Meeting Time</th><td><input id="meeting-time"'+
+			' class="datetime"/></td></tr>'+
+			'<tr><th>Who</th><td><select id="meeting-user_id"/></td></tr>'+
+			'<tr><th>Is Meeting Who</th><td><select id="meeting-customer_id"/>'+
+			'</td></tr>'+
+			'<tr><th>Question List</th><td><select id="meeting-form_id"/></td></tr>'+
+			'</table>';
 		// }
 		var $dialog=$(html).dialog({
 			'modal':true,
@@ -63,7 +63,7 @@ $(function() {
 						'form_id':form_id
 					}, function() {
 						document.location=
-							"/ww.admin/plugin.php?_plugin=meetings&_page=meetings";
+							'/ww.admin/plugin.php?_plugin=meetings&_page=meetings';
 					});
 				}
 			}
@@ -97,7 +97,7 @@ $(function() {
 				.val(m.customer_id||-1)
 				.change(function() {
 					if ($(this).val()=='0') {
-						var name=prompt("what is the customer's name");
+						var name=prompt('what is the customer\'s name');
 						if (!name) {
 							$('#meeting-customer_id').val('-1');
 							return;
@@ -122,7 +122,7 @@ $(function() {
 				.val(m.user_id||-1)
 				.change(function() {
 					if ($(this).val()=='0') {
-						var name=prompt("what is the employee's name");
+						var name=prompt('what is the employee\'s name');
 						if (!name) {
 							$('#meeting-user_id').val('-1');
 							return;
@@ -143,7 +143,7 @@ $(function() {
 			.datetimepicker({
 				dateFormat: 'yy-mm-dd',
 				timeFormat: 'hh:mm',
-				onClose: function(dateText, inst){
+				onClose: function(){
 				}
 			});
 	}
@@ -152,19 +152,19 @@ $(function() {
 			f.fields=eval('('+f.fields+')');
 		}
 		// { $dialog
-		var html='<div id="popup-wrapper"><ul><li><a href="#popup-fields">Fields</a></li>'
-			+'<li><a href="#popup-template">Template</a></li></ul>'
-			+'<div id="popup-fields"><table>'
-			+'<tr><th>Name</th><td><input id="dialog-name"/></td></tr>'
-			+'<tr><th>Questions</th><td><table id="dialog-questions">'
-			+'<thead><tr><th>Question</th><th>Type</th><th></th></tr></thead>'
-			+'<tbody/></table></td></tr>'
-			+'</table></div>'
-			+'<div id="popup-template"><p>Note, that if you leave this blank'
-			+', the form will be shown in default format.</p>'
-			+'<textarea id="popup-template-val" style="width:100%;"/>'
-			+'</div>'
-			+'</div>';
+		var html='<div id="popup-wrapper"><ul><li><a href="#popup-fields">Fields</a></li>'+
+		'<li><a href="#popup-template">Template</a></li></ul>'+
+		'<div id="popup-fields"><table>'+
+		'<tr><th>Name</th><td><input id="dialog-name"/></td></tr>'+
+		'<tr><th>Questions</th><td><table id="dialog-questions">'+
+		'<thead><tr><th>Question</th><th>Type</th><th></th></tr></thead>'+
+		'<tbody/></table></td></tr>'+
+		'</table></div>'+
+		'<div id="popup-template"><p>Note, that if you leave this blank'+
+		', the form will be shown in default format.</p>'+
+		'<textarea id="popup-template-val" style="width:100%;"/>'+
+		'</div>'+
+		'</div>';
 		var $dialog=$(html).dialog({
 			'modal':true,
 			'close':function() {
@@ -274,7 +274,7 @@ $(function() {
 		// { template
 		$('#popup-template-val')
 			.val(f.template)
-			.ckeditor(CKEditor_config);
+			.ckeditor(window.CKEditor_config);
 		// }
 		$('#popup-wrapper').tabs();
 	}
@@ -294,31 +294,26 @@ $(function() {
 			for (var i=0;i<fields.length;++i) {
 				table+='<th>'+fields[i].name+'</th>';
 			}
-			table+='</tr></thead>';
-			table+='<tbody></tbody></table>';
+			table+='</tr></thead><tbody></tbody></table>';
 			$('#main').empty().append('<h1>Meetings</h1>')
-				.append('<a href="/ww.admin/plugin.php?_plugin=meetings&_page=forms">'
-					+'back to Forms</a>')
+				.append('<a href="/ww.admin/plugin.php?_plugin=meetings&_page=forms">'+
+					'back to Forms</a>')
 				.append(table);
 			var params={
-				"sAjaxSource":'/a/p=meetings/f=adminMeetingsDataGetDT/form_id='+id,
-				"bProcessing":true,
-				"bJQueryUI":true,
-				"bServerSide":true,
-				"fnRowCallback":function( nRow, aData, iDisplayIndex ) {
+				'sAjaxSource':'/a/p=meetings/f=adminMeetingsDataGetDT/form_id='+id,
+				'bProcessing':true,
+				'bJQueryUI':true,
+				'bServerSide':true,
+				'fnRowCallback':function(nRow, aData) {
 					for (var i=0;i<fields.length;++i) {
-					console.log(fields[i]);
-						switch (fields[i].type) {
-							case 'image':
-								if (aData[i]!='') {
-									$('td:nth-child('+(i+1)+')', nRow)
-										.html(
-											'<a target="popup" href="data:image/jpeg;base64,'+aData[i]+'">'
-											+'<img src="data:image/jpeg;base64,'+aData[i]+'"'
-											+' style="max-width:128px;max-height:128px;"/></a>'
-										);
-								}
-							break;
+						if (fields[i].type=='image' && aData[i]!=='') {
+							$('td:nth-child('+(i+1)+')', nRow)
+								.html(
+									'<a target="popup" href="data:image/jpeg;base64,'+
+									aData[i]+'">'+
+									'<img src="data:image/jpeg;base64,'+aData[i]+'"'+
+									' style="max-width:128px;max-height:128px;"/></a>'
+								);
 						}
 					}
 					return nRow;
