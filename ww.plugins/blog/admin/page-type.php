@@ -53,10 +53,8 @@ $c.='<p>'
 	.' value="'.$excerpt_length.'"/>';
 // }
 // { show a featured-story carousel
-$featured_posts=(int)$vars['blog_featured_posts'];
-if (!$featured_posts) {
-	$featured_posts=0;
-}
+$featured_posts=isset($vars['blog_featured_posts'])
+	?(int)$vars['blog_featured_posts']:0;
 $c.='<p>'.__(
 	'If you would like featured posts to appear in a carousel, how many should'
 	.' appear?'

@@ -347,6 +347,9 @@ class Product{
 		* @return float
 		*/
 	function getPriceBase() {
+		if (!isset($this->vals['online-store'])) {
+			return 0;
+		}
 		$bp=$this->vals['online-store']['_price'];
 		if (!is_object($bp)) {
 			$bp=(object)array('_default'=>$bp);

@@ -929,18 +929,20 @@ class Products{
 					}
 				}
 				else {
-					foreach ($values as $v) {
-						$vals=json_decode($v['data_fields'], true);
-						$key2='';
-						foreach ($vals as $v2) {
-							if ($v2['n']==$order_by) {
-								$key2=__FromJSON($v2['v']);
+					if (is_array($values)) {
+						foreach ($values as $v) {
+							$vals=json_decode($v['data_fields'], true);
+							$key2='';
+							foreach ($vals as $v2) {
+								if ($v2['n']==$order_by) {
+									$key2=__FromJSON($v2['v']);
+								}
 							}
+							if (!isset($tmpprods1[$key2])) {
+								$tmpprods1[$key2]=array();
+							}
+							$tmpprods1[$key2][]=$v['id'];
 						}
-						if (!isset($tmpprods1[$key2])) {
-							$tmpprods1[$key2]=array();
-						}
-						$tmpprods1[$key2][]=$v['id'];
 					}
 					if ($order_dir==1) {
 						krsort($tmpprods1);

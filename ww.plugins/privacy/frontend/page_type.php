@@ -685,9 +685,10 @@ function Privacy_profileGet() {
 		'select * from user_accounts where id='.$uid.' limit 1',
 		'extras'
 	);
-	$extras=json_decode($extras,true);
-	$remainingCredits = $extras['free-credits'];
-	$remainingPaidCredits = $extras['paid_credits'];	
+	$extras=json_decode($extras, true);
+	$remainingCredits=isset($extras['free-credits'])?$extras['free-credits']:0;
+	$remainingPaidCredits=isset($extras['paid_credits'])
+		?$extras['paid_credits']:0;
 	
 	if (!array_key_exists('free-credits',$extras)) { // the user has not been initialised	  
 		$remainingCredits=dbOne(
