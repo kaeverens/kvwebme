@@ -94,7 +94,13 @@ function OnlineStore_sendInvoiceEmail($id, $order=false) {
 	}
 	$headers='';
 	if ($bcc) {
-		$headers.='BCC: '.$bcc."\r\n";
+		$sendToAdmin=(int)dbOne(
+			'select val from online_store_vars where name="invoices_by_email_admin"',
+			'val'
+		);
+		if (!$sendToAdmin) {
+			$headers.='BCC: '.$bcc."\r\n";
+		}
 	}
 	// }
 	Core_trigger('send-invoice', array($order));

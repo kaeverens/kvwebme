@@ -87,8 +87,9 @@ echo '>'.__('post-VAT').'</option></select>.</p></div>';
 // }
 // { invoices
 echo '<h2><a href="#">'.__('Invoices').'</a></h2>'
-	.'<div id="invoices">'
-	.'<select name="online_store_vars[invoices_by_email]">';
+	.'<div id="invoices">';
+// { how/when the customer gets the invoice
+echo '<select name="online_store_vars[invoices_by_email]">';
 $opts=array(
 	__('Invoice should be emailed to customer when the order is Paid'),
 	__('Invoice should not be emailed at all'),
@@ -98,8 +99,8 @@ $opts=array(
 	__('Invoice should be emailed when the payment is Authorised')
 );
 $curval=(int)dbOne(
-	'select value from online_store_vars where name="invoices_by_email"',
-	'value'
+	'select val from online_store_vars where name="invoices_by_email"',
+	'val'
 );
 foreach ($opts as $k=>$opt) {
 	echo '<option value="'.$k.'"';
@@ -108,7 +109,28 @@ foreach ($opts as $k=>$opt) {
 	}
 	echo '>'.htmlspecialchars(__($opt)).'</option>';
 }
-echo '</select></div>';
+echo '</select>';
+// }
+// { is a copy sent to the admins?
+echo '<select name="online_store_vars[invoices_by_email_admin]">';
+$opts=array(
+	__('Copy the invoice to the admin as well'),
+	__('Admins do not receive a copy of the invoice')
+);
+$curval=(int)dbOne(
+	'select val from online_store_vars where name="invoices_by_email_admin"',
+	'val'
+);
+foreach ($opts as $k=>$opt) {
+	echo '<option value="'.$k.'"';
+	if ($k==$curval) {
+		echo ' selected="selected"';
+	}
+	echo '>'.htmlspecialchars(__($opt)).'</option>';
+}
+echo '</select>';
+// }
+echo '</div>';
 // }
 // { exports
 echo '<h2><a href="#">'.__('Automated Exports').'</a></h2>'

@@ -38,7 +38,7 @@ $plugin=array(
 );
 // }
 
-// { OnlineStoreEconomics
+// { OnlineStoreEconomics class
 
 /**
 	* class for handling E-Conomic transactions
@@ -678,6 +678,10 @@ class OnlineStoreEconomics{
 	*/
 function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 	$details=json_decode($order['form_vals'], true);
+	$meta=json_decode($order['meta'], true);
+	if (is_null($meta)) {
+		$meta=array();
+	}
 	global $DBVARS;
 	$OSE=new OnlineStoreEconomics(
 		$DBVARS['economic_agreement_no'],
@@ -753,6 +757,17 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 			$item->amt
 		);
 	}
+	// { shipping
+	if (isset($meta['shipping']) && $meta['shipping']['total']) {
+		$OSE->addInvoiceLine(
+			$invId,
+			99999999,
+			'Shipping ('.$meta['shipping']['name'].')',
+			$meta['shipping']['total'],
+			1
+		);
+	}
+	// }
 	// }
 	// { get PDF
 	$pdf=$OSE->getInvoiceAsPdf($invId);

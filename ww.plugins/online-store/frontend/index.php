@@ -181,14 +181,22 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			.'</em></div>';
 	} 
 	else {
-		$formvals = addslashes(json_encode($_REQUEST));
-		$items=addslashes(json_encode($_SESSION['online-store']['items']));
 		$total=OnlineStore_getFinalTotal();
 		// { save data
+		$meta=array(
+			'shipping'=>OnlineStore_getPostageAndPackaging(
+				$total, $_POST['Country'], 0
+			)
+		);
 		dbQuery(
-			'insert into online_store_orders (form_vals,total,items,date_created,user_id)'
-			." values('$formvals', $total, '$items', now(), '"
-			. @$_SESSION[ 'userdata' ][ 'id' ] . "' )"
+			'insert into online_store_orders set'
+			.' form_vals="'.addslashes(json_encode($_REQUEST)).'"'
+			.', total='.OnlineStore_getFinalTotal()
+			.', items="'.addslashes(
+				json_encode($_SESSION['online-store']['items'])
+			).'"'
+			.', date_created=now(), user_id='.((int)$_SESSION['userdata']['id'])
+			.', meta="'.addslashes(json_encode($meta)).'"'
 		);
 		$id=dbOne('select last_insert_id() as id', 'id');
 		$_SESSION['online_store_last_order_id']=$id;
@@ -351,7 +359,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		$invoice=addslashes($smarty->fetch($tpldir.$PAGEDATA->id));
 		dbQuery("update online_store_orders set invoice='$invoice' where id=$id");
 		// }
-		// { order_made_customer
+		// { send order_made_customer email if the template is set
 		if (!file_exists($tpldir.$PAGEDATA->id.'-order_made_customer')) {
 			$r=dbOne(
 				'select val from online_store_vars'
@@ -384,7 +392,8 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			);
 		}
 		// }
-		// { order_made_admin
+		// { send order_made_admin email if the template is set
+		// { create template if it doesn't exist
 		if (!file_exists($tpldir.$PAGEDATA->id.'-order_made_admin')) {
 			$r=dbOne(
 				'select val from online_store_vars'
@@ -395,6 +404,8 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 				file_put_contents($tpldir.$PAGEDATA->id.'-order_made_admin', $r);
 			}
 		}
+		// }
+		// { send email
 		if (file_exists($tpldir.$PAGEDATA->id.'-order_made_admin')) {
 			$rs=dbAll(
 				'select * from online_store_vars'
