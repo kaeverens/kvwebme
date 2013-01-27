@@ -53,7 +53,10 @@ $c.='<option value="-1">'.__('add new').'</option></select>'
 	.'<div id="ads-types-wrapper"></div></div>';
 // }
 // { ad categories
-$c.='<div id="ads-categories"></div>';
+$c.='<div id="ads-categories"><table><tr>'
+	.'<td id="ads-categories-names">&nbsp;</td>'
+	.'<td id="ads-categories-details">&nbsp;</td>'
+	.'</tr></table></div>';
 // }
 // { payment details
 $c.='<div id="ads-payment-details">'

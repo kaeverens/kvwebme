@@ -405,13 +405,21 @@ echo '<div id="misc"><table><tr><td>';
 echo '<table>';
 // { publish date
 echo '<tr><th>'.__('Date to Publish')
-	.'</th><td><input name="date_publish" value="'.$page['date_publish']
-	.'" class="datetime" title="'.__('year-month-day hour:minute').'"/></td></tr>';
+	.'</th><td><input name="date_publish"';
+if (isset($page['date_publish'])) {
+	echo ' value="'.$page['date_publish'].'"';
+}
+echo ' class="datetime" title="'.__('year-month-day hour:minute').'"/>'
+	.'</td></tr>';
 // }
 // { unpublish date
 echo '<tr><th>'.__('Date to Unpublish')
-	.'</th><td><input name="date_unpublish" value="'.$page['date_unpublish']
-	.'" class="datetime" title="'.__('year-month-day hour:minute').'"/></td></tr>';
+	.'</th><td><input name="date_unpublish"';
+if (isset($page['date_unpublish'])) {
+	echo ' value="'.$page['date_unpublish'].'"';
+}
+echo ' class="datetime" title="'.__('year-month-day hour:minute').'"/>'
+	.'</td></tr>';
 // }
 // { associated date
 $reg='/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/';

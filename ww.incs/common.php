@@ -106,7 +106,12 @@ function Core_dateM2H($d, $type = 'date') {
 	}
 	$utime=@mktime($date[3], $date[4], $date[5], $date[1], $date[2], $date[0]);
 	if ($type == 'date') {
-		return date('l jS F, Y', $utime);
+		return date(
+			'<\s\p\a\n \c\l\a\s\s="\d\a\y">l</\s\p\a\n>'
+			.' <\s\p\a\n \c\l\a\s\s="\m\o\n\t\h\d\a\y">jS F,</\s\p\a\n>'
+			.' <\s\p\a\n \c\l\a\s\s="\y\e\a\r">Y</\s\p\a\n>',
+			$utime
+		);
 	}
 	if ($type == 'datetime') {
 		return date('D jS M, Y h:iA', $utime);

@@ -11,6 +11,39 @@
 	* @link     http://kvsites.ie/
 	*/
 
+// { ClassifiedAds_adminCategoryDelete
+
+/**
+	* delete a category
+	*
+	* @return status
+	*/
+function ClassifiedAds_adminCategoryDelete() {
+	$id=(int)$_REQUEST['id'];
+	dbQuery('delete from classifiedads_ad where category_id='.$id);
+	dbQuery('delete from classifiedads_categories where id='.$id);
+	return array('ok'=>1);
+}
+
+// }
+// { ClassifiedAds_adminCategoryName
+
+/**
+	* rename a category
+	*
+	* @return status
+	*/
+function ClassifiedAds_adminCategoryRename() {
+	$id=(int)$_REQUEST['id'];
+	$name=$_REQUEST['name'];
+	dbQuery(
+		'update classifiedads_categories set name="'.addslashes($name).'"'
+		.' where id='.$id
+	);
+	return array('ok'=>1);
+}
+
+// }
 // { ClassifiedAds_adminCategoryUpdate
 
 /**
@@ -35,7 +68,7 @@ function ClassifiedAds_adminCategoryUpdate() {
 }
 
 // }
-// { function ClassifiedAds_adminCategoryMove
+// { ClassifiedAds_adminCategoryMove
 
 /**
 	* ClassifiedAds_adminCategoryMove
@@ -177,6 +210,40 @@ function ClassifiedAds_adminAdsGetDT() {
 function ClassifiedAds_adminAdGet() {
 	$id=(int)$_REQUEST['id'];
 	return dbRow('select * from classifiedads_ad where id='.$id);
+}
+
+// }
+// { ClassifiedAds_adminCategoryUploadImage
+
+/**
+	* upload a new category image
+	*
+	* @return null
+	*/
+function ClassifiedAds_adminCategoryUploadImage() {
+	$id=(int)$_REQUEST['id'];
+	if (!file_exists(USERBASE.'/f/classified-ads/categories/'.$id)) {
+		mkdir(USERBASE.'/f/classified-ads/categories/'.$id, 0777, true);
+	}
+	$imgs=new DirectoryIterator(USERBASE.'/f/classified-ads/categories/'.$id);
+	foreach ($imgs as $img) {
+		if ($img->isDot()) {
+			continue;
+		}
+		unlink($img->getPathname());
+	}
+	$from=$_FILES['Filedata']['tmp_name'];
+	$ext=preg_replace('/.*\./', '', $_FILES['Filedata']['name']);
+	$url='/classified-ads/categories/'.$id.'/icon.'.$ext;
+	$to=USERBASE.'/f'.$url;
+	move_uploaded_file($from, $to);
+	dbQuery(
+		'update classifiedads_categories set'
+		.' icon="'.$url.'" where id='.$id
+	);
+	Core_cacheClear();
+	echo $url;
+	Core_quit();
 }
 
 // }

@@ -1,7 +1,8 @@
 $(function() {
-	var $categoriesWrapper=$('#ads-categories').empty();
+	var $categoriesWrapper=$('#ads-categories-names');
 	function initCategories() {
 		$.post('/a/p=classified-ads/f=categoriesGetAll', function(categories) {
+			$categoriesWrapper.empty();
 			if (!categories.length) {
 				$.post('/a/p=classified-ads/f=adminCategoryUpdate', {
 					'id':0,
@@ -103,8 +104,63 @@ $(function() {
 					},1);
 				})
 				.on('click', 'a', function() {
-					var id=$(this).closest('li').attr('id').replace(/.*-/, '');
-					console.log(catByIds[id]);
+					var $this=$(this);
+					var id=$this.closest('li').attr('id').replace(/.*-/, '');
+					var cat=catByIds[id];
+					var html='<table>'
+						+'<tr><th>Name</th><td><input id="ads-cat-name"/></td></tr>'
+						+'<tr><th>Icon</th><td id="ads-cat-icon"></td></tr>'
+						+'<tr><th>&nbsp;</th><td><a href="#" id="ads-cat-delete">[x]</a></td></tr>'
+						+'</table>';
+					var $details=$('#ads-categories-details').empty();
+					$details.html(html);
+					// { icon
+					var src=cat.icon
+						?'/a/f=getImg/w=64/h=64/'+cat.icon+'?'+Math.random()
+						:'/i/blank.gif';
+					$(
+						'<img id="ads-cat-icon-img" src="'+src+'"'
+						+' style="max-width:64px;max-height:64px"/>'
+						+'<input name="image_not_found" id="ads-cat-icon-inp"/>'
+					)
+						.appendTo('#ads-cat-icon');
+					Core_uploader('#ads-cat-icon-inp', {
+						'serverScript':'/a/p=classified-ads/f=adminCategoryUploadImage'
+							+'/id='+id
+						, 'successHandler':function(file, data, response){
+							$('#ads-cat-icon-img')
+								.attr('src', '/a/f=getImg/w=64/h=64/'+data+'?'+Math.random());
+							cat.icon=data;
+						}
+					});
+					// }
+					$('#ads-cat-name')
+						.change(function() {
+							var name=$(this).val().replace(/^\s*| *$/, '');
+							if (name=='' || name.replace(/[^a-zA-Z0-9- ]/, '')!=name) {
+								return alert('Name must not be empty and must use only letters, numbers, dashes and spaces');
+							}
+							$.post('/a/p=classified-ads/f=adminCategoryRename', {
+								'id': id,
+								'name': name
+							}, function(ret) {
+								$this.html(
+									'<ins class="jstree-icon">&nbsp;</ins>'+name
+								);
+							});
+						})
+						.val($this.text().replace(/^\s*| *$/, ''));
+					$('#ads-cat-delete').click(function() {
+						if (!confirm('are you sure you want to delete this?')) {
+							return;
+						}
+						$.post('/a/p=classified-ads/f=adminCategoryDelete', {
+							'id':id
+						}, function(ret) {
+							$details.empty();
+							initCategories();
+						});
+					});
 				});
 			setTimeout(function() {
 				$('<button><span>Add Category</span></button>')
