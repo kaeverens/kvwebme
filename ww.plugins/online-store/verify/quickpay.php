@@ -55,6 +55,6 @@ if (strtolower($expected_md5) == strtolower($_REQUEST['md5check'])) {
 		.', authorised=1 where id='.$id
 	);
 	require_once dirname(__FILE__).'/../order-status.php';
-	OnlineStore_sendInvoiceEmail($id, $order);
-	OnlineStore_exportToFile($id, $order);
+	OnlineStore_sendInvoiceEmail($id);
+	OnlineStore_exportToFile($id);
 }

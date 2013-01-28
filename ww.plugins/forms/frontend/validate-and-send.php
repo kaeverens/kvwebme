@@ -373,7 +373,7 @@ function Form_send($page, $vars, $form_fields) {
 		cmsMail(
 			$to,
 			$from,
-			$_SERVER['HTTP_HOST'].' '.$page['name'],
+			$_SERVER['HTTP_HOST'].' '.__FromJson($page['name']),
 			'<html><head></head><body>'.$form.'</body></html>',
 			$_FILES
 		);

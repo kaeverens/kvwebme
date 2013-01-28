@@ -188,6 +188,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 				$total, $_POST['Country'], 0
 			)
 		);
+		$uid=isset($_SESSION['userdata']['id'])?$_SESSION['userdata']['id']:0;
 		dbQuery(
 			'insert into online_store_orders set'
 			.' form_vals="'.addslashes(json_encode($_REQUEST)).'"'
@@ -195,7 +196,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			.', items="'.addslashes(
 				json_encode($_SESSION['online-store']['items'])
 			).'"'
-			.', date_created=now(), user_id='.((int)$_SESSION['userdata']['id'])
+			.', date_created=now(), user_id='.$uid
 			.', meta="'.addslashes(json_encode($meta)).'"'
 		);
 		$id=dbOne('select last_insert_id() as id', 'id');

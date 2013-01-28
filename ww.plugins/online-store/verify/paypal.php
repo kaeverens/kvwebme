@@ -19,16 +19,17 @@ foreach ($_POST as $key => $value) {
 	$value = urlencode(stripslashes($value));
 	$req .= "&$key=$value";
 }
-if ($_POST['payment_status'] == 'Refunded') {
-	Core_quit();
-}
 if ($req=='cmd=_notify-validate') {
 	// TODO: translation needed
 	die('please don\'t access this file directly');
 }
+if ($_POST['payment_status'] == 'Refunded') {
+	Core_quit();
+}
 // post back to PayPal system to validate
-$header = "POST /cgi-bin/webscr HTTP/1.0\r\n";
+$header = "POST /cgi-bin/webscr HTTP/1.1\r\n";
 $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
+$header .="Host: www.paypal.com\r\n";
 $header .= "Content-Length: " . strlen($req) . "\r\n\r\n";
 $fp = fsockopen('ssl://www.paypal.com', 443, $errno, $errstr, 30);
 if (!$fp) {
@@ -67,7 +68,6 @@ if (!$fp) {
 		}
 		else if (strcmp($res, "INVALID") == 0) {
 		}
-		
 	}
 	fclose($fp);
 }

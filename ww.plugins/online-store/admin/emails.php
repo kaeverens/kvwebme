@@ -113,9 +113,18 @@ echo '<tr><th>'.__('Reply-to address').'</th>'
 // }
 // { body
 echo '<tr><th>'.__('Email Body').'</th>';
-$body=@$rs['email_'.$email]['val']
-	?$rs['email_'.$email]['val']
-	:file_get_contents(dirname(__FILE__).'/email_template_'.$email.'.html');
+if (isset($rs['email_'.$email]['val']) && $rs['email_'.$email]['val']) {
+	$body=$rs['email_'.$email]['val'];
+}
+else {
+	$fname=dirname(__FILE__).'/email_template_'.$email.'.html';
+	if (file_exists($fname)) {
+		$body=file_get_contents($fname);
+	}
+	else {
+		$body='';
+	}
+}
 echo '<td>'.ckeditor('onlinestore-emails-body', $body).'</td></tr>';
 // }
 echo '<tr><th></th><td>'
