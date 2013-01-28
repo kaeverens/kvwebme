@@ -156,7 +156,6 @@ class OnlineStoreEconomics{
 		}
 		catch (Exception $e) {
 			echo __('Could not connect to E-Conomic server');
-			die();
 		}
 		return $client;
 	}
