@@ -543,20 +543,23 @@ var Gallery={
 						});
 				}
 			}
-			$.contextMenu('destroy', '.ad-image .tag');
-			$.contextMenu({
-				'selector':'.ad-image .tag',
-				'items':{
-					'edit-tag':{
-						'name':'Edit Tag',
-						'icon':'edit',
-						'callback':function(a, opts) {
-							var index=+$(opts['$trigger']).data('index');
-							editTag(index, idata.tags[index]);
+			if (userdata.isAdmin) {
+				$('.ad-image .tag-wrapper').remove();
+				$.contextMenu('destroy', '.ad-image .tag');
+				$.contextMenu({
+					'selector':'.ad-image .tag',
+					'items':{
+						'edit-tag':{
+							'name':'Edit Tag',
+							'icon':'edit',
+							'callback':function(a, opts) {
+								var index=+$(opts['$trigger']).data('index');
+								editTag(index, idata.tags[index]);
+							}
 						}
 					}
-				}
-			});
+				});
+			}
 		}
 		function tagSave(ev, ui) {
 			var $tag=$(ev.target);
