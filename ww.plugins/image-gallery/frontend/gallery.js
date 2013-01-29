@@ -498,11 +498,12 @@ var Gallery={
 			for (var i=0;i<tags.length;++i) {
 				var tag=tags[i], img=$img[0];
 				var pos={
-					'width':tag.width||tagSize,
-					'height':tag.height||tagSize
+					'width':tag.width/ratio||tagSize,
+					'height':tag.height/ratio||tagSize
 				}
 				pos.x=img.offsetLeft+(+tag.x)/ratio-(pos.width/2);
 				pos.y=img.offsetTop+(+tag.y)/ratio-(pos.height/2);
+				console.log(pos);
 				var $tag=$(
 					'<div class="tag" style="width:'+pos.width+'px;'
 					+'height:'+pos.height+'px;"/>')
@@ -566,10 +567,10 @@ var Gallery={
 			var index=+$tag.data('index');
 			var img=$tag.siblings('img')[0];
 			var w=$tag[0].offsetWidth, h=$tag[0].offsetHeight;
-			idata.tags[index].x=$tag[0].offsetLeft-img.offsetLeft+w/2;
-			idata.tags[index].y=$tag[0].offsetTop-img.offsetTop+h/2;
-			idata.tags[index].width=w;
-			idata.tags[index].height=h;
+			idata.tags[index].x=($tag[0].offsetLeft-img.offsetLeft+w/2)*ratio;
+			idata.tags[index].y=($tag[0].offsetTop-img.offsetTop+h/2)*ratio;
+			idata.tags[index].width=w*ratio;
+			idata.tags[index].height=h*ratio;
 			setTimeout(function() {
 				$tag.data('ignoreClick', false);
 			}, 1);
