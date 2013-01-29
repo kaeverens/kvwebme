@@ -457,13 +457,13 @@ var Gallery={
 							if (idata.tags===undefined) {
 								idata.tags=[];
 							}
-							var tag={
-								'x':x,
-								'y':y,
-								'notes':$('#dialog-notes').val()
-							};
+							if (idata.tags[index]===undefined) {
+								idata.tags[index]={};
+							}
+							idata.tags[index].x=x;
+							idata.tags[index].y=y;
+							idata.tags[index].notes=$('#dialog-notes').val();
 							index=index==-1?idata.tags.length:index;
-							idata.tags[index]=tag;
 							for (var i=0;i<Gallery.tagPlugins.length;++i) {
 								idata=tp.onTagSave(idata, index);
 							}
@@ -496,25 +496,52 @@ var Gallery={
 			$('.ad-image .tag').remove();
 			var tags=idata.tags||[], tagSize=50;
 			for (var i=0;i<tags.length;++i) {
+				var tag=tags[i], img=$img[0];
+				var pos={
+					'width':tag.width||tagSize,
+					'height':tag.height||tagSize
+				}
+				pos.x=img.offsetLeft+(+tag.x)/ratio-(pos.width/2);
+				pos.y=img.offsetTop+(+tag.y)/ratio-(pos.height/2);
 				var $tag=$(
-					'<div class="tag"><img src="/i/blank.gif" style="width:'+tagSize+'px;'
-					+'height:'+tagSize+'px;"/></div>')
+					'<div class="tag" style="width:'+pos.width+'px;'
+					+'height:'+pos.height+'px;"/>')
 					.css({
-						'left':($img[0].offsetLeft+(+tags[i].x)/ratio-(tagSize/2))+'px',
-						'top':($img[0].offsetTop+(+tags[i].y)/ratio-(tagSize/2))+'px',
-						'width':tagSize+'px',
-						'height':tagSize+'px'
+						'left':pos.x+'px',
+						'top':pos.y+'px',
+						'width':pos.width+'px',
+						'height':pos.height+'px'
 					})
 					.attr('title', tags[i].notes)
 					.data('index', i)
 					.click(function() {
-						var index=$(this).data('index');
+						var $this=$(this);
+						if ($this.data('ignoreClick')) {
+							return false;
+						}
+						var index=$this.data('index');
 						for (var i=0;i<Gallery.tagPlugins.length;++i) {
 							var tp=Gallery.tagPlugins[i];
 							tp.onTagClick(idata, index);
 						}
 					})
 					.appendTo($imgWrap);
+				if (userdata.isAdmin) {
+					$tag
+						.draggable({
+							'containment':img,
+							'start':function(ev) {
+								$(ev.target).data('ignoreClick', true);
+							},
+							'stop':tagSave
+						})
+						.resizable({
+							'start':function(ev) {
+								$(ev.target).data('ignoreClick', true);
+							},
+							'stop':tagSave
+						});
+				}
 			}
 			$.contextMenu('destroy', '.ad-image .tag');
 			$.contextMenu({
@@ -529,6 +556,25 @@ var Gallery={
 						}
 					}
 				}
+			});
+		}
+		function tagSave(ev, ui) {
+			var $tag=$(ev.target);
+			var index=+$tag.data('index');
+			var img=$tag.siblings('img')[0];
+			var w=$tag[0].offsetWidth, h=$tag[0].offsetHeight;
+			idata.tags[index].x=$tag[0].offsetLeft-img.offsetLeft+w/2;
+			idata.tags[index].y=$tag[0].offsetTop-img.offsetTop+h/2;
+			idata.tags[index].width=w;
+			idata.tags[index].height=h;
+			setTimeout(function() {
+				$tag.data('ignoreClick', false);
+			}, 1);
+			$.post('/a/p=image-gallery/f=tagsUpdate', {
+				'id':idata.id,
+				'tags':idata.tags
+			}, function(ret) {
+				showTags();
 			});
 		}
 		var ratio=idata.width/$img.width();
