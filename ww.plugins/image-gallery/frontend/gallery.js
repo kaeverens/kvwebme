@@ -974,7 +974,9 @@ $(function() {
 			Gallery.resetTimeout();
 		}
 		if(!$('.ad-thumb-list').hasClass('working')) {
-			var n=+$('.ad-image img').attr('num');
+			var $imgWrapper=$('.ad-image');
+			$imgWrapper.find('.tag').remove();
+			var n=+$imgWrapper.find('img').attr('num');
 			$('#'+n+' img').removeClass('image-selected');
 			n=((n+1)==Gallery.count())?0:++n;
 			$('#'+n+' img').addClass('image-selected');
@@ -989,7 +991,9 @@ $(function() {
 			Gallery.resetTimeout();
 		}
 		if(!$('.ad-thumb-list').hasClass('working')) {
-			var n=+$('.ad-image img').attr('num');
+			var $imgWrapper=$('.ad-image');
+			$imgWrapper.find('.tag').remove();
+			var n=+$imgWrapper.find('img').attr('num');
 			$('#'+n+' img').removeClass('image-selected');
 			n=(n==0)?(Gallery.count()-1):--n;
 			$('#'+n+' img').addClass('image-selected');
