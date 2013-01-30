@@ -344,9 +344,9 @@ var Gallery={
 		var $img=$('.ad-image img'), $imgWrap=$img.closest('span'), $tagWrap2;
 		if (userdata.isAdmin) {
 			$('.ad-image .tag-wrapper').remove();
-			$.contextMenu('destroy', '.ad-image img');
+			$.contextMenu('destroy', '.ad-image .image>img');
 			$.contextMenu({
-				'selector':'.ad-image img',
+				'selector':'.ad-image .image>img',
 				'items':{
 					'add-tag':{
 						'name':'Add Tag',
@@ -505,8 +505,8 @@ var Gallery={
 				pos.y=img.offsetTop+(+tag.y)/ratio-(pos.height/2);
 				console.log(pos);
 				var $tag=$(
-					'<div class="tag" style="width:'+pos.width+'px;'
-					+'height:'+pos.height+'px;"/>')
+					'<div class="tag"><img style="width:'+pos.width+'px;'
+					+'height:'+pos.height+'px;"/></div>')
 					.css({
 						'left':pos.x+'px',
 						'top':pos.y+'px',

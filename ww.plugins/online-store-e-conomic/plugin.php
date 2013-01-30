@@ -542,13 +542,19 @@ class OnlineStoreEconomics{
 		*/
 	public function setDebtorCounty($number, $county) {
 		$client=$this->_connect();
-		$result=$client->Debtor_SetCounty(
-			array(
-				'debtorHandle'=>array('Number'=>$number),
-				'value'=>$county
-			)
-		);
-		return $result;
+		try{
+			$result=$client->Debtor_SetCounty(
+				array(
+					'debtorHandle'=>array('Number'=>$number),
+					'value'=>$county
+				)
+			);
+			return $result;
+		}
+		catch(Exception $e) { // probably not a problem
+			// e-conomic doesn't support setDebtorCounty for non-UK connections
+			return false
+		}
 	}
 
 	// }
