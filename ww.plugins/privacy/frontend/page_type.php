@@ -725,11 +725,13 @@ function Privacy_profileGet() {
 		.'<tr><th>'.__('Phone', 'core').'</th><td>'.$phone.'</td></tr>'
 		.'<tr><th>'.__('Avatar', 'core').'</th><td><span id="avatar-wrapper"'
 		.' data-uid="'.$uid.'"></span></td></tr>'
-		.'<tr><th>'.__('RemainingCredits', 'core').'</th><td>'.$remainingCredits
-		.'</td></tr>'
-		.'<tr><th>'.__('PaidCredits','core').'</th><td>'.$remainingPaidCredits
-		.'&nbsp;<button id="buy-credits">Buy Credits</button>'
-		.'</td></tr>'
+		// { credits
+		.'<tr class="remaining-credits"><th>'.__('RemainingCredits', 'core').'</th>'
+		.'<td>'.$remainingCredits.'</td></tr>'
+		.'<tr class="paid-credits"><th>'.__('PaidCredits','core').'</th>'
+		.'<td>'.$remainingPaidCredits.'&nbsp;'
+		.'<button id="buy-credits">Buy Credits</button></td></tr>'
+		// }
 		.'</table></div>'
 		.'<div id="address"><a id="new-address" href="javascript:add_address();"'
 		.' style="float:right">[+]'.__('Add Address').'</a>'
