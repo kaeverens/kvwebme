@@ -32,6 +32,7 @@ function Comments_adminModerate() {
 function Comments_adminDelete() {
 	$id=(int)$_REQUEST['id'];
 	dbQuery('delete from comments where id='.$id);
+	Core_cacheClear('comments');
 	return array(
 		'status'=>1,
 		'id'=>$id
