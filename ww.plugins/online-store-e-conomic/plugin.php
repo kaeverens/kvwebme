@@ -789,9 +789,15 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 			'email'
 		)
 	);
+	$md5Auth=md5($order['id'].'|'.microtime(true));
 	send_mail(
 		$details['Billing_Email'], 'no-reply@'.$_SERVER['HTTP_HOST'],
-		'Invoice '.$invId, 'Your invoice is attached.', array(
+		'Invoice '.$invId, 'Your invoice is attached.'."\n\n"
+		.'If the attachment does not load, please click the following link to'
+		.'  to access the invoice: http://'.$_SERVER['HTTP_HOST'].'/a/'
+		.'p=online-store/f=getInvoiceAsPDF/id='.$order['id']
+		.'/auth='.$md5Auth
+		, array(
 			array(
 				'tmp_name'=>$fname,
 				'name'=>$invId.'.pdf',
@@ -820,6 +826,7 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 	}
 	$meta['economic-invoiceId']=$bookId;
 	$meta['invoice-type']='pdf';
+	$meta['auth-md5']=$md5Auth;
 	dbQuery(
 		'update online_store_orders set invoice="'.base64_encode($pdf).'"'
 		.', meta="'.addslashes(json_encode($meta)).'"'
