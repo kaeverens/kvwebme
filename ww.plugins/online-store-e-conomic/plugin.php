@@ -553,7 +553,7 @@ class OnlineStoreEconomics{
 		}
 		catch(Exception $e) { // probably not a problem
 			// e-conomic doesn't support setDebtorCounty for non-UK connections
-			return false
+			return false;
 		}
 	}
 
