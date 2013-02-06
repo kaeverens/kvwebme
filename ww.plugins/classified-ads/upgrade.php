@@ -33,3 +33,18 @@ if ($version==3) {
 	);
 	$version=4;
 }
+if ($version==4) {
+	dbQuery(
+		'alter table classifiedads_ad add phone text'
+	);
+	dbQuery(
+		'alter table classifiedads_ad add title text'
+	);
+	dbQuery(
+		'alter table classifiedads_ad add location text'
+	);
+	dbQuery(
+		'alter table classifiedads_ad add excerpt text'
+	);
+	$version=5;
+}

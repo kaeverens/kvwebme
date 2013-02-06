@@ -26,7 +26,7 @@ $plugin=array(
 	'frontend'=>array( // { frontend
 		'page_type' => 'ClassifiedAds_frontend'
 	), // }
-	'version'=>4
+	'version'=>5
 );
 
 // }

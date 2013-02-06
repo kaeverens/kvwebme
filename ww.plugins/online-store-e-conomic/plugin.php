@@ -795,7 +795,7 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 		'Invoice '.$invId, 'Your invoice is attached.'."\n\n"
 		.'If the attachment does not load, please click the following link to'
 		.'  to access the invoice: http://'.$_SERVER['HTTP_HOST'].'/a/'
-		.'p=online-store/f=getInvoiceAsPDF/id='.$order['id']
+		.'p=online-store/f=invoicePdf/id='.$order['id']
 		.'/auth='.$md5Auth
 		, array(
 			array(

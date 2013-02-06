@@ -1156,18 +1156,20 @@ function Products_adminTypeCopy() {
 		$r['data_fields']=json_encode($r['data_fields']);
 	}
 	dbQuery(
-		'insert into products_types set name="'.addslashes($r['name'].' (copy)')
-		.'",multiview_template="'.addslashes($r['multiview_template']).'",'
-		.'singleview_template="'.addslashes($r['singleview_template']).'",'
-		.'data_fields="'.addslashes($r['data_fields']).'",'
-		.'is_for_sale='.((int)$r['is_for_sale']).','
-		.'is_voucher='.((int)$r['is_voucher']).','
-		.'default_category='.((int)@$r['default_category']).','
-		.'voucher_template="'.addslashes(@$r['voucher_template']).'",'
-		.'multiview_template_header="'.addslashes($r['multiview_template_header'])
-		.'",'
-		.'multiview_template_footer="'.addslashes($r['multiview_template_footer'])
-		.'",meta="'.addslashes($r['meta']).'"'
+		'insert into products_types set'
+		.' name="'.addslashes($r['name'].' (copy)').'"'
+		.', multiview_template="'.addslashes($r['multiview_template']).'"'
+		.', singleview_template="'.addslashes($r['singleview_template']).'"'
+		.', data_fields="'.addslashes($r['data_fields']).'"'
+		.', is_for_sale='.((int)$r['is_for_sale'])
+		.', is_voucher='.((int)$r['is_voucher'])
+		.', default_category='.((int)@$r['default_category'])
+		.', voucher_template="'.addslashes(@$r['voucher_template']).'"'
+		.', multiview_template_header="'
+			.addslashes($r['multiview_template_header']).'"'
+		.', multiview_template_footer="'
+			.addslashes($r['multiview_template_footer']).'"'
+		.', meta="'.addslashes($r['meta']).'"'
 	);
 	Core_cacheClear();
 	return array(
