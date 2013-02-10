@@ -204,9 +204,10 @@ function Products_priceDiscountPercent2($params, $smarty) {
 	}
 	if ($product->getPrice()) {
 		$p=$product->getPrice();
-		return (int)(100* (($p-$product->getPrice('sale'))/$p));
+		return '<span class="percentage-discount">'.
+		(int)(100* (($p-$product->getPrice('sale'))/$p)).'</span>';
 	}
-	return '--';
+	return '<span class="no-percentage-discount">0</span>';
 }
 
 // }
