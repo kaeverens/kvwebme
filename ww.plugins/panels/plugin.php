@@ -86,7 +86,7 @@ function Panels_show($vars) {
 	// }
 	// { get the panel content
 	$widgets=json_decode($p['body']);
-	if (!count($widgets->widgets)) {
+	if (!isset($widgets->widgets) || !count($widgets->widgets)) {
 		return '';
 	}
 	// }

@@ -190,6 +190,11 @@ function panel_visibility(id){
 function panels_init(panel_column){
 	for(var i=0;i<ww.panels.length;++i){
 		var p=ww.panels[i];
+		if (p.widgets==null) {
+			p.widgets={
+				widgets:[]
+			};
+		}
 		$('<div class="panel-wrapper '+(p.disabled?'disabled':'enabled')+'" id="panel'+p.id+'">'
 				+'<h4><span class="name">'+p.name+'</span></h4>'
 				+'<div class="controls" style="display:none;text-align:right">'
@@ -201,7 +206,7 @@ function panels_init(panel_column){
 					  +i+');" class="remove">[x]</a>'
 				+'</div></div>'
 			)
-			.data('widgets',p.widgets.widgets)
+			.data('widgets', p.widgets.widgets)
 			.appendTo(panel_column);
 	}
 }

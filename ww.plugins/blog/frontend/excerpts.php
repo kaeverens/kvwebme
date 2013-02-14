@@ -49,9 +49,12 @@ $sql='select * from blog_entry'.$constraints.' order by cdate desc'
 	.' limit '.$excerpts_offset.','.$excerpts_per_page;
 $rs=dbAll($sql);
 $c.='<div class="blog-main-wrapper">';
-$excerpt_length=(int)$PAGEDATA->vars['blog_excerpt_length'];
-if (!$excerpt_length) {
-	$excerpt_length=200;
+$excerpt_length=200;
+if (isset($PAGEDATA->vars['blog_excerpt_length'])) {
+	$excerpt_length=(int)$PAGEDATA->vars['blog_excerpt_length'];
+	if ($excerpt_length<10) {
+		$excerpt_length=200;
+	}
 }
 foreach ($rs as $r) {
 	$sclass=$r['status']=='1'?'blog-published':'blog-unpublished';

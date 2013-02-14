@@ -119,7 +119,7 @@ function Aggregator_parse($data, $vars) {
 			?$vars->stories_to_show
 			:2;
 		if (isset($vars->scrolling) && $vars->scrolling) {
-			WW_addScript('/j/jquery.vticker-min.js');
+			WW_addScript('/j/jquery.vticker.js');
 			WW_addCSS('/ww.plugins/messaging-notifier/c/scroller.css');
 			$html.='<script defer="defer">$(function(){
 					$("#messaging-notifier-'.$vars->id.'").vTicker({
