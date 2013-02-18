@@ -24,9 +24,14 @@ $plugin=array(
 		return __('Classified Ads');
 	},
 	'frontend'=>array( // { frontend
-		'page_type' => 'ClassifiedAds_frontend'
+		'page_type' => 'ClassifiedAds_frontend',
+		'template_functions' => array( // {
+			'CLASSIFIEDADS_CATEGORY_TREE' => array( // {
+				'function' => 'ClassifiedAds_categoryTree'
+			) // }
+		) // }
 	), // }
-	'version'=>5
+	'version'=>6
 );
 
 // }
@@ -67,11 +72,25 @@ function ClassifiedAds_frontend($PAGEDATA) {
 		$bits=explode('/', preg_replace('/\/$/', '', $unused_uri));
 		$cid=ClassifiedAds_getCategoryId($bits);
 	}
+	$sql='select name from classifiedads_categories where id='.$cid;
+	WW_addInlineScript(
+		'var classifiedads_categoryId='.$cid
+		.', classifiedads_categoryName="'.addslashes(
+			dbOne($sql, 'name')
+		).'";'
+	);
 	$html='<div id="classifiedads-wrapper">';
 	// { breadcrumbs
 	if ($bits) {
 		$html.='<div class="breadcrumbs">'
-			.ClassifiedAds_getBreadcrumbs($PAGEDATA, $bits).'</div>';
+			.ClassifiedAds_getBreadcrumbs($PAGEDATA, $bits);
+		if ($cid) {
+			$html.=' <span class="divider">&raquo;</span>'
+				.' <button class="classifiedads-advertise-button">'
+				.'Advertise Here</button>';
+			WW_addScript('classified-ads/frontend/advertise.js');
+		}
+		$html.='</div>';
 	}
 	// }
 	if ($bits && preg_match('/^[0-9]+-.*/', $bits[count($bits)-1])) {
@@ -230,7 +249,7 @@ function ClassifiedAds_getCategoryIdsRecursive($cid) {
 	*/
 function ClassifiedAds_getCategoryUrl($cid) {
 	if ((int)$cid===0) {
-		return $GLOBALS['PAGEDATA']->getRelativeUrl();
+		return PAGE::getInstanceByType('classified-ads')->getRelativeUrl();
 	}
 	if (!isset($GLOBALS['ClassifiedAdsUrls'])) {
 		$GLOBALS['ClassifiedAdsUrls']=array();
@@ -243,6 +262,50 @@ function ClassifiedAds_getCategoryUrl($cid) {
 		.preg_replace('/[^a-z0-9A-Z]/', '-', $r['name']);
 	$GLOBALS['ClassifiedAdsUrls'][$cid]=$url;
 	return $url;
+}
+
+// }
+// { ClassifiedAds_categoryTree
+
+/**
+	* get a tree of all classified ad categories, with links to each
+	*
+	* @param int $pid parent ID
+	*
+	* @return string
+	*/
+function ClassifiedAds_categoryTree($pid=0) {
+	if (is_array($pid)) {
+		$pid=0;
+	}
+	$lis=array();
+	$rs=dbAll(
+		'select id,icon,name from classifiedads_categories where parent='.$pid
+		.' order by name'
+	);
+	if (count($rs)) {
+		$lis[]='<ul class="classifiedads-category-tree"'
+			.' data-classifiedads-category-tree="0">';
+		foreach ($rs as $r) {
+			$img=$r['icon']
+				?'<img src="/a/f=getImg/'.$r['icon'].'/w=16/h=16"/>'
+				:'';
+			$lis[]='<li>'
+				.'<a href="'.ClassifiedAds_getCategoryUrl($r['id']).'">'
+				.'<ins>'.$img.'</ins>'
+				.htmlspecialchars($r['name']).'</a>'
+				.ClassifiedAds_categoryTree($r['id'])
+				.'</li>';
+		}
+		$lis[]='</ul>';
+	}
+	WW_addScript('/j/jstree/jquery.jstree.js');
+	WW_addScript('classified-ads/frontend/category-tree.js');
+	WW_addCSS('/ww.plugins/classified-ads/frontend/category-tree.css');
+	return $pid
+		?join('', $lis)
+		:'<div class="classifiedads-category-tree-wrapper">'.join('', $lis)
+		.'</div>';
 }
 
 // }

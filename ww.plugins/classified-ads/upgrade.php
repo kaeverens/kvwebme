@@ -48,3 +48,12 @@ if ($version==4) {
 	);
 	$version=5;
 }
+if ($version==5) {
+	dbQuery(
+		'alter table classifiedads_types add minimum_number_of_days int default 0'
+	);
+	dbQuery(
+		'alter table classifiedads_types add number_of_images int default 0'
+	);
+	$version=6;
+}

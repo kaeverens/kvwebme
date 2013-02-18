@@ -203,11 +203,15 @@ $(function() {
 					+'<tr><th>Name</th><td><input id="ads-types-name"/></td></tr>'
 					+'<tr><th>Max Chars</th><td><input id="ads-types-maxchars"/></td></tr>'
 					+'<tr><th>Price Per Day</th><td><input id="ads-types-price_per_day"/></td></tr>'
+					+'<tr><th>Minimum number of days</th><td><input id="ads-types-minimum_number_of_days"/></td></tr>'
+					+'<tr><th>Number of Images</th><td><input id="ads-types-number_of_images"/></td></tr>'
 					+'<tr><td></td><td><button>Save</button></td></tr>'
 					+'</table>');
 				$('#ads-types-name').val(ret.name);
 				$('#ads-types-maxchars').val(ret.maxchars);
 				$('#ads-types-price_per_day').val(ret.price_per_day);
+				$('#ads-types-minimum_number_of_days').val(+ret.minimum_number_of_days);
+				$('#ads-types-number_of_images').val(+ret.number_of_images);
 				$wrapper.find('button').click(function() {
 					$.post(
 						'/a/p=classified-ads/f=adminTypeEdit',
@@ -215,7 +219,9 @@ $(function() {
 							'id':ret.id,
 							'name':$('#ads-types-name').val(),
 							'maxchars':$('#ads-types-maxchars').val(),
-							'price_per_day':$('#ads-types-price_per_day').val()
+							'price_per_day':$('#ads-types-price_per_day').val(),
+							'minimum_number_of_days':$('#ads-types-minimum_number_of_days').val(),
+							'number_of_images':$('#ads-types-number_of_images').val()
 						},
 						function(ret) {
 							$wrapper.val('0').change();

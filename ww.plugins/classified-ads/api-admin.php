@@ -107,10 +107,10 @@ function ClassifiedAds_adminTypeGet() {
 	* @return status
 	*/
 function ClassifiedAds_adminTypeEdit() {
-	$sql='classifiedads_types set width='.((int)$_REQUEST['width'])
-		.', height='.((int)$_REQUEST['height'])
-		.', maxchars='.((int)$_REQUEST['maxchars'])
+	$sql='classifiedads_types set maxchars='.((int)$_REQUEST['maxchars'])
 		.', price_per_day='.((float)$_REQUEST['price_per_day'])
+		.', minimum_number_of_days='.((int)$_REQUEST['minimum_number_of_days'])
+		.', number_of_images='.((int)$_REQUEST['number_of_images'])
 		.', name="'.addslashes($_REQUEST['name']).'"';
 	$id=(int)$_REQUEST['id'];
 	if ($id) {
