@@ -42,7 +42,7 @@ if (!isset($_SESSION['online-store']['status'])) {
 	$_SESSION['online-store']['status']=1;
 }
 if (isset($_REQUEST['online-store-status'])) {
-	$_SESSION['online-store']['status']=(int)$_REQUEST['online-store-status'];
+	$_SESSION['online-store']['status']=$_REQUEST['online-store-status'];
 }
 $c.='<p>'
 	.__('This list shows orders with the status: ')
@@ -52,11 +52,12 @@ $statii=array(
 	'4'=>__('Authorised'),
 	'1'=>__('Paid'),
 	'2'=>__('Delivered'),
-	'3'=>__('Cancelled')
+	'3'=>__('Cancelled'),
+	'all'=>__('Show All Orders')
 );
 foreach ($statii as $k=>$v) {
 	$c.='<option value="'.$k.'"';
-	if ($k===$_SESSION['online-store']['status']) {
+	if ($k==$_SESSION['online-store']['status']) {
 		$c.=' selected="selected"';
 	}
 	$c.='>'.htmlspecialchars($v).'</option>';
@@ -66,13 +67,16 @@ $c.='</select></p>';
 if ($_SESSION['online-store']['status']==1) {
 	$filter='status=1 or authorised=1';
 }
+else if ($_SESSION['online-store']['status']=='all') {
+	$filter='1';
+}
 else {
 	$filter='status='.(int)$_SESSION['online-store']['status'];
 }
 // }
 $rs=dbAll(
-	'select status,id,total,date_created,authorised from online_store_orders where '
-	.$filter.' order by date_created desc'
+	'select status,id,total,date_created,authorised from online_store_orders'
+	.' where '.$filter.' order by date_created desc'
 );
 if (is_array($rs) && count($rs)) {
 	$c.='<div style="margin:0 10%">'
