@@ -214,7 +214,6 @@ function OnlineStore_invoicePdf() {
 	$id=(int)$_REQUEST['id'];
 	$order=dbRow(
 		'select invoice, meta, user_id from online_store_orders where id='.$id
-		.' and user_id='.$_SESSION['userdata']['id']
 	);
 	$ok=false;
 	if ($order) {

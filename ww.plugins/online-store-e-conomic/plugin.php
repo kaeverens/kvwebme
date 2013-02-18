@@ -789,25 +789,35 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 			'email'
 		)
 	);
+	$dont_send_invoice_email=(int)$DBVARS['economic_dont_send_invoice_email'];
 	$md5Auth=md5($order['id'].'|'.microtime(true));
-	send_mail(
-		$details['Billing_Email'], 'no-reply@'.$_SERVER['HTTP_HOST'],
-		'Invoice '.$invId, 'Your invoice is attached.'."\n\n"
-		.'If the attachment does not load, please click the following link to'
-		.'  to access the invoice: http://'.$_SERVER['HTTP_HOST'].'/a/'
-		.'p=online-store/f=invoicePdf/id='.$order['id']
-		.'/auth='.$md5Auth
-		, array(
+	if (!$dont_send_invoice_email) {
+		$invoice_email_subject=isset($DBVARS['economic_invoice_email_subject'])
+			?$DBVARS['economic_invoice_email_subject']:'Invoice {{invoice_num}}';
+		$invoice_email_subject=str_replace(
+			'{{invoice_num}}', $invId, $invoice_email_subject
+		);
+		send_mail(
+			$details['Billing_Email']
+			, 'no-reply@'.$_SERVER['HTTP_HOST']
+			, $invoice_email_subject
+			, 'Your invoice is attached.'."\n\n"
+			.'If the attachment does not load, please click the following link to'
+			.'  to access the invoice: http://'.$_SERVER['HTTP_HOST'].'/a/'
+			.'p=online-store/f=invoicePdf/id='.$order['id']
+			.'/auth='.$md5Auth
+			, array(
+				array(
+					'tmp_name'=>$fname,
+					'name'=>$invId.'.pdf',
+					'type'=>'application/pdf'
+				)
+			),
 			array(
-				'tmp_name'=>$fname,
-				'name'=>$invId.'.pdf',
-				'type'=>'application/pdf'
+				'BCC'=>join(',', $emails)
 			)
-		),
-		array(
-			'BCC'=>join(',', $emails)
-		)
-	);
+		);
+	}
 	// }
 	// { book the invoice
 	if (isset($DBVARS['economic_book_immediately'])

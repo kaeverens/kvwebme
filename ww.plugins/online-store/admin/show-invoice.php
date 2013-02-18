@@ -22,6 +22,12 @@ if (!isset($_REQUEST['id'])) {
 $id=(int)$_REQUEST['id'];
 
 $inv=dbOne('select invoice from online_store_orders where id='.$id, 'invoice');
+if (preg_match('/==$|[a-zA-Z0-9]$/', $inv)) {
+	$pdf=base64_decode($inv);
+	header('Content-type: application/pdf');
+	echo $pdf;
+	Core_quit();
+}
 if (strpos($inv, '<body')===false) {
 	$inv='<body>'.$inv.'</body>';
 }
