@@ -47,8 +47,21 @@ function WW_getInlineScripts() {
 	* @return string generated URL
 	*/
 function WW_getScripts() {
-	return '/js/'.filemtime(SCRIPTBASE.'j/js.js').'*'
-		.join('*', $GLOBALS['scripts']);
+	global $scripts;
+	$latest=filemtime(SCRIPTBASE.'j/js.js');
+	foreach ($scripts as $script) {
+		if (strpos($script, '/')===0) {
+			$t=filemtime(SCRIPTBASE.$script);
+		}
+		else {
+			$t=filemtime(SCRIPTBASE.'/ww.plugins/'.$script);
+		}
+		if ($t>$latest) {
+			$latest=$t;
+		}
+	}
+	return '/js/'.$latest.'*'
+		.join('*', $scripts);
 }
 
 // }
@@ -316,6 +329,7 @@ $c.='WW_CSS_GOES_HERE'.Core_getJQueryScripts()
 $tmp='var pagedata={id:'.$PAGEDATA->id
 	.Core_trigger('displaying-pagedata')
 	.',ptop:'.$PAGEDATA->getTopParentId()
+	.(isset($DBVARS['cdn']) && $DBVARS['cdn']?', cdn:"'.$DBVARS['cdn'].'"':'')
 	.',sessid:"'.session_id().'"'
 	.',lang:"'.@$_SESSION['language'].'"'
 	.'},'

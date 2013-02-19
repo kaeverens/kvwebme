@@ -77,7 +77,9 @@ function ImageGallery_galleryGet() {
 						'media'=>'image',
 						'width'=>$meta['width'],
 						'height'=>$meta['height'],
-						'url'=>'/a/f=getImg/'.$dir.'/'.$meta['name']
+	
+						'url'=>(isset($DBVARS['cdn']) && $DBVARS['cdn']?'//'.$DBVARS['cdn']:'')
+							.'/a/f=getImg/'.$dir.'/'.$meta['name']
 					);
 					if (isset($meta['author'])) {
 						$arr['author']=$meta['author'];
@@ -102,7 +104,7 @@ function ImageGallery_galleryGet() {
 						array(
 							'id'=>$file['id'],
 							'media'=>'video',
-							'url'=>'/a/f=getImg/'.$image,
+							'url'=>(isset($DBVARS['cdn']) && $DBVARS['cdn']?'//'.$DBVARS['cdn']:'').'/a/f=getImg/'.$image,
 							'href'=>$meta['href']
 						)
 					);
@@ -139,13 +141,15 @@ function ImageGallery_galleryGet() {
 	* @return null
 	*/
 function ImageGallery_img() {
+	global $DBVARS;
 	$id    =(int)$_REQUEST['id'];
 	$width =@(int)$_REQUEST['w'];
 	$height=@(int)$_REQUEST['h'];
 	$sql='select * from image_gallery where id='.$id;
 	$r=dbRow($sql);
 	$meta=json_decode($r['meta']);
-	$url='/a/f=getImg/w='.$width.'/h='.$height.'/image-galleries/'
+	$url=(isset($DBVARS['cdn']) && $DBVARS['cdn']?'//'.$DBVARS['cdn']:'')
+		.'/a/f=getImg/w='.$width.'/h='.$height.'/image-galleries/'
 		.'imagegallery-'.$r['gallery_id'].'/'.$meta->name;
 	header('Location: '.$url);
 	Core_quit();

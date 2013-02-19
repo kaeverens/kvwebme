@@ -62,12 +62,12 @@ var Gallery={
 		}
 		$img
 			.css({
-				'background':'url("'+src+'") no-repeat '+bgoffset,
+				'background':'url("'+ww.cdn+src+'") no-repeat '+bgoffset,
 				'width'     :newwidth+'px',
 				'height'    :newheight+'px'
 			})
-			.attr('image', src)
-			.attr('src', newsrc);
+			.attr('image', ww.cdn+src)
+			.attr('src', ww.cdn+newsrc);
 	},
 	bump:function(offset) { // bump effect
 		var pos=parseInt($('#slider').css('left'));
@@ -234,7 +234,7 @@ var Gallery={
 						'height':'auto'
 					})
 					.attr({
-						'src':src,
+						'src':ww.cdn+src,
 						'title':files[e].caption,
 						'num':e,
 						'sequence':sequence
@@ -276,14 +276,14 @@ var Gallery={
 							.css('height', $wrapper.css('height'));
 						$img
 							.css({
-								'background':'url("'+src+'") no-repeat '+bgoffset,
+								'background':'url("'+ww.cdn+src+'") no-repeat '+bgoffset,
 								'background-size':'100%',
 								'width'     :newwidth+'px',
 								'height'    :newheight+'px',
 								'margin-top':marginTop
 							})
-							.attr('image', src)
-							.attr('src', newsrc);
+							.attr('image', ww.cdn+src)
+							.attr('src', ww.cdn+newsrc);
 						if (newwidth>$wrapper.width()) {
 							$wrapper.css({
 								'width':newwidth+'px'
@@ -935,7 +935,7 @@ var Gallery={
 			:'';
 		var html='<a href="'+(file.media=='image'?file.url:file.href)+'" id="'
 			+Gallery.position+'"'+popup+style+'>'
-			+'<span class="image"><img src="'+file.url+'/w='+xy[0]+'/h='+xy[1]+'"/></span>'
+			+'<span class="image"><img src="'+ww.cdn+file.url+'/w='+xy[0]+'/h='+xy[1]+'"/></span>'
 			+'<span class="caption">'+caption+'</span></a>';
 		return html;
 	},
