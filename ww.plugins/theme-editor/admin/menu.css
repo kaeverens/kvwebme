@@ -20,3 +20,13 @@ div.sub-nav li .actions a:hover{
 	background:none;
 	color:red;
 }
+div.sub-nav li div.controls{
+	display:none;
+	float:right;
+}
+div.sub-nav li:hover div.controls{
+	display:block;
+}
+div.sub-nav li div.controls a{
+	display:inline-block;
+}

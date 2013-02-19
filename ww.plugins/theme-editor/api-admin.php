@@ -11,6 +11,81 @@
 	* @link     http://webme.kvsites.ie/
 	*/
 
+// { ThemeEditor_adminCssCopy
+
+/**
+	* copy a CSS file
+	*
+	* @return status
+	*/
+function ThemeEditor_adminCssCopy() {
+	$from=$_REQUEST['from'];
+	$to  =$_REQUEST['to'];
+	$errors=array();
+	if (preg_replace('/[a-zA-Z0-9\-_ ]/', '', $from) !== '') {
+		$errors[]=__('invalid "From" name');
+	}
+	if (preg_replace('/[a-zA-Z0-9\-_ ]/', '', $to) !== '') {
+		$errors[]=__('invalid "To" name');
+	}
+	$to.='.css';
+	$from.='.css';
+	$d=new DirectoryIterator(THEME_DIR.'/'.THEME.'/c');
+	$from_found=false;
+	foreach ($d as $f) {
+		if ($f->isDot()) {
+			continue;
+		}
+		$fn=$f->getFileName();
+		if ($fn==$to) {
+			$errors[]=__('that CSS file already exists');
+		}
+		if ($fn==$from) {
+			$from_found=true;
+		}
+	}
+	if (!$from_found) {
+		$errors[]=__('the "From" file does not exist');
+	}
+	if (!count($errors)) {
+		copy(THEME_DIR.'/'.THEME.'/c/'.$from, THEME_DIR.'/'.THEME.'/c/'.$to);
+		if (!file_exists(THEME_DIR.'/'.THEME.'/c/'.$to)) {
+			$errors[]=__('failed to copy the file. please check file permissions');
+		}
+	}
+	if (count($errors)) {
+		return array(
+			'error'=>join("\n", $errors)
+		);
+	}
+	return array('success'=>1);
+}
+
+// }
+// { ThemeEditor_adminCssDelete
+
+/**
+	* delete a CSS file
+	*
+	* @return status
+	*/
+function ThemeEditor_adminCssDelete() {
+	$file=$_REQUEST['file'];
+	$errors=array();
+	if (preg_replace('/[a-zA-Z0-9\-_ ]/', '', $file) !== '') {
+		$errors[]=__('invalid file name');
+	}
+	$file.='.css';
+	if (!count($errors)) {
+		unlink(THEME_DIR.'/'.THEME.'/c/'.$file);
+		if (file_exists(THEME_DIR.'/'.THEME.'/c/'.$file)) {
+			$errors[]=__('failed to delete the file. please check file permissions');
+		}
+	}
+	return array('success'=>1);
+}
+
+// }
 // { ThemeEditor_adminTemplateCopy
 
 /**
@@ -62,52 +137,25 @@ function ThemeEditor_adminTemplateCopy() {
 }
 
 // }
-// { ThemeEditor_adminCssCopy
+// { ThemeEditor_adminTemplateDelete
 
 /**
-	* copy a CSS file
+	* delete a template file
 	*
 	* @return status
 	*/
-function ThemeEditor_adminCssCopy() {
-	$from=$_REQUEST['from'];
-	$to  =$_REQUEST['to'];
+function ThemeEditor_adminTemplateDelete() {
+	$file=$_REQUEST['file'];
 	$errors=array();
-	if (preg_replace('/[a-zA-Z0-9\-_ ]/', '', $from) !== '') {
-		$errors[]=__('invalid "From" name');
+	if (preg_replace('/[a-zA-Z0-9\-_ ]/', '', $file) !== '') {
+		$errors[]=__('invalid file name');
 	}
-	if (preg_replace('/[a-zA-Z0-9\-_ ]/', '', $to) !== '') {
-		$errors[]=__('invalid "To" name');
-	}
-	$to.='.css';
-	$from.='.css';
-	$d=new DirectoryIterator(THEME_DIR.'/'.THEME.'/c');
-	$from_found=false;
-	foreach ($d as $f) {
-		if ($f->isDot()) {
-			continue;
-		}
-		$fn=$f->getFileName();
-		if ($fn==$to) {
-			$errors[]=__('that CSS file already exists');
-		}
-		if ($fn==$from) {
-			$from_found=true;
-		}
-	}
-	if (!$from_found) {
-		$errors[]=__('the "From" file does not exist');
-	}
+	$file.='.html';
 	if (!count($errors)) {
-		copy(THEME_DIR.'/'.THEME.'/c/'.$from, THEME_DIR.'/'.THEME.'/c/'.$to);
-		if (!file_exists(THEME_DIR.'/'.THEME.'/c/'.$to)) {
-			$errors[]=__('failed to copy the file. please check file permissions');
+		unlink(THEME_DIR.'/'.THEME.'/h/'.$file);
+		if (file_exists(THEME_DIR.'/'.THEME.'/h/'.$file)) {
+			$errors[]=__('failed to delete the file. please check file permissions');
 		}
-	}
-	if (count($errors)) {
-		return array(
-			'error'=>join("\n", $errors)
-		);
 	}
 	return array('success'=>1);
 }

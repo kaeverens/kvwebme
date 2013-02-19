@@ -1,6 +1,6 @@
 $(function(){
 	$('#themeeditor-templates a').each(function(){
-		$('<a href="javascript:;" style="float:right" class="ui-icon ui-icon-copy" title="copy"></a>')
+		var $copy=$('<a href="javascript:;" class="ui-icon ui-icon-copy" title="copy"></a>')
 			.click(function(){
 				var name=$(this).closest('li').find('>a').text();
 				var msg='', newname=name;
@@ -32,11 +32,33 @@ $(function(){
 					},
 					"json"
 				);
-			})
+			});
+		var $delete=$('<a href="javascript:;" class="ui-icon ui-icon-trash" title="delete"></a>')
+			.click(function(){
+				var $li=$(this).closest('li');
+				var name=$li.find('>a').text();
+				if (!confirm('are you sure you want to delete the template file "'+name+'"')
+				) {
+					return;
+				}
+				$.post(
+					'/a/p=theme-editor/f=adminTemplateDelete',
+					{ 'file':name },
+					function(ret) {
+						if (ret.error) {
+							return alert(ret.error);
+						}
+						$li.remove();
+					},
+					"json"
+				);
+			});
+		var $controls=$('<div class="controls">')
 			.insertBefore(this);
+		$controls.append($copy, $delete);
 	});
 	$('#themeeditor-css a').each(function(){
-		$('<a href="javascript:;" style="float:right" class="ui-icon ui-icon-copy" title="copy"></a>')
+		var $copy=$('<a href="javascript:;" class="ui-icon ui-icon-copy" title="copy"></a>')
 			.click(function(){
 				var name=$(this).closest('li').find('>a').text();
 				var msg='', newname=name;
@@ -68,7 +90,29 @@ $(function(){
 					},
 					"json"
 				);
-			})
+			});
+		var $delete=$('<a href="javascript:;" class="ui-icon ui-icon-trash" title="delete"></a>')
+			.click(function(){
+				var $li=$(this).closest('li');
+				var name=$li.find('>a').text();
+				if (!confirm('are you sure you want to delete the CSS file "'+name+'"')
+				) {
+					return;
+				}
+				$.post(
+					'/a/p=theme-editor/f=adminCssDelete',
+					{ 'file':name },
+					function(ret) {
+						if (ret.error) {
+							return alert(ret.error);
+						}
+						$li.remove();
+					},
+					"json"
+				);
+			});
+		var $controls=$('<div class="controls">')
 			.insertBefore(this);
+		$controls.append($copy, $delete);
 	});
 });
