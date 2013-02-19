@@ -77,7 +77,9 @@ $(function(){
 	}
 	setTimeout(refreshSession, 60000);
 	// }
-	ww.cdn=pagedata.cdn?'//'+pagedata.cdn:'';
+	if (window.pagedata!=undefined) {
+		ww.cdn=pagedata.cdn?'//'+pagedata.cdn:'';
+	}
 });
 // { stubs
 var stubs=['lightbox_show'];
