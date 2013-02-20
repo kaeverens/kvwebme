@@ -66,14 +66,16 @@ function ImageTransition_show($vars) {
 				return '<em>'.__('No images in selected directory.').'</em>';
 			}
 			$html='';
+			$cdnprefix=isset($GLOBALS['DBVARS']['cdn'])
+				?'//'.$GLOBALS['DBVARS']['cdn']:'';
 			if ($r['trans_type']=='3dCarousel') {
 				$html.='<div id="k3dCarousel'.$vars->id.'" style="height:'
 					.($height+30).'px"><img style="display:none" src="'
-					.'/a/f=getImg/w='.$width.'/h='.$height
+					.$cdnprefix.'/a/f=getImg/w='.$width.'/h='.$height
 					.$r['directory'].'/'
 					.join(
 						'" /><img style="display:none" src="'
-						.'/a/f=getImg/w='.$width.'/h='.$height
+						.$cdnprefix.'/a/f=getImg/w='.$width.'/h='.$height
 						.$r['directory'].'/',
 						$imgs
 					)
@@ -100,11 +102,13 @@ function ImageTransition_show($vars) {
 				$html.=' style="display:block;width:'.$width.'px;height:'.$height
 					.'px;" id="image_transitions_'.$vars->id.'">'
 					.'<div style="width:'.$width.'px;height:'.$height.'px;background:'
-					.'url(\'/a/f=getImg/w='.$width.'/h='.$height.$r['directory'].'/'
+					.'url(\''.$cdnprefix.'/a/f=getImg/w='.$width.'/h='
+					.$height.$r['directory'].'/'
 					.join(
 						'\') no-repeat center center">&nbsp;</div><div style="width:'
 						.$width.'px;height:'.$height.'px;display:none;background:'
-						.'url(\'/a/f=getImg/w='.$width.'/h='.$height.$r['directory'].'/',
+						.'url(\''.$cdnprefix.'/a/f=getImg/w='.$width.'/h='
+						.$height.$r['directory'].'/',
 						$imgs
 					).'\') no-repeat center center">&nbsp;</div>';
 				if ($r['url']) {
