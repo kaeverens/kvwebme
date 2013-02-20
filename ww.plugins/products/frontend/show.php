@@ -881,6 +881,7 @@ class Products{
 		$PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0,
 		$limit_start=0, $enabledFilter=0
 	) {
+		global $cdnprefix;
 		$c='';
 		// { sort based on $order_by
 		$md5=md5(
@@ -1108,7 +1109,8 @@ class Products{
 					$categories.='<li><a href="'.$cat->getRelativeUrl().'">';
 					$icon='/products/categories/'.$cr['id'].'/icon.png';
 					if (file_exists(USERBASE.'f'.$icon)) {
-						$categories.='<img src="/a/f=getImg/w=120/h=120'.$icon.'"/>';
+						$categories.='<img src="'.$cdnprefix
+							.'/a/f=getImg/w=120/h=120'.$icon.'"/>';
 					}
 					$categories.='<span>'.htmlspecialchars($cr['name']).'</span>'
 						.'</a></li>';

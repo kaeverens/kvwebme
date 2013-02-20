@@ -73,8 +73,8 @@ switch ($widget_type) {
 			
 			$img=$iid
 				?'<a class="product-widget-imglink" href="'.$product->getRelativeURL()
-				.'"><img class="product-widget-img" src="/a/w=200/h=auto/'
-				.'/f=getImg/'.$iid.'"/></a>'
+				.'"><img class="product-widget-img" src="'.$GLOBALS['cdnprefix']
+				.'/a/w=200/h=auto/f=getImg/'.$iid.'"/></a>'
 				:'';
 				$pvat = array("vat" => $_SESSION['onlinestore_vat_percent']);
 			$html.='<div class="products-widget-inner">'.$img

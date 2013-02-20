@@ -934,7 +934,8 @@ class ProductType{
 	  * @return string html of the image 
 	  */
 	function getMissingImage($maxsize) {
-		return '<img src="/a/f=getImg/w='.$maxsize.'/h='.$maxsize
+		global $cdnprefix;
+		return '<img src="'.$cdnprefix.'/a/f=getImg/w='.$maxsize.'/h='.$maxsize
 			.'/products/types/'.$this->id.'/image-not-found.png" />';
 	}
 
@@ -1962,6 +1963,7 @@ function Products_getSubCategoriesAsMenuHtml(
 	* @return string the HTML
 	*/
 function Products_image($params, $smarty) {
+	global $cdnprefix;
 	$params=array_merge(
 		array(
 			'width'=>200,
@@ -1986,11 +1988,13 @@ function Products_image($params, $smarty) {
 	}
 	list($link1, $link2)=@$params['nolink']
 		?array('', '')
-		:array('<a href="/a/f=getImg/'.$iid.'" target="popup">', '</a>');
+		:array(
+			'<a href="'.$cdnprefix.'/a/f=getImg/'.$iid.'" target="popup">', '</a>'
+		);
 	$imgclasses=count($imgclasses)?' class="'.join(' ', $imgclasses).'"':'';
 	return '<div class="products-image" style="width:'.$params['width']
 		.'px;height:'.$params['height']
-		.'px">'.$link1.'<img'.$imgclasses.' src="/a/f=getImg/w='
+		.'px">'.$link1.'<img'.$imgclasses.' src="'.$cdnprefix.'/a/f=getImg/w='
 		.$params['width'].'/h='
 		.$params['height'].'/'.$iid.'"/>'
 		.$link2.'</div>';
@@ -2008,6 +2012,7 @@ function Products_image($params, $smarty) {
 	* @return string the images HTML
 	*/
 function Products_images($params, $smarty) {
+	global $cdnprefix;
 	$params=array_merge(
 		array(
 			'thumbsize'=>60,
@@ -2050,7 +2055,8 @@ function Products_images($params, $smarty) {
 			continue;
 		}
 		$html.='<li><img src="/i/blank.gif" style="width:'.$params['thumbsize'].'px;'
-			.'height:'.$params['thumbsize'].'px;background:url(\'/a/f=getImg/w='
+			.'height:'.$params['thumbsize'].'px;background:url(\''
+			.$cdnprefix.'/a/f=getImg/w='
 			.$params['thumbsize'].'/h='.$params['thumbsize'].'/'.$directory.'/'
 			.urlencode($image->getFilename()).'\') no-repeat center center"/></li>';
 	}
@@ -2651,6 +2657,7 @@ function Products_setupSmarty() {
 	* @return string the list of products
 	*/
 function Products_showRelatedProducts($params, $smarty) {
+	global $cdnprefix;
 	$params=array_merge(
 		array(
 			'mode'=>'table',
@@ -2724,7 +2731,8 @@ function Products_showRelatedProducts($params, $smarty) {
 				$pvat = array("vat" => $_SESSION['onlinestore_vat_percent']);
 				require_once SCRIPTBASE.'/ww.plugins/online-store/frontend/'
 					.'smarty-functions.php';
-				$h[]='<img src="/a/w='.$params['thumb_width'].'/h='.$params['thumb_height']
+				$h[]='<img src="'.$cdnprefix.'/a/w='.$params['thumb_width']
+					.'/h='.$params['thumb_height']
 					.'/f=getImg/'.$iid.'" />'
 					.OnlineStore_productPriceFull2($pvat, $smarty)
 					.'<p class="product_related_name">'
@@ -2732,7 +2740,8 @@ function Products_showRelatedProducts($params, $smarty) {
 				continue;
 			}
 			
-			$h[]='<img src="/a/w='.$params['thumb_width'].'/h='.$params['thumb_height']
+			$h[]='<img src="'.$cdnprefix.'/a/w='.$params['thumb_width']
+				.'/h='.$params['thumb_height']
 				.'/f=getImg/'.$iid.'"/>'
 				.'<br/>'.htmlspecialchars(__fromJSON($p->name)).'</a>';
 		}

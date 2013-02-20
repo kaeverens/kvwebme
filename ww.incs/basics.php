@@ -967,6 +967,8 @@ else {
 	define('THEME', $DBVARS['theme']);
 }
 // }
+$cdnprefix=isset($GLOBALS['DBVARS']['cdn'])
+	?'//'.$GLOBALS['DBVARS']['cdn']:'';
 // { set up location
 if (!isset($_SESSION['location'])) {
 	require_once dirname(__FILE__).'/api-funcs.php';

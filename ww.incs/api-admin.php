@@ -792,7 +792,7 @@ function Core_adminMenusGetDefault() {
 }
 
 // }
-// { Core_adminMenusSetMineAsDefault
+// { Core_adminMenuSetMineAsDefault
 
 /**
 	* set the current admin's menu as the default admin menu
@@ -818,7 +818,7 @@ function Core_adminMenuSetMineAsDefault() {
 }
 
 // }
-// { Core_adminMenusClearAll
+// { Core_adminMenuClearAll
 
 /**
 	* clear all menus
@@ -834,7 +834,7 @@ function Core_adminMenuClearAll() {
 }
 
 // }
-// { Core_adminMenusClearAllAdmins
+// { Core_adminMenuClearAllAdmins
 
 /**
 	* clear all admin's menus
@@ -850,7 +850,7 @@ function Core_adminMenuClearAllAdmins() {
 }
 
 // }
-// { Core_adminMenusClearMine
+// { Core_adminMenuClearMine
 
 /**
 	* clear the current admin's menu

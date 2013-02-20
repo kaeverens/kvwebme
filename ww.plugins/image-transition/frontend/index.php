@@ -21,6 +21,7 @@
 	* @return HTML of the widget
 	*/
 function ImageTransition_show($vars) {
+	global $cdnprefix;
 	if (!is_array($vars) && isset($vars->id) && $vars->id) {
 		$r=Core_cacheLoad('image-transitions', 'id'.$vars->id);
 		if ($r===false) {
@@ -66,8 +67,6 @@ function ImageTransition_show($vars) {
 				return '<em>'.__('No images in selected directory.').'</em>';
 			}
 			$html='';
-			$cdnprefix=isset($GLOBALS['DBVARS']['cdn'])
-				?'//'.$GLOBALS['DBVARS']['cdn']:'';
 			if ($r['trans_type']=='3dCarousel') {
 				$html.='<div id="k3dCarousel'.$vars->id.'" style="height:'
 					.($height+30).'px"><img style="display:none" src="'

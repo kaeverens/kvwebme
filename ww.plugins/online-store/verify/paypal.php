@@ -39,6 +39,20 @@ if (!$fp) {
 	while (!feof($fp)) {
 		$res = fgets($fp, 1024);
 		if (strcmp($res, "VERIFIED") == 0) {
+			$str='';
+			foreach ($_POST as $key => $value) {
+				$str.=$key." = ". $value."\n";
+			}
+			if (!isset($_POST['item_number'])) {
+				Core_mail(
+					$eml
+					, $_SERVER['HTTP_HOST'].' problem with PayPal payment',
+					, "There was a problem marking a purchase as Paid. Please contact"
+					." your website provider with the following details:\n\n".$str
+					, $eml
+				);
+				Core_quit();
+			}
 			$id=(int)$_POST['item_number'];
 			if ($id<1) {
 				Core_quit();
@@ -47,10 +61,6 @@ if (!$fp) {
 			// check that payment_amount/payment_currency are correct
 			$order=dbRow("SELECT * FROM online_store_orders WHERE id=$id");
 			if (round($order['total']) != round($_POST['mc_gross'])) {
-				$str='';
-				foreach ($_POST as $key => $value) {
-					$str.=$key." = ". $value."\n";
-				}
 				// TODO: you should be able to edit the email address here - e.g. test domains will have a strange email address
 				$eml='info@'.preg_replace('/^www\./', '', $_SERVER['HTTP_HOST']);
 				Core_mail(

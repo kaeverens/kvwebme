@@ -60,10 +60,6 @@ WW_addScript('/j/jstree/_lib/jquery.cookie.js');
 WW_addCSS('/j/jquery.multiselect/jquery.multiselect.css');
 WW_addScript('/j/jquery.multiselect/jquery.multiselect.min.js');
 // }
-// { uploadify
-WW_addScript('image-gallery/files/uploadify.jquery.min.js');
-WW_addCSS('/ww.plugins/image-gallery/files/uploadify.css');
-// }
 WW_addScript('products/admin/categories.js');
 WW_addScript('products/admin/create-page.js');
 WW_addScript('image-gallery/files/swfobject.js');
