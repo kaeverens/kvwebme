@@ -2067,8 +2067,8 @@ function Core_adminUsersGetDT() {
 	*/
 function Core_statsUpdate() {
 	$time=time()+30;
-	$f=file(USERBASE.'/log.txt');
-	foreach ($f as $l) {
+	$handle=fopen(USERBASE.'/log.txt', 'r');
+	while(($l=fgets($handle, 4096)) !== false) {
 		list(
 			$tmp,$type_data,$user_agent,$referer,
 			$ram_used,$bandwidth,$time_to_render,$db_calls
@@ -2087,6 +2087,7 @@ function Core_statsUpdate() {
 			."',$ram_used,$bandwidth,$time_to_render,$db_calls)";
 		dbQuery($sql);
 	}
+	fclose($handle);
 	file_put_contents(USERBASE.'/log.txt', '');
 	do {
 		$cdate=dbOne(
