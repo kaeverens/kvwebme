@@ -1,6 +1,8 @@
-if(!ww.messaging_notifier)ww.messaging_notifier={
-	editor_instances:0
-};
+if (!ww.messaging_notifier) {
+	ww.messaging_notifier={
+		editor_instances:0
+	};
+}
 function messaging_notifier_edit(ev){
 	var el=ev.target;
 	var id=el.id.replace(/messaging_notifier_editlink_/,'');
@@ -17,8 +19,11 @@ function messaging_notifier_edit(ev){
 				'Save':function(){
 					var data=[];
 					$('tr',d).each(function(){
-						var sel=$('select',this),url=$('.url',this),refresh=$('input.refresh',this);
-						if(!sel.length || !url.length)return;
+						var sel=$('td:first-child select', this), url=$('.url', this)
+							, refresh=$('input.refresh', this);
+						if (!sel.length || !url.length) {
+							return;
+						}
 						refresh=parseInt(refresh.val());
 						if(refresh<1)refresh=60;
 						var arr={
@@ -26,22 +31,33 @@ function messaging_notifier_edit(ev){
 							'url':url.val(),
 							'refresh':refresh
 						};
-						if(!arr.type || arr.type=='--none--' || !arr.url)return;
+						if (!arr.type || arr.type=='--none--' || !arr.url) {
+							return;
+						}
 						data.push(arr);
 					});
-					$.post('/ww.plugins/messaging-notifier/admin/widget-form.php',{'id':id,'action':'save','data':Json.toString(data)},function(ret){
-						if(ret.id!=ret.was_id){
-							el.id='messaging_notifier_editlink_'+ret.id;
-						}
-						id=ret.id;
-						var w=$(el).closest('.widget-wrapper');
-						var wd=w.data('widget');
-						wd.id=id;
-						w.data('widget',wd);
-						updateWidgets(w.closest('.panel-wrapper'));
-						d.dialog('close');
-						d.remove();
-					},'json');
+					$.post(
+						'/ww.plugins/messaging-notifier/admin/widget-form.php',
+						{
+							'id':id,
+							'action':'save',
+							'data':Json.toString(data)
+						},
+						function(ret){
+							if(ret.id!=ret.was_id){
+								el.id='messaging_notifier_editlink_'+ret.id;
+							}
+							id=ret.id;
+							var w=$(el).closest('.widget-wrapper');
+							var wd=w.data('widget');
+							wd.id=id;
+							w.data('widget',wd);
+							updateWidgets(w.closest('.panel-wrapper'));
+							d.dialog('close');
+							d.remove();
+						},
+						'json'
+					);
 				},
 				'Close':function(){
 					d.dialog('close');
@@ -50,9 +66,9 @@ function messaging_notifier_edit(ev){
 			}
 		});
 		var t=$('<table style="width:100%"><tr><th>Type</th><th>URL</th><th>Refresh<br />(minutes)<th></tr>');
-		for(var i=0;i<res.data.length;++i){
-			t.append(messaging_notifier_table_row(res.data[i]));
-		}
+		$.each(res.data, function(k, v) {
+			t.append(messaging_notifier_table_row(v));
+		});
 		t.append(messaging_notifier_table_row());
 		t.appendTo(d);
 	});

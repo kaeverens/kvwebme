@@ -27,26 +27,18 @@ if (isset($_REQUEST['get_messaging_notifier'])) {
 	echo json_encode($r);
 	Core_quit();
 }
-if (@$_REQUEST['action']=='save') {
+if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	$id=(int)$_REQUEST['id'];
 	$id_was=$id;
 	$data=json_decode($_REQUEST['data']);
 	foreach ($data as $k=>$r) {
 		if ($r->type=='Twitter') {
 			$regex='http://twitter.com/statuses/user_timeline/[0-9]*.rss';
-			if (!preg_match('#^'.$regex.'$#', $r->url)) {
-				$file=file_get_contents($r->url);
-				$rss=preg_replace(
-					'#.*"('.$regex.')".*#',
-					'$1',
-					str_replace(array("\n", "\r"), '', $file)
-				);
-				if (!preg_match('#^'.$regex.'$#', $rss)) {
-					unset($data[$k]);
-				}
-				else {
-					$data[$k]->url=$rss;
-				}
+			$regex='/https.*api.twitter.com.*statuses/';
+			if (!preg_match($regex, $r->url)) {
+				$username=preg_replace('#.*/#', '', $r->url);
+				$data[$k]->url='https://api.twitter.com/1/statuses/'
+					.'user_timeline.rss?screen_name='.$username;
 			}
 		}
 	}
@@ -61,7 +53,12 @@ if (@$_REQUEST['action']=='save') {
 		dbQuery($sql);
 		$id=dbOne('select last_insert_id() as id', 'id');
 	}
-	$ret=array('id'=>$id,'id_was'=>$id_was);
+	$ret=array(
+		'id'=>$id,
+		'id_was'=>$id_was,
+		'datastr'=>$_REQUEST['data'],
+		'dataobj'=>$data
+	);
 	echo json_encode($ret);
 	Core_cacheClear('messaging_notifier');
 	Core_quit();
