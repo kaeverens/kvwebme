@@ -763,7 +763,7 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 		);
 	}
 	// { shipping
-	if (isset($meta['shipping']) && $meta['shipping']['total']) {
+	if (isset($meta['shipping'])) {
 		$OSE->addInvoiceLine(
 			$invId,
 			99999999,
