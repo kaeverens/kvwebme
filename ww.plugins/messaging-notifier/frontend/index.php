@@ -98,7 +98,7 @@ function Aggregator_parse($data, $vars) {
 			continue;
 		}
 		$description='';
-		if ($vars->characters_shown) {
+		if ($vars->characters_shown && isset($r['description'])) {
 			$description=preg_replace('/<[^>]*>/', '', $r['description']);
 			if (strlen($description)>(int)$vars->characters_shown) {
 				$description=substr($description, 0, $vars->characters_shown).'...';

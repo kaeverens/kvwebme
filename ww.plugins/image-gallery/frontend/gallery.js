@@ -62,11 +62,11 @@ var Gallery={
 		}
 		$img
 			.css({
-				'background':'url("'+ww.cdn+src+'") no-repeat '+bgoffset,
+				'background':'url("'+src+'") no-repeat '+bgoffset,
 				'width'     :newwidth+'px',
 				'height'    :newheight+'px'
 			})
-			.attr('image', ww.cdn+src)
+			.attr('image', src)
 			.attr('src', ww.cdn+newsrc);
 	},
 	bump:function(offset) { // bump effect
@@ -503,7 +503,6 @@ var Gallery={
 				}
 				pos.x=img.offsetLeft+(+tag.x)/ratio-(pos.width/2);
 				pos.y=img.offsetTop+(+tag.y)/ratio-(pos.height/2);
-				console.log(pos);
 				var $tag=$(
 					'<div class="tag"><img style="width:'+pos.width+'px;'
 					+'height:'+pos.height+'px;"/></div>')
