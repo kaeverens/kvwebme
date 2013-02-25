@@ -75,14 +75,16 @@ else {
 }
 // }
 $rs=dbAll(
-	'select status,id,total,date_created,authorised from online_store_orders'
+	'select status,id,invoice_num, total,date_created,authorised'
+	.' from online_store_orders'
 	.' where '.$filter.' order by date_created desc'
 );
 if (is_array($rs) && count($rs)) {
 	$c.='<div style="margin:0 10%">'
 		.'<table id="onlinestore-orders-table" width="100%" class="desc"><thead><tr>'
 		.'<th><input type="checkbox" id="onlinestore-orders-selectall"/></th>'
-		.'<th>'.__('ID').'</th>'
+		.'<th>'.__('Order ID').'</th>'
+		.'<th>'.__('Invoice Num').'</th>'
 		.'<th>'.__('Date').'</th>'
 		.'<th>'.__('Amount').'</th>'
 		.'<th>'.__('Items').'</th>'
@@ -94,6 +96,7 @@ if (is_array($rs) && count($rs)) {
 		$c.='<tr data-id="'.$r['id'].'">'
 			.'<td><input class="mass-actions" type="checkbox"/></td>'
 			.'<td>'.$r['id'].'</td>'
+			.'<td>'.htmlspecialchars($r['invoice_num']).'</td>'
 			.'<td><span style="display:none">'.$r['date_created'].'</span>'
 			.Core_dateM2H($r['date_created']).'</td><td>'
 			.$csym.sprintf('%.2f', $r['total'])

@@ -752,6 +752,10 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 		$DBVARS['online_store_currency'],
 		$customer
 	);
+	dbQuery(
+		'update online_store_orders set invoice_num="'.addslashes($invId).'"'
+		.' where id='.$order['id']
+	);
 	$items=json_decode($order['items']);
 	foreach ($items as $item) {
 		$OSE->addInvoiceLine(

@@ -219,3 +219,7 @@ if ($version==15) { // no longer using page_vars for export variables
 	// }
 	$version=16;
 }
+if ($version==16) { // invoice ID
+	dbQuery('alter table online_store_orders add invoice_num char(16) default ""');
+	$version=17;
+}
