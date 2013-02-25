@@ -188,8 +188,41 @@ $(function(){
 	});
 	$('#onlinestore-orders-table').dataTable({
 		'bJQueryUI':true,
-		"iDisplayLength": 100
+		"iDisplayLength": 100,
+		"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+			$('td:nth-child(3)', nRow).css('cursor', 'pointer');
+			return nRow;
+		}
 	});
+	$('#onlinestore-orders-table').on(
+		'click',
+		'tbody td:nth-child(3)',
+		function() {
+			var $this=$(this);
+			if ('true'==$this.attr('clicked')) {
+				return;
+			}
+			var id=+$this.closest('tr').find('td:nth-child(2)').text();
+			var invoice_num=+$this.text();
+			var $input=$('<input type="number"/>')
+				.css('width', '100%').val(invoice_num);
+			$this.empty().append($input);
+			$this.attr('clicked', 'true');
+			$input.focus()
+				.blur(function() {
+					var new_invoice_num=+$input.val();
+					setTimeout(function() {
+						$this.attr('clicked', false).html(new_invoice_num);
+						if (new_invoice_num!=invoice_num) {
+							$.post('/a/p=online-store/f=adminInvoiceNumberUpdate', {
+								'id':id,
+								'num':new_invoice_num
+							});
+						}
+					}, 1);
+				});
+		}
+	);
 	$('#onlinestore-orders-action').change(function() {
 		var val=+$(this).val();
 		var $inps=$('#onlinestore-orders-table tbody input[type="checkbox"]');

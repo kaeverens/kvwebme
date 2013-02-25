@@ -33,6 +33,8 @@ $plugin=array(
 	'triggers' => array( // {
 		'after-order-processed'=>'OnlineStoreEconomics_recordTransaction',
 		'after-order-cancelled'=>'OnlineStoreEconomics_cancelTransaction',
+		'online-store-order-invoice-num-changed'
+			=>'OnlineStoreEconomics_invoiceNumUpdate'
 	), // }
 	'version' => '0'
 );
@@ -133,6 +135,27 @@ class OnlineStoreEconomics{
 	}
 
 	// }
+	// { bookInvoice
+
+	/**
+		* book an invoice
+		*
+		* @param int $invId invoice ID
+		*
+		* @return details
+		*/
+	public function bookInvoice($invId) {
+		$client=$this->_connect();
+		$result=$client->CurrentInvoice_Book(
+			array(
+				'currentInvoiceHandle'=>array('Id'=>$invId)
+			)
+		);
+		$invId=$result->CurrentInvoice_BookResult->Number;
+		return $invId;
+	}
+
+	// }
 	// { connect
 
 	/**
@@ -186,27 +209,6 @@ class OnlineStoreEconomics{
 	}
 
 	// }
-	// { bookInvoice
-
-	/**
-		* book an invoice
-		*
-		* @param int $invId invoice ID
-		*
-		* @return details
-		*/
-	public function bookInvoice($invId) {
-		$client=$this->_connect();
-		$result=$client->CurrentInvoice_Book(
-			array(
-				'currentInvoiceHandle'=>array('Id'=>$invId)
-			)
-		);
-		$invId=$result->CurrentInvoice_BookResult->Number;
-		return $invId;
-	}
-
-	// }
 	// { createInvoice
 
 	/**
@@ -217,7 +219,7 @@ class OnlineStoreEconomics{
 		*
 		* @return details
 		*/
-	public function createInvoice($currency, $customer) {
+	public function createInvoice($currency, $customer, $invNum=0) {
 		$client=$this->_connect();
 		if (is_object($customer)) {
 			$customer=$customer->Number;
@@ -232,6 +234,12 @@ class OnlineStoreEconomics{
 			array(
 				'currentInvoiceHandle'=>array('Id'=>$invId),
 				'valueHandle'=>array('Code'=>$currency)
+			)
+		);
+		$client->CurrentInvoice_SetOtherReference(
+			array(
+				'currentInvoiceHandle'=>array('Id'=>$invId),
+				'value'=>$invNum
 			)
 		);
 		return $invId;
@@ -668,6 +676,27 @@ class OnlineStoreEconomics{
 	}
 
 	// }
+	// { setInvoiceNumber
+
+	/**
+		* set the invoice number
+		*
+		* @param string $currency currency code
+		* @param int    $customer customer ID
+		*
+		* @return details
+		*/
+	public function setInvoiceNumber($invId, $invNum) {
+		$client=$this->_connect();
+		$client->CurrentInvoice_SetOtherReference(
+			array(
+				'currentInvoiceHandle'=>array('Id'=>$invId),
+				'value'=>$invNum
+			)
+		);
+	}
+
+	// }
 }
 
 // }
@@ -748,13 +777,11 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 	}
 	// }
 	// { create the invoice
+	$invNum=$order['invoice_num']?$order['invoice_num']:$order['id'];
 	$invId=$OSE->createInvoice(
 		$DBVARS['online_store_currency'],
-		$customer
-	);
-	dbQuery(
-		'update online_store_orders set invoice_num="'.addslashes($invId).'"'
-		.' where id='.$order['id']
+		$customer,
+		$invNum
 	);
 	$items=json_decode($order['items']);
 	foreach ($items as $item) {
@@ -918,6 +945,34 @@ function OnlineStoreEconomics_cancelTransaction($PAGEDATA, $orderId) {
 		.' where id='.$order['id']
 	);
 	// }
+}
+
+// }
+// { OnlineStoreEconomics_invoiceNumUpdate
+
+/**
+	* update an invoice number
+	*
+	* @param object $PAGEDATA details about the page
+	* @param array  $order    the order
+	*
+	* @return null
+	*/
+function OnlineStoreEconomics_invoiceNumUpdate($PAGEDATA, $order) {
+	global $DBVARS;
+	if (!isset($order['meta']['economic-invoiceId'])) {
+		return false;
+	}
+	$OSE=new OnlineStoreEconomics(
+		$DBVARS['economic_agreement_no'],
+		$DBVARS['economic_user_id'],
+		$DBVARS['economic_password']
+	);
+	$OSE->setInvoiceNumber(
+		$order['meta']['economic-invoiceId'],
+		$order['invoice_num']
+	);
+	return true;
 }
 
 // }

@@ -295,3 +295,16 @@ function OnlineStore_adminInvoicesGetAsPdf() {
 }
 
 // }
+function OnlineStore_adminInvoiceNumberUpdate() {
+	$id=(int)$_REQUEST['id'];
+	$num=(int)$_REQUEST['num'];
+	dbQuery('update online_store_orders set invoice_num='.$num.' where id='.$id);
+	$order=dbRow('select id,invoice_num,meta from online_store_orders where id='.$id);
+	$meta=json_decode($order['meta'], true);
+	$order['meta']=$meta;
+	Core_trigger(
+		'online-store-order-invoice-num-changed',
+		array($order)
+	);
+	return true;
+}
