@@ -187,17 +187,20 @@ $c.='<div id="image-gallery-frames">'
 	.'<p>Picture frames for your images.</p>'
 	.'<select id="val-image_gallery_frame" name="page_vars[image_gallery_frame]">'
 	.'<option value=""> -- none -- </option>';
-$frames=new DirectoryIterator(dirname(__FILE__).'/../frames');
-foreach ($frames as $frame) {
-	if ($frame->isDot() || $frame->getFilename()=='.svn') {
-		continue;
+$framedir=dirname(__FILE__).'/../frames';
+if (file_exists($framedir)) {
+	$frames=new DirectoryIterator($framedir);
+	foreach ($frames as $frame) {
+		if ($frame->isDot() || $frame->getFilename()=='.svn') {
+			continue;
+		}
+		$fname=$frame->getFilename();
+		$c.='<option';
+		if ($fname==@$vars['image_gallery_frame']) {
+			$c.=' selected="selected"';
+		}
+		$c.='>'.$fname.'</option>';
 	}
-	$fname=$frame->getFilename();
-	$c.='<option';
-	if ($fname==@$vars['image_gallery_frame']) {
-		$c.=' selected="selected"';
-	}
-	$c.='>'.$fname.'</option>';
 }
 $c.='<option';
 if ('--custom--'==@$vars['image_gallery_frame']) {
