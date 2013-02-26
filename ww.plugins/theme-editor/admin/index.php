@@ -43,7 +43,7 @@ if (isset($_REQUEST['other']) && $_REQUEST['other']=='restore') {
 }
 
 // { menu
-echo '<h2>'.__('Editor').'</h2><div class="sub-nav">';
+echo '<div class="sub-nav">';
 // { html templates
 $d=new DirectoryIterator(THEME_DIR.'/'.THEME.'/h');
 $files=array();

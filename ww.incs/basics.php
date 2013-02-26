@@ -579,6 +579,7 @@ function Core_smartySetup($compile_dir) {
 	$smarty->registerPlugin('function', 'LOCATIONSELECTOR', 'Core_locationsGetUi');
 	$smarty->registerPlugin('function', 'LOGO', 'Template_logoDisplay');
 	$smarty->registerPlugin('function', 'MENU', 'menuDisplay');
+	$smarty->registerPlugin('function', 'STATSVALUE', 'Template_statsValue');
 	$smarty->assign('QRCODE', '/a/f=qrCode/id='.$PAGEDATA->id);
 	$smarty->registerPlugin('function', 'nuMENU', 'Core_menuShowFg');
 	foreach ($PLUGINS as $pname=>$plugin) {

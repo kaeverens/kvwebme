@@ -422,6 +422,21 @@ function Template_breadcrumbs($id=0, $top=1) {
 }
 
 // }
+// { Template_statsValue
+
+/**
+	* return a value showing how many visitors/views in a period
+	*
+	* @param array $vars array of parameters
+	*
+	* @return string
+	*/
+function Template_statsValue($vars) {
+	require_once dirname(__FILE__).'/stats.php';
+	return Stats_value($vars['type'], $vars['period']);
+}
+
+// }
 // { Template_logoDisplay
 
 /**
