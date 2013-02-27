@@ -165,6 +165,8 @@ function ClassifiedAds_frontend($PAGEDATA) {
 	}
 	$html.='</div>';
 	$html.=@$PAGEDATA->vars['footer'];
+	WW_addCSS('/ww.plugins/classified-ads/frontend/style.css');
+	WW_addScript('/j/uploader.js');
 	return $html;
 }
 

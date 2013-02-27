@@ -55,14 +55,13 @@ echo '<form id="onlinestore-emails" method="post" action="'
 	.'/ww.admin/plugin.php?_plugin=online-store&amp;_page=emails">'
 	.'<table>';
 // { show list of email types
-echo '<tr><th>Email type</th><td><select name="onlinestore-emails-type">';
-// TODO: Translate
 $emails=array(
-	'invoice'=>'the invoice/receipt to send to the customer',
-	'order_made_admin'=>'email to send to admin when an order is made',
-	'order_made_customer'=>'email to send to customer when an order is made',
-	'order_dispatched'=>'email to send when the order is dispatched'
+	'invoice'=>__('the invoice/receipt to send to the customer'),
+	'order_made_admin'=>__('email to send to admin when an order is made'),
+	'order_made_customer'=>__('email to send to customer when an order is made'),
+	'order_dispatched'=>__('email to send when the order is dispatched')
 );
+echo '<tr><th>Email type</th><td><select name="onlinestore-emails-type">';
 foreach ($emails as $k=>$v) {
 	echo '<option value="'.$k.'"';
 	if ($k==$email) {
