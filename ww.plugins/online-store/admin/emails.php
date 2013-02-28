@@ -14,7 +14,7 @@
 // { handle actions
 if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	$type=$_REQUEST['onlinestore-emails-type'];
-	if (preg_replace('/[^a-z_]/', '', $type)!=$type) {
+	if (preg_replace('/[^a-z\-_]/', '', $type)!=$type) {
 		echo __('no hacking, please');
 		Core_quit();
 	}
@@ -61,6 +61,14 @@ $emails=array(
 	'order_made_customer'=>__('email to send to customer when an order is made'),
 	'order_dispatched'=>__('email to send when the order is dispatched')
 );
+foreach ($PLUGINS as $p) {
+	if (!isset($p['onlinestore_email_templates'])) {
+		continue;
+	}
+	foreach ($p['onlinestore_email_templates'] as $k=>$v) {
+		$emails[$k]=$v;
+	}
+}
 echo '<tr><th>Email type</th><td><select name="onlinestore-emails-type">';
 foreach ($emails as $k=>$v) {
 	echo '<option value="'.$k.'"';
