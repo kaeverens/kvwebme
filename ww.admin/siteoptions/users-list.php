@@ -12,19 +12,21 @@
 	*/
 
 echo '<h3>List Users</h3>';
+echo '<a class="button" href="siteoptions.php?page=users&amp;id=-1">'
+	.__('Create User').'</a>';
 $groups=array();
 // { list all users
 $users=dbAll(
 	'select active,id,name,email,last_login,last_view from user_accounts '
 	.'order by last_view desc,last_login desc,email'
 );
-echo '<table style="min-width:50%"><tr><th>User</th><th>Groups</th><th>Last'
-	.' Login</th><th>Last View</th><th>Actions</th></tr>';
+echo '<table id="users-list"><thead><tr><th>User</th><th>Groups</th><th>Last'
+	.' Login</th><th>Last View</th><th>Actions</th></tr></thead><tbody>';
 foreach ($users as $user) {
 	$name=$user['name']?$user['name']:$user['email'];
 	echo '<tr'.($user['active']?'':' class="inactive"').'>'
-		.'<th><a href="siteoptions.php?page=users&amp;id='.$user['id'].'">'
-		.htmlspecialchars($name).'</a></th>';
+		.'<td><a href="siteoptions.php?page=users&amp;id='.$user['id'].'">'
+		.htmlspecialchars($name).'</a></td>';
 	// { groups
 	echo '<td>';
 	$grs=dbAll("select * from users_groups where user_accounts_id=$user[id]");
@@ -63,7 +65,6 @@ foreach ($users as $user) {
 			.'action=delete" onclick="return confirm(\'are you sure you want to del'
 		.'ete this user?\')">[x]</a></td></tr>';
 }
-echo '<tr><td colspan="2"></td><td><a href="siteoptions.php?page=users&amp;'
-	.'id=-1">Create User</a></td></tr>';
-echo '</table><br style="clear:both"/>';
+echo '</tbody></table>';
 // }
+WW_addScript('/ww.admin/siteoptions/users-list.js');

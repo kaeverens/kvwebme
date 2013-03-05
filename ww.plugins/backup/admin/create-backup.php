@@ -17,10 +17,10 @@ if (!Core_isAdmin()) {
 }
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.admin/admin_libs.php';
 
-$password=addslashes($_REQUEST['password']);
-if (!$password) {
+if (!isset($_REQUEST['password']) || !$_REQUEST['password']) {
 	Core_quit();
 }
+$password=addslashes($_REQUEST['password']);
 $tmpdir='/tmp/cmsBackup-'.md5($_SERVER['HTTP_HOST'].microtime(true));
 
 mkdir($tmpdir);
