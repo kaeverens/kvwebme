@@ -44,7 +44,7 @@ $(function() {
 			}
 			var days=$('#ads-purchase-days-wanted').val();
 			var subtotal=days*chosenType.price_per_day;
-			$('#ads-purchase-subtotal').removeClass().html('€'+subtotal);
+			$('#ads-purchase-subtotal').removeClass().html('€'+subtotal.toFixed(2));
 			updatePreview();
 			site_url=document.location.toString()
 				.replace(/(https?:\/\/[^\/]*).*/, '$1');
@@ -97,7 +97,7 @@ $(function() {
 				chosenType=types[id];
 				$('#ads-purchase-price_per_day')
 					.removeClass()
-					.html('€'+chosenType.price_per_day+' per day');
+					.html('€'+chosenType.price_per_day.toFixed(2)+' per day');
 				$('#ads-purchase-size')
 					.removeClass()
 					.html(chosenType.width+'px x '+chosenType.height+'px');
