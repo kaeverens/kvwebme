@@ -19,7 +19,7 @@ foreach ($ads as $ad) {
 	$username='';
 	if ($ad['customer_id']) {
 		$user=User::getInstance($ad['customer_id']);
-		$username=$user->get('name');
+		$username=$user?$user->get('name'):'UNKNOWN';
 	}
 	echo '<tr id="ad-'.$ad['id'].'"><td>'.htmlspecialchars($ad['name']).'</td>'
 		.'<td>'.htmlspecialchars($ad_types[$ad['type_id']]).'</td>'
