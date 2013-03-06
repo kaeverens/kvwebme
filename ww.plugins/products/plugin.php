@@ -1396,11 +1396,13 @@ function Products_categoryWatchesRun() {
 function Products_categoryWatchesSend() {
 	$rs=dbAll('select * from products_watchlists');
 	$users=array();
-	foreach ($rs as $r) {
-		if (!isset($users[$r['user_id']])) {
-			$users[$r['user_id']]=array();
+	if (is_array($rs)) {
+		foreach ($rs as $r) {
+			if (!isset($users[$r['user_id']])) {
+				$users[$r['user_id']]=array();
+			}
+			$users[$r['user_id']][]=$r['category_id'];
 		}
-		$users[$r['user_id']][]=$r['category_id'];
 	}
 	foreach ($users as $uid=>$cats) {
 		$numFound=0;

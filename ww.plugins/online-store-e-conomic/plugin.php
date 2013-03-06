@@ -90,10 +90,13 @@ class OnlineStoreEconomics{
 		* @param string $short_desc short description of line
 		* @param float  $cost       cost of the product (individual)
 		* @param int    $amt        amount of the product purchased
+		* @param float  $discount   discount to apply
 		*
 		* @return details
 		*/
-	public function addInvoiceLine($invId, $itemId, $short_desc, $cost, $amt) {
+	public function addInvoiceLine(
+		$invId, $itemId, $short_desc, $cost, $amt, $discount=0
+	) {
 		$client=$this->_connect();
 		global $DBVARS;
 		$lineHandle=$client->CurrentInvoiceLine_Create(
@@ -134,6 +137,12 @@ class OnlineStoreEconomics{
 			array(
 				'currentInvoiceLineHandle'=>array('Id'=>$lineId, 'Number'=>$lineNr),
 				'value'=>$amt
+			)
+		);
+		$client->CurrentInvoiceLine_SetDiscountAsPercent(
+			array(
+				'currentInvoiceLineHandle'=>array('Id'=>$lineId, 'Number'=>$lineNr),
+				'value'=>$discount
 			)
 		);
 	}
@@ -726,9 +735,16 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 		$DBVARS['economic_user_id'],
 		$DBVARS['economic_password']
 	);
-	// { check that customer is recorded in e-conomic
+	$user_is_vat_free=0;
+	$group_discount=0;
+	// { check that customer is recorded in e-conomic, and get discounts
 	if ($order['user_id']) { // use user_id as customer number
 		$uid=(int)$order['user_id'];
+		$user=User::getInstance($uid);
+		if ($user) {
+			$user_is_vat_free=$user->isInGroup('_vatfree');
+			$group_discount=$user->getGroupHighest('discount');
+		}
 	}
 	else { // make customer number from the phone number
 		$uid=preg_replace('/^[0-9]/', '', $details['Phone']);
@@ -794,7 +810,8 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 			$item->id,
 			$item->short_desc,
 			$item->cost,
-			$item->amt
+			$item->amt,
+			$group_discount
 		);
 	}
 	// { shipping
