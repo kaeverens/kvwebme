@@ -31,7 +31,7 @@ $plugin=array(
 			) // }
 		) // }
 	), // }
-	'version'=>6
+	'version'=>8
 );
 
 // }
@@ -77,7 +77,8 @@ function ClassifiedAds_frontend($PAGEDATA) {
 		'var classifiedads_categoryId='.$cid
 		.', classifiedads_categoryName="'.addslashes(
 			dbOne($sql, 'name')
-		).'";'
+		).'"'
+		.', classifiedads_paypal="'.$PAGEDATA->vars['classified-ads-paypal'].'";'
 	);
 	$html='<div id="classifiedads-wrapper">';
 	// { breadcrumbs

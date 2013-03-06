@@ -57,3 +57,20 @@ if ($version==5) {
 	);
 	$version=6;
 }
+if ($version==6) {
+	dbQuery(
+		'create table classifiedads_purchase_orders('
+		.'id int auto_increment not null primary key,user_id int,type_id int,'
+		.'days int,title text, description text, category_id int'
+		.')default charset=utf8'
+	);
+	$version=7;
+}
+if ($version==7) {
+	dbQuery('alter table classifiedads_purchase_orders add phone varchar(255)');
+	dbQuery(
+		'alter table classifiedads_purchase_orders add location varchar(255)'
+	);
+	dbQuery('alter table classifiedads_purchase_orders add cost varchar(255)');
+	$version=8;
+}
