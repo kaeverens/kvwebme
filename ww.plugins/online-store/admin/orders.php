@@ -74,11 +74,10 @@ else {
 	$filter='status='.(int)$_SESSION['online-store']['status'];
 }
 // }
-$rs=dbAll(
-	'select status,id,invoice_num, total,date_created,authorised'
+$sql='select status,id,invoice_num, total,date_created,authorised'
 	.' from online_store_orders'
-	.' where '.$filter.' order by date_created desc'
-);
+	.' where '.$filter.' order by date_created desc';
+$rs=dbAll($sql);
 if (is_array($rs) && count($rs)) {
 	$c.='<div style="margin:0 10%">'
 		.'<table id="onlinestore-orders-table" width="100%" class="desc"><thead><tr>'
