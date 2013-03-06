@@ -46,7 +46,7 @@ if (!$fp) {
 			if (!isset($_POST['item_number'])) {
 				Core_mail(
 					$eml
-					, $_SERVER['HTTP_HOST'].' problem with PayPal payment',
+					, $_SERVER['HTTP_HOST'].' problem with PayPal payment'
 					, "There was a problem marking a purchase as Paid. Please contact"
 					." your website provider with the following details:\n\n".$str
 					, $eml
