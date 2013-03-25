@@ -44,19 +44,21 @@ foreach ($users as $user) {
 	echo '</td>';
 	// }
 	// { last login
+	echo '<td><span class="nodisplay">'.$user['last_login'].'</span>';
 	if ($user['last_login']=='0000-00-00 00:00:00') {
-		echo '<td>never</td>';
+		echo 'never</td>';
 	}
 	else {
-		echo '<td>'.Core_dateM2H($user['last_login']).'</td>';
+		echo Core_dateM2H($user['last_login']).'</td>';
 	}
 	// }
 	// { last view
+	echo '<td><span class="nodisplay">'.$user['last_view'].'</span>';
 	if ($user['last_view']=='0000-00-00 00:00:00') {
-		echo '<td>never</td>';
+		echo 'never</td>';
 	}
 	else {
-		echo '<td>'.Core_dateM2H($user['last_view']).'</td>';
+		echo Core_dateM2H($user['last_view']).'</td>';
 	}
 	// }
 	echo '<td><a href="siteoptions.php?page=users&amp;id='.$user['id'].'">edi'

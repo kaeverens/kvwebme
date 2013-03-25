@@ -15,6 +15,7 @@
 // { plugin config
 $plugin=array(
 	'name' => 'Mailing List',
+	'hide_from_admin' => true,
 	'admin' => array(
 		'menu' => array(
 			'Communication>Mailing List'=>'plugin.php?_plugin=mailing-list&amp;_page=index'
@@ -39,6 +40,11 @@ $plugin=array(
 // { MailingList_showForm
 
 function MailingList_showForm(){
+mail(
+	'kae@kvsites.ie',
+	'mailing-list plugin used',
+	$_SERVER['HTTP_HOST'].'|'.$_SERVER['REQUEST_URI']
+);
 	require_once SCRIPTBASE.'ww.plugins/mailing-list/frontend/mailing-list.php';
 	return Mailinglist_showForm2();
 }

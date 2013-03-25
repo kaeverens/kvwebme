@@ -11,6 +11,31 @@
 	* @link     http://kvsites.ie/
 	*/
 
+// { Core_alternateCssGet
+
+/**
+	* get alternate CSS
+	*
+	* @return string
+	*/
+function Core_alternateCssGet() {
+	return isset($_SESSION['alternate-css'])?$_SESSION['alternate-css']:'';
+}
+
+// }
+// { Core_alternateCssSet
+
+/**
+	* set alternate CSS
+	*
+	* @return string
+	*/
+function Core_alternateCssSet() {
+	$_SESSION['alternate-css']=$_REQUEST['css'];
+	return Core_alternateCssGet();
+}
+
+// }
 // { Core_directoryCheckName
 
 /**
