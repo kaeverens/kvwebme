@@ -1,0 +1,10 @@
+.classifiedads-advertise-form textarea{
+	width:90%;
+	height:80px;
+}
+.classifiedads-advertise-form .title{
+	width:90%;
+}
+.classifiedads-advertise-form #images-preview div{
+	display:inline-block;
+}
