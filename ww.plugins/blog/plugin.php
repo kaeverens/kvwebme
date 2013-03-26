@@ -18,7 +18,7 @@ $plugin=array(
 		return __('Blog');
 	},
 	'description' => function() {
-		return __('Add a blog page-type to your site');
+		return __('Add a blog page-type to your site', 'core');
 	},
 	'admin' => array(
 		'page_type' => 'Blog_admin'
@@ -152,14 +152,24 @@ function Blog_widget($vars=null) {
 	$rs=dbAll(
 		'select count(tag) as cnt, tag from blog_tags group by tag order by tag'
 	);
+	$iterator=1;
+	$even='uneven';
 	$tags=array();
 	foreach ($rs as $r) {
 		$h=htmlspecialchars($r['tag']);
-		$tags[]='<a href="'.$PAGEDATA->getRelativeUrl().'/tags/'.$h
+		$tags[]='<a class="bt'.$iterator.' '.$even.'" href="'.$PAGEDATA->getRelativeUrl().'/tags/'.$h
 			.'">'.$h.'</a>';
+			$iterator++;
+			if($even=='uneven')
+			{
+				$even='even';
+			}
+			else{
+				$even='uneven';
+			}
 	}
 	
-	return '<div class="blog-tags">'.join(', ', $tags).'</div>';
+	return '<div class="blog-tags">'.join(' ', $tags).'</div>';
 }
 
 // }

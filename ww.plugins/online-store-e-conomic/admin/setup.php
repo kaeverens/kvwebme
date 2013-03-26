@@ -64,31 +64,12 @@ echo '<th>'.__('User ID.').'</th>'
 // { password
 echo '<th>'.__('Password').'</th>'
 	.'<td><input name="password" type="password" value="'
-	.htmlspecialchars($password).'"/></td>';
-// }
-echo '</tr><tr>';
-// { send e-conomic email
-echo '<th>'.__('Send e-conomic Invoice Email').'</th><td>'
-	.'<select name="dont_send_invoice_email">'
-	.'<option value="0">'.__('Yes').'</option>'
-	.'<option value="1"'.($dont_send_invoice_email?' selected="selected"':'').'>'
-	.__('No').'</option></select></td>';
-// }
-// { invoice email subject
-echo '<th>'.__('Invoice Email Subject').'</th>'
-	.'<td><input name="invoice_email_subject" value="'
-	.htmlspecialchars($invoice_email_subject).'"'
-	.' title="use code {{invoice_num}} for invoice number"/></td>';
-// }
-echo '</tr><tr>';
-// { book invoices as soon as authorised
-echo '<th>'.__('Book invoices as soon as they\'re authorised or paid').'</th>'
+	.htmlspecialchars($password).'"/></td></tr>'
+	.'<tr><th>'.__('Book invoices as soon as they\'re authorised or paid').'</th>'
 	.'<td><select name="book-immediately"><option value="0">'
 	.__('No').'</option><option value="1"'
 	.($book_immediately?' selected="selected"':'').'>'.__('Yes')
-	.'</option></select></td>';
-// }
-echo '</tr>';
+	.'</option></select></td></tr>';
 if (isset($DBVARS['economic_enabled']) && $DBVARS['economic_enabled']) {
 	try{
 		$OSE=new OnlineStoreEconomics(
@@ -97,10 +78,9 @@ if (isset($DBVARS['economic_enabled']) && $DBVARS['economic_enabled']) {
 			$DBVARS['economic_password']
 		);
 		if (method_exists($OSE, 'getCashBooks')) {
-			echo '<tr>';
 			// { cashbook
 			$books=$OSE->getCashBooks();
-			echo '<th>'.__('CashBook to record sales in').'</th><td>'
+			echo '<tr><th>'.__('CashBook to record sales in').'</th><td>'
 				.'<select name="cashbook">';
 			foreach ($books as $k=>$v) {
 				echo '<option value="'.$k.'"';
@@ -109,11 +89,11 @@ if (isset($DBVARS['economic_enabled']) && $DBVARS['economic_enabled']) {
 				}
 				echo '>'.htmlspecialchars($v->Name).'</option>';
 			}
-			echo '</select></td>';
+			echo '</select></td></tr>';
 			// }
 			// { customer group
 			$debtorgroups=$OSE->getDebtorGroups();
-			echo '<th>'.__('Debtor Group to add new customers to').'</th><td>'
+			echo '<tr><th>'.__('Debtor Group to add new customers to').'</th><td>'
 				.'<select name="debtorgroup">';
 			foreach ($debtorgroups as $k=>$v) {
 				echo '<option value="'.$k.'"';
@@ -124,12 +104,11 @@ if (isset($DBVARS['economic_enabled']) && $DBVARS['economic_enabled']) {
 				}
 				echo '>'.htmlspecialchars($v->Name).'</option>';
 			}
-			echo '</select></td>';
+			echo '</select></td></tr>';
 			// }
-			echo '</tr><tr>';
 			// { products group
 			$productgroups=$OSE->getProductGroups();
-			echo '<th>'.__('Product Group to add new products to').'</th><td>'
+			echo '<tr><th>'.__('Product Group to add new products to').'</th><td>'
 				.'<select name="productgroup">';
 			foreach ($productgroups as $k=>$v) {
 				echo '<option value="'.$k.'"';
@@ -140,7 +119,7 @@ if (isset($DBVARS['economic_enabled']) && $DBVARS['economic_enabled']) {
 				}
 				echo '>'.htmlspecialchars($v->Name).'</option>';
 			}
-			echo '</select></td>';
+			echo '</select></td></tr>';
 			// }
 		}
 		else {
@@ -150,10 +129,10 @@ if (isset($DBVARS['economic_enabled']) && $DBVARS['economic_enabled']) {
 					.' are correct, and that you have enabled the API module in your'
 					.' E-Conomic setup.'
 				)
-				.'</td>';
+				.'</td></tr>';
 		}
 		// { login button
-		echo '<th></th><td>'
+		echo '<tr><th></th><td>'
 			.'<button id="login-to-external">'.__('Login to external dashboard')
 			.'</button></td></tr>';
 		// }
@@ -165,6 +144,6 @@ if (isset($DBVARS['economic_enabled']) && $DBVARS['economic_enabled']) {
 }
 echo '</table>';
 echo '<input type="hidden" name="action" value="save"/>'
-	.'<button>'.__('Save').'</button></form>';
+	.'<button class="k-button">'.__('Save').'</button></form>';
 
 WW_addScript('online-store-e-conomic/admin/setup.js');

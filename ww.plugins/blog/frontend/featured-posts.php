@@ -56,7 +56,7 @@ foreach ($rs as $r) {
 		.'<a class="blog-link-to-article" href="'
 		.$PAGEDATA->getRelativeUrl().'/'.$r['user_id'].'/'.$date.'/'
 		.preg_replace('/[^a-zA-Z0-9]/', '-', transcribe($r['title']))
-		.'">read more</a>'
+		.'">'.__('Read more', 'core').'</a>'
 		.'</div>';
 	$c.='</div>';
 }

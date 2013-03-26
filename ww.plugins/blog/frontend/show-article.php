@@ -28,7 +28,7 @@ $c='<div class="blog-article-wrapper" id="blog-entry-'.$r['id'].'">';
 $c.='<h1 class="blog-header">'.htmlspecialchars($r['title']).'</h1>';
 $user=User::getInstance($r['user_id']);
 $name=$user?$user->name:'unknown';
-$c.='<span class="blog-author" data-uid="'.$r['user_id'].'">'.$name.'</span> ~ '
+$c.='<span class="blog-author" data-uid="'.$r['user_id'].'">'.$name.'</span><span class="blog-spacing"> ~ </span>'
 	.'<span class="blog-date-published">'.Core_dateM2H($r['cdate']).'</span>';
 $c.='<div class="blog-body">'.$r['body'].'</div>';
 $date=preg_replace('/ .*/', '', $r['cdate']);

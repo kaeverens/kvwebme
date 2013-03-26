@@ -577,11 +577,11 @@ if (!$submitted) {
 			// }
 			// { stock number
 			if ($showStockNumber) {
-				$c.='<td>'.$item['stock_number'].'</td>';
+				$c.='<td class="product-stocknumber">'.$item['stock_number'].'</td>';
 			}
 			// }
 			// { cost per item
-			$c.='<td>'.OnlineStore_numToPrice($item['cost']).'</td>';
+			$c.='<td class="product-itemprice">'.OnlineStore_numToPrice($item['cost']).'</td>';
 			// }
 			// { amount
 			$c.='<td class="amt"><span class="'.$md5.'-amt amt-num">'
@@ -609,7 +609,7 @@ if (!$submitted) {
 					.$item['long_desc'].'</td><td></td></tr>';
 			}
 		}
-		$c.='<tr class="os_basket_totals"><td style="text-align: right;" colspa'
+		$c.='<tr class="os_basket_totals subtotal"><td style="text-align: right;" colspa'
 			.'n="3">'.__('Subtotal', 'core').'</td>'
 			.'<td class="totals">'.OnlineStore_numToPrice($grandTotal).'</td></tr>';
 		if (isset($_REQUEST['os_voucher']) && $_REQUEST['os_voucher']=='') {
@@ -621,7 +621,7 @@ if (!$submitted) {
 			$code=$_REQUEST['os_voucher'];
 			$voucher_amount=OnlineStore_voucherAmount($code, $email, $grandTotal);
 			if ($voucher_amount) {
-				$c.='<tr class="os_basket_totals">'
+				$c.='<tr class="os_basket_totals vouchers">'
 					.'<td class="voucher" style="text-align: right;" colspan="3">'
 					.'<span>'.__('Voucher', 'core').'</span> ('
 					.htmlspecialchars($code)
@@ -634,7 +634,7 @@ if (!$submitted) {
 				$grandTotal-=$voucher_amount;
 			}
 			else {
-				$c.='<tr class="os_basket_totals">'
+				$c.='<tr class="os_basket_totals vouchers">'
 					.'<td class="voucher" style="text-align: right;" colspan="4">'
 					.'<span>'
 					.__('Voucher has no effect on cart. Removed from cart.', 'core')
@@ -674,23 +674,23 @@ if (!$submitted) {
 		);
 		if ($postage['total']) {
 			$grandTotal+=$postage['total'];
-			$c.='<tr class="os_basket_totals"><td class="p_and_p __" lang-context="core" '
+			$c.='<tr class="os_basket_totals postage"><td class="p_and_p __" lang-context="core" '
 				.'style="text-align: right;" colspan="3">'
-				.__('Postage and Packaging (P&amp;P)').'</td><td class="totals">'
+				.__('Postage and Packaging', 'core').'</td><td class="totals">'
 				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
 		}
 		// }
 		if ($vattable && $_SESSION['onlinestore_vat_percent']) {
-			$c.='<tr class="os_basket_totals">'
+			$c.='<tr class="os_basket_totals vat">'
 				.'<td style="text-align:right" class="vat" colspan="3">'
-				.'<span>'.__('VAT', 'core').'</span> ('
-				.$_SESSION['onlinestore_vat_percent'].'% on '
-				.OnlineStore_numToPrice($vattable).')</td><td class="totals">';
+				.'<span>'.__('VAT', 'core').'</span> ( '
+				.$_SESSION['onlinestore_vat_percent'].' % ' .__('on', 'core')
+				.OnlineStore_numToPrice($vattable).' )</td><td class="totals">';
 			$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);
 			$c.=OnlineStore_numToPrice($vat).'</td></tr>';
 			$grandTotal+=$vat;
 		}
-		$c.='<tr class="os_basket_totals"><td style="text-align: right;" colspa'
+		$c.='<tr class="os_basket_totals total-due"><td style="text-align: right;" colspa'
 			.'n="3">'.__('Total Due', 'core').'</td>'
 			.'<td class="totals">'.OnlineStore_numToPrice($grandTotal).'</td></tr>'
 			.'</table>';
@@ -715,7 +715,7 @@ if (!$submitted) {
 			$c.='<form method="post" action="'.$PAGEDATA->getRelativeUrl().'">'
 				.'<input type="hidden" name="viewtype" value="1"/>'
 				.'<button class="onlinestore-view-checkout __" lang-context="core">'
-				.'Checkout</button></form>';
+				.__('Checkout', 'core').'</button></form>';
 		}
 		// }
 		// { add scripts
@@ -744,7 +744,7 @@ if (!$submitted) {
 		// }
 	}
 	else {
-		$c.='<em>'.__('No items in your basket<', 'core').'/em>';
+		$c.='<em>'.__('No items in your basket', 'core').'</em>';
 	}
 }
 // }

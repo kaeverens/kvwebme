@@ -260,7 +260,7 @@ msgid "Create Backup"
 msgstr "Opret backup"
 
 msgid "Create New Checkout"
-msgstr ""
+msgstr "Opret ny webshop"
 
 msgid "Create news items from sub-pages."
 msgstr "Opret nyheder fra undersider."
@@ -269,7 +269,7 @@ msgid "Create User"
 msgstr "Opret bruger"
 
 msgid "Creates a panel, which can contain Widgets"
-msgstr ""
+msgstr "Opretter et panel som kan indeholde Widgets"
 
 msgid "Credits"
 msgstr ""
@@ -278,7 +278,7 @@ msgid "CSS"
 msgstr "CSS-stylesheets"
 
 msgid "Currency"
-msgstr ""
+msgstr "Valuta"
 
 msgid "current page"
 msgstr "Nuværende side"
