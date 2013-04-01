@@ -100,9 +100,12 @@ function ClassifiedAds_frontend($PAGEDATA) {
 		$html.='<div id="classifiedads-single">'
 			.'<h2>'.htmlspecialchars($ad['title']).'</h2>'
 			.'<table id="classifiedads-ad-details"><tr>'
-			.'<td class="classifiedads-creation-date">Posted: '.Core_dateM2H($ad['creation_date']).'</td>'
-			.'<td class="classifiedads-location">Location: '.htmlspecialchars($ad['location']).'</td>'
-			.'<td class="classifiedads-cost">Cost: €'.htmlspecialchars($ad['cost']).'</td></tr></table>';
+			.'<td class="classifiedads-creation-date">Posted: '
+			.Core_dateM2H($ad['creation_date']).'</td>'
+			.'<td class="classifiedads-location">Location: '
+			.htmlspecialchars($ad['location']).'</td>'
+			.'<td class="classifiedads-cost">Cost: €'.htmlspecialchars($ad['cost'])
+			.'</td></tr></table>';
 		$html.='<p class="classified-ads-body">'
 			.nl2br(htmlspecialchars($ad['body'])).'</p>';
 		$html.='<table class="classifiedads-contact"><tr>';
@@ -110,7 +113,8 @@ function ClassifiedAds_frontend($PAGEDATA) {
 			$html.='<td>Phone: '.htmlspecialchars($ad['phone']).'</td>';
 		}
 		if ($ad['email']) {
-			$html.='<td>Email: <a href="#" class="classified-ads-email" data-ad-id="'.$ad['id'].'">click to send</a></td>';
+			$html.='<td>Email: <a href="#" class="classified-ads-email"'
+				.' data-ad-id="'.$ad['id'].'">click to send</a></td>';
 		}
 		$html.='</tr></table>';
 		$html.='</div>';
@@ -147,9 +151,8 @@ function ClassifiedAds_frontend($PAGEDATA) {
 			.' order by creation_date desc limit 100'
 		);
 		$html.='<table id="classifiedads-ads">'
-			.'<thead><tr><th colspan="2">Title</th><th>Location</th><th>Posted</th><th>Price</th>'
-			.'</tr></thead>'
-			.'<tbody>';
+			.'<thead><tr><th colspan="2">Title</th><th>Location</th><th>Posted</th>'
+			.'<th>Price</th></tr></thead><tbody>';
 		foreach ($ads as $ad) {
 			$url=ClassifiedAds_getCategoryUrl($ad['category_id'])
 				.'/'.$ad['id'].'-'.preg_replace('/[^a-z0-9A-Z]/', '-', $ad['title']);
@@ -179,7 +182,7 @@ function ClassifiedAds_frontend($PAGEDATA) {
 	*
 	* @param array $bits exploded name
 	*
-	* return int
+	* @return int
 	*/
 function ClassifiedAds_getCategoryId($bits) {
 	$cbits=count($bits);
@@ -202,10 +205,10 @@ function ClassifiedAds_getCategoryId($bits) {
 /**
 	* get breadcrumbs for category
 	*
-	* @param object $PAGEDATA the page object
-	* @param array $bits exploded name
+	* @param object &$PAGEDATA the page object
+	* @param array  $bits      exploded name
 	*
-	* return int
+	* @return int
 	*/
 function ClassifiedAds_getBreadcrumbs(&$PAGEDATA, $bits) {
 	$cbits=count($bits);

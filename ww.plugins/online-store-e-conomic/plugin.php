@@ -229,6 +229,7 @@ class OnlineStoreEconomics{
 		*
 		* @param string $currency currency code
 		* @param int    $customer customer ID
+		* @param int    $invNum   invoice number
 		*
 		* @return details
 		*/
@@ -694,10 +695,10 @@ class OnlineStoreEconomics{
 	/**
 		* set the invoice number
 		*
-		* @param string $currency currency code
-		* @param int    $customer customer ID
+		* @param int $invId  invoice ID
+		* @param int $invNum invoice number
 		*
-		* @return details
+		* @return null
 		*/
 	public function setInvoiceNumber($invId, $invNum) {
 		$client=$this->_connect();
@@ -850,15 +851,15 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 			'{{invoice_num}}', $invId, $invoice_email_subject
 		);
 		send_mail(
-			$details['Billing_Email']
-			, 'no-reply@'.$_SERVER['HTTP_HOST']
-			, $invoice_email_subject
-			, 'Your invoice is attached.'."\n\n"
+			$details['Billing_Email'],
+			'no-reply@'.$_SERVER['HTTP_HOST'],
+			$invoice_email_subject,
+			'Your invoice is attached.'."\n\n"
 			.'If the attachment does not load, please click the following link to'
 			.'  to access the invoice: http://'.$_SERVER['HTTP_HOST'].'/a/'
 			.'p=online-store/f=invoicePdf/id='.$order['id']
-			.'/auth='.$md5Auth
-			, array(
+			.'/auth='.$md5Auth,
+			array(
 				array(
 					'tmp_name'=>$fname,
 					'name'=>$invId.'.pdf',
@@ -904,7 +905,7 @@ function OnlineStoreEconomics_recordTransaction($PAGEDATA, $order) {
 	* cancel a transaction
 	*
 	* @param object $PAGEDATA details about the page
-	* @param array  $order    the order to cancel
+	* @param array  $orderId  the order to cancel
 	*
 	* @return null
 	*/

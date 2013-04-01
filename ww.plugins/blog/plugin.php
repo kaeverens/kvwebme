@@ -53,7 +53,7 @@ function Blog_admin($page, $vars) {
 /**
 	* show the frontend of the blog
 	*
-	* @param $PAGEDATA object the page object
+	* @param object $PAGEDATA the page object
 	*
 	* @return string
 	*/
@@ -145,6 +145,8 @@ function Blog_frontend($PAGEDATA) {
 /**
 	* widget for blog stuff
 	*
+	* @param array $vars variables
+	*
 	* @return html
 	*/
 function Blog_widget($vars=null) {
@@ -157,16 +159,10 @@ function Blog_widget($vars=null) {
 	$tags=array();
 	foreach ($rs as $r) {
 		$h=htmlspecialchars($r['tag']);
-		$tags[]='<a class="bt'.$iterator.' '.$even.'" href="'.$PAGEDATA->getRelativeUrl().'/tags/'.$h
-			.'">'.$h.'</a>';
-			$iterator++;
-			if($even=='uneven')
-			{
-				$even='even';
-			}
-			else{
-				$even='uneven';
-			}
+		$tags[]='<a class="bt'.$iterator.' '.$even.'" href="'
+			.$PAGEDATA->getRelativeUrl().'/tags/'.$h.'">'.$h.'</a>';
+		$iterator++;
+		$even=$even=='even'?'uneven':'even';
 	}
 	
 	return '<div class="blog-tags">'.join(' ', $tags).'</div>';

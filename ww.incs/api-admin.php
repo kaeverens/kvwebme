@@ -1362,13 +1362,16 @@ function Core_adminPageEdit() {
 	}
 	// }
 	if ($_POST['type']==4) {
+		$page_summary_parent=isset($_POST['page_summary_parent'])
+			?$_POST['page_summary_parent']
+			:$id;
 		$r2=dbRow('select * from page_summaries where page_id="'.$id.'"');
 		$do=1;
 		if ($r2) {
 			if (isset($_POST['page_summary_parent'])
-				&& $r2['parent_id']!=$_POST['page_summary_parent']
+				&& $r2['parent_id']!=$page_summary_parent
 			) {
-				dbQuery('delete from page_summaries where page_id="'.$_POST['id'].'"');
+				dbQuery('delete from page_summaries where page_id="'.$id.'"');
 			}
 			else {
 				$do=0;
@@ -1377,11 +1380,11 @@ function Core_adminPageEdit() {
 		if ($do) {
 			dbQuery(
 				'insert into page_summaries set page_id="'.$id.'",parent_id="'
-				.$_POST['page_summary_parent'].'",rss=""'
+				.$page_summary_parent.'",rss=""'
 			);
 		}
 		require_once SCRIPTBASE.'/ww.incs/page.summaries.php';
-		PageSummaries_getHtml($_POST['id']);
+		PageSummaries_getHtml($id);
 	}
 	// { clean up and return
 	dbQuery('update page_summaries set rss=""');

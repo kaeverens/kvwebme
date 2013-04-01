@@ -3,8 +3,8 @@ $(function() {
 	var $menuopener=$('<div style="text-align:center;background:#000;color:#fff;position:fixed;left:0;top:0;right:0;line-height:40px;">Menu</div>');
 	$menuopener.appendTo('body')
 		.click(function(){
-			$menu.css($menu.attr('is-open')!='true'
-				?{
+			$menu.css($menu.attr('is-open')!='true'?
+				{
 					'visibility':'visible',
 					'height':'inherit'
 				}
