@@ -71,6 +71,7 @@ function Blog_frontend($PAGEDATA) {
 	// }
 	$excerpts_offset=0;
 	$blog_author=0;
+	$links_prefix=$PAGEDATA->getRelativeURL();
 	$authors_per_page=10;
 	WW_addScript('blog');
 	if (isset($PAGEDATA->vars['blog_groupsAllowedToPost'])
@@ -82,12 +83,39 @@ function Blog_frontend($PAGEDATA) {
 		);
 	}
 	if ($unused_uri) {
+		if (preg_match('#page[0-9]+#', $unused_uri)) {
+			$excerpts_offset=$excerpts_per_page*((int)preg_replace(
+				'#.*page([0-9]+).*#', '\1', $unused_uri
+			));
+		}
 		// { show specific article
 		if (preg_match('#^[0-9]+/[0-9]+-[0-9]+-[0-9]+/[^/]+#', $unused_uri)) {
 			require_once dirname(__FILE__).'/frontend/show-article.php';
 			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
 		}
 		// }
+		if (preg_match('#^tags/#', $unused_uri)) {
+			// { show list of tags
+			if ($unused_uri=='tags/') {
+				require_once dirname(__FILE__).'/frontend/tags.php';
+				return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
+			}
+			// }
+			// { show list of excerpts specific to a tag
+			$tagname=preg_replace('#^tags/([^/]*).*#', '\1', $unused_uri);
+			$links_prefix.='/tags/'.$tagname;
+			$tagsql=preg_replace('/[^a-zA-Z0-9]/', '_', $tagname);
+			$entry_ids=array();
+			$rs=dbAll(
+				'select entry_id from blog_tags where tag like "'.$tagsql.'"'
+			);
+			foreach ($rs as $r) {
+				$entry_ids[]=$r['entry_id'];
+			}
+			require_once dirname(__FILE__).'/frontend/excerpts.php';
+			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
+			// }
+		}
 		// { show a page of excerpts
 		if (preg_match('#page[0-9]+#', $unused_uri)) {
 			$excerpts_offset=$excerpts_per_page*((int)preg_replace(
@@ -104,35 +132,10 @@ function Blog_frontend($PAGEDATA) {
 			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
 		}
 		// }
-		// { show list of authors
 		if ($unused_uri=='authors/') {
 			require_once dirname(__FILE__).'/frontend/authors.php';
 			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
 		}
-		// }
-		// { tags
-		if (preg_match('#^tags/#', $unused_uri)) {
-			// { show list of tags
-			if ($unused_uri=='tags/') {
-				require_once dirname(__FILE__).'/frontend/tags.php';
-				return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
-			}
-			// }
-			// { show list of excerpts specific to a tag
-			$tagname=preg_replace('#^tags/([^/]*).*#', '\1', $unused_uri);
-			$tagsql=preg_replace('/[^a-zA-Z0-9]/', '_', $tagname);
-			$entry_ids=array();
-			$rs=dbAll(
-				'select entry_id from blog_tags where tag like "'.$tagsql.'"'
-			);
-			foreach ($rs as $r) {
-				$entry_ids[]=$r['entry_id'];
-			}
-			require_once dirname(__FILE__).'/frontend/excerpts.php';
-			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
-			// }
-		}
-		// }
 		return $PAGEDATA->render().$unused_uri.@$PAGEDATA->vars['footer'];
 	}
 	require_once dirname(__FILE__).'/frontend/excerpts.php';

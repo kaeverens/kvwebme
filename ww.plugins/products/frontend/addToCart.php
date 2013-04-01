@@ -94,7 +94,7 @@ OnlineStore_addToCart(
 	__FromJson($product->get('name')),
 	$long_desc,
 	'products_'.$id.$md5,
-	$_SERVER['HTTP_REFERER'],
+	(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'no referer'),
 	$vat,
 	$id,
 	(int)(@$product->vals['online-store']['_deliver_free']),

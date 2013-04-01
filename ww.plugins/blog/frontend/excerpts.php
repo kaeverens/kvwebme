@@ -91,16 +91,16 @@ $this_page=(int)($excerpts_offset/$excerpts_per_page);
 $bottom_links=array();
 if ($num_of_entries>$excerpts_offset+$excerpts_per_page) {
 	$bottom_links[]='<a class="blog-link-to-older-entries" href="'
-		.$PAGEDATA->getRelativeURL().'/page'.($this_page+1).'">'
+		.$links_prefix.'/page'.($this_page+1).'">'
 		.'older entries</a>';
 }
 if ($this_page) {
 	$bottom_links[]='<a class="blog-link-to-newers-entries" href="'
-		.$PAGEDATA->getRelativeURL().'/page'.($this_page-1).'">'
+		.$links_prefix.'/page'.($this_page-1).'">'
 		.'newer entries</a>';
 }
 $bottom_links[]='<a class="blog-link-to-all-authors" href="'
-	.$PAGEDATA->getRelativeURL().'/authors">'
+	.$links_prefix.'/authors">'
 	.'list of authors</a>';
 $c.='<div class="blog-bottom-links">'.join(' | ', $bottom_links).'</div>';
 $c.='</div>';
