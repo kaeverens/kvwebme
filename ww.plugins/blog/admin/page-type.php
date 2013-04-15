@@ -29,7 +29,8 @@ $c.='<div id="blog-options"><div id="blog-options-wrapper">';
 $c.='<h2><a href="#">'.__('Front page options', 'core').'</a></h2>'
 	.'<div>';
 // { excerpts per page
-$excerpts_per_page=(int)$vars['blog_excerpts_per_page'];
+$excerpts_per_page=isset($vars['blog_excerpts_per_page'])
+	?(int)$vars['blog_excerpts_per_page']:0;
 if (!$excerpts_per_page) {
 	$excerpts_per_page=10;
 }
@@ -38,7 +39,8 @@ $c.='<p>'.__('How many blog excerpts should be shown per page?', 'core').'</p>'
 	.' value="'.$excerpts_per_page.'"/>';
 // }
 // { excerpt length
-$excerpt_length=(int)$vars['blog_excerpt_length'];
+$excerpt_length=isset($vars['blog_excerpt_length'])
+	?(int)$vars['blog_excerpt_length']:0;
 if (!$excerpt_length) {
 	$excerpt_length=200;
 }

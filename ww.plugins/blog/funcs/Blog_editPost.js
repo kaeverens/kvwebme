@@ -111,11 +111,13 @@ function Blog_editPost(pdata) {
 			})
 			.insertAfter('button.save');
 	}
-	$('#blog-excerpt-image').saorfm({
-		'rpc':'/ww.incs/saorfm/rpc.php',
-		'select':'file',
-		'prefix':userdata.isAdmin?'':'/users/'+userdata.id
-	});
+	$('#blog-excerpt-image')
+		.val(pdata.excerpt_image)
+		.saorfm({
+			'rpc':'/ww.incs/saorfm/rpc.php',
+			'select':'file',
+			'prefix':userdata.isAdmin?'':'/users/'+userdata.id
+		});
 	$('#blog-tags').tagsInput({
 		'height':30,
 		'width':'100%',

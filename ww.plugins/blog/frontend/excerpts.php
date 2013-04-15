@@ -47,9 +47,12 @@ $num_of_entries=dbOne(
 );
 $sql='select * from blog_entry'.$constraints.' order by cdate desc'
 	.' limit '.$excerpts_offset.','.$excerpts_per_page;
+echo '<!-- '.$sql.' -->';
 $rs=dbAll($sql);
 $c.='<div class="blog-main-wrapper">';
-$excerpt_length=200;
+if (!isset($excerpt_length)) {
+	$excerpt_length=200;
+}
 if (isset($PAGEDATA->vars['blog_excerpt_length'])) {
 	$excerpt_length=(int)$PAGEDATA->vars['blog_excerpt_length'];
 	if ($excerpt_length<10) {
@@ -62,8 +65,12 @@ foreach ($rs as $r) {
 	$c.='<h2 class="blog-header">'.htmlspecialchars($r['title']).'</h2>';
 	$user=User::getInstance($r['user_id']);
 	$name=$user?$user->name:'unknown';
-	$c.='<span class="blog-author" data-uid="'.$r['user_id'].'">'.$name.'</span> ~ '
-		.'<span class="blog-date-published">'.Core_dateM2H($r['pdate']).'</span>';
+	$c.='<div class="blog-meta">'
+		.'<span class="blog-author" data-uid="'.$r['user_id'].'">'.$name.'</span>'
+		.' ~ '
+		.'<span class="blog-date-published">'.Core_dateM2H($r['pdate']).'</span>'
+		.'</div>';
+	// }
 	$excerpt=$r['excerpt']
 		?$r['excerpt']
 		:substr(preg_replace('/<[^>]*>/', ' ', $r['body']), 0, $excerpt_length).'...';
@@ -99,8 +106,10 @@ if ($this_page) {
 		.$links_prefix.'/page'.($this_page-1).'">'
 		.'newer entries</a>';
 }
-$bottom_links[]='<a class="blog-link-to-all-authors" href="'
-	.$links_prefix.'/authors">'
-	.'list of authors</a>';
-$c.='<div class="blog-bottom-links">'.join(' | ', $bottom_links).'</div>';
+if (!isset($nobottomlinks)) {
+	$bottom_links[]='<a class="blog-link-to-all-authors" href="'
+		.$links_prefix.'/authors">'
+		.'list of authors</a>';
+	$c.='<div class="blog-bottom-links">'.join(' | ', $bottom_links).'</div>';
+}
 $c.='</div>';

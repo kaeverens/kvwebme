@@ -21,7 +21,10 @@ $plugin=array(
 		return __('Add a blog page-type to your site', 'core');
 	},
 	'admin' => array(
-		'page_type' => 'Blog_admin'
+		'page_type' => 'Blog_admin',
+		'widget' => array(
+			'form_url'   => '/ww.plugins/blog/admin/widget.php'
+		)
 	),
 	'frontend' => array(
 		'page_type' => 'Blog_frontend',
@@ -153,22 +156,8 @@ function Blog_frontend($PAGEDATA) {
 	* @return html
 	*/
 function Blog_widget($vars=null) {
-	global $PAGEDATA;
-	$rs=dbAll(
-		'select count(tag) as cnt, tag from blog_tags group by tag order by tag'
-	);
-	$iterator=1;
-	$even='uneven';
-	$tags=array();
-	foreach ($rs as $r) {
-		$h=htmlspecialchars($r['tag']);
-		$tags[]='<a class="bt'.$iterator.' '.$even.'" href="'
-			.$PAGEDATA->getRelativeUrl().'/tags/'.$h.'">'.$h.'</a>';
-		$iterator++;
-		$even=$even=='even'?'uneven':'even';
-	}
-	
-	return '<div class="blog-tags">'.join(' ', $tags).'</div>';
+	require_once dirname(__FILE__).'/frontend/widget.php';
+	return Blog_widget2($vars);
 }
 
 // }
