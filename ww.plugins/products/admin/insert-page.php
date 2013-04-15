@@ -77,15 +77,13 @@ else {
 	$product= $id;
 }
 if ($product) {
-	$datafields
-		= dbOne
-		(
-			'select data_fields from products where id='.$product, 
-			'data_fields'
-		);
+	$datafields=dbOne(
+		'select data_fields from products where id='.$product, 
+		'data_fields'
+	);
 	if ($datafields) {
 		$data=json_decode($datafields);
-		if ($data!==false) {
+		if ($data!==false && isset($data->n)) {
 			$firstField=$data->n;
 			dbQuery(
 				"insert into page_vars(page_id, name, value)

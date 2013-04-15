@@ -1586,7 +1586,8 @@ function Products_frontendVarsSetup($PAGEDATA) {
 	global $PAGE_UNUSED_URI;
 	if ($PAGE_UNUSED_URI) {
 		$bits=explode('/', $PAGE_UNUSED_URI);
-		$cat_id=0;
+		$cat_id=isset($PAGEDATA->vars['products_category_to_show'])
+			?(int)$PAGEDATA->vars['products_category_to_show']:0;
 		$product_id=0;
 		foreach ($bits as $bit) {
 			$sql='select id from products_categories where parent_id='.$cat_id
@@ -2087,7 +2088,7 @@ function Products_imageSlider($params) {
 		$width='100%';
 	}
 	if ($height=='') {
-		$height='100%';
+		$height='100px';
 	}
 	return '<div class="products-image-slider" style="width:'.$width.';height:'
 		.$height.'"></div>';
