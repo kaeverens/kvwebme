@@ -1,4 +1,3 @@
-// TODO - translation of statuses needed 
 window.os_statuses=['Unpaid', 'Paid', 'Delivered', 'Cancelled', 'Authorised'];
 function os_invoice(id, print){
 	var w=$(window), wh=w.height(), ww=w.width(), p=print?'&print=1':'';
@@ -415,6 +414,8 @@ $(function(){
 	if (!$(idOSCountries+'input:checked').length) {
 		$(idOSCountries+'input').attr('checked', true);
 	}
+	CKEDITOR.replace('bank_transfer_message');
+	CKEDITOR.replace('other_message');
 });
 
 function onlinestoreCustomers() {

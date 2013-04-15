@@ -87,6 +87,8 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 				$errors[]=__('Bank Transfer payment method not available.');
 			}
 		break; // }
+		case 'Other': // {
+		break; // }
 		case 'PayPal': // {
 			if (!@$PAGEDATA->vars['online_stores_paypal_address']) {
 				$errors[]=__('PayPal payment method not available.');
@@ -468,6 +470,48 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 				);
 				$c.=$msg;
 			break; // }
+			case 'Other': // {
+				$msg=$PAGEDATA->vars['online_stores_other_message'];
+				$msg=str_replace(
+					'{{$total}}',
+					OnlineStore_numToPrice($grandTotal),
+					$msg
+				);
+				$msg=str_replace(
+					'{{$invoice_number}}',
+					$id,
+					$msg
+				);
+				$msg=str_replace(
+					'{{$bank_name}}',
+					htmlspecialchars(
+						$PAGEDATA->vars['online_stores_bank_transfer_bank_name']
+					),
+					$msg
+				);
+				$msg=str_replace(
+					'{{$account_name}}',
+					htmlspecialchars(
+						$PAGEDATA->vars['online_stores_bank_transfer_account_name']
+					),
+					$msg
+				);
+				$msg=str_replace(
+					'{{$account_number}}',
+					htmlspecialchars(
+						$PAGEDATA->vars['online_stores_bank_transfer_account_number']
+					),
+					$msg
+				);
+				$msg=str_replace(
+					'{{$sort_code}}',
+					htmlspecialchars(
+						$PAGEDATA->vars['online_stores_bank_transfer_sort_code']
+					),
+					$msg
+				);
+				$c.=$msg;
+			break; // }
 			case 'PayPal': // {
 				$c.='<p>'.__(
 					'Your order has been recorded. Please click the button below to'
@@ -700,12 +744,14 @@ if (!$submitted) {
 		// }
 		// { show details form
 		$_POST['_viewtype']=$pviewtype;
+		$txt=isset($PAGEDATA->vars['online_stores_proceedToPayment'])
+			?$PAGEDATA->vars['online_stores_proceedToPayment']:'Proceed to Payment';
 		if ($pviewtype==1&&$viewtype==1 || !$pviewtype) {
 			$c.='<form method="post">'
 				.$PAGEDATA->render()
 				.'<input type="hidden" name="viewtype" value="1"/>'
 				.'<input type="hidden" name="action" value="Proceed to Payment" />'
-				.'<button>'.__('Proceed to Payment', 'core').'</button>'
+				.'<button>'.__($txt, 'core').'</button>'
 				.'</form>';
 		}
 		else if ($pviewtype==2 || $pviewtype==3) {

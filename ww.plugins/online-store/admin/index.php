@@ -118,6 +118,7 @@ $c.='<li><a href="#online-store-payments-bank-transfer">'.__('Bank Transfer')
 	.'</a></li>';
 $c.='<li><a href="#online-store-payments-realex">Realex</a></li>';
 $c.='<li><a href="#online-store-payments-quickpay">QuickPay</a></li>';
+$c.='<li><a href="#online-store-payments-other">Other</a></li>';
 $c.='</ul>';
 // { paypal
 $c.='<div id="online-store-payments-paypal">';
@@ -168,25 +169,27 @@ $c.=' /></td></tr>';
 // }
 // { message
 // add ckeditor
-$script='var bbcode_editor=CKEDITOR.replace("bank_transfer_message", { extr'
-	.'aPlugins : "bbcode", removePlugins : "bidi,button,dialogadvtab,div,file'
-	.'browser,flash,format,forms,horizontalrule,iframe,indent,justify,liststy'
-	.'le,pagebreak,showborders,stylescombo,table,tabletools,templates", toolb'
-	.'ar : [ ["Source", "-", "Save","NewPage","-","Undo","Redo"], ["Find","Re'
-	.'place","-","SelectAll","RemoveFormat"], ["Link", "Unlink", "Image"], "/'
-	.'", ["FontSize", "Bold", "Italic","Underline"], ["NumberedList","Bullete'
-	.'dList","-","Blockquote"], ["TextColor", "-", "Smiley","SpecialChar", "-'
-	.'", "Maximize"] ], smiley_images : [ "regular_smile.gif","sad_smile.gif"'
-	.',"wink_smile.gif","teeth_smile.gif","tounge_smile.gif", "embaressed_smi'
-	.'le.gif","omg_smile.gif","whatchutalkingabout_smile.gif","angel_smile.gi'
-	.'f","shades_smile.gif", "cry_smile.gif","kiss.gif" ], smiley_description'
-	.'s : [ "smiley", "sad", "wink", "laugh", "cheeky", "blush", "surprise", '
-	.'"indecision", "angel", "cool", "crying", "kiss" ] });';
-WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
-WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
-WW_addInlineScript($script);
+#$script='var bbcode_editor=CKEDITOR.replace("bank_transfer_message", { extr'
+#	.'aPlugins : "bbcode", removePlugins : "bidi,button,dialogadvtab,div,file'
+#	.'browser,flash,format,forms,horizontalrule,iframe,indent,justify,liststy'
+#	.'le,pagebreak,showborders,stylescombo,table,tabletools,templates", toolb'
+#	.'ar : [ ["Source", "-", "Save","NewPage","-","Undo","Redo"], ["Find","Re'
+#	.'place","-","SelectAll","RemoveFormat"], ["Link", "Unlink", "Image"], "/'
+#	.'", ["FontSize", "Bold", "Italic","Underline"], ["NumberedList","Bullete'
+#	.'dList","-","Blockquote"], ["TextColor", "-", "Smiley","SpecialChar", "-'
+#	.'", "Maximize"] ], smiley_images : [ "regular_smile.gif","sad_smile.gif"'
+#	.',"wink_smile.gif","teeth_smile.gif","tounge_smile.gif", "embaressed_smi'
+#	.'le.gif","omg_smile.gif","whatchutalkingabout_smile.gif","angel_smile.gi'
+#	.'f","shades_smile.gif", "cry_smile.gif","kiss.gif" ], smiley_description'
+#	.'s : [ "smiley", "sad", "wink", "laugh", "cheeky", "blush", "surprise", '
+#	.'"indecision", "angel", "cool", "crying", "kiss" ] });';
+#WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
+#WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
+#WW_addInlineScript($script);
 $c.='<tr><th>'.__('Message to buyer').'</th>';
-if (!@$vars['online_stores_bank_transfer_message']) {
+if (!isset($vars['online_stores_bank_transfer_message'])
+	|| !$vars['online_stores_bank_transfer_message']
+) {
 	$vars['online_stores_bank_transfer_message']='<p>'
 		.__(
 			'Thank you for your purchase. Please send {{$total}} to the following'
@@ -358,6 +361,19 @@ $c.='>'.__('Live').'</option></select>'
 // }
 $c.=' </table></div>';
 // }
+// { other
+$c.='<div id="online-store-payments-other">';
+$c.='<table>';
+$c.='<tr><th>'.__('What text to display').'</th>';
+if (!isset($vars['online_stores_other_message'])) {
+	$vars['online_stores_other_message']='';
+}
+$c.='<td><textarea name="page_vars[online_stores_other_message]" id'
+	.'="other_message">'
+	.htmlspecialchars($vars['online_stores_other_message'])
+	.'</textarea></td></tr>';
+$c.='</table></div>';
+// }
 $c.='</div></td></tr>';
 // }
 $c.='</table></div>';
@@ -391,7 +407,12 @@ if ($page['body']==''
 	$page['body']
 		=file_get_contents(dirname(__FILE__).'/body_template_sample.html');
 }
+$txt=isset($vars['online_stores_proceedToPayment'])
+	?$vars['online_stores_proceedToPayment']:'Proceed to Payment';
 $c.=ckeditor('body', $page['body'])
+	.'text for "Proceed to Payment" button:'
+	.' <input name="page_vars[online_stores_proceedToPayment]"'
+	.' value="'.htmlspecialchars($txt).'"/><br/>'
 	.'<a href="#" class="docs" page="/ww.plugins/online-store/docs/form.html">'
 	.__('Checkout Template Codes').'</a></div>';
 // }
