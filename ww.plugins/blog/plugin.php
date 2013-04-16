@@ -1,16 +1,16 @@
 <?php
 /**
-  * Blog plugin definition file
-  *
-  * PHP Version 5
-  *
-  * @category   None
-  * @package    None
-  * @subpackage None
-  * @author     Kae Verens <kae@kvsites.ie>
-  * @license    GPL Version 2
-  * @link       www.kvweb.me
- */
+	* Blog plugin definition file
+	*
+	* PHP Version 5
+	*
+	* @category   None
+	* @package    None
+	* @subpackage None
+	* @author     Kae Verens <kae@kvsites.ie>
+	* @license    GPL Version 2
+	* @link       www.kvweb.me
+	*/
 
 // { config
 $plugin=array(
@@ -39,7 +39,7 @@ $plugin=array(
 /**
 	* show the admin of the blog
 	*
-  * @param array $page the page's db row
+	* @param array $page the page's db row
 	* @param array $vars any meta data the page has
 	*
 	* @return string

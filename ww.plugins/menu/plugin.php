@@ -20,7 +20,7 @@ $plugin=array(
 	'frontend' => array(
 		'widget' => 'menu_showWidget'
 	),
-	'version'=>7
+	'version'=>8
 );
 // }
 

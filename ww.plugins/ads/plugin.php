@@ -54,10 +54,12 @@ $plugin=array(
 	* @return ads HTML
 	*/
 function Ads_widget($params) {
+	if (!isset($params->{'ad-type'})) {
+		return 'missing ad type';
+	}
 	$type_id=(int)$params->{'ad-type'};
 	$howmany=(int)$params->{'how-many'};
 	$type=dbRow('select * from ads_types where id='.$type_id);
-	echo '<!-- '; var_dump($type); echo ' -->';
 	$ads=dbAll(
 		'select id,image_url,target_type,poster from ads'
 		.' where type_id='.$type_id.' and is_active order by rand()'

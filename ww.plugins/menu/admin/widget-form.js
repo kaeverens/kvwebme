@@ -6,9 +6,13 @@ function menu_edit(ev){
 	var id=el.id.replace(/menu_editlink_/,'');
 	// { build the HTML for the form
 	var html='<div id="menu_form">'
-		+'<ul><li><a href="#menu_main">Main</a></li><li><a href="#menu_style">'
-		+'Sub-menu Style</a></li></ul>'
-		// {
+		// { tabs
+		+'<ul>'
+		+'<li><a href="#menu_main">Main</a></li>'
+		+'<li><a href="#menu_advanced">Advanced</a></li>'
+		+'</ul>'
+		// }
+		// { main
 		+'<div id="menu_main"><table>'
 		+'<tr><th>Parent Page</th><td><select id="menu_parent"></select></td></tr>'
 		+'<tr><th>Direction</th><td><select id="menu_direction">'
@@ -30,14 +34,27 @@ function menu_edit(ev){
 		+'<tr><th>Columns</th><td><input id="menu_columns" class="small" /></td></tr>'
 		+'</table></div>'
 		// }
-		// { styles
-		+'<div id="menu_style"><select id="menu_style_from"><option value="0">'
-		+'inherit styles from CSS</option><option value="1">define styles here'
-		+'</option></select><table><tr><th>Sub-menu Background</th><td><input i'
-		+'d="menu_background" /><div id="menu_background_picker" style="width:1'
+		// { advanced
+		+'<div id="menu_advanced"><table>'
+		// { CSS
+		+'<tr><th>CSS</th><td><select id="menu_style_from">'
+		+'<option value="0">inherit styles from CSS</option>'
+		+'<option value="1">define styles here</option>'
+		+'</select><table id="menu_style_from_table">'
+		+'<tr><th>Sub-menu Background</th><td><input id="menu_background" />'
+		+'<div id="menu_background_picker" style="width:1'
 		+'95px;height:195px;"></div></td></tr><tr><th>Opacity</th><td><input id'
 		+'="menu_opacity" /><div id="menu_opacity_slider"></div></td></tr></tab'
-		+'le></div>'
+		+'le></td></tr>'
+		// }
+		// { HTML
+		/*
+		+'<tr><th>HTML</th><td><select id="menu_html_type">'
+		+'<option value="1">use UL/LI elements</option>'
+		+'<option value="0">use DIV elements</option>'
+		+'</select></td></tr>'
+		+'</table></div>'
+		*/
 		// }
 		+'</div>';
 	var $d=$(html);
@@ -60,7 +77,8 @@ function menu_edit(ev){
 							'opacity':$('#menu_opacity').val(),
 							'columns':$('#menu_columns').val(),
 							'style_from':$('#menu_style_from').val(),
-							'state':$('#menu_state').val()
+							'state':$('#menu_state').val(),
+							'html_type':$('#menu_html_type').val()
 						},
 						function(ret){
 							if(ret.id!=ret.was_id){
@@ -131,9 +149,10 @@ function menu_edit(ev){
 					$('#menu_opacity').val(ui.value);
 				}
 			});
-		$('#menu_columns').val(+res.columns);
+		$('#menu_columns').val(res.columns?+res.columns:1);
 		function update_styles_table(){
-			$('#menu_style table').css('display',$('#menu_style_from').val()=='0'?'none':'block');
+			$('#menu_style_from_table')
+				.css('display',$('#menu_style_from').val()=='0'?'none':'block');
 		}
 		$('#menu_style_from')
 			.val(+res.style_from)
@@ -153,6 +172,7 @@ function menu_edit(ev){
 			});
 			update_styles_table();
 		},1);
+		$('#menu_html_type').val(+res.html_type);
 		// }
 	});
 }

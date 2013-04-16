@@ -47,7 +47,6 @@ $num_of_entries=dbOne(
 );
 $sql='select * from blog_entry'.$constraints.' order by cdate desc'
 	.' limit '.$excerpts_offset.','.$excerpts_per_page;
-echo '<!-- '.$sql.' -->';
 $rs=dbAll($sql);
 $c.='<div class="blog-main-wrapper">';
 if (!isset($excerpt_length)) {
@@ -89,7 +88,7 @@ foreach ($rs as $r) {
 	$c.='<div class="blog-excerpt">'.$img.$excerpt.'</div>';
 	$date=preg_replace('/ .*/', '', $r['cdate']);
 	$c.='<a class="blog-link-to-article" href="'
-		.$PAGEDATA->getRelativeUrl().'/'.$r['user_id'].'/'.$date.'/'
+		.$links_prefix.'/'.$r['user_id'].'/'.$date.'/'
 		.preg_replace('/[^a-zA-Z0-9]/', '-', transcribe($r['title']))
 		.'">read more</a>';
 	$c.='</div>';

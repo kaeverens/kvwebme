@@ -11,15 +11,19 @@
 	* @link     http://kvsites.ie/
 	*/
 
-$howmany=(int)$PAGEDATA->vars['blog_featured_posts'];
-$tmpconstraints=$constraints
+$howmany=isset($PAGEDATA->vars['blog_featured_posts'])
+	?$PAGEDATA->vars['blog_featured_posts']:3;
+if (!$howmany) {
+	$howmany=8;
+}
+$tmpconstraints=isset($constraints) && $constraints
 	?$constraints.' and'
 	:' where';
-$rs=dbAll(
-	'select * from blog_entry'.$tmpconstraints.' featured'
-	.' order by pdate desc limit 0,'.$howmany
-);
+$sql='select * from blog_entry'.$tmpconstraints.' featured'
+	.' order by pdate desc limit 0,'.$howmany;
+$rs=dbAll($sql);
 if (!count($rs)) {
+	echo '<!-- '.$sql.' -->';
 	return;
 }
 $c.='<div id="blog-featured-excerpts"><div class="main">';
@@ -54,7 +58,7 @@ foreach ($rs as $r) {
 		.'<h2 class="blog-header">'.htmlspecialchars($r['title']).'</h2>'
 		.'<div class="blog-excerpt">'.$excerpt.'</div>'
 		.'<a class="blog-link-to-article" href="'
-		.$PAGEDATA->getRelativeUrl().'/'.$r['user_id'].'/'.$date.'/'
+		.$links_prefix.'/'.$r['user_id'].'/'.$date.'/'
 		.preg_replace('/[^a-zA-Z0-9]/', '-', transcribe($r['title']))
 		.'">'.__('Read more', 'core').'</a>'
 		.'</div>';

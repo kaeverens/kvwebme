@@ -30,7 +30,7 @@ foreach ($rs as $r) {
 	$hname=htmlspecialchars($user->get('name'));
 	$a.=$hname.'</h2>';
 	$a.='number of articles: '.$r['ids'].'<br/>';
-	$a.='<a href="'.$PAGEDATA->getRelativeUrl().'/'.$r['user_id'].'">'
+	$a.='<a href="'.$links_prefix.'/'.$r['user_id'].'">'
 		.'read '.$hname.'\'s entries</a><br/>';
 	$a.='</td></tr></table>';
 	$authors[]=$a;

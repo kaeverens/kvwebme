@@ -20,7 +20,7 @@ $rs=dbAll(
 $tags=array();
 foreach ($rs as $r) {
 	$h=htmlspecialchars($r['tag']);
-	$tags[]='<a href="'.$PAGEDATA->getRelativeUrl().'/tags/'.$h
+	$tags[]='<a href="'.$links_prefix.'/tags/'.$h
 		.'">'.$h.' <span>('.$r['cnt'].')</span></a>';
 }
 

@@ -29,10 +29,15 @@ if ($version=='5') { // where to inherit styles from
 	dbQuery('update menus set style_from=1');
 	$version=6;
 }
-if ($version=='6') {
+if ($version=='6') { // state
 	// create state column in database
 	dbQuery('alter table menus add state text');
 	// set default value for state
 	dbQuery('update menus set state=0');
 	$version=7;
+}
+if ($version=='7') { // html type
+	dbQuery('alter table menus add html_type smallint default 1');
+	dbQuery('update menus set html_type=0'); // set existing menus to old style
+	$version=8;
 }

@@ -146,12 +146,9 @@ class User{
 			$tmp.=',address:1';
 		}
 		if (isset($_SESSION['userdata']['id']) && $_SESSION['userdata']['id']) {
-			$tmp.=',groups:['
-				.join(
-					',',
-					User::getInstance($_SESSION['userdata']['id'])->getGroups()
-				)
-				.']';
+			$user=User::getInstance($_SESSION['userdata']['id']);
+			$groups=$user?$user->getGroups():array();
+			$tmp.=',groups:['.join(',', $groups).']';
 		}
 		return $tmp.'};';
 	}
