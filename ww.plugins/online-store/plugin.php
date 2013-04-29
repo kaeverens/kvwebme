@@ -561,7 +561,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 		.($slidedown?' slidedown':'')
 		.'">';
 	if ($slidedown) {
-		$html.='<div class="slidedown-header">.'.__('Your Items').'</div>'
+		$html.='<div class="slidedown-header">'.__('Your Items').'</div>'
 			.'<div class="slidedown-wrapper" slidedown="'
 			.@$vars->slidedown_animation.'" slideup="'.$slideup.'">';
 		WW_addCSS('/ww.plugins/online-store/basket.css');
@@ -641,7 +641,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 				// }
 				// { price
 				$price=$cost*$item['amt'];
-				$html.='<td class="'.$md5.'-item-total">'
+				$html.='<td class="'.$md5.'-item-total total">'
 					.OnlineStore_numToPrice($price)
 					.'</td></tr>';
 				// }

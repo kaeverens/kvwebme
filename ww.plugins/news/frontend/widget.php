@@ -24,8 +24,7 @@ if (!$vars->stories_to_show) {
 $rs=Core_cacheLoad('pages', 'news|'.$vars->id.'|'.$vars->stories_to_show, -1);
 if ($rs===-1) {
 	$sql='select id from pages where parent='.$vars->id
-		.' and associated_date<now()'
-		.' order by associated_date desc,cdate desc limit '.$vars->stories_to_show;
+		.' order by associated_date desc,cdate desc limit 10';
 	$rs=dbAll($sql);
 	if ($rs!==false) {
 		Core_cacheSave('pages', 'news|'.$vars->id.'|'.$vars->stories_to_show, $rs);

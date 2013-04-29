@@ -82,7 +82,7 @@ function Core_createTranslatableInputs() {
 		var vals;
 		try{
 			var vals=$.parseJSON(val);
-			if (vals==null) {
+			if (vals==null || vals==val) {
 				vals={};
 				vals[languages[0].code]=val;
 			}
@@ -97,6 +97,7 @@ function Core_createTranslatableInputs() {
 		var $inp=$('<input style="width:'+($orig.width()-16)+'px'
 			+';float:left;display:block"/>')
 			.change(update)
+			.val($orig.val())
 			.appendTo($div);
 		var $button=$('<span class="ui-icon ui-icon-triangle-1-s '
 			+'translatable-button"></span>')

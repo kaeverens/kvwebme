@@ -5,3 +5,8 @@
 #pc_edit_name{
 	width:100%;
 }
+.highlighted em,.active-result em{
+	display:inline;
+	margin:0;
+	padding:0;
+}

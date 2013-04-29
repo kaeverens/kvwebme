@@ -78,16 +78,16 @@ function Products_adminCategoryDelete() {
 	*/
 function Products_adminCategoryEdit() {
 	if (!is_numeric(@$_REQUEST['id']) || @$_REQUEST['name']==''
-		|| strlen(@$_REQUEST['associated_colour'])!=6
 	) {
 		Core_quit();
 	}
-	dbQuery(
-		'update products_categories set name="'.addslashes($_REQUEST['name']).'"'
-		.',enabled="'.((int)$_REQUEST['enabled']).'"'
-		.',associated_colour="'.addslashes($_REQUEST['associated_colour']).'"'
-		.' where id='.$_REQUEST['id']
-	);
+	$sql='update products_categories set name="'.addslashes($_REQUEST['name']).'"'
+		.',enabled="'.((int)$_REQUEST['enabled']).'"';
+	if (isset($_REQUEST['associated_colour']) && strlen($_REQUEST['associated_colour'])==6) {
+		$sql.=', associated_colour="'.addslashes($_REQUEST['associated_colour']).'"';
+	}
+	$sql.=' where id='.$_REQUEST['id'];
+	dbQuery($sql);
 	Core_cacheClear('products');
 	$pageid=dbOne(
 		'select page_id from page_vars where name="products_category_to_show" '
@@ -494,32 +494,36 @@ function Products_adminImportImages() {
 			if ($file->isDot()) {
 				continue;
 			}
-			$ext=strtolower($file->getExtension());
-			if (in_array($ext, array('jpg', 'jpeg', 'png', 'jpe'))) {
-				$name=preg_replace('/\.[^\.]*$/', '', $file->getFilename());
-				$r=dbRow(
-					'select id,images_directory from products where '
-					.$field.'="'.addslashes($name).'"'
-				);
-				if (!$r) {
-					$missingproduct++;
-					continue;
+			try {
+				$ext=strtolower(preg_replace('/.*\./', '', $file->getFilename()));
+				if (in_array($ext, array('jpg', 'jpeg', 'png', 'jpe'))) {
+					$name=preg_replace('/\.[^\.]*$/', '', $file->getFilename());
+					$r=dbRow(
+						'select id,images_directory from products where '
+						.$field.'="'.addslashes($name).'"'
+					);
+					if (!$r) {
+						$missingproduct++;
+						continue;
+					}
+					@mkdir(
+						USERBASE.'/f/'.$r['images_directory'],
+						0777,
+						true
+					);
+					$success=rename(
+						$directory.'/'.$file->getFilename(),
+						USERBASE.'/f/'.$r['images_directory'].'/'.$file->getFilename()
+					);
+					if ($success) {
+						$moved++;
+					}
+					else {
+						$failedmove++;
+					}
 				}
-				@mkdir(
-					USERBASE.'/f/'.$r['images_directory'],
-					0777,
-					true
-				);
-				$success=rename(
-					$directory.'/'.$file->getFilename(),
-					USERBASE.'/f/'.$r['images_directory'].'/'.$file->getFilename()
-				);
-				if ($success) {
-					$moved++;
-				}
-				else {
-					$failedmove++;
-				}
+			}
+			catch (Exception $e) {
 			}
 		}
 		return array(

@@ -1,10 +1,18 @@
 $(function(){
 	$.jstree._themes='/j/jstree/themes/';
 	function save(){
-		$.post('/a/p=products/f=adminCategoryEdit/id='+window.selected_cat, {
-			"name"   :$('#pc_edit_name').val(),
-			"enabled":$('#pc_edit_enabled').val()
-		});
+		var id=window.selected_cat, name=$('#pc_edit_name').val();
+		$.post(
+			'/a/p=products/f=adminCategoryEdit',
+			{
+				'id':id,
+				'name':name,
+				'enabled':$('#pc_edit_enabled').val()
+			},
+			function() {
+				$('#cat_'+window.selected_cat+'>a').text(name);
+			}
+		);
 	}
 	var tableCache='<table id="attrs_table" style="width:100%">'
 		+'<tr><th>Name</th><td><input id="pc_edit_name" /></td></tr>'
