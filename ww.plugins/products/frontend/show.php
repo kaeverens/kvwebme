@@ -995,14 +995,22 @@ class Products{
 		}
 		else{
 			$prods=array();
+			echo '<!-- '; var_dump($PAGEDATA); echo '-->';
 			for ($i=$start;$i<$limit+$start;++$i) {
 				if (isset($tmpprods[$i])) {
 					$prods[]=$tmpprods[$i];
 				}
 			}
+			if ($PAGEDATA->vars['products_what_to_show']==2) {
+				$cat=ProductCategory::getInstance($PAGEDATA->vars['products_category_to_show']);
+				$prefix=$cat->getRelativeUrl();
+			}
+			else {
+				$prefix=$PAGEDATA->getRelativeUrl();
+			}
 			if ($start>$limit_start) {
 				$prevnext.='<a class="products-prev" href="'
-					.$PAGEDATA->getRelativeUrl().'?start='.($start-$limit)
+					.$prefix.'?start='.($start-$limit)
 					.'">'.__('Previous').'</a>';
 			}
 			if ($limit && $start+$limit<$cnt) {
@@ -1010,7 +1018,7 @@ class Products{
 					$prevnext.=' | ';
 				}
 				$prevnext.='<a class="products-next" href="'
-					.$PAGEDATA->getRelativeUrl().'?start='.($start+$limit)
+					.$prefix.'?start='.($start+$limit)
 					.'">'.__('Next').'</a>';
 			}
 		}
