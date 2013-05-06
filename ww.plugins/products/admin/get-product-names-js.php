@@ -17,7 +17,7 @@ if (!Core_isAdmin()) {
 
 header('Content-type: text/javascript; charset=utf-8');
 
-$ps=dbAll('select id,name from products order by name');
+$ps=dbAll('select id,name from products where enabled order by name');
 $end=count($ps);
 
 echo "product_names=[\n";

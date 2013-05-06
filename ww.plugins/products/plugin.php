@@ -1883,6 +1883,7 @@ function Products_getSubCategoriesAsMenu($ignore, $page) {
 function Products_getSubCategoriesAsMenuHtml(
 	$ignore, $pid, $depth, $options
 ) {
+	$s='';
 	if (is_object($pid)) {
 		if (!$pid->type
 			|| ($pid->type!='products' && $pid->type!='products|products')

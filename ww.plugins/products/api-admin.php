@@ -236,18 +236,33 @@ function Products_adminCategoryProductsEdit() {
 	if (!is_numeric(@$_REQUEST['id'])) {
 		Core_quit();
 	}
-	dbQuery(
-		'delete from products_categories_products where category_id='
-		.$_REQUEST['id']
-	);
+	$id=(int)$_REQUEST['id'];
+	if (!isset($_REQUEST['noclear'])) {
+		dbQuery(
+			'delete from products_categories_products where category_id='.$id
+		);
+	}
 	foreach ($_REQUEST['s'] as $p) {
+		if (isset($_REQUEST['noclear'])) {
+			dbQuery(
+				'delete from products_categories_products where product_id='
+				.((int)$p).' and category_id='.$id
+			);
+		}
 		dbQuery(
 			'insert into products_categories_products set product_id='
-			.((int)$p).',category_id='.$_REQUEST['id']
+			.((int)$p).',category_id='.$id
 		);
 	}
 	Core_cacheClear('products');
-	return Products_adminCategoryGetFromID($_REQUEST['id']);
+	$ret=Products_adminCategoryGetFromID($id);
+	$parent=dbOne('select parent_id from products_categories where id='.$id.' and parent_id!=0', 'parent_id');
+	if ($parent) {
+		$_REQUEST['noclear']=true;
+		$_REQUEST['id']=$parent;
+		Products_adminCategoryProductsEdit();
+	}
+	return $ret;
 }
 
 // }
@@ -858,7 +873,7 @@ function Products_adminProductsEnable() {
 // { Products_adminProductEditVal
 
 /**
-	* edit a single value of aa product
+	* edit a single value of a product
 	*
 	* @return array status
 	*/

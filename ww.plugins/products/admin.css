@@ -14,3 +14,6 @@ td.editable{
 	text-align:center;
 	padding:5px;
 }
+#data-fields-table input{
+	width:95%;
+}
