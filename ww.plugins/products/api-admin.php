@@ -1022,7 +1022,7 @@ function Products_adminProductsListImages() {
 // { Products_adminProductsList
 
 /**
-	* get products in <option> format
+	* get products in array format
 	*
 	* @return null
 	*/

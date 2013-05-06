@@ -105,23 +105,16 @@ $c.='</td></tr>';
 // }
 // { product names
 $c.='<tr id="products_what_to_show_3"><th>Which product to show</th><td>';
-$rs=dbAll('select id,name from products order by name');
-if ($rs===false || !count($rs)) {
-	$c.='<p><strong>no products exist.</strong> '
-		.'<a href="/ww.admin/plugin.php?_plugin=products&amp;_page=products">'
-		.'click here to create a product</a>.</p>';
+if (isset($vars['products_product_to_show']) && $vars['products_product_to_show']) {
+	$pid=(int)$vars['products_product_to_show'];
+	$pName=dbOne('select name from products where id='.$pid, 'name');
+	if (!$pName) {
+		$pName=' -- no name -- ';
+	}
+	$c.='<select name="page_vars[products_product_to_show]"><option value="'.$pid.'">'.htmlspecialchars($pName).'</option></select>';
 }
 else {
-	$c.='<select name="page_vars[products_product_to_show]">'
-		.'<option value="0"> -- choose -- </option>';
-	foreach ($rs as $r) {
-		$c.='<option value="'.$r['id'].'"';
-		if (@$vars['products_product_to_show']==$r['id']) {
-			$c.=' selected="selected"';
-		}
-		$c.='>'.htmlspecialchars($r['name']).'</option>';
-	}
-	$c.='</select>';
+	$c.='<select name="page_vars[products_product_to_show]"><option value="0"> -- choose -- </option></select>';
 }
 $c.='</td></tr>';
 // }

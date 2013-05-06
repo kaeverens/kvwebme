@@ -34,4 +34,20 @@ $(function(){
 	$('#products_what_to_show_1 select,#products_what_to_show_2 select').change(function(){
 		$('#products_order_by_select').trigger('mousedown');
 	});
+	$('select[name="page_vars[products_product_to_show]"]').hover(function() {
+		var $this=$(this);
+		if ($this.data('clicked')) {
+			return;
+		}
+		$this.data('clicked', true);
+		var $pleaseWait=$('<span>Please Wait - Loading...</span>').insertAfter($this.hide());
+		$.post('/a/p=products/f=adminProductsList/', function(ret) {
+			var opts=[];
+			$.each(ret, function(k, v) {
+				opts.push('<option value="'+k+'">'+v+'</option>');
+			});
+			$this.append(opts.join('')).css('max-width', '400px').show();
+			$pleaseWait.remove();
+		});
+	});
 });
