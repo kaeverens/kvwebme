@@ -60,11 +60,22 @@ function Ads_widget($params) {
 	$type_id=(int)$params->{'ad-type'};
 	$howmany=(int)$params->{'how-many'};
 	$type=dbRow('select * from ads_types where id='.$type_id);
-	$ads=dbAll(
+	$sql='select id,image_url,target_type,poster from ads'
+		.' where type_id='.$type_id.' and is_active and cdate>date_add(now(), interval -2 day) order by rand()'
+		.' limit '.$howmany;
+	$adsNew=dbAll($sql);
+	$adsOld=dbAll(
 		'select id,image_url,target_type,poster from ads'
 		.' where type_id='.$type_id.' and is_active order by rand()'
 		.' limit '.$howmany
 	);
+	$ads=array();
+	for ($i=0;$i<count($adsNew);++$i) {
+		$ads[]=$adsNew[$i];
+	}
+	for ($j=0;$j<($howmany-$i) &&$j<count($adsOld);++$j) {
+		$ads[]=$adsOld[$j];
+	}
 	$html='<div class="ads-wrapper type-'.$type_id.'">';
 	foreach ($ads as $ad) {
 		$ad['image_url']=str_replace(
@@ -77,7 +88,7 @@ function Ads_widget($params) {
 		if ($ad['target_type']=='1') {
 			$html.=' data-poster="'.htmlspecialchars($ad['poster']).'"';
 		}
-		$html.='><img src="'.$ad['image_url'].'"/></div>';
+		$html.='><img src="'.$ad['image_url'].'" style="max-height:'.$type['height'].'px;max-width:'.$type['width'].'"/></div>';
 		dbQuery(
 			'insert into ads_track set ad_id='.$ad['id'].', view=1, cdate=now()'
 		);

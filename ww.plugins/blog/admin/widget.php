@@ -38,3 +38,16 @@ foreach ($widgetTypes as $k=>$t) {
 }
 echo '</select></label>';
 // }
+if ($widgetType==0) { // number of excerpts
+	$excerpts=isset($_REQUEST['excerpts'])?(int)$_REQUEST['excerpts']:'0';
+	echo '<br/><label>'.__('Number of Excerpts')
+		.'<br/><input name="excerpts" type="number" value="'.$excerpts.'"/></label>';
+	$excerpts_offset=isset($_REQUEST['excerpts_offset'])?(int)$_REQUEST['excerpts_offset']:'0';
+	echo '<br/><label>'.__('Excerpts Offset')
+		.'<br/><input name="excerpts_offset" type="number" value="'.$excerpts_offset.'"/></label>';
+	$imageSizeX=isset($_REQUEST['imageSizeX'])?(int)$_REQUEST['imageSizeX']:'100';
+	$imageSizeY=isset($_REQUEST['imageSizeY'])?(int)$_REQUEST['imageSizeY']:'100';
+	echo '<br/>'.__('Image Size')
+		.'<br/><input name="imageSizeX" type="number" value="'.$imageSizeX.'" class="small"/>x'
+		.'<input name="imageSizeY" type="number" value="'.$imageSizeY.'" class="small"/>';
+}

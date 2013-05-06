@@ -12,7 +12,7 @@ foreach ($rs as $r) {
 	$ad_types[$r['id']]=$r['name'];
 }
 
-echo '<table id="ads-table"><thead><tr><th>Name</th><th>Type</th>'
+echo '<table id="ads-table"><thead><tr><th>ID</th><th>Name</th><th>Type</th>'
 	.'<th>Owner</th><th>Views</th><th>Clicks</th><th>Active</th>'
 	.'<th>Expires</th><th></th></tr></thead><tbody>';
 foreach ($ads as $ad) {
@@ -21,7 +21,9 @@ foreach ($ads as $ad) {
 		$user=User::getInstance($ad['customer_id']);
 		$username=$user?$user->get('name'):'UNKNOWN';
 	}
-	echo '<tr id="ad-'.$ad['id'].'"><td>'.htmlspecialchars($ad['name']).'</td>'
+	echo '<tr id="ad-'.$ad['id'].'">'
+		.'<td>'.str_pad($ad['id'], 4, '0', STR_PAD_LEFT).'</td>'
+		.'<td>'.htmlspecialchars($ad['name']).'</td>'
 		.'<td>'.htmlspecialchars($ad_types[$ad['type_id']]).'</td>'
 		.'<td>'.htmlspecialchars($username).'</td>'
 		.'<td>'.$ad['views'].'</td>'

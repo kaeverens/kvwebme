@@ -34,8 +34,8 @@ function Blog_widget2($vars=null) {
 		}
 	}
 	$blog_author='';
-	$excerpts_offset=0;
-	$excerpts_per_page=2;
+	$excerpts_offset=(isset($vars->excerpts_offset) && $vars->excerpts_offset)?$vars->excerpts:0;
+	$excerpts_per_page=(isset($vars->excerpts) && $vars->excerpts)?$vars->excerpts:2;
 	$links_prefix=$PAGEDATA->getRelativeURL();
 	if ($PAGEDATA->type!='blog|blog') {
 		$page=PAGE::getInstanceByType('blog');
@@ -51,6 +51,12 @@ function Blog_widget2($vars=null) {
 			require dirname(__FILE__).'/featured-posts.php';
 		break; // }
 		default: // {
+			if (isset($vars->imageSizeX) && $vars->imageSizeX) {
+				$excerptImageSizeX=(int)$vars->imageSizeX;
+			}
+			if (isset($vars->imageSizeY) && $vars->imageSizeY) {
+				$excerptImageSizeY=(int)$vars->imageSizeY;
+			}
 			require dirname(__FILE__).'/excerpts.php';
 		break; //}
 	}

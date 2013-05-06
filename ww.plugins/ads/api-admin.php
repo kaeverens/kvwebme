@@ -128,7 +128,7 @@ function Ads_adminAdEdit() {
 		dbQuery('update '.$sql.' where id='.$id);
 	}
 	else {
-		dbQuery('insert into '.$sql);
+		dbQuery('insert into '.$sql.', cdate=now()');
 		$id=dbLastInsertId();
 		if (strpos($image_url, '/f/ads/0/')!==false) {
 			$fname=str_replace('/f/ads/0/', '', $image_url);

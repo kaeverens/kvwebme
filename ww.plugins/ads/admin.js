@@ -1,6 +1,7 @@
 $(function() {
 	$('#ads-table').dataTable({
-		'bJQueryUI':true
+		'bJQueryUI':true,
+		'aaSorting':[[0, 'desc']]
 	});
 	$('#ads-types-table').dataTable({
 		'bJQueryUI':true

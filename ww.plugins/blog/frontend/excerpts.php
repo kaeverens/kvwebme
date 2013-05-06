@@ -66,13 +66,13 @@ foreach ($rs as $r) {
 	$name=$user?$user->name:'unknown';
 	$c.='<div class="blog-meta">'
 		.'<span class="blog-author" data-uid="'.$r['user_id'].'">'.$name.'</span>'
-		.' ~ '
+		.'<span class="blog-separator"> ~ </span>'
 		.'<span class="blog-date-published">'.Core_dateM2H($r['pdate']).'</span>'
 		.'</div>';
 	// }
 	$excerpt=$r['excerpt']
 		?$r['excerpt']
-		:substr(preg_replace('/<[^>]*>/', ' ', $r['body']), 0, $excerpt_length).'...';
+		:substr(preg_replace('/\s+/', ' ', str_replace('&nbsp;', ' ', preg_replace('/<[^>]*>/', ' ', $r['body']))), 0, $excerpt_length).'...';
 	// { image
 	if (!$r['excerpt_image']) {
 		$img=preg_replace('/.*<img.*?src="([^"]*)".*/m', '\1', str_replace(array("\n", "\r"), ' ', $r['body']));
@@ -82,15 +82,22 @@ foreach ($rs as $r) {
 	}
 	$img='';
 	if ($r['excerpt_image']) {
-		$img='<img class="blog-excerpt-image" src="/a/f=getImg/w=100/h=100/'.$r['excerpt_image'].'"/>';
+		if (!isset($excerptImageSizeX)) {
+			$excerptImageSizeX=100;
+		}
+		if (!isset($excerptImageSizeY)) {
+			$excerptImageSizeY=100;
+		}
+		$img='<img class="blog-excerpt-image" src="/a/f=getImg/w='.$excerptImageSizeX.'/h='.$excerptImageSizeY.'/'.$r['excerpt_image'].'"/>';
 	}
 	// }
-	$c.='<div class="blog-excerpt">'.$img.$excerpt.'</div>';
 	$date=preg_replace('/ .*/', '', $r['cdate']);
-	$c.='<a class="blog-link-to-article" href="'
+	$c.='<div class="blog-excerpt">'.$img.$excerpt
+		.' <a class="blog-link-to-article" href="'
 		.$links_prefix.'/'.$r['user_id'].'/'.$date.'/'
 		.preg_replace('/[^a-zA-Z0-9]/', '-', transcribe($r['title']))
-		.'">read more</a>';
+		.'">more</a>'
+		.'</div>';
 	$c.='</div>';
 }
 $this_page=(int)($excerpts_offset/$excerpts_per_page);
