@@ -66,15 +66,20 @@ $(function() {
 	});
 	function editAd(ret) {
 		var html='<table>'
+			// { name, type
 			+'<tr><th>Name</th><td><input id="popup-name"/></td>'
+			+'<th>Ad Type</th><td><select id="popup-type_id"></select></td></tr>'
+			// }
+			+'<tr><th>Upload Image</th><td><span id="popup-upload"/></td>'
 			+'<th>Image URL</th><td style="width:300px"><input id="popup-image_url"/></td></tr>'
-			+'<tr><th>Ad Type</th><td><select id="popup-type_id"></select></td>'
-			+'<td id="image-wrapper" colspan="2" rowspan="4"></td></tr>'
-			+'<tr><th>Owner</th><td><select id="popup-customer_id"></select></td></tr>'
-			+'<tr><th>Active</th><td><select id="popup-is_active"><option value="1">Yes</option><option value="0">No</option></select></td></tr>'
+			// { owner, active
+			+'<tr><th>Owner</th><td><select id="popup-customer_id"></select></td>'
+			+'<th>Active</th><td><select id="popup-is_active"><option value="1">Yes</option><option value="0">No</option></select></td></tr>'
+			// }
 			+'<tr><th>Expire Date</th><td><input id="popup-date_expire"/></td></tr>'
 			+'<tr><th>Target Url</th></th><td colspan="3">'
 			+'<input style="width:100%" id="popup-target_url"/></td></tr>'
+			+'<tr><td id="image-wrapper" colspan="4"></td></tr>'
 			+'</table>';
 		var $dialog=$(html).dialog({
 			'modal':true,
@@ -140,6 +145,16 @@ $(function() {
 				}
 			})
 			.change();
+		// { setup upload button
+		Core_uploader('#popup-upload', {
+			'serverScript': '/a/p=ads/f=adminImageUpload/id='+ret.id,
+			'successHandler':function(file, data, response) {
+				data=JSON.parse(data);
+				$('#popup-image_url').val(data.url.replace(/^\/f/, ''));
+				$('#image-wrapper').html('<img src="'+data.url+'" style="max-width:500px;max-height:100px;"/>');
+			}
+		});
+		// }
 	}
 	function editAdsType(ret) {
 		var html='<table>'

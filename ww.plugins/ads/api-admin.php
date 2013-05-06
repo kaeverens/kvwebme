@@ -129,7 +129,34 @@ function Ads_adminAdEdit() {
 	}
 	else {
 		dbQuery('insert into '.$sql);
+		$id=dbLastInsertId();
+		if (strpos($image_url, '/f/ads/0/')!==false) {
+			$fname=str_replace('/f/ads/0/', '', $image_url);
+			@mkdir(USERBASE.'/f/ads/'.$id, 0777, true);
+//			echo USERBASE.'/f/ads/0/'.$fname."\n".USERBASE.'/f/ads/'.$id.'/'.$fname;
+			rename(USERBASE.'/f/ads/0/'.$fname, USERBASE.'/f/ads/'.$id.'/'.$fname);
+			$sql='update ads set image_url="/f/ads/'.$id.'/'.addslashes($fname).'" where id='.$id;
+			dbQuery($sql);
+		}
 	}
 }
 
 // }
+function Ads_adminImageUpload() {
+	$id=(int)$_REQUEST['id'];
+	@mkdir(USERBASE.'/f/ads/'.$id, 0777, true);
+	$imgs=new DirectoryIterator(USERBASE.'/f/ads/'.$id);
+	foreach ($imgs as $img) {
+		if ($img->isDot()) {
+			continue;
+		}
+		unlink($img->getPathname());
+	}
+	$from=$_FILES['Filedata']['tmp_name'];
+	$to=USERBASE.'/f/ads/'.$id.'/'.$_FILES['Filedata']['name'];
+	move_uploaded_file($from, $to);
+	Core_cacheClear('ads');
+	return array(
+		'url'=>'/f/ads/'.$id.'/'.$_FILES['Filedata']['name']
+	);
+}

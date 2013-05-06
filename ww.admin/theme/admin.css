@@ -268,3 +268,6 @@ table.borders>thead *{
 .nodisplay{
 	display:none;
 }
+.swfupload{
+	z-index:9999!important;
+}
