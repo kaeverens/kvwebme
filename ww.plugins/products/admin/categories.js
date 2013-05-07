@@ -1,60 +1,98 @@
 $(function(){
-	$.jstree._themes='/j/jstree/themes/';
-	function save(){
-		var id=window.selected_cat, name=$('#pc_edit_name').val();
-		$.post(
-			'/a/p=products/f=adminCategoryEdit',
-			{
-				'id':id,
-				'name':name,
-				'enabled':$('#pc_edit_enabled').val()
-			},
-			function() {
-				$('#cat_'+window.selected_cat+'>a').text(name);
-			}
-		);
-	}
-	var tableCache='<table id="attrs_table" style="width:100%">'
-		+'<tr><th>Name</th><td><input id="pc_edit_name" /></td></tr>'
-		+'<tr><th>Enabled</th><td><select id="pc_edit_enabled"><option value="1">Yes</option><option value="0">No</option></td></tr>';
-	// { icon
-	tableCache+='<tr id="icon"><th>Icon</th>'
-		+'<td><div id="icon-image"/><input type="file" id="uploader"/></td>'
-		+'</tr>';
-	// }
-	// { products
-	tableCache+='<tr id="products"><th>Products</th><td><form><select name="pc_edit_products[]" id="pc_edit_products" multiple="multiple" style="width:100%">';
-	for (var i=0;i<window.product_names.length;++i) {
-		var product=window.product_names[i];
-		tableCache+='<option value="'+product[1]+'"';
-		tableCache+='>'+product[0]+'</option>';
-	}
-	tableCache+='</select></form></td></tr>';
-	// }
-	tableCache+='</table>';
-	$(tableCache).appendTo('#products-categories-attrs');
-	$('#pc_edit_products').chosen().change(function() {
-		var $opts=$('#pc_edit_products option:selected');
-		var $this=$('#pc_edit_products');
-		var vals=[];
-		$opts.each(function() {
-			vals.push(this.value);
-		});
-		if (window.pcEditProductsTimeout) {
-			clearTimeout(window.pcEditProductsTimeout);
-		}
-		window.pcEditProductsTimeout=setTimeout(function() {
+	function show_attributes(ret, cid){
+		function save(){
+			var id=window.selected_cat, name=$('#pc_edit_name').val(), enabled=$('#pc_edit_enabled').val();
+			ret.attrs.enabled=enabled;
+			ret.attrs.name=name;
 			$.post(
-				'/a/p=products/f=adminCategoryProductsEdit/id='+window.selected_cat,
-				{ "s[]":vals}
+				'/a/p=products/f=adminCategoryEdit',
+				{
+					'id':id,
+					'name':name,
+					'enabled':enabled
+				},
+				function() {
+					$('#cat_'+window.selected_cat+'>a').text(name);
+				}
 			);
-			clearTimeout(window.pcEditProductsTimeout);
-			delete window.pcEditProductsTimeout;
-		}, 1000);
-	});
-	function show_attributes(ret){
+		}
 		window.selected_cat=ret.attrs.id;
-		$('#pc_edit_products').val(ret.products).trigger('liszt:updated');
+		var $wrapper=$('#products-categories-attrs').empty();
+		var tableCache='<table id="attrs_table" style="width:100%">'
+			+'<tr><th>Name</th><td><input id="pc_edit_name" /></td></tr>'
+			+'<tr><th>Enabled</th><td><select id="pc_edit_enabled"><option value="1">Yes</option><option value="0">No</option></td></tr>';
+		// { icon
+		tableCache+='<tr id="icon"><th>Icon</th>'
+			+'<td><div id="icon-image"/><input type="file" id="uploader"/></td>'
+			+'</tr>';
+		// }
+		// { products
+		tableCache+='<tr id="products"><th>Products</th><td><input id="selectFromParentCats" type="checkbox"/>only show products that the parent category has<div id="products-wrapper">';
+		tableCache+='please wait...</div></td></tr>';
+		function showProducts(productsPool) {
+			var products=['<select name="pc_edit_products[]" id="pc_edit_products" multiple="multiple" style="width:100%">'];
+			var pNames=window.product_names;
+			for (var i=0;i<pNames.length;++i) {
+				var product=pNames[i];
+				if (productsPool) {
+					var found=false;
+					for (var j=0;j<productsPool.length;++j) {
+						if (productsPool[j]==product[1]) {
+							found=true;
+							break;
+						}
+					}
+					if (!found) {
+						continue;
+					}
+				}
+				products.push('<option value="'+product[1]+'">'+product[0]+'</option>');
+			}
+			products.push('</select>');
+			products.join('');
+			$('#products-wrapper').empty().append(products.join(''));
+			$('#pc_edit_products').chosen().change(function() {
+				var $opts=$('#pc_edit_products option:selected');
+				var $this=$('#pc_edit_products');
+				var vals=[];
+				$opts.each(function() {
+					vals.push(this.value);
+				});
+				if (window.pcEditProductsTimeout) {
+					clearTimeout(window.pcEditProductsTimeout);
+				}
+				window.pcEditProductsTimeout=setTimeout(function() {
+					$.post(
+						'/a/p=products/f=adminCategoryProductsEdit/id='+window.selected_cat,
+						{ "s[]":vals}
+					);
+					clearTimeout(window.pcEditProductsTimeout);
+					delete window.pcEditProductsTimeout;
+				}, 1000);
+			});
+			$('#pc_edit_products').val(ret.products).trigger('liszt:updated');
+		}
+		if (selectFromParentCats) {
+			var id=$('#cat_'+window.selected_cat).parents('li').attr('id');
+			if (id===undefined) {
+				setTimeout(showProducts, 1);
+			}
+			else {
+				id=id.replace('cat_', '');
+				$.post(
+					'/a/p=products/f=adminCategoryGet/id='+id,
+					function(ret) {
+						showProducts(ret.products);
+					}
+				);
+			}
+		}
+		else {
+			setTimeout(showProducts, 1);
+		}
+		// }
+		tableCache+='</table>';
+		$wrapper.append(tableCache);
 		Core_uploader('#uploader', {
 			'serverScript': '/a/p=products/f=adminCategorySetIcon/cat_id='
 				+window.selected_cat,
@@ -66,7 +104,9 @@ $(function(){
 			}
 		});
 		$('#cat_'+ret.attrs.id+'>a').text(ret.attrs.name);
-		$('#pc_edit_name').val(ret.attrs.name);
+		$('#pc_edit_name')
+			.change(save)
+			.val(ret.attrs.name);
 		$('#cat_'+ret.attrs.id+' a').removeClass('disabled');
 		// { Remove the links so that they don't get added twice
 		$('#create_link,#frontend_link').remove();
@@ -87,13 +127,24 @@ $(function(){
 				'View this category on the frontend</a></td></tr>'
 			).insertAfter('#products');
 		}
-		$('#pc_edit_enabled').val(ret.attrs.enabled);
+		$('#pc_edit_enabled')
+			.change(save)
+			.val(ret.attrs.enabled);
 		$('#icon-image').html(ret.hasIcon
 			?'<img src="/f/products/categories/'+ret.attrs.id+'/icon.png?'
 				+Math.random()+'"/>'
 			:''
 		);
+		$('#selectFromParentCats')
+			.change(function() {
+				selectFromParentCats=$(this).is(':checked');
+				show_attributes(ret);
+			})
+			.attr('checked', selectFromParentCats);
 	}
+	var selectFromParentCats=false;
+	// { draw categories tree
+	$.jstree._themes='/j/jstree/themes/';
 	$('#categories-wrapper')
 		.jstree({
 			'plugins': ["themes", "html_data", "ui", "dnd", "contextmenu"],
@@ -209,13 +260,13 @@ $(function(){
 		})
 		.appendTo(div);
 	div.insertAfter('#categories-wrapper');
-	$.post('/a/p=products/f=adminCategoryGet/id='+window.selected_cat,
-		show_attributes
-	);
-	$('#pc_edit_name, #pc_edit_enabled').live('change', save);
 	$('#categories-wrapper li>a').live('click', function(){
 		$.post('/a/p=products/f=adminCategoryGet/id='
 			+$(this).closest('li')[0].id.replace(/.*_/,''), show_attributes
 		);
 	});
+	// }
+	$.post('/a/p=products/f=adminCategoryGet/id='+window.selected_cat,
+		show_attributes
+	);
 });

@@ -382,6 +382,9 @@ class Product{
 		* @return array
 		*/
 	function getPriceBulkAll() {
+		if (!isset($this->vals['online-store']['_bulk_amount'])) {
+			return array(0, 0);
+		}
 		$ba=$this->vals['online-store']['_bulk_amount'];
 		if (!is_object($ba)) {
 			$ba=(object)array('_default'=>$ba);

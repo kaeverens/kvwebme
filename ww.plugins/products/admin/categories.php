@@ -56,15 +56,24 @@ WW_addScript('/j/farbtastic-1.3u/farbtastic.js');
 WW_addScript('/j/jstree/jquery.jstree.js');
 WW_addScript('/j/jstree/_lib/jquery.cookie.js');
 // }
-// { multiselect
-WW_addCSS('/j/jquery.multiselect/jquery.multiselect.css');
-WW_addScript('/j/jquery.multiselect/jquery.multiselect.min.js');
-// }
 WW_addScript('products/admin/categories.js');
 WW_addScript('products/admin/create-page.js');
 WW_addScript('image-gallery/files/swfobject.js');
-WW_addScript('/j/chosen/chosen.jquery.js');
+WW_addScript('/j/chosen/chosen.jquery.min.js');
 WW_addCSS('/j/chosen/chosen.css');
 WW_addCSS('/ww.plugins/products/admin/categories.css');
-echo '<script src="/ww.plugins/products/admin/get-product-names-js.php">'
-	.'</script>';
+$c=Core_cacheLoad('products', 'productNames');
+if (!$c) {
+	$ps=dbAll('select id,name from products where enabled order by name');
+	$end=count($ps);
+	$c='[';
+	for ($i=0;$i<$end;++$i) {
+		$c.='["'.addslashes(__FromJson($ps[$i]['name'])).'",'.$ps[$i]['id'].']';
+		if ($i<$end-1) {
+			$c.=',';
+		}
+	}
+	$c.='];';
+	Core_cacheSave('products', 'productNames', $c);
+}
+echo '<script>window.product_names='.$c.';</script>';
