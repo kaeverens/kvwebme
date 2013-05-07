@@ -35,15 +35,22 @@ $(function(){
 	$(tableCache).appendTo('#products-categories-attrs');
 	$('#pc_edit_products').chosen().change(function() {
 		var $opts=$('#pc_edit_products option:selected');
+		var $this=$('#pc_edit_products');
 		var vals=[];
 		$opts.each(function() {
 			vals.push(this.value);
 		});
-		$.post(
-			'/a/p=products/f=adminCategoryProductsEdit/id='+window.selected_cat,
-			{ "s[]":vals},
-			show_attributes
-		);
+		if (window.pcEditProductsTimeout) {
+			clearTimeout(window.pcEditProductsTimeout);
+		}
+		window.pcEditProductsTimeout=setTimeout(function() {
+			$.post(
+				'/a/p=products/f=adminCategoryProductsEdit/id='+window.selected_cat,
+				{ "s[]":vals}
+			);
+			clearTimeout(window.pcEditProductsTimeout);
+			delete window.pcEditProductsTimeout;
+		}, 1000);
 	});
 	function show_attributes(ret){
 		window.selected_cat=ret.attrs.id;

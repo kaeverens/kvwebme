@@ -255,14 +255,13 @@ function Products_adminCategoryProductsEdit() {
 		);
 	}
 	Core_cacheClear('products');
-	$ret=Products_adminCategoryGetFromID($id);
 	$parent=dbOne('select parent_id from products_categories where id='.$id.' and parent_id!=0', 'parent_id');
 	if ($parent) {
 		$_REQUEST['noclear']=true;
 		$_REQUEST['id']=$parent;
 		Products_adminCategoryProductsEdit();
 	}
-	return $ret;
+	return array('ok'=>1);
 }
 
 // }
