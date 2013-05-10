@@ -72,7 +72,7 @@ $(function() {
 			+'<th>Ad Type</th><td><select id="popup-type_id"></select></td></tr>'
 			// }
 			+'<tr><th>Upload Image</th><td><span id="popup-upload"/></td>'
-			+'<th>Image URL</th><td style="width:300px"><input id="popup-image_url"/></td></tr>'
+			+'<th>Image URL</th><td style="width:300px" id="popup-image_url"></td></tr>'
 			// { owner, active
 			+'<tr><th>Owner</th><td><select id="popup-customer_id"></select></td>'
 			+'<th>Active</th><td><select id="popup-is_active"><option value="1">Yes</option><option value="0">No</option></select></td></tr>'
@@ -90,7 +90,7 @@ $(function() {
 			},
 			'buttons':{
 				'Save':function() {
-					var imgurl=$('#popup-image_url').val();
+					var imgurl=$('#popup-image_url').text();
 					if (imgurl.charAt(0)=='/') {
 						imgurl='/f'+imgurl;
 					}
@@ -132,29 +132,28 @@ $(function() {
 		});
 		$('#popup-target_url').val(ret.target_url);
 		$('#popup-image_url')
-			.val((ret.image_url||'').replace(/^\/f/, ''))
-			.saorfm({
-				'rpc':'/ww.incs/saorfm/rpc.php',
-				'select':'file',
-				'prefix':''
-			})
-			.change(function() {
-				var url=$(this).val();
-				var $wrapper=$('#image-wrapper').empty();
-				if (url) {
-					$wrapper.html('<img src="/a/f=getImg/w=350/h=150/'+url+'"/>');
-				}
-			})
-			.change();
+			.text((ret.image_url||'').replace(/^\/f/, ''));
 		// { setup upload button
 		Core_uploader('#popup-upload', {
 			'serverScript': '/a/p=ads/f=adminImageUpload/id='+ret.id,
 			'successHandler':function(file, data, response) {
 				data=JSON.parse(data);
-				$('#popup-image_url').val(data.url.replace(/^\/f/, ''));
+				$('#popup-image_url').text(data.url.replace(/^\/f/, ''));
 				$('#image-wrapper').html('<img src="'+data.url+'" style="max-width:500px;max-height:100px;"/>');
 			}
 		});
+		var url=ret.image_url;
+		var $wrapper=$('#image-wrapper').empty();
+		if (url) {
+			var w='500';
+			var h='150';
+			var imgHtml=/swf$/.test(url)
+				?'<object type="application/x-shockwave-flash" style="width:'+w+'px; height:'+h+'px;" data="'
+					+url+'"><param name="movie" value="'+url+'" /></object>'
+				:'<img src="/a/f=getImg/w='+w+'/h='+h+'/'+url.replace(/^\/f/, '')+'"/>';
+			$wrapper.html(imgHtml);
+		}
+
 		// }
 	}
 	function editAdsType(ret) {

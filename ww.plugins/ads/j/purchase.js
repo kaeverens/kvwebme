@@ -166,9 +166,12 @@ $(function() {
 			if (!ret) {
 				return $('#ads-purchase-preview').addClass('disabled').html('please upload an image');
 			}
+			var imgHtml=/swf$/.test(ret)
+				?'<object type="application/x-shockwave-flash" style="width:'+chosenType.width+'px; height:'+chosenType.height+'px;" data="/f/'+ret+'"><param name="movie" value="/f/'+ret+'" /></object>'
+				:'<img src="/a/f=getImg/w='+chosenType.width+'/h='+chosenType.height+'/'+ret+'"/>';
 			$('#ads-purchase-preview')
 				.removeClass()
-				.html('<div style="border:1px solid red;width:'+chosenType.width+'px;height:'+chosenType.height+'px;"><img src="/a/f=getImg/w='+chosenType.width+'/h='+chosenType.height+'/'+ret+'"/></div><em>the red border is only to illustrate the size of the ad</em>');
+				.html('<div style="border:1px solid red;width:'+chosenType.width+'px;height:'+chosenType.height+'px;">'+imgHtml+'</div><em>the red border is only to illustrate the size of the ad</em>');
 		});
 	}
 	function updatePoster() {

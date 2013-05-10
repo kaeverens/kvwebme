@@ -16,7 +16,7 @@ foreach ($_POST as $key => $value) {
 	$value = urlencode(stripslashes($value));
 	$req .= "&$key=$value";
 }
-if ($_POST['payment_status'] == 'Refunded') {
+if (isset($_POST['payment_status']) && $_POST['payment_status']=='Refunded') {
 	Core_quit();
 }
 if ($req=='cmd=_notify-validate') {
@@ -42,13 +42,13 @@ else {
 			}
 			// create ad
 			$data=dbRow('select * from ads_purchase_orders where id='.$id);
-			dbQuery(
+			$sql=
 				'insert into ads set name="ad",customer_id='.$data['user_id']
 				.',target_url="'.addslashes($data['target_url']).'",cdate=now()'
 				.',target_type="'.addslashes($data['target_type']).'"'
 				.',is_active=1,type_id='.$data['type_id']
-				.',date_expire=date_add(now(), interval '.$data['days'].' day)'
-			);
+				.',date_expire=date_add(now(), interval '.$data['days'].' day)';
+			dbQuery($sql);
 			$ad_id=dbLastInsertId();
 			// { poster 
 			$url=false;

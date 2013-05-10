@@ -66,3 +66,17 @@ if ($version==8) {
 	dbQuery('alter table ads add poster text');
 	$version=9;
 }
+if ($version==9) {
+	dbQuery('alter table ads_track add to_delete smallint default 0');
+	$version=10;
+}
+if ($version==10) { // calculate ad views
+	dbQuery(
+		'insert into cron set name="ad stats recalculate"'
+		.', notes="recalculate daily totals for ads"'
+		.', period="hour",period_multiplier=6'
+		.', next_date=date_add(now(), interval 6 hour)'
+		.', func="Ads_statsUpdate"'
+	);
+	$version=11;
+}

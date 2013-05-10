@@ -254,3 +254,9 @@ function Ads_go() {
 }
 
 // }
+function Ads_paymentDetailsGet() {
+	$p=Page::getInstanceByType('ads');
+	$p->initValues();
+	return isset($p->vars['ads-profile-page'])
+		?$p->vars['ads-profile-page']:'no details recorded';
+}

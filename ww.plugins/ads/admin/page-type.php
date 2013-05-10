@@ -27,16 +27,16 @@ $c.='</div>';
 // { footer
 $c.='<div id="ads-footer">'
 	.'<p>'.__('This text will appear below the contents.').'</p>';
-$c.=ckeditor(
-	'page_vars[footer]',
-	(isset($vars['footer'])?$vars['footer']:'')
-);
+$c.=ckeditor('page_vars[footer]', (isset($vars['footer'])?$vars['footer']:''));
 $c.='</div>';
 // }
 // { payment details
-$c.='<div id="ads-payment-details">'
-	.'<p>Paypal address: <input name="page_vars[ads-paypal]" value="'
-	.htmlspecialchars($vars['ads-paypal']).'" type="email" /></p>'
-	.'</div>';
+$c.='<div id="ads-payment-details"><table>'
+	.'<tr><th>'.__('Paypal address').'</th><td><input name="page_vars[ads-paypal]" value="'
+	.htmlspecialchars($vars['ads-paypal']).'" type="email" /></td></tr>'
+	.'<tr><th>'.__('Profile Page Payment Tab').'</th><td>'
+	.ckeditor('page_vars[ads-profile-page]', (isset($vars['ads-profile-page'])?$vars['ads-profile-page']:''))
+	.'</td></tr>'
+	.'</table></div>';
 // }
 $c.='</div>';

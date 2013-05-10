@@ -99,6 +99,17 @@ else {
 }
 $html.='</select></td></tr>';
 // }
+// { allow users to purchase credits
+$html.='<tr><th>Users can purchase site credits:</th><td>';
+$html.='<select id="page_vars_userlogin_can_purchase_credits" name="'
+	.'page_vars[userlogin_can_purchase_credits]">'
+	.'<option value="0">No</option>'
+	.'<option value="1"';
+if (isset($page_vars['userlogin_can_purchase_credits']) && $page_vars['userlogin_can_purchase_credits']) {
+	$html.=' selected="selected"';
+}
+$html.='>Yes</option></select></td></tr>';
+// }
 $html.='</table></div>';
 // }
 // { messages

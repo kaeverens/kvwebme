@@ -724,15 +724,18 @@ function Privacy_profileGet() {
 		.'</td></tr>'
 		.'<tr><th>'.__('Phone', 'core').'</th><td>'.$phone.'</td></tr>'
 		.'<tr><th>'.__('Avatar', 'core').'</th><td><span id="avatar-wrapper"'
-		.' data-uid="'.$uid.'"></span></td></tr>'
-		// { credits
-		.'<tr class="remaining-credits"><th>'.__('RemainingCredits', 'core').'</th>'
-		.'<td>'.$remainingCredits.'</td></tr>'
-		.'<tr class="paid-credits"><th>'.__('PaidCredits','core').'</th>'
-		.'<td>'.$remainingPaidCredits.'&nbsp;'
-		.'<button id="buy-credits">Buy Credits</button></td></tr>'
-		// }
-		.'</table></div>'
+		.' data-uid="'.$uid.'"></span></td></tr>';
+	// { credits
+	$page=$GLOBALS['PAGEDATA'];
+	if (isset($page->vars['userlogin_can_purchase_credits']) && $page->vars['userlogin_can_purchase_credits']) {
+		$html.='<tr class="remaining-credits"><th>'.__('RemainingCredits', 'core').'</th>'
+			.'<td>'.$remainingCredits.'</td></tr>'
+			.'<tr class="paid-credits"><th>'.__('PaidCredits','core').'</th>'
+			.'<td>'.$remainingPaidCredits.'&nbsp;'
+			.'<button id="buy-credits">Buy Credits</button></td></tr>';
+	}
+	// }
+	$html.='</table></div>'
 		.'<div id="address"><a id="new-address" href="javascript:add_address();"'
 		.' style="float:right">[+]'.__('Add Address').'</a>'
 		.'<div id="address-container"><table>';

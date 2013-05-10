@@ -59,8 +59,10 @@ WW_addScript('/j/jstree/_lib/jquery.cookie.js');
 WW_addScript('products/admin/categories.js');
 WW_addScript('products/admin/create-page.js');
 WW_addScript('image-gallery/files/swfobject.js');
-WW_addScript('/j/chosen/chosen.jquery.min.js');
+// { multiselect for products
+WW_addScript('/j/chosen/chosen.jquery.js');
 WW_addCSS('/j/chosen/chosen.css');
+// }
 WW_addCSS('/ww.plugins/products/admin/categories.css');
 $c=Core_cacheLoad('products', 'productNames');
 if (!$c) {

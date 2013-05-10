@@ -157,9 +157,9 @@
   margin: 0;
   padding: 0;
   cursor: text;
-  overflow: hidden;
+  overflow: auto;
   height: auto !important;
-  height: 1%;
+	max-height:250px;
   position: relative;
   width: 100%;
   -moz-box-sizing   : border-box;

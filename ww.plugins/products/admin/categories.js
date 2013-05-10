@@ -226,8 +226,30 @@ $(function(){
 				}
 			},
 			'dnd': {
-				'drag_target': false,
-				'drop_target': false
+				'drag_target': '.search-choice',
+				'drop_target': '#categories-wrapper a',
+				'drag_finish': function(data) {
+					var pindex=+($(data.o).closest('li').attr('id').replace(/.*_/, ''))+1,
+						cid=$(data.r[0]).attr('id').replace('cat_', '');
+					var pid=$('#pc_edit_products option:nth-child('+pindex+')').attr('value');
+					$.post(
+						'/a/p=products/f=adminCategoryProductsEdit',
+						{
+							'id':$(data.r[0]).attr('id').replace('cat_', ''),
+							's':[$('#pc_edit_products option:nth-child('+pindex+')').attr('value')],
+							'noclear':true
+						},
+						function(ret) {
+							var $this=$('<div style="position:absolute;z-index:9999;color:#f00;background:#fff">Moved</div>')
+								.appendTo('body')
+								.position({'at':'left', 'of':data.r[0]})
+								.fadeOut(3000, function() {
+									$this.remove();
+								});
+						}
+					);
+					$(data.o).closest('li').find('a').click();
+				}
 			}
 		})
 		.bind('move_node.jstree',function(e, ref){

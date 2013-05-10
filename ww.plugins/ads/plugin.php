@@ -39,7 +39,7 @@ $plugin=array(
 	'triggers'=>array(
 		'privacy_user_profile' => 'Ads_userProfile'
 	),
-	'version'=>9
+	'version'=>11
 );
 
 // }
@@ -78,23 +78,33 @@ function Ads_widget($params) {
 	}
 	$html='<div class="ads-wrapper type-'.$type_id.'">';
 	foreach ($ads as $ad) {
-		$ad['image_url']=str_replace(
-			'/f/userfiles',
-			'/a/f=getImg/w='.$type['width'].'/h='.$type['height'].'/userfiles',
-			$ad['image_url']
-		);
 		$html.='<div class="ads-ad" data-id="'.$ad['id'].'"'
 			.' data-type="'.$ad['target_type'].'"';
 		if ($ad['target_type']=='1') {
 			$html.=' data-poster="'.htmlspecialchars($ad['poster']).'"';
 		}
-		$html.='><img src="'.$ad['image_url'].'" style="max-height:'.$type['height'].'px;max-width:'.$type['width'].'"/></div>';
+		$html.='>';
+		// { image
+		if (preg_match('/swf$/', $ad['image_url'])) {
+			$html.='<object type="application/x-shockwave-flash" style="width:'.$type['width'].'px; height:'.$type['height'].'px;" data="/f//ads/291/Monaghan-Life-Banner.swf"><param name="movie" value="'.$ad['image_url'].'"></object>';
+		}
+		else {
+			$ad['image_url']=str_replace(
+				'/f/userfiles',
+				'/a/f=getImg/w='.$type['width'].'/h='.$type['height'].'/userfiles',
+				$ad['image_url']
+			);
+			$html.='<img src="'.$ad['image_url'].'" style="max-height:'.$type['height'].'px;max-width:'.$type['width'].'"/>';
+		}
+		// }
+		$html.='<div class="ads-overlay"></div></div>';
 		dbQuery(
 			'insert into ads_track set ad_id='.$ad['id'].', view=1, cdate=now()'
 		);
 	}
 	$html.='</div>';
 	WW_addScript('ads/j/js.js');
+	WW_addCSS('/ww.plugins/ads/frontend.css');
 	return $html;
 }
 
@@ -154,3 +164,7 @@ function Ads_userProfile($PAGEDATA, $user) {
 }
 
 // }
+function Ads_statsUpdate() {
+	require_once dirname(__FILE__).'/api-admin.php';
+	Ads_adminTrackSummarise();
+}

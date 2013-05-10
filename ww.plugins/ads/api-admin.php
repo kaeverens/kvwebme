@@ -160,3 +160,39 @@ function Ads_adminImageUpload() {
 		'url'=>'/f/ads/'.$id.'/'.$_FILES['Filedata']['name']
 	);
 }
+function Ads_adminTrackSummarise() {
+	$timeout=5; // how many seconds to allow this to run
+	dbQuery('delete from ads_track where to_delete=1');
+	$dates=dbAll('select count(ad_id) as ads,date(cdate) as d from ads_track group by d order by d desc');
+	$time=time();
+	foreach ($dates as $d) {
+		$now=time();
+		if ($now-$time>$timeout) {
+			continue;
+		}
+		$date=$d['d'];
+		$sql='select count(ad_id) as cnt, ad_id,sum(click) as clicks, sum(view) as views from ads_track'
+			.' where cdate>="'.$date.'" and cdate<"'.$date.' 24" and to_delete=0 group by ad_id';
+		$ad_data=dbAll($sql);
+		foreach ($ad_data as $i) {
+			$now=time();
+			if ($now-$time>$timeout) {
+				continue;
+			}
+			if ($i['cnt']!='1') {
+				dbQuery(
+					'update ads_track set to_delete=1 where cdate>="'.$date.'" and cdate<"'.$date.' 24"'
+					.' and ad_id='.$i['ad_id']
+				);
+				$sql='insert into ads_track set cdate="'.$date.'", ad_id='.$i['ad_id'].', click='.$i['clicks']
+					.', view='.$i['views'];
+				dbQuery($sql);
+			}
+		}
+	}
+	dbQuery('delete from ads_track where to_delete=1');
+	$ads=dbAll('select sum(click) as clicks, sum(view) as views, ad_id from ads_track group by ad_id');
+	foreach ($ads as $ad) {
+		dbQuery('update ads set clicks='.$ad['clicks'].', views='.$ad['views'].' where id='.$ad['ad_id']);
+	}
+}
