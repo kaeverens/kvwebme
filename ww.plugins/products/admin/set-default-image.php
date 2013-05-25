@@ -21,6 +21,7 @@ $imgsrc='/'.$_REQUEST['imgsrc'];
 
 dbQuery(
 	'update products set image_default="'.addslashes($imgsrc).'"'
+	.', date_edited=now()'
 	.' where id='.$product_id
 );
 

@@ -119,7 +119,7 @@ function Products_priceBase2($params, $smarty) {
 		$params['vat']=1;
 	}
 	$product=Product::getInstance($pid);
-	if (!isset($product->vals['online-store'])) {
+	if (!isset($product->vals['os_base_price'])) {
 		return '0';
 	}
 	$vat=isset($params['vat']) && $params['vat']
@@ -147,14 +147,14 @@ function Products_priceBulk2($params, $smarty) {
 		$params['vat']=1;
 	}
 	$product=Product::getInstance($pid);
-	if (!isset($product->vals['online-store'])) {
+	if (!isset($product->vals['os_base_price'])) {
 		return '0';
 	}
-	$p=$product->vals['online-store'];
+	$p=$product->vals;
 	$vat=isset($params['vat']) && $params['vat']
 		?(100+$_SESSION['onlinestore_vat_percent'])/100
 		:1;
-	$price=$p['_bulk_price']?$p['_bulk_price']:$product->getPriceBase();
+	$price=$p['os_bulk_price']?$p['os_bulk_price']:$product->getPriceBase();
 	return OnlineStore_numToPrice($price*$vat, true, (int)@$params['round']);
 }
 
@@ -175,7 +175,7 @@ function Products_priceDiscount2($params, $smarty) {
 		$params['vat']=1;
 	}
 	$product=Product::getInstance($pid);
-	if (!isset($product->vals['online-store'])) {
+	if (!isset($product->vals['os_base_price'])) {
 		return '0';
 	}
 	$discount=$product->getPriceBase()-$product->getPrice('sale');
@@ -199,7 +199,7 @@ function Products_priceDiscount2($params, $smarty) {
 function Products_priceDiscountPercent2($params, $smarty) {
 	$pid=$smarty->smarty->tpl_vars['product']->value->id;
 	$product=Product::getInstance($pid);
-	if (!isset($product->vals['online-store'])) {
+	if (!isset($product->vals['os_base_price'])) {
 		return '0';
 	}
 	if ($product->getPrice()) {
@@ -229,7 +229,7 @@ function Products_priceSale2($params, $smarty) {
 		$params['vat']=1;
 	}
 	$product=Product::getInstance($pid);
-	if (!isset($product->vals['online-store'])) {
+	if (!isset($product->vals['os_base_price'])) {
 		return '0';
 	}
 	$vat=isset($params['vat']) && $params['vat']
@@ -283,10 +283,10 @@ function Products_soldAmount2($params, $smarty) {
 	);
 	$pid=$smarty->smarty->tpl_vars['product']->value->id;
 	$product=Product::getInstance($pid);
-	if (!isset($product->vals['online-store'])) {
+	if (!isset($product->vals['os_base_price'])) {
 		return '';
 	}
-	$sold=(int)$product->vals['online-store']['_sold_amt'];
+	$sold=(int)$product->vals['os_amount_sold'];
 	if ($sold==0) {
 		return __($params['none']);
 	}

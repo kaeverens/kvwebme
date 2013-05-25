@@ -146,7 +146,7 @@ function OnlineStore_sendInvoiceEmail($id, $order=false) {
 			);
 			$html=str_replace(
 				'{{$_amount}}',
-				$p->vals['online-store']['_voucher_value'],
+				$p->vals['os_voucher_value'],
 				$html
 			);
 			// }
@@ -173,11 +173,17 @@ function OnlineStore_sendInvoiceEmail($id, $order=false) {
 		}
 		// { stock control
 		$valsOS=$p->vals['online-store'];
-		$valsOS['_stock_amt']=(int)@$valsOS['_stock_amt']-$item->amt;
-		$valsOS['_sold_amt']=(int)@$valsOS['_sold_amt']+$item->amt;
+		$stock_amount=(int)@$valsOS['_stock_amt']-$item->amt;
+		$valsOS['_stock_amt']=$stock_amount;
+		$sold_amount=(int)@$valsOS['_sold_amt']+$item->amt;
+		$valsOS['_sold_amt']=$sold_amount;
 		dbQuery(
-			'update products set online_store_fields="'
-			.addslashes(json_encode($valsOS)).'" where id='.$item->id
+			'update products set'
+			.' online_store_fields="'.addslashes(json_encode($valsOS)).'"'
+			.', os_amount_in_stock='.$stock_amount
+			.', os_amount_sold='.$sold_amount
+			.', date_edited=now()'
+			.' where id='.$item->id
 		);
 		// }
 	}

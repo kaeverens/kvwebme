@@ -68,18 +68,22 @@ function WW_getScripts() {
 
 require_once 'ww.incs/common.php';
 if (isset($https_required) && $https_required && !$_SERVER['HTTPS']) {
-	redirect('https://www.'.str_replace('www.', '', $_SERVER['HTTP_HOST']).'/');
+	redirect(
+		'https://www.'.str_replace('www.', '', $_SERVER['HTTP_HOST']).'/',
+		'site requires https'
+	);
 }
 if (isset($DBVARS['canonical_name'])
 	&& $_SERVER['HTTP_HOST']!=$DBVARS['canonical_name']
 ) {
 	redirect(
 		(@$_SERVER['HTTPS']=='on'?'https':'http')
-		.'://'.$DBVARS['canonical_name'].$_SERVER['REQUEST_URI']
+		.'://'.$DBVARS['canonical_name'].$_SERVER['REQUEST_URI'],
+		'redirecting to canonical domain name'
 	);
 }
-if (!isset($DBVARS['version']) || $DBVARS['version']<56) {
-	redirect('/ww.incs/upgrade.php');
+if (!isset($DBVARS['version']) || $DBVARS['version']<57) {
+	redirect('/ww.incs/upgrade.php', 'upgrade detected');
 }
 $id=(int)@$_REQUEST['pageid'];
 $page=preg_replace('#&.*|/$#', '', @$_REQUEST['page']);
@@ -116,7 +120,7 @@ if (!$id) {
 					'select short_url from short_urls where page_id='.$id, 'short_url'
 				);
 				if ($s!=$page) {
-					redirect('/'.$s);
+					redirect('/'.$s, 'page has a shorter URL');
 				}
 			}
 		}
@@ -137,7 +141,7 @@ if (!$id) {
 			$r=Page::getInstanceBySpecial($special);
 			if ($r && isset($r->id)) {
 				if ($special==1) {
-					redirect($r->getRelativeUrl());
+					redirect($r->getRelativeUrl(), 'cannot remember what this one is...');
 				}
 				$id=$r->id;
 			}
@@ -164,7 +168,7 @@ if ($id) {
 }
 else {
 	if ($page!='') {
-		redirect('/');
+		redirect('/', 'no page id for '.$page);
 	}
 	Core_quit(
 		__(
@@ -231,7 +235,7 @@ else {
 			if (isset($PAGEDATA->vars['redirect_to'])
 				&& $PAGEDATA->vars['redirect_to']
 			) {
-				redirect($PAGEDATA->vars['redirect_to']);
+				redirect($PAGEDATA->vars['redirect_to'], 'this is a redirect page');
 			}
 		break; // }
 		case '4': // { sub-page summaries

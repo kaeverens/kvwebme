@@ -64,7 +64,7 @@ class Page{
 			}
 		}
 		elseif ($byField == 1) { // by alias (name)
-			if (preg_match('/[^a-zA-Z0-9 \-_]/', $v)) {
+			if (preg_match('/[^,a-zA-Z0-9 \-_]/', $v)) {
 				return false;
 			}
 			$name=strtolower(str_replace('-', '_', $v));
@@ -187,10 +187,11 @@ class Page{
 		*/
 	static function getInstanceByName($name='') {
 		if (preg_match('/[^!,a-zA-Z0-9 \-_\/]/', $name)) {
+			header('X-Illegal-Page-Name', $name);
 			return false;
 		}
 		$name=strtolower($name);
-		$nameIndex=preg_replace('#[^,a-z0-9/]#', '-', $name);
+		$nameIndex=preg_replace('#[^a-z0-9/]#', '-', $name);
 		if (array_key_exists($nameIndex, self::$instancesByName)) {
 			return self::$instancesByName[$nameIndex];
 		}

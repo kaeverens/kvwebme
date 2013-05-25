@@ -227,3 +227,76 @@ if ($version==17) {
 	dbQuery('update online_store_orders set invoice_num=id');
 	$version=18;
 }
+if ($version==18) { // move OS fields directly into products database table
+	dbQuery('alter table products add os_base_price float default 0;');
+	dbQuery('alter table products add os_trade_price float default 0;');
+	dbQuery('alter table products add os_sale_price float default 0;');
+	dbQuery('alter table products add os_sale_price_type smallint default 0;');
+	dbQuery('alter table products add os_bulk_price float default 0;');
+	dbQuery('alter table products add os_bulk_amount smallint default 0;');
+	dbQuery('alter table products add os_weight float default 0;');
+	dbQuery('alter table products add os_tax_free smallint default 0;');
+	dbQuery('alter table products add os_custom_tax float default 0;');
+	dbQuery('alter table products add os_free_delivery smallint default 0;');
+	dbQuery('alter table products add os_not_discountable smallint default 0;');
+	dbQuery('alter table products add os_amount_sold int default 0;');
+	dbQuery('alter table products add os_amount_in_stock int default 0;');
+	dbQuery(
+		'alter table products add os_amount_allowed_per_purchase smallint default 0'
+	);
+	$version=19;
+}
+if ($version<22) {
+	$ps=dbAll('select id,online_store_fields from products');
+	foreach ($ps as $p) {
+		if (!$p['online_store_fields']) {
+			continue;
+		}
+		$os=json_decode($p['online_store_fields'], true);
+		$sql=
+			'update products set '
+			.' os_base_price='.(isset($os['_price'])?(float)$os['_price']:0)
+			.', os_trade_price='.(isset($os['_trade_price'])?(float)$os['_trade_price']:0)
+			.', os_sale_price='.(isset($os['_sale_price'])?(float)$os['_sale_price']:0)
+			.', os_sale_price_type='.(isset($os['_sale_price_type'])?(float)$os['_sale_price_type']:0)
+			.', os_bulk_price='.(isset($os['_bulk_price'])?(float)$os['_bulk_price']:0)
+			.', os_bulk_amount='.(isset($os['_bulk_amount'])?(float)$os['_bulk_amount']:0)
+			.', os_weight='.(isset($os['_weight(kg)'])?(float)$os['_weight(kg)']:0)
+			.', os_tax_free='.(isset($os['_vatfree'])?(float)$os['_vatfree']:0)
+			.', os_custom_tax='.(isset($os['_custom_vat_amount'])?(float)$os['_custom_vat_amount']:0)
+			.', os_free_delivery='.(isset($os['_deliver_free'])?(float)$os['_deliver_free']:0)
+			.', os_not_discountable='.(isset($os['_not_discountable'])?(float)$os['_not_discountable']:0)
+			.', os_amount_sold='.(isset($os['_sold_amt'])?(float)$os['_sold_amt']:0)
+			.', os_amount_in_stock='.(isset($os['_stock_amt'])?(float)$os['_stock_amt']:0)
+			.', os_amount_allowed_per_purchase='.(isset($os['_max_allowed'])?(float)$os['_max_allowed']:0)
+			.' where id='.$p['id']
+		;
+		dbQuery($sql);
+	}
+	$version=22;
+}
+if ($version==22) { // add voucher_value
+	dbQuery('alter table products add os_voucher_value float default 0;');
+	$ps=dbAll(
+		'select id,online_store_fields from products'
+		.' where online_store_fields like "%_voucher_value%"'
+	);
+	foreach ($ps as $p) {
+		if (!$p['online_store_fields']) {
+			continue;
+		}
+		$os=json_decode($p['online_store_fields'], true);
+		$sql=
+			'update products set '
+			.', os_voucher_value='.(isset($os['_voucher_value'])?(float)$os['_voucher_value']:0)
+			.' where id='.$p['id']
+		;
+		dbQuery($sql);
+	}
+	$version=23;
+}
+if ($version==23) { // add supplier price
+	dbQuery('alter table products add os_supplier_price float default 0;');
+	dbQuery('update products set os_supplier_price=os_base_price');
+	$version=24;
+}

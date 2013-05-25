@@ -983,7 +983,7 @@ class Products{
 		}
 		else{
 			if ($start && $start>=count($this->product_ids)) {
-				$start=$cnt-$limit-1;
+				$start=$cnt-$limit;
 			}
 		}
 		// }
@@ -995,7 +995,6 @@ class Products{
 		}
 		else{
 			$prods=array();
-			echo '<!-- '; var_dump($PAGEDATA); echo '-->';
 			for ($i=$start;$i<$limit+$start;++$i) {
 				if (isset($tmpprods[$i])) {
 					$prods[]=$tmpprods[$i];
@@ -1117,8 +1116,10 @@ class Products{
 					$categories.='<li><a href="'.$cat->getRelativeUrl().'">';
 					$icon='/products/categories/'.$cr['id'].'/icon.png';
 					if (file_exists(USERBASE.'f'.$icon)) {
+						$subcatW=(int)$cat->vals['thumbsize_w'];
+						$subcatH=(int)$cat->vals['thumbsize_h'];
 						$categories.='<img src="'.$cdnprefix
-							.'/a/f=getImg/w=120/h=120'.$icon.'"/>';
+							.'/a/f=getImg/w='.$subcatW.'/h='.$subcatH.'/fmt='.filemtime(USERBASE.'f'.$icon).$icon.'"/>';
 					}
 					$categories.='<span>'.htmlspecialchars($cr['name']).'</span>'
 						.'</a></li>';

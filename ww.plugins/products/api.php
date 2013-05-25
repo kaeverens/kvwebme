@@ -200,25 +200,13 @@ function Products_getProductMainDetails($p) {
 		'id'=>$p->id,
 		'name'=>__FromJson($p->name)
 	);
-	if ($p->vals['online-store']) {
-		$o=$p->vals['online-store'];
+	if ($p->vals['os_base_price']) {
 		$parr['_price']=$p->getPriceBase();
-		$sale_price=$p->getPriceSale();
-		if ($sale_price) {
-			$parr['_sale_price']=$sale_price;
-		}
-		if ($o['_bulk_price']) {
-			$parr['_bulk_price']=$o['_bulk_price'];
-		}
-		if ($o['_bulk_amount']) {
-			$parr['_bulk_amount']=$o['_bulk_amount'];
-		}
-		if ($o['_sold_amt']) {
-			$parr['_sold_amt']=$o['_sold_amt'];
-		}
-		if ($o['_stock_amt']) {
-			$parr['_stock_amt']=$o['_stock_amt'];
-		}
+		$parr['_sale_price']=$p->getPriceSale();
+		$parr['_bulk_price']=$p->vals['os_bulk_price'];
+		$parr['_bulk_amount']=$p->vals['os_bulk_amount'];
+		$parr['_sold_amt']=$p->vals['os_amount_sold'];
+		$parr['_stock_amt']=$p->vals['os_amount_in_stock'];
 	}
 	$parr['link']=$p->getRelativeUrl();
 	return $parr;

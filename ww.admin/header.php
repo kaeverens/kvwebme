@@ -77,6 +77,9 @@ $langs=dbAll(
 );
 echo '<script>var languages='.json_encode($langs).';</script>';
 // }
+WW_addScript('/j/jstree/jquery.jstree.js');
+WW_addScript('/j/jstree/_lib/jquery.cookie.js');
+WW_addInlineScript('$.jstree._themes="/j/jstree/themes/";');
 echo '</head><body';
 echo '><div id="header"></div>';
 echo Core_languagesGetUi(array('type'=>'selectbox'));

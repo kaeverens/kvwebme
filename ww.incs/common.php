@@ -375,9 +375,12 @@ function menuDisplay($a=0) {
 	*
 	* @return null
 	*/
-function redirect($addr) {
+function redirect($addr, $reason='') {
 	header('HTTP/1.1 301 Moved Permanently');
 	header('Location: '.$addr);
+	if ($reason) {
+		header('X-Redirect-Reason: '.$reason);
+	}
 	echo '<html><head><script defer="defer" type="text/javascript">'
 		.'setTimeout(function(){document.location="'.$addr.'";},10);</script>'
 		.'</head><body></body></html>';

@@ -94,7 +94,8 @@ foreach ($rs as $r) {
 	$date=preg_replace('/ .*/', '', $r['cdate']);
 	$c.='<div class="blog-excerpt">'.$img.$excerpt
 		.' <a class="blog-link-to-article" href="'
-		.$links_prefix.'/'.$r['user_id'].'/'.$date.'/'
+		.preg_replace('#/tags/[^/]*#', '', $links_prefix)
+		.'/'.$r['user_id'].'/'.$date.'/'
 		.preg_replace('/[^a-zA-Z0-9]/', '-', transcribe($r['title']))
 		.'">more</a>'
 		.'</div>';

@@ -372,6 +372,17 @@ $(function(){
 		});
 		return false;
 	});
+	window.indexedDB = window.indexedDB || window.mozIndexedDB
+		|| window.webkitIndexedDB || window.msIndexedDB;
+	window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction
+		|| window.msIDBTransaction;
+	window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange
+		|| window.msIDBKeyRange;
+	if (!window.indexedDB) {
+		alert(
+			'Your browser does not support IndexedDB. Please use a different one.'
+		);
+	}
 });
 var jsvars={
 	'datatables':{}

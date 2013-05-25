@@ -33,20 +33,6 @@ function OnlineStore_productPriceFull2($params, $smarty) {
 	}
 	$pid=$smarty->smarty->tpl_vars['product']->value->id;
 	$product=Product::getInstance($pid);
-	if (!isset($product->vals['online-store'])) {
-		$product->vals['online-store']=array(
-			'_price'=>0,
-			'_trade_price'=>0,
-			'_sale_price'=>0,
-			'_sale_price_type'=>0,
-			'_bulk_price'=>0,
-			'_bulk_amount'=>0,
-			'_weight'=>0,
-			'_vatfree'=>0,
-			'_custom_vat_amount'=>0
-		);
-	}
-	$p=$product->vals['online-store'];
 	$vat=$params['vat']?(100+$_SESSION['onlinestore_vat_percent'])/100:1;
 	$vatclass=$params['vat']?' vat':'';
 	$sale_price=$product->getPriceSale();

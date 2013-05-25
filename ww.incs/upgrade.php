@@ -578,6 +578,13 @@ if ($version==54) { // locations can have sublocations
 if ($version==55) { // dummy step
 	$version=56; // just forcing a Core_cacheClear, after upgrading Smarty
 }
+if ($version==56) { //  add "updates" table
+	dbQuery(
+		'CREATE TABLE `updates` ( `name` varchar(64) default NULL,'
+		.'`last_updated` datetime default NULL) ENGINE=MyISAM DEFAULT CHARSET=utf8'
+	);
+	$version=57;
+}
 
 $DBVARS['version']=$version;
 Core_configRewrite();

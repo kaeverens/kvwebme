@@ -65,13 +65,11 @@ dbQuery(
 	values('$pageid', 'products_per_page', 0)"
 );
 if ($what==2) {
-	$product
-		= dbOne(
-			'select product_id 
-			from products_categories_products 
-			where category_id='.$id,
-			'product_id'
-		);
+	$product=dbOne(
+		'select product_id from products_categories_products'
+		.' where category_id='.$id,
+		'product_id'
+	);
 }
 else {
 	$product= $id;

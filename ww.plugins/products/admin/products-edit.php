@@ -232,6 +232,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 			.',default_category='.((int)$_REQUEST['products_default_category'])
 			.',enabled='.(int)$_REQUEST['enabled']
 			.',date_edited=now()'
+			.', num_of_categories='.count($_REQUEST['product_categories'])
 			.',location='.((int)$_REQUEST['location'])
 			.',images_directory="'.addslashes($_REQUEST['images_directory']).'"';
 		// { add data fields to SQL
@@ -253,6 +254,20 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 			foreach ($_REQUEST['online-store-fields'] as $name=>$value) {
 				$online_store_data[$name] = $value;
 			}
+			$sql.=', os_base_price='.(float)$_REQUEST['online-store-fields']['_price']
+				.', os_trade_price='.(float)$_REQUEST['online-store-fields']['_trade_price']
+				.', os_sale_price='.(float)$_REQUEST['online-store-fields']['_sale_price']
+				.', os_sale_price_type='.(int)$_REQUEST['online-store-fields']['_sale_price_type']
+				.', os_bulk_price='.(float)$_REQUEST['online-store-fields']['_bulk_price']
+				.', os_bulk_amount='.(float)$_REQUEST['online-store-fields']['_bulk_amount']
+				.', os_weight='.(float)$_REQUEST['online-store-fields']['__weight(kg)']
+				.', os_tax_free='.(float)$_REQUEST['online-store-fields']['_vatfree']
+				.', os_custom_tax='.(float)$_REQUEST['online-store-fields']['_custom_vat_amount']
+				.', os_free_delivery='.(float)$_REQUEST['online-store-fields']['_deliver_free']
+				.', os_not_discountable='.(float)$_REQUEST['online-store-fields']['_not_discountable']
+				.', os_amount_sold='.(float)$_REQUEST['online-store-fields']['_sold_amt']
+				.', os_amount_in_stock='.(float)$_REQUEST['online-store-fields']['_stock_amt']
+				.', os_amount_allowed_per_purchase='.(float)$_REQUEST['online-store-fields']['_max_allowed'];
 			$online_store_data = json_encode($online_store_data);
 			$sql.=',online_store_fields="'.addslashes($online_store_data).'"';
 		}

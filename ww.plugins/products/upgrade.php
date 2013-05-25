@@ -230,8 +230,9 @@ if ($version==32) { // add link field to help with multilingual
 	if (is_array($rs) && count($rs)) {
 		foreach ($rs as $r) {
 			dbQuery(
-				'update products set link="'.addslashes(__FromJson($r['name'], true))
-				.'" where id='.$r['id']
+				'update products set'
+				.' link="'.addslashes(__FromJson($r['name'], true)).'"'
+				.' where id='.$r['id']
 			);
 		}
 	}
@@ -259,8 +260,9 @@ bsaaaaaaaceeeeiiiidnoooooouuuyybyRr';
 	$rs=dbAll('select id,name from products_categories');
 	foreach ($rs as $r) {
 		dbQuery(
-			'update products_categories set link="'
-			.addslashes(transcribe($r['name'])).'" where id='.$r['id']
+			'update products_categories set'
+			.' link="'.addslashes(transcribe($r['name'])).'"'
+			.'where id='.$r['id']
 		);
 	}
 	$version=35;
@@ -282,8 +284,9 @@ if ($version==36) { // change default image to text
 			$url='';
 		}
 		dbQuery(
-			'update products set image_default="'.addslashes($url).'" where id='
-			.$r['id']
+			'update products set'
+			.' image_default="'.addslashes($url).'"'
+			.' where id='.$r['id']
 		);
 	}
 	$version=37;
@@ -345,4 +348,34 @@ if ($version==45) { // add has_userdefined_price
 		'alter table products_types add has_userdefined_price smallint default 0'
 	);
 	$version=46;
+}
+if ($version==46) { // add num_of_categories
+	dbQuery(
+		'alter table products add num_of_categories int default 0'
+	);
+	$version=47;
+}
+if ($version==47) { // add subcats thumbsizes
+	dbQuery(
+		'alter table products_types add subcat_thumbsize_w int default 120;'
+	);
+	dbQuery(
+		'alter table products_types add subcat_thumbsize_h int default 120;'
+	);
+	$version=48;
+}
+if ($version==48) { // move it to categories instead
+	dbQuery(
+		'alter table products_types drop subcat_thumbsize_w'
+	);
+	dbQuery(
+		'alter table products_types drop subcat_thumbsize_h'
+	);
+	dbQuery(
+		'alter table products_categories add thumbsize_w int default 120;'
+	);
+	dbQuery(
+		'alter table products_categories add thumbsize_h int default 120;'
+	);
+	$version=49;
 }

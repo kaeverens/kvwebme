@@ -119,7 +119,533 @@ function Products_screenBrandsandProducers() {
 	});
 }
 function Products_screenCategories() {
-	document.location="/ww.admin/plugin.php?_plugin=products&_page=categories";
+	function findCommonPhrases(selector) {
+		var keywords={};
+		$(selector+'>*')
+			.each(function(k, v) {
+				var words=$(this).text().toLowerCase().replace('[x]', '')
+					.replace(/[^a-z0-9]+/, ' ').split(' ');
+				for (var i=0;i<words.length-2;++i) {
+					if (words[i]=='for' || words[i+1]=='for' || words[i+2]=='for') {
+						continue;
+					}
+					var phrase=words[i]+' '+words[i+1]+' '+words[i+2];
+					if (undefined===keywords[phrase]) {
+						keywords[phrase]=0;
+					}
+					keywords[phrase]++;
+				}
+			});
+		var toptwenty=[], min=0, max=0;
+		$.each(keywords, function(k, v) {
+			if (toptwenty.length<20) {
+				toptwenty.push([k, v]);
+			}
+			else {
+				if (v<=min) {
+					return;
+				}
+				var found=0;
+				for (var i=0;i<toptwenty.length;++i) {
+					if (found || toptwenty[i][1]!=min) {
+						continue;
+					}
+					found=1;
+					toptwenty[i]=toptwenty[toptwenty.length-1];
+					toptwenty.pop();
+				}
+				toptwenty.push([k, v]);
+			}
+			min=toptwenty[0][1];
+			max=toptwenty[0][1];
+			for (var i=1;i<toptwenty.length;++i) {
+				if (toptwenty[i][1]<min) {
+					min=toptwenty[i][1];
+				}
+				if (toptwenty[i][1]>max) {
+					max=toptwenty[i][1];
+				}
+			}
+		});
+		for (var i=0;i<toptwenty.length-1;++i) {
+			for (var j=i+1;j<toptwenty.length;++j) {
+				if (toptwenty[i][1]<toptwenty[j][1]) {
+					var tmp=toptwenty[i];
+					toptwenty[i]=toptwenty[j];
+					toptwenty[j]=tmp;
+				}
+			}
+		}
+		alert(toptwenty.join("\n"));
+	}
+	function showTree() {
+		var $wrapper=$('#categories-tree');
+		$('<button>Add Category</button>')
+			.button()
+			.click(function() {
+				var $name=$('<p><input placeholder="Name" id="popup-name"/></p>')
+					.dialog({
+						'modal':true,
+						'buttons':{
+							'Save':function() {
+								var name=$('#popup-name').val();
+								if (!name) {
+									return;
+								}
+								$.post(
+									'/a/p=products/f=adminCategoryNew', {
+										'parent_id':0,
+										'name':name
+									}, function(ret) {
+										$name.remove();
+										$('#category-jstree').jstree(
+											'create', -1, 0,
+											{
+												'attr': {
+													'id':'cat-'+ret.attrs.id
+												},
+												'data':name
+											},
+											false, true
+										);
+										$('#cat-'+ret.attrs.id).find('a').click();
+									}
+								);
+							}
+						},
+						'close':function() {
+							$(this).remove();
+						}
+					});
+			})
+			.appendTo($wrapper);
+		$('<div id="category-jstree" style="overflow-x:hidden">')
+			.jstree({
+				'json_data':{
+					'ajax':{
+						'url':'/a/p=products/f=adminCategoriesGetJSTree'
+					}
+				},
+				'contextmenu':{
+					'items':function() {
+						return {
+							'delete':{
+								'label':'Delete',
+								'action':function(obj) {
+									var $el=$(obj[0]);
+									if ($el.find('ul').length) {
+										return alert('Cannot delete non-empty categories');
+									}
+									if (!confirm('Are you sure you want to delete this?')) {
+										return;
+									}
+									var id=$el.attr('id').replace('cat-', '');
+									$.post('/a/p=products/f=adminCategoryDelete/id='+id);
+									if ($el.parents('ul').find('li').length>1) {
+										$el.remove();
+									}
+									else {
+										var $li=$el.parents('li');
+										$li.removeClass('jstree-open').addClass('jstree-leaf')
+											.find('ul').remove();
+									}
+								}
+							}
+						};
+					}
+				},
+				'dnd': {
+					'drag_target': '#category-products span,#category-other-products a',
+					'drop_target': '#category-jstree a',
+					'drag_finish': function(data) {
+						var pid=$(data.o).data('id'),
+							cid=+$(data.r[0]).attr('id').replace('cat-', '');
+						$.post(
+							'/a/p=products/f=adminCategoryProductAdd',
+							{
+								'pid':pid,
+								'cid':cid
+							},
+							function(ret) {
+								var $this=$('<div style="position:absolute;z-index:9999;color:#f00;background:#fff">Moved</div>')
+									.appendTo('body')
+									.position({'at':'left', 'of':data.r[0]})
+									.fadeOut(3000, function() {
+										$this.remove();
+									});
+							}
+						);
+						$(data.o).find('a').click();
+					}
+				},
+				'plugins': ['themes', 'json_data', 'dnd', 'crrm', 'contextmenu']
+			})
+			.bind('move_node.jstree', function(ev, data) {
+				var mvData=data.inst._get_move();
+				var el=mvData.o[0], index=mvData.cp;
+				var pid=$(el).parents('li').attr('id')||'0', cid=el.id;
+				$.post(
+					'/a/p=products/f=adminCategoryMove', {
+						'id':cid.replace('cat-', ''),
+						'parent_id':pid.replace('cat-', ''),
+						'index':index
+					}
+				);
+			})
+			.appendTo($wrapper);
+		$('#category-jstree').on('click', 'a', function() {
+			var id=$(this).closest('li').attr('id').replace('cat-', '');
+			showCategory(id);
+			return false;
+		});
+	}
+	function showList() {
+		var $wrapper=$('#categories-list');
+		$.post(
+			'/a/p=products/f=adminCategoriesByCount',
+			function(ret) {
+				var table='<table style="width:100%">'
+					+'<tr><th>Category</th><th>Products</th></tr>';
+				for (var i=0;i<ret.length;++i) {
+					var cat=ret[i];
+					table+='<tr title="..." data-id="'+cat.category_id+'"><td>'+cat.name+'</td>'
+						+'<td>'+cat.pids+'</td></tr>';
+				}
+				table+='</table>';
+				var fullNames=[];
+				$('#categories-list')
+					.html(table)
+					.find('tr')
+					.tooltip({
+						'open':function(ev, ui) {
+							var id=$(this).data('id');
+							if (fullNames[id]) {
+								return $(ui.tooltip[0]).text(fullNames[id]);
+							}
+							$.post(
+								'/a/p=products/f=adminCategoryFullName/id='+id,
+								function(ret) {
+									$(ui.tooltip[0]).text(ret);
+									fullNames[id]=ret;
+								}
+							);
+						}
+					});
+			}
+		);
+	}
+	function showCategory(id) {
+		function filterMatch(str, filters) {
+			str=str.toLowerCase();
+			if ('function' == typeof filters.test) {
+				return filters.test(str);
+			}
+			for (var j=0;j<filters.length;++j) {
+				var filterStr=filters[j];
+				if (filterStr.charAt(0)=='-') {
+					filterStr=filterStr.substr(1, filterStr.length-1);
+					if (str.indexOf(filterStr)!=-1) {
+						return false;
+					}
+				}
+				else {
+					if (str.indexOf(filterStr)==-1) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+		function filterSetup(str) {
+			if (str.length>2 && /^\/.*\/$/.test(str)) {
+				return new RegExp(str.substr(1, str.length-2));
+			}
+			return str.split(' ');
+		}
+		function showProductsInCategory() {
+			var $categoryProducts=$('#category-products');
+			$categoryProducts.empty();
+			var toCheck=productsInCategory.length;
+			if (!toCheck) {
+				return;
+			}
+			$('#pic-filter-table input').attr('disabled', true);
+			var products=[];
+			var filters=filterSetup(productsInCategoryFilter);
+			$.each(productsInCategory, function(k, v) {
+				var pid=+v;
+				var request=dbProducts.transaction(['products'], 'readonly')
+					.objectStore('products').get(pid);
+				request.onsuccess=function(ev) {
+					toCheck--;
+					var name=request.result.name;
+					if (!productsInCategoryFilter || filterMatch(name, filters)) {
+						products.push(
+							'<span data-id="'+pid+'">'+name+'<a href="#">[x]</a></span>'
+						);
+					}
+					if (!toCheck) { // none left to go. show these.
+						$('#pic-filter-table input').attr('disabled', false);
+						$categoryProducts.html(products.join(' '));
+					}
+				}
+			});
+		}
+		function showProductsNotInCategory() {
+			var $categoryOtherProducts=$('#category-other-products');
+			$categoryOtherProducts.empty();
+			if (!bShowProductsNotInCategory) {
+				return $categoryOtherProducts
+					.html('tick Show to display these products');
+			}
+			$('#pnic-filter-table input').attr('disabled', true);
+			var products=[];
+			var filters=filterSetup(productsNotInCategoryFilter);
+			dbProducts.transaction(['products'], 'readonly')
+				.objectStore('products').openCursor()
+				.onsuccess=function(ev) {
+				var cursor=ev.target.result;
+				if (cursor) {
+					var name=cursor.value.name, pid=cursor.key;
+					if (!(productsNotInCategoryFilter && !filterMatch(name, filters))
+						&& (!onlyShowProductsWithNoCategory
+							|| (onlyShowProductsWithNoCategory && !(+cursor.value.num_of_categories))
+						)
+					) {
+						products.push(
+							'<a href="#" id="pnic-'+pid+'" data-id="'+pid+'">'+name+'</a>'
+						);
+					}
+					cursor.continue();
+				}
+				else {
+					$('#pnic-filter-table input').attr('disabled', false);
+					$categoryOtherProducts
+						.html(products.join(' '));
+					$.each(productsInCategory, function(k, v) {
+						$('#pnic-'+v).remove();
+					});
+				}
+			}
+		}
+		var mainDetails='<table style="width:100%">'
+			+'<tr><th>Name</th><td><input id="category-name"/></td>'
+			+'<th colspan="2">Icon</th><td rowspan="2" id="category-icon">'
+			+'</td></tr>'
+			+'<tr><th>Enabled</th><td><select id="category-enabled">'
+			+'<option value="0">No</option><option value="1">Yes</option>'
+			+'</select></td>'
+			+'<td><span id="category-icon-upload"/></td><td><input id="category-thumb-w" class="small" title="width of thumbnail"/>x<input id="category-thumb-h" class="small" title="height of thumbnail"/></td></tr>'
+			+'</table>';
+		// { contained products
+		var containedProducts='<table id="pic-filter-table" style="width:100%">'
+			+'<tr><td>Filter: <input id="pic-filter"/></td>'
+			+'<td><a href="#" id="pic-common-phrases">common phrases</a></td>'
+			+'<td><a href="#" id="pic-remove-all">remove all</a></td></tr>'
+			+'<tr><td colspan="3" id="category-products"></td></tr>'
+			+'</table>';
+		// }
+		// { other products
+		var otherProducts='<table id="pnic-filter-table" style="width:100%">'
+			+'<tr><td><input id="products-other-show" type="checkbox"/>Show</td>'
+			+'<td>Filter: <input id="pnic-filter"/></td>'
+			+'<td>Only show products that have no categories:'
+			+'<input id="pnic-only-no-cat" type="checkbox"/></td>'
+			+'<td><a href="#" id="pnic-common-phrases">common phrases</a></td>'
+			+'<td><a href="#" id="pnic-add-all">add all</a></td></tr>'
+			+'<tr><td id="category-other-products" colspan="5"></td></tr>'
+			+'</table>';
+		// }
+		var $wrapper=$('<div>'
+			+'<h2>Category Details</h2>'+mainDetails
+			+'<h2>Contained Products</h2>'+containedProducts
+			+'<h2>Products Not In Category</h2>'+otherProducts
+			+'</div>')
+			.appendTo($('#product-wrapper').empty());
+		$wrapper.find('h2').click(function() {
+			$(this).next().toggle('slow');
+			return false;
+		});
+		$.post(
+			'/a/p=products/f=adminCategoryGet',
+			{
+				'id':id
+			},
+			function(ret) {
+				$('#category-enabled').val(ret.attrs.enabled);
+				$('#category-name').val(ret.attrs.name);
+				productsInCategory=ret.products;
+				showProductsInCategory();
+				$('#products-other-show').change();
+				$('#category-icon').html(ret.hasIcon
+					?'<img src="/a/f=getImg/w=64/h=64/fmt='+ret.hasIcon+'/products/categories/'
+						+ret.attrs.id+'/icon.png"/>'
+					:''
+				);
+				$('#category-thumb-w').val(+ret.attrs.thumbsize_w);
+				$('#category-thumb-h').val(+ret.attrs.thumbsize_h);
+				$('#category-enabled,#category-name,#category-thumb-w,#category-thumb-h')
+					.change(function() {
+						var name=$('#category-name').val(),
+							enabled=$('#category-enabled').val();
+						$('#cat-'+ret.attrs.id).find('a')
+							.html('<ins class="jstree-icon">&nbsp;</ins>'+name);
+						$.post('/a/p=products/f=adminCategoryEdit', {
+							'id':ret.attrs.id,
+							'name':name,
+							'enabled':enabled,
+							'thumbsize_w':+$('#category-thumb-w').val(),
+							'thumbsize_h':+$('#category-thumb-h').val()
+						});
+					});
+			}
+		);
+		$('#category-other-products').on('click', 'a', function() {
+			var $this=$(this);
+			var pid=$this.data('id'), name=$this.text();
+			$('#category-products').append(
+				' <span data-id="'+pid+'">'+name+'<a href="#">[x]</a></span>'
+			);
+			$this.remove();
+			$.post(
+				'/a/p=products/f=adminCategoryProductAdd',
+				{
+					'pid':pid,
+					'cid':id
+				},
+				Products_updateProductCommonDetails
+			);
+			return false;
+		});
+		$('#category-products').on('click', 'a', function() {
+			var $this=$(this).parents('span');
+			var pid=$this.data('id'), name=$this.text().replace('[x]', '');
+			$('#category-other-products').append(
+				' <a href="#" data-id="'+pid+'">'+name+'</a>'
+			);
+			$this.remove();
+			$.post(
+				'/a/p=products/f=adminCategoryProductRemove',
+				{
+					'pid':pid,
+					'cid':id
+				},
+				Products_updateProductCommonDetails
+			);
+			return false;
+		});
+		$('#products-other-show')
+			.change(function() {
+				bShowProductsNotInCategory=$(this).is(':checked');
+				showProductsNotInCategory();
+			});
+		bShowProductsNotInCategory=false;
+		$('#pic-filter') // products in category
+			.val(productsInCategoryFilter)
+			.change(function() {
+				productsInCategoryFilter=$(this).val().replace(/^ *| *$/, '')
+					.replace(/ +/, ' ').toLowerCase();
+				showProductsInCategory();
+			});
+		$('#pnic-only-no-cat')
+			.attr('checked', onlyShowProductsWithNoCategory)
+			.change(function() {
+				onlyShowProductsWithNoCategory=$(this).is(':checked');
+				showProductsNotInCategory();
+			});
+		$('#pnic-filter') // products not in category
+			.val(productsNotInCategoryFilter)
+			.change(function() {
+				productsNotInCategoryFilter=$(this).val().replace(/^ *| *$/, '')
+					.replace(/ +/, ' ').toLowerCase();
+				showProductsNotInCategory();
+			});
+		$('#pnic-add-all').click(function() {
+			var $as=$('#category-other-products a');
+			var ids=[];
+			$as.each(function() {
+				var $this=$(this);
+				var id=$this.attr('id').replace('pnic-', ''), name=$this.text();
+				ids.push(id);
+				$('<span data-id="'+id+'">'+name+'<a href="#">[a]</a></span>')
+					.appendTo('#category-products');
+			});
+			$('#category-other-products').empty();
+			$.post(
+				'/a/p=products/f=adminCategoryProductAdd', {
+					'pid':ids.join(','),
+					'cid':id
+				},
+				Products_updateProductCommonDetails
+				);
+			return false;
+		});
+		$('#pic-remove-all').click(function() {
+			var $as=$('#category-products span');
+			var ids=[];
+			$as.each(function() {
+				var $this=$(this);
+				ids.push($this.data('id'));
+			});
+			$('#category-products').empty();
+			$.post(
+				'/a/p=products/f=adminCategoryProductRemove', {
+					'pid':ids.join(','),
+					'cid':id
+				},
+				Products_updateProductCommonDetails
+			);
+			return false;
+		});
+		$('#pic-common-phrases').click(function() {
+			findCommonPhrases('#category-products');
+		});
+		$('#pnic-common-phrases').click(function() {
+			findCommonPhrases('#category-other-products');
+		});
+		Core_uploader('#category-icon-upload', {
+			'serverScript': '/a/p=products/f=adminCategorySetIcon/cat_id='
+				+id,
+			'successHandler':function(file, data, response){
+				$('#category-icon').html(
+					'<img src="/a/f=getImg/w=64/h=64/fmt='+Math.random()+'/products/categories/'
+					+id+'/icon.png"/>'
+				);
+			}
+		});
+	}
+	var height=$(window).height()-120;
+	if (height<200) {
+		height=200;
+	}
+	$('#content')
+		.html('<table style="width:100%"><tr><td style="width:250px;">'
+			+'<div id="categories-accordion" style="height:'+height+'px">'
+			+'<h2><a href="#">Categories Tree</a></h2>'
+			+'<div id="categories-tree"/>'
+			+'<h2><a href="#">Categories List</a></h2>'
+			+'<div id="categories-list"/>'
+			+'</div>'
+			+'</td><td><div id="product-wrapper"/></td></tr></table>');
+	$('#categories-accordion').accordion({
+		'heightStyle':'fill',
+		'activate':function(ev, ui) {
+			$('#categories-accordion>div').empty();
+			switch(ui.newPanel[0].id) {
+				case 'categories-tree':
+					showTree();
+				break;
+				case 'categories-list':
+					showList();
+				break;
+			}
+		}
+	});
+	var bShowProductsNotInCategory=false, productsNotInCategoryFilter='';
+	var productsInCategory=[], productsInCategoryFilter='';
+	var onlyShowProductsWithNoCategory=false;
+	showTree();
+	Products_updateProductCommonDetails();
 }
 function Products_screenExportData() {
 	$('#content')
@@ -766,9 +1292,9 @@ function Products_typeEdit(id) {
 			+'<tr><th>Name</th><td id="pte1"></td></tr>'
 			+'<tr><th>Are products of this type for sale?</th>'
 			+'<td id="pte2"></td></tr><tr id="pte4"/><tr id="pte5"/><tr id="pte7"/>'
-			+'<tr><th>Default Category</th><td><select id="pte6"/></td></tr>'
 			+'<tr><th>If no image is uploaded for the product, what image should '
 			+'be shown?</th><td id="pte3"></td></tr>'
+			+'<tr><th>Default Category</th><td><select id="pte6"/></td></tr>'
 			+'</table>'
 		).appendTo(panel);
 		// { name
@@ -1053,4 +1579,60 @@ function Products_typeEdit(id) {
 			})
 			.appendTo($content);
 	});
+}
+function Products_updateProductCommonDetails() {
+	if (dbProducts==false) {
+		return;
+	}
+	dbProducts.transaction(['products'], 'readonly').objectStore('products')
+		.index('date_edited').openCursor(null, 'prev').onsuccess=function(ev) {
+			var date_edited=ev.target.result?ev.target.result.key:'0000-00-00';
+			$.post(
+				'/a/p=products/f=adminProductsListCommonDetails',
+				{
+					'date_edited':date_edited
+				},
+				function(ret) {
+					var objectStore=dbProducts.transaction(['products'], 'readwrite')
+						.objectStore('products');
+					$.each(ret, function(k, v) {
+						var obj={
+							'id':+v[0],
+							'name':v[1],
+							'num_of_categories':+v[2],
+							'date_edited':v[3]
+						};
+						objectStore.put(obj);
+					});
+				}
+			);
+		}
+}
+window.dbProducts=false;
+window.request=indexedDB.open('products', 3);
+request.onerror=function(e) {
+	console.log('database opening error', e);
+}
+request.onsuccess=function() {
+	window.dbProducts=request.result;
+	window.dbProducts.onerror=function(e) {
+		console.log('DB error in Products: '+e.target.errorCode);
+	}
+	Products_updateProductCommonDetails();
+}
+request.onupgradeneeded=function(ev) {
+	var db=ev.target.result;
+	if (ev.oldVersion<2) {
+		var objectStore=db.createObjectStore('products', {'keyPath':'id'});
+		objectStore.createIndex('name', 'name', { 'unique':false });
+		objectStore.createIndex(
+			'num_of_categories', 'num_of_categories', { 'unique':false }
+		);
+	}
+	if (ev.oldVersion<3) {
+		var objectStore=ev.currentTarget.transaction.objectStore('products');
+		objectStore.createIndex(
+			'date_edited', 'date_edited', { 'unique':false }
+		);
+	}
 }

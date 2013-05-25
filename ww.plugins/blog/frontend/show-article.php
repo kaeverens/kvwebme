@@ -38,7 +38,6 @@ $date=preg_replace('/ .*/', '', $r['cdate']);
 $c.='</div>';
 WW_addScript('blog');
 WW_addInlineScript('window.blog_comments=0;');
-//WW_addInlineScript('window.blog_comments='.$r['allow_comments'].';');
 if ($r['allow_comments']) {
 	if (isset($PAGEDATA->vars['blog_fbappid'])
 		&& (int)$PAGEDATA->vars['blog_fbappid']
@@ -51,10 +50,19 @@ if ($r['allow_comments']) {
 			.$fbappid
 			.'";fjs.parentNode.insertBefore(js, fjs);}'
 			.'(document, "script", "facebook-jssdk"));</script>';
+		$url=$PAGEDATA->getAbsoluteUrl().'/'.$r['user_id'].'/'.$date.'/'
+			.preg_replace('/[^a-zA-Z0-9]/', '-', transcribe($r['title']));
 		$c.='<div class="fb-comments" data-href="'
-			.$PAGEDATA->getAbsoluteUrl().'/'.$r['user_id'].'/'.$date.'/'
-			.preg_replace('/[^a-zA-Z0-9]/', '-', transcribe($r['title']))
-			.'" data-num-posts="2"></div>';
+			.$url.'" data-num-posts="2"></div>';
+		$md5=md5($url);
+		$comments=Core_cacheLoad('blog-comments', $md5, -1);
+		if ($comments===-1) {
+			$comments=file_get_contents(
+				'https://graph.facebook.com/comments/?ids='.urlencode($url)
+			);
+			Core_cacheSave('blog-comments', $md5, $comments);
+		}
+		$c.='<div style="display:none;">'.$comments.'</div>';
 	}
 	else {
 		$c.='<em>no Facebook App ID set for comments</em>';

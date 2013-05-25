@@ -17,9 +17,8 @@ $plugin=array(
 		'menu' => array( // {
 			'Products>Products'=> // __('Products')
 				'/ww.admin/plugin.php?_plugin=products&amp;_page=products',
-			'Products>Categories'=> // __('Categories')
-				'/ww.admin/plugin.php?_plugin=products&amp;_page=categories',
-			 // __('Types')
+			'Products>Categories'=>
+				'javascript:Core_screen(\'products\', \'Categories\')',
 			'Products>Types'=>'javascript:Core_screen(\'products\', \'Types\')',
 			'Products>Relation Types'=> // __('Relation Types')
 				'/ww.admin/plugin.php?_plugin=products&amp;_page=relation-types',
@@ -139,7 +138,7 @@ $plugin=array(
 		'menu-subpages' => 'Products_getSubCategoriesAsMenu',
 		'menu-subpages-html' => 'Products_getSubCategoriesAsMenuHtml'
 	), // }
-	'version' => '46'
+	'version' => '49'
 );
 // }
 
@@ -197,9 +196,6 @@ class Product{
 		}
 		$vals=json_decode($r['data_fields']);
 		unset($r['data_fields']);
-		if (isset($r['online_store_fields'])) {
-			$online_store_data=json_decode($r['online_store_fields']);
-		}
 		unset($r['online_store_fields']);
 		$this->vals=array();
 		foreach ($r as $k=>$v) {
@@ -211,11 +207,6 @@ class Product{
 			}
 			else {
 				$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/', '_', $val->n)]=$val->v;
-			}
-		}
-		if (isset($online_store_data)) {
-			foreach ($online_store_data as $name=>$value) {
-				$this->vals['online-store'][$name]=$value;
 			}
 		}
 		$this->id=$r['id'];
@@ -347,13 +338,13 @@ class Product{
 		* @return float
 		*/
 	function getPriceBase() {
-		if (!isset($this->vals['online-store'])) {
+		if (!isset($this->vals['os_base_price'])) {
 			return 0;
 		}
-		$bp=isset($this->vals['online-store']['_price'])?$this->vals['online-store']['_price']:0;
+		$bp=isset($this->vals['os_base_price'])?$this->vals['os_base_price']:0;
 		if (!is_object($bp)) {
 			$bp=(object)array('_default'=>$bp);
-			$this->vals['online-store']['_price']=$bp;
+			$this->vals['os_base_price']=$bp;
 		}
 		$lowest=$bp->_default;
 		if (!isset($_SESSION['userdata'])) {
@@ -382,18 +373,18 @@ class Product{
 		* @return array
 		*/
 	function getPriceBulkAll() {
-		if (!isset($this->vals['online-store']['_bulk_amount'])) {
+		if (!isset($this->vals['os_bulk_amount'])) {
 			return array(0, 0);
 		}
-		$ba=$this->vals['online-store']['_bulk_amount'];
+		$ba=$this->vals['os_bulk_amount'];
 		if (!is_object($ba)) {
 			$ba=(object)array('_default'=>$ba);
-			$this->vals['online-store']['_bulk_amount']=$ba;
+			$this->vals['os_bulk_amount']=$ba;
 		}
-		$bp=$this->vals['online-store']['_bulk_price'];
+		$bp=$this->vals['os_bulk_price'];
 		if (!is_object($bp)) {
 			$bp=(object)array('_default'=>$bp);
-			$this->vals['online-store']['_bulk_price']=$bp;
+			$this->vals['os_bulk_price']=$bp;
 		}
 		$lowest=$bp->_default;
 		$lowestAmt=$ba->_default;
@@ -427,11 +418,11 @@ class Product{
 		* @return float
 		*/
 	function getPriceSale() {
-		$bp=isset($this->vals['online-store']['_sale_price'])
-			?$this->vals['online-store']['_sale_price']:0;
+		$bp=isset($this->vals['os_sale_price'])
+			?$this->vals['os_sale_price']:0;
 		if (!is_object($bp)) {
 			$bp=(object)array('_default'=>$bp);
-			$this->vals['online-store']['_sale_price']=$bp;
+			$this->vals['os_sale_price']=$bp;
 		}
 		$lowest=$bp->_default;
 		if (isset($_SESSION['userdata'])) {
@@ -447,7 +438,7 @@ class Product{
 				}
 			}
 		}
-		switch (@$this->vals['online-store']['_sale_price_type']) {
+		switch (@$this->vals['os_sale_price_type']) {
 			case '1': // discount
 			return $this->getPriceBase()-$lowest;
 			case '2': // percentage
@@ -565,9 +556,14 @@ class Product{
 			}
 			else {
 				$catdir='/missing-category-'.$cat;
+				$pids=dbAll(
+					'select product_id from products_categories_products'
+					.' where category_id='.$cat
+				);
 				dbQuery(
 					'delete from products_categories_products where category_id='.$cat
 				);
+				Products_categoriesRecount($pids);
 				return $this->getRelativeUrl();
 			}
 			return $catdir
@@ -1377,6 +1373,32 @@ function Products_categories ($params, $smarty) {
 }
 
 // }
+function Products_categoriesRecount($pids=array()) {
+	$cnt=count($pids);
+	if (!$cnt) {
+		return;
+	}
+	$ids=array();
+	if (is_numeric($pids[0])) {
+		$ids=$pids;
+	}
+	else if (isset($pids[0]['product_id'])) {
+		foreach ($pids as $p) {
+			$ids[]=$p['product_id'];
+		}
+	}
+	foreach ($ids as $pid) {
+		$r=dbOne(
+			'select count(product_id) as pids from products_categories_products'
+			.' where product_id='.$pid,
+			'pids'
+		);
+		dbQuery(
+			'update products set num_of_categories='.$r
+			.' where id='.$pid
+		);
+	}
+}
 // { Products_categoryWatchesRun
 
 /**
@@ -1796,8 +1818,7 @@ function Products_getProductPrice(
 		}
 	}
 	// { get price
-	if (isset($product->vals['online-store'])) {
-		$p=$product->vals['online-store'];
+	if (isset($product->vals['os_base_price'])) {
 		$price=(float)$product->getPriceBase();
 		$sale_price=$product->getPriceSale();
 		if ($sale_price) {
@@ -1807,7 +1828,7 @@ function Products_getProductPrice(
 		if ($bp>0 && $bp<$price && $amount>=$ba) {
 			$price=$bp;
 		}
-		$vat=(isset($p['_vatfree']) && $p['_vatfree']=='1')?false:true;
+		$vat=$product->vals['os_tax_free']=='1'?false:true;
 	}
 	else {
 		$price=(float)$product->get('price');
@@ -2181,7 +2202,10 @@ function Products_importFile($vars=false) {
 	$preUpload=(int)@$vars->productsImportSetExisting['varvalue'];
 	$postUpload=(int)@$vars->productsImportSetImported['varvalue'];
 	if ($preUpload) {
-		dbQuery('update products set enabled='.($preUpload-1));
+		dbQuery(
+			'update products set enabled='.($preUpload-1)
+			.', date_edited=now()'
+		);
 	}
 	// { do the import
 	while (
@@ -2312,6 +2336,7 @@ function Products_importFile($vars=false) {
 		switch ($cid) {
 			case '-1': // { from file
 				dbQuery('delete from products_categories_products where product_id='.$id);
+				dbQuery('update products set num_of_categories=0 where id='.$id);
 				if (@$data[$headers['_categories']]) {
 					$catnames=explode('|', $data[$headers['_categories']]);
 					foreach ($catnames as $catname) {
@@ -2323,6 +2348,7 @@ function Products_importFile($vars=false) {
 							'insert into products_categories_products set'
 							.' category_id='.$cat->vals['id'].', product_id='.$id
 						);
+						Products_categoriesRecount(array($id));
 					}
 				}
 			break; // }
@@ -2334,6 +2360,7 @@ function Products_importFile($vars=false) {
 					'insert into products_categories_products set'
 					.' category_id='.$cid.', product_id='.$id
 				);
+				dbQuery('update products set num_of_categories=1 where id='.$id);
 			break; // }
 		}
 		$imported++;
@@ -2476,8 +2503,8 @@ function Products_owner($params, $smarty) {
 	*/
 function Products_plusVat($params, $smarty) {
 	$product= $smarty->smarty->tpl_vars['product']->value;
-	if (!isset($product->vals['online-store']['_vatfree'])
-		|| $product->vals['online-store']['_vatfree'] == '0'
+	if (!isset($product->vals['os_tax_free'])
+		|| $product->vals['os_tax_free'] == '0'
 	) {
 		return __('+ VAT');
 	}

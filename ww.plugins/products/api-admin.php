@@ -11,6 +11,38 @@
 	* @link     http://kvsites.ie/
 	*/
 
+// { Products_adminCategoriesGetJSTree
+
+/**
+	* get a recursive list of all categories
+	*
+	* @param array $params parameters
+	* @param int   $pid    parent ID
+	*
+	* @return array categories
+	*/
+function Products_adminCategoriesGetJSTree($params=array(), $pid=0) {
+	$sql='select id,name from products_categories where parent_id='.$pid
+		.' order by sortNum';
+	$cats=dbAll($sql);
+	$arr=array();
+	foreach ($cats as $cat) {
+		$obj=array(
+			'data'=>$cat['name'],
+			'attr'=>array(
+				'id'=>'cat-'.$cat['id']
+			)
+		);
+		$children=Products_adminCategoriesGetJSTree($params, $cat['id']);
+		if (count($children)) {
+			$obj['children']=$children;
+		}
+		$arr[]=$obj;
+	}
+	return $arr;
+}
+
+// }
 // { Products_adminCategoriesGetRecursiveList
 
 /**
@@ -64,6 +96,14 @@ function Products_adminCategoryDelete() {
 	dbQuery(
 		'update products_categories set parent_id='.$parent.' where parent='.$id
 	);
+	$pids=dbAll(
+		'select product_id from products_categories_products'
+		.' where category_id='.$id
+	);
+	dbQuery(
+		'delete from products_categories_products where category_id='.$id
+	);
+	Products_categoriesRecount($pids);
 	dbQuery('delete from products_categories where id='.$id);
 	return array('status'=>1);
 }
@@ -82,7 +122,9 @@ function Products_adminCategoryEdit() {
 		Core_quit();
 	}
 	$sql='update products_categories set name="'.addslashes($_REQUEST['name']).'"'
-		.',enabled="'.((int)$_REQUEST['enabled']).'"';
+		.', enabled="'.((int)$_REQUEST['enabled']).'"'
+		.', thumbsize_w='.(int)$_REQUEST['thumbsize_w']
+		.', thumbsize_h='.(int)$_REQUEST['thumbsize_h'];
 	if (isset($_REQUEST['associated_colour']) && strlen($_REQUEST['associated_colour'])==6) {
 		$sql.=', associated_colour="'.addslashes($_REQUEST['associated_colour']).'"';
 	}
@@ -126,11 +168,10 @@ function Products_adminCategoryGetFromID($id) {
 	}
 	$data=array(
 		'attrs'=>dbRow(
-			'select id,associated_colour,name,enabled,parent_id from products_cat'
-			.'egories where id='.$id
+			'select thumbsize_w,thumbsize_h,id,associated_colour,name,enabled,parent_id from products_categories where id='.$id
 		),
 		'products'=>$products,
-		'hasIcon'=>file_exists(USERBASE.'/f/products/categories/'.$id.'/icon.png')
+		'hasIcon'=>file_exists(USERBASE.'/f/products/categories/'.$id.'/icon.png')?filemtime(USERBASE.'/f/products/categories/'.$id.'/icon.png'):0
 	);
 	if (isset($pageid)) {
 		$page= Page::getInstance($pageid);
@@ -192,20 +233,102 @@ function Products_adminCategoryNew() {
 	* @return array status of the move
 	*/
 function Products_adminCategoryMove() {
-	$id=(int)$_REQUEST['id'];
-	$p_id=(int)$_REQUEST['parent_id'];
-	dbQuery('update products_categories set parent_id='.$p_id.' where id='.$id);
+	$cid=(int)$_REQUEST['id'];
+	$pid=(int)$_REQUEST['parent_id'];
+	dbQuery('update products_categories set parent_id='.$pid.' where id='.$cid);
 	if (isset($_REQUEST['order'])) {
 		$order=explode(',', $_REQUEST['order']);
 		for ($i=0;$i<count($order);++$i) {
-			$id=(int)$order[$i];
-			dbQuery('update products_categories set sortNum='.$i.' where id='.$id);
+			$cid=(int)$order[$i];
+			dbQuery('update products_categories set sortNum='.$i.' where id='.$cid);
 		}
+	}
+	else if (isset($_REQUEST['index'])) {
+		$rs=dbAll(
+			'select id from products_categories where parent_id='.$pid
+			.' and id!='.$cid
+			.' order by sortNum'
+		);
+		$index=(int)$_REQUEST['index'];
+		for ($i=0;$i<count($rs);++$i) {
+			$index2=($i>=$index)?$i+1:$i;
+			dbQuery(
+				'update products_categories set sortNum='.$index2
+				.' where id='.$rs[$i]['id']
+			);
+		}
+		dbQuery('update products_categories set sortNum='.$index.' where id='.$cid);
 	}
 	return Products_adminCategoryGetFromID($id);
 }
 
 // }
+// { Products_adminCategoryProductAdd
+
+/**
+	* add a product to a category
+	*
+	* @return null
+	*/
+function Products_adminCategoryProductAdd() {
+	$pids=explode(',', $_REQUEST['pid']);
+	$cid=(int)$_REQUEST['cid'];
+	$arr=array();
+	foreach ($pids as $pid) {
+		$pid=(int)$pid;
+		$arr[]=$pid;
+		dbQuery(
+			'delete from products_categories_products where product_id='
+			.$pid.' and category_id='.$cid
+		);
+	}
+	foreach ($pids as $pid) {
+		$pid=(int)$pid;
+		dbQuery(
+			'insert into products_categories_products set product_id='
+			.$pid.',category_id='.$cid
+		);
+	}
+	Products_categoriesRecount($pids);
+	dbQuery(
+		'update products set date_edited=now() where id in ('.join(', ', $arr).')'
+	);
+	Core_cacheClear('products');
+	return array('ok'=>1);
+}
+
+// }
+// { Products_adminCategoryProductRemove
+
+/**
+	* remove a product from a category
+	*
+	* @return null
+	*/
+function Products_adminCategoryProductRemove() {
+	$pids=explode(',', $_REQUEST['pid']);
+	$cid=(int)$_REQUEST['cid'];
+	$arr=array();
+	foreach ($pids as $pid) {
+		$pid=(int)$pid;
+		$arr[]=$pid;
+		dbQuery(
+			'delete from products_categories_products where product_id='
+			.$pid.' and category_id='.$cid
+		);
+	}
+	Products_categoriesRecount($pids);
+	dbQuery(
+		'update products set date_edited=now() where id in ('.join(', ', $arr).')'
+	);
+	Core_cacheClear('products');
+	return array('ok'=>1);
+}
+
+// }
+function Products_adminCategoriesByCount() {
+	return dbAll('select name,category_id,count(product_id) as pids from products_categories_products, products_categories where category_id=id group by category_id order by pids desc');
+}
 // { Products_adminCategoryProductsList
 
 /**
@@ -225,48 +348,6 @@ function Products_adminCategoryProductsList() {
 	return $arr;
 }
 // }
-// { Products_adminCategoryProductsEdit
-
-/**
-	* edit a category's contained products
-	*
-	* @return null
-	*/
-function Products_adminCategoryProductsEdit() {
-	if (!is_numeric(@$_REQUEST['id'])) {
-		Core_quit();
-	}
-	$id=(int)$_REQUEST['id'];
-	if (!isset($_REQUEST['noclear'])) {
-		dbQuery(
-			'delete from products_categories_products where category_id='.$id
-		);
-	}
-	foreach ($_REQUEST['s'] as $p) {
-		if (isset($_REQUEST['noclear'])) {
-			dbQuery(
-				'delete from products_categories_products where product_id='
-				.((int)$p).' and category_id='.$id
-			);
-		}
-		dbQuery(
-			'insert into products_categories_products set product_id='
-			.((int)$p).',category_id='.$id
-		);
-	}
-	Core_cacheClear('products');
-	/*
-	$parent=dbOne('select parent_id from products_categories where id='.$id.' and parent_id!=0', 'parent_id');
-	if ($parent) {
-		$_REQUEST['noclear']=true;
-		$_REQUEST['id']=$parent;
-		Products_adminCategoryProductsEdit();
-	}
-	*/
-	return array('ok'=>1);
-}
-
-// }
 // { Products_adminCategorySetIcon
 
 /**
@@ -276,10 +357,19 @@ function Products_adminCategoryProductsEdit() {
 	*/
 function Products_adminCategorySetIcon() {
 	$cat_id=(int)$_REQUEST['cat_id'];
+	$cat=ProductCategory::getInstance($cat_id);
 	$dir=USERBASE.'/f/products/categories/'.$cat_id;
 	@mkdir($dir, 0777, true);
 	$tmpname=$_FILES['Filedata']['tmp_name'];
-	CoreGraphics::resize($tmpname, $dir.'/icon.png', 128, 128);
+	list($width, $height)=getimagesize($tmpname);
+	$thumbw=(int)$cat->vals['thumbsize_w'];
+	$thumbh=(int)$cat->vals['thumbsize_h'];
+	if ($width>$thumbw || $height>$thumbh) {
+		CoreGraphics::resize($tmpname, $dir.'/icon.png', $thumbw, $thumbh);
+	}
+	else {
+		move_uploaded_file($tmpname, $dir.'/icon.png');
+	}
 	return array('ok'=>1);
 }
 
@@ -841,6 +931,7 @@ function Products_adminProductsDelete() {
 	dbQuery(
 		'delete from products_reviews where product_id in ('.join(', ', $ids).')'
 	);
+	Products_categoriesRecount($ids);
 	Core_cacheClear();
 	return array('ok'=>1);
 }
@@ -1137,6 +1228,32 @@ function Products_adminProductsListDT() {
 }
 
 // }
+// { Products_adminProductsListCommonDetails
+
+/**
+	* get common details about products in array format
+	*
+	* @return null
+	*/
+function Products_adminProductsListCommonDetails() {
+	$constraint='';
+	if (isset($_REQUEST['date_edited'])) {
+		$constraint=' where date_edited>"'.addslashes($_REQUEST['date_edited']).'"';
+	}
+	$sql='select id, name, num_of_categories, date_edited from products'
+		.$constraint
+		.' order by name';
+	$ps=dbAll($sql);
+	$arr=array();
+	foreach ($ps as $p) {
+		$arr[]=array(
+			$p['id'], $p['name'], $p['num_of_categories'], $p['date_edited']
+		);
+	}
+	return $arr;
+}
+
+// }
 // { Products_adminProductTypeVoucherTemplateSample
 
 /**
@@ -1223,18 +1340,20 @@ function Products_adminTypeDelete() {
 function Products_adminTypeEdit() {
 	$d=$_REQUEST['data'];
 	$data_fields=json_encode($d['data_fields']);
-	$sql='update products_types set name="'.addslashes($d['name'])
-		.'",multiview_template="'
+	$sql='update products_types set name="'.addslashes($d['name']).'"'
+		.', multiview_template="'
 		.addslashes(Core_sanitiseHtmlEssential($d['multiview_template']))
 		.'",singleview_template="'
 		.addslashes(Core_sanitiseHtmlEssential($d['singleview_template']))
-		.'",data_fields="'.addslashes($data_fields).'",'
-		.'is_for_sale='.(int)$d['is_for_sale'].','
-		.'has_userdefined_price='.(int)@$d['user_defined_price'].','
-		.'is_voucher='.(int)$d['is_voucher'].','
-		.'stock_control='.(int)$d['stock_control'].','
-		.'default_category='.(int)$d['default_category'].','
-		.'voucher_template="'
+		.'",data_fields="'.addslashes($data_fields).'"'
+		.', is_for_sale='.(int)$d['is_for_sale']
+		.', has_userdefined_price='.(int)@$d['user_defined_price']
+		.', is_voucher='.(int)$d['is_voucher']
+		.', stock_control='.(int)$d['stock_control']
+		.', default_category='.(int)$d['default_category']
+		.', subcat_thumbsize_w='.(int)$d['subcat_thumbsize_w']
+		.', subcat_thumbsize_h='.(int)$d['subcat_thumbsize_h']
+		.', voucher_template="'
 		.addslashes(Core_sanitiseHtmlEssential($d['voucher_template'])).'",'
 		.'prices_based_on_usergroup="'
 		.addslashes($d['prices_based_on_usergroup'])
@@ -1386,3 +1505,13 @@ function Products_adminUserGroupsGet() {
 }
 
 // }
+function Products_adminCategoryFullName() {
+	function getParentName($id) {
+		$r=dbRow('select parent_id,name from products_categories where id='.$id);
+		if ($r['parent_id']) {
+			return getParentName($r['parent_id']).'/'.$r['name'];
+		}
+		return $r['name'];
+	}
+	return getParentName((int)$_REQUEST['id']);
+}

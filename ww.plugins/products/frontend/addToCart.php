@@ -84,9 +84,8 @@ if (isset($_REQUEST['products_values__custom-price'])
 	$price=(float)$_REQUEST['products_values__custom-price'];
 }
 // { does the amount requested bring it over the maximum allowed per purchase
-$max_allowed=isset($product->vals['online-store']['_max_allowed'])
-	?(int)$product->vals['online-store']['_max_allowed']
-	:0;
+$max_allowed=$product->vals['os_amount_allowed_per_purchase']
+	?$product->vals['os_amount_allowed_per_purchase']:0;
 // }
 OnlineStore_addToCart(
 	$price+$price_amendments,
@@ -97,8 +96,8 @@ OnlineStore_addToCart(
 	(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'no referer'),
 	$vat,
 	$id,
-	(int)(@$product->vals['online-store']['_deliver_free']),
-	(int)(@$product->vals['online-store']['_not_discountable']),
+	(int)(@$product->vals['os_free_delivery']),
+	(int)(@$product->vals['os_not_discountable']),
 	$max_allowed,
 	$product->stock_number
 );
