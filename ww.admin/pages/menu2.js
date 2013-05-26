@@ -1,6 +1,7 @@
 /*global __,adminVars*/
 $(function(){
-	function pageAddNode(name,id,pid){
+	function pageAddNode(name, id, pid){
+		console.log(name);
 		var pel=null;
 		var $jstree=$('#pages-wrapper');
 		if (pid) {
@@ -51,8 +52,8 @@ $(function(){
 							alert(ret.error);
 						}
 						else{
-						pageAddNode(ret.alias, ret.id, ret.pid);
-						pageOpen(ret.id);
+							pageAddNode(name, ret.id, ret.pid);
+							pageOpen(ret.id);
 						}
 					});
 					$(this).dialog('close');
