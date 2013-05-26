@@ -50,10 +50,12 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	$columns=(int)$_REQUEST['columns'];
 	$style_from=(int)$_REQUEST['style_from'];
 	$state=(int)$_REQUEST['state'];
+	$cache=(int)$_REQUEST['cache'];
 	$html_type=(int)$_REQUEST['html_type'];
 	$sql="menus set type='$type',parent='$parent',direction='$direction',"
-		."background='$background',opacity=$opacity,columns=$columns,"
-		."style_from=$style_from,state=$state, html_type=$html_type";
+		."background='$background',opacity=$opacity,columns=$columns"
+		.', cache='.$cache
+		.",style_from=$style_from,state=$state, html_type=$html_type";
 	if ($id) {
 		$sql="update $sql where id=$id";
 		dbQuery($sql);

@@ -1144,7 +1144,7 @@ class ProductType{
 		if ($template=='singleview') {
 			if ($this->allow_comments) {
 				$html.=Core_commentsShow(
-					'http://'.$_SERVER['HTTP_HOST'].'/_products/'.$product->id
+					'http://'.$_SERVER['HTTP_HOST'].$product->getRelativeURL()
 				);
 			}
 		}

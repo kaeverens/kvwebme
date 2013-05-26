@@ -47,15 +47,14 @@ function menu_edit(ev){
 		+'="menu_opacity" /><div id="menu_opacity_slider"></div></td></tr></tab'
 		+'le></td></tr>'
 		// }
-		// { HTML
-		/*
-		+'<tr><th>HTML</th><td><select id="menu_html_type">'
-		+'<option value="1">use UL/LI elements</option>'
-		+'<option value="0">use DIV elements</option>'
+		+'<tr><th>Cache</th><td>'
+		+'<select name="menu_cache" id="menu_cache">'
+		+'<option value="0">Don\'t cache</option>'
+		+'<option value="3600">1 hour</option>'
+		+'<option value="21600">6 hours</option>'
+		+'<option value="43200">12 hours</option>'
+		+'<option value="86400">1 day</option>'
 		+'</select></td></tr>'
-		+'</table></div>'
-		*/
-		// }
 		+'</div>';
 	var $d=$(html);
 	// }
@@ -75,6 +74,7 @@ function menu_edit(ev){
 							'type':(direction?$('select[name=menu_type_v]').val():''),
 							'background':$('#menu_background').val(),
 							'opacity':$('#menu_opacity').val(),
+							'cache':+$('#menu_cache').val(),
 							'columns':$('#menu_columns').val(),
 							'style_from':$('#menu_style_from').val(),
 							'state':$('#menu_state').val(),
@@ -150,6 +150,7 @@ function menu_edit(ev){
 				}
 			});
 		$('#menu_columns').val(res.columns?+res.columns:1);
+		$('#menu_cache').val(res.cache||0);
 		function update_styles_table(){
 			$('#menu_style_from_table')
 				.css('display',$('#menu_style_from').val()=='0'?'none':'block');

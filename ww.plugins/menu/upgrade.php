@@ -41,3 +41,7 @@ if ($version=='7') { // html type
 	dbQuery('update menus set html_type=0'); // set existing menus to old style
 	$version=8;
 }
+if ($version=='8') { // cache
+	dbQuery('alter table menus add cache int default 0');
+	$version=9;
+}

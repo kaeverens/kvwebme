@@ -300,7 +300,6 @@ function Core_menuShowFg ($opts=array()) {
 	}
 	global $_languages;
 	$c='';
-	$md5_1=md5('menu_fg|'.print_r($opts, true).'|'.join(', ', $_languages));
 	$options=array(
 		'direction' => 0,  // 0: horizontal, 1: vertical
 		'parent'    => 0,  // top-level
@@ -336,11 +335,7 @@ function Core_menuShowFg ($opts=array()) {
 	$md5=md5(
 		$options['parent'].'|0|'.json_encode($options).'|'.join(', ', $_languages)
 	);
-	$html=Core_cacheLoad('pages', 'fgmenu-'.$md5);
-	if (1 || $html===false) {
-		$html=menuBuildFg($options['parent'], 0, $options);
-		Core_cacheSave('pages', 'fgmenu-'.$md5, $html);
-	}
+	$html=menuBuildFg($options['parent'], 0, $options);
 	switch ($options['type']) {
 		case 2: // { tree
 			$c.='<div class="menu-tree">'.$html.'</div>';
