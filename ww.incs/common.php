@@ -13,6 +13,68 @@
 
 require_once dirname(__FILE__).'/basics.php';
 
+function Core_commentsShow($url) {
+	$c='';
+	if ($GLOBALS['DBVARS']['fbAppID']) {
+		$fbappid=$GLOBALS['DBVARS']['fbAppID'];
+		$c.='<div id="fb-root"></div><script>(function(d, s, id) {'
+			.'var js, fjs = d.getElementsByTagName(s)[0];'
+			.'if (d.getElementById(id)) return;js = d.createElement(s);'
+			.'js.id = id;js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1&appId='
+			.$fbappid
+			.'";fjs.parentNode.insertBefore(js, fjs);}'
+			.'(document, "script", "facebook-jssdk"));</script>';
+		$c.='<div class="fb-comments" data-href="'
+			.$url.'" data-num-posts="2"></div>';
+		$md5=md5($url);
+		$comments=Core_cacheLoad('blog-comments', $md5, -1);
+		if ($comments===-1) {
+			$comments=file_get_contents(
+				'https://graph.facebook.com/comments/?ids='.urlencode($url)
+			);
+			Core_cacheSave('blog-comments', $md5, $comments);
+		}
+		$c.='<div style="display:none;">'.$comments.'</div>';
+	}
+	else {
+		$c.='<em>no Facebook App ID set for comments</em>';
+	}
+	return $c;
+}
+// { Core_dateM2H
+
+/**
+	* convert a MySQL date to a human-readable one
+	*
+	* @param string $d    the date to convert
+	* @param string $type the type of date to return
+	*
+	* @return string the transformed date
+	*/
+function Core_dateM2H($d, $type = 'date') {
+	$date = preg_replace('/[- :]/', ' ', $d);
+	$date = explode(' ', $date);
+	if (count($date)<4) {
+		$date[3]='00';
+		$date[4]='00';
+		$date[5]='00';
+	}
+	$utime=@mktime($date[3], $date[4], $date[5], $date[1], $date[2], $date[0]);
+	if ($type == 'date') {
+		return date(
+			'<\s\p\a\n \c\l\a\s\s="\d\a\y">l</\s\p\a\n>'
+			.' <\s\p\a\n \c\l\a\s\s="\m\o\n\t\h\d\a\y">jS F,</\s\p\a\n>'
+			.' <\s\p\a\n \c\l\a\s\s="\y\e\a\r">Y</\s\p\a\n>',
+			$utime
+		);
+	}
+	if ($type == 'datetime') {
+		return date('D jS M, Y h:iA', $utime);
+	}
+	return date(DATE_RFC822, $utime);
+}
+
+// }
 // { Core_getJQueryScripts
 
 /**
@@ -83,40 +145,6 @@ function Core_languagesGetUi($params=null) {
 			// }
 	}
 	return $ui;
-}
-
-// }
-// { Core_dateM2H
-
-/**
-	* convert a MySQL date to a human-readable one
-	*
-	* @param string $d    the date to convert
-	* @param string $type the type of date to return
-	*
-	* @return string the transformed date
-	*/
-function Core_dateM2H($d, $type = 'date') {
-	$date = preg_replace('/[- :]/', ' ', $d);
-	$date = explode(' ', $date);
-	if (count($date)<4) {
-		$date[3]='00';
-		$date[4]='00';
-		$date[5]='00';
-	}
-	$utime=@mktime($date[3], $date[4], $date[5], $date[1], $date[2], $date[0]);
-	if ($type == 'date') {
-		return date(
-			'<\s\p\a\n \c\l\a\s\s="\d\a\y">l</\s\p\a\n>'
-			.' <\s\p\a\n \c\l\a\s\s="\m\o\n\t\h\d\a\y">jS F,</\s\p\a\n>'
-			.' <\s\p\a\n \c\l\a\s\s="\y\e\a\r">Y</\s\p\a\n>',
-			$utime
-		);
-	}
-	if ($type == 'datetime') {
-		return date('D jS M, Y h:iA', $utime);
-	}
-	return date(DATE_RFC822, $utime);
 }
 
 // }

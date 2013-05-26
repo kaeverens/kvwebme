@@ -1341,6 +1341,7 @@ function Products_adminTypeEdit() {
 	$d=$_REQUEST['data'];
 	$data_fields=json_encode($d['data_fields']);
 	$sql='update products_types set name="'.addslashes($d['name']).'"'
+		.', allowcomments="'.((int)$d['allowcomments']).'"'
 		.', multiview_template="'
 		.addslashes(Core_sanitiseHtmlEssential($d['multiview_template']))
 		.'",singleview_template="'
@@ -1351,8 +1352,6 @@ function Products_adminTypeEdit() {
 		.', is_voucher='.(int)$d['is_voucher']
 		.', stock_control='.(int)$d['stock_control']
 		.', default_category='.(int)$d['default_category']
-		.', subcat_thumbsize_w='.(int)$d['subcat_thumbsize_w']
-		.', subcat_thumbsize_h='.(int)$d['subcat_thumbsize_h']
 		.', voucher_template="'
 		.addslashes(Core_sanitiseHtmlEssential($d['voucher_template'])).'",'
 		.'prices_based_on_usergroup="'

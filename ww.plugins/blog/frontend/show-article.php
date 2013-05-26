@@ -39,32 +39,8 @@ $c.='</div>';
 WW_addScript('blog');
 WW_addInlineScript('window.blog_comments=0;');
 if ($r['allow_comments']) {
-	if (isset($PAGEDATA->vars['blog_fbappid'])
-		&& (int)$PAGEDATA->vars['blog_fbappid']
-	) {
-		$fbappid=(int)$PAGEDATA->vars['blog_fbappid'];
-		$c.='<div id="fb-root"></div><script>(function(d, s, id) {'
-			.'var js, fjs = d.getElementsByTagName(s)[0];'
-			.'if (d.getElementById(id)) return;js = d.createElement(s);'
-			.'js.id = id;js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1&appId='
-			.$fbappid
-			.'";fjs.parentNode.insertBefore(js, fjs);}'
-			.'(document, "script", "facebook-jssdk"));</script>';
-		$url=$PAGEDATA->getAbsoluteUrl().'/'.$r['user_id'].'/'.$date.'/'
-			.preg_replace('/[^a-zA-Z0-9]/', '-', transcribe($r['title']));
-		$c.='<div class="fb-comments" data-href="'
-			.$url.'" data-num-posts="2"></div>';
-		$md5=md5($url);
-		$comments=Core_cacheLoad('blog-comments', $md5, -1);
-		if ($comments===-1) {
-			$comments=file_get_contents(
-				'https://graph.facebook.com/comments/?ids='.urlencode($url)
-			);
-			Core_cacheSave('blog-comments', $md5, $comments);
-		}
-		$c.='<div style="display:none;">'.$comments.'</div>';
-	}
-	else {
-		$c.='<em>no Facebook App ID set for comments</em>';
-	}
+	$c.=Core_commentsShow(
+		$PAGEDATA->getAbsoluteUrl().'/'.$r['user_id'].'/'.$date.'/'
+		.preg_replace('/[^a-zA-Z0-9]/', '-', transcribe($r['title']))
+	);
 }

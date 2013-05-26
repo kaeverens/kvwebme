@@ -585,6 +585,13 @@ if ($version==56) { //  add "updates" table
 	);
 	$version=57;
 }
+if ($version==57) { // move fbappid into main settings
+	$fbappid=dbOne(
+		'select value from page_vars where name="blog_fbappid"', 'value'
+	);
+	$DBVARS['fbAppID']=$fbappid;
+	$version=58;
+}
 
 $DBVARS['version']=$version;
 Core_configRewrite();

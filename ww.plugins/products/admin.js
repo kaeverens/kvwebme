@@ -120,17 +120,22 @@ function Products_screenBrandsandProducers() {
 }
 function Products_screenCategories() {
 	function findCommonPhrases(selector) {
-		var keywords={};
+		var keywords={}, keywordsLength=0;
 		$(selector+'>*')
 			.each(function(k, v) {
 				var words=$(this).text().toLowerCase().replace('[x]', '')
-					.replace(/[^a-z0-9]+/, ' ').split(' ');
-				for (var i=0;i<words.length-2;++i) {
-					if (words[i]=='for' || words[i+1]=='for' || words[i+2]=='for') {
+					.replace(/[^a-z0-9 ]/g, ' ')
+					.replace(/ +/g, ' ').split(' ');
+				for (var i=0;i<words.length;++i) {
+					var phrase=' '+words[i];
+					if ($.inArray(words[i], ['for', 'with', 'in', 'to', 'and'])!==-1) {
+						return;
+					}
+					if (phrase.length<3) {
 						continue;
 					}
-					var phrase=words[i]+' '+words[i+1]+' '+words[i+2];
 					if (undefined===keywords[phrase]) {
+						keywordsLength++;
 						keywords[phrase]=0;
 					}
 					keywords[phrase]++;
@@ -138,6 +143,9 @@ function Products_screenCategories() {
 			});
 		var toptwenty=[], min=0, max=0;
 		$.each(keywords, function(k, v) {
+			if (v===undefined) {
+				return;
+			}
 			if (toptwenty.length<20) {
 				toptwenty.push([k, v]);
 			}
@@ -430,12 +438,13 @@ function Products_screenCategories() {
 		}
 		var mainDetails='<table style="width:100%">'
 			+'<tr><th>Name</th><td><input id="category-name"/></td>'
-			+'<th colspan="2">Icon</th><td rowspan="2" id="category-icon">'
+			+'<th rowspan="2">Icon</th><td><span id="category-icon-upload"/></td>'
+			+'<td rowspan="2" id="category-icon">'
 			+'</td></tr>'
 			+'<tr><th>Enabled</th><td><select id="category-enabled">'
 			+'<option value="0">No</option><option value="1">Yes</option>'
 			+'</select></td>'
-			+'<td><span id="category-icon-upload"/></td><td><input id="category-thumb-w" class="small" title="width of thumbnail"/>x<input id="category-thumb-h" class="small" title="height of thumbnail"/></td></tr>'
+			+'<td><input id="category-thumb-w" class="small" title="width of thumbnail"/>x<input id="category-thumb-h" class="small" title="height of thumbnail"/></td></tr>'
 			+'</table>';
 		// { contained products
 		var containedProducts='<table id="pic-filter-table" style="width:100%">'
@@ -1290,11 +1299,14 @@ function Products_typeEdit(id) {
 	function showMain(panel) {
 		$('<table class="wide">'
 			+'<tr><th>Name</th><td id="pte1"></td></tr>'
-			+'<tr><th>Are products of this type for sale?</th>'
-			+'<td id="pte2"></td></tr><tr id="pte4"/><tr id="pte5"/><tr id="pte7"/>'
+			+'<tr><th>Are products of this type for sale?</th><td id="pte2"></td>'
+			+'</tr><tr id="pte4"/><tr id="pte5"/><tr id="pte7"/>'
 			+'<tr><th>If no image is uploaded for the product, what image should '
 			+'be shown?</th><td id="pte3"></td></tr>'
 			+'<tr><th>Default Category</th><td><select id="pte6"/></td></tr>'
+			+'<tr><th>Allow Comments (using Facebook)</th><td>'
+			+'<select id="pte-allowcomments"><option value="0">No</option>'
+			+'<option value="1">Yes</option></select></td></tr>'
 			+'</table>'
 		).appendTo(panel);
 		// { name
@@ -1303,6 +1315,9 @@ function Products_typeEdit(id) {
 			.val(tdata.name||"default")
 			.appendTo('#pte1');
 		// }
+		$('#pte-allowcomments')
+			.change(function(){tdata.allowcomments=+$(this).val();})
+			.val(tdata.allowcomments||'0');
 		// { for sale
 		$('<select><option value="0">No</option><option value="1">Yes</option></select>')
 			.change(function(){
@@ -1493,6 +1508,7 @@ function Products_typeEdit(id) {
 	}
 	function updateMain() {
 		tdata.name=$('#pte1 input').val();
+		tdata.allowcomments=$('#pte-allowcomments').val();
 		tdata.is_for_sale=+$('#pte2 select').val();
 		tdata.stock_control=+$('#pte5 select').val();
 		tdata.default_category=+$('#pte6').val();

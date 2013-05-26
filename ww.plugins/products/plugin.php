@@ -138,7 +138,7 @@ $plugin=array(
 		'menu-subpages' => 'Products_getSubCategoriesAsMenu',
 		'menu-subpages-html' => 'Products_getSubCategoriesAsMenuHtml'
 	), // }
-	'version' => '49'
+	'version' => '50'
 );
 // }
 
@@ -875,6 +875,7 @@ class ProductType{
 		$this->voucher_template=@$r['voucher_template'];
 		$this->default_category=(int)$r['default_category'];
 		$this->has_userdefined_price=(int)$r['has_userdefined_price'];
+		$this->allow_comments=(int)$r['allowcomments'];
 		self::$instances[$this->id] =& $this;
 		return $this;
 	}
@@ -1140,6 +1141,13 @@ class ProductType{
 		$html.=$smarty->fetch(
 			USERBASE.'/ww.cache/products/templates/types_'.$template.'_'.$this->id
 		);
+		if ($template=='singleview') {
+			if ($this->allow_comments) {
+				$html.=Core_commentsShow(
+					'http://'.$_SERVER['HTTP_HOST'].'/_products/'.$product->id
+				);
+			}
+		}
 		if ($add_wrapper) {
 			$html.='</div>';
 		}

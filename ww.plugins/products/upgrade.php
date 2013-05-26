@@ -379,3 +379,9 @@ if ($version==48) { // move it to categories instead
 	);
 	$version=49;
 }
+if ($version==49) { // add allowcomments to product types
+	dbQuery(
+		'alter table products_types add allowcomments smallint default 0'
+	);
+	$version=50;
+}

@@ -65,12 +65,6 @@ $c.='<p>'.__(
 	.'<input class="small" name="page_vars[blog_featured_posts]"'
 	.' value="'.$featured_posts.'"/>';
 // }
-// { facebook comments
-$fbappid=(int)@$vars['blog_fbappid'];
-$c.='<p>'.__('Your Facebook App ID (for comments management)', 'core').'</p>'
-	.'<input name="page_vars[blog_fbappid]"'
-	.' value="'.$fbappid.'"/>';
-// }
 $c.='</div>';
 // }
 // { groups access

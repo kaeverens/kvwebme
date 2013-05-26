@@ -82,7 +82,7 @@ if (isset($DBVARS['canonical_name'])
 		'redirecting to canonical domain name'
 	);
 }
-if (!isset($DBVARS['version']) || $DBVARS['version']<57) {
+if (!isset($DBVARS['version']) || $DBVARS['version']<58) {
 	redirect('/ww.incs/upgrade.php', 'upgrade detected');
 }
 $id=(int)@$_REQUEST['pageid'];

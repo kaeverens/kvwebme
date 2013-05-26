@@ -15,6 +15,7 @@ echo '<h2>'.__('General').'</h2>';
 // { handle actions
 if ($action=='Save') {
 	$DBVARS['f_cache']=$_REQUEST['f_cache'];
+	$DBVARS['fbAppID']=$_REQUEST['fbAppID'];
 	$DBVARS['maintenance-mode']=$_REQUEST['maintenance-mode'];
 	$DBVARS['maintenance-mode-message']=$_REQUEST['maintenance-mode-message'];
 	if (@$_REQUEST['disable-hidden-sitemap']) {
@@ -251,6 +252,11 @@ if (isset($DBVARS['cdn'])) {
 	echo ' value="'.$DBVARS['cdn'].'"';
 }
 echo ' /></td></tr>';
+// }
+// { facebook app id
+echo '<tr><th>'.__('Facebook App ID').'</th><td>'
+	.'<input name="site_title" value="'
+	.htmlspecialchars($DBVARS['fbAppID']).'" /></td></tr>';
 // }
 echo '</table><input type="hidden" name="action" value="Save"/>'
 	.'<input type="submit" value="'.__('Save').'" /></form>';
