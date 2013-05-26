@@ -18,8 +18,7 @@ function Menu_getHtml() {
 			header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
 			header('Expires-Active: On');
 			header('Pragma:');
-			header('Last-Modified: '.:w
-			gmdate('D, d M Y H:i:s', time()));
+			header('Last-modified: '.gmdate('D, d M Y H:i:s', time()));
 		}
 		if ($vars['parent']=='-1') {
 			global $PAGEDATA;

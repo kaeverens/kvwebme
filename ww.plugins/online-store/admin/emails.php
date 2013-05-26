@@ -107,12 +107,14 @@ echo '<tr><th>'.__('Subject of the email').'</th>'
 // { recipient
 echo '<tr><th>'.__('Admin who receives a copy of this email').'</th>'
 	.'<td><input type="email" name="onlinestore-emails-recipient"'
+	.' multiple="multiple"'
 	.' value="'.htmlspecialchars(@$rs['email_'.$email.'_recipient']['val']).'"/></td>'
 	.'</tr>';
 // }
 // { replyto
 echo '<tr><th>'.__('Reply-to address').'</th>'
 	.'<td><input type="email" name="onlinestore-emails-replyto"'
+	.' multiple="multiple"'
 	.' value="'.htmlspecialchars(
 		@$rs['email_'.$email.'_replyto']['val']
 	).'"/></td>'

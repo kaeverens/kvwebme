@@ -28,5 +28,9 @@ require_once SCRIPTBASE.'ww.incs/menus.php';
 function menu_showWidget($vars=null) {
 	WW_addScript('/j/fg.menu/fg.menu.js');
 	WW_addCSS('/j/fg.menu/fg.menu.css');
-	return '<script src="/a/p=menu/f=getHtml/vars='.urlencode(json_encode($vars)).'"></script>';
+	return '<a style="display:none"'
+		.' href="'.$GLOBALS['PAGEDATA']->getRelativeUrl.'?cmsspecial=sitemap">'
+		.'sitemap</a>'
+		.'<script src="/a/p=menu/f=getHtml/vars='.urlencode(json_encode($vars)).'">'
+		.'</script>';
 }
