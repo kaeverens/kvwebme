@@ -806,6 +806,27 @@ class ProductCategory{
 	}
 
 	// }
+	// { getSubCategoryIDs
+	
+	function getSubCategoryIDs() {
+		$ids=Core_cacheLoad('products', 'subCategoryIds-'.$this->vals['id'], -1);
+		if ($ids===-1) {
+			$ids=array();
+			$rs=dbAll(
+				'select id from products_categories where parent_id='.$this->vals['id']
+				.' and enabled'
+			);
+			foreach ($rs as $r) {
+				$ids[]=$r['id'];
+				$cat=ProductCategory::getInstance($r['id']);
+				$ids=array_merge($ids, $cat->getSubCategoryIDs());
+			}
+			Core_cacheSave('products', 'subCategoryIds-'.$this->vals['id'], $ids);
+		}
+		return $ids;
+	}
+
+	// }
 }
 
 // }

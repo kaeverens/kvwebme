@@ -438,8 +438,11 @@ function Products_showByCategory(
 	if ($id==0) {
 		$id=(int)$PAGEDATA->vars['products_category_to_show'];
 	}
+	$noRecurse=isset($PAGEDATA->vars['products_category_no_recurse'])
+		&& $PAGEDATA->vars['products_category_no_recurse']
+		?1:0;
 	$products=Products::getByCategory(
-		$id, $search, array(), '', 'asc', $location
+		$id, $search, array(), '', 'asc', $location, $noRecurse
 	);
 	$ret=$products->render(
 		$PAGEDATA, $start, $limit, $order_by, $order_dir, $limit_start
@@ -705,39 +708,35 @@ class Products{
 		*/
 	static function getByCategory(
 		$id, $search='', $search_arr=array(), $sort_col='_name', $sort_dir='asc',
-		$location=0
+		$location=0, $noRecurse=0
 	) {
 		if (!is_numeric($id)) {
 			return false;
 		}
 		$locmd5=is_array($location)?join(',', $location):0;
-		$md5=md5($id.'|'.$search.'|'.join(',', $search_arr).'|'.$locmd5);
+		$md5=md5(
+			$id.'|'.$search.'|'.join(',', $search_arr).'|'.$locmd5.'|'.$noRecurse
+		);
 		if (!array_key_exists($md5, self::$instances)) {
 			$product_ids=array();
 			$locFilter=$location?' and location in ('.$location.')':'';
-			$sql='select id from products,products_categories_products'
-				.' where id=product_id'.$locFilter.' and enabled and category_id='.$id;
-			if ($search=='' && !count($search_arr)) {
-				$md5_2=md5($sql);
-				$rs=Core_cacheLoad('products', $md5_2, -1);
-				if ($rs===-1) {
-					$rs=dbAll($sql);
-					Core_cacheSave('products', $md5_2, $rs);
-				}
+			$cats=array($id);
+			if (!$noRecurse) {
+				$cat=ProductCategory::getInstance($id);
+				$cats=array_merge($cats, $cat->getSubCategoryIDs());
 			}
-			else {
-				if ($search!='') {
-					$sql.=' and (name like "%'.addslashes($search)
-						.'%" or data_fields like "%'.addslashes($search).'%")';
-				}
+			$sql='select id from products,products_categories_products'
+				.' where id=product_id'.$locFilter.' and enabled'
+				.' and category_id in ('.join(', ', $cats).')';
+			if ($search!='') {
+				$sql.=' and (name like "%'.addslashes($search)
+					.'%" or data_fields like "%'.addslashes($search).'%")';
+			}
+			$md5_2=md5($sql);
+			$rs=Core_cacheLoad('products', $md5_2, -1);
+			if ($rs===-1) {
 				$rs=dbAll($sql);
-				$cats=dbAll('select id from products_categories where parent_id='.$id);
-				foreach ($cats as $cat) {
-					$ps=Products::getByCategory($cat['id'], $search, $search_arr);
-					foreach ($ps->product_ids as $p) {
-						$rs[]=array('id'=>$p);
-					}
-				}
+				Core_cacheSave('products', $md5_2, $rs);
 			}
 			foreach ($rs as $r) {
 				$product_ids[]=$r['id'];
@@ -771,7 +770,7 @@ class Products{
 		*
 		* @return object instance of Products object
 		*/
-	static function getByCategoryName($name, $enabledFilter=0) {
+	static function getByCategoryName($name, $enabledFilter=0, $noRecurse=0) {
 		$arr=explode('/', $name);
 		if ($arr[0]=='') {
 			array_shift($arr);
@@ -790,7 +789,7 @@ class Products{
 		if (!$cid) {
 			return Products::getAll('', 0, $enabledFilter);
 		}
-		return Products::getByCategory($cid);
+		return Products::getByCategory($cid, array(), '_name', 'asc', 0, $noRecurse);
 	}
 
 	// }

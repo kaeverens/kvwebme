@@ -100,6 +100,15 @@ else {
 		.'<option value="0"> -- choose -- </option>'
 		.showCategoriesRecursive(0, 0, @$vars['products_category_to_show']);
 	$c.='</select>';
+	$c.='<select name="page_vars[products_category_no_recurse]">'
+		.'<option value="0">show products in this and contained categories</option>'
+		.'<option value="1"';
+	if (isset($vars['products_category_no_recurse'])
+		&& $vars['products_category_no_recurse']
+	) {
+		$c.=' selected="selected"';
+	}
+	$c.='>show products specifically in this category</option></select>';
 }
 $c.='</td></tr>';
 // }
