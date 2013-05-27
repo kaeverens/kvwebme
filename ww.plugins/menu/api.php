@@ -38,5 +38,11 @@ function Menu_getHtml() {
 	header('Content-type: text/javascript');
 	echo 'document.write("'.addslashes(Core_menuShowFg($vars)).'");';
 	echo join(';', $GLOBALS['scripts_inline']);
+	foreach ($GLOBALS['scripts'] as $r) {
+		echo 'document.write("<script src=\\"'.$r.'\\"></script>");';
+	}
+	foreach ($GLOBALS['css_urls'] as $r) {
+		echo 'document.write("<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"'.$r.'\\"/>");';
+	}
 	exit;
 }

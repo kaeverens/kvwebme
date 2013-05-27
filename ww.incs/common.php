@@ -331,6 +331,9 @@ function Core_menuShowFg ($opts=array()) {
 	}
 	$options['type']=(int)$options['type'];
 	$items=array();
+	if (!isset($GLOBALS['fg_menus'])) {
+		$GLOBALS['fg_menus']=0;
+	}
 	$menuid=$GLOBALS['fg_menus']++;
 	$md5=md5(
 		$options['parent'].'|0|'.json_encode($options).'|'.join(', ', $_languages)

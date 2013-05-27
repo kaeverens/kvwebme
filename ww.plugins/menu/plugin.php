@@ -26,10 +26,9 @@ $plugin=array(
 
 require_once SCRIPTBASE.'ww.incs/menus.php';
 function menu_showWidget($vars=null) {
-	WW_addScript('/j/fg.menu/fg.menu.js');
-	WW_addCSS('/j/fg.menu/fg.menu.css');
+	$pageurl=preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI']);
 	return '<a style="display:none"'
-		.' href="'.$GLOBALS['PAGEDATA']->getRelativeUrl.'?cmsspecial=sitemap">'
+		.' href="'.$pageurl.'?cmsspecial=sitemap">'
 		.'sitemap</a>'
 		.'<script src="/a/p=menu/f=getHtml/vars='.urlencode(json_encode($vars)).'">'
 		.'</script>';
