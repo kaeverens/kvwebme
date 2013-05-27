@@ -73,7 +73,7 @@ function mp3_edit(ev){
 					height:450,
 					width:630,
 					modal:true,
-					beforeclose:function(){
+					beforeClose:function(){
 						if(!ww.mp3.rte)return;
 						ww.mp3.rte.destroy();
 						ww.mp3.rte=null;

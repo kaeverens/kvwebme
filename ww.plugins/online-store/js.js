@@ -262,9 +262,9 @@ $(function(){
 			function showStep(ev, ui) {
 				if (!ui.newHeader) {
 					ui.newHeader=$('#online-store-wrapper>div>h2:first-child');
-					ui.newContent=$('#online-store-wrapper>div>div:nth-child(2)');
+					ui.newPanel=$('#online-store-wrapper>div>div:nth-child(2)');
 				}
-				var content=ui.newContent;
+				var content=ui.newPanel;
 				var panel=ui.newHeader.attr('panel');
 				$('#online-store-wrapper>div>div').empty();
 				switch(panel) {
@@ -273,7 +273,8 @@ $(function(){
 							content.text('logged in as '+userdata.name);
 							setTimeout(function() {
 								$('#online-store-checkout-accordion-wrapper').accordion(
-									'activate',
+									'option',
+									'active',
 									'h2[panel="Billing Address"]'
 								);
 							}, 500);
@@ -451,7 +452,8 @@ $(function(){
 						});
 						content.find('.user-guest button').click(function() {
 							$('#online-store-checkout-accordion-wrapper').accordion(
-								'activate',
+								'option',
+								'active',
 								'h2[panel="Billing Address"]'
 							);
 						});
@@ -518,7 +520,8 @@ $(function(){
 						$('#online-store-billing .next').click(function() {
 							if (checkBillingAddress()) {
 								$accordion.accordion(
-									'activate',
+									'option',
+									'active',
 									'h2[panel="Delivery Address"]'
 								);
 							}
@@ -648,7 +651,8 @@ $(function(){
 								var next=$('h2[panel="Delivery Options"]').length
 									?'Delivery Options':'Payment';
 								$accordion.accordion(
-									'activate',
+									'option',
+									'active',
 									'h2[panel="'+next+'"]'
 								);
 							}
@@ -656,7 +660,8 @@ $(function(){
 						if (!checkBillingAddress()) {
 							setTimeout(function() {
 								$accordion.accordion(
-									'activate',
+									'option',
+									'active',
 									'h2[panel="Billing Address"]'
 								);
 							}, 500);
@@ -687,7 +692,8 @@ $(function(){
 						$('#online-store-pandp button').click(function() {
 							$accordion.accordion(
 								// TODO: translation needed
-								'activate',
+								'option',
+								'active',
 								'h2[panel="Payment"]'
 							);
 						});
@@ -695,7 +701,8 @@ $(function(){
 							setTimeout(function() {
 								$accordion.accordion(
 									// TODO: translation needed
-									'activate',
+									'option',
+									'active',
 									'h2[panel="Billing Address"]'
 								);
 							}, 500);
@@ -745,7 +752,8 @@ $(function(){
 						if (!checkBillingAddress()) {
 							setTimeout(function() {
 								$accordion.accordion(
-									'activate',
+									'option',
+									'active',
 									'h2[panel="Billing Address"]'
 								);
 							}, 500);
@@ -820,15 +828,15 @@ $(function(){
 			// { setup the accordion
 			var tabNum=+os_post_vars.tabNum;
 			var $accordion=$('#online-store-checkout-accordion-wrapper').accordion({
-				'autoHeight':false,
+				'heightStyle':'content',
 				'create':showStep,
-				'changestart':showStep
+				'beforeActivate':showStep
 			});
 			if (!tabNum) {
 				tabNum=0;
 			}
 			setTimeout(function() {
-				$accordion.accordion('activate', tabNum);
+				$accordion.accordion('option', 'active', tabNum);
 			}, 1);
 			// }
 			if (+os_post_vars._viewtype==3) {

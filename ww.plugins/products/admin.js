@@ -630,9 +630,9 @@ function Products_screenCategories() {
 	$('#content')
 		.html('<table style="width:100%"><tr><td style="width:250px;">'
 			+'<div id="categories-accordion" style="height:'+height+'px">'
-			+'<h2><a href="#">Categories Tree</a></h2>'
+			+'<h2>Categories Tree</h2>'
 			+'<div id="categories-tree"/>'
-			+'<h2><a href="#">Categories List</a></h2>'
+			+'<h2>Categories List</h2>'
 			+'<div id="categories-list"/>'
 			+'</div>'
 			+'</td><td><div id="product-wrapper"/></td></tr></table>');
@@ -1128,7 +1128,7 @@ function Products_typeEdit(id) {
 		$(html+'</div>')
 			.appendTo(panel)
 			.accordion({
-				'changestart':function(e, ui) {
+				'beforeActivate':function(e, ui) {
 					updateDataFields();
 					$('.product-field-panel').remove();
 					if (!ui.newHeader.context) {
@@ -1137,7 +1137,7 @@ function Products_typeEdit(id) {
 					var index=+ui.newHeader.context.id.replace(/f/, '');
 					var field=fields[index];
 					field.e=field.e||'';
-					var $wrapper=$(ui.newContent.context).next();
+					var $wrapper=$(ui.newPanel.context).next();
 					$wrapper
 						.append('<table class="product-field-panel wide">'
 							+'<tr><th>Name</th><td class="pfp-name"></td>'
@@ -1209,8 +1209,8 @@ function Products_typeEdit(id) {
 					}
 				},
 				'active':false,
-				'autoHeight':false,
-				'animated':false,
+				'heightStyle':'content',
+				'animate':false,
 				'collapsible':true,
 				'create':function() {
 					if (index) {

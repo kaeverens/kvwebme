@@ -51,8 +51,8 @@ function ContentSnippet_show2($vars) {
 					setTimeout( change_slide, 8000 );
 				}
 				$( "#' . $id . '" ).accordion( {
-					autoHeight : false,
-					changeStart : function( ){
+					\'heightStyle\':\'content\',
+					\'beforeActivate\': function( ){
 						clearTimeout( change_slide );
 					}
 				} );

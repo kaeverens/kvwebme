@@ -71,7 +71,7 @@ if (!$os_currencies) {
 echo '<form method="post" action="'.$_url.'" />'
 	.'<div class="accordion">';
 // { default price display with/without VAT
-echo '<h2><a href="#">'.__('VAT').'</a></h2><div>'
+echo '<h2>'.__('VAT').'</h2><div>'
 	.'<p>'.__('Prices will be displayed on the frontend by default:')
 	.'<select name="online_store_vars[vat_display]">'
 	.'<option value="0">'.__('pre-VAT').'</option>'
@@ -86,7 +86,7 @@ if ($postvat) {
 echo '>'.__('post-VAT').'</option></select>.</p></div>';
 // }
 // { invoices
-echo '<h2><a href="#">'.__('Invoices').'</a></h2>'
+echo '<h2>'.__('Invoices').'</h2>'
 	.'<div id="invoices">';
 // { how/when the customer gets the invoice
 echo '<select name="online_store_vars[invoices_by_email]">';
@@ -133,7 +133,7 @@ echo '</select>';
 echo '</div>';
 // }
 // { exports
-echo '<h2><a href="#">'.__('Automated Exports').'</a></h2>'
+echo '<h2>'.__('Automated Exports').'</h2>'
 	.'<div id="exports">'
 	.'<table>';
 // { export at what point
@@ -198,14 +198,14 @@ echo '<tr><th>'.__('Customers Filename').'</th>'
 echo '</table></div>';
 // }
 // { currencies
-echo '<h2><a href="#">'.__('Currencies').'</a></h2>'
+echo '<h2>'.__('Currencies').'</h2>'
 	.'<div id="currencies">'
 	.'<p>'.__('The top row is the default currency of the website.'
 	.' To change the default, please drag a different row to the top.').'</p>'
 	.'</div>';
 // }
 // { discounts
-echo '<h2><a href="#">'.__('Group discounts').'</a></h2><div><table>';
+echo '<h2>'.__('Group discounts').'</h2><div><table>';
 $groups=dbAll('select * from groups order by name');
 foreach ($groups as $group) {
 	if ($group['meta']=='') {

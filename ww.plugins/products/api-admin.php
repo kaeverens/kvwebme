@@ -207,20 +207,15 @@ function Products_adminCategoryGet() {
 	* @return array category data
 	*/
 function Products_adminCategoryNew() {	
-	
 	if (!is_numeric(@$_REQUEST['parent_id']) || @$_REQUEST['name']=='') {	
 		Core_quit();
 	}
-		
 	dbQuery(
 		'insert into products_categories set name="'.addslashes($_REQUEST['name'])
 		.'",enabled=1,parent_id='.$_REQUEST['parent_id']
 	);
-	
-	
 	$id=dbOne('select last_insert_id() as id', 'id');
 	$data=Products_adminCategoryGetFromID($id);	
-	
 	return $data;
 }
 
@@ -384,6 +379,12 @@ function Products_adminCategorySetIcon() {
 function Products_adminDatafieldsList() {
 	$fields=array();
 	$filter='';
+	$arr=array(
+		'_name'=>'Name',
+		'_activates_on'=>'Publish date',
+		'_expires_on'=>'Expiry date',
+		'_os_base_price'=>'Price'
+	);
 	if ($_REQUEST['other_GET_params']) {
 		if (is_numeric($_REQUEST['other_GET_params'])) { // product type
 			$filter=' where id='.(int)$_REQUEST['other_GET_params'];
@@ -398,26 +399,26 @@ function Products_adminDatafieldsList() {
 					'select product_id from products_categories_products where category_id='
 					.$cat
 				);
-				$arr=array();
+				$arr2=array();
 				foreach ($rs as $r) {
-					$arr[]=$r['product_id'];
+					$arr2[]=$r['product_id'];
 				}
-				if (!count($arr)) {
-					Core_quit();
+				if (!count($arr2)) {
+					return $arr;
 				}
 				$rs=dbAll(
 					'select distinct product_type_id from products where id in ('
-					.join(',', $arr).')'
+					.join(',', $arr2).')'
 				);
 			}
-			$arr=array();
+			$arr2=array();
 			foreach ($rs as $r) {
-				$arr[]=$r['product_type_id'];
+				$arr2[]=$r['product_type_id'];
 			}
-			if (!count($arr)) {
-				Core_quit();
+			if (!count($arr2)) {
+				return $arr;
 			}
-			$filter=' where id in ('.join(',', $arr).')';
+			$filter=' where id in ('.join(',', $arr2).')';
 		}
 	}
 	$rs=dbAll('select data_fields from products_types'.$filter);
@@ -429,13 +430,9 @@ function Products_adminDatafieldsList() {
 	}
 	$fields=array_unique($fields);
 	asort($fields);
-	$arr=array();
 	foreach ($fields as $field) {
 		$arr[$field]=$field;
 	}
-	$arr['_name']='Name';
-	$arr['_activates_on']='Publish date';
-	$arr['_expires_on']='Expiry date';
 	return $arr;
 }
 

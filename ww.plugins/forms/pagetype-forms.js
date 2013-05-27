@@ -342,7 +342,7 @@ function Forms_Pagetype_forms() {
 		$(html+'</div>')
 			.appendTo(panel)
 			.accordion({
-				'changestart':function(e, ui) {
+				'beforeActivate':function(e, ui) {
 					updateFormFields();
 					$('.form-field-panel').remove();
 					if (!ui.newHeader.context) {
@@ -350,7 +350,7 @@ function Forms_Pagetype_forms() {
 					}
 					var index=+ui.newHeader.context.id.replace(/f/, '');
 					field=fields[index];
-					var $wrapper=$(ui.newContent.context).next();
+					var $wrapper=$(ui.newPanel.context).next();
 					$wrapper
 						.append('<table class="form-field-panel wide">'
 							+'<tr><th>Name</th><td class="pfp-name"></td>'
@@ -405,7 +405,7 @@ function Forms_Pagetype_forms() {
 					$wrapper.find('input,textarea,select').change(updateFormFields);
 				},
 				'active':false,
-				'autoHeight':false,
+				'heightStyle':'content',
 				'collapsible':true,
 				'create':function() {
 					if (index) {

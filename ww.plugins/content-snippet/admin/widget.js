@@ -40,7 +40,7 @@ function content_snippet_edit(ev){
 				"minHeight":450,
 				"height":450,
 				"width":630,
-				"beforeclose":function(){
+				"beforeClose":function(){
 					if (!ww.content_snippet.rte) {
 						return;
 					}
@@ -88,7 +88,7 @@ function content_snippet_edit(ev){
 							.css('display',val?'inline':'none');
 					})
 					.val(res.accordion)
-					.trigger('change');
+					.trigger('activate');
 				$('#content_snippet_accordion_direction')
 					.val(res.accordion_direction);
 				$('#content_snippet_image_directory')

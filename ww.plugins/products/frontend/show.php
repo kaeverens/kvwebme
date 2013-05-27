@@ -255,8 +255,7 @@ function Products_show($PAGEDATA) {
 		$addASearchBox = $PAGEDATA->vars['products_add_a_search_box'];
 	}
 	if (isset($addASearchBox) && $addASearchBox) {
-		$c.='<form action="'.$PAGEDATA->getRelativeUrl()
-			.'" class="products-search"><input name="products-search" value="'
+		$c.='<form action="'.htmlspecialchars($_SERVER['REQUEST_URI']).'" class="products-search"><input name="products-search" value="'
 			.htmlspecialchars($search)
 			.'" /><input type="submit" value="'.__('Search').'" /></form>';
 	}
@@ -599,13 +598,20 @@ class Products{
 				$vs=$arr;
 			}
 			if ($search!='') {
+				$search=explode(' ', $search);
 				$arr=array();
 				foreach ($vs as $v) {
 					$p=Product::getInstance($v, false, $enabledFilter);
 					if (!$p) {
 						continue;
 					}
-					if ($p->search($search)) {
+					$ok=1;
+					foreach ($search as $s) {
+						if (!$p->search($s)) {
+							$ok=0;
+						}
+					}
+					if ($ok) {
 						$arr[]=$v;
 					}
 				}
@@ -729,8 +735,9 @@ class Products{
 				.' where id=product_id'.$locFilter.' and enabled'
 				.' and category_id in ('.join(', ', $cats).')';
 			if ($search!='') {
-				$sql.=' and (name like "%'.addslashes($search)
-					.'%" or data_fields like "%'.addslashes($search).'%")';
+				$str=str_replace(' ', '%', $search);
+				$sql.=' and (name like "%'.addslashes($str)
+					.'%" or data_fields like "%'.addslashes($str).'%")';
 			}
 			$md5_2=md5($sql);
 			$rs=Core_cacheLoad('products', $md5_2, -1);

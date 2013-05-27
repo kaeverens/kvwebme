@@ -64,7 +64,7 @@ function banner_edit(ev) {
 			minHeight:400,
 			height:400,
 			width:630,
-			beforeclose:function(){
+			beforeClose:function(){
 				if(!ww.banner.rte)return;
 				ww.banner.rte.destroy();
 				ww.banner.rte=null;

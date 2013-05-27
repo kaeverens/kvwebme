@@ -27,7 +27,7 @@ $res=array();
 foreach ($rs as $r) {
 	$res[]=array(
 		'id'=>$r['id'],
-		'label'=>$r['name'],
+		'label'=>__FromJson($r['name']),
 		'value'=>$r['name']
 	);
 }

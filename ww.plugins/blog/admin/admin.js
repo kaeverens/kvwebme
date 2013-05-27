@@ -1,6 +1,6 @@
 $(function() {
 	$('#blog-options-wrapper').accordion({
-		'autoHeight':false
+		'heightStyle':'content'
 	});
 	Blog_showContents();
 });

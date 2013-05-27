@@ -26,7 +26,7 @@ $c.='<div id="blog-main"></div>';
 $c.='<div id="blog-options"><div id="blog-options-wrapper">';
 
 // { front page options
-$c.='<h2><a href="#">'.__('Front page options', 'core').'</a></h2>'
+$c.='<h2>'.__('Front page options', 'core').'</h2>'
 	.'<div>';
 // { excerpts per page
 $excerpts_per_page=isset($vars['blog_excerpts_per_page'])
@@ -70,7 +70,7 @@ $c.='</div>';
 // { groups access
 $groups=dbAll('select * from groups where id!=1');
 if (count($groups)) {
-	$c.='<h2><a href="#">'.__('User blog rights', 'core').'</a></h2>'
+	$c.='<h2>'.__('User blog rights', 'core').'</h2>'
 		.'<div><p>'.__(
 			'Along with administrators, what user groups should be allowed to'
 			.' create blog entries?', 'core'

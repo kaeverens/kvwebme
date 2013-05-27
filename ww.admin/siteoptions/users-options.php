@@ -31,7 +31,7 @@ echo '<form action="./siteoptions.php?page=users&amp;tab=options" '
 echo '<div id="user-options-wrapper">';
 
 // { token email
-echo '<h2><a href="#">User Token email</a></h2><div><table>'
+echo '<h2>User Token email</h2><div><table>'
 	.'<tr><th>From email address</th><td><input name="email" value="'
 	.htmlspecialchars(Core_siteVar('useraccounts_registrationtokenemail_from'))
 	.'"/></td></tr>'

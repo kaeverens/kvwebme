@@ -25,7 +25,7 @@ $(function(){
 						return $('#products_what_to_show_1 select').val();
 					// }
 					case '2': // { category
-						return 'c'+$('#products_what_to_show_2 select').val();
+						return 'c'+$('#products_what_to_show_2 select:first-child').val();
 					// }
 				}
 				return '';
