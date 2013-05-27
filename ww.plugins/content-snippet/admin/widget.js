@@ -146,5 +146,5 @@ function content_snippet_showPage(page){
 	ww.content_snippet.rte.setData(ww.content_snippet.data[page].html);
 	$('#content_snippet_page_title').val(ww.content_snippet.data[page].title);
 }
-$('.content_snippet_editlink').live('click',content_snippet_edit);
-$('#content_snippet_page').live('change',content_snippet_changePage);
+$('body').on('click', '.content_snippet_editlink', content_snippet_edit);
+$('body').on('change', '#content_snippet_page', content_snippet_changePage);

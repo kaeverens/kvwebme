@@ -1,16 +1,16 @@
 $(function(){
 	Wizard.init();	
-	$('.toggle').live('click',function(){
+	$('body').on('click', '.toggle', function(){
 		var id=$(this).attr('id').replace(" ","-");
 		$('#'+id+'-toggle').toggle();
 	});
-	$('.next-link').live('click',function(){
+	$('body').on('click', '.next-link', function(){
 		Wizard.submit();
 	});
-	$('.back-link').live('click',function(){
+	$('body').on('click', '.back-link', function(){
 		Wizard.animatePrevious();
 	});
-	$('.preview-invoice').live('click',function(){
+	$('body').on('click', '.preview-invoice', function(){
 		var inv=$(this).attr('id');
 		$('#preview-dialog')
 			.html(
@@ -28,7 +28,7 @@ $(function(){
 				}
 			});
 	});
-	$('select[name="wizard-products-type"]').live('change',function(){
+	$('body').on('change', 'select[name="wizard-products-type"]', function(){
 		var type=$(this).val();
 		var html='<table>'
 			+ '<tr>'
@@ -46,7 +46,7 @@ $(function(){
 		+ '</table>';
 		$('#preview-template').html(html);
 	});
-	$('.preview-template-mode').live('click',function(){
+	$('body').on('click', '.preview-template-mode', function(){
 		var type=$(this).attr('id');
 		var multi=$(this).attr('mode');
 		$('#preview-dialog')

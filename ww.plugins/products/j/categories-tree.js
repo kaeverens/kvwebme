@@ -6,7 +6,7 @@ $(function(){
 				"themes", "html_data"
 			]
 		});
-	$('#pages-wrapper a').live('click',function(e){
+	$('body').on('click', '#pages-wrapper a', function(e){
 		var node=e.target.parentNode;
 		document.getElementById('page-form-wrapper')
 			.src="pages/form.php?id="+node.id.replace(/.*_/,'');

@@ -42,7 +42,7 @@ function change_password_dialog( id ){
 	__langInit();
 }
 
-$('input[name="password-current"]').live('keyup', function(){
+$('body').on('keyup', 'input[name="password-current"]', function(){
 	var pass = $( this ).val( );
 	$.post('/ww.plugins/privacy/frontend/check_password.php',
 		{ 'pass' : pass },
@@ -79,7 +79,7 @@ $(function(){
 		},
 		'json'
 	);
-	$('input[name="default-address"]').live('click',function(){
+	$('body').on('click', 'input[name="default-address"]', function(){
 		var name=$(this).val();
 		userdata.address[name].default='yes';
 		$.get('/ww.plugins/privacy/frontend/save_user_info.php?action=default&name='

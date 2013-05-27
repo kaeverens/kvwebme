@@ -250,10 +250,10 @@ var Carousel = {
 		}
 		// }
 
-		$( '.previous' ).live( 'click', function( ){
+		$('body').on('click', '.previous', function( ){
 			Carousel.displayPrevious( );
 		});
-		$( '.next' ).live( 'click', function( ){
+		$('body').on('click', '.next', function( ){
 			Carousel.displayNext( );
 		});
 

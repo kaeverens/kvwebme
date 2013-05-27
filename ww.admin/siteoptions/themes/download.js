@@ -1,17 +1,14 @@
 /*global Carousel*/
 $( function( ){
 
-	$( '.theme_variant' ).live({
-		each : show_screenshot,
-		change : show_screenshot
-	});
+	$('body').on('change', '.theme_variant', show_screenshot);
 
 	function show_screenshot( ){
 			var screenshot = $( ':selected', this ).attr( 'screenshot' );
 			$( this ).closest( 'div' ).find( '.screenshot' ).attr( 'src', screenshot );
 	}
 
-	$( '.install-theme' ).live( 'click', function( ){
+	$('body').on('click', '.install-theme', function( ){
 		/**
 		 * check if theme is already installed
 		 */
@@ -24,7 +21,7 @@ $( function( ){
 		}
 	});
 
-	$( '.theme-preview-download' ).live( 'click', function( ){
+	$('body').on('click', '.theme-preview-download', function( ){
 		$( '#preview-frame' ).attr( 'src', '' );
 		var name = $( this ).attr( 'title' );
 		var variant = $( this ).closest( 'form' ).find( '.theme_variant' ).val( );

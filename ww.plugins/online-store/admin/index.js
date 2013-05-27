@@ -318,7 +318,6 @@ function pandp_show_constraints(i, constraints_old){
 		}
 	}
 }
-$('#online_stores_fields_table input').live('click', onlinestoreFieldsUpdate);
 
 pandp=[];
 pandp_open=[];
@@ -330,7 +329,7 @@ $(function(){
 			+$(ev.target).val();
 	});
 	onlinestoreFields();
-	$('.ui-tabs-nav').live('mousedown', onlinestoreFields);
+	$('body').on('mousedown', '.ui-tabs-nav', onlinestoreFields);
 	$('form').bind('submit', onlinestoreFields);
 	$("#online_store_redirect_to, #online_store_quickpay_redirect_to, #online_store_quickpay_redirect_failed")
 		.remoteselectoptions({url:"/a/f=adminPageParentsList"});
@@ -374,7 +373,7 @@ $(function(){
 		$('#postage').val('[]');
 	}
 	pandp_rebuild_widget();
-	$('#postage_wrapper').live('change', pandp_rebuild_value_from_top);
+	$('body').on('change', '#postage_wrapper', pandp_rebuild_value_from_top);
 	$('#action').mousedown(pandp_rebuild_value_from_top);
 	var idOSAuthorised='#online-store-authorised ',
 		idOSCountries='#online-store-countries ';
@@ -416,6 +415,7 @@ $(function(){
 	}
 	CKEDITOR.replace('bank_transfer_message');
 	CKEDITOR.replace('other_message');
+	$('#online_stores_fields_table').on('click', 'input', onlinestoreFieldsUpdate);
 });
 
 function onlinestoreCustomers() {

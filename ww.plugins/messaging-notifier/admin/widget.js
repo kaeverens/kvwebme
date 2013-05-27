@@ -115,4 +115,4 @@ function messaging_notifier_table_row(rdata){
 	$tr.find('select.url').remoteselectoptions({url:"/a/f=adminPageParentsList"});
 	return $tr;
 }
-$('.messaging_notifier_editlink').live('click', messaging_notifier_edit);
+$('body').on('click', '.messaging_notifier_editlink',  messaging_notifier_edit);

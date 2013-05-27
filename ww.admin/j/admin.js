@@ -310,7 +310,7 @@ $(function(){
 		}
 		$this.dataTable(params);
 	});
-	$('.dataTables_length select').live('change', function() {
+	$('body').on('change', '.dataTables_length select', function() {
 		var $this=$(this);
 		var id=$this.closest('.dataTables_wrapper').attr('id').replace(/_wrapper$/, '');
 		if (!id) {
@@ -351,14 +351,7 @@ $(function(){
 		$('.help').cluetip();
 	}
 	setTimeout(keepAlive,1700000);
-	$('input[type=number]').live('keyup', function() {
-		var val=this.value;
-		if (!/[^\-0-9.]/.test(val)) {
-			return;
-		}
-		this.value=val.replace(/[^\-0-9.]/, '');
-	});
-	$('.docs').live('click', function() {
+	$('body').on('click', '.docs', function() {
 		var $this=$(this);
 		var page=$this.attr('page');
 		$.get(page, function(html) {

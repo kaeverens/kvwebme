@@ -64,7 +64,7 @@ $(function(){
 			}, 500);
 		});
 	// { on rollover of submit button
-	$('div.products-product form input[type=submit], div.products-product form button.submit-button').live('mouseover', function(){
+	$('body').on('mouseover', 'div.products-product form input[type=submit], div.products-product form button.submit-button',  function(){
 		var inps=[];
 		var $form=$(this).closest('form');
 		$form.find('input').each(function(){
@@ -135,7 +135,7 @@ $(function(){
 		);
 		return false;
 	});
-	$('.products-product select').live('change', updatePrice);
+	$('body').on('change', '.products-product select',  updatePrice);
 	$('.products-product').each(function() {
 		$($(this).find('select')[0]).change();
 	});

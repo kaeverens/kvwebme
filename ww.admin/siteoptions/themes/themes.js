@@ -32,7 +32,7 @@ $(function(){
 			height: $( window ).height( ) - 60
 		} );
 	});
-	$('#themes-upload-form').live('submit', function() {
+	$('body').on('submit', '#themes-upload-form', function() {
 		themes_dialog('<p>uploading. please wait.</p>');
 	});
 });

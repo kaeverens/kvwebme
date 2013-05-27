@@ -370,7 +370,7 @@ $(function(){
 			addRow(detail[i]);
 		}
 		addRow();
-		$('#stockcontrol-complex input').live('change',recount);
+		$('body').on('change', '#stockcontrol-complex input', recount);
 		$('#stockcontrol-addrow').click(addRow);
 	}
 	// }

@@ -211,7 +211,7 @@ $(function(){
 					.append('<input type="hidden" name="save-address" value="1"/>');
 			}
 		});
-		$('select[name="address"]').live('change',function(){
+		$('body').on('change', 'select[name="address"]', function(){
 			var bill=($(this).hasClass('billing'))?'Billing_':'';
 			populate_delivery($(this).val(),bill);
 		});

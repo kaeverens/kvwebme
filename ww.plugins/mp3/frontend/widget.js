@@ -28,7 +28,7 @@ var MP3={
 			this.options.progress=true;
 		// }
 		if(this.options.play_button){
-			$('.play_button').live('click',function(){
+			$('body').on('click', '.play_button', function(){
 				var $this=$(this);
 				if(MP3.options.big_play_button)
 					return MP3.mainButton($this);
@@ -45,7 +45,7 @@ var MP3={
 			});
 		}
 		if(this.options.link_to_play){
-			$('.link_to_play').live('click',function(){
+			$('body').on('click', '.link_to_play', function(){
 				var $this=$(this);
 				if(MP3.options.big_play_button)
 					return MP3.mainButton($this);
@@ -62,7 +62,7 @@ var MP3={
 			});
 		}
 		if(this.options.big_play_button){
-			$('.mp3_play_link').live('click',function(){
+			$('body').on('click', '.mp3_play_link', function(){
 				var $this=$(this);
 				if($this.hasClass('playing')){
 					$this.removeClass('playing');

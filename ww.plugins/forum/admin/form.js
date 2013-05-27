@@ -95,7 +95,7 @@ $(function() {
 			);
 		}
 	});
-	$('.moderators').live('change', function() {
+	$('body').on('change', '.moderators', function() {
 		var $this = $(this);
 		var checked = $this.attr('checked');
 		var forum = $this.attr('name').replace('moderators-', '');
@@ -126,7 +126,7 @@ $(function() {
 				'json'
 		);
 	});
-	$('.add-group').live('click', function() {
+	$('body').on('click', '.add-group', function() {
 		var $this = $(this);
 		var id = $this.attr('id').replace('add-group-link-for-forum-', '');
 		var html='<div>'
@@ -149,7 +149,7 @@ $(function() {
 			$this.remove();
 		});
 	});
-	$('.delete-forum-link').live('click', function() {
+	$('body').on('click', '.delete-forum-link', function() {
 		if (confirm('Are you sure you want to delete this forum')) {
 			var id = $(this).attr('id').replace('delete-forum-', '');
 			$.post('/a/p=forum/f=adminForumDelete/id='+id,

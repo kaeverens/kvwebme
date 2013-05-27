@@ -133,13 +133,13 @@ function mp3_coladd(){
 function mp3_delete(){
 	$(this).parent().parent().remove();	
 }
-$('.mp3_editlink').live('click',mp3_edit);
-$('.mp3_add_link').live('click',mp3_coladd);
-$('.delete_row').live('click',mp3_delete);
-$('.fileput').live('focus click',function(){
+$('body').on('click', '.mp3_editlink', mp3_edit);
+$('body').on('click', '.mp3_add_link', mp3_coladd);
+$('body').on('click', '.delete_row', mp3_delete);
+$('body').on('focus click', '.fileput', function(){
 	$('.select-file',$(this).parent()).trigger('click');
 });
-$('.select-file').live('click',function(){
+$('body').on('click', '.select-file', function(){
 	$this=$(this);
 	window.SetUrl=(function($this){
 		return function(value){

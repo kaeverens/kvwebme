@@ -20,7 +20,7 @@ $(function () {
 		}
 	});
 });
-$('div.comment-editable').live('mouseover',function() {
+$('body').on('mouseover', 'div.comment-editable', function() {
 	var id = $(this).attr('id').replace(/comment-wrapper-/,'');
 	if (document.getElementById('links-'+id)!=null) {
 		return;
@@ -55,7 +55,7 @@ $('div.comment-editable').live('mouseover',function() {
 	links+= '</div>';
 	$(links).insertBefore('#comment-info-'+id);
 });
-$('div.comment-editable').live('mouseout',function(e) {
+$('body').on('mouseout', 'div.comment-editable', function(e) {
 	var id = e.target.id;
 	if(!/^comment-wrapper-[0-9]*$/.test(e.target.id)){
 		return;

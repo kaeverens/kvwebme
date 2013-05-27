@@ -231,7 +231,7 @@ $(function(){
 		.click(pageNew)
 		.appendTo(div);
 	div.appendTo('div.sub-nav');
-	$('#pages-wrapper a').live('click',function(e){
+	$('#pages-wrapper').on('click', 'a', function(e){
 		var node=e.target.parentNode;
 		pageOpen(node.id.replace(/.*_/,''));
 		$('#pages-wrapper').jstree('select_node',node);

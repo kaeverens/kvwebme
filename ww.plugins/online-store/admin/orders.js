@@ -141,7 +141,6 @@ function onlinestoreStatus(id, current_status){
 		.insertAfter(target);
 	target.remove();
 }
-$('#online_stores_fields_table input').live('click', onlinestoreFieldsUpdate);
 
 $(function(){
 	$('.tabs').tabs();
@@ -150,7 +149,7 @@ $(function(){
 			+'&online-store-status='+$(ev.target).val();
 	});
 	onlinestoreFields();
-	$('.ui-tabs-nav').live('mousedown', onlinestoreFields);
+	$('body').on('mousedown', '.ui-tabs-nav', onlinestoreFields);
 	$('form').bind('submit', onlinestoreFields);
 	$("#online_store_redirect_to, #online_store_quickpay_redirect_to, #online_store_quickpay_redirect_failed")
 		.remoteselectoptions({url:"/a/f=adminPageParentsList"});
@@ -291,6 +290,8 @@ $(function(){
 	if (!$(idOSCountries+'input:checked').length) {
 		$(idOSCountries+'input').attr('checked', true);
 	}
+	$('#online_stores_fields_table')
+		.on('click', 'input', onlinestoreFieldsUpdate);
 });
 
 function onlinestoreCustomers() {

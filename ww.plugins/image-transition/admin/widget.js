@@ -93,4 +93,4 @@ function image_transition_edit(ev){
 		},1);
 	});
 }
-$('.image_transition_editlink').live('click',image_transition_edit);
+$('body').on('click', '.image_transition_editlink', image_transition_edit);

@@ -29,7 +29,7 @@ $(function(){
 			);
 		}
 	});
-	$('.delete-img').live('click',function(){
+	$('body').on('click', '.delete-img', function(){
 		var id=$(this).attr('id');
 		var result=confirm('Are you sure you wish to delete this image?');
 		if(result){
@@ -37,7 +37,7 @@ $(function(){
 			$.post('/ww.plugins/image-gallery/admin/delete-image.php', {'id':id});
 		}
 	});
-	$('.edit-img').live('click',function(){	
+	$('body').on('click', '.edit-img', function(){	
 		var id=$(this).attr('id');
 		$('<div id="p-dialog" title="Image Properties"><table>'
 			+'<tr><th>Caption</th><td style="width:60%"><input id="p-caption"/></td>'

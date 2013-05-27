@@ -37,7 +37,7 @@ WW_addCSS('/ww.plugins/themes-api/files/jquery-ui-1.8.12.custom.css');
 
 $script='function displayTags(tags){var html="";for(var i in tags)html+="<s'
 	.'pan id=\'"+tags[i]+"\'>"+tags[i]+" <a class=\'x\' href=\'javascript:;\''
-	.'>[x]</a>, </span>";$("#tags-display").html(html);}$(".x").live("click",'
+	.'>[x]</a>, </span>";$("#tags-display").html(html);}$("body").on("click",".x",'
 	.'function(){var tag=$(this).parent().attr("id");var tags=$("#hidden-tags'
 	.'").attr("value").split(",");var new_tags=[];for(var i in tags){if(tags['
 	.'i]!=tag)new_tags.push(tags[i]);}displayTags(new_tags);$("#hidden-tags")'

@@ -228,10 +228,10 @@ $(function(){
 	});
 });
 
-$(".delete-addr").live("click",function(){
-	var name=$(this).attr("name");
-	$(this).parent().parent().fadeOut("slow").remove();
-	$.get("/ww.plugins/privacy/frontend/save_user_info.php?action=delete"
-		+"&address="+name
+$('body').on('click', '.delete-addr', function(){
+	var name=$(this).attr('name');
+	$(this).parent().parent().fadeOut('slow').remove();
+	$.get('/ww.plugins/privacy/frontend/save_user_info.php?action=delete'
+		+'&address='+name
 	);
 });

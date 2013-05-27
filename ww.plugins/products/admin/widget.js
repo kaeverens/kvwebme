@@ -12,5 +12,9 @@ function Products_widgetTypeChanged() {
 		}
 	});
 }
-$('form.panel-products select[name=widget_type]')
-	.live('change', Products_widgetTypeChanged);
+$('body')
+	.on(
+		'change',
+		'form.panel-products select[name=widget_type]',
+		Products_widgetTypeChanged
+	);

@@ -7,7 +7,7 @@ function sms_get_phone_error(val){
 	}
 	return 0;
 }
-$('input.sms-phone').live('change',function(){
+$('body').on('change', 'input.sms-phone', function(){
 	switch(sms_get_phone_error($(this).val())){
 		case 1:
 			return alert('please use numbers only in the phone field.');
@@ -15,7 +15,7 @@ $('input.sms-phone').live('change',function(){
 			return alert('number must begin with the country code.\nalso, drop the leading 0 of the network number.\nexample: "087 1234567" becomes "353871234567"');
 	}
 });
-$('.sms-subscribe button').live('click',function(){
+$('body').on('click', '.sms-subscribe button', function(){
 	var $container=$(this).closest('div.sms-subscribe');
 	var ids=[];
 	$container.find('input:checked').each(function(){

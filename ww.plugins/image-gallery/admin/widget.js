@@ -65,4 +65,4 @@ function image_gallery_edit(ev){
 		$('#image_gallery_columns').val(res.data.columns);
 	});
 }
-$('.image_gallery_editlink').live('click',image_gallery_edit);
+$('body').on('click', '.image_gallery_editlink', image_gallery_edit);

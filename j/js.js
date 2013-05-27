@@ -41,7 +41,7 @@ var Json = {
 	}
 };
 $(function(){
-	$('a[target=popup]').live('click', function() {
+	$('body').on('click', 'a[target=popup]', function() {
 		var $this=$(this);
 		var src=$this.attr('href');
 		var sequence=[],num=0,id;
@@ -61,7 +61,7 @@ $(function(){
 		lightbox_show(src, sequence, num);
 		return false;
 	});
-	$('#core-language').live('change', function() {
+	$('#core-language').change(function() {
 		document.location=document.location.toString().replace(/\?.*/, '')+
 			'?__LANG='+$(this).val();
 	});

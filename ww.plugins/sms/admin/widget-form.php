@@ -46,7 +46,7 @@ else {
 <script>
 if(!window.sms_funcs_loaded){
 	window.sms_funcs_loaded=true;
-	$('.sms_addressbooks').live('click',function(){
+	$('body').on('click', '.sms_addressbooks', function(){
 		var $div=$(this).closest('.sms_addressbooks');
 		var ids=[];
 		$div.find('input:checked').each(function(){

@@ -562,12 +562,12 @@ Number.prototype.pxToEm = String.prototype.pxToEm = function(settings){
 
 $('#menu-top>ul>li>a').addClass('fg-menu-top-level');
 
-$('.fg-menu,.fg-menu-top-level')
-	.live('mouseover',function(){
+$('body')
+	.on('mouseover', '.fg-menu,.fg-menu-top-level', function(){
 		this.mouse_is_over=true;
 		clearTimeout(window.fgmenu_mouseout_timer);
 	})
-	.live('mouseout',function(){
+	.on('mouseout', '.fg-menu,.fg-menu-top-level', function(){
 		this.mouse_is_over=false;
 		window.fgmenu_mouseout_timer=setTimeout(function(){
 			var o=0;

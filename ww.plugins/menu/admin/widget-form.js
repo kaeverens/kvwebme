@@ -177,4 +177,4 @@ function menu_edit(ev){
 		// }
 	});
 }
-$('.menu_editlink').live('click',menu_edit);
+$('body').on('click', '.menu_editlink', menu_edit);

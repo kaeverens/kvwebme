@@ -50,7 +50,7 @@ $(function(){
 		'<td><textarea style="height:50px;" name="extras_vals['+numextras+']">'+
 		'</textarea></td></tr></table>';
 	$holder.append(html);
-	$('#custom input').live('change',function(){
+	$('#custom').on('change', 'input', function(){
 		setTimeout(function(){
 			numextras++;
 			$holder.find('table').append(
@@ -197,7 +197,7 @@ $(function(){
 			'</table>'
 		);
 	});
-	$('.delete-add').live('click',function(){
+	$('body').on('click', '.delete-add', function(){
 		$(this).closest('.address-table').fadeOut('show').remove();
 	});
 	// }

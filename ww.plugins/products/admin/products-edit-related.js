@@ -28,7 +28,7 @@ $(function(){
 			'url':'/a/p=products/f=adminProductsList',
 			'cache_id':'product_names'
 		});
-	$('#product-relations select').live('change', function(){
+	$('body').on('change', '#product-relations select',  function(){
 		$('#product-relations tr').each(function(){
 			var $selects=$(this).find('select');
 			if ($selects.length<1) {
