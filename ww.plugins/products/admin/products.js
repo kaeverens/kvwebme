@@ -20,16 +20,20 @@ $(function() {
 		{'name':'enabled',
 			'type':'field', 'field_name':'enabled', 'text':'Enabled', 'edit':1}
 	];
-	var table='<table id="products-list"><thead><tr>';
-	for (var i=0;i<columns.length;++i) {
-		table+='<th>'+columns[i].text+'</th>';
-	}
-	table+='</tr></thead><tbody/></table>';
 	var cols=[
 		{'sWidth':'4%', 'bSortable':false}, {'sWidth':'4%'},  {'sWidth':'64%'},
 		{'sWidth':'10%'}, {'sWidth':'4%'}, {'sWidth':'10%'}, {'sWidth':'4%'},
 		{'sWidth':'4%'}
 	];
+	for (var i in extraProductColumns) {
+		columns.push(extraProductColumns[i]);
+		cols.push({'sWidth':'4%'});
+	}
+	var table='<table id="products-list"><thead><tr>';
+	for (var i=0;i<columns.length;++i) {
+		table+='<th>'+columns[i].text+'</th>';
+	}
+	table+='</tr></thead><tbody/></table>';
 	if (adminVars.productCols) {
 		adminVars.productCols=JSON.parse(adminVars.productCols);
 		if (adminVars.productCols.length) {
@@ -141,7 +145,7 @@ $(function() {
 			}
 		})
 		.dataTable({
-			'iDisplayLength':100,
+			'iDisplayLength':10,
 			'bProcessing': true,
 			'bJQueryUI': true,
 			'bServerSide': true,
@@ -192,7 +196,6 @@ $(function() {
 				adminVars.productCols[iColumn]={};
 			}
 			adminVars.productCols[iColumn].bVisible=bVisible;
-			console.log(adminVars.productCols);
 			$.post('/a/f=adminAdminVarsSave', {
 				'name':'productCols',
 				'val':JSON.stringify(adminVars.productCols)

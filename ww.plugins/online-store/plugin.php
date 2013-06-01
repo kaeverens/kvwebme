@@ -62,6 +62,7 @@ $plugin=array(
 	), // }
 	'triggers' => array( // {
 		'displaying-pagedata'      => 'OnlineStore_pagedata',
+		'extra-products-columns' => 'OnlineStore_extraColumnsList',
 		'initialisation-completed' => 'OnlineStore_startup',
 		'privacy_user_profile'     => 'OnlineStore_userProfile',
 		'privacy_overload' => 'OnlineStore_userProfileInvoiceDetails'
@@ -833,3 +834,12 @@ function OnlineStore_userProfileInvoiceDetails($PAGEDATA, $user) {
 }
 
 // }
+function OnlineStore_extraColumnsList() {
+	$GLOBALS['product_columns'][]=array(
+		'name'=>'price',
+		'type'=>'field',
+		'field_name'=>'os_base_price',
+		'text'=>__('Price'),
+		'edit'=>1
+	);
+}

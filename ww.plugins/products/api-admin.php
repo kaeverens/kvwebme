@@ -1136,9 +1136,12 @@ function Products_adminProductsListDT() {
 	$start=(int)$_REQUEST['iDisplayStart'];
 	$length=(int)$_REQUEST['iDisplayLength'];
 	$search=$_REQUEST['sSearch'];
-	$orderby=(int)$_REQUEST['iSortCol_0'];
+	$orderbyNum=(int)$_REQUEST['iSortCol_0'];
 	$orderdesc=$_REQUEST['sSortDir_0']=='desc'?'desc':'asc';
-	switch ($orderby) {
+	$GLOBALS['product_columns']=array();
+	Core_trigger('extra-products-columns');
+	global $product_columns;
+	switch ($orderbyNum) {
 		case 2:
 			$orderby='name';
 		break;
@@ -1154,6 +1157,9 @@ function Products_adminProductsListDT() {
 		default:
 			$orderby='name';
 	}
+	if ($orderbyNum>7 && isset($product_columns[$orderbyNum-8]['field_name'])) {
+		$orderby=$product_columns[$orderbyNum-8]['field_name'];
+	}
 	$filters=array();
 	if ($search) {
 		$filters[]='name like "%'.addslashes($search).'%"'
@@ -1163,12 +1169,17 @@ function Products_adminProductsListDT() {
 	if (count($filters)) {
 		$filter='where '.join(' and ', $filters);
 	}
-	$rs=dbAll(
-		'select id,user_id,images_directory,name,stock_number,enabled,'
-		.'stockcontrol_total from products '.$filter
+	$sql='select id, user_id, images_directory, name, stock_number, enabled'
+		.', stockcontrol_total';
+	foreach ($product_columns as $p) {
+		if (isset($p['field_name'])) {
+			$sql.=', '.$p['field_name'];
+		}
+	}
+	$sql.=' from products '.$filter
 		.' order by '.$orderby.' '.$orderdesc
-		.' limit '.$start.','.$length
-	);
+		.' limit '.$start.','.$length;
+	$rs=dbAll($sql);
 	$result=array();
 	$result['sEcho']=intval($_GET['sEcho']);
 	$result['iTotalRecords']=dbOne(
@@ -1217,6 +1228,14 @@ function Products_adminProductsListDT() {
 		// { enabled
 		$row[]=$r['enabled']=='1'?'Yes':'No';
 		// }
+		foreach ($product_columns as $p) {
+			if (isset($p['field_name'])) {
+				$row[]=$r[$p['field_name']];
+			}
+			else {
+				$row[]='TODO';
+			}
+		}
 		$arr[]=$row;
 	}
 	$result['aaData']=$arr;

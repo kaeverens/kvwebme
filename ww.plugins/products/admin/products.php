@@ -43,14 +43,15 @@ if (!count($rs)) {
 	return;
 }
 
-// { products list
 echo '<div id="products-wrapper"></div>'
 	.'<select id="products-action"><option value="0"> -- </option>'
 	.'<option value="1">'.__('Delete Selected').'</option>'
 	.'<option value="2">'.__('Set Disabled').'</option>'
 	.'<option value="3">'.__('Set Enabled').'</option>'
 	.'</select>';
-// }
+$product_columns=array();
+Core_trigger('extra-products-columns');
+WW_addInlineScript('var extraProductColumns='.json_encode($product_columns));
 WW_addScript('/j/datatables-colvis-1.0.8/ColVis.min.js');
 WW_addScript('products/admin/products.js');
 WW_addCSS('/ww.plugins/products/admin/products.css');
