@@ -25,6 +25,19 @@ $(function() {
 		table+='<th>'+columns[i].text+'</th>';
 	}
 	table+='</tr></thead><tbody/></table>';
+	var cols=[
+		{'sWidth':'4%', 'bSortable':false}, {'sWidth':'4%'},  {'sWidth':'64%'},
+		{'sWidth':'10%'}, {'sWidth':'4%'}, {'sWidth':'10%'}, {'sWidth':'4%'},
+		{'sWidth':'4%'}
+	];
+	if (adminVars.productCols) {
+		adminVars.productCols=JSON.parse(adminVars.productCols);
+		if (adminVars.productCols.length) {
+			for (var i in adminVars.productCols) {
+				$.extend(cols[i], adminVars.productCols[i]);
+			}
+		}
+	}
 	window.$pTable=$(table)
 		.appendTo('#products-wrapper')
 		.on('click', 'tbody input[type=checkbox]', function(e) {
@@ -132,16 +145,8 @@ $(function() {
 			'bProcessing': true,
 			'bJQueryUI': true,
 			'bServerSide': true,
-			'sDom':'C<"clear">lfrtip',
 			'bAutoWidth': false,
-			'oColVis':{
-				'aiExclude':[0, 1, 2, 6]
-			},
-			'aoColumns': [
-				{'sWidth':'4%', 'bSortable':false}, {'sWidth':'4%'},  {'sWidth':'64%'},
-				{'sWidth':'10%'}, {'sWidth':'4%'},
-				{'sWidth':'10%'}, {'sWidth':'4%'}, {'sWidth':'4%'}
-			],
+			'aoColumns':cols,
 			'sAjaxSource': '/a/p=products/f=adminProductsListDT',
 			'fnRowCallback': function( nRow, aData, iDisplayIndex ) {
 				var tCols=$pTable.fnSettings().aoColumns;
@@ -170,12 +175,33 @@ $(function() {
 						document.location='/ww.admin/plugin.php?_plugin='
 							+'products&_page=products-edit&id='+id;
 					});
-				$('td:nth-child('+vCols.owner+')', nRow)
-					.data('uid', aData[5].replace(/\|.*/, ''))
-					.text(aData[5].replace(/.*\|/, ''));
+				if (vCols.owner) {
+					$('td:nth-child('+vCols.owner+')', nRow)
+						.data('uid', aData[5].replace(/\|.*/, ''))
+						.text(aData[5].replace(/.*\|/, ''));
+				}
 				return nRow;
 			}
 		});
+	var oColVis=new ColVis($pTable.fnSettings(), {
+		'fnStateChange':function(iColumn, bVisible) {
+			if (!adminVars.productCols) {
+				adminVars.productCols=[];
+			}
+			if (!adminVars.productCols[iColumn]) {
+				adminVars.productCols[iColumn]={};
+			}
+			adminVars.productCols[iColumn].bVisible=bVisible;
+			console.log(adminVars.productCols);
+			$.post('/a/f=adminAdminVarsSave', {
+				'name':'productCols',
+				'val':JSON.stringify(adminVars.productCols)
+			});
+		},
+		'aiExclude':[0, 1, 2, 6]
+	});
+	$('#products-wrapper').prepend(oColVis.dom.wrapper);
+	oColVis.fnRebuild();
 	$('#products-selectall').click(function() {
 		$('#products-list_wrapper input').attr(
 			'checked',
