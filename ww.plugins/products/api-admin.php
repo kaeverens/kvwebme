@@ -1217,7 +1217,6 @@ function Products_adminProductsListDT() {
 		// { enabled
 		$row[]=$r['enabled']=='1'?'Yes':'No';
 		// }
-		$row[]='';
 		$arr[]=$row;
 	}
 	$result['aaData']=$arr;

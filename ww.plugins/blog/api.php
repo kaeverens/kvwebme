@@ -149,6 +149,31 @@ function Blog_getPostsList() {
 }
 
 // }
+function Blog_getRecent() {
+	$rs=dbAll(
+		'select excerpt_image,id,pdate,title,body,tags from blog_entry'
+		.' where pdate<now() and status'
+		.' order by pdate desc'
+		.' limit 100'
+	);
+	foreach ($rs as $k=>$r) {
+		if (!$r['excerpt_image']) {
+			$img=preg_replace('/.*<img.*?src="([^"]*)".*/m', '\1', str_replace(array("\n", "\r"), ' ', $r['body']));
+			if (strpos($img, '/f')===0) {
+				$r['excerpt_image']=preg_replace('#^/f/#', '', $img);
+			}
+		}
+		$img='';
+		if ($r['excerpt_image']) {
+			$img='/a/f=getImg/w=100/h=100/'.$r['excerpt_image'];
+		}
+		unset($r['excerpt_image']);
+		$r['image']=$img;
+		unset($r['body']);
+		$rs[$k]=$r;
+	}
+	return $rs;
+}
 // { Blog_getUserName
 
 /**

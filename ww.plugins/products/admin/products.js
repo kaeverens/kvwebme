@@ -1,47 +1,27 @@
 $(function() {
-	var $table=$('#products-list').dataTable({
-		"iDisplayLength":100,
-		"bProcessing": true,
-		"bJQueryUI": true,
-		"bServerSide": true,
-		"bAutoWidth": false,
-		"sAjaxSource": '/a/p=products/f=adminProductsListDT',
-		"aoColumns": [
-			{"sWidth":"4%", "bSortable":false}, {"sWidth":"4%"},  {"sWidth":"60%"},
-			{"sWidth":"10%"}, {"sWidth":"4%"},
-			{"sWidth":"10%"}, {"sWidth":"4%"}, {"sWidth":"4%"},
-			{"sWidth":"4%", "bSortable":false}],
-		"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-			var id=+aData[6];
-			nRow.id='product-row-'+id;
-			$('td:nth-child(1)', nRow).html('<input type="checkbox"/>');
-			$('td:nth-child(2)', nRow).html(+aData[1]
-				?'<div title="has images" class="ui-icon ui-icon-image"/>'
-				:'');
-			$('td:nth-child(3)', nRow)
-				.css('cursor', 'pointer')
-				.addClass('link')
-				.click(function() {
-					var id=$(this).closest('tr').attr('id').replace(/product-row-/, '');
-					document.location='/ww.admin/plugin.php?_plugin='
-						+'products&_page=products-edit&id='+id;
-				});
-			$('td:nth-child(4),td:nth-child(5),td:nth-child(6),td:nth-child(8)', nRow)
-				.css('cursor', 'pointer');
-			$('td:nth-child(6)', nRow)
-				.data('uid', aData[5].replace(/\|.*/, ''))
-				.text(aData[5].replace(/.*\|/, ''));
-			$('td:nth-child(9)', nRow).html(
-				'<a class="delete-product" href="#" title="delete">[x]</a>'
-			);
-			return nRow;
-		}
-	});
-	$('#products-list')
-		.delegate('tbody input[type=checkbox]', 'click', function(e) {
+	var columns=[
+		{'type':'base', 'text':'<input type="checkbox" id="products-selectall"/>'},
+		{'type':'base', 'text':'&nbsp;'},
+		{'type':'field', 'field_name':'name', 'text':'Name'},
+		{'type':'field', 'field_name':'stock_number', 'text':'Stock Number'},
+		{'type':'field', 'field_name':'amount_in_stock', 'text':'#',
+			'title':'Amount In Stock'
+		},
+		{'type':'field', 'field_name':'owner_id', 'text':'Owner'},
+		{'type':'field', 'field_name':'id', 'text':'ID'},
+		{'type':'field', 'field_name':'enabled', 'text':'Enabled'}
+	];
+	var table='<table id="products-list"><thead><tr>';
+	for (var i=0;i<columns.length;++i) {
+		table+='<th>'+columns[i].text+'</th>';
+	}
+	table+='</tr></thead><tbody/></table>';
+	var $pTable=$(table)
+		.appendTo('#products-wrapper')
+		.on('click', 'tbody input[type=checkbox]', function(e) {
 			e.stopPropagation();
 		})
-		.delegate('td', 'click', function() {
+		.on('click', 'td', function() {
 			var $this=$(this),$tr=$this.closest('tr');
 			if ($this.attr('in-edit')) {
 				return false;
@@ -134,7 +114,7 @@ $(function() {
 				break; // }
 			}
 		})
-		.delegate('a.delete-product', 'click', function(){
+		.on('click', 'a.delete-product', function(){
 			var $tr=$(this).closest('tr');
 			var id=$tr[0].id.replace(/product-row-/, '');
 			var name=$tr.find('td.link').text();
@@ -142,10 +122,45 @@ $(function() {
 				'are you sure you want to delete the product "'+name+'"?'
 			)) {
 				$.post('/a/p=products/f=adminProductDelete/id='+id, function() {
-					$table.fnDraw();
+					$pTable.fnDraw();
 				});
 			};
 			return false;
+		})
+		.dataTable({
+			"iDisplayLength":100,
+			"bProcessing": true,
+			"bJQueryUI": true,
+			"bServerSide": true,
+			"bAutoWidth": false,
+			"aoColumns": [
+				{"sWidth":"4%", "bSortable":false}, {"sWidth":"4%"},  {"sWidth":"64%"},
+				{"sWidth":"10%"}, {"sWidth":"4%"},
+				{"sWidth":"10%"}, {"sWidth":"4%"}, {"sWidth":"4%"}
+			],
+			"sAjaxSource": '/a/p=products/f=adminProductsListDT',
+			"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+				var id=+aData[6];
+				nRow.id='product-row-'+id;
+				$('td:nth-child(1)', nRow).html('<input type="checkbox"/>');
+				$('td:nth-child(2)', nRow).html(+aData[1]
+					?'<div title="has images" class="ui-icon ui-icon-image"/>'
+					:'');
+				$('td:nth-child(3)', nRow)
+					.css('cursor', 'pointer')
+					.addClass('link')
+					.click(function() {
+						var id=$(this).closest('tr').attr('id').replace(/product-row-/, '');
+						document.location='/ww.admin/plugin.php?_plugin='
+							+'products&_page=products-edit&id='+id;
+					});
+				$('td:nth-child(4),td:nth-child(5),td:nth-child(6),td:nth-child(8)', nRow)
+					.css('cursor', 'pointer');
+				$('td:nth-child(6)', nRow)
+					.data('uid', aData[5].replace(/\|.*/, ''))
+					.text(aData[5].replace(/.*\|/, ''));
+				return nRow;
+			}
 		});
 	$('#products-selectall').click(function() {
 		$('#products-list_wrapper input').attr(
@@ -171,21 +186,21 @@ $(function() {
 				}
 				$.post('/a/p=products/f=adminProductsDelete/ids='+ids, function() {
 					$('#products-action').val('0');
-					$table.fnDraw(false);
+					$pTable.fnDraw(false);
 					$('#products-selectall').attr('checked', false);
 				});
 			break; // }
 			case 2: // {
 				$.post('/a/p=products/f=adminProductsDisable/ids='+ids, function() {
 					$('#products-action').val('0');
-					$table.fnDraw(false);
+					$pTable.fnDraw(false);
 					$('#products-selectall').attr('checked', false);
 				});
 			break; // }
 			case 3: // {
 				$.post('/a/p=products/f=adminProductsEnable/ids='+ids, function() {
 					$('#products-action').val('0');
-					$table.fnDraw(false);
+					$pTable.fnDraw(false);
 					$('#products-selectall').attr('checked', false);
 				});
 			break; // }

@@ -42,8 +42,20 @@ function displayQuizInfo ($name, $topic, $id) {
   * @return string $displayString The correct page HTML
 */
 function getPageHtml () {
-	WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
-	WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
+	// { datatables
+	WW_addScript(
+		'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/'
+		.'jquery.dataTables.min.js'
+	);
+	WW_addCSS(
+		'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/'
+		.'jquery.dataTables.css'
+	);
+	WW_addCSS(
+		'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/'
+		.'jquery.dataTables_themeroller.css'
+	);
+	// }
 	// { The Script
 	$displayString='<script defer="defer">'
 		.'$(function(){'

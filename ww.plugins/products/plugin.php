@@ -1905,7 +1905,7 @@ function Products_getSubCategoriesAsMenu($ignore, $page) {
 			'type'=>'products|products',
 			'classes'=>'menuItem',
 			'link'=>$cat->getRelativeUrl(),
-			'parent'=>$page->id
+			'parent'=>(isset($page->id)?$page->id:0)
 		);
 		$subcats=dbOne(
 			'select id from products_categories where parent_id='.$cat->vals['id'],

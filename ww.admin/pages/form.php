@@ -62,7 +62,20 @@ WW_addScript('/j/jquery.json-2.2.min.js');
 WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
 WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
 WW_addScript('/ww.admin/j/admin.js');
-WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
+// { datatables
+WW_addScript(
+	'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/'
+	.'jquery.dataTables.min.js'
+);
+WW_addCSS(
+	'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/'
+	.'jquery.dataTables.css'
+);
+WW_addCSS(
+	'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/'
+	.'jquery.dataTables_themeroller.css'
+);
+// }
 WW_addScript('/j/jquery.remoteselectoptions.js');
 WW_addScript('/j/cluetip/jquery.cluetip.js');
 WW_addScript('/j/jquery-ui-timepicker-addon.js');
@@ -74,8 +87,6 @@ WW_addScript('/j/jstree/_lib/jquery.cookie.js');
 WW_addInlineScript('$.jstree._themes="/j/jstree/themes/";');
 echo '<html><head>'
 	.Core_getJQueryScripts()
-	.'<link rel="stylesheet" href="/j/jquery.dataTables-1.7.5'
-	.'/jquery.dataTables.css" />'
 	.'<link rel="stylesheet" href="/j/cluetip/jquery.cluetip.'
 	.'css" />'
 	.'<link rel="stylesheet" href="/ww.admin/theme/admin.css" />'

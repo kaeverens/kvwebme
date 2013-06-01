@@ -44,20 +44,7 @@ if (!count($rs)) {
 }
 
 // { products list
-echo '<div><table id="products-list"><thead>'
-	.'<tr><th><input type="checkbox" id="products-selectall"/></th>'
-	.'<th>&nbsp;</th><th>'
-	.__('Name')
-	.'</th><th>'
-	.__('Stock Number')
-	.'</th><th title="'.__('Amount In Stock').'">#</th><th>'
-	.__('Owner')
-	.'</th><th>'
-	.__('ID')
-	.'</th><th>'
-	.__('Enabled')
-	.'</th><th>&nbsp;</th></tr></thead><tbody>'
-	.'</tbody></table></div>'
+echo '<div id="products-wrapper"></div>'
 	.'<select id="products-action"><option value="0"> -- </option>'
 	.'<option value="1">'.__('Delete Selected').'</option>'
 	.'<option value="2">'.__('Set Disabled').'</option>'

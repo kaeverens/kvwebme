@@ -13,6 +13,18 @@ if (isset($PAGEDATA->vars['issue_tracker_edit_all'])) {
 }
 WW_addScript('issue-tracker/str.js');
 WW_addScript('issue-tracker/js.js');
-WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
-WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
 WW_addScript('/j/uploader.js');
+// { datatables
+WW_addScript(
+	'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/'
+	.'jquery.dataTables.min.js'
+);
+WW_addCSS(
+	'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/'
+	.'jquery.dataTables.css'
+);
+WW_addCSS(
+	'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/'
+	.'jquery.dataTables_themeroller.css'
+);
+// }

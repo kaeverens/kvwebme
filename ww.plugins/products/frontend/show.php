@@ -81,8 +81,20 @@ function Product_datatableMultiple ($products, $direction) {
 	}
 	switch ($direction) {
 		case 'horizontal': // {
-			WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
-			WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
+			// { datatables
+			WW_addScript(
+				'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/'
+				.'jquery.dataTables.min.js'
+			);
+			WW_addCSS(
+				'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/'
+				.'jquery.dataTables.css'
+			);
+			WW_addCSS(
+				'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/'
+				.'jquery.dataTables_themeroller.css'
+			);
+			// }
 			WW_addScript('products/frontend/show-horizontal.js');
 			WW_addCSS('/ww.plugins/products/frontend/show-horizontal.css');
 			$html='<table class="product-horizontal">';
@@ -729,7 +741,9 @@ class Products{
 			$cats=array($id);
 			if (!$noRecurse) {
 				$cat=ProductCategory::getInstance($id);
-				$cats=array_merge($cats, $cat->getSubCategoryIDs());
+				if ($cat) {
+					$cats=array_merge($cats, $cat->getSubCategoryIDs());
+				}
 			}
 			$sql='select id from products,products_categories_products'
 				.' where id=product_id'.$locFilter.' and enabled'

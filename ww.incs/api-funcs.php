@@ -245,7 +245,7 @@ function Core_getMenu() {
 function Core_getScript() {
 	$url=$_REQUEST['_remainder'];
 	if (preg_match('/\.js$/', $url) && strpos($furl, '..')===false) {
-		header('Content-type: text/javscript');
+		header('Content-type: text/javascript');
 		readfile($_SERVER['DOCUMENT_ROOT'].$url);
 	}
 	exit;

@@ -169,11 +169,18 @@ function Core_unfixImageResizes($src) {
 function WW_getCSS() {
 	global $css_urls;
 	$url='/css/';
+	$returns=array();
 	foreach ($css_urls as $s) {
-		$url.='|'.$s;
+		if (strpos($s, '//')!==false) {
+			$returns[]='<link rel="stylesheet" href="'.htmlspecialchars($s).'"/>';
+		}
+		else {
+			$url.='|'.$s;
+		}
 	}
 	$css_urls=array();
-	return '<link rel="stylesheet" href="'.htmlspecialchars($url).'" />';
+	return join('', $returns)
+		.'<link rel="stylesheet" href="'.htmlspecialchars($url).'" />';
 }
 
 // }
