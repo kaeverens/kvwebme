@@ -73,7 +73,7 @@ flush();
 readfile($file);
 
 /**
-	* returns a MieType when given a filename
+	* returns a MimeType when given a filename
 	*
 	* @param string $f filename
 	*

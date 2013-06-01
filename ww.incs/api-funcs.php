@@ -235,6 +235,23 @@ function Core_getMenu() {
 }
 
 // }
+// { Core_getScript
+
+/**
+	* return a script, compressed
+	*
+	* @return string the script
+	*/
+function Core_getScript() {
+	$url=$_REQUEST['_remainder'];
+	if (preg_match('/\.js$/', $url) && strpos($furl, '..')===false) {
+		header('Content-type: text/javscript');
+		readfile($_SERVER['DOCUMENT_ROOT'].$url);
+	}
+	exit;
+}
+
+// }
 // { Core_getUserData
 
 /**

@@ -185,7 +185,7 @@ function WW_getCSS() {
   * @return string the HTML
   */
 function WW_getScripts() {
-	global $scripts, $scripts_inline;
+	global $scripts, $scripts_inline, $DBVARS;
 	if (!count($scripts)) {
 		return '';
 	}
@@ -225,9 +225,15 @@ function WW_getScripts() {
 			elseif ($script{0}!='/') { // {
 				$script='/ww.plugins/'.$script;
 			}
-			$local[]=$script;
-			if (filemtime($_SERVER['DOCUMENT_ROOT'].$script)>$latest) {
-				$latest=filemtime($_SERVER['DOCUMENT_ROOT'].$script);
+			$ftime=filemtime($_SERVER['DOCUMENT_ROOT'].$script);
+			if (isset($DBVARS['cdn']) && $DBVARS['cdn']) {
+				$external[]='//'.$DBVARS['cdn'].'/a/f=getScript/ftime='.$ftime.$script;
+			}
+			else {
+				$local[]=$script;
+				if ($ftime>$latest) {
+					$latest=$ftime;
+				}
 			}
 		}
 	}
