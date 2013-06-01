@@ -51,4 +51,6 @@ echo '<div id="products-wrapper"></div>'
 	.'<option value="3">'.__('Set Enabled').'</option>'
 	.'</select>';
 // }
+WW_addScript('/j/datatables-colvis-1.0.8/ColVis.min.js');
 WW_addScript('products/admin/products.js');
+WW_addCSS('/ww.plugins/products/admin/products.css');

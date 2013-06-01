@@ -1,16 +1,9 @@
-#product-images-wrapper div{
-	display:inline-block;
-	width:70px;
-	height:110px;
-	text-align:center;
+.ColVis.TableTools{
+	float:right;
 }
-#product-images-wrapper div a{
-	text-decoration:none;
-	font-size:9px;
+.ColVis_collection.TableTools_collection button{
+	text-align:left;
 }
-div.default{
-	background:#ff0;
-}
-ul,li{
-	list-style:none;
+.col-owner, .col-enabled. .col-stockControlTotal, col-stockNumber{
+	cursor:pointer;
 }

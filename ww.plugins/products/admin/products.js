@@ -1,22 +1,31 @@
 $(function() {
 	var columns=[
-		{'type':'base', 'text':'<input type="checkbox" id="products-selectall"/>'},
-		{'type':'base', 'text':'&nbsp;'},
-		{'type':'field', 'field_name':'name', 'text':'Name'},
-		{'type':'field', 'field_name':'stock_number', 'text':'Stock Number'},
-		{'type':'field', 'field_name':'amount_in_stock', 'text':'#',
-			'title':'Amount In Stock'
+		{'name':'checkboxes',
+			'type':'base', 'text':'<input type="checkbox" id="products-selectall"/>'
 		},
-		{'type':'field', 'field_name':'owner_id', 'text':'Owner'},
-		{'type':'field', 'field_name':'id', 'text':'ID'},
-		{'type':'field', 'field_name':'enabled', 'text':'Enabled'}
+		{'name':'hasImages', 'type':'base', 'text':'&nbsp;'},
+		{'name':'name',
+			'type':'field', 'field_name':'name', 'text':'Name', 'edit':1},
+		{'name':'stockNumber',
+			'type':'field', 'field_name':'stock_number', 'text':'Stock Number',
+			'edit':1},
+		{'name':'stockControlTotal',
+			'type':'field', 'field_name':'stockcontrol_total', 'text':'#',
+			'title':'Amount In Stock', 'edit':1
+		},
+		{'name':'owner',
+			'type':'field', 'field_name':'owner', 'text':'Owner', 'edit':1},
+		{'name':'id',
+			'type':'field', 'field_name':'id', 'text':'ID'},
+		{'name':'enabled',
+			'type':'field', 'field_name':'enabled', 'text':'Enabled', 'edit':1}
 	];
 	var table='<table id="products-list"><thead><tr>';
 	for (var i=0;i<columns.length;++i) {
 		table+='<th>'+columns[i].text+'</th>';
 	}
 	table+='</tr></thead><tbody/></table>';
-	var $pTable=$(table)
+	window.$pTable=$(table)
 		.appendTo('#products-wrapper')
 		.on('click', 'tbody input[type=checkbox]', function(e) {
 			e.stopPropagation();
@@ -28,8 +37,12 @@ $(function() {
 			}
 			$this.attr('in-edit', true);
 			var id=+$tr.attr('id').replace('product-row-', '');
-			switch($tr.find('td').index($this)) {
-				case 3: // { stock number
+			var col=columns[+$this.data('col')];
+			if (col.edit===undefined) {
+				return;
+			}
+			switch(col.field_name) {
+				case 'stock_number': // {
 					var oldVal=$this.text();
 					var $inp=$('<input style="width:100%;height:100%;"/>')
 						.val(oldVal)
@@ -47,7 +60,7 @@ $(function() {
 						.appendTo($this.empty())
 						.focus();
 				break; // }
-				case 4: // { stockcontrol_total
+				case 'stockcontrol_total': // {
 					var oldVal=$this.text();
 					var $inp=$('<input style="width:100%;height:100%;"/>')
 						.val(oldVal)
@@ -65,7 +78,7 @@ $(function() {
 						.appendTo($this.empty())
 						.focus();
 				break; // }
-				case 5: // { owner
+				case 'owner': // {
 					var oldVal=+$this.data('uid');
 					$.post('/a/f=adminUserNamesGet', function(ret) {
 						var opts=['<option>unknown owner</option>'];
@@ -92,7 +105,7 @@ $(function() {
 							.focus();
 					});
 				break; // }
-				case 7: // { enabled
+				case 'enabled': // {
 					var oldVal=$this.text()=='Yes'?1:0;
 					var $inp=$('<select/>')
 						.append('<option value="1">Yes</option>')
@@ -114,33 +127,36 @@ $(function() {
 				break; // }
 			}
 		})
-		.on('click', 'a.delete-product', function(){
-			var $tr=$(this).closest('tr');
-			var id=$tr[0].id.replace(/product-row-/, '');
-			var name=$tr.find('td.link').text();
-			if (confirm(
-				'are you sure you want to delete the product "'+name+'"?'
-			)) {
-				$.post('/a/p=products/f=adminProductDelete/id='+id, function() {
-					$pTable.fnDraw();
-				});
-			};
-			return false;
-		})
 		.dataTable({
-			"iDisplayLength":100,
-			"bProcessing": true,
-			"bJQueryUI": true,
-			"bServerSide": true,
-			"bAutoWidth": false,
-			"aoColumns": [
-				{"sWidth":"4%", "bSortable":false}, {"sWidth":"4%"},  {"sWidth":"64%"},
-				{"sWidth":"10%"}, {"sWidth":"4%"},
-				{"sWidth":"10%"}, {"sWidth":"4%"}, {"sWidth":"4%"}
+			'iDisplayLength':100,
+			'bProcessing': true,
+			'bJQueryUI': true,
+			'bServerSide': true,
+			'sDom':'C<"clear">lfrtip',
+			'bAutoWidth': false,
+			'oColVis':{
+				'aiExclude':[0, 1, 2, 6]
+			},
+			'aoColumns': [
+				{'sWidth':'4%', 'bSortable':false}, {'sWidth':'4%'},  {'sWidth':'64%'},
+				{'sWidth':'10%'}, {'sWidth':'4%'},
+				{'sWidth':'10%'}, {'sWidth':'4%'}, {'sWidth':'4%'}
 			],
-			"sAjaxSource": '/a/p=products/f=adminProductsListDT',
-			"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-				var id=+aData[6];
+			'sAjaxSource': '/a/p=products/f=adminProductsListDT',
+			'fnRowCallback': function( nRow, aData, iDisplayIndex ) {
+				var tCols=$pTable.fnSettings().aoColumns;
+				var vCols={};
+				for (var i=0,j=1;i<aData.length;++i) {
+					if (tCols[i].bVisible) {
+						var col=columns[i];
+						$('td:nth-child('+j+')', nRow)
+							.data('col', i)
+							.addClass('col-'+col.name);
+						vCols[col.name]=j;
+						j++;
+					}
+				}
+				var id=+aData[vCols.id-1];
 				nRow.id='product-row-'+id;
 				$('td:nth-child(1)', nRow).html('<input type="checkbox"/>');
 				$('td:nth-child(2)', nRow).html(+aData[1]
@@ -154,9 +170,7 @@ $(function() {
 						document.location='/ww.admin/plugin.php?_plugin='
 							+'products&_page=products-edit&id='+id;
 					});
-				$('td:nth-child(4),td:nth-child(5),td:nth-child(6),td:nth-child(8)', nRow)
-					.css('cursor', 'pointer');
-				$('td:nth-child(6)', nRow)
+				$('td:nth-child('+vCols.owner+')', nRow)
 					.data('uid', aData[5].replace(/\|.*/, ''))
 					.text(aData[5].replace(/.*\|/, ''));
 				return nRow;

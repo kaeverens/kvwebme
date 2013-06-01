@@ -245,6 +245,11 @@ function Core_getMenu() {
 function Core_getScript() {
 	$url=$_REQUEST['_remainder'];
 	if (preg_match('/\.js$/', $url) && strpos($furl, '..')===false) {
+		header('Expires-Active: On');
+		header('Cache-Control: max-age = 9999999999');
+		header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
+		header('Pragma:');
+		header("Last-Modified: ".gmdate("D, d M Y H:i:s", filemtime($file))." GMT");
 		header('Content-type: text/javascript');
 		readfile($_SERVER['DOCUMENT_ROOT'].$url);
 	}
