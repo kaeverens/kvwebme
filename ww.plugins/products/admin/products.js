@@ -57,7 +57,7 @@ $(function() {
 			$this.attr('in-edit', true);
 			var id=+$tr.attr('id').replace('product-row-', '');
 			var col=columns[+$this.data('col')];
-			if (col.edit===undefined) {
+			if (col.edit===undefined || col.edit_type===undefined) {
 				return;
 			}
 			switch(col.edit_type) {
@@ -166,7 +166,14 @@ $(function() {
 						$('td:nth-child('+j+')', nRow)
 							.data('col', i)
 							.addClass('col-'+col.name);
+						if (col.name=='id') {
+							var id=+aData[i];
+						}
 						vCols[col.name]=j;
+						if (col.edit_type && col.edit_type=='boolean') {
+							$('td:nth-child('+j+')', nRow)
+								.text((+aData[i])?'Yes':'No');
+						}
 						if (col.fixed) {
 							$('td:nth-child('+j+')', nRow)
 								.text((+aData[i]).toFixed(col.fixed));
@@ -174,7 +181,6 @@ $(function() {
 						j++;
 					}
 				}
-				var id=+aData[vCols.id];
 				nRow.id='product-row-'+id;
 				$('td:nth-child(1)', nRow).html('<input type="checkbox"/>');
 				$('td:nth-child(2)', nRow).html(+aData[1]

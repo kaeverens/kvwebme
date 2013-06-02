@@ -1,0 +1,8 @@
+textarea{
+	width:100% !important;
+	height:100px !important;;
+	min-width:500px;
+}
+#main table{
+	width:100%;
+}

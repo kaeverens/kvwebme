@@ -1220,7 +1220,7 @@ function Products_adminProductsListDT() {
 		$row[]=$r['id'];
 		// }
 		// { enabled
-		$row[]=$r['enabled']=='1'?'Yes':'No';
+		$row[]=$r['enabled'];
 		// }
 		foreach ($product_columns as $p) {
 			if (isset($p['field_name'])) {
