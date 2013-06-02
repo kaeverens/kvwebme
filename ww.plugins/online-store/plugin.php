@@ -840,6 +840,8 @@ function OnlineStore_extraColumnsList() {
 		'type'=>'field',
 		'field_name'=>'os_base_price',
 		'text'=>__('Price'),
-		'edit'=>1
+		'edit'=>1,
+		'edit_type'=>'float',
+		'fixed'=>2
 	);
 }

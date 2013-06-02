@@ -8,17 +8,19 @@ $(function() {
 			'type':'field', 'field_name':'name', 'text':'Name', 'edit':1},
 		{'name':'stockNumber',
 			'type':'field', 'field_name':'stock_number', 'text':'Stock Number',
-			'edit':1},
+			'edit':1, 'edit_type':'int'},
 		{'name':'stockControlTotal',
 			'type':'field', 'field_name':'stockcontrol_total', 'text':'#',
-			'title':'Amount In Stock', 'edit':1
+			'title':'Amount In Stock', 'edit':1, 'edit_type':'int'
 		},
 		{'name':'owner',
-			'type':'field', 'field_name':'owner', 'text':'Owner', 'edit':1},
+			'type':'field', 'field_name':'user_id', 'text':'Owner', 'edit':1,
+			'edit_type':'user_list'},
 		{'name':'id',
 			'type':'field', 'field_name':'id', 'text':'ID'},
 		{'name':'enabled',
-			'type':'field', 'field_name':'enabled', 'text':'Enabled', 'edit':1}
+			'type':'field', 'field_name':'enabled', 'text':'Enabled', 'edit':1,
+			'edit_type':'boolean'}
 	];
 	var cols=[
 		{'sWidth':'4%', 'bSortable':false}, {'sWidth':'4%'},  {'sWidth':'64%'},
@@ -58,17 +60,17 @@ $(function() {
 			if (col.edit===undefined) {
 				return;
 			}
-			switch(col.field_name) {
-				case 'stock_number': // {
+			switch(col.edit_type) {
+				case 'float': // {
 					var oldVal=$this.text();
 					var $inp=$('<input style="width:100%;height:100%;"/>')
 						.val(oldVal)
 						.blur(function() {
-							var newVal=$inp.val();
+							var newVal=+$inp.val();
 							$this.text(newVal).attr('in-edit', null);
 							if (newVal!=oldVal) {
 								$.post('/a/p=products/f=adminProductEditVal', {
-									'name': 'stock_number',
+									'name': col.field_name,
 									'val': newVal,
 									'id': id
 								});
@@ -77,16 +79,16 @@ $(function() {
 						.appendTo($this.empty())
 						.focus();
 				break; // }
-				case 'stockcontrol_total': // {
+				case 'int': // {
 					var oldVal=$this.text();
 					var $inp=$('<input style="width:100%;height:100%;"/>')
 						.val(oldVal)
 						.blur(function() {
-							var newVal=$inp.val();
+							var newVal=parseInt($inp.val());
 							$this.text(newVal).attr('in-edit', null);
 							if (newVal!=oldVal) {
 								$.post('/a/p=products/f=adminProductEditVal', {
-									'name': 'stockcontrol_total',
+									'name': col.field_name,
 									'val': newVal,
 									'id': id
 								});
@@ -95,7 +97,7 @@ $(function() {
 						.appendTo($this.empty())
 						.focus();
 				break; // }
-				case 'owner': // {
+				case 'user_list': // {
 					var oldVal=+$this.data('uid');
 					$.post('/a/f=adminUserNamesGet', function(ret) {
 						var opts=['<option>unknown owner</option>'];
@@ -112,7 +114,7 @@ $(function() {
 									.data('uid', newVal);
 								if (newVal!=oldVal) {
 									$.post('/a/p=products/f=adminProductEditVal', {
-										'name': 'user_id',
+										'name': col.field_name,
 										'val': newVal,
 										'id': id
 									});
@@ -122,18 +124,18 @@ $(function() {
 							.focus();
 					});
 				break; // }
-				case 'enabled': // {
+				case 'boolean': // {
 					var oldVal=$this.text()=='Yes'?1:0;
 					var $inp=$('<select/>')
-						.append('<option value="1">Yes</option>')
 						.append('<option value="0">No</option>')
+						.append('<option value="1">Yes</option>')
 						.val(oldVal)
 						.change(function() {
 							var newVal=+$inp.val();
 							$this.text(newVal?'Yes':'No').attr('in-edit', null);
 							if (newVal!=oldVal) {
 								$.post('/a/p=products/f=adminProductEditVal', {
-									'name': 'enabled',
+									'name': col.field_name,
 									'val': newVal,
 									'id': id
 								});
@@ -142,6 +144,9 @@ $(function() {
 						.appendTo($this.empty())
 						.focus();
 				break; // }
+				default: // {
+					alert('help! I don\'t know how to handle this type');
+				// }
 			}
 		})
 		.dataTable({
@@ -162,10 +167,14 @@ $(function() {
 							.data('col', i)
 							.addClass('col-'+col.name);
 						vCols[col.name]=j;
+						if (col.fixed) {
+							$('td:nth-child('+j+')', nRow)
+								.text((+aData[i]).toFixed(col.fixed));
+						}
 						j++;
 					}
 				}
-				var id=+aData[vCols.id-1];
+				var id=+aData[vCols.id];
 				nRow.id='product-row-'+id;
 				$('td:nth-child(1)', nRow).html('<input type="checkbox"/>');
 				$('td:nth-child(2)', nRow).html(+aData[1]

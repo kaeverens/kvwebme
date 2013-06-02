@@ -968,15 +968,9 @@ function Products_adminProductsEnable() {
 	*/
 function Products_adminProductEditVal() {
 	$id=(int)$_REQUEST['id'];
-	$name=$_REQUEST['name'];
+	$name=strtolower($_REQUEST['name']);
 	$value=$_REQUEST['val'];
-	$valid_fields=array(
-		'stock_number',
-		'stockcontrol_total',
-		'enabled',
-		'user_id'
-	);
-	if (!in_array($name, $valid_fields)) {
+	if ($name=='id') {
 		return array('error'=>'field not allowed');
 	}
 	dbQuery(
