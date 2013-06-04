@@ -360,7 +360,7 @@ var ITStrings={
 			}
 		};
 		var $table=$(table).attr("id","issue-table")
-			.appendTo($content).dataTable(params);								
+			.appendTo($content).dataTable(params).fnSetFilteringDelay();
 		$('.dataTables_filter').css('display', 'none');
 		if (userdata.isAdmin) {
 			$('<button>New '+ITStrings.Issue+'</button>')

@@ -67,6 +67,7 @@ WW_addScript(
 	'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/'
 	.'jquery.dataTables.min.js'
 );
+WW_addScript('/j/datatables-delay.js');
 WW_addCSS(
 	'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/'
 	.'jquery.dataTables.css'

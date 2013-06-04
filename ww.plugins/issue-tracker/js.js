@@ -333,7 +333,7 @@ $(function() {
 				$.getJSON(sSource, aoData, fnCallback);
 			}
 		};
-		var $table=$(table).appendTo($content).dataTable(params);
+		var $table=$(table).appendTo($content).dataTable(params).fnSetFilteringDelay();
 		$('.dataTables_filter').css('display', 'none');
 		if (userdata.isAdmin) {
 			$('<button>New '+ITStrings.Issue+'</button>')

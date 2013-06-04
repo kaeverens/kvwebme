@@ -78,7 +78,7 @@ $(function() {
 		params["iDisplayLength"]=jsvars.datatables['forum-datatable-requires-moderation'].show;
 	}
 	window.postsForModeration = $('#forum-datatable-requires-moderation')
-		.dataTable({});
+		.dataTable().fnSetFilteringDelay();
 	$('.approve').click(function() {
 		var id = $(this).attr('id').replace('approve_', '');
 		$.post('/a/p=forum/f=adminPostApprove/id='+id,

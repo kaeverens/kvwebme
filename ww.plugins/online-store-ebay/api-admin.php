@@ -126,7 +126,7 @@ function OnlineStoreEbay_adminPublish() {
 		.'<ConditionID>1000</ConditionID>'
 		.'<Country>'.$countryFrom.'</Country>'
 		.'<Location>China</Location>'
-		.'<Description>'.htmlspecialchars($description).'</Description>'
+		.'<Description>'.htmlspecialchars($description.'<br/><br/>Shipping is included in price').'</Description>'
 		.'<DispatchTimeMax>'.$dispatchDays.'</DispatchTimeMax>'
 		.'<PayPalEmailAddress>'.$paypalAddress.'</PayPalEmailAddress>'
 		.'<ListingDuration>Days_7</ListingDuration>'
@@ -146,7 +146,8 @@ function OnlineStoreEbay_adminPublish() {
 		.'</ReturnPolicy>'
 		// }
 		// { shipping
-		.'<ShippingDetails><ShippingType>Free</ShippingType>'
+		.'<ShippingDetails>'
+		.'<InternationalShippingServiceOption><ShippingService>IE_SellersStandardRateInternational</ShippingService><ShippingServiceAdditionalCost currencyID="EUR">0</ShippingServiceAdditionalCost><ShippingServiceCost currencyID="EUR">0</ShippingServiceCost><ShippingServicePriority>0</ShippingServicePriority><ShipToLocation>Europe</ShipToLocation></InternationalShippingServiceOption>'
 		.'</ShippingDetails>'
 		// }
 		.'</Item>'
@@ -161,9 +162,93 @@ function OnlineStoreEbay_adminPublish() {
 }
 function OnlineStoreEbay_adminLinkProductToEbay() {
 	$id=(int)$_REQUEST['id'];
-	$ebay_id=(int)$_REQUST['ebay_id'];
+	$ebay_id=(int)$_REQUEST['ebay_id'];
 	dbQuery(
 		'update products set ebay_currently_active=1,ebay_id='.$ebay_id
 		.' where id='.$id
 	);
+}
+function OnlineStoreEbay_adminListShipping() {
+	require_once 'eBaySession.php';
+	error_reporting(E_ALL);
+	$rs=dbAll('select * from online_store_vars where name like "ebay%"');
+	$vs=array();
+	foreach ($rs as $r) {
+		$vs[$r['name']]=$r['val'];
+	}
+	$production=(int)$vs['ebay_status'];
+	if ($production) {
+		$devID=$vs['ebay_devid'];
+		$appID=$vs['ebay_appid'];
+		$certID=$vs['ebay_certid'];
+		$serverUrl = 'https://api.ebay.com/ws/api.dll';	  // server URL different for prod and sandbox
+		$userToken=$vs['ebay_usertoken'];
+	}
+	else {  
+		$devID=$vs['ebay_sandbox_devid'];
+		$appID=$vs['ebay_sandbox_appid'];
+		$certID=$vs['ebay_sandbox_certid'];
+		$serverUrl='https://api.sandbox.ebay.com/ws/api.dll';
+		$userToken=$vs['ebay_sandbox_usertoken'];
+	}
+	$compatabilityLevel=823;	// eBay API version
+	$siteToUseID=205;
+	$sess=new eBaySession(
+		$userToken, $devID, $appID, $certID, $serverUrl,
+		$compatabilityLevel, $siteToUseID, 'AddItem'
+	);
+	$xml='<?xml version="1.0" encoding="utf-8"?>'."\n"
+		.'<GeteBayDetailsRequest xmlns="urn:ebay:apis:eBLBaseComponents">'
+		.'<ErrorLanguage>en_US</ErrorLanguage><WarningLevel>High</WarningLevel>'
+		.'<RequesterCredentials>'
+		.'<eBayAuthToken>'.$userToken.'</eBayAuthToken>'
+		.'</RequesterCredentials>'
+		.'<DetailName>ShippingServiceDetails</DetailName>'
+		.'<WarningLevel>High</WarningLevel>'
+		.'</GeteBayDetailsRequest>';
+	$xmlstr=$sess->sendHttpRequest($xml);
+	$xml=new SimpleXMLElement($xmlstr);
+	return $xml;
+}
+function OnlineStoreEbay_adminListShipTo() {
+	require_once 'eBaySession.php';
+	error_reporting(E_ALL);
+	$rs=dbAll('select * from online_store_vars where name like "ebay%"');
+	$vs=array();
+	foreach ($rs as $r) {
+		$vs[$r['name']]=$r['val'];
+	}
+	$production=(int)$vs['ebay_status'];
+	if ($production) {
+		$devID=$vs['ebay_devid'];
+		$appID=$vs['ebay_appid'];
+		$certID=$vs['ebay_certid'];
+		$serverUrl = 'https://api.ebay.com/ws/api.dll';	  // server URL different for prod and sandbox
+		$userToken=$vs['ebay_usertoken'];
+	}
+	else {  
+		$devID=$vs['ebay_sandbox_devid'];
+		$appID=$vs['ebay_sandbox_appid'];
+		$certID=$vs['ebay_sandbox_certid'];
+		$serverUrl='https://api.sandbox.ebay.com/ws/api.dll';
+		$userToken=$vs['ebay_sandbox_usertoken'];
+	}
+	$compatabilityLevel=823;	// eBay API version
+	$siteToUseID=205;
+	$sess=new eBaySession(
+		$userToken, $devID, $appID, $certID, $serverUrl,
+		$compatabilityLevel, $siteToUseID, 'AddItem'
+	);
+	$xml='<?xml version="1.0" encoding="utf-8"?>'."\n"
+		.'<GeteBayDetailsRequest xmlns="urn:ebay:apis:eBLBaseComponents">'
+		.'<ErrorLanguage>en_US</ErrorLanguage><WarningLevel>High</WarningLevel>'
+		.'<RequesterCredentials>'
+		.'<eBayAuthToken>'.$userToken.'</eBayAuthToken>'
+		.'</RequesterCredentials>'
+		.'<DetailName>ShippingToLocations</DetailName>'
+		.'<WarningLevel>High</WarningLevel>'
+		.'</GeteBayDetailsRequest>';
+	$xmlstr=$sess->sendHttpRequest($xml);
+	$xml=new SimpleXMLElement($xmlstr);
+	return $xml;
 }

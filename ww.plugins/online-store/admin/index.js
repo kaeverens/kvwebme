@@ -477,7 +477,7 @@ function onlinestoreCustomers() {
 			}
 		};
 		window.openDataTable=$('#users-list')
-			.dataTable(params);
+			.dataTable(params).fnSetFilteringDelay();
 		$('#users-list').on('click', 'td.editable', function() {
 			var $this=$(this),$tr=$this.closest('tr');
 			if ($this.attr('in-edit')) {

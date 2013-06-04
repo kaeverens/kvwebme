@@ -2,10 +2,10 @@ $(function() {
 	$('#ads-table').dataTable({
 		'bJQueryUI':true,
 		'aaSorting':[[0, 'desc']]
-	});
+	}).fnSetFilteringDelay();
 	$('#ads-types-table').dataTable({
 		'bJQueryUI':true
-	});
+	}).fnSetFilteringDelay();
 	$('#ads-types-table').on('click', '.delete', function() {
 		if (!confirm('are you sure you want to delete this ad type?')) {
 			return false;

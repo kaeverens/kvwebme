@@ -255,7 +255,7 @@ echo ' /></td></tr>';
 // }
 // { facebook app id
 echo '<tr><th>'.__('Facebook App ID').'</th><td>'
-	.'<input name="site_title" value="'
+	.'<input name="fbAppID" value="'
 	.htmlspecialchars($DBVARS['fbAppID']).'" /></td></tr>';
 // }
 echo '</table><input type="hidden" name="action" value="Save"/>'

@@ -104,7 +104,7 @@ switch ($action){
 		// {The javascript to display the table
 		echo '<script>';
 		echo '$(document).ready(function(){';
-		echo '$(\'#quizTable\').dataTable();';
+		echo '$(\'#quizTable\').dataTable().fnSetFilteringDelay();';
 		echo '});';
 		echo '</script>';
 		// }

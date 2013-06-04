@@ -201,7 +201,7 @@ $(function() {
 				}
 				return nRow;
 			}
-		});
+		}).fnSetFilteringDelay();
 	var oColVis=new ColVis($pTable.fnSettings(), {
 		'fnStateChange':function(iColumn, bVisible) {
 			if (!adminVars.productCols) {

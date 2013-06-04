@@ -308,7 +308,7 @@ $(function(){
 		if (id && jsvars.datatables[id]) {
 			params["iDisplayLength"]=jsvars.datatables[id].show;
 		}
-		$this.dataTable(params);
+		$this.dataTable(params).fnSetFilteringDelay();
 	});
 	$('body').on('change', '.dataTables_length select', function() {
 		var $this=$(this);

@@ -8,7 +8,7 @@ $(function(){
 	if (jsvars.datatables['onlinestore-vouchers']) {
 		params["iDisplayLength"]=jsvars.datatables['onlinestore-vouchers'].show;
 	}
-	$('#onlinestore-vouchers').dataTable(params);
+	$('#onlinestore-vouchers').dataTable(params).fnSetFilteringDelay();
 	// { users_list
 	var $user_constraints=$('select[name=user_constraints]');
 	$user_constraints.change(build_users_list);

@@ -3,7 +3,7 @@ $(function() {
 	if (jsvars.datatables['comments-table']) {
 		params["iDisplayLength"]=jsvars.datatables['comments-table'].show;
 	}
-	my_table = $("#comments-table").dataTable(params);
+	my_table = $("#comments-table").dataTable(params).fnSetFilteringDelay();
 	if (noModeration) {
 		my_table.fnSetColumnVis(5, false);
 	}

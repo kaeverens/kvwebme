@@ -69,7 +69,6 @@ $(function() {
 										},
 										function() {
 											alert('Successfully added');
-											$('#products-form').submit();
 										}
 									);
 								}

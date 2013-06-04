@@ -1,7 +1,7 @@
 $(function() {
 	$('#meetings').dataTable({
 		'bJQueryUI':true
-	});
+	}).fnSetFilteringDelay();
 	$('#meetings').on('click', '.edit', function() {
 		var id=$(this).closest('tr').attr('id').replace('meeting-', '');
 		$.post('/a/p=meetings/f=adminMeetingGet', {

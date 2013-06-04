@@ -192,7 +192,7 @@ $(function(){
 			$('td:nth-child(3)', nRow).css('cursor', 'pointer');
 			return nRow;
 		}
-	});
+	}).fnSetFilteringDelay();
 	$('#onlinestore-orders-table').on(
 		'click',
 		'tbody td:nth-child(3)',
@@ -353,7 +353,7 @@ function onlinestoreCustomers() {
 			}
 		};
 		window.openDataTable=$('#users-list')
-			.dataTable(params);
+			.dataTable(params).fnSetFilteringDelay();
 		$('#users-list').on('click', 'td.editable', function() {
 			var $this=$(this),$tr=$this.closest('tr');
 			if ($this.attr('in-edit')) {

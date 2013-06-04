@@ -65,7 +65,7 @@ function Mailinglists_screenDashboard() {
 			}
 		};
 		var $automatedIssuesTable=$('#mailinglists-automated-issue-sending')
-			.dataTable(params);
+			.dataTable(params).fnSetFilteringDelay();
 		$automatedIssuesTable.on('click', '.delete', function() {
 			var id=$(this).closest('tr').data('id');
 			if (!confirm('Are you sure you want to remove this automated issue?')) {

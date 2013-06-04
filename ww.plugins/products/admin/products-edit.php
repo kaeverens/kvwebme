@@ -253,28 +253,6 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 		$sql.=',data_fields="'.addslashes(json_encode($datafields)).'"';
 		// }
 		// { online store stuff
-		if (isset($_REQUEST['online-store-fields'])) {
-			$online_store_data = array();
-			foreach ($_REQUEST['online-store-fields'] as $name=>$value) {
-				$online_store_data[$name] = $value;
-			}
-			$sql.=', os_base_price='.(float)$_REQUEST['online-store-fields']['_price']
-				.', os_trade_price='.(float)$_REQUEST['online-store-fields']['_trade_price']
-				.', os_sale_price='.(float)$_REQUEST['online-store-fields']['_sale_price']
-				.', os_sale_price_type='.(int)$_REQUEST['online-store-fields']['_sale_price_type']
-				.', os_bulk_price='.(float)$_REQUEST['online-store-fields']['_bulk_price']
-				.', os_bulk_amount='.(float)$_REQUEST['online-store-fields']['_bulk_amount']
-				.', os_weight='.(float)$_REQUEST['online-store-fields']['__weight(kg)']
-				.', os_tax_free='.(float)$_REQUEST['online-store-fields']['_vatfree']
-				.', os_custom_tax='.(float)$_REQUEST['online-store-fields']['_custom_vat_amount']
-				.', os_free_delivery='.(float)$_REQUEST['online-store-fields']['_deliver_free']
-				.', os_not_discountable='.(float)$_REQUEST['online-store-fields']['_not_discountable']
-				.', os_amount_sold='.(float)$_REQUEST['online-store-fields']['_sold_amt']
-				.', os_amount_in_stock='.(float)$_REQUEST['online-store-fields']['_stock_amt']
-				.', os_amount_allowed_per_purchase='.(float)$_REQUEST['online-store-fields']['_max_allowed'];
-			$online_store_data = json_encode($online_store_data);
-			$sql.=',online_store_fields="'.addslashes($online_store_data).'"';
-		}
 		// { stock control
 		$stockcontrol_total=(int)@$_REQUEST['stockcontrol_total'];
 		$stockcontrol_detail='false';
@@ -303,7 +281,8 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 		// }
 		// }
 		if ($id) {
-			dbQuery("update products $sql where id=$id");
+			$sql="update products $sql where id=$id";
+			dbQuery($sql);
 		}
 		else {
 			dbQuery("insert into products $sql,date_created=now()");
@@ -684,10 +663,10 @@ if ($id && isset($PLUGINS['online-store'])) {
 	// { set up fields
 	$online_store_fields 
 		= array (
-			'_price' => 'Base Price',
-			'_trade_price' => 'Trade Price',
-			'_sale_price' => 'Sale Price',
-			'_sale_price_type' => array(
+			'base_price' => 'Base Price',
+			'trade_price' => 'Trade Price',
+			'sale_price' => 'Sale Price',
+			'sale_price_type' => array(
 				'Sale Type',
 				'Options' => array(
 					'set actual price',
@@ -695,28 +674,28 @@ if ($id && isset($PLUGINS['online-store'])) {
 					'reduce base price by percentage'
 				)
 			),
-			'_bulk_price' =>__('Bulk Price'),
-			'_bulk_amount' =>__('Bulk Amount'),
-			'_weight(kg)' => __('Weight (kg)'),
-			'_vatfree'  
+			'bulk_price' =>__('Bulk Price'),
+			'bulk_amount' =>__('Bulk Amount'),
+			'weight' => __('Weight (kg)'),
+			'tax_free'  
 				=> array (
-					__('VAT-free'),
+					__('Tax-free'),
 					'Options' 
 						=>array(
 							'No',
 							'Yes'
 						)
 				),
-			'_custom_vat_amount' => __('Custom VAT Amount'),
-			'_deliver_free' => array(
+			'custom_tax' => __('Custom Tax Amount'),
+			'free_delivery' => array(
 				__('Free Delivery'), 'Options'=>array(__('No'), __('Yes'))
 			),
-			'_not_discountable' => array(
+			'not_discountable' => array(
 				__('Not Discountable'), 'Options'=>array(__('No'), __('Yes'))
 			),
-			'_sold_amt' => __('Amount Sold'),
-			'_stock_amt' => __('Amount in Stock'),
-			'_max_allowed' => __('Amount allowed per purchase')
+			'amount_sold' => __('Amount Sold'),
+			'amount_in_stock' => __('Amount in Stock'),
+			'amount_allowed_per_purchase' => __('Amount allowed per purchase')
 		);
 	$sql='select is_voucher from products_types where id='
 		.$pdata['product_type_id'];
@@ -730,7 +709,7 @@ if ($id && isset($PLUGINS['online-store'])) {
 		echo ' style="display:none"';
 	}
 	echo '><table>';
-	foreach ($online_store_fields as $internal=>$display) {
+	foreach ($online_store_fields as $k=>$display) {
 		echo '<tr><th>';
 		if (is_array($display)) {
 			echo $display[0];
@@ -740,18 +719,21 @@ if ($id && isset($PLUGINS['online-store'])) {
 		}
 		echo '</th><td>';
 		if (!is_array($display)) {
-			echo '<input class="small" type="number" name="online-store-fields['
-				.$internal.']"';
-			if (isset($online_store_data->$internal)) {
-				echo ' value="'.$online_store_data->$internal.'"';
+			echo '<input class="small" type="number" name="productsExtra[os_'
+				.$k.']"';
+			if (isset($online_store_data->$k)) {
+				echo ' value="'.$online_store_data->$k.'"';
+			}
+			if ($pdata['os_'.$k]) {
+				echo ' value="'.$pdata['os_'.$k].'"';
 			}
 			echo ' />';
 		}
 		else {
-			echo '<select name="online-store-fields['.$internal.']">';
+			echo '<select name="productsExtra[os_'.$k.']">';
 			for ($i=0; $i<count($display['Options']); ++$i) {
 				echo '<option value="'.$i.'"';
-				if ($i==@$online_store_data->$internal) {
+				if ($i==@$online_store_data->$k) {
 					echo ' selected="selected"';
 				}
 				echo '>'.$display['Options'][$i]

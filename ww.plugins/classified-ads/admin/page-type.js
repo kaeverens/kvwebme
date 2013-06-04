@@ -256,7 +256,7 @@ $(function() {
 		}
 	};
 	var $adsTable=$('#ads-main>table')
-		.dataTable(params);
+		.dataTable(params).fnSetFilteringDelay();
 	$('#ads-main>button').click(function() {
 		adEdit(0);
 		return false;

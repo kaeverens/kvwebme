@@ -18,7 +18,7 @@ function CoreSiteoptions_screenCron() {
 		table+='</tbody></table>';
 		var $table=$(table)
 			.appendTo($content);
-		$table.dataTable();
+		$table.dataTable().fnSetFilteringDelay();
 		$table.find('td')
 			.click(tdClicked);
 	});
@@ -110,8 +110,7 @@ function CoreSiteoptions_screenLanguages() {
 			table+='</tbody></table>';
 			var $table=$(table)
 				.appendTo($content);
-			$table.dataTable(
-			);
+			$table.dataTable().fnSetFilteringDelay();
 			$('<a href="#">'+__('Add Language')+'</a>')
 				.click(function() {
 					$('<form id="languages-form"><table>'+
@@ -292,7 +291,8 @@ function CoreSiteoptions_screenLanguages() {
 						{ 'sWidth': '8%' },
 						{ 'sWidth': '46%'}
 					]
-				});
+				})
+				.fnSetFilteringDelay();
 			$languagestable.on('click', 'tbody td:last-child', function() {
 				if ($languages.val()==='') {
 					return;
@@ -429,7 +429,7 @@ function CoreSiteoptions_screenLocations() {
 		table+='</tbody></table>';
 		var $table=$(table)
 			.appendTo($content);
-		$table.dataTable();
+		$table.dataTable().fnSetFilteringDelay();
 		$('<a href="#">'+__('Add Location')+'</a>')
 			.click(function() {
 				$('<form id="locations-form"><table>'+
@@ -932,7 +932,7 @@ function CoreSiteoptions_screenEmails() {
 				return nRow;
 			}
 		};
-		$('#emails-sent-datatable').dataTable(params);
+		$('#emails-sent-datatable').dataTable(params).fnSetFilteringDelay();
 	}
 	function showTemplates(panel) {
 		var $panel=$(panel).empty();

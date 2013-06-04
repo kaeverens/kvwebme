@@ -50,7 +50,7 @@ function Products_screenBrandsandProducers() {
 			}
 		};
 		window.openDataTable=$('#users-list')
-			.dataTable(params);
+			.dataTable(params).fnSetFilteringDelay();
 		$('#users-list').on('click', 'td.editable', function() {
 			var $this=$(this),$tr=$this.closest('tr');
 			if ($this.attr('in-edit')) {
@@ -1103,7 +1103,7 @@ function Products_screenTypes() {
 		params["iDisplayLength"]=jsvars.datatables['product-types-list'].show;
 	}
 	window.openDataTable=$('#product-types-list')
-		.dataTable(params);
+		.dataTable(params).fnSetFilteringDelay();
 }
 function Products_typeDelete(id) {
 	var name=$('#product-types-list-row'+id).find('td:first-child').text();
