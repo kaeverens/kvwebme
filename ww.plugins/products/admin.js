@@ -127,11 +127,17 @@ function Products_screenCategories() {
 					.replace(/[^a-z0-9 ]/g, ' ')
 					.replace(/ +/g, ' ').split(' ');
 				for (var i=0;i<words.length;++i) {
-					var phrase=' '+words[i];
-					if ($.inArray(words[i], ['for', 'with', 'in', 'to', 'and'])!==-1) {
-						return;
+					if (words[i].length<2 || /^[0-9]*$/.test(words[i])) {
+						continue;
 					}
-					if (phrase.length<3) {
+					var phrase=' '+words[i];
+					if (
+						$.inArray(words[i], [
+							'for', 'with', 'in', 'to', 'and', 'the', 'is',
+							'white', 'blue', 'red', 'green', 'color', 'dc', '12v', 'pcs', 'one',
+							'black', 'style', 'size', 'leather', 'plastic', 'price', 'inch'
+						])!==-1)
+					{
 						continue;
 					}
 					if (undefined===keywords[phrase]) {
@@ -449,7 +455,7 @@ function Products_screenCategories() {
 		// { contained products
 		var containedProducts='<table id="pic-filter-table" style="width:100%">'
 			+'<tr><td>Filter: <input id="pic-filter"/></td>'
-			+'<td><a href="#" id="pic-common-phrases">common phrases</a></td>'
+			+'<td><a href="#" id="pic-common-phrases">common words</a></td>'
 			+'<td><a href="#" id="pic-remove-all">remove all</a></td></tr>'
 			+'<tr><td colspan="3" id="category-products"></td></tr>'
 			+'</table>';
@@ -460,7 +466,7 @@ function Products_screenCategories() {
 			+'<td>Filter: <input id="pnic-filter"/></td>'
 			+'<td>Only show products that have no categories:'
 			+'<input id="pnic-only-no-cat" type="checkbox"/></td>'
-			+'<td><a href="#" id="pnic-common-phrases">common phrases</a></td>'
+			+'<td><a href="#" id="pnic-common-phrases">common words</a></td>'
 			+'<td><a href="#" id="pnic-add-all">add all</a></td></tr>'
 			+'<tr><td id="category-other-products" colspan="5"></td></tr>'
 			+'</table>';

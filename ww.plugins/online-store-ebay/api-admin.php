@@ -107,36 +107,57 @@ function OnlineStoreEbay_adminPublish() {
 	$product=Product::getInstance((int)$_REQUEST['id']);
 	$description=$product->get('description');
 	$paypalAddress=$vs['ebay_paypal_address'];
-	$imgUrl='http://'.$_SERVER['HTTP_HOST'].'/f'.$product->getDefaultImage();
 	$categoryId=dbOne('select ebay_id from products_categories, products_categories_products where product_id='.$product->id.' and category_id=id', 'ebay_id');
 	$howMany=1;
 	$returnsPolicy=$vs['ebay_returns_policy'];
 	$title=$product->get('name');
 	$xml='<?xml version="1.0" encoding="utf-8"?>'."\n"
 		.'<AddItemRequest xmlns="urn:ebay:apis:eBLBaseComponents">'
-		.'<ErrorLanguage>en_US</ErrorLanguage><WarningLevel>High</WarningLevel>'
-		// { main details
-		.'<Item><BuyItNowPrice>'.sprintf('%.2f', $price).'</BuyItNowPrice>'
-		.'<Currency>'.$currency.'</Currency>'
+		.'<ErrorLanguage>en_US</ErrorLanguage><WarningLevel>High</WarningLevel>';
+	// { main details
+	$xml.='<Item>'
 		.'<Site>Ireland</Site>'
-		.'<StartPrice>'.$bidsStartPrice.'</StartPrice>'
-		.'<Title>'.htmlspecialchars($title).'</Title>'
-	//	.'<UUID>e0b5913b17e64694bd0dbc0ff95f93f8</UUID>'
-		.'<CategoryMappingAllowed>true</CategoryMappingAllowed>'
+		.'<Title>'.htmlspecialchars($title).'</Title>';
+	// }
+	// { price
+	$xml.='<BuyItNowPrice>'.sprintf('%.2f', $price).'</BuyItNowPrice>'
+		.'<Currency>'.$currency.'</Currency>';
+	if ($bidsStartPrice>=.01) {
+		$xml.='<StartPrice>'.$bidsStartPrice.'</StartPrice>'
+			.'<ListingType>Chinese</ListingType>';
+		if ($price>=70) {
+			$xml.='<ReservePrice currencyID="'.$currency.'">'
+			.sprintf('%.2f', $price).'</ReservePrice>';
+		}
+	}
+	else {
+		$xml.='<ListingType>FixedPriceItem</ListingType>';
+	}
+	// }
+	// { pictures
+	$xml.='<PictureDetails>';
+	$images=$product->getAllImages();
+	$xml.='<PictureURL>http://'.$_SERVER['HTTP_HOST'].'/f'.$product->getDefaultImage().'</PictureURL>';
+	$images_html='';
+	foreach ($images as $img) {
+		$imgUrl='http://'.$_SERVER['HTTP_HOST'].'/f'.$img;
+		$xml.='<PictureURL>'.$imgUrl.'</PictureURL>';
+		$images_html.='<img src="'.$imgUrl.'"/>';
+	}
+	$xml.='</PictureDetails>';
+	// }
+	// { other main stuff
+	$xml.='<CategoryMappingAllowed>true</CategoryMappingAllowed>'
 		.'<ConditionID>1000</ConditionID>'
 		.'<Country>'.$countryFrom.'</Country>'
 		.'<Location>China</Location>'
-		.'<Description>'.htmlspecialchars($description.'<br/><br/>Shipping is included in price').'</Description>'
+		.'<Description>'.htmlspecialchars($description.$images_html).'</Description>'
 		.'<DispatchTimeMax>'.$dispatchDays.'</DispatchTimeMax>'
 		.'<PayPalEmailAddress>'.$paypalAddress.'</PayPalEmailAddress>'
 		.'<ListingDuration>Days_7</ListingDuration>'
-		.'<ListingType>Chinese</ListingType>'
-		.'<PaymentMethods>PayPal</PaymentMethods>'
-		// }
-		// { picture
-		.'<PictureDetails><PictureURL>'.$imgUrl.'</PictureURL></PictureDetails>'
-		// }
-		.'<PrimaryCategory><CategoryID>'.$categoryId.'</CategoryID></PrimaryCategory>'
+		.'<PaymentMethods>PayPal</PaymentMethods>';
+	// }
+	$xml.='<PrimaryCategory><CategoryID>'.$categoryId.'</CategoryID></PrimaryCategory>'
 		.'<Quantity>'.$howMany.'</Quantity>'
 		// { refunds and returns
 		.'<ReturnPolicy><ReturnsAcceptedOption>ReturnsAccepted</ReturnsAcceptedOption>'
@@ -148,6 +169,7 @@ function OnlineStoreEbay_adminPublish() {
 		// { shipping
 		.'<ShippingDetails>'
 		.'<InternationalShippingServiceOption><ShippingService>IE_SellersStandardRateInternational</ShippingService><ShippingServiceAdditionalCost currencyID="EUR">0</ShippingServiceAdditionalCost><ShippingServiceCost currencyID="EUR">0</ShippingServiceCost><ShippingServicePriority>0</ShippingServicePriority><ShipToLocation>Europe</ShipToLocation></InternationalShippingServiceOption>'
+		.'<ShippingServiceOptions><FreeShipping>true</FreeShipping><ShippingService>IE_EconomyDeliveryFromAbroad</ShippingService></ShippingServiceOptions>'
 		.'</ShippingDetails>'
 		// }
 		.'</Item>'
@@ -157,8 +179,13 @@ function OnlineStoreEbay_adminPublish() {
 		.'<WarningLevel>High</WarningLevel>'
 		.'</AddItemRequest>';
 	$xmlstr=$sess->sendHttpRequest($xml);
-	$xml=new SimpleXMLElement($xmlstr);
-	return $xml;
+	$reply=new SimpleXMLElement($xmlstr);
+	$errors=isset($reply->Errors)?$reply->Errors:false;
+	return array(
+		'sent'=>$xml,
+		'reply'=>new SimpleXMLElement($xmlstr),
+		'errors'=>$errors
+	);
 }
 function OnlineStoreEbay_adminLinkProductToEbay() {
 	$id=(int)$_REQUEST['id'];

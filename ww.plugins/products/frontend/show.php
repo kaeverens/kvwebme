@@ -16,7 +16,9 @@ if (!file_exists(USERBASE.'/ww.cache/products')) {
 }
 if (!file_exists(USERBASE.'/ww.cache/products/templates')) {
 	mkdir(USERBASE.'/ww.cache/products/templates');
-	mkdir(USERBASE.'/ww.cache/products/templates_c');
+	if (!file_exists(USERBASE.'/ww.cache/products/templates_c')) {
+		mkdir(USERBASE.'/ww.cache/products/templates_c');
+	}
 }
 
 // { Product_datatableMultiple

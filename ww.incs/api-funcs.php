@@ -244,7 +244,8 @@ function Core_getMenu() {
 	*/
 function Core_getScript() {
 	$url=$_REQUEST['_remainder'];
-	if (preg_match('/\.js$/', $url) && strpos($furl, '..')===false) {
+	if (preg_match('/\.js$/', $url) && strpos($url, '..')===false) {
+		$file=$_SERVER['DOCUMENT_ROOT'].$url;
 		header('Expires-Active: On');
 		header('Cache-Control: max-age = 9999999999');
 		header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');

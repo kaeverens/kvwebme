@@ -33,7 +33,7 @@ $plugin=array(
 	), // }
 	'frontend' => array(
 	),
-	'version'=>1
+	'version'=>2
 );
 
 // }
@@ -55,9 +55,17 @@ function OnlineStoreEbay_showProductEditFormTabs(
 		?'Yes. <a href="http://www.ebay.ie/itm/'.$product['ebay_id'].'"'
 		.' target="_blank">View it</a>'
 		:'No';
+	if (!$product['ebay_bids_start_at']) {
+		$product['ebay_bids_start_at']=0;
+	}
+	if (!$product['ebay_buy_now_price']) {
+		$product['ebay_buy_now_price']=$product['os_base_price'];
+	}
+	$howMany=$product['ebay_how_many_to_sell'];
 	echo '</td></tr>'
 		.'<tr><th>Bids Start At</th><td><input name="productsExtra[ebay_bids_start_at]" value="'.(float)$product['ebay_bids_start_at'].'"/></td></tr>'
 		.'<tr><th>Buy Now Price</th><td><input name="productsExtra[ebay_buy_now_price]" value="'.(float)$product['ebay_buy_now_price'].'"/></td></tr>'
+		.'<tr><th>Quantity Available to Sell</th><td><input name="productsExtra[ebay_how_many_to_sell]" value="'.(float)$product['ebay_how_many_to_sell'].'"/></td></tr>'
 		.'</table>'
 		.'<div id="ebay-wrapper"></div>';
 	WW_addScript('/ww.plugins/online-store-ebay/admin/product-edit.js');

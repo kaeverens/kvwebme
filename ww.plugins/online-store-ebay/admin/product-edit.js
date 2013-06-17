@@ -34,8 +34,8 @@ $(function() {
 							.val();
 						var bidsStart=+$('input[name="productsExtra[ebay_bids_start_at]"]')
 							.val();
-						if (!buyItNow || !bidsStart) {
-							alert('fill in the Bids and Buy prices');
+						if (!buyItNow) {
+							alert('fill in the Buy It Now price');
 							return false;
 						}
 						if (buyItNow<bidsStart*1.4) {
@@ -51,21 +51,23 @@ $(function() {
 								'buy_now_price':$('input[name="productsExtra[ebay_buy_now_price]"]').val()
 							},
 							function(ret) {
-								if (ret.Errors && ret.Errors.length) {
+								console.log(ret);
+								if (ret.errors && ret.errors.LongMessage) {
+									ret.errors=[ret.errors];
+								}
+								if (ret.errors && ret.errors.length) {
 									var errors=[];
-									for (var i=0;i<ret.Errors.length;++i) {
-										errors.push(ret.Errors[i].LongMessage);
+									for (var i=0;i<ret.errors.length;++i) {
+										errors.push(ret.errors[i].LongMessage);
 									}
 									alert(errors.join("\n"));
-									console.log(errors);
 								}
-								console.log(ret);
-								if (ret.ItemID) {
+								if (ret.reply.ItemID) {
 									$.post(
 										'/a/p=online-store-ebay/f=adminLinkProductToEbay',
 										{
 											'id':id,
-											'ebay_id':ret.ItemID
+											'ebay_id':ret.reply.ItemID
 										},
 										function() {
 											alert('Successfully added');

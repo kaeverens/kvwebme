@@ -74,6 +74,48 @@ function Products_adminCategoriesGetRecursiveList(
 }
 
 // }
+function Products_adminCategoriesClean() {
+	// { find broken product-category links
+	$rs=dbAll('select distinct category_id from products_categories_products');
+	foreach ($rs as $r) {
+		echo 'category '.$r['category_id'].'<br/>';
+		$c=dbRow('select id from product_categories where id='.$r['category_id']);
+		if (!$c) {
+			$pids=dbAll(
+				'select * from products_categories_products'
+				.' where category_id='.$r['category_id']
+			);
+			foreach ($pids as $p) {
+				$sql='delete from products_categories_products'
+					.' where category_id='.$p['category_id']
+					.' and product_id='.$p['product_id'];
+				echo $sql.'<br/>';
+				dbQuery($sql);
+			}
+			Products_categoriesRecount(array($ps));
+			echo 'cleaned up '.$r['category_id']
+				.'<script>document.location="/a/p=products/f=adminCategoriesClean";</script>';
+			exit;
+		}
+	}
+	// }
+}
+function Products_adminCategoriesRecount() {
+	$now=time();
+	$id=isset($_REQUEST['id'])?(int)$_REQUEST['id']:0;
+	do {
+		$id=dbOne('select id from products where id>'.$id.' order by id limit 1', 'id');
+		if ($id) {
+			Products_categoriesRecount(array($id));
+		}
+		echo $id.' ';
+	} while($id && time()<($now+10));
+	if ($id) {
+		echo '<script>document.location="/a/p=products/f=adminCategoriesRecount/id='.$id
+			.'";</script>';
+	}
+	exit;
+}
 // { Products_adminCategoryDelete
 
 /**
@@ -1156,8 +1198,28 @@ function Products_adminProductsListDT() {
 	}
 	$filters=array();
 	if ($search) {
-		$filters[]='name like "%'.addslashes($search).'%"'
-			.' or stock_number like "%'.addslashes($search).'%"';
+		$sArr=array();
+		if ($search{0}=='"' && $search{strlen($search)-1}=='"') {
+			$sArr[]='name like "%'
+				.addslashes(substr($search, 1, strlen($search)-2))
+				.'%"';
+		}
+		else {
+			$bits=explode(' ', $search);
+			foreach ($bits as $b) {
+				if ($b) {
+					if (substr($b, 0, 1)=='-') {
+						$b=substr($b, 1, strlen($b)-1);
+						$sArr[]='name not like "%'.addslashes($b).'%"';
+					}
+					else {
+						$sArr[]='name like "%'.addslashes($b).'%"';
+					}
+				}
+			}
+		}
+		$filters[]='(('.join(' and ', $sArr).')'
+			.' or stock_number like "%'.addslashes($search).'%")';
 	}
 	$filter='';
 	if (count($filters)) {

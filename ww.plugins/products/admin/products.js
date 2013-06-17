@@ -151,6 +151,7 @@ $(function() {
 		})
 		.dataTable({
 			'iDisplayLength':10,
+			'aLengthMenu':[5, 10, 25, 50, 100, 200, 500, 1000],
 			'bProcessing': true,
 			'bJQueryUI': true,
 			'bServerSide': true,
@@ -188,12 +189,10 @@ $(function() {
 					:'');
 				$('td:nth-child(3)', nRow)
 					.css('cursor', 'pointer')
-					.addClass('link')
-					.click(function() {
-						var id=$(this).closest('tr').attr('id').replace(/product-row-/, '');
-						document.location='/ww.admin/plugin.php?_plugin='
-							+'products&_page=products-edit&id='+id;
-					});
+					.html(
+						'<a href="/ww.admin/plugin.php?_plugin=products'
+						+'&amp;_page=products-edit&amp;id='+id+'">'+aData[2]+'</a>'
+					);
 				if (vCols.owner) {
 					$('td:nth-child('+vCols.owner+')', nRow)
 						.data('uid', aData[5].replace(/\|.*/, ''))

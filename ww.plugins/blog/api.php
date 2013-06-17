@@ -284,6 +284,9 @@ function Blog_postGet() {
 			.' and userid='.$_SESSION['userdata']['id']
 		);
 	}
+	return dbRow(
+		'select id,body from blog_entry where id='.$id.' and status'
+	);
 }
 
 // }

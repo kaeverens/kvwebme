@@ -1,10 +1,10 @@
 <?php
 /**
-  * upgrade script for the Products plugin
+  * upgrade script for the OnlineStoreEbay plugin
   *
   * PHP Version 5
   *
-  * @category ProductsPlugin
+  * @category OnlineStoreEbayPlugin
   * @package  Webme
   * @author   Kae Verens <kae@kvsites.ie>
   * @license  GPL Version 2
@@ -17,4 +17,8 @@ if ($version==0) {
 	dbQuery('alter table products add ebay_id bigint default 0;');
 	dbQuery('alter table products_categories add ebay_id int default 0;');
 	$version=1;
+}
+if ($version==1) {
+	dbQuery('alter table products add ebay_how_many_to_sell int default 1;');
+	$version=2;
 }

@@ -263,32 +263,49 @@ class Product{
 			return $this->default_image;
 		}
 		$vals=$this->vals;
-		if (!$vals['images_directory']) {
-			$this->default_image=false;
-			return false;
-		}
-		$iid=false;
 		if ($vals['image_default']
 			&& file_exists(USERBASE.'/f/'.$vals['image_default'])
 		) {
 			return $vals['image_default'];
 		}
-		$directory = $vals['images_directory'];
-		if (file_exists(USERBASE.'/f/'.$directory)) {
-			$files=new DirectoryIterator(USERBASE.'/f/'.$directory);
-			foreach ($files as $file) {
-				if ($file->isDot()) {
-					continue;
-				}
-				$this->default_image=$directory.'/'.$file->getFilename();
-				return $this->default_image;
-			}
+		$images=$this->getAllImages();
+		if (count($images)) {
+			$this->default_image=$images[0];
+			dbQuery(
+				'update products set default_image="'.addslashes($images[0]).'"'
+				.' where id='.$this->id
+			);
+			return $this->default_image;
 		}
 		$this->default_image=false;
 		return false;
 	}
 
 	// }
+	function getAllImages() {
+		$vals=$this->vals;
+		if (!isset($vals['images_directory']) || !$vals['images_directory']) {
+			$basedir='/products/product-images/';
+			$pThousands=(int)($this->id/1000);
+			$vals['images_directory']=$basedir.$pThousands.'/'.$this->id.'/';
+			$sql='update products'
+				.' set images_directory="'.$vals['images_directory'].'"'
+				.' where id='.$this->id;
+			dbQuery($sql);
+		}
+		$directory = $vals['images_directory'];
+		$images=array();
+		if (file_exists(USERBASE.'/f/'.$directory)) {
+			$files=new DirectoryIterator(USERBASE.'/f/'.$directory);
+			foreach ($files as $file) {
+				if ($file->isDot()) {
+					continue;
+				}
+				$images[]=$directory.'/'.$file->getFilename();
+			}
+		}
+		return $images;
+	}
 	// { getInstance
 
 	/**
