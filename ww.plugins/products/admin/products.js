@@ -20,12 +20,14 @@ $(function() {
 			'type':'field', 'field_name':'id', 'text':'ID'},
 		{'name':'enabled',
 			'type':'field', 'field_name':'enabled', 'text':'Enabled', 'edit':1,
-			'edit_type':'boolean'}
+			'edit_type':'boolean'},
+		{'name':'date_created',
+			'type':'field', 'field_name':'date_created', 'text':'Date Added', 'edit':0}
 	];
 	var cols=[
 		{'sWidth':'4%', 'bSortable':false}, {'sWidth':'4%'},  {'sWidth':'64%'},
 		{'sWidth':'10%'}, {'sWidth':'4%'}, {'sWidth':'10%'}, {'sWidth':'4%'},
-		{'sWidth':'4%'}
+		{'sWidth':'4%'}, {'sWidth':'4%'}
 	];
 	for (var i in extraProductColumns) {
 		columns.push(extraProductColumns[i]);

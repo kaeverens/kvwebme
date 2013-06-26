@@ -125,10 +125,6 @@ function OnlineStoreEbay_adminPublish() {
 	if ($bidsStartPrice>=.01) {
 		$xml.='<StartPrice>'.$bidsStartPrice.'</StartPrice>'
 			.'<ListingType>Chinese</ListingType>';
-		if ($price>=70) {
-			$xml.='<ReservePrice currencyID="'.$currency.'">'
-			.sprintf('%.2f', $price).'</ReservePrice>';
-		}
 	}
 	else {
 		$xml.='<ListingType>FixedPriceItem</ListingType>';
