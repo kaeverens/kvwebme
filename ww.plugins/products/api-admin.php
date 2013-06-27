@@ -202,11 +202,13 @@ function Products_adminCategoryGetFromID($id) {
 	);
 	$products=array();
 	$pageid= dbOne(
-		'select page_id from page_vars where name="products_category_to_show" a'
-		.'nd value='.$id, 'page_id'
+		'select page_id from page_vars where name="products_category_to_show"'
+		.' and value='.$id, 'page_id'
 	);
-	foreach ($ps as $p) {
-		$products[]=$p['product_id'];
+	if (is_array($ps) && count($ps)) {
+		foreach ($ps as $p) {
+			$products[]=$p['product_id'];
+		}
 	}
 	$data=array(
 		'attrs'=>dbRow(

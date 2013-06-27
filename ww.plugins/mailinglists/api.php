@@ -38,7 +38,20 @@ function Mailinglists_subscribe() {
 			$data=xmlrpc_decode(trim($response));
 		break; // }
 		default: // {
-			return array('error'=>__('unknown subscription engine request'));
+			$apikey=$listMeta['mailchimp-apikey'];
+			require_once dirname(__FILE__).'/MCAPI.class.php';
+			$api=new MCAPI($apikey);
+			$data=$api->lists();
+			$api->listSubscribe(
+				preg_replace('/\|.*/', '', $listMeta['mailchimp-list']),
+				$email
+			);
+			if ($api->errorCode) {
+				return array(
+					'error'=>$api->errorCode,
+					'message'=>$api->errorMessage
+				);
+			}
 		// }
 	}
 	return array('ok'=>true);
