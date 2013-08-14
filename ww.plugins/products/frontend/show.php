@@ -270,9 +270,13 @@ function Products_show($PAGEDATA) {
 		$addASearchBox = $PAGEDATA->vars['products_add_a_search_box'];
 	}
 	if (isset($addASearchBox) && $addASearchBox) {
-		$c.='<form action="'.htmlspecialchars($_SERVER['REQUEST_URI']).'" class="products-search"><input name="products-search" value="'
-			.htmlspecialchars($search)
-			.'" /><input type="submit" value="'.__('Search').'" /></form>';
+		$c.='<form action="'.htmlspecialchars($_SERVER['REQUEST_URI']).'"'
+			.'class="products-search">'
+			.'<input name="products-search"'
+			.' value="'.htmlspecialchars($search).'"'
+			.' placeholder="'.__('Search').'" autocomplete="off"/>'
+			.'<input type="submit" value="'.__('Search').'" /></form>';
+		WW_addCSS('/ww.plugins/products/products.css');
 	}
 	// }
 	// { filter by location

@@ -234,7 +234,15 @@ $c.='<tr id="products-pagetitleoverride-single"><th>Page Title Override'
 	.' (single product view)</th><td>'
 	.'<input name="page_vars[products_pagetitleoverride_single]" value="'
 	.htmlspecialchars(@$vars['products_pagetitleoverride_single'])
-	.'"/></td></tr>';
+	.'" placeholder="example: {{$_name}}"/></td></tr>';
+// }
+// { override description
+$c.='<tr><th>Page Description Override</th><td><select'
+	.' name="page_vars[products_pagedescriptionoverride]">'
+	.'<option value="0">No</option><option value="1"'
+	.(@$vars['products_pagedescriptionoverride']?' selected="selected"':'')
+	.'">Yes</option></select>'
+	.'</td></tr>';
 // }
 // { show sub-categories in navigation menu
 $c.='<tr id="products_show_subcats_in_menu">'

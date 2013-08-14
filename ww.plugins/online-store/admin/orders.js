@@ -1,9 +1,9 @@
-// TODO: translation of statusses needed
 window.os_statuses=[
 	[0, 'Unpaid'],
 	[4, 'Authorised'],
 	[1, 'Paid'],
-	[2, 'Delivered'],
+	[5, 'Prepared'],
+	[2, 'Dispatched'],
 	[3, 'Cancelled']
 ];
 function os_invoice(id, print){
@@ -28,7 +28,7 @@ function os_listItems(id){
 		}
 		var html='<table><tr><th>'+__('Name')+'</th><th>'+__('Amount')+'</th></tr>', i=0;
 		for (;i<ret.length;++i) {
-			html+='<tr><td>'+ret[i].name+'</td><td>'+ret[i].amt+'</td></tr>';
+			html+='<tr><td><a href="/ww.admin/plugin.php?_plugin=products&_page=products-edit&id='+ret[i].id+'" target="_blank">'+ret[i].name+'</a></td><td>'+ret[i].amt+'</td></tr>';
 		}
 		html+='</table>';
 		$(html).dialog({

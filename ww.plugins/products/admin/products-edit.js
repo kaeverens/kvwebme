@@ -377,4 +377,15 @@ $(function(){
 		$('#stockcontrol-addrow').click(addRow);
 	}
 	// }
+	$('input[name=name]+div>input')
+		.keyup(function() {
+			var $this=$(this);
+			if ($this.val().length>80) {
+				$this.addClass('warning-too-long');
+			}
+			else {
+				$this.removeClass('warning-too-long');
+			}
+		})
+		.keyup();
 });

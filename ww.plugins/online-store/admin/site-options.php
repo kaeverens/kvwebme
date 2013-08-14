@@ -94,7 +94,7 @@ $opts=array(
 	__('Invoice should be emailed to customer when the order is Paid'),
 	__('Invoice should not be emailed at all'),
 	__(
-		'Invoice should be emailed to customer when the order is Delivered'
+		'Invoice should be emailed to customer when the order is Dispatched'
 	),
 	__('Invoice should be emailed when the payment is Authorised')
 );
@@ -143,7 +143,7 @@ echo '<tr><th>'.__('Export at what point').'</th><td>'
 $opts=array(
 	'Export details to file when the order is Paid',
 	'Do not export details to file at all',
-	'Export details to file when the order is Paid And Delivered'
+	'Export details to file when the order is Dispatched'
 );
 $curval=(int)dbOne(
 	'select val from online_store_vars where name="export_at_what_point"',

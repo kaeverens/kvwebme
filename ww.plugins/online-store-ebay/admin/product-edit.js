@@ -43,12 +43,17 @@ $(function() {
 							return false;
 						}
 						var id=$('input[name=id]').val();
+						var quantity=+$('input[name="productsExtra[ebay_how_many_to_sell]"]').val();
+						if (quantity<1) {
+							quantity=1;
+						}
 						$.post(
 							'/a/p=online-store-ebay/f=adminPublish',
 							{
 								'id':id,
-								'bids_start_at':$('input[name="productsExtra[ebay_bids_start_at]"]').val(),
-								'buy_now_price':$('input[name="productsExtra[ebay_buy_now_price]"]').val()
+								'bids_start_at':bidsStart,
+								'buy_now_price':buyItNow,
+								'quantity':quantity
 							},
 							function(ret) {
 								console.log(ret);

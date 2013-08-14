@@ -21,19 +21,20 @@ $plugin=array(
 			'sell your products on EBay and still manage them here'
 		);
 	},
-	'admin' => array(
+	'admin' => array( // {
 		'menu' => array(
 			'Online Store>eBay Options' =>
 				'plugin.php?_plugin=online-store-ebay&amp;_page=options'
 		)
-	),
+	), // }
 	'triggers' => array( // {
 		'extra-products-columns' => 'OnlineStoreEbay_extraColumnsList',
-		'products-show-edit-form-tabs' => 'OnlineStoreEbay_showProductEditFormTabs'
+		'products-show-edit-form-tabs' => 'OnlineStoreEbay_showProductEditFormTabs',
+		'online-store-list-orders' => 'OnlineStoreEbay_showImportOrdersButton'
 	), // }
 	'frontend' => array(
 	),
-	'version'=>2
+	'version'=>3
 );
 
 // }
@@ -59,7 +60,7 @@ function OnlineStoreEbay_showProductEditFormTabs(
 		$product['ebay_bids_start_at']=0;
 	}
 	if (!$product['ebay_buy_now_price']) {
-		$product['ebay_buy_now_price']=$product['os_base_price'];
+		$product['ebay_buy_now_price']=$product['os_base_price']*1.1+.5;
 	}
 	$howMany=$product['ebay_how_many_to_sell'];
 	echo '</td></tr>'
@@ -71,4 +72,8 @@ function OnlineStoreEbay_showProductEditFormTabs(
 	WW_addScript('/ww.plugins/online-store-ebay/admin/product-edit.js');
 	WW_addScript('/j/jquery.optionTree.js');
 	echo '</div>';
+}
+function OnlineStoreEbay_showImportOrdersButton() {
+	WW_addScript('/ww.plugins/online-store-ebay/import-orders.js');
+	return '<button id="onlineStoreEbay-importOrders">Import EBay Orders</button>';
 }

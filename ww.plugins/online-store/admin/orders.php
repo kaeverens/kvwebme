@@ -44,6 +44,7 @@ if (!isset($_SESSION['online-store']['status'])) {
 if (isset($_REQUEST['online-store-status'])) {
 	$_SESSION['online-store']['status']=$_REQUEST['online-store-status'];
 }
+$c.=Core_trigger('online-store-list-orders');
 $c.='<p>'
 	.__('This list shows orders with the status: ')
 	.'<select id="online-store-status">';
@@ -51,7 +52,8 @@ $statii=array(
 	'0'=>__('Unpaid'),
 	'4'=>__('Authorised'),
 	'1'=>__('Paid'),
-	'2'=>__('Delivered'),
+	'5'=>__('Prepared'),
+	'2'=>__('Dispatched'),
 	'3'=>__('Cancelled'),
 	'all'=>__('Show All Orders')
 );
@@ -119,7 +121,7 @@ if (is_array($rs) && count($rs)) {
 		.'<select id="onlinestore-orders-action"><option value="0"> -- </option>'
 		.'<option value="1">'.__('Mark as Unpaid').'</option>'
 		.'<option value="2">'.__('Mark as Paid').'</option>'
-		.'<option value="3">'.__('Mark as Delivered').'</option>'
+		.'<option value="3">'.__('Mark as Dispatched').'</option>'
 		.'<option value="4">'.__('Download as PDF').'</option>'
 		.'</select>';
 }

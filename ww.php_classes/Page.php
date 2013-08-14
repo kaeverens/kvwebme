@@ -382,11 +382,14 @@ class Page{
 		$this->vars=array();
 		if (!$pvq) {
 			$fname='page_vars_'.$this->id;
-			$pvq=Core_cacheLoad('pages', $fname);
-			if ($pvq===false) {
+			$pvq=Core_cacheLoad('pages', $fname, -1);
+			if ($pvq===-1) {
 				$pvq=dbAll("select * from page_vars where page_id=".$this->id);
 				Core_cacheSave('pages', $fname, $pvq);
 			}
+		}
+		if (!is_array($pvq)) {
+			return $this;
 		}
 		foreach ($pvq as $pvr) {
 			$this->vars[$pvr['name']]=$pvr['value'];

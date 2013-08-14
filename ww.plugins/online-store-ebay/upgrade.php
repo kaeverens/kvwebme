@@ -22,3 +22,7 @@ if ($version==1) {
 	dbQuery('alter table products add ebay_how_many_to_sell int default 1;');
 	$version=2;
 }
+if ($version==2) {
+	dbQuery('alter table online_store_orders add ebayOrderId text');
+	$version=3;
+}

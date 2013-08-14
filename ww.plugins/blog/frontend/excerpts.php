@@ -114,7 +114,7 @@ if ($this_page) {
 		.'newer entries</a>';
 }
 if (!isset($nobottomlinks)) {
-	$bottom_links[]='<a class="blog-link-to-all-authors" href="'
+	$bottom_links[]='<a style="display:none" class="blog-link-to-all-authors" href="'
 		.$links_prefix.'/authors">'
 		.'list of authors</a>';
 	$c.='<div class="blog-bottom-links">'.join(' | ', $bottom_links).'</div>';

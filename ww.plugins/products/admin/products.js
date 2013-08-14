@@ -25,13 +25,19 @@ $(function() {
 			'type':'field', 'field_name':'date_created', 'text':'Date Added', 'edit':0}
 	];
 	var cols=[
-		{'sWidth':'4%', 'bSortable':false}, {'sWidth':'4%'},  {'sWidth':'64%'},
-		{'sWidth':'10%'}, {'sWidth':'4%'}, {'sWidth':'10%'}, {'sWidth':'4%'},
-		{'sWidth':'4%'}, {'sWidth':'4%'}
+		{'bSortable':false,'sWidth':'1%'},
+		{'sWidth':'1%'},
+		{'sWidth':'20%'},
+		{'sWidth':'1%'},
+		{'sWidth':'1%'},
+		{'sWidth':'2%'},
+		{'sWidth':'1%'},
+		{'sWidth':'1%'},
+		{'sWidth':'2%'}
 	];
 	for (var i in extraProductColumns) {
 		columns.push(extraProductColumns[i]);
-		cols.push({'sWidth':'4%'});
+		cols.push({'sWidth':'1%'});
 	}
 	var table='<table id="products-list"><thead><tr>';
 	for (var i=0;i<columns.length;++i) {
@@ -157,7 +163,7 @@ $(function() {
 			'bProcessing': true,
 			'bJQueryUI': true,
 			'bServerSide': true,
-			'bAutoWidth': false,
+			'bAutoWidth':false,
 			'aoColumns':cols,
 			'sAjaxSource': '/a/p=products/f=adminProductsListDT',
 			'fnRowCallback': function( nRow, aData, iDisplayIndex ) {

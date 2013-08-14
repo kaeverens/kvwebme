@@ -1,4 +1,6 @@
-window.os_statuses=['Unpaid', 'Paid', 'Delivered', 'Cancelled', 'Authorised'];
+window.os_statuses=[
+	'Unpaid', 'Paid', 'Dispatched', 'Cancelled', 'Authorised', 'Prepared'
+];
 function os_invoice(id, print){
 	var w=$(window), wh=w.height(), ww=w.width(), p=print?'&print=1':'';
 	$('<iframe id="externalSite" class="externalSite" src="/ww.plugins/online-store/admin/show-invoice.php?id='+id+p+'" />').dialog({
@@ -105,7 +107,7 @@ function onlinestoreFieldsUpdate(){
 }
 function onlinestoreStatus(id, current_status){
 	var options=[];
-	for(var i=0;i<window.os_statuses.length;++i){
+	for (var i=0;i<window.os_statuses.length;++i){
 		var html='<option value="'+i+'"';
 		if(i==current_status){
 			html+=' selected="selected"';

@@ -23,7 +23,7 @@
 	*/
 function Products_adminCategoriesGetJSTree($params=array(), $pid=0) {
 	$sql='select id,name from products_categories where parent_id='.$pid
-		.' order by sortNum';
+		.' order by sortNum, name';
 	$cats=dbAll($sql);
 	$arr=array();
 	foreach ($cats as $cat) {
@@ -298,7 +298,7 @@ function Products_adminCategoryMove() {
 		}
 		dbQuery('update products_categories set sortNum='.$index.' where id='.$cid);
 	}
-	return Products_adminCategoryGetFromID($id);
+	return Products_adminCategoryGetFromID($cid);
 }
 
 // }

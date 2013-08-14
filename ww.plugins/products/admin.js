@@ -350,6 +350,9 @@ function Products_screenCategories() {
 	}
 	function showCategory(id) {
 		function filterMatch(str, filters) {
+			if (str===null) {
+				return false;
+			}
 			str=str.toLowerCase();
 			if ('function' == typeof filters.test) {
 				return filters.test(str);
@@ -443,7 +446,7 @@ function Products_screenCategories() {
 			}
 		}
 		var mainDetails='<table style="width:100%">'
-			+'<tr><th>Name</th><td><input id="category-name"/></td>'
+			+'<tr><th>Name</th><td><input id="category-name" class="wide"/></td>'
 			+'<th rowspan="2">Icon</th><td><span id="category-icon-upload"/></td>'
 			+'<td rowspan="2" id="category-icon">'
 			+'</td></tr>'

@@ -11,6 +11,13 @@ li.fg-menu-container{
 }
 div.fg-menu-container ul li a{
 	display:block;
+	position:relative;
+}
+div.fg-menu-container .ui-icon{
+	position:absolute;
+	display:block;
+	right:2px;
+	top:2px;
 }
 div.menu-fg ul table{
 	display:none;

@@ -16,6 +16,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 	$tmpdir='/tmp/webmeBackup-import-'.md5($_SERVER['HTTP_HOST'].microtime(true));
 	mkdir($tmpdir);
 	$uname=$_FILES['file']['tmp_name'];
+	$uname='/www.soundinsulation.ie-2013-07-22.zip';
 	$password=addslashes($_POST['password']);
 	$cmd='cd '.$tmpdir.' && unzip -oP "'.$password.'" "'.$uname.'"';
 	`$cmd`;

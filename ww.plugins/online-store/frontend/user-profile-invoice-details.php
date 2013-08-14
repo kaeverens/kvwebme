@@ -20,13 +20,16 @@ switch ($iid['status']) {
 		$status='Paid';
 	break;
 	case '2':
-		$status='Delivered';
+		$status='Dispatched';
 	break;
 	case '3':
 		$status='Cancelled';
 	break;
 	case '4':
 		$status='Authorised';
+	break;
+	case '5':
+		$status='Prepared';
 	break;
 	default:
 		$status='Status number '.$iid['status'].' is unknown';

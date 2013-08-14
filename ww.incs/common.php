@@ -29,10 +29,12 @@ function Core_commentsShow($url) {
 		$md5=md5($url);
 		$comments=Core_cacheLoad('blog-comments', $md5, -1);
 		if ($comments===-1) {
-			$comments=file_get_contents(
+			$comments=@file_get_contents(
 				'https://graph.facebook.com/comments/?ids='.urlencode($url)
 			);
-			Core_cacheSave('blog-comments', $md5, $comments);
+			if ($comments) {
+				Core_cacheSave('blog-comments', $md5, $comments);
+			}
 		}
 		$c.='<div style="display:none;">'.$comments.'</div>';
 	}

@@ -30,39 +30,44 @@ $(function(){
 		$price.text(currency+n);
 	}
 	var cache={}, lastXhr;
+	// { search
 	$('input[name=products-search]')
-		.autocomplete({
-			source: function(request, response){
-				var term = request.term;
-				if ( term in cache ) {
-					response( cache[ term ] );
-					return;
-				}
-				lastXhr = $.getJSON( 
-					"/ww.plugins/products/frontend/search.php", 
-					request, 
-					function( data, status, xhr ) {
-						cache[ term ] = data;
-						if ( xhr === lastXhr ) {
-							response( data );
+		.keyup(function() {
+			clearTimeout(window.productsSearch);
+			var $this=$(this), term=$this.val();
+			if (!term) {
+				return;
+			}
+			window.productsSearch=setTimeout(function() {
+				$.post(
+					'/a/p=products/f=filter/term='+term,
+					function(ret) {
+						var list=[];
+						for (var i=0;i<ret.length;++i) {
+							var p=ret[i];
+							list.push('<li><a href="'+p.url+'">'+p.name+'</a></li>');
 						}
+						$('#products-search-results').remove();
+						var $offset=$this.offset();
+						$('<div id="products-search-results"><ul>'
+							+list.join('')
+							+'</ul></div>')
+							.appendTo('body')
+							.css({
+								'left':$offset.left,
+								'top':$offset.top+$this.outerHeight()
+							})
 					}
 				);
-			}
+			}, 500);
 		})
-		.focus(function(){
-			this.value='';
-		})
-		.change(function(){
-			var $this=$(this), $form=$this.closest('form');
-			if(!$form.length){
-				$form=$this.wrap('<form style="display:inline" action="'+
-					(document.location.toString())+'" />');
-			}
-			setTimeout(function(){
-				$this.closest('form').submit();
+		.blur(function() {
+			clearTimeout(window.productsSearch);
+			setTimeout(function() {
+				$('#products-search-results').remove();
 			}, 500);
 		});
+	// }
 	// { on rollover of submit button
 	$('body').on('mouseover', 'div.products-product form input[type=submit], div.products-product form button.submit-button',  function(){
 		var inps=[];
@@ -117,7 +122,7 @@ $(function(){
 				if (ret && ret.ok) {
 					document.location=redirect=='checkout'
 						?'/_r?type=online-store'
-						:document.location.toString().replace('/showcart', '')+'/showcart';
+						:document.location.toString().replace(/\?.*|\/showcart/, '')+'/showcart';
 					return;
 				}
 				if (ret.error=='expired') {

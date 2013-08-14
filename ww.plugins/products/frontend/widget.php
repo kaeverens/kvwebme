@@ -11,35 +11,6 @@
 	* @link     http://kvsites.ie/
 	*/
 
-// { functions
-/**
-	* get a list of sub-categories in UL format
-	*
-	* @param int $pid product category ID
-	*
-	* @return string $html the UL
-	*/
-function Products_categoriesListSubCats($pid) {
-	$cats=dbAll(
-		'select id,name from products_categories '
-		.'where parent_id='.$pid.' and enabled order by sortNum'
-	);
-	if (!$cats || !count($cats)) {
-		return '';
-	}
-	$html='<ul>';
-	foreach ($cats as $c) {
-		$cat=ProductCategory::getInstance($c['id']);
-		$name=$c['name'];
-		$html.='<li class="products-cat-'
-			.preg_replace('/[^a-zA-Z0-9\-_]/', '', $name).'">'
-			.'<a href="'.$cat->getRelativeUrl().'">'.htmlspecialchars($name).'</a>';
-		$html.='</li>';
-	}
-	return $html.'</ul>';
-}
-// }
-
 $html='';
 $widget_type=isset($vars->widget_type) && $vars->widget_type
 	?$vars->widget_type

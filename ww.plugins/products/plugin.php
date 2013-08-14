@@ -523,46 +523,16 @@ class Product{
 		if (count($productCats)) {
 			$pcats=array();
 			foreach ($productCats as $productCat) {
-				$pcats[]=$productCat['category_id'];
-			}
-			$rs=Core_cacheLoad(
-				'products',
-				'pages_with_categories_'.join(',', $pcats)
-			);
-			if ($rs===false) {
-				$sql='select page_id from page_vars where '
-					.'name="products_category_to_show" and value in ('
-					.join(',', $pcats).')';
-				$rs=dbAll($sql);
-				Core_cacheSave(
-					'products',
-					'pages_with_categories_'.join(',', $pcats),
-					$rs
-				);
-			}
-			$pid=0;
-			foreach ($rs as $r) {
-				$page=Page::getInstance($r['page_id']);
-				if ($page->type!='products') {
-					continue;
+				$cid=$productCat['category_id'];
+				$cat=ProductCategory::getInstance($cid);
+				if ($cat) {
+					$url=$cat->getRelativeUrl();
+					return $url.'/'.$this->id.'-'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
 				}
-				$pid=$r['page_id'];
-				if ($pid==$PAGEDATA->id) {
-					break;
-				}
-			}
-			if ($pid) {
-				$page = Page::getInstance($pid);
-				$this->relativeUrl=$page->getRelativeUrl()
-					.'/'.$this->id.'-'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
-				return $this->relativeUrl;
 			}
 		}
 		// }
 		$cat=0;
-		if (count($productCats)) {
-			$cat=$productCats[0]['category_id'];
-		}
 		if (@$_REQUEST['product_cid']) {
 			$cat=(int)$_REQUEST['product_cid'];
 		}
@@ -724,6 +694,9 @@ class ProductCategory{
 		}
 		if (!array_key_exists($id, self::$instances)) {
 			new ProductCategory($id);
+		}
+		if (!array_key_exists($id, self::$instances)) {
+			self::$instances[$id]=false;
 		}
 		return self::$instances[$id];
 	}
@@ -1003,6 +976,7 @@ class ProductType{
 		if (!is_array(@$this->data_fields)) {
 			$this->data_fields=array();
 		}
+		$productVals=array();
 		foreach ($this->data_fields as $f) {
 			$f->n=preg_replace('/[^a-zA-Z0-9\-_]/', '_', $f->n);
 			$val=$product->get($f->n);
@@ -1152,7 +1126,14 @@ class ProductType{
 					}
 					// }
 			}
+			$productVals[$f->n]=$val;
 			$PAGEDATA->title=str_replace('{{$'.$f->n.'}}', $val, $PAGEDATA->title);
+		}
+		if (isset($PAGEDATA->vars['products_pagedescriptionoverride'])
+			&& $PAGEDATA->vars['products_pagedescriptionoverride']) {
+			$desc=preg_replace('/<[^>]*>/', '', $productVals['description']);
+			$desc=trim(preg_replace('/\s+/m', ' ', $desc));
+			$PAGEDATA->description=substr($desc, 0, 153).'...';
 		}
 		if (isset($product->ean)) {
 			$smarty->assign('_ean', $product->ean);
@@ -2058,6 +2039,9 @@ function Products_image($params, $smarty) {
 	$product=$smarty->smarty->tpl_vars['product']->value;
 	$iid=$product->getDefaultImage();
 	if (!$iid) {
+		$iid=Core_trigger('product-images-not-found', array($product->id));
+	}
+	if (!$iid) {
 		return Products_imageNotFound($params, $smarty);
 	}
 	list($link1, $link2)=@$params['nolink']
@@ -2504,6 +2488,34 @@ function Products_listCategoryContents($params, $smarty) {
 	return Products_listCategoryContents2($params, $smarty);
 }
 
+// }
+// { Products_categoriesListSubCats
+/**
+	* get a list of sub-categories in UL format
+	*
+	* @param int $pid product category ID
+	*
+	* @return string $html the UL
+	*/
+function Products_categoriesListSubCats($pid) {
+	$cats=dbAll(
+		'select id,name from products_categories '
+		.'where parent_id='.$pid.' and enabled order by sortNum'
+	);
+	if (!$cats || !count($cats)) {
+		return '';
+	}
+	$html='<ul>';
+	foreach ($cats as $c) {
+		$cat=ProductCategory::getInstance($c['id']);
+		$name=$c['name'];
+		$html.='<li class="products-cat-'
+			.preg_replace('/[^a-zA-Z0-9\-_]/', '', $name).'">'
+			.'<a href="'.$cat->getRelativeUrl().'">'.htmlspecialchars($name).'</a>';
+		$html.='</li>';
+	}
+	return $html.'</ul>';
+}
 // }
 // { Products_map
 

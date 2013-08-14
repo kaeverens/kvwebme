@@ -72,7 +72,6 @@ function OnlineStoreEbay_adminLinkEbayCat() {
 }
 function OnlineStoreEbay_adminPublish() {
 	require_once 'eBaySession.php';
-	error_reporting(E_ALL);
 	$rs=dbAll('select * from online_store_vars where name like "ebay%"');
 	$vs=array();
 	foreach ($rs as $r) {
@@ -104,11 +103,12 @@ function OnlineStoreEbay_adminPublish() {
 	$countryFrom=$vs['ebay_country_from'];
 	$currency='EUR';
 	$dispatchDays=$vs['ebay_dispatch_days'];
-	$product=Product::getInstance((int)$_REQUEST['id']);
+	$productId=(int)$_REQUEST['id'];
+	$product=Product::getInstance($productId);
 	$description=$product->get('description');
 	$paypalAddress=$vs['ebay_paypal_address'];
-	$categoryId=dbOne('select ebay_id from products_categories, products_categories_products where product_id='.$product->id.' and category_id=id', 'ebay_id');
-	$howMany=1;
+	$categoryId=dbOne('select ebay_id from products_categories, products_categories_products where product_id='.$productId.' and category_id=id', 'ebay_id');
+	$howMany=(int)$_REQUEST['quantity'];
 	$returnsPolicy=$vs['ebay_returns_policy'];
 	$title=$product->get('name');
 	$xml='<?xml version="1.0" encoding="utf-8"?>'."\n"
@@ -116,18 +116,20 @@ function OnlineStoreEbay_adminPublish() {
 		.'<ErrorLanguage>en_US</ErrorLanguage><WarningLevel>High</WarningLevel>';
 	// { main details
 	$xml.='<Item>'
+		.'<ApplicationData>{"productId":'.$productId.'}</ApplicationData>'
 		.'<Site>Ireland</Site>'
 		.'<Title>'.htmlspecialchars($title).'</Title>';
 	// }
 	// { price
-	$xml.='<BuyItNowPrice>'.sprintf('%.2f', $price).'</BuyItNowPrice>'
-		.'<Currency>'.$currency.'</Currency>';
+	$xml.='<Currency>'.$currency.'</Currency>';
 	if ($bidsStartPrice>=.01) {
-		$xml.='<StartPrice>'.$bidsStartPrice.'</StartPrice>'
+		$xml.='<BuyItNowPrice>'.sprintf('%.2f', $price).'</BuyItNowPrice>'
+			.'<StartPrice>'.sprintf('%.2f', $bidsStartPrice).'</StartPrice>'
 			.'<ListingType>Chinese</ListingType>';
 	}
 	else {
-		$xml.='<ListingType>FixedPriceItem</ListingType>';
+		$xml.='<StartPrice>'.sprintf('%.2f', $price).'</StartPrice>'
+			.'<ListingType>FixedPriceItem</ListingType>';
 	}
 	// }
 	// { pictures
@@ -164,9 +166,22 @@ function OnlineStoreEbay_adminPublish() {
 		// }
 		// { shipping
 		.'<ShippingDetails>'
-		.'<InternationalShippingServiceOption><ShippingService>IE_SellersStandardRateInternational</ShippingService><ShippingServiceAdditionalCost currencyID="EUR">0</ShippingServiceAdditionalCost><ShippingServiceCost currencyID="EUR">0</ShippingServiceCost><ShippingServicePriority>0</ShippingServicePriority><ShipToLocation>Europe</ShipToLocation></InternationalShippingServiceOption>'
-		.'<ShippingServiceOptions><FreeShipping>true</FreeShipping><ShippingService>IE_EconomyDeliveryFromAbroad</ShippingService></ShippingServiceOptions>'
+		.'<InternationalShippingServiceOption>'
+		.'<ShippingService>IE_SellersStandardRateInternational</ShippingService>'
+		.'<ShippingServiceAdditionalCost currencyID="EUR">0</ShippingServiceAdditionalCost><ShippingServiceCost currencyID="EUR">0</ShippingServiceCost><ShippingServicePriority>0</ShippingServicePriority><ShipToLocation>Europe</ShipToLocation></InternationalShippingServiceOption>'
+		.'<ShippingServiceOptions><FreeShipping>true</FreeShipping>'
+		.'<ShippingService>IE_EconomyDeliveryFromAbroad</ShippingService>'
+		.'<ShippingServiceAdditionalCost currencyID="EUR">0</ShippingServiceAdditionalCost>'
+		.'</ShippingServiceOptions>'
 		.'</ShippingDetails>'
+		// }
+		// { brand, etc
+		.'<ItemSpecifics>'
+		.'<NameValueList>'
+		.'<Name>Brand</Name>'
+		.'<Value>Generic</Value>'
+		.'</NameValueList>'
+		.'</ItemSpecifics>'
 		// }
 		.'</Item>'
 		.'<RequesterCredentials>'
@@ -274,4 +289,126 @@ function OnlineStoreEbay_adminListShipTo() {
 	$xmlstr=$sess->sendHttpRequest($xml);
 	$xml=new SimpleXMLElement($xmlstr);
 	return $xml;
+}
+function OnlineStoreEbay_adminImportOrders() {
+	require_once 'eBaySession.php';
+	error_reporting(E_ALL);
+	$rs=dbAll('select * from online_store_vars where name like "ebay%"');
+	$vs=array();
+	foreach ($rs as $r) {
+		$vs[$r['name']]=$r['val'];
+	}
+	$production=(int)$vs['ebay_status'];
+	if ($production) {
+		$devID=$vs['ebay_devid'];
+		$appID=$vs['ebay_appid'];
+		$certID=$vs['ebay_certid'];
+		$serverUrl = 'https://api.ebay.com/ws/api.dll';	  // server URL different for prod and sandbox
+		$userToken=$vs['ebay_usertoken'];
+	}
+	else {  
+		$devID=$vs['ebay_sandbox_devid'];
+		$appID=$vs['ebay_sandbox_appid'];
+		$certID=$vs['ebay_sandbox_certid'];
+		$serverUrl='https://api.sandbox.ebay.com/ws/api.dll';
+		$userToken=$vs['ebay_sandbox_usertoken'];
+	}
+	$compatabilityLevel=827;	// eBay API version
+	$siteToUseID=205;
+	$sess=new eBaySession(
+		$userToken, $devID, $appID, $certID, $serverUrl,
+		$compatabilityLevel, $siteToUseID, 'GetOrders'
+	);
+	$xml='<?xml version="1.0" encoding="utf-8"?>'
+		.'<GetOrdersRequest xmlns="urn:ebay:apis:eBLBaseComponents">'
+		.'	<RequesterCredentials>'
+		.'		<eBayAuthToken>'.$userToken.'</eBayAuthToken>'
+		.'	</RequesterCredentials>'
+		.'	<NumberOfDays>10</NumberOfDays>'
+		.'	<OrderRole>Seller</OrderRole>'
+		.'	<OrderStatus>Completed</OrderStatus>'
+		.'	<DetailLevel>ReturnAll</DetailLevel>'
+		.'	<SortingOrder>Descending</SortingOrder>'
+		#.'	<OutputSelector> string </OutputSelector>'
+		.'	<WarningLevel>High</WarningLevel>'
+		.'</GetOrdersRequest>';
+	$xmlstr=$sess->sendHttpRequest($xml);
+	$reply=new SimpleXMLElement($xmlstr);
+	if (isset($reply->Errors)) {
+		return array(
+			'sent'=>$xml,
+			'reply'=>new SimpleXMLElement($xmlstr),
+			'errors'=>$reply->Errors
+		);
+	}
+	$imported=0;
+	foreach ($reply->OrderArray->Order as $order) {
+		$order=json_decode(json_encode($order));
+		$ebayOrderId=$order->OrderID;
+		$r=dbOne(
+			'select id from online_store_orders where ebayOrderId="'.$ebayOrderId.'"'
+			.' limit 1', 'id'
+		);
+		if ($r) {
+			continue;
+		}
+		$address=$order->ShippingAddress;
+		$form_vals=array(
+			'FirstName'=>preg_replace('/ .*/', '', $address->Name),
+			'Surname'=>preg_replace('/.*? /', '', $address->Name),
+			'Phone'=>$address->Phone,
+			'Email'=>'ebay@kaebots.com',
+			'Street'=>$address->Street1,
+			'Street2'=>$address->Street2,
+			'Town'=>$address->CityName,
+			'County'=>$address->StateOrProvince,
+			'PostCode'=>$address->PostalCode,
+			'Country'=>$address->CountryName,
+			'CountryCode'=>$address->Country
+		);
+		$form_vals=json_encode($form_vals);
+		$total=(float)$order->Total;
+		$date_created=$order->CreatedTime;
+		$transactions=array();
+		$tArr=$order->TransactionArray->Transaction;
+		if (!is_array($tArr)) {
+			$transactions=array($tArr);
+		}
+		else {
+			$transactions=$tArr;
+		}
+		$items=array();
+		foreach ($transactions as $transaction) {
+			$item=$transaction->Item;
+			$appData=json_decode(htmlspecialchars_decode($item->ApplicationData));
+			$itemId=$appData->productId;
+			$key='products_'.$itemId;
+			if (!isset($items[$key])) {
+				$items[$key]=array();
+				$r=dbRow('select * from products where id='.$itemId.' limit 1');
+				$items[$key]=array(
+					'short_desc'=>$r['name'],
+					'id'=>$itemId,
+					'amt'=>0
+				);
+			}
+			$items[$key]['amt']+=$transaction->QuantityPurchased;
+		}
+		$items=json_encode($items);
+		dbQuery(
+			'insert into online_store_orders set total="'.$total.'"'
+			.', items="'.addslashes($items).'"'
+			.', ebayOrderId="'.$ebayOrderId.'"'
+			.', form_vals="'.addslashes($form_vals).'"'
+			.', date_created="'.addslashes($date_created).'"'
+			.', status=1'
+		);
+		$id=dbLastInsertId();
+		dbQuery('update online_store_orders set invoice_num=id where id='.$id);
+		$imported++;
+	}
+	return array(
+		'imported'=>$imported,
+		'reply'=>new SimpleXMLElement($xmlstr)
+	);
 }

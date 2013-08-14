@@ -47,3 +47,25 @@
 #products-mapview{
 	 min-height:400px;
 }
+
+#products-search-results ul, #products-search-results li{
+	list-style:none;
+	max-width:400px;
+	overflow:hidden;
+	margin:0;
+	padding:0;
+}
+#products-search-results a{
+	display:block;
+	padding:2px 5px;
+	margin:1px;
+	border;1px solid #eee;
+}
+#products-search-results{
+	background:rgba(255,255,255,.9);
+	border-radius:10px;
+	position:absolute;
+	z-index:1000;
+	border:1px solid #666;
+	box-shadow:2px 2px 5px #666;
+}

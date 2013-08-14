@@ -470,6 +470,35 @@ function Products_reviewUpdate() {
 }
 
 // }
+// { Products_filter
+
+function Products_filter() {
+	if (!isset($_REQUEST['term']) || $_REQUEST['term']=='') {
+		return array();
+	}
+	$term=$_REQUEST['term'];
+	$hash='search|'.md5($term);
+	$res=Core_cacheLoad('products', $hash, -1);
+	if ($res===-1) {
+		$rs=dbAll(
+			'select id,name from products where (name like "%'.addslashes($term).'%"'
+			.' or data_fields like "%'.addslashes($term).'%")'
+			.' and enabled limit 20'
+		);
+		
+		$res=array();
+		foreach ($rs as $r) {
+			$res[]=array(
+				'url'=>Product::getInstance($r['id'])->getRelativeUrl(),
+				'name'=>__FromJson($r['name'])
+			);
+		}
+		Core_cacheSave('products', $hash, $res);
+	}
+	return($res);
+}
+
+// }
 // { Products_showDefaultImg
 
 /**

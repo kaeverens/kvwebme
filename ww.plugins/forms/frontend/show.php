@@ -171,7 +171,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 					$_REQUEST[$name]=date('Y-m-d');
 				}
 				$d='<input name="'.$name.'" value="'.$_REQUEST[$name].'"'.$help
-					.' class="date" type="date" placeholder="yyyy-mm-dd" '
+					.' class="date" placeholder="yyyy-mm-dd" '
 					.'metadata="'.addslashes($r2['extra']).'"/>';
 				$has_date=true;
 			break; // }
