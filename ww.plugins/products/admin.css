@@ -20,3 +20,6 @@ td.editable{
 .warning-too-long{
 	box-shadow:0 0 2px #f00;
 }
+#product-images-wrapper .default{
+	border:1px solid red;
+}

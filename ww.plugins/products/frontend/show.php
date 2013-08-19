@@ -1027,11 +1027,14 @@ class Products{
 					$prods[]=$tmpprods[$i];
 				}
 			}
+			$prefix='';
 			if ($PAGEDATA->vars['products_what_to_show']==2) {
 				$cat=ProductCategory::getInstance($PAGEDATA->vars['products_category_to_show']);
-				$prefix=$cat->getRelativeUrl();
+				if ($cat) {
+					$prefix=$cat->getRelativeUrl();
+				}
 			}
-			else {
+			if (!$prefix) {
 				$prefix=$PAGEDATA->getRelativeUrl();
 			}
 			if ($start>$limit_start) {
