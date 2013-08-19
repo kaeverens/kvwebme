@@ -67,6 +67,25 @@ function WW_getScripts() {
 // }
 
 require_once 'ww.incs/common.php';
+if (isset($DBVARS['ddos_wait'])) {
+	$dname=USERBASE.'/ww.cache/ddos_wait/';
+	$ip=$_SERVER['REMOTE_ADDR'];
+	if (!file_exists($dname.'/'.$ip)) {
+		if (!file_exists($dname)) {
+			mkdir($dname, 0777, true);
+		}
+		touch($dname.'/'.$ip);
+	}
+	else {
+		$t=filectime($dname.'/'.$ip);
+		$d=time()-$t;
+		if ($d<$DBVARS['ddos_wait']) {
+			sleep($DBVARS['ddos_wait']-$d);
+		}
+		unlink($dname.'/'.$ip);
+		touch($dname.'/'.$ip);
+	}
+}
 if (isset($https_required) && $https_required && !$_SERVER['HTTPS']) {
 	redirect(
 		'https://www.'.str_replace('www.', '', $_SERVER['HTTP_HOST']).'/',
