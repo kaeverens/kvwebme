@@ -59,8 +59,9 @@ function OnlineStoreEbay_showProductEditFormTabs(
 	if (!$product['ebay_bids_start_at']) {
 		$product['ebay_bids_start_at']=0;
 	}
-	if (!$product['ebay_buy_now_price']) {
-		$product['ebay_buy_now_price']=$product['os_base_price']*1.1+.5;
+	$min=$product['os_base_price']*1.2+.5;
+	if ($product['ebay_buy_now_price']<$min) {
+		$product['ebay_buy_now_price']=$min;
 	}
 	$howMany=$product['ebay_how_many_to_sell'];
 	echo '</td></tr>'

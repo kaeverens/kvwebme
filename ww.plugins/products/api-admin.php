@@ -910,9 +910,7 @@ function Products_adminProductDelete() {
 	$pid=(int)$_REQUEST['id'];
 	dbQuery('delete from products where id='.$pid);
 	dbQuery('delete from products_categories_products where product_id='.$pid);
-	dbQuery(
-		'delete from products_relations where from_id='.$pid.' or to_id='.$pid
-	);
+	dbQuery('delete from products_relations where from_id='.$pid.' or to_id='.$pid);
 	dbQuery('delete from products_reviews where product_id='.$pid);
 	Core_cacheClear();
 	return array('ok'=>1);
@@ -952,7 +950,7 @@ function Products_adminProductsDisable() {
 	* @return array status
 	*/
 function Products_adminProductsDelete() {
-	$ids_to_check=explode(',', $_REQUEST['ids']);
+	$ids_to_check=$_REQUEST['ids'];
 	if (!count($ids_to_check)) {
 		return array('error'=>'no ids');
 	}
@@ -1316,12 +1314,11 @@ function Products_adminProductsListDT() {
 	*/
 function Products_adminProductsListCommonDetails() {
 	$constraint='';
-	if (isset($_REQUEST['date_edited'])) {
+	if (isset($_REQUEST['date_edited']) && $_REQUEST['date_edited']!='0000-00-00') {
 		$constraint=' where date_edited>"'.addslashes($_REQUEST['date_edited']).'"';
 	}
 	$sql='select id, name, num_of_categories, date_edited from products'
-		.$constraint
-		.' order by name';
+		.$constraint;
 	$ps=dbAll($sql);
 	$arr=array();
 	foreach ($ps as $p) {

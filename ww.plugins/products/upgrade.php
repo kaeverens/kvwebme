@@ -385,3 +385,8 @@ if ($version==49) { // add allowcomments to product types
 	);
 	$version=50;
 }
+if ($version==50) { // optimise large product databases
+	dbQuery('alter table products_categories add index parent_id (parent_id)');
+	dbQuery('alter table products_categories_products add index category_id (category_id)');
+	$version=51;
+}

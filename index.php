@@ -125,11 +125,15 @@ if (!$id) {
 			}
 		}
 		if (!$id) {
-			$id=(int)dbOne(
-				'select page_id from short_urls where short_url="'
-				.addslashes($page).'"',
-				'page_id'
-			);
+			$id=Core_cacheLoad('short_urls', md5($page), false);
+			if ($id===false) {
+				$id=(int)dbOne(
+					'select page_id from short_urls where short_url="'
+					.addslashes($page).'"',
+					'page_id'
+				);
+				Core_cacheSave('short_urls', md5($page), $id);
+			}
 		}
 	}
 	if (!$id) {          // or maybe it's a "special" or the home page

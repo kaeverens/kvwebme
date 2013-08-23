@@ -249,7 +249,7 @@ $(function() {
 				if (!confirm('Are you sure you want to delete these products?')) {
 					return;
 				}
-				$.post('/a/p=products/f=adminProductsDelete/ids='+ids, function() {
+				$.post('/a/p=products/f=adminProductsDelete', {'ids':ids}, function() {
 					$('#products-action').val('0');
 					$pTable.fnDraw(false);
 					$('#products-selectall').attr('checked', false);

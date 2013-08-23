@@ -32,7 +32,11 @@ class User{
 		}
 		$filter=$enabled?' and active':'';
 		if (!$r) {
-			$r=dbRow("select * from user_accounts where id=$id $filter limit 1");
+			$r=Core_cacheLoad('user_accounts', $id.'|'.$filter, -1);
+			if ($r===-1) {
+				$r=dbRow("select * from user_accounts where id=$id $filter limit 1");
+				Core_cacheSave('user_accounts', $id.'|'.$filter, $r);
+			}
 		}
 		if (!count($r) || !is_array($r)) {
 			return false;

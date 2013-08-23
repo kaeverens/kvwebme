@@ -138,7 +138,7 @@ $plugin=array(
 		'menu-subpages' => 'Products_getSubCategoriesAsMenu',
 		'menu-subpages-html' => 'Products_getSubCategoriesAsMenuHtml'
 	), // }
-	'version' => '50'
+	'version' => '51'
 );
 // }
 
@@ -760,10 +760,14 @@ class ProductCategory{
 			Core_cacheSave('products', 'page_for_category_'.$this->vals['id'], $ps1);
 		}
 		if ($ps1 && count($ps1)) {
-			$sql='select id from pages,page_vars where page_id=pages.id '
-				.'and page_vars.name="products_what_to_show" and page_vars.value=2 '
-				.'and id in ('.join(', ', array_keys($ps1)).')';
-			$pid=dbOne($sql, 'id');
+			$pid=Core_cacheLoad('pages,page_vars', 'idIn'.join(', ', array_keys($ps1)), -1);
+			if ($pid==-1) {
+				$sql='select id from pages,page_vars where page_id=pages.id '
+					.'and page_vars.name="products_what_to_show" and page_vars.value=2 '
+					.'and id in ('.join(', ', array_keys($ps1)).')';
+				$pid=dbOne($sql, 'id');
+				Core_cacheSave('pages,page_vars', 'idIn'.join(', ', array_keys($ps1)), $pid);
+			}
 			if ($pid) {
 				$page=Page::getInstance($pid);
 				return $page->getRelativeUrl();
@@ -1642,9 +1646,14 @@ function Products_frontendVarsSetup($PAGEDATA) {
 			?(int)$PAGEDATA->vars['products_category_to_show']:0;
 		$product_id=0;
 		foreach ($bits as $bit) {
-			$sql='select id from products_categories where parent_id='.$cat_id
-				.' and name like "'.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'"';
-			$id=dbOne($sql, 'id');
+			$n=preg_replace('/[^a-zA-Z0-9]/', '_', $bit);
+			$id=Core_cacheLoad('products_categories', '1|pid='.$cat_id.'|name='.$n, -1);
+			if ($id===-1) {
+				$sql='select id from products_categories where parent_id='.$cat_id
+					.' and name like "'.$n.'"';
+				$id=dbOne($sql, 'id');
+				Core_cacheSave('products_categories', '1|pid='.$cat_id.'|name='.$n, $id);
+			}
 			if ($id) {
 				$cat_id=$id;
 				$_REQUEST['product_cid']=$cat_id;
@@ -1655,20 +1664,34 @@ function Products_frontendVarsSetup($PAGEDATA) {
 					$pconstraint='id='.(int)$prefix;
 				}
 				else {
-					$pconstraint='link like "'.preg_replace('/[^a-zA-Z0-9]/', '_', $bit).'"';
+					$n=preg_replace('/[^a-zA-Z0-9]/', '_', $bit);
+					if (strpos($n, '_')===false) {
+						$pconstraint='link="'.$n.'"';
+					}
+					else {
+						$pconstraint='link like "'.$n.'"';
+					}
 				}
 				if ($cat_id) {
-					$id=dbOne(
-						'select product_id,name from products_categories_products,products'
-						.' where category_id='.$cat_id.' and '.$pconstraint.' and id=product_id',
-						'product_id'
-					);
+					$id=Core_cacheLoad('products_categories_products,products', $cat_id.'|'.$pconstraint, -1);
+					if ($id===-1) {
+						$id=dbOne(
+							'select product_id,name from products_categories_products,products'
+							.' where category_id='.$cat_id.' and '.$pconstraint.' and id=product_id',
+							'product_id'
+						);
+						Core_cacheSave('products_categories_products,products', $cat_id.'|'.$pconstraint, $id);
+					}
 				}
 				if (!$id) {
-					$id=dbOne(
-						'select id from products where '.$pconstraint,
-						'id'
-					);
+					$id=Core_cacheLoad('products', 'id|'.$pconstraint, -1);
+					if ($id===-1) {
+						$id=dbOne(
+							'select id from products where '.$pconstraint,
+							'id'
+						);
+						Core_cacheSave('products', 'id|'.$pconstraint, $id);
+					}
 				}
 				if ($id) {
 					$_REQUEST['product_id']=$id;
