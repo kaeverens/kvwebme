@@ -7,3 +7,6 @@
 .col-owner, .col-enabled. .col-stockControlTotal, col-stockNumber{
 	cursor:pointer;
 }
+#products-list thead input,#products-list thead select{
+	width:95%
+}

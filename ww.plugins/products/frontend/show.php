@@ -463,7 +463,7 @@ function Products_showByCategory(
 		$id, $search, array(), '', 'asc', $location, $noRecurse
 	);
 	$ret=$products->render(
-		$PAGEDATA, $start, $limit, $order_by, $order_dir, $limit_start
+		$PAGEDATA, $start, $limit, $order_by, $order_dir, $limit_start, 1
 	);
 	return $ret;
 }
@@ -925,27 +925,31 @@ class Products{
 		}
 		if ($tmpprods==-1) {
 			if ($order_by!='') {
+				$native=substr($order_by, 0, 1)==='_';
 				$tmpprods1=array();
 				$prods=$this->product_ids;
-				$sql='select id,data_fields from products where id in ('
+				$sql='select id';
+				if (!$native) {
+					$sql.=',data_fields';
+				}
+				$sql.=' from products where id in ('
 					.join(', ', $this->product_ids).')';
 				if ($enabledFilter==0) {
 					$sql.=' and enabled';
 				}
 				if ($enabledFilter==1) {
-					$sql='';
 				}
 				if ($enabledFilter==2) {
 					$sql.=' and !enabled';
 				}
-				if (substr($order_by, 0, 1)==='_') {
+				if ($native) {
 					$sql.=' order by '.substr($order_by, 1, strlen($order_by)-1);
 					if ($order_dir==1) {
 						$sql.=' desc';
 					}
 				}
 				$values=dbAll($sql);
-				if (substr($order_by, 0, 1)==='_') {
+				if ($native) {
 					$tmpprods=array();
 					if (is_array($values)) {
 						foreach ($values as $v) {

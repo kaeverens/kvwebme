@@ -5,10 +5,13 @@ $(function() {
 		},
 		{'name':'hasImages', 'type':'base', 'text':'&nbsp;'},
 		{'name':'name',
-			'type':'field', 'field_name':'name', 'text':'Name', 'edit':1},
+			'type':'field', 'field_name':'name', 'text':'Name', 'edit':1,
+			'searchable':1
+		},
 		{'name':'stockNumber',
 			'type':'field', 'field_name':'stock_number', 'text':'Stock Number',
-			'edit':1, 'edit_type':'int'},
+			'edit':1, 'edit_type':'int', 'searchable':1
+		},
 		{'name':'stockControlTotal',
 			'type':'field', 'field_name':'stockcontrol_total', 'text':'#',
 			'title':'Amount In Stock', 'edit':1, 'edit_type':'int'
@@ -20,7 +23,8 @@ $(function() {
 			'type':'field', 'field_name':'id', 'text':'ID'},
 		{'name':'enabled',
 			'type':'field', 'field_name':'enabled', 'text':'Enabled', 'edit':1,
-			'edit_type':'boolean'},
+			'edit_type':'boolean', 'searchable':1
+		},
 		{'name':'date_created',
 			'type':'field', 'field_name':'date_created', 'text':'Date Added', 'edit':0}
 	];
@@ -40,6 +44,26 @@ $(function() {
 		cols.push({'sWidth':'1%'});
 	}
 	var table='<table id="products-list"><thead><tr>';
+	for (var i=0;i<columns.length;++i) {
+		var col=columns[i];
+		table+='<th>';
+		if (col.searchable) {
+			if (col.edit_type=='int') {
+				table+='<input class="int" data-for="'+col.name+'"/>';
+			}
+			else if (col.edit_type=='float') {
+				table+='<input class="float" data-for="'+col.name+'"/>';
+			}
+			else if(col.edit_type=='boolean') {
+				table+='<select class="boolean" data-for="'+col.name+'"><option></option><option value="1">Yes</option><option value="0">No</option></select>';
+			}
+			else {
+				table+='<input class="string" data-for="'+col.name+'"/>';
+			}
+		}
+		table+='</th>';
+	}
+	table+='</tr><tr>';
 	for (var i=0;i<columns.length;++i) {
 		table+='<th>'+columns[i].text+'</th>';
 	}

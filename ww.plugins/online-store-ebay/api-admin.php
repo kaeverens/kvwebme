@@ -135,7 +135,9 @@ function OnlineStoreEbay_adminPublish() {
 	// { pictures
 	$xml.='<PictureDetails>';
 	$images=$product->getAllImages();
-	$xml.='<PictureURL>http://'.$_SERVER['HTTP_HOST'].'/f'.$product->getDefaultImage().'</PictureURL>';
+	$siteurl=isset($GLOBALS['DBVARS']['cdn'])&&$GLOBALS['DBVARS']['cdn']
+		?$GLOBALS['DBVARS']['cdn']:$_SERVER['HTTP_HOST'];
+	$xml.='<PictureURL>http://'.$siteurl.'/f'.$product->getDefaultImage().'</PictureURL>';
 	$images_html='';
 	foreach ($images as $img) {
 		$imgUrl='http://'.$_SERVER['HTTP_HOST'].'/f'.$img;
@@ -177,10 +179,8 @@ function OnlineStoreEbay_adminPublish() {
 		// }
 		// { brand, etc
 		.'<ItemSpecifics>'
-		.'<NameValueList>'
-		.'<Name>Brand</Name>'
-		.'<Value>Generic</Value>'
-		.'</NameValueList>'
+		.'<NameValueList><Name>Brand</Name><Value>Generic</Value></NameValueList>'
+		.'<NameValueList><Name>Size</Name><Value>Free Size</Value></NameValueList>'
 		.'</ItemSpecifics>'
 		// }
 		.'</Item>'
