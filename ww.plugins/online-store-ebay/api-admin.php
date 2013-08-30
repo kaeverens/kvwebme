@@ -154,7 +154,7 @@ function OnlineStoreEbay_adminPublish() {
 		.'<Description>'.htmlspecialchars($description.$images_html).'</Description>'
 		.'<DispatchTimeMax>'.$dispatchDays.'</DispatchTimeMax>'
 		.'<PayPalEmailAddress>'.$paypalAddress.'</PayPalEmailAddress>'
-		.'<ListingDuration>Days_7</ListingDuration>'
+		.'<ListingDuration>Days_30</ListingDuration>'
 		.'<PaymentMethods>PayPal</PaymentMethods>';
 	// }
 	$xml.='<PrimaryCategory><CategoryID>'.$categoryId.'</CategoryID></PrimaryCategory>'

@@ -283,6 +283,32 @@ function Core_configRewrite() {
 }
 
 // }
+function Core_curl($url, $post=array(), $headers=array()) {
+	$ch=curl_init();
+	@mkdir(USERBASE.'ww.cache/cookies');
+	$cookie_file=USERBASE.'ww.cache/cookies/'
+		.md5(preg_replace('#https?://([^/]*)/.*#', '\1', $url)).'.txt';
+	curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file);
+	curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie_file);
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
+	curl_setopt($ch, CURLOPT_REFERER, $url);
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+	foreach ($headers as $header) {
+		curl_setopt($ch, $header[0], $header[1]);
+	}
+	$data=curl_exec($ch);       
+	if (curl_errno($ch)) {
+		return curl_error($ch);
+	}
+	else {
+		curl_close($ch);
+		return $data;
+	}
+}
 // { Core_flushBuffer
 
 /**

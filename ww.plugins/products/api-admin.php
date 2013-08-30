@@ -1202,6 +1202,7 @@ function Products_adminProductsListDT() {
 	$filters=array();
 	if ($search) {
 		$sArr=array();
+		$sArr[]='match(data_fields,name) against ("'.addslashes($search).'")';
 		if ($search{0}=='"' && $search{strlen($search)-1}=='"') {
 			$sArr[]='name like "%'
 				.addslashes(substr($search, 1, strlen($search)-2))

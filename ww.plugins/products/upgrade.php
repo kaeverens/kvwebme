@@ -391,3 +391,7 @@ if ($version==50) { // optimise large product databases
 	dbQuery('alter table products_categories_products add index product_id (product_id)');
 	$version=51;
 }
+if ($version==51) { // add fulltext search to products
+	dbQuery('alter table products add fulltext(name, data_fields)');
+	$version=52;
+}

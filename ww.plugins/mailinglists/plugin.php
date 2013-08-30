@@ -77,28 +77,11 @@ function MailingLists_widget($vars) {
 function Mailinglists_xmlrpcClient($username, $password, $request) {
 	$url='https://'.$username.'.clients.ubivox.com/xmlrpc/';
 	$header=array('Content-type: text/xml', 'Content-length: '.strlen($request));
-	$ch=curl_init();
-	@mkdir(USERBASE.'ww.cache/cookies');
-	$cookie_file=USERBASE.'ww.cache/cookies/'.md5($url).'.txt';
-	curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file);
-	curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie_file);
-	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
-	curl_setopt($ch, CURLOPT_REFERER, $url);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-	curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-	curl_setopt($ch, CURLOPT_USERPWD, $username.':'.$password);
-	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-	$data = curl_exec($ch);       
-	if (curl_errno($ch)) {
-		print curl_error($ch);
-	}
-	else {
-		curl_close($ch);
-		return $data;
-	}
+	return Core_curl($url, $request, array(
+		array(CURLOPT_USERPWD, $username.':'.$password),
+		array(CURLOPT_HTTPAUTH, CURLAUTH_BASIC),
+		array(CURLOPT_HTTPHEADER, $header)
+	));
 }
 
 // }
