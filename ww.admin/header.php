@@ -85,9 +85,8 @@ echo Core_getJQueryScripts()
 WW_addInlineScript('var sessid="'.session_id().'";');
 WW_addScript('/j/fg.menu/fg.menu.js');
 // { languages
-$langs=dbAll(
-	'select code,name from language_names order by is_default desc,code,name'
-);
+$sql='select code,name from language_names order by is_default desc,code,name';
+$langs=dbAll($sql, '', 'language_names');
 echo '<script>var languages='.json_encode($langs).';</script>';
 // }
 WW_addScript('/j/jstree/jquery.jstree.js');

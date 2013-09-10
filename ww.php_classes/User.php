@@ -199,10 +199,8 @@ class User{
 			return $this->groups;
 		}
 		$byid=array();
-		$gs=dbAll(
-			'select groups_id from users_groups '
-			.'where user_accounts_id='.$this->id
-		);
+		$sql='select groups_id from users_groups where user_accounts_id='.$this->id;
+		$gs=dbAll($sql, '', 'users_groups');
 		foreach ($gs as $g) {
 			$byid[]=$g['groups_id'];
 		}
@@ -260,11 +258,8 @@ class User{
 			$this->groupsByName[$group]=0;
 			return false;
 		}
-		$this->groupsByName[$group]=dbOne(
-			'select groups_id from users_groups where groups_id='.$gid
-			.' and user_accounts_id='.$this->id,
-			'groups_id'
-		);
+		$sql='select groups_id from users_groups where groups_id='.$gid.' and user_accounts_id='.$this->id;
+		$this->groupsByName[$group]=dbOne($sql, 'groups_id', 'users_groups');
 		return $this->groupsByName[$group];
 	}
 

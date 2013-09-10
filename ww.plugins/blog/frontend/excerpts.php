@@ -42,12 +42,11 @@ if (isset($PAGEDATA->vars['blog_featured_posts'])
 }
 // }
 
-$num_of_entries=dbOne(
-	'select count(id) ids from blog_entry'.$constraints, 'ids'
-);
+$sql='select count(id) ids from blog_entry'.$constraints;
+$num_of_entries=dbOne($sql, 'ids', 'blog_entry');
 $sql='select * from blog_entry'.$constraints.' order by cdate desc'
 	.' limit '.$excerpts_offset.','.$excerpts_per_page;
-$rs=dbAll($sql);
+$rs=dbAll($sql, '', 'blog_entry');
 $c.='<div class="blog-main-wrapper">';
 if (!isset($excerpt_length)) {
 	$excerpt_length=200;

@@ -78,16 +78,8 @@ if (!function_exists('__')) {
 			$_language_cache[$context]=array();
 		}
 		// { load from cache or database
-		$rs=Core_cacheLoad('core-translation', md5($str.'|'.$context));
-		if (!$rs) {
-			$rs=dbAll(
-				'select lang,trstr from languages where lang in ("'.join('","', $_languages)
-				.'") and context="'.$context.'" and str="'.addslashes($str).'"', 'lang'
-			);
-			if ($rs) {
-				Core_cacheSave('core-translation', md5($str.'|'.$context), $rs);
-			}
-		}
+		$sql='select lang,trstr from languages where lang in ("'.join('","', $_languages).'") and context="'.$context.'" and str="'.addslashes($str).'"';
+		$rs=dbAll($sql, 'lang', 'languages');
 		// }
 		// { find the best-fit translation
 		if ($rs && count($rs)) {
@@ -674,9 +666,18 @@ function Core_trigger($trigger_name, $params = null) {
   *
   * @return array the results
   */
-function dbAll($query, $key='') {
-	$q = dbQuery($query);
-	if ($q === false) {
+function dbAll($query, $key='', $cache=false) {
+	if ($cache) {
+		$q=Core_cacheLoad($cache, $query.'|'.$key, -1);
+		if ($q!==-1) {
+			return $q;
+		}
+	}
+	$q=dbQuery($query);
+	if ($q===false) {
+		if ($cache) {
+			Core_cacheSave($cache, $query.'|'.$key, false);
+		}
 		return false;
 	}
 	$results=array();
@@ -684,6 +685,9 @@ function dbAll($query, $key='') {
 		$results[]=$r;
 	}
 	if (!$key) {
+		if ($cache) {
+			Core_cacheSave($cache, $query.'|', $results);
+		}
 		return $results;
 	}
 	$arr=array();
@@ -692,6 +696,9 @@ function dbAll($query, $key='') {
 			return false;
 		}
 		$arr[$r[$key]]=$r;
+	}
+	if ($cache) {
+		Core_cacheSave($cache, $query.'|'.$key, $arr);
 	}
 	return $arr;
 }
@@ -748,8 +755,17 @@ function dbLastInsertId() {
   *
   * @return mixed false if it failed, or the requested field if successful
   */
-function dbOne($query, $field='') {
-	$r = dbRow($query);
+function dbOne($query, $field='', $cache=false) {
+	if ($cache) {
+		$r=Core_cacheLoad($cache, $query, -1);
+		if ($r===-1) {
+			$r=dbRow($query);
+			Core_cacheSave($cache, $query, $r);
+		}
+	}
+	else {
+		$r=dbRow($query);
+	}
 	if ($r === false) {
 		return false;
 	}
@@ -786,12 +802,24 @@ function dbQuery($query) {
   *
   * @return array the returned row
   */
-function dbRow($query) {
-	$q = dbQuery($query);
-	if ($q === false) {
-		return false;
+function dbRow($query, $cache=false) {
+	if ($cache) {
+		$q=Core_cacheLoad($cache, $query, -1);
+		if ($q!=-1) {
+			return $q;
+		}
 	}
-	return $q->fetch(PDO::FETCH_ASSOC);
+	$q=dbQuery($query);
+	if ($q===false) {
+		$r=false;
+	}
+	else {
+		$r=$q->fetch(PDO::FETCH_ASSOC);
+	}
+	if ($cache) {
+		Core_cacheSave($cache, $query, $r);
+	}
+	return $r;
 }
 
 // }

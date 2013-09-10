@@ -21,7 +21,7 @@ $tmpconstraints=isset($constraints) && $constraints
 	:' where';
 $sql='select * from blog_entry'.$tmpconstraints.' featured'
 	.' order by pdate desc limit 0,'.$howmany;
-$rs=dbAll($sql);
+$rs=dbAll($sql, '', 'blog_entry');
 if (!count($rs)) {
 	echo '<!-- '.$sql.' -->';
 	return;

@@ -290,10 +290,8 @@ function Core_getUserData() {
 		:array();
 	// }
 	// { groups
-	$groups=dbAll(
-		'select groups_id from users_groups where user_accounts_id='
-		.$_SESSION['userdata']['id']
-	);
+	$sql='select groups_id from users_groups where user_accounts_id='.$_SESSION['userdata']['id'];
+	$groups=dbAll($sql, '', 'users_groups');
 	$g=array();
 	foreach ($groups as $group) {
 		array_push($g, $group['groups_id']);

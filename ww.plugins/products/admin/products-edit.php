@@ -139,39 +139,6 @@ function Products_showDataField($datafield, $def) {
 }
 
 // }
-// { showCats
-
-/**
-	* show categories and subcategories
-	*
-	* @param int $parent parent category
-	*
-	* @return string categories
-	*/
-function showCats($parent) {
-	global $cats;
-	$found=array();
-	foreach ($cats as $id=>$cat) {
-		if (isset($cat['parent_id'])
-			&& $cat['parent_id']==$parent
-			&& isset($cat['name'])
-		) {
-			$l='<li><input type="checkbox" name="product_categories['.$id.']"';
-			if (isset($cat['selected'])) {
-				$l.=' checked="checked"';
-			}
-			$l.='><span id="category-name-'.$id.'">'
-				.htmlspecialchars($cat['name']).'</span>';
-			$l.=showCats($id);
-			$found[]=$l;
-		}
-	}
-	return $found
-		?'<ul>'.join('', $found).'</ul>'
-		:'';
-}
-
-// }
 
 // { set up initial variables
 if (isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
@@ -180,9 +147,8 @@ if (isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
 else {
 	$id=0;
 }
-$relations=dbAll(
-	'select * from products_relation_types order by name'
-);
+$sql='select * from products_relation_types order by name';
+$relations=dbAll($sql, '', 'products_relation_types');
 // }
 require_once $_SERVER['DOCUMENT_ROOT'].'/j/kfm/includes/directories.php';
 if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
@@ -354,12 +320,12 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 		unset($DBVARS['cron-next']);
 		Core_configRewrite();
 	}
-	Core_cacheClear('products');
-	Core_cacheClear('pages');
+	Core_cacheClear('products,pages,products_categories_products,products_relations');
 }
 
 if ($id) {
-	$pdata=dbRow("select * from products where id=$id");
+	$sql='select * from products where id='.$id;
+	$pdata=dbRow($sql, 'products');
 	if (!$pdata) {
 		echo '<em>No product with that ID exists.</em>';
 		return;
@@ -388,9 +354,8 @@ echo '<a href="plugin.php?_plugin=products&amp;_page=products">'
 	.__('Import', 'core').'</a>';
 // }
 // { gather needed data
-$sql='select stock_control,data_fields from products_types '
-	.'where id='.$pdata['product_type_id'];
-$product_type=dbRow($sql);
+$sql='select stock_control,data_fields from products_types where id='.$pdata['product_type_id'];
+$product_type=dbRow($sql, 'products_types');
 // }
 
 // { start form
@@ -411,7 +376,8 @@ echo '<input class="not-empty translatable" name="name" value="'
 // }
 // { type
 echo '<th><div class="help products/type"></div>Type</th><td>';
-$ptypes=dbAll('select id,name from products_types order by name');
+$sql='select id,name from products_types order by name';
+$ptypes=dbAll($sql, '', 'products_types');
 if ($ptypes===false) {
 	echo '<em>No product types created yet. '
 		.'Please <a href="plugin.php?_plugin=products&amp;_page=types-edit">'
@@ -471,12 +437,8 @@ echo '>No</option></select></td>';
 // { page link
 if ($id) {
 	echo '<td><strong>Page:</strong> <span id="product_table_link_holder">';
-	$pageid = dbOne(
-		'select page_id 
-		from page_vars 
-		where name=\'products_product_to_show\' and value ='.$id,
-		'page_id'
-	);
+	$sql='select page_id from page_vars where name="products_product_to_show" and value='.$id;
+	$pageid=dbOne($sql, 'page_id', 'page_vars');
 	if (!$pageid) {
 		echo '<a href="javascript:;" id="page_create_link" 
 			onClick=
@@ -509,10 +471,8 @@ $user_id=(int)@$pdata['user_id'];
 if (!$user_id) {
 	$user_id=(int)$_SESSION['userdata']['id'];
 }
-$user_name=dbOne(
-	'select name from user_accounts where id='.$user_id,
-	'name'
-);
+$sql='select name from user_accounts where id='.$user_id;
+$user_name=dbOne($sql, 'name', 'user_accounts');
 echo '<td><strong>Owner:</strong> <select name="user_id"><option value="'
 	.$user_id.'">'.$user_name.'</option></select></td>';
 // }
@@ -591,12 +551,12 @@ if ($n) {
 			?' class="default"'
 			:'';
 		echo '<div'.$default.'>';
-		echo '<img id="products-img-'.$n
-			.'" src="/a/f=getImg/w=64/h=64/'.$pdata['images_directory'].'/'
-			.$images[$i].'"/><br /><input type="checkbox" id="products-dchk-'
-			.$n.'" />'
-			.'<a class="delete" href="javascript:;" id="products-dbtn-'
-			.$n.'">delete</a><br />'
+		echo '<a href="/f'.$pdata['images_directory'].'/'.$images[$i].'" target="_blank">'
+			.'<img id="products-img-'.$n.'" src="/a/f=getImg/w=64/h=64/'.$pdata['images_directory'].'/'.$images[$i].'"/>'
+			.'</a><br />'
+			.'<input type="checkbox" id="products-dchk-'.$n.'" />'
+			.'<a class="delete" href="javascript:;" id="products-dbtn-'.$n.'">delete</a>'
+			.'<br />'
 			.'<a class="caption" href="javascript:;" id="products-cbtn-'
 			.$n.'">edit caption</a><br />'
 			.'<a class="mark-as-default" href="javascript:;" '
@@ -697,9 +657,8 @@ if ($id && isset($PLUGINS['online-store'])) {
 			'amount_in_stock' => __('Amount in Stock'),
 			'amount_allowed_per_purchase' => __('Amount allowed per purchase')
 		);
-	$sql='select is_voucher from products_types where id='
-		.$pdata['product_type_id'];
-	if (dbOne($sql, 'is_voucher')=='1') {
+	$sql='select is_voucher from products_types where id='.$pdata['product_type_id'];
+	if (dbOne($sql, 'is_voucher', 'products_types')=='1') {
 		$online_store_fields['_voucher_value']='Voucher Value';
 	}
 	// }
@@ -790,31 +749,30 @@ Core_trigger(
 // { categories
 echo '<h2>'.__('Categories').'</h2><div id="categories"><p>'.__('At least one category must be chosen.')
 	.'</p>';
-// { build array of categories
-$rs=dbAll('select id,name,parent_id from products_categories');
-$cats=array();
-foreach ($rs as $r) {
-	$cats[$r['id']]=$r;
-}
-// }
 // { add selected categories to the list
-$rs=dbAll('select * from products_categories_products where product_id='.$id);
+$sql='select category_id from products_categories_products where product_id='.$id;
+$rs=dbAll($sql, '', 'products_categories_products');
+echo '<ul id="categories-wrapper">';
 foreach ($rs as $r) {
-	$cats[$r['category_id']]['selected']=true;
+	$cat=ProductCategory::getInstance($r['category_id']);
+	if (!$cat) {
+		continue;
+	}
+	echo '<li><input type="checkbox" name="product_categories['.$cat->vals['id'].']" checked="checked"/>'
+		.$cat->getBreadcrumbs()
+		.'</li>';
 }
+echo '</ul><button id="category-add">Add Category</button>';
 // }
-echo showCats(0);
 $cid=(int)@$pdata['default_category'];
 if (!$cid) {
 	$cid=1;
 }
-echo '<input type="button" id="addCategory" value="Add Category" /><br />';
-echo '<label>Default Category: <select name="products_default_category">'
+$sql='select name from products_categories where id='.$cid;
+$default_category=dbOne($sql, 'name', 'products_categories');
+echo '<br/><label>Default Category: <select name="products_default_category">'
 	.'<option value="'.((int)@$pdata['products_default_category']).'">'
-	.dbOne(
-		'select name from products_categories where id='.$cid,
-		'name'
-	)
+	.$default_category
 	.'</option></select></label>';
 echo '</div>';
 // }

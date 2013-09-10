@@ -677,9 +677,8 @@ function Privacy_profileGet() {
 
 	// get array of groups the user is a member of
 	$groups = array();
-	$group_ids = dbAll(
-		'select groups_id from users_groups where user_accounts_id=' . $uid
-	);
+	$sql='select groups_id from users_groups where user_accounts_id='.$uid;
+	$group_ids=dbAll($sql, '', 'users_groups');
 	
 	$extras=dbOne(
 		'select * from user_accounts where id='.$uid.' limit 1',

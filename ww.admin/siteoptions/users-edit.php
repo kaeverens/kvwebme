@@ -166,7 +166,8 @@ $gms=array();
 foreach ($grs as $g) {
 	$groups[$g['id']]=$g['name'];
 }
-$grs=dbAll("select groups_id from users_groups where user_accounts_id=$id");
+$sql='select groups_id from users_groups where user_accounts_id='.$id;
+$grs=dbAll($sql, '', 'users_groups');
 foreach ($grs as $g) {
 	$gms[$g['groups_id']]=true;
 }

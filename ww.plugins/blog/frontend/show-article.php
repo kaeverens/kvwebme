@@ -19,7 +19,7 @@ $titlelike=str_replace('-', '_', $bits[2]);
 $sql='select * from blog_entry where user_id='.$user_id
 	.' and cast(cdate as date)'
 	.'="'.addslashes($date).'" and title like "'.addslashes($titlelike).'"';
-$r=dbRow($sql);
+$r=dbRow($sql, 'blog_entry');
 if (!$r) {
 	$c='<div class="blog-article-error">Error: article not found.</div>';
 	return;

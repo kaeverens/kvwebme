@@ -137,11 +137,11 @@ function OnlineStoreEbay_adminPublish() {
 	$images=$product->getAllImages();
 	$siteurl=isset($GLOBALS['DBVARS']['cdn'])&&$GLOBALS['DBVARS']['cdn']
 		?$GLOBALS['DBVARS']['cdn']:$_SERVER['HTTP_HOST'];
-	$xml.='<PictureURL>http://'.$siteurl.'/f'.$product->getDefaultImage().'</PictureURL>';
+	$xml.='<PictureURL>'.str_replace(' ', '%20', 'http://'.$siteurl.'/f'.$product->getDefaultImage()).'</PictureURL>';
 	$images_html='';
 	foreach ($images as $img) {
 		$imgUrl='http://'.$_SERVER['HTTP_HOST'].'/f'.$img;
-		$xml.='<PictureURL>'.$imgUrl.'</PictureURL>';
+		$xml.='<PictureURL>'.str_replace(' ', '%20', $imgUrl).'</PictureURL>';
 		$images_html.='<img src="'.$imgUrl.'"/>';
 	}
 	$xml.='</PictureDetails>';

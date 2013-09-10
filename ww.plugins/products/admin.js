@@ -135,7 +135,8 @@ function Products_screenCategories() {
 						$.inArray(words[i], [
 							'for', 'with', 'in', 'to', 'and', 'the', 'is',
 							'white', 'blue', 'red', 'green', 'color', 'dc', '12v', 'pcs', 'one',
-							'black', 'style', 'size', 'leather', 'plastic', 'price', 'inch'
+							'black', 'style', 'size', 'leather', 'plastic', 'price', 'inch', 'grey',
+							'pink', 'silver', 'magenta', 'yellow', 'orange', 'purple', 'golden'
 						])!==-1)
 					{
 						continue;

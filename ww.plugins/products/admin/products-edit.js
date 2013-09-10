@@ -388,4 +388,65 @@ $(function(){
 			}
 		})
 		.keyup();
+	$('#category-add').button().click(function() {
+		var html='<div><table id="category-rows"><tr><th>Select Category</th><td><select id="categories-'+0+'"><select></td></tr></table></div>';
+		var $dialog=$(html).dialog({
+			'modal':true,
+			'close':function() {
+				$dialog.remove();
+			},
+			'buttons':{
+				'Choose':function() {
+					if (!curid) {
+						return false;
+					}
+					var bits=[];
+					$dialog.find('option:selected').each(function() {
+						bits.push($(this).text());
+					});
+					bits.pop();
+					var name=bits.join(' / ');
+					var html='<li><input type="checkbox" name="product_categories['
+						+curid+']" checked="checked"/>'+name+'</li>';
+					$('#categories-wrapper').append(html);
+					$dialog.remove();
+				}
+			}
+		});
+		var cats=[], curid=0;
+		function showSubCats() {
+			$.post(
+				'/a/p=products/f=adminCategoriesGetByParent/pid='+curid, showCategories
+			);
+		}
+		function showCategories(ret) {
+			var options='<option value="'+curid+'">'
+				+(curid?' -- choose this category -- ':' -- choose a category -- ')
+				+'</option>';
+			for (var i=0;i<ret.length;++i) {
+				options+='<option value="'+ret[i].id+'">'+ret[i].name+'</option>';
+			}
+			$('#categories-'+curid)
+				.html(options)
+				.change(function() {
+					var $this=$(this);
+					var val=$this.val();
+					curid=$this.attr('id').replace(/.*-/, '');
+					var $tr=$this.closest('tr');
+					do {
+						$newtr=$tr.find('+tr');
+						$newtr.remove();
+					} while($newtr.length);
+					if (val==curid) {
+						return;
+					}
+					$('<tr><th></th><td><select id="categories-'+val+'"/></td></tr>')
+						.appendTo($tr.closest('table'));
+					curid=val;
+					showSubCats();
+				});
+		}
+		showSubCats();
+		return false;
+	});
 });

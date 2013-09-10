@@ -94,9 +94,8 @@ echo '<html><head>'
 	.'<link rel="stylesheet" href="/ww.admin/pages/form.css" />'
 	.'<title>page form</title>';
 // { languages
-$langs=dbAll(
-	'select code,name from language_names order by is_default desc,code,name'
-);
+$sql='select code,name from language_names order by is_default desc,code,name';
+$langs=dbAll($sql, '', 'language_names');
 WW_addInlineScript('var languages='.json_encode($langs).';');
 // }
 echo '</head>'

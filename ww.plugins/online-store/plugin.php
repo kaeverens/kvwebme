@@ -598,7 +598,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 		$html.=$t;
 	}
 	else {
-		if (count($_SESSION['online-store']['items'])) {
+		if (isset($_SESSION['online-store']['items']) && count($_SESSION['online-store']['items'])) {
 			$html.='<table class="os_basket">';
 			$html.='<tr class="os_basket_titles"><th>'.__('Price').'</th><th>'
 				.__('Amt').'</th>'

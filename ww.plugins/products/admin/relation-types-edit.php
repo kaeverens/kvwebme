@@ -49,7 +49,8 @@ if (@$_REQUEST['action']='save') {
 }
 
 if ($id) {
-	$tdata=dbRow("select * from products_relation_types where id=$id");
+	$sql='select * from products_relation_types where id='.$id;
+	$tdata=dbRow($sql, 'products_relation_types');
 	if (!$tdata) {
 		die('<em>No relation type with that ID exists.</em>');
 	}

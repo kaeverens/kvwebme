@@ -74,6 +74,10 @@ function Products_adminCategoriesGetRecursiveList(
 }
 
 // }
+function Products_adminCategoriesGetByParent() {
+	$pid=(int)$_REQUEST['pid'];
+	return dbAll('select id,name from products_categories where parent_id='.$pid.' order by sortNum', '', 'products_categories');
+}
 function Products_adminCategoriesClean() {
 	// { find broken product-category links
 	$rs=dbAll('select distinct category_id from products_categories_products');
@@ -332,7 +336,7 @@ function Products_adminCategoryProductAdd() {
 	dbQuery(
 		'update products set date_edited=now() where id in ('.join(', ', $arr).')'
 	);
-	Core_cacheClear('products');
+	Core_cacheClear('products,products_categories_products');
 	return array('ok'=>1);
 }
 
@@ -360,7 +364,7 @@ function Products_adminCategoryProductRemove() {
 	dbQuery(
 		'update products set date_edited=now() where id in ('.join(', ', $arr).')'
 	);
-	Core_cacheClear('products');
+	Core_cacheClear('products,products_categories_products');
 	return array('ok'=>1);
 }
 
@@ -1202,28 +1206,9 @@ function Products_adminProductsListDT() {
 	$filters=array();
 	if ($search) {
 		$sArr=array();
-		$sArr[]='match(data_fields,name) against ("'.addslashes($search).'")';
-		if ($search{0}=='"' && $search{strlen($search)-1}=='"') {
-			$sArr[]='name like "%'
-				.addslashes(substr($search, 1, strlen($search)-2))
-				.'%"';
-		}
-		else {
-			$bits=explode(' ', $search);
-			foreach ($bits as $b) {
-				if ($b) {
-					if (substr($b, 0, 1)=='-') {
-						$b=substr($b, 1, strlen($b)-1);
-						$sArr[]='name not like "%'.addslashes($b).'%"';
-					}
-					else {
-						$sArr[]='name like "%'.addslashes($b).'%"';
-					}
-				}
-			}
-		}
-		$filters[]='(('.join(' and ', $sArr).')'
-			.' or stock_number like "%'.addslashes($search).'%")';
+		$sArr[]='match(data_fields,name) against ("'.addslashes($search).'" in boolean mode)';
+		$filters[]='('.join(' and ', $sArr).')';
+#			.' or stock_number like "%'.addslashes($search).'%")';
 	}
 	$filter='';
 	if (count($filters)) {
@@ -1239,15 +1224,15 @@ function Products_adminProductsListDT() {
 	$sql.=' from products '.$filter
 		.' order by '.$orderby.' '.$orderdesc
 		.' limit '.$start.','.$length;
-	$rs=dbAll($sql);
+	$rs=dbAll($sql, '', 'products');
 	$result=array();
 	$result['sEcho']=intval($_GET['sEcho']);
 	$result['iTotalRecords']=dbOne(
-		'select count(id) as ids from products', 'ids'
+		'select count(id) as ids from products', 'ids', 'products'
 	);
 	$result['iTotalDisplayRecords']=dbOne(
 		'select count(id) as ids from products '.$filter,
-		'ids'
+		'ids', 'products'
 	);
 	$arr=array();
 	foreach ($rs as $r) {

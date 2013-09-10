@@ -821,6 +821,16 @@ class ProductCategory{
 	}
 
 	// }
+	function getBreadcrumbs($delimiter=' &raquo; ') {
+		$name='<a href="'.$this->getRelativeUrl().'">'
+			.htmlspecialchars($this->vals['name']).'</a>';
+		if ($this->vals['parent_id']) {
+			$pname=ProductCategory::getInstance($this->vals['parent_id'])
+				->getBreadcrumbs($delimiter);
+			$name=$pname.$delimiter.$name;
+		}
+		return $name;
+	}
 }
 
 // }

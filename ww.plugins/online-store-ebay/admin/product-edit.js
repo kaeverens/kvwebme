@@ -20,7 +20,7 @@ $(function() {
 						var id=+ret.invalids[i];
 						bits.push(
 							'<li data-id="'+ret.invalids[i]+'"><a href="#">'
-							+$('#category-name-'+id).text()
+							+$('input[name="product_categories['+id+']"]').parent().text()
 							+'</a></li>'
 						);
 					}

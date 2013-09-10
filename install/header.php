@@ -100,16 +100,8 @@ function __($str, $param1='core', $param2=null) {
 		$_language_cache[$context]=array();
 	}
 	// { load from cache or database
-	$rs=Core_cacheLoad('core-translation', md5($str.'|'.$context));
-	if (!$rs) {
-		$rs=dbAll(
-			'select lang,trstr from languages where lang in ("'.join('","', $_languages)
-			.'") and context="'.$context.'" and str="'.addslashes($str).'"', 'lang'
-		);
-		if ($rs) {
-			Core_cacheSave('core-translation', md5($str.'|'.$context), $rs);
-		}
-	}
+	$sql='select lang,trstr from languages where lang in ("'.join('","', $_languages).'") and context="'.$context.'" and str="'.addslashes($str).'"';
+	$rs=dbAll($rs, 'lang', 'languages');
 	// }
 	// { find the best-fit translation
 	if ($rs && count($rs)) {
