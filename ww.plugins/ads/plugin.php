@@ -165,6 +165,6 @@ function Ads_userProfile($PAGEDATA, $user) {
 
 // }
 function Ads_statsUpdate() {
-	require_once dirname(__FILE__).'/api-admin.php';
+	require_once SCRIPTBASE.'ww.plugins/ads/api-admin.php';
 	Ads_adminTrackSummarise();
 }

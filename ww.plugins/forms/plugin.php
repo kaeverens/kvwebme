@@ -46,9 +46,9 @@ function Form_adminPageForm($page, $vars) {
 	$id=$page['id'];
 	$c='';
 	if ($edit) {
-		require dirname(__FILE__).'/admin/save.php';
+		require SCRIPTBASE.'ww.plugins/forms/admin/save.php';
 	}
-	require dirname(__FILE__).'/admin/form.php';
+	require SCRIPTBASE.'ww.plugins/forms/admin/form.php';
 	return $c;
 }
 
@@ -63,7 +63,7 @@ function Form_adminPageForm($page, $vars) {
   * @return string the form's HTML
   */
 function Form_frontend($PAGEDATA) {
-	require dirname(__FILE__).'/frontend/show.php';
+	require SCRIPTBASE.'ww.plugins/forms/frontend/show.php';
 	WW_addScript('/j/jquery.tooltip.min.js');
 	return $PAGEDATA->render()
 		.Form_show($PAGEDATA->dbVals, $PAGEDATA->vars)

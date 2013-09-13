@@ -42,7 +42,7 @@ $plugin=array(
   * @return string HTML of the forum creation tool
   */
 function Forum_adminPageForm($page, $vars) {
-	require dirname(__FILE__).'/admin/form.php';
+	require SCRIPTBASE.'ww.plugins/forum/admin/form.php';
 	return $c;
 }
 
@@ -57,7 +57,7 @@ function Forum_adminPageForm($page, $vars) {
   * @return string the forum's HTML
   */
 function Forum_frontend($PAGEDATA) {
-	require dirname(__FILE__).'/frontend/forum.php';
+	require SCRIPTBASE.'ww.plugins/forum/frontend/forum.php';
 	return Forum_show($PAGEDATA);
 }
 

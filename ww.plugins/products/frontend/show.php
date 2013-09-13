@@ -11,15 +11,9 @@
 	* @link     http://kvsites.ie/
 	*/
 
-if (!file_exists(USERBASE.'/ww.cache/products')) {
-	mkdir(USERBASE.'/ww.cache/products');
-}
-if (!file_exists(USERBASE.'/ww.cache/products/templates')) {
-	mkdir(USERBASE.'/ww.cache/products/templates');
-	if (!file_exists(USERBASE.'/ww.cache/products/templates_c')) {
-		mkdir(USERBASE.'/ww.cache/products/templates_c');
-	}
-}
+@mkdir(USERBASE.'/ww.cache/products');
+@mkdir(USERBASE.'/ww.cache/products/templates');
+@mkdir(USERBASE.'/ww.cache/products/templates_c');
 
 // { Product_datatableMultiple
 

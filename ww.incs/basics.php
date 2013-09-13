@@ -1063,34 +1063,33 @@ if (isset($_REQUEST['__LOCATION'])) {
 $PLUGINS=array();
 $PLUGIN_TRIGGERS=array();
 if (!isset($ignore_cms_plugins)) {
-	foreach ($DBVARS['plugins'] as $pname) {
-		if (strpos('/', $pname)!==false) {
-			continue;
-		}
-		require_once SCRIPTBASE . 'ww.plugins/'.$pname.'/plugin.php';
-		if (isset($plugin['version']) && $plugin['version']
-			&& (!isset($DBVARS[$pname.'|version'])
-			|| $DBVARS[$pname.'|version']!=$plugin['version'] )
-		) {
-			$version=isset($DBVARS[$pname.'|version'])
-				?(int)$DBVARS[$pname.'|version']
-				:0;
-			require SCRIPTBASE . 'ww.plugins/'.$pname.'/upgrade.php';
-			$DBVARS[$pname.'|version']=$version;
-			Core_configRewrite();
-			Core_cacheClear();
-			header('Location: '.$_SERVER['REQUEST_URI']);
-			Core_quit();
-		}
-		$PLUGINS[$pname]=$plugin;
-		if (isset($plugin['triggers'])) {
-			foreach ($plugin['triggers'] as $name=>$fn) {
-				if (!isset($PLUGIN_TRIGGERS[$name])) {
-					$PLUGIN_TRIGGERS[$name]=array();
+	if (1 && file_exists(USERBASE.'/ww.cache/core/plugins.php')) {
+		require_once USERBASE.'/ww.cache/core/plugins.php';
+	}
+	else {
+		$ptxt=array();
+		$pchecker=preg_replace('/^<\?php/', '', file_get_contents(SCRIPTBASE.'ww.incs/plugin-check.php'));
+		foreach ($DBVARS['plugins'] as $pname) {
+			if (strpos('/', $pname)!==false) {
+				continue;
+			}
+			$ptxt[]='$pname=\''.$pname.'\';';
+			$ptxt[]=preg_replace('/^<\?php/', '', file_get_contents(SCRIPTBASE.'ww.plugins/'.$pname.'/plugin.php'));
+			$ptxt[]=$pchecker;
+			if (isset($plugin['triggers'])) {
+				foreach ($plugin['triggers'] as $name=>$fn) {
+					if (!isset($PLUGIN_TRIGGERS[$name])) {
+						$PLUGIN_TRIGGERS[$name]=array();
+					}
+					$PLUGIN_TRIGGERS[$name][]=$fn;
 				}
-				$PLUGIN_TRIGGERS[$name][]=$fn;
 			}
 		}
+		file_put_contents(
+			USERBASE.'/ww.cache/core/plugins.php', '<?php'."\n".join('', $ptxt)
+		);
+		header('Location: '.$_SERVER['REQUEST_URI']);
+		Core_quit();
 	}
 }
 // }

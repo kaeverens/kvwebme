@@ -69,7 +69,7 @@ $plugin=array(
 	), // }
 	'do-not-delete' => true,
 	'only-one-page-instance' => true,
-	'version' => '24'
+	'version' => '25'
 );
 // }
 // { currency symbols
@@ -131,7 +131,7 @@ function OnlineStore_addToCart(
 	$item['stock_number']=$stock_number;
 	$_SESSION['online-store']['items'][$md5]=$item;
 	// }
-	require dirname(__FILE__).'/libs.php';
+	require SCRIPTBASE.'ww.plugins/online-store/libs.php';
 	OnlineStore_calculateTotal();
 }
 
@@ -147,7 +147,7 @@ function OnlineStore_addToCart(
 	* @return string
 	*/
 function OnlineStore_adminPageForm($page, $vars) {
-	require dirname(__FILE__).'/admin/index.php';
+	require SCRIPTBASE.'ww.plugins/online-store/admin/index.php';
 	return $c;
 }
 
@@ -162,7 +162,7 @@ function OnlineStore_adminPageForm($page, $vars) {
 	*/
 function OnlineStore_frontend($PAGEDATA) {
 	OnlineStore_setVat($PAGEDATA);
-	require dirname(__FILE__).'/frontend/index.php';
+	require SCRIPTBASE.'ww.plugins/online-store/frontend/index.php';
 	WW_addCss('/ww.plugins/online-store/frontend/index.css');
 	return $c;
 }
@@ -181,7 +181,7 @@ function OnlineStore_frontend($PAGEDATA) {
 	* @return string
 	*/
 function OnlineStore_generatePaypalButton($PAGEDATA, $id, $total, $return='') {
-	require_once dirname(__FILE__).'/frontend/generate-button-paypal.php';
+	require_once SCRIPTBASE.'ww.plugins/online-store/frontend/generate-button-paypal.php';
 	return $html;
 }
 
@@ -201,7 +201,7 @@ function OnlineStore_generatePaypalButton($PAGEDATA, $id, $total, $return='') {
 function OnlineStore_generateQuickPayButton(
 	$PAGEDATA, $id, $total, $return=''
 ) {
-	require_once dirname(__FILE__).'/frontend/generate-button-quickpay.php';
+	require_once SCRIPTBASE.'ww.plugins/online-store/frontend/generate-button-quickpay.php';
 	return $html;
 }
 
@@ -219,7 +219,7 @@ function OnlineStore_generateQuickPayButton(
 	* @return string
 	*/
 function OnlineStore_generateRealexButton($PAGEDATA, $id, $total, $return='') {
-	require_once dirname(__FILE__).'/frontend/generate-button-realex.php';
+	require_once SCRIPTBASE.'ww.plugins/online-store/frontend/generate-button-realex.php';
 	return $html;
 }
 
@@ -290,7 +290,7 @@ function OnlineStore_getFinalTotal() {
 		}
 	}
 	if (@$_REQUEST['os_voucher']) {
-		require_once dirname(__FILE__).'/frontend/voucher-libs.php';
+		require_once SCRIPTBASE.'ww.plugins/online-store/frontend/voucher-libs.php';
 		$email=@$_REQUEST['Email'];
 		$code=$_REQUEST['os_voucher'];
 		$voucher_amount=OnlineStore_voucherAmount($code, $email, $grandTotal);
@@ -511,7 +511,7 @@ function OnlineStore_pagedata() {
 	* @return string
 	*/
 function OnlineStore_paymentTypes() {
-	require_once dirname(__FILE__).'/api.php';
+	require_once SCRIPTBASE.'ww.plugins/online-store/api.php';
 	$c='<select id="payment_method_type" name="_payment_method_type">';
 	$arr=OnlineStore_paymentTypesList();
 	if (@$arr['error']) {
@@ -540,7 +540,7 @@ function OnlineStore_paymentTypes() {
 	* @return string
 	*/
 function OnlineStore_productPriceFull($params, $smarty) {
-	require_once dirname(__FILE__).'/frontend/smarty-functions.php';
+	require_once SCRIPTBASE.'ww.plugins/online-store/frontend/smarty-functions.php';
 	return OnlineStore_productPriceFull2($params, $smarty);
 }
 
@@ -802,7 +802,7 @@ function OnlineStore_startup() {
   * @return string HTML list of orders
   */
 function OnlineStore_userProfile( $PAGEDATA, $user ) {
-	require dirname(__FILE__).'/frontend/user-profile.php';
+	require SCRIPTBASE.'ww.plugins/online-store/frontend/user-profile.php';
 	return $html;
 }
 
@@ -829,7 +829,7 @@ function OnlineStore_userProfileInvoiceDetails($PAGEDATA, $user) {
 	if ($iid===false) {
 		return false;
 	}
-	require_once dirname(__FILE__).'/frontend/user-profile-invoice-details.php';
+	require_once SCRIPTBASE.'ww.plugins/online-store/frontend/user-profile-invoice-details.php';
 	return $html;
 }
 

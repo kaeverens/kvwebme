@@ -452,7 +452,6 @@ if ($id) {
 	}
 	else {
 		$dir= dirname(__FILE__);
-		require_once $dir.'/../frontend/show.php';
 		$page= Page::getInstance($pageid);
 		$url= $page->getRelativeUrl();
 		echo '<a href="'.$url.'" target="_blank" id="view_this_product">'

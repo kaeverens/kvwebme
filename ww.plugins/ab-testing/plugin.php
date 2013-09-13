@@ -37,10 +37,10 @@ $plugin=array(
   */
 function ABTesting_admin($page, $page_vars) {
 	if ($page === false) {
-		require dirname(__FILE__).'/admin/body-rebuild.php';
+		require SCRIPTBASE.'ww.plugins/ab-testing/admin/body-rebuild.php';
 	}
 	else {
-		require dirname(__FILE__).'/admin/body-override.php';
+		require SCRIPTBASE.'ww.plugins/ab-testing/admin/body-override.php';
 	}
 	return $body;
 }
@@ -53,7 +53,7 @@ function ABTesting_admin($page, $page_vars) {
   * @return string HTML of the page content version
   */
 function ABTesting_frontend($page) {
-	require dirname(__FILE__).'/frontend.php';
+	require SCRIPTBASE.'ww.plugins/ab-testing/frontend.php';
 	return $body;
 }
 
@@ -65,5 +65,5 @@ function ABTesting_frontend($page) {
   * @return null
   */
 function ABTesting_record($page) {
-	require dirname(__FILE__).'/record.php';
+	require SCRIPTBASE.'ww.plugins/ab-testing/record.php';
 }

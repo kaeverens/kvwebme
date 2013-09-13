@@ -32,7 +32,7 @@ $plugin=array(
   * @return string HTML of the form
   */
 function RecommendThisSite_adminPageForm($page, $vars) {
-	require dirname(__FILE__).'/admin/form.php';
+	require SCRIPTBASE.'ww.plugins/recommend-this-site/admin/form.php';
 	return $c;
 }
 
@@ -44,7 +44,7 @@ function RecommendThisSite_adminPageForm($page, $vars) {
   * @return string the plugin's HTML
   */
 function RecommendThisSite_frontend($PAGEDATA) {
-	require dirname(__FILE__).'/frontend/show.php';
+	require SCRIPTBASE.'ww.plugins/recommend-this-site/frontend/show.php';
 	if (!isset($PAGEDATA->vars['footer'])) {
 		$PAGEDATA->vars['footer']='';
 	}

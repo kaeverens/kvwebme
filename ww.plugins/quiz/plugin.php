@@ -35,7 +35,6 @@ $plugin = array (
   *
 */  
 function Quiz_Display_page () {
-	$dir= dirname(__FILE__);
-	require_once $dir.'/frontend/display.php';
+	require_once SCRIPTBASE.'ww.plugins/quiz/frontend/display.php';
 	return getPageHtml();
 }

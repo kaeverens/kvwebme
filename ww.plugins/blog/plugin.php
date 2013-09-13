@@ -45,7 +45,7 @@ $plugin=array(
 	* @return string
 	*/
 function Blog_admin($page, $vars) {
-	require_once dirname(__FILE__).'/admin/page-type.php';
+	require_once SCRIPTBASE.'ww.plugins/blog/admin/page-type.php';
 	WW_addScript('blog');
 	return $c;
 }
@@ -93,14 +93,14 @@ function Blog_frontend($PAGEDATA) {
 		}
 		// { show specific article
 		if (preg_match('#^[0-9]+/[0-9]+-[0-9]+-[0-9]+/[^/]+#', $unused_uri)) {
-			require_once dirname(__FILE__).'/frontend/show-article.php';
+			require_once SCRIPTBASE.'ww.plugins/blog/frontend/show-article.php';
 			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
 		}
 		// }
 		if (preg_match('#^tags/#', $unused_uri)) {
 			// { show list of tags
 			if ($unused_uri=='tags/') {
-				require_once dirname(__FILE__).'/frontend/tags.php';
+				require_once SCRIPTBASE.'ww.plugins/blog/frontend/tags.php';
 				return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
 			}
 			// }
@@ -115,7 +115,7 @@ function Blog_frontend($PAGEDATA) {
 			foreach ($rs as $r) {
 				$entry_ids[]=$r['entry_id'];
 			}
-			require_once dirname(__FILE__).'/frontend/excerpts.php';
+			require_once SCRIPTBASE.'ww.plugins/blog/frontend/excerpts.php';
 			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
 			// }
 		}
@@ -124,24 +124,24 @@ function Blog_frontend($PAGEDATA) {
 			$excerpts_offset=$excerpts_per_page*((int)preg_replace(
 				'#page([0-9]+).*#', '\1', $unused_uri
 			));
-			require_once dirname(__FILE__).'/frontend/excerpts.php';
+			require_once SCRIPTBASE.'ww.plugins/blog/frontend/excerpts.php';
 			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
 		}
 		// }
 		// { show list of a specific user's excerpts
 		if (preg_match('#^[0-9]+#', $unused_uri)) {
 			$blog_author=preg_replace('/^([0-9]+).*/', '\1', $unused_uri);
-			require_once dirname(__FILE__).'/frontend/excerpts.php';
+			require_once SCRIPTBASE.'ww.plugins/blog/frontend/excerpts.php';
 			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
 		}
 		// }
 		if ($unused_uri=='authors/') {
-			require_once dirname(__FILE__).'/frontend/authors.php';
+			require_once SCRIPTBASE.'ww.plugins/blog/frontend/authors.php';
 			return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
 		}
 		return $PAGEDATA->render().$unused_uri.@$PAGEDATA->vars['footer'];
 	}
-	require_once dirname(__FILE__).'/frontend/excerpts.php';
+	require_once SCRIPTBASE.'ww.plugins/blog/frontend/excerpts.php';
 	return $PAGEDATA->render().$c.@$PAGEDATA->vars['footer'];
 }
 
@@ -156,7 +156,7 @@ function Blog_frontend($PAGEDATA) {
 	* @return html
 	*/
 function Blog_widget($vars=null) {
-	require_once dirname(__FILE__).'/frontend/widget.php';
+	require_once SCRIPTBASE.'ww.plugins/blog/frontend/widget.php';
 	return Blog_widget2($vars);
 }
 

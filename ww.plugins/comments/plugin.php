@@ -62,7 +62,7 @@ function Comments_pageTab ($page, $pagevars) {
 	*
 	**/
 function Comments_getCommentsHTML($PAGEDATA) {
-	require_once dirname(__FILE__).'/frontend/show-comments.php';
+	require_once SCRIPTBASE.'ww.plugins/comments/frontend/show-comments.php';
 	return Comments_displayComments($PAGEDATA);
 }
 
@@ -97,7 +97,7 @@ function Comments_rssHandler($PAGEDATA) {
 	if ($hideComments) {
 		die('comments are hidden');
 	}
-	require_once dirname(__FILE__).'/frontend/libs.php';
+	require_once SCRIPTBASE.'ww.plugins/comments/frontend/libs.php';
 	$comments=Comments_getListOfComments($PAGEDATA, 'desc', 10);
 	$items=array();
 	foreach ($comments as $comment) {

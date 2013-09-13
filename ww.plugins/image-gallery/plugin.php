@@ -46,7 +46,7 @@ $plugin=array(
   * @return string HTML of the administration area
   */
 function ImageGallery_adminPageForm($page, $vars) {
-	require_once dirname(__FILE__).'/admin/index.php';
+	require_once SCRIPTBASE.'ww.plugins/image-gallery/admin/index.php';
 	return $c;
 }
 
@@ -61,7 +61,7 @@ function ImageGallery_adminPageForm($page, $vars) {
   * @return string HTML of the image gallery
   */
 function ImageGallery_frontend($PAGEDATA) {
-	require_once dirname(__FILE__).'/frontend/show.php';
+	require_once SCRIPTBASE.'ww.plugins/image-gallery/frontend/show.php';
 	return ImageGallery_show($PAGEDATA);
 }
 
@@ -76,7 +76,7 @@ function ImageGallery_frontend($PAGEDATA) {
 	* @return html
 	*/
 function ImageGallery_widget($vars=null) {
-	require_once dirname(__FILE__).'/frontend/show.php';
+	require_once SCRIPTBASE.'ww.plugins/image-gallery/frontend/show.php';
 	return GalleryWidget_show($vars);
 }
 
