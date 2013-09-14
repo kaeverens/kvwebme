@@ -1085,6 +1085,7 @@ if (!isset($ignore_cms_plugins)) {
 				}
 			}
 		}
+		@mkdir(USERBASE.'/ww.cache/core', 0777, true);
 		file_put_contents(
 			USERBASE.'/ww.cache/core/plugins.php', '<?php'."\n".join('', $ptxt)
 		);

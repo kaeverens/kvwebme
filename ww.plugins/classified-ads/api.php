@@ -149,7 +149,7 @@ function ClassifiedAds_makePurchaseOrder() {
 	dbQuery(
 		'insert into classifiedads_purchase_orders set user_id='.$user_id
 		.', type_id='.$type_id.', days='.$days.', title="'.addslashes($title).'"'
-		.', phone="'.addslashes($phone).'", location="'.$addslashes($location).'"'
+		.', phone="'.addslashes($phone).'", location="'.addslashes($location).'"'
 		.', cost="'.addslashes($cost).'"'
 		.', description="'.addslashes($description).'"'
 	);

@@ -17,7 +17,7 @@ foreach ($_POST as $key => $value) {
 	$req .= "&$key=$value";
 }
 if ($_POST['payment_status'] == 'Refunded') {
-	Core_quit();
+	exit;
 }
 if ($req=='cmd=_notify-validate') {
 	die('please don\'t access this file directly');
@@ -28,9 +28,11 @@ $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
 $header .= "Content-Length: " . strlen($req) . "\r\n\r\n";
 $fp = fsockopen('ssl://www.paypal.com', 443, $errno, $errstr, 30);
 if (!$fp) {
+mail('kae.verens@gmail.com', 'test', 'failed');
 	// HTTP ERROR
 }
 else {
+mail('kae.verens@gmail.com', 'test4', print_r($_REQUEST, true));
 	fputs($fp, $header . $req);
 	while (!feof($fp)) {
 		$res = fgets($fp, 1024);
@@ -38,18 +40,19 @@ else {
 			require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 			$id=(int)$_POST['item_number'];
 			if ($id<1) {
-				Core_quit();
+				exit;
 			}
 			// create ad
 			$data=dbRow('select * from classifiedads_purchase_orders where id='.$id);
-			dbQuery(
-				'insert into classifiedads_ad set user_id='.$data['user_id']
+			mail('kae.verens@gmail.com', 'test', print_r($data, true));
+			$sql='insert into classifiedads_ad set user_id='.$data['user_id']
 				.',email="'.addslashes($data['email']).'",creation_date=now()'
 				.',title="'.addslashes($data['target_type']).'"'
 				.',body="'.addslashes($data['description']).'"'
 				.',expiry_date=date_add(now(), interval '.$data['days'].' day)'
-				.', status=1, category_id='.$data['category_id']
-			);
+				.', status=1, category_id='.$data['category_id'];
+			mail('kae.verens@gmail.com', 'test2', $sql);
+			dbQuery($sql);
 			$ad_id=dbLastInsertId();
 		}
 		else if (strcmp($res, "INVALID") == 0) {
