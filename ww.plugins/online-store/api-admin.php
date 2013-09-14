@@ -308,3 +308,13 @@ function OnlineStore_adminInvoiceNumberUpdate() {
 	);
 	return true;
 }
+function OnlineStore_adminUpdateAllProductSales() {
+	dbQuery('delete from online_store_sales');
+	$rs=dbAll('select id,items,date_created from online_store_orders where status in (1, 2)');
+	$update=0;
+	foreach ($rs as $r) {
+		OnlineStore_updateProductSales($r['id'], json_decode($r['items'], true), $r['date_created']);
+		$updated++;
+	}
+	return $updated;
+}

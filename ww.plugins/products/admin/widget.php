@@ -13,6 +13,7 @@ $types=array(
 	'List Categories',
 	'Tree View',
 	'Products',
+	'Most Popular Products',
 	'Pie-Chart'
 );
 echo '<select name="widget_type">';

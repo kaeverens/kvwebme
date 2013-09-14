@@ -845,3 +845,20 @@ function OnlineStore_extraColumnsList() {
 		'fixed'=>2
 	);
 }
+function OnlineStore_updateProductSales($id, $items=false, $date_created=false) {
+	if (!$items) {
+		$r=dbRow(
+			'select date_created, items from online_store_orders where id='.$id
+		);
+		$items=json_decode($r['items'], true);
+		$date_created=$r['date_created'];
+	}
+	dbQuery('delete from online_store_sales where order_id='.$id);
+	foreach ($items as $k=>$v) {
+		$sql='insert into online_store_sales set order_id='.$id
+			.', source="eBay", product_id='.$v['id']
+			.', quantity='.$v['amt'].', cdate="'.addslashes($date_created).'"';
+		echo $sql.'<br/>';
+		dbQuery($sql);
+	}
+}

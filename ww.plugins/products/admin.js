@@ -134,9 +134,9 @@ function Products_screenCategories() {
 					if (
 						$.inArray(words[i], [
 							'for', 'with', 'in', 'to', 'and', 'the', 'is',
-							'white', 'blue', 'red', 'green', 'color', 'dc', '12v', 'pcs', 'one',
-							'black', 'style', 'size', 'leather', 'plastic', 'price', 'inch', 'grey',
-							'pink', 'silver', 'magenta', 'yellow', 'orange', 'purple', 'golden'
+							'color', 'dc', '12v', 'pcs', 'one',
+							'style', 'size', 'leather', 'plastic', 'price', 'inch',
+//							'pink', 'silver', 'magenta', 'yellow', 'orange', 'purple', 'golden', 'black', 'white', 'blue', 'red', 'green', 'grey'
 						])!==-1)
 					{
 						continue;

@@ -142,6 +142,10 @@ $plugin=array(
 );
 // }
 
+@mkdir(USERBASE.'/ww.cache/products');
+@mkdir(USERBASE.'/ww.cache/products/templates');
+@mkdir(USERBASE.'/ww.cache/products/templates_c');
+
 // { class Product
 
 /**
@@ -1825,6 +1829,128 @@ class Utf8encode_Filter extends php_user_filter{
 
 // }
 
+// { Product_datatableMultiple
+
+/**
+	* display products in a datatable format
+	*
+	* @param array  $products  array of product IDS to show
+	* @param string $direction the orientation of the table
+	*
+	* @return string HTML of the table
+	*/
+function Product_datatableMultiple ($products, $direction) {
+	$headers=array();
+	$header_types=array();
+	$data=array();
+	foreach ($products as $pid) {
+		$row=array();
+		$product=Product::getInstance($pid);
+		$type=ProductType::getInstance($product->vals['product_type_id']);
+		if (!isset($type)) {
+			$ptid=$product->vals['product_type_id'];
+			return '<em>'.__(
+				'Product Type with ID %1 does not exist - please alert the admin of'
+				.' this site.', array($ptid), 'core'
+			).'</em>';
+		}
+		$row['name']=$product->name;
+		if (!is_array($type->data_fields)) {
+			return __(
+				'Product Type "%1" has no data fields.', array($type->name), 'core'
+			);
+		}
+		foreach ($type->data_fields as $df) {
+			switch ($df->t) {
+				case 'checkbox': // {
+					$row[$df->n]=isset($product->vals[$df->n])&&$product->vals[$df->n]
+						?__('Yes')
+						:__('No');
+				break; // }
+				case 'date': // {
+					$row[$df->n] = Core_dateM2H($product->vals[$df->n]);
+				break; // }
+				case 'textarea' : // {
+					$row[$df->n] = $product->vals[$df->n];
+				break; // }
+				default : // {
+					$row[$df->n] = htmlspecialchars($product->vals[$df->n]);
+				break; // }
+			}
+			if (!in_array($df->n, $headers)) {
+				if ($df->ti) {
+					$headers[$df->n]=$df->ti;
+				}
+				else {
+					$headers[$df->n]=ucwords($df->n);
+				}
+				$header_types[$df->n]=$df->t;
+			}
+		}
+		$data[] = $row;
+	}
+	switch ($direction) {
+		case 'horizontal': // {
+			// { datatables
+			WW_addScript(
+				'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/'
+				.'jquery.dataTables.min.js'
+			);
+			WW_addScript('/j/datatables-delay.js');
+			WW_addCSS(
+				'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/'
+				.'jquery.dataTables.css'
+			);
+			WW_addCSS(
+				'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/'
+				.'jquery.dataTables_themeroller.css'
+			);
+			// }
+			WW_addScript('products/frontend/show-horizontal.js');
+			WW_addCSS('/ww.plugins/products/frontend/show-horizontal.css');
+			$html='<table class="product-horizontal">';
+			$html.='<thead><tr>';
+			foreach ($headers as $n=>$v) {
+				$html.='<th o="'.htmlspecialchars($n).'">'.htmlspecialchars($v).'</th>';
+			}
+			$html.='</tr></thead><tbody>';
+			foreach ($data as $row) {
+				$html.='<tr>';
+				foreach ($headers as $n=>$d) {
+					$html.='<td>'.$row[$n].'</td>';
+				}
+				$html.='</tr>';
+			}
+			$html.='</tbody>';
+			$html.= '<tfoot><tr>';
+			foreach ($headers as $key=>$name) {
+				if ($header_types[$key]=='checkbox') {
+					$html.='<th><select name="search_'.$name.'"><option></option>'
+						.'<option value="0">'.__('No').'</option>'
+						.'<option value="1">'.__('Yes').'</option>'
+						.'</select></th>';
+				}
+				else {
+					$html.='<th><input type="text" name="search_'.$name.'" /></th>';
+				}
+			}
+			$html.='</tr></tfoot></table>';
+		return $html; // }
+		case 'vertical': // {
+			$html='<table class="product-vertical">';
+			foreach ($headers as $n=>$d) {
+				$html.='<tr class="'.$n.'"><th>'.$d.'</th>';
+				foreach ($data as $row) {
+					$html.='<td>'.$row[$n].'</td>';
+				}
+				$html.='</tr>';
+			}
+			$html.='</table>';
+		return $html; // }
+	}
+}
+
+// }
 // { Products_addToCart
 
 /**
@@ -3924,136 +4050,145 @@ function Products_user($params, $smarty) {
   * @return string HTML of the widget
   */
 function Products_widget($vars=null) {
-	require SCRIPTBASE.'ww.plugins/products/frontend/widget.php';
+	$html='';
+	$widget_type=isset($vars->widget_type) && $vars->widget_type
+		?$vars->widget_type
+		:'List Categories';
+	$diameter=isset($vars->diameter) && $vars->diameter?$vars->diameter:280;
+	$parent_cat=isset($vars->parent_cat)?((int)$vars->parent_cat):0;
+	switch ($widget_type) {
+		case 'Pie Chart': // { Pie Chart
+			$id='products_categories_'.md5(rand());
+			$cats=dbAll(
+				'select id,name,associated_colour as col from products_categories '
+				.'where parent_id='.$parent_cat.' and enabled order by sortNum', false,
+				'products_categories'
+			);
+			$html.='<div id="'.$id.'" class="products-widget" style="width:'.$diameter
+				.'px;height:'.($diameter+30).'px">'.__('Loading...').'</div>'
+				.'<script defer="defer">$(function(){'
+				.'products_widget("'.$id.'",'.json_encode($cats).');'
+				.'});</script>';
+			$html.='<!--[if IE]><script defer="defer" src="/ww.plugins/products/'
+				.'frontend/excanvas.js"></script><![endif]-->';
+			WW_addScript('products/frontend/jquery.canvas.js');
+			WW_addScript('products/frontend/widget.js');
+		break; // }
+		case 'Products': // { Products
+			$html='<div class="products-widget-products">';
+			$products=Products::getByCategory($parent_cat);
+			foreach ($products->product_ids as $pid) {
+				$product=Product::getInstance($pid);
+				$iid=$product->getDefaultImage();
+				$img=$iid
+					?'<a class="product-widget-imglink" href="'.$product->getRelativeURL()
+					.'"><img class="product-widget-img" src="'.$GLOBALS['cdnprefix']
+					.'/a/w=200/h=auto/f=getImg/'.$iid.'"/></a>'
+					:'';
+					$pvat = array("vat" => $_SESSION['onlinestore_vat_percent']);
+				$html.='<div class="products-widget-inner">'.$img
+					.'<p class="products-widget-name">'
+					.htmlspecialchars(__FromJson($product->name)).'</p>'				
+					.'<div class="products-widget-price">'
+					.'<p class="products-widget-price-inner">'
+					.OnlineStore_numToPrice(
+						$product->getPriceBase()*(1+($pvat['vat'])/100)
+					)
+					.'</p></div>'
+					.'<a class="product-widget-link" href="'.$product->getRelativeURL().'">'
+					.__('more info').'</a></div>';
+			}
+			$html.='</div>';
+		break; // }
+		case 'Most Popular Products': // {
+			$html='';
+			$pids=array();
+			if ($parent_cat) {
+				$products=Products::getByCategory($parent_cat);
+				$rs=dbAll('select sum(quantity) as amt,product_id from online_store_sales where product_id in ('.join(', ', $products->product_ids).') group by product_id order by amt desc limit 10');
+			}
+			else {
+				$rs=dbAll('select sum(quantity) as amt,product_id from online_store_sales group by product_id order by amt desc limit 10');
+			}
+			foreach ($rs as $r) {
+				$pid=$r['product_id'];
+				$product=Product::getInstance($pid);
+				$iid=$product->getDefaultImage();
+				$img=$iid
+					?'<a class="product-widget-imglink" href="'.$product->getRelativeURL()
+					.'"><img class="product-widget-img" src="'.$GLOBALS['cdnprefix']
+					.'/a/w=200/h=auto/f=getImg/'.$iid.'"/></a>'
+					:'';
+					$pvat = array("vat" => $_SESSION['onlinestore_vat_percent']);
+				$html.='<div class="products-widget-inner">'.$img
+					.'<p class="products-widget-name">'
+					.htmlspecialchars(__FromJson($product->name)).'</p>'				
+					.'<div class="products-widget-price">'
+					.'<p class="products-widget-price-inner">'
+					.OnlineStore_numToPrice(
+						$product->getPriceBase()*(1+($pvat['vat'])/100)
+					)
+					.'</p></div>'
+					.'<a class="product-widget-link" href="'.$product->getRelativeURL().'">'
+					.__('more info').'</a></div>';
+			}
+		break; // }
+		case 'Tree View': // { Tree View
+			$html='<div class="product-categories-tree"><ul>';
+			$cats=dbAll(
+				'select id,name,associated_colour as col from products_categories '
+				.'where parent_id='.$parent_cat.' and enabled order by sortNum', false,
+				'products_categories'
+			);
+			foreach ($cats as $c) {
+				$cat=ProductCategory::getInstance($c['id']);
+				$name=$c['name'];
+				$html.='<li class="products-cat-'
+					.preg_replace('/[^a-zA-Z0-9\-_]/', '', $name).'">'
+					.'<a href="'.$cat->getRelativeUrl().'">'.htmlspecialchars($name).'</a>';
+				$html.=Products_categoriesListSubCats($c['id']);
+				$html.='</li>';
+			}
+			$html.='</ul></div>';
+			WW_addScript('/j/jstree/jquery.jstree.js');
+			WW_addScript('products/j/categories-tree.js');
+		break; // }
+		default: // { List Categories
+			$html='<ul class="product-categories">';
+			$cats=dbAll(
+				'select id,name,associated_colour as col from products_categories '
+				.'where parent_id='.$parent_cat.' and enabled order by sortNum', false,
+				'products_categories'
+			);
+			foreach ($cats as $c) {
+				$name=$c['name'];
+				$html.='<li class="products-cat-'
+					.preg_replace('/[^a-zA-Z0-9\-_]/', '', $name).'">'
+					.'<a data-cid="'.$c['id'].'"'
+					.' href="/_r?type=products&product_cid='.$c['id'].'">'
+					.$name.'</a>';
+				if (isset($vars->show_products) && $vars->show_products=='1') {
+					$sql='select id,name from products,products_categories_products'
+						.' where product_id=products.id and category_id='.$c['id'];
+					$ps=dbAll($sql);
+					$html.='<ul class="products-products">';
+					foreach ($ps as $p) {
+						$product=Product::getInstance($p['id']);
+						$html.='<li><a data-pid="'.$p['id'].'" href="'
+							.$product->getRelativeUrl().'">'
+							.htmlspecialchars(__FromJson($p['name'])).'</a></li>';
+					}
+					$html.='</ul>';
+				}
+				$html.='</li>';
+			}
+			$html.='</ul>';
+			if (@$_SESSION['userdata']['id']) {
+				WW_addScript('products/j/watchlists.js');
+			}
+		break; // }
+	}
 	return $html;
 }
 
 // }
-
-@mkdir(USERBASE.'/ww.cache/products');
-@mkdir(USERBASE.'/ww.cache/products/templates');
-@mkdir(USERBASE.'/ww.cache/products/templates_c');
-
-// { Product_datatableMultiple
-
-/**
-	* display products in a datatable format
-	*
-	* @param array  $products  array of product IDS to show
-	* @param string $direction the orientation of the table
-	*
-	* @return string HTML of the table
-	*/
-function Product_datatableMultiple ($products, $direction) {
-	$headers=array();
-	$header_types=array();
-	$data=array();
-	foreach ($products as $pid) {
-		$row=array();
-		$product=Product::getInstance($pid);
-		$type=ProductType::getInstance($product->vals['product_type_id']);
-		if (!isset($type)) {
-			$ptid=$product->vals['product_type_id'];
-			return '<em>'.__(
-				'Product Type with ID %1 does not exist - please alert the admin of'
-				.' this site.', array($ptid), 'core'
-			).'</em>';
-		}
-		$row['name']=$product->name;
-		if (!is_array($type->data_fields)) {
-			return __(
-				'Product Type "%1" has no data fields.', array($type->name), 'core'
-			);
-		}
-		foreach ($type->data_fields as $df) {
-			switch ($df->t) {
-				case 'checkbox': // {
-					$row[$df->n]=isset($product->vals[$df->n])&&$product->vals[$df->n]
-						?__('Yes')
-						:__('No');
-				break; // }
-				case 'date': // {
-					$row[$df->n] = Core_dateM2H($product->vals[$df->n]);
-				break; // }
-				case 'textarea' : // {
-					$row[$df->n] = $product->vals[$df->n];
-				break; // }
-				default : // {
-					$row[$df->n] = htmlspecialchars($product->vals[$df->n]);
-				break; // }
-			}
-			if (!in_array($df->n, $headers)) {
-				if ($df->ti) {
-					$headers[$df->n]=$df->ti;
-				}
-				else {
-					$headers[$df->n]=ucwords($df->n);
-				}
-				$header_types[$df->n]=$df->t;
-			}
-		}
-		$data[] = $row;
-	}
-	switch ($direction) {
-		case 'horizontal': // {
-			// { datatables
-			WW_addScript(
-				'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/'
-				.'jquery.dataTables.min.js'
-			);
-			WW_addScript('/j/datatables-delay.js');
-			WW_addCSS(
-				'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/'
-				.'jquery.dataTables.css'
-			);
-			WW_addCSS(
-				'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/'
-				.'jquery.dataTables_themeroller.css'
-			);
-			// }
-			WW_addScript('products/frontend/show-horizontal.js');
-			WW_addCSS('/ww.plugins/products/frontend/show-horizontal.css');
-			$html='<table class="product-horizontal">';
-			$html.='<thead><tr>';
-			foreach ($headers as $n=>$v) {
-				$html.='<th o="'.htmlspecialchars($n).'">'.htmlspecialchars($v).'</th>';
-			}
-			$html.='</tr></thead><tbody>';
-			foreach ($data as $row) {
-				$html.='<tr>';
-				foreach ($headers as $n=>$d) {
-					$html.='<td>'.$row[$n].'</td>';
-				}
-				$html.='</tr>';
-			}
-			$html.='</tbody>';
-			$html.= '<tfoot><tr>';
-			foreach ($headers as $key=>$name) {
-				if ($header_types[$key]=='checkbox') {
-					$html.='<th><select name="search_'.$name.'"><option></option>'
-						.'<option value="0">'.__('No').'</option>'
-						.'<option value="1">'.__('Yes').'</option>'
-						.'</select></th>';
-				}
-				else {
-					$html.='<th><input type="text" name="search_'.$name.'" /></th>';
-				}
-			}
-			$html.='</tr></tfoot></table>';
-		return $html; // }
-		case 'vertical': // {
-			$html='<table class="product-vertical">';
-			foreach ($headers as $n=>$d) {
-				$html.='<tr class="'.$n.'"><th>'.$d.'</th>';
-				foreach ($data as $row) {
-					$html.='<td>'.$row[$n].'</td>';
-				}
-				$html.='</tr>';
-			}
-			$html.='</table>';
-		return $html; // }
-	}
-}
-
-// }
-

@@ -394,11 +394,11 @@ function OnlineStoreEbay_adminImportOrders() {
 			}
 			$items[$key]['amt']+=$transaction->QuantityPurchased;
 		}
-		$items=json_encode($items);
+		$jitems=json_encode($items);
 		// { create the order entry
 		dbQuery(
 			'insert into online_store_orders set total="'.$total.'"'
-			.', items="'.addslashes($items).'"'
+			.', items="'.addslashes($jitems).'"'
 			.', ebayOrderId="'.$ebayOrderId.'"'
 			.', form_vals="'.addslashes($form_vals).'"'
 			.', date_created="'.addslashes($date_created).'"'
@@ -407,13 +407,7 @@ function OnlineStoreEbay_adminImportOrders() {
 		$id=dbLastInsertId();
 		// }
 		dbQuery('update online_store_orders set invoice_num=id where id='.$id);
-		foreach ($items as $k=>$v) {
-			$sql='insert into online_store_sales set order_id='.$id
-				.', source="eBay", product_id='.$v['id']
-				.', quantity='.$v['amt'].', cdate="'.addslashes($date_created).'"';
-			dbQuery($sql);
-			mail('kae.verens@gmail.com', 'test', $sql);
-		}
+		OnlineStore_updateProductSales($id, $items, $date_created);
 		$imported++;
 	}
 	return array(
