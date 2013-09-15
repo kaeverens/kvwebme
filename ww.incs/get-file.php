@@ -38,6 +38,7 @@ foreach ($PLUGINS as $plugin) {
 	));
 }
 
+session_write_close();
 $force_download=isset($_REQUEST['force_download']);
 header('Content-Description: File Transfer');
 if ($force_download) {

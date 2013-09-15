@@ -12,6 +12,11 @@ FileETag None
 
 RewriteEngine on
 
+RewriteCond %{HTTP_USER_AGENT} 360Spider [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} Baiduspider [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} AhrefsBot [OR]
+RewriteCond %{HTTP_USER_AGENT} ^Zeus
+RewriteRule .* - [F]
 RewriteCond %{SCRIPT_NAME} !\.php
 RewriteRule ^a(/.*)?$ /ww.incs/api.php?extra=$1 [QSA,L]
 RewriteRule ^f/(.*)$ /ww.incs/get-file.php?filename=$1 [L]

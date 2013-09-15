@@ -72,10 +72,10 @@ $(function(){
 	}
 	// { periodically refresh the user's session
 	function refreshSession() {
-		setTimeout(refreshSession, 60000); // ping the server every minute
+		setTimeout(refreshSession, 240000);
 		$.post('/a/f=nothing');
 	}
-	setTimeout(refreshSession, 60000);
+	setTimeout(refreshSession, 240000);
 	// }
 	if (window.pagedata!=undefined) {
 		ww.cdn=pagedata.cdn?'//'+pagedata.cdn:'';

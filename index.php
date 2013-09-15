@@ -420,6 +420,7 @@ if (strpos($template, '/')===false) {
 	$template=THEME_DIR.'/'.THEME.'/h/'.$template.'.html';
 }
 $t=$smarty->fetch($template);
+session_write_close();
 $t=str_replace(
 	array('WW_SCRIPTS_GO_HERE', 'WW_CSS_GOES_HERE', '</body>'),
 	array(WW_getScripts(), WW_getCSS(), WW_getInlineScripts().'</body>'),

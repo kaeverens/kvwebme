@@ -858,7 +858,6 @@ function OnlineStore_updateProductSales($id, $items=false, $date_created=false) 
 		$sql='insert into online_store_sales set order_id='.$id
 			.', source="eBay", product_id='.$v['id']
 			.', quantity='.$v['amt'].', cdate="'.addslashes($date_created).'"';
-		echo $sql.'<br/>';
 		dbQuery($sql);
 	}
 }

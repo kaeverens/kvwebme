@@ -4105,10 +4105,10 @@ function Products_widget($vars=null) {
 			$pids=array();
 			if ($parent_cat) {
 				$products=Products::getByCategory($parent_cat);
-				$rs=dbAll('select sum(quantity) as amt,product_id from online_store_sales where product_id in ('.join(', ', $products->product_ids).') group by product_id order by amt desc limit 10');
+				$rs=dbAll('select sum(quantity) as amt,product_id from online_store_sales where product_id in ('.join(', ', $products->product_ids).') group by product_id order by amt desc limit 8');
 			}
 			else {
-				$rs=dbAll('select sum(quantity) as amt,product_id from online_store_sales group by product_id order by amt desc limit 10');
+				$rs=dbAll('select sum(quantity) as amt,product_id from online_store_sales group by product_id order by amt desc limit 8');
 			}
 			foreach ($rs as $r) {
 				$pid=$r['product_id'];
