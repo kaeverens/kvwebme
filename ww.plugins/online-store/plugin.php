@@ -69,7 +69,7 @@ $plugin=array(
 	), // }
 	'do-not-delete' => true,
 	'only-one-page-instance' => true,
-	'version' => '25'
+	'version' => '27'
 );
 // }
 // { currency symbols
