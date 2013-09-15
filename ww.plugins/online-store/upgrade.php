@@ -305,3 +305,7 @@ if ($version<27) { //  online_store_sales
 	dbQuery($sql);
 	$version=27;
 }
+if ($version==27) { // invoice ID
+	dbQuery('alter table online_store_orders add invoice_num int default 0');
+	$version=28;
+}
