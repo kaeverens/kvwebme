@@ -12,7 +12,6 @@
 	*/
 
 $id=(int)$_REQUEST['product_id'];
-require_once dirname(__FILE__).'/show.php';
 $product=Product::getInstance($id);
 if (!$product) {
 	return;
