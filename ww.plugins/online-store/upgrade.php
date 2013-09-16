@@ -300,15 +300,12 @@ if ($version==23) { // add supplier price
 	dbQuery('update products set os_supplier_price=os_base_price');
 	$version=24;
 }
-if ($version==24) { //  online_store_sales
-	dbQuery('CREATE TABLE `online_store_sales` ('
-		.'id` int(11) NOT NULL AUTO_INCREMENT,'
-		.'order_id` int(11) DEFAULT NULL,'
-		.'source` char(16) DEFAULT NULL,'
-		.'product_id` int(11) DEFAULT NULL,'
-		.'quantity` int(11) DEFAULT NULL,'
-		.'cdate` datetime DEFAULT NULL,'
-		.'PRIMARY KEY (`id`)'
-		.') ENGINE=MyISAM DEFAULT CHARSET utf8');
-	$version=25;
+if ($version<27) { //  online_store_sales
+	$sql='CREATE TABLE `online_store_sales` (`id` int(11) NOT NULL AUTO_INCREMENT,`order_id` int(11) DEFAULT NULL,`source` char(16) DEFAULT NULL,`product_id` int(11) DEFAULT NULL,`quantity` int(11) DEFAULT NULL,`cdate` datetime DEFAULT NULL,PRIMARY KEY (`id`)) ENGINE=MyISAM DEFAULT CHARSET utf8;';
+	dbQuery($sql);
+	$version=27;
+}
+if ($version==27) { // invoice ID
+	dbQuery('alter table online_store_orders add invoice_num int default 0');
+	$version=28;
 }

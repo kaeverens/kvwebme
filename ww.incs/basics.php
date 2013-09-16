@@ -272,6 +272,7 @@ function Core_configRewrite() {
 	}
 	$config="<?php\n\$DBVARS=array(\n	".join(",\n	", $tmparr2)."\n);";
 	file_put_contents(CONFIG_FILE, $config);
+	Core_cacheClear('core');
 }
 
 // }
