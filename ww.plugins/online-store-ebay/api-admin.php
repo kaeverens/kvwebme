@@ -353,6 +353,9 @@ function OnlineStoreEbay_adminImportOrders() {
 			continue;
 		}
 		$address=$order->ShippingAddress;
+		if ($address->PostalCode=='') {
+			$address->PostalCode='na';
+		}
 		$form_vals=array(
 			'FirstName'=>preg_replace('/ .*/', '', $address->Name),
 			'Surname'=>preg_replace('/.*? /', '', $address->Name),

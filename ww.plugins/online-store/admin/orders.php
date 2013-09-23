@@ -79,7 +79,6 @@ else {
 $sql='select status,id,invoice_num, total,date_created,authorised'
 	.' from online_store_orders'
 	.' where '.$filter.' order by date_created desc';
-	echo $sql;
 $rs=dbAll($sql);
 if (is_array($rs) && count($rs)) {
 	$c.='<div style="margin:0 10%">'

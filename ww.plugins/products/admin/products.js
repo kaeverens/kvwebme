@@ -207,6 +207,10 @@ $(function() {
 							$('td:nth-child('+j+')', nRow)
 								.text((+aData[i])?'Yes':'No');
 						}
+						if (col.name=='date_created') {
+							$('td:nth-child('+j+')', nRow)
+								 .text(aData[i].replace(/ .*/, ''));
+						}
 						if (col.fixed) {
 							$('td:nth-child('+j+')', nRow)
 								.text((+aData[i]).toFixed(col.fixed));

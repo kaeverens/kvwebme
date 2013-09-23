@@ -330,6 +330,8 @@ if ($id) {
 		echo '<em>No product with that ID exists.</em>';
 		return;
 	}
+	$product=Product::getInstance($id);
+	$product_url=$product->getRelativeUrl();
 }
 else {
 	$pdata=array(
@@ -343,6 +345,7 @@ else {
 		'images_directory'=>'',
 		'online_store_fields'=>'{}'
 	);
+	$product_url='#';
 }
 
 // { top links
@@ -481,7 +484,7 @@ echo '<th>EAN-13 barcode</th><td><input name="ean" value="'
 	.htmlspecialchars(@$pdata['ean']).'" /></td>';
 // }
 // { Location
-echo '<th>'.__('Location').'</th><td colspan="2"><select name="location">'
+echo '<th>'.__('Location').'</th><td><select name="location">'
 	.'<option value="0"> -- </option>';
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/api-admin.php';
 $opts=Core_locationsGetFull();
@@ -493,6 +496,13 @@ foreach ($opts as $k=>$v) {
 	echo '>'.htmlspecialchars($k).'</option>';
 }
 echo '</select></td>';
+// }
+// { view on front-end
+echo '<td>';
+if ($id) {
+	echo '<a href="'.$product_url.'" target="_blank">view on front-end</a>';
+}
+echo '</td>';
 // }
 echo '</tr>';
 // { images

@@ -153,7 +153,7 @@ function Products_screenCategories() {
 			if (v===undefined) {
 				return;
 			}
-			if (toptwenty.length<20) {
+			if (toptwenty.length<40) {
 				toptwenty.push([k, v]);
 			}
 			else {
@@ -191,7 +191,7 @@ function Products_screenCategories() {
 				}
 			}
 		}
-		alert(toptwenty.join("\n"));
+		alert(toptwenty.join("\t"));
 	}
 	function showTree() {
 		var $wrapper=$('#categories-tree');
