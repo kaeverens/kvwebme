@@ -60,44 +60,28 @@ function Ads_widget($params) {
 	$type_id=(int)$params->{'ad-type'};
 	$howmany=(int)$params->{'how-many'};
 	$type=dbRow('select * from ads_types where id='.$type_id);
-	$sql='select id,image_url,target_type,poster from ads'
-		.' where type_id='.$type_id.' and is_active and cdate>date_add(now(), interval -2 day) order by rand()'
-		.' limit '.$howmany;
-	$adsNew=dbAll($sql);
+	$ads=array();
+	$i=0;
+	if ($howmany>1) {
+		$sql='select id,image_url,target_type,poster from ads'
+			.' where type_id='.$type_id.' and is_active and cdate>date_add(now(), interval -2 day) order by rand()'
+			.' limit '.$howmany;
+		$adsNew=dbAll($sql);
+		for (;$i<count($adsNew);++$i) {
+			$ads[]=$adsNew[$i];
+		}
+	}
 	$adsOld=dbAll(
 		'select id,image_url,target_type,poster from ads'
 		.' where type_id='.$type_id.' and is_active order by rand()'
 		.' limit '.$howmany
 	);
-	$ads=array();
-	for ($i=0;$i<count($adsNew);++$i) {
-		$ads[]=$adsNew[$i];
-	}
 	for ($j=0;$j<($howmany-$i) &&$j<count($adsOld);++$j) {
 		$ads[]=$adsOld[$j];
 	}
 	$html='<div class="ads-wrapper type-'.$type_id.'">';
 	foreach ($ads as $ad) {
-		$html.='<div class="ads-ad" data-id="'.$ad['id'].'"'
-			.' data-type="'.$ad['target_type'].'"';
-		if ($ad['target_type']=='1') {
-			$html.=' data-poster="'.htmlspecialchars($ad['poster']).'"';
-		}
-		$html.='>';
-		// { image
-		if (preg_match('/swf$/', $ad['image_url'])) {
-			$html.='<object type="application/x-shockwave-flash" style="width:'.$type['width'].'px; height:'.$type['height'].'px;" data="/f//ads/291/Monaghan-Life-Banner.swf"><param name="movie" value="'.$ad['image_url'].'"></object>';
-		}
-		else {
-			$ad['image_url']=str_replace(
-				'/f/userfiles',
-				'/a/f=getImg/w='.$type['width'].'/h='.$type['height'].'/userfiles',
-				$ad['image_url']
-			);
-			$html.='<img src="'.$ad['image_url'].'" style="max-height:'.$type['height'].'px;max-width:'.$type['width'].'"/>';
-		}
-		// }
-		$html.='<div class="ads-overlay"></div></div>';
+		$html.=Ads_adShow($ad, $type);
 		dbQuery(
 			'insert into ads_track set ad_id='.$ad['id'].', view=1, cdate=now()'
 		);
@@ -109,6 +93,29 @@ function Ads_widget($params) {
 }
 
 // }
+function Ads_adShow($ad, $type) {
+	$html='<div class="ads-ad" data-id="'.$ad['id'].'"'
+		.' data-type="'.$ad['target_type'].'"';
+	if ($ad['target_type']=='1') {
+		$html.=' data-poster="'.htmlspecialchars($ad['poster']).'"';
+	}
+	$html.='>';
+	// { image
+	if (preg_match('/swf$/', $ad['image_url'])) {
+		$html.='<object type="application/x-shockwave-flash" style="width:'.$type['width'].'px; height:'.$type['height'].'px;" data="/f//ads/291/Monaghan-Life-Banner.swf"><param name="movie" value="'.$ad['image_url'].'"></object>';
+	}
+	else {
+		$ad['image_url']=str_replace(
+			'/f/userfiles',
+			'/a/f=getImg/w='.$type['width'].'/h='.$type['height'].'/userfiles',
+			$ad['image_url']
+		);
+		$html.='<img src="'.$ad['image_url'].'" style="max-height:'.$type['height'].'px;max-width:'.$type['width'].'"/>';
+	}
+	// }
+	$html.='<div class="ads-overlay"></div></div>';
+	return $html;
+}
 // { Ads_frontend
 
 /**
@@ -119,14 +126,20 @@ function Ads_widget($params) {
 	* @return string
 	*/
 function Ads_frontend($PAGEDATA) {
-	$html='<div id="ads-purchase-wrapper"></div>';
-	WW_addInlineScript(
-		'var ads_paypal="'.addslashes($PAGEDATA->vars['ads-paypal']).'";'
-	);
-	WW_addScript('ads/j/purchase.js');
-	WW_addScript('/j/uploader.js');
-	WW_addCss('/ww.plugins/ads/css.css');
-	return $PAGEDATA->render().$html.@$PAGEDATA->vars['footer'];
+	if (preg_match('/show-all-ads$/', $_SERVER['REQUEST_URI'])) {
+		require_once SCRIPTBASE.'ww.plugins/ads/frontend/show-all-ads.php';
+		return $html;
+	}
+	else {
+		$html='<div id="ads-purchase-wrapper"></div>';
+		WW_addInlineScript(
+			'var ads_paypal="'.addslashes($PAGEDATA->vars['ads-paypal']).'";'
+		);
+		WW_addScript('ads/j/purchase.js');
+		WW_addScript('/j/uploader.js');
+		WW_addCss('/ww.plugins/ads/css.css');
+		return $PAGEDATA->render().$html.@$PAGEDATA->vars['footer'];
+	}
 }
 
 // }

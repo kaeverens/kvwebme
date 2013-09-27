@@ -1226,6 +1226,7 @@ function Products_adminProductsListDT() {
 		.' limit '.$start.','.$length;
 	$rs=dbAll($sql, '', 'products');
 	$result=array();
+	$result['sql']=$sql;
 	$result['sEcho']=intval($_GET['sEcho']);
 	$result['iTotalRecords']=dbOne(
 		'select count(id) as ids from products', 'ids', 'products'

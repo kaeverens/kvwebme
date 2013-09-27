@@ -29,6 +29,7 @@ if (strpos($md5, '..')!==false) {
 	Core_quit();
 }
 
+@mkdir(USERBASE.'/ww.cache/admin', 0777, true);
 $fname=USERBASE.'/ww.cache/admin/'.$md5;
 header('X-Powered-By:');
 header("Expires: ".gmdate("D, d M Y H:i:s", filemtime($fname)+216000)." GMT");

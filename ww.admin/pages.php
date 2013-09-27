@@ -27,7 +27,21 @@ WW_addScript('/j/jstree/_lib/jquery.cookie.js');
 WW_addScript('/j/jstree/jquery.jstree.js');
 WW_addScript('/j/jquery.remoteselectoptions.js');
 WW_addScript('/ww.admin/pages/menu2.js');
-WW_addInlineScript('window.page_menu_currentpage='.$id.';');
+$reports=array(
+	array('visitorStats', 'Visitor Stats', false),
+	array('popularPages', 'Popular Pages', false)
+);
+foreach ($PLUGINS as $n=>$p) {
+	if (isset($p['reports'])) {
+		foreach ($p['reports'] as $k=>$v) {
+			$reports[]=array($k, $v, $n);
+		}
+	}
+}
+WW_addInlineScript(
+	'window.page_menu_currentpage='.$id.';'
+	.'window.reports='.json_encode($reports).';'
+);
 WW_addCSS('/ww.admin/pages/menu.css');
 WW_addCSS('/ww.admin/pages/css.css');
 // }

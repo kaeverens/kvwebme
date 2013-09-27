@@ -269,18 +269,14 @@ $(function(){
 		if (adminVars.dashboardReportsOrder!==undefined) {
 			reports_ordered=eval('('+adminVars.dashboardReportsOrder+')');
 		}
-		var available_reports=[
-			// TODO: translation needed
-			['visitorStats', 'Visitor Stats'],
-			['popularPages', 'Popular Pages']
-		];
+		var available_reports=window.reports;
 		var repAvail, i;
 		for (i=0;i<reports_ordered.length;++i) {
 			var repOrd=reports_ordered[i];
 			for (var j=0;j<available_reports.length;++j) {
 				repAvail=available_reports[j];
 				if (repAvail[0]==repOrd[0]) {
-					repAvail[2]=1;
+					repAvail[3]=1;
 					reportsShow(repOrd[0], repAvail[1], repOrd[1], repOrd[2], repOrd[3]);
 					break;
 				}
@@ -288,7 +284,7 @@ $(function(){
 		}
 		for (i=0;i<available_reports.length;++i) {
 			repAvail=available_reports[i];
-			if (repAvail[2]===undefined) {
+			if (repAvail[3]===undefined) {
 				reportsShow(repAvail[0], repAvail[1], 0, 200, 200);
 			}
 		}
@@ -313,7 +309,7 @@ $(function(){
 				$content
 					.toggle();
 				if ($content.css('display')=='block') {
-					eval('Reports_'+$parent.data('func'))($content);
+					reportOpen($parent, $content);
 				}
 				else {
 					$this.empty();
@@ -329,9 +325,26 @@ $(function(){
 				reportsSave();
 				var $content=$(this);
 				var $parent=$content.closest('.portlet');
-				eval('Reports_'+$parent.data('func'))($content);
+				reportOpen($parent, $content);
 			}
 		});
+		function reportOpen($parent, $content) {
+			var fnName='Reports_'+$parent.data('func');
+			if (!window[fnName]) {
+				window[fnName]=function($content) {
+					for (var i=0;i<reports.length;++i) {
+						if ('Reports_'+reports[i][0]==fnName) {
+							var r=reports[i];
+							$.cachedScript('/ww.plugins/'+r[2]+'/reports/'+r[0]+'.js')
+								.done(function() {
+									window[fnName]($content);
+								});
+						}
+					}
+				}
+			}
+			window[fnName]($content);
+		}
 		// }
 	}
 });

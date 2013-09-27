@@ -67,6 +67,9 @@ $plugin=array(
 		'privacy_user_profile'     => 'OnlineStore_userProfile',
 		'privacy_overload' => 'OnlineStore_userProfileInvoiceDetails'
 	), // }
+	'reports' => array( // show reports in Pages
+		'onlinestoreSalesVolume'=>'Sales Volume'
+	),
 	'do-not-delete' => true,
 	'only-one-page-instance' => true,
 	'version' => '28'
