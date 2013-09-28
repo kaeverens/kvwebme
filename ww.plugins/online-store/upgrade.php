@@ -309,3 +309,7 @@ if ($version==27) { // invoice ID
 	dbQuery('alter table online_store_orders add invoice_num int default 0');
 	$version=28;
 }
+if ($version==28) { // profit
+	dbQuery('alter table online_store_sales add profit float default 0');
+	$version=29;
+}

@@ -1779,6 +1779,8 @@ class ProductType{
 			USERBASE.'/ww.cache/products/templates/types_'.$template.'_'.$this->id
 		);
 		if ($template=='singleview') {
+			$PAGEDATA->vars['header_html']=(isset($PAGEDATA->vars['header_html'])?$PAGEDATA->vars['header_html']:'')
+				.'<link rel="canonical" href="'.htmlspecialchars($product->getRelativeUrl()).'" />';
 			if ($this->allow_comments) {
 				$html.=Core_commentsShow(
 					'http://'.$_SERVER['HTTP_HOST'].$product->getRelativeURL()

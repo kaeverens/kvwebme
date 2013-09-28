@@ -68,7 +68,8 @@ $plugin=array(
 		'privacy_overload' => 'OnlineStore_userProfileInvoiceDetails'
 	), // }
 	'reports' => array( // show reports in Pages
-		'onlinestoreSalesVolume'=>'Sales Volume'
+		'onlinestoreSalesVolume'=>'Sales Volume',
+		'onlinestoreProfit'=>'Profit'
 	),
 	'do-not-delete' => true,
 	'only-one-page-instance' => true,
@@ -246,9 +247,12 @@ function OnlineStore_getCountriesSelectbox($params, &$smarty) {
 		.'<option value=""> -- '.__('Choose').' -- </option>';
 	if ($cjson) {
 		$cjson=json_decode($cjson);
+		$countries_arr=array();
 		foreach ($cjson as $country=>$val) {
-			$countries.='<option>'.htmlspecialchars($country).'</option>';
+			$countries_arr[]='<option>'.htmlspecialchars($country).'</option>';
 		}
+		asort($countries_arr);
+		$countries.=join('', $countries_arr);
 	}
 	return $countries.'</select>';
 }
@@ -858,8 +862,14 @@ function OnlineStore_updateProductSales($id, $items=false, $date_created=false) 
 	}
 	dbQuery('delete from online_store_sales where order_id='.$id);
 	foreach ($items as $k=>$v) {
+		$p=Product::getInstance($v['id']);
+		$profit=0;
+		if ($p) {
+			$profit=$p->vals['os_base_price']-$p->vals['os_supplier_price'];
+		}
 		$sql='insert into online_store_sales set order_id='.$id
 			.', source="eBay", product_id='.$v['id']
+			.', profit='.$profit*$v['amt']
 			.', quantity='.$v['amt'].', cdate="'.addslashes($date_created).'"';
 		dbQuery($sql);
 	}

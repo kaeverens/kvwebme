@@ -15,6 +15,9 @@ RewriteEngine on
 RewriteCond %{HTTP_USER_AGENT} 360Spider [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} Baiduspider [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} AhrefsBot [OR]
+RewriteCond %{HTTP_USER_AGENT} Ezooms [OR]
+RewriteCond %{HTTP_USER_AGENT} Yandex [OR]
+RewriteCond %{HTTP_USER_AGENT} Mail.RU_Bot [OR]
 RewriteCond %{HTTP_USER_AGENT} ^Zeus
 RewriteRule .* - [F]
 RewriteCond %{SCRIPT_NAME} !\.php

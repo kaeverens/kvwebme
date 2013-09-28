@@ -547,6 +547,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 	} 
 }
 // }
+// }
 // { else show the checkout
 if (!$submitted) {
 	if (@$_SESSION['online-store']['items']

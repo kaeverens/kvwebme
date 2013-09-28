@@ -59,7 +59,9 @@ function OnlineStoreEbay_showProductEditFormTabs(
 	if (!$product['ebay_bids_start_at']) {
 		$product['ebay_bids_start_at']=0;
 	}
-	$min=$product['os_base_price']*1.2+.5;
+	$insertion_fee=.5;
+	$final_fee_percentage=10;
+	$min=($product['os_base_price']+$insertion_fee)/(1-$final_fee_percentage/100);
 	if ($product['ebay_buy_now_price']<$min) {
 		$product['ebay_buy_now_price']=$min;
 	}

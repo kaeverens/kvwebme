@@ -396,11 +396,13 @@ function Products_screenCategories() {
 					.objectStore('products').get(pid);
 				request.onsuccess=function(ev) {
 					toCheck--;
-					var name=request.result.name;
-					if (!productsInCategoryFilter || filterMatch(name, filters)) {
-						products.push(
-							'<span data-id="'+pid+'">'+name+'<a href="#">[x]</a></span>'
-						);
+					if (request.result) {
+						var name=request.result.name;
+						if (!productsInCategoryFilter || filterMatch(name, filters)) {
+							products.push(
+								'<span data-id="'+pid+'">'+name+'<a href="#">[x]</a></span>'
+							);
+						}
 					}
 					if (!toCheck) { // none left to go. show these.
 						$('#pic-filter-table input').attr('disabled', false);
