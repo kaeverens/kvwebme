@@ -36,8 +36,8 @@ $id=isset($_REQUEST['id'])?(int)$_REQUEST['id']:0;
 WW_addScript('/ww.admin/j/admin.js');
 WW_addScript('/j/jquery.remoteselectoptions.js');
 WW_addScript('/j/fg.menu/fg.menu.js');
-WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
-WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
+WW_addScript('/j/ckeditor-'.CKEDITOR_VERSION.'/ckeditor.js');
+WW_addScript('/j/ckeditor-'.CKEDITOR_VERSION.'/adapters/jquery.js');
 WW_addScript('/j/cluetip/jquery.cluetip.js');
 WW_addScript('/j/jquery.saorfm/jquery.saorfm.js');
 WW_addScript('/j/jquery-ui-timepicker-addon.js');
@@ -80,6 +80,7 @@ foreach ($PLUGINS as $pname=>$p) {
 	}
 }
 echo WW_getCSS();
+echo '<script>CKEDITOR_BASEPATH="/j/ckeditor-'.CKEDITOR_VERSION.'/";</script>';
 echo Core_getJQueryScripts()
 	.'<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>';
 WW_addInlineScript('var sessid="'.session_id().'";');

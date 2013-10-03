@@ -645,6 +645,7 @@ if ($id && isset($PLUGINS['online-store'])) {
 			),
 			'bulk_price' =>__('Bulk Price'),
 			'bulk_amount' =>__('Bulk Amount'),
+			'supplier_price' => 'Supplier Price',
 			'weight' => __('Weight (kg)'),
 			'tax_free'  
 				=> array (

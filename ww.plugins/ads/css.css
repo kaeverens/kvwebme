@@ -40,3 +40,39 @@
 #ad-stats-ad{
 	width:75px;
 }
+.ads-ad{
+	position:relative;
+}
+.ads-ad .ads-overlay{
+	position:absolute;
+	left:0;
+	top:0;
+	right:0;
+	bottom:0;
+}
+#ads-purchase-wrapper>div{
+	position:relative;
+	padding:5px 96px 20px 96px;
+	border:1px solid #00f;
+	border-radius:10px;
+	box-shadow:0 0 10px #000;
+}
+#ads-purchase-wrapper .next{
+	position:absolute;
+	right:2px;
+	top:64px;
+}
+#ads-purchase-wrapper .prev{
+	position:absolute;
+	left:2px;
+	top:64px;
+}
+#ads-purchase-wrapper .full-width{
+	display:block;
+	width:100%;
+}
+#ads-purchase-wrapper .selected{
+	font-weight:bold;
+	background:none;
+	color:#00f;
+}

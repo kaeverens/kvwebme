@@ -143,8 +143,8 @@ function Forum_showForum(&$PAGEDATA, &$id) {
 	if (isset($_SESSION['userdata']) && $_SESSION['userdata']['id']) {
 		$c.='<div id="forum-post-submission-form"><script defer="defer">var forum_id='
 			.$id.';</script></div>';
-		WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
-		WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
+		WW_addScript('/j/ckeditor-'.CKEDITOR_VERSION.'/ckeditor.js');
+		WW_addScript('/j/ckeditor-'.CKEDITOR_VERSION.'/adapters/jquery.js');
 		WW_addScript('forum/frontend/forum.js');
 	}
 	else {
@@ -246,8 +246,8 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 	if (isset($_SESSION['userdata']) && $_SESSION['userdata']['id']) {
 		$c.='<div id="forum-post-submission-form"><script defer="defer">var forum_id='
 			.$forum_id.',forum_thread_id='.$id.';</script></div>';
-		WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
-		WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
+		WW_addScript('/j/ckeditor-'.CKEDITOR_VERSION.'/ckeditor.js');
+		WW_addScript('/j/ckeditor-'.CKEDITOR_VERSION.'/adapters/jquery.js');
 		WW_addScript('forum/frontend/forum.js');
 	}
 	else {

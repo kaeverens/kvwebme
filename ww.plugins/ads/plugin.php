@@ -88,7 +88,7 @@ function Ads_widget($params) {
 	}
 	$html.='</div>';
 	WW_addScript('ads/j/js.js');
-	WW_addCSS('/ww.plugins/ads/frontend.css');
+	WW_addCSS('/ww.plugins/ads/css.css');
 	return $html;
 }
 
@@ -135,7 +135,12 @@ function Ads_frontend($PAGEDATA) {
 		WW_addInlineScript(
 			'var ads_paypal="'.addslashes($PAGEDATA->vars['ads-paypal']).'";'
 		);
-		WW_addScript('ads/j/purchase.js');
+		if (strpos($_SERVER['REQUEST_URI'], 'test')!==false) {
+			WW_addScript('ads/j/purchase2.js');
+		}
+		else {
+			WW_addScript('ads/j/purchase.js');
+		}
 		WW_addScript('/j/uploader.js');
 		WW_addCss('/ww.plugins/ads/css.css');
 		return $PAGEDATA->render().$html.@$PAGEDATA->vars['footer'];

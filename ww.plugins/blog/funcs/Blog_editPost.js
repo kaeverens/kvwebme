@@ -14,8 +14,8 @@ function Blog_editPost(pdata) {
 		});
 	}
 	if (!window.CKEDITOR) {
-		return $.cachedScript('/j/ckeditor-3.6.2/ckeditor.js').done(function() {
-			$.cachedScript('/j/ckeditor-3.6.2/adapters/jquery.js').done(function() {
+		return $.cachedScript(CKEDITOR_BASEPATH+'/ckeditor.js').done(function() {
+			$.cachedScript(CKEDITOR_BASEPATH+'/adapters/jquery.js').done(function() {
 				Blog_editPost(pdata)
 			});
 		});

@@ -399,6 +399,9 @@ function Products_screenCategories() {
 					if (request.result) {
 						var name=request.result.name;
 						if (!productsInCategoryFilter || filterMatch(name, filters)) {
+							if (name[0]=='{') {
+								name=JSON.parse(name).en;
+							}
 							products.push(
 								'<span data-id="'+pid+'">'+name+'<a href="#">[x]</a></span>'
 							);
@@ -432,6 +435,9 @@ function Products_screenCategories() {
 							|| (onlyShowProductsWithNoCategory && !(+cursor.value.num_of_categories))
 						)
 					) {
+						if (name[0]=='{') {
+							name=JSON.parse(name).en;
+						}
 						products.push(
 							'<a href="#" id="pnic-'+pid+'" data-id="'+pid+'">'+name+'</a>'
 						);
@@ -587,7 +593,7 @@ function Products_screenCategories() {
 			$as.each(function() {
 				var $this=$(this);
 				var id=$this.attr('id').replace('pnic-', ''), name=$this.text();
-				ids.push(id);
+				ids.push(id);	
 				$('<span data-id="'+id+'">'+name+'<a href="#">[a]</a></span>')
 					.appendTo('#category-products');
 			});

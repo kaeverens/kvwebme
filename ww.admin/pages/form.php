@@ -59,8 +59,8 @@ $edit=($is_an_update || $action=='edit' || $id)?1:0;
 // { display header and link in scripts
 WW_addScript('/j/js.js');
 WW_addScript('/j/jquery.json-2.2.min.js');
-WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
-WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
+WW_addScript('/j/ckeditor-'.CKEDITOR_VERSION.'/ckeditor.js');
+WW_addScript('/j/ckeditor-'.CKEDITOR_VERSION.'/adapters/jquery.js');
 WW_addScript('/ww.admin/j/admin.js');
 // { datatables
 WW_addScript(
@@ -87,6 +87,7 @@ WW_addScript('/j/jstree/jquery.jstree.js');
 WW_addScript('/j/jstree/_lib/jquery.cookie.js');
 WW_addInlineScript('$.jstree._themes="/j/jstree/themes/";');
 echo '<html><head>'
+	.'<script>CKEDITOR_BASEPATH="/j/ckeditor-'.CKEDITOR_VERSION.'/";</script>'
 	.Core_getJQueryScripts()
 	.'<link rel="stylesheet" href="/j/cluetip/jquery.cluetip.'
 	.'css" />'

@@ -25,6 +25,7 @@ if (!defined('START_TIME')) {
 $css_urls=array();
 $scripts=array();
 $scripts_inline=array();
+define('CKEDITOR_VERSION', '4.2.1');
 // }
 
 if (!function_exists('__')) {

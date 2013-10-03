@@ -89,8 +89,6 @@ div.resize-bar-w{position:absolute;background:#3b3c37;width:6px;bottom:0;top:0;r
 .pageForm{margin:0;padding:0;width:auto}
 .pageForm table{width:98%;margin:0;border-spacing:0}
 .pageForm td, .pageForm th{padding:7px 0;font-weight:normal;color:#333;font-size:13px;border-spacing:0}
-.pageForm td a, .pageForm td a:visited{color:#36f;text-decoration:none;border:0}
-.pageForm td a:hover{color:#f63;border-bottom:1px solid #f63}
 .pageForm th{text-transform:capitalize;font-weight:bold;padding-right:5px}
 textarea.ckeditor{height:275px!important}
 input#action{min-width:150px!important;width:auto !important;border:1px outset #ccc;background:#ddd;color:#333}

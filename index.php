@@ -352,6 +352,7 @@ $tmp='var pagedata={id:'.$PAGEDATA->id
 	.(isset($DBVARS['cdn']) && $DBVARS['cdn']?', cdn:"'.$DBVARS['cdn'].'"':'')
 	.',sessid:"'.session_id().'"'
 	.',lang:"'.@$_SESSION['language'].'"'
+	.', CKEDITOR_BASEPATH="/j/ckeditor-'.CKEDITOR_VERSION.'"'
 	.'},'
 	.(
 		isset($_SESSION['userdata']['id'])

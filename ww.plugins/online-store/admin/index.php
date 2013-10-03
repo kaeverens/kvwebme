@@ -169,23 +169,6 @@ $c.=' /></td></tr>';
 // }
 // { message
 // add ckeditor
-#$script='var bbcode_editor=CKEDITOR.replace("bank_transfer_message", { extr'
-#	.'aPlugins : "bbcode", removePlugins : "bidi,button,dialogadvtab,div,file'
-#	.'browser,flash,format,forms,horizontalrule,iframe,indent,justify,liststy'
-#	.'le,pagebreak,showborders,stylescombo,table,tabletools,templates", toolb'
-#	.'ar : [ ["Source", "-", "Save","NewPage","-","Undo","Redo"], ["Find","Re'
-#	.'place","-","SelectAll","RemoveFormat"], ["Link", "Unlink", "Image"], "/'
-#	.'", ["FontSize", "Bold", "Italic","Underline"], ["NumberedList","Bullete'
-#	.'dList","-","Blockquote"], ["TextColor", "-", "Smiley","SpecialChar", "-'
-#	.'", "Maximize"] ], smiley_images : [ "regular_smile.gif","sad_smile.gif"'
-#	.',"wink_smile.gif","teeth_smile.gif","tounge_smile.gif", "embaressed_smi'
-#	.'le.gif","omg_smile.gif","whatchutalkingabout_smile.gif","angel_smile.gi'
-#	.'f","shades_smile.gif", "cry_smile.gif","kiss.gif" ], smiley_description'
-#	.'s : [ "smiley", "sad", "wink", "laugh", "cheeky", "blush", "surprise", '
-#	.'"indecision", "angel", "cool", "crying", "kiss" ] });';
-#WW_addScript('/j/ckeditor-3.6.2/ckeditor.js');
-#WW_addScript('/j/ckeditor-3.6.2/adapters/jquery.js');
-#WW_addInlineScript($script);
 $c.='<tr><th>'.__('Message to buyer').'</th>';
 if (!isset($vars['online_stores_bank_transfer_message'])
 	|| !$vars['online_stores_bank_transfer_message']

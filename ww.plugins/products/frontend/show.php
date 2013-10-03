@@ -1136,24 +1136,25 @@ class Products{
 				// }
 		}
 		$categories='';
-		if (!isset($_REQUEST['products-search'])) {
-			if (isset($this->subCategories) && count($this->subCategories)) {
-				$categories='<ul class="products-categories categories">';
-				foreach ($this->subCategories as $cr) {
-					$cat=ProductCategory::getInstance($cr['id']);
-					$categories.='<li><a href="'.$cat->getRelativeUrl().'">';
-					$icon='/products/categories/'.$cr['id'].'/icon.png';
-					if (file_exists(USERBASE.'f'.$icon)) {
-						$subcatW=(int)$cat->vals['thumbsize_w'];
-						$subcatH=(int)$cat->vals['thumbsize_h'];
-						$categories.='<img src="'.$cdnprefix
-							.'/a/f=getImg/w='.$subcatW.'/h='.$subcatH.'/fmt='.filemtime(USERBASE.'f'.$icon).$icon.'"/>';
-					}
-					$categories.='<span>'.htmlspecialchars($cr['name']).'</span>'
-						.'</a></li>';
+		if (!isset($_REQUEST['products-search']) && isset($this->subCategories)
+			&& count($this->subCategories)
+			&& !@$PAGEDATA->vars['products_dont_show_sub_categories']
+		) {
+			$categories='<ul class="products-categories categories">';
+			foreach ($this->subCategories as $cr) {
+				$cat=ProductCategory::getInstance($cr['id']);
+				$categories.='<li><a href="'.$cat->getRelativeUrl().'">';
+				$icon='/products/categories/'.$cr['id'].'/icon.png';
+				if (file_exists(USERBASE.'f'.$icon)) {
+					$subcatW=(int)$cat->vals['thumbsize_w'];
+					$subcatH=(int)$cat->vals['thumbsize_h'];
+					$categories.='<img src="'.$cdnprefix
+						.'/a/f=getImg/w='.$subcatW.'/h='.$subcatH.'/fmt='.filemtime(USERBASE.'f'.$icon).$icon.'"/>';
 				}
-				$categories.='</ul>';
+				$categories.='<span>'.htmlspecialchars($cr['name']).'</span>'
+					.'</a></li>';
 			}
+			$categories.='</ul>';
 		}
 		return $categories.$prevnext.'<div class="products">'.$c.'</div>'.$prevnext;
 	}

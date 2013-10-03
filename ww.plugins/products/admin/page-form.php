@@ -227,7 +227,7 @@ $c.='<tr id="products-pagetitleoverride-multiple"><th>Page Title Override'
 	.' (multiple products view)</th><td>'
 	.'<input name="page_vars[products_pagetitleoverride_multiple]" value="'
 	.htmlspecialchars(@$vars['products_pagetitleoverride_multiple'])
-	.'"/></td></tr>';
+	.'" placeholder="example: {{$_category_name}}" /></td></tr>';
 // }
 // { override page title (single page view)
 $c.='<tr id="products-pagetitleoverride-single"><th>Page Title Override'
@@ -284,6 +284,16 @@ foreach ($vs as $k=>$v) {
 	$c.='>'.$v.'</option>';
 }
 $c.='</select></td></tr>';
+// }
+// { show sub-categories
+$c.='<tr id="products-dont-show-sub-categories">'
+	.'<th>'.__('Show Sub-categories').'</th><td>'
+	.'<select name="page_vars[products_dont_show_sub_categories]">';
+$c.='<option value="0">Yes</option><option value="1"';
+if (@$vars['products_dont_show_sub_categories']=='1') {
+	$c.=' selected="selected"';
+}
+$c.='>No</option></select></td></tr>';
 // }
 $c.= '</table></div>';
 // }
