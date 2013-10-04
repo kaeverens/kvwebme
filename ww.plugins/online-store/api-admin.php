@@ -331,10 +331,12 @@ function OnlineStore_adminReportNumberOfSales() {
 function OnlineStore_adminReportProfit() {
 	$from=$_REQUEST['from'];
 	$to=$_REQUEST['to'];
-	$rs=dbAll('select date(cdate) as cdate,sum(profit) as qty from online_store_sales where cdate between "'.addslashes($from).'" and date_add("'.addslashes($to).'", interval 24 hour) group by date(cdate)');
+	$sql='select date(cdate) as cdate,sum(profit) as qty from online_store_sales where cdate between "'.addslashes($from).'" and date_add("'.addslashes($to).'", interval 24 hour) group by date(cdate)';
+	$rs=dbAll($sql);
 	$ret=array();
 	foreach ($rs as $r) {
 		$ret[$r['cdate']]=$r['qty'];
 	}
+#	$ret['sql']=$sql;
 	return $ret;
 }

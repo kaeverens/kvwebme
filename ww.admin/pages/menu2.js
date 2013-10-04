@@ -366,11 +366,14 @@ function Reports_popularPages($el) {
 			}
 			table+='<tr>'+
 				'<td class="amt day">'+(day?day.amt:'')+'</td>'+
-				'<td class="page day">'+(day?day.page:'')+'</td>'+
+				'<td class="page day"><a href="'+(day?day.page:'')+'"'
+				+' target="_blank">'+(day?day.page:'')+'</a></td>'+
 				'<td class="amt week">'+(week?week.amt:'')+'</td>'+
-				'<td class="page week">'+(week?week.page:'')+'</td>'+
+				'<td class="page week"><a href="'+(week?week.page:'')+'"'
+				+' target="_blank">'+(week?week.page:'')+'</a></td>'+
 				'<td class="amt month">'+(month?month.amt:'')+'</td>'+
-				'<td class="page month">'+(month?month.page:'')+'</td>'+
+				'<td class="page month"><a href="'+(month?month.page:'')+'"'
+				+' target="_blank">'+(month?month.page:'')+'</a></td>'+
 				'</tr>';
 		}
 		table+='</tbody></table>';
