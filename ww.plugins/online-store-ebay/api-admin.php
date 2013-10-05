@@ -151,7 +151,7 @@ function OnlineStoreEbay_adminPublish() {
 		.'<ConditionID>1000</ConditionID>'
 		.'<Country>'.$countryFrom.'</Country>'
 		.'<Location>China</Location>'
-		.'<Description>'.htmlspecialchars($description.$images_html).'</Description>'
+		.'<Description>'.htmlspecialchars($description.$images_html.'<br/><p>'.nl2br($vs['ebay_description_afterword']).'</p>').'</Description>'
 		.'<DispatchTimeMax>'.$dispatchDays.'</DispatchTimeMax>'
 		.'<PayPalEmailAddress>'.$paypalAddress.'</PayPalEmailAddress>'
 		.'<ListingDuration>Days_30</ListingDuration>'

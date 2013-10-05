@@ -141,6 +141,7 @@ class User{
 			.',id:'.$_SESSION['userdata']['id']
 			.(isset($_SESSION['wasAdmin'])?',wasAdmin:1':'')
 			.',name:"'.addslashes($_SESSION['userdata']['name']).'"'
+			.',email:"'.addslashes($_SESSION['userdata']['email']).'"'
 			.',lat:'.((float)@$_SESSION['userdata']['location_lat'])
 			.',lng:'.((float)@$_SESSION['userdata']['location_lng']);
 		if (isset($_SESSION['userdata']['discount'])) {

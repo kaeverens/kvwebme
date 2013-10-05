@@ -135,12 +135,7 @@ function Ads_frontend($PAGEDATA) {
 		WW_addInlineScript(
 			'var ads_paypal="'.addslashes($PAGEDATA->vars['ads-paypal']).'";'
 		);
-		if (strpos($_SERVER['REQUEST_URI'], 'test')!==false) {
-			WW_addScript('ads/j/purchase2.js');
-		}
-		else {
-			WW_addScript('ads/j/purchase.js');
-		}
+		WW_addScript('ads/j/purchase2.js');
 		WW_addScript('/j/uploader.js');
 		WW_addCss('/ww.plugins/ads/css.css');
 		return $PAGEDATA->render().$html.@$PAGEDATA->vars['footer'];

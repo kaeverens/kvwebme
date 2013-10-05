@@ -156,6 +156,20 @@ echo '<h2>'.__('Production Authentication').'</h2><div>'
 	// }
 	.'</table></div>';
 // }
+// { description afterword
+echo '<h2>'.__('Description Afterword').'</h2><div><table>'
+	// {
+	.'<tr><textarea name="ebayVals[description_afterword]">'
+	.htmlspecialchars(
+		dbOne(
+			'select val from online_store_vars where name="ebay_description_afterword"',
+			'val'
+		)
+	)
+	.'</textarea></td></tr>'
+	// }
+	.'</table></div>';
+// }
 // { returns policy
 echo '<h2>'.__('Returns Policy').'</h2><div><table>'
 	// { user token
