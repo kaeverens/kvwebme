@@ -1,5 +1,6 @@
 <?php
 function Menu_getHtml() {
+	global $DBVARS;
 	require_once SCRIPTBASE.'ww.incs/menus.php';
 	require_once SCRIPTBASE.'ww.incs/common.php';
 	$vars=null;
@@ -38,11 +39,12 @@ function Menu_getHtml() {
 	header('Content-type: text/javascript');
 	echo 'document.write("'.addslashes(Core_menuShowFg($vars)).'");';
 	echo join(';', $GLOBALS['scripts_inline']);
+	$cdn=isset($DBVARS['cdn'])?'//'.$DBVARS['cdn']:'';
 	foreach ($GLOBALS['scripts'] as $r) {
-		echo 'document.write("<script src=\\"'.$r.'\\"></script>");';
+		echo 'document.write("<script src=\\"'.$cdn.$r.'\\"></script>");';
 	}
 	foreach ($GLOBALS['css_urls'] as $r) {
-		echo 'document.write("<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"'.$r.'\\"/>");';
+		echo 'document.write("<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"'.$cdn.$r.'\\"/>");';
 	}
 	exit;
 }

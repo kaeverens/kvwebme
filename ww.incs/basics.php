@@ -12,7 +12,7 @@
 	*/
 
 $starttime=microtime(true);
-$starttimeCount=100;
+$starttimeCount=1;
 if (isset($_REQUEST['PHPSESSID'])) {
 	@session_id($_REQUEST['PHPSESSID']);
 }
@@ -231,6 +231,14 @@ function Core_cacheLoad($type, $id, $fail=false) {
 }
 
 // }
+function Core_headerTime($k='') {
+	$newtime=microtime(true);
+	header(
+		'X-RenderTime-'.($GLOBALS['starttimeCount']++).'-'.$k.': '
+		.(($newtime-$GLOBALS['starttime'])*1000)
+	);
+	$GLOBALS['starttime']=$newtime;
+}
 // { Core_cacheSave
 
 /**
@@ -1065,7 +1073,7 @@ if (isset($_REQUEST['__LOCATION'])) {
 $PLUGINS=array();
 $PLUGIN_TRIGGERS=array();
 if (!isset($ignore_cms_plugins)) {
-	if (1 && file_exists(USERBASE.'/ww.cache/core/plugins.php')) {
+	if (file_exists(USERBASE.'/ww.cache/core/plugins.php')) {
 		require_once USERBASE.'/ww.cache/core/plugins.php';
 	}
 	else {

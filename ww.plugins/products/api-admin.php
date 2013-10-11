@@ -302,6 +302,7 @@ function Products_adminCategoryMove() {
 		}
 		dbQuery('update products_categories set sortNum='.$index.' where id='.$cid);
 	}
+	Core_cacheClear('products,products_categories');
 	return Products_adminCategoryGetFromID($cid);
 }
 

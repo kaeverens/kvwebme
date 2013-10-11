@@ -26,10 +26,13 @@ $plugin=array(
 
 require_once SCRIPTBASE.'ww.incs/menus.php';
 function menu_showWidget($vars=null) {
+	global $DBVARS;
+	$cdn=isset($DBVARS['cdn'])?'//'.$DBVARS['cdn']:'';
 	$pageurl=preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI']);
 	return '<a style="display:none"'
 		.' href="'.$pageurl.'?cmsspecial=sitemap">'
 		.'sitemap</a>'
-		.'<script src="/a/p=menu/f=getHtml/vars='.urlencode(json_encode($vars)).'">'
+		.'<script src="'.$cdn.'/a/p=menu/f=getHtml/vars='
+		.urlencode(json_encode($vars)).'">'
 		.'</script>';
 }

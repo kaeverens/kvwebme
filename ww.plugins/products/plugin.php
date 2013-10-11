@@ -205,12 +205,14 @@ class Product{
 		foreach ($r as $k=>$v) {
 			$this->vals[$k]=$v;
 		}
-		foreach ($vals as $k=>$val) {
-			if (!is_object($val)) {
-				$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/', '_', $k)]=$val;
-			}
-			else {
-				$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/', '_', $val->n)]=$val->v;
+		if (is_array($vals)) {
+			foreach ($vals as $k=>$val) {
+				if (!is_object($val)) {
+					$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/', '_', $k)]=$val;
+				}
+				else {
+					$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/', '_', $val->n)]=$val->v;
+				}
 			}
 		}
 		$this->id=$r['id'];
@@ -1219,7 +1221,7 @@ class Products{
 						$sql.=' desc';
 					}
 				}
-				$values=dbAll($sql);
+				$values=dbAll($sql, '', 'products');
 				if ($native) {
 					$tmpprods=array();
 					if (is_array($values)) {
@@ -4116,10 +4118,18 @@ function Products_widget($vars=null) {
 			$pids=array();
 			if ($parent_cat) {
 				$products=Products::getByCategory($parent_cat);
-				$rs=dbAll('select sum(quantity) as amt,product_id from online_store_sales where product_id in ('.join(', ', $products->product_ids).') group by product_id order by amt desc limit 8');
+				$rs=dbAll(
+					'select sum(quantity) as amt,product_id from online_store_sales'
+					.' where product_id in ('.join(', ', $products->product_ids).')'
+					.' group by product_id order by amt desc limit 8',
+					'', 'online_store_sales');
 			}
 			else {
-				$rs=dbAll('select sum(quantity) as amt,product_id from online_store_sales group by product_id order by amt desc limit 8');
+				$rs=dbAll(
+					'select sum(quantity) as amt,product_id from online_store_sales'
+					.' group by product_id order by amt desc limit 8',
+					'', 'online_store_sales'
+				);
 			}
 			foreach ($rs as $r) {
 				$pid=$r['product_id'];

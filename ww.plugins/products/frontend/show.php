@@ -942,7 +942,7 @@ class Products{
 						$sql.=' desc';
 					}
 				}
-				$values=dbAll($sql);
+				$values=dbAll($sql, '', 'products');
 				if ($native) {
 					$tmpprods=array();
 					if (is_array($values)) {

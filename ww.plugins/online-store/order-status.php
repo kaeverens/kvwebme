@@ -112,14 +112,16 @@ function OnlineStore_sendInvoiceEmail($id, $order=false) {
 	// }
 	Core_trigger('send-invoice', array($order));
 	// { send invoice
-	Core_mail(
-		$form_vals->Billing_Email,
-		'['.$short_domain.'] invoice #'. $id,
-		$order['invoice'],
-		$from,
-		'_body',
-		$headers
-	);
+	if ($form_vals->Billing_Email!='no-email-supplied@example.com') {
+		Core_mail(
+			$form_vals->Billing_Email,
+			'['.$short_domain.'] invoice #'. $id,
+			$order['invoice'],
+			$from,
+			'_body',
+			$headers
+		);
+	}
 	// }
 	// { handle item-specific stuff (vouchers, stock control)
 	foreach ($items as $item_index=>$item) {

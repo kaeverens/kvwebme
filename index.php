@@ -21,7 +21,10 @@
 	* @return string HTML element with generated URL
 	*/
 function WW_getCSS() {
-	return '<style>@import "/css/'.join('|', $GLOBALS['css_urls']).'";</style>';
+	global $DBVARS;
+	return '<link href="'.(isset($DBVARS['cdn'])?'//'.$DBVARS['cdn']:'')
+		.'/css/'.join('|', $GLOBALS['css_urls']).'"'
+		.' rel="stylesheet" type="text.css"/>';
 }
 
 // }
@@ -408,13 +411,7 @@ if (file_exists(USERBASE.'/f/skin_files/favicon.png')) {
 // }
 $smarty->assign('METADATA', $c.Core_trigger('building-metadata'));
 // }
-// { send timing header
-global $starttimeCount, $starttime;
-header(
-	'X-RenderTime-'.($starttimeCount++).'-totalSetup: '.((microtime(true)-$starttime)*1000)
-);
-$starttime=microtime(true);
-// }
+Core_headerTime('finished');
 // { display the document
 ob_start();
 if (strpos($template, '/')===false) {
