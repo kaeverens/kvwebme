@@ -383,8 +383,13 @@ function OnlineStoreEbay_adminImportOrders() {
 		$items=array();
 		foreach ($transactions as $transaction) {
 			$item=$transaction->Item;
-			$appData=json_decode(htmlspecialchars_decode($item->ApplicationData));
-			$itemId=$appData->productId;
+			if (isset($item->ApplicationData)) {
+				$appData=json_decode(htmlspecialchars_decode($item->ApplicationData));
+				$itemId=$appData->productId;
+			}
+			else {
+				$itemId=dbOne('select id from products where link="'.addslashes($item->Title).'"', 'id');
+			}
 			$key='products_'.$itemId;
 			if (!isset($items[$key])) {
 				$items[$key]=array();
