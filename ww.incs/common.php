@@ -86,7 +86,7 @@ function Core_dateM2H($d, $type = 'date') {
 	*/
 function Core_getJQueryScripts() {
 	global $DBVARS;
-	$jquery_versions=array('1.8.2', '1.9.2');
+	$jquery_versions=array('1.9.1', '1.10.3');
 	if (@$DBVARS['offline']) {
 		require SCRIPTBASE.'/ww.incs/get-offline-files.php';
 		$jurls=Core_getOfflineJQueryScripts($jquery_versions);
@@ -96,7 +96,7 @@ function Core_getJQueryScripts() {
 		$jurls=array(
 			$h.'/'.$jquery_versions[0].'/jquery.min.js',
 			$h.'ui/'.$jquery_versions[1].'/jquery-ui.min.js',
-			$h.'ui/'.$jquery_versions[1].'/themes/smoothness/jquery-ui.css'
+			$h.'ui/'.$jquery_versions[1].'/themes/smoothness/jquery-ui.min.css'
 		);
 	}
 	$uicssbits=(int)@$DBVARS['disable-jqueryui-css'];

@@ -17,6 +17,7 @@ $plugin=array(
 	'name' => function() {
 		return __('Banners');
 	},
+	'hide_from_admin'=>	true,
 	'admin' => array(
 		'menu' => array(
 			'Misc>Banners'  => 'plugin.php?_plugin=banner-image&amp;_page=index'
