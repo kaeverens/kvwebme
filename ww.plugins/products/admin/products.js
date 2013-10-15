@@ -256,9 +256,9 @@ $(function() {
 	$('#products-wrapper').prepend(oColVis.dom.wrapper);
 	oColVis.fnRebuild();
 	$('#products-selectall').click(function() {
-		$('#products-list_wrapper input').attr(
+		$('#products-list_wrapper input').prop(
 			'checked',
-			$(this).attr('checked')?true:false
+			$(this).prop('checked')?true:false
 		);
 	});
 	$('#products-action').change(function() {
@@ -266,7 +266,7 @@ $(function() {
 		var $inps=$('#products-list_wrapper tbody input[type="checkbox"]');
 		var ids=[];
 		$inps.each(function() {
-			if (!$(this).attr('checked')) {
+			if (!$(this).prop('checked')) {
 				return;
 			}
 			var id=+$(this).closest('tr').attr('id').replace('product-row-', '');
@@ -280,21 +280,21 @@ $(function() {
 				$.post('/a/p=products/f=adminProductsDelete', {'ids':ids}, function() {
 					$('#products-action').val('0');
 					$pTable.fnDraw(false);
-					$('#products-selectall').attr('checked', false);
+					$('#products-selectall').prop('checked', false);
 				});
 			break; // }
 			case 2: // {
 				$.post('/a/p=products/f=adminProductsDisable/ids='+ids, function() {
 					$('#products-action').val('0');
 					$pTable.fnDraw(false);
-					$('#products-selectall').attr('checked', false);
+					$('#products-selectall').prop('checked', false);
 				});
 			break; // }
 			case 3: // {
 				$.post('/a/p=products/f=adminProductsEnable/ids='+ids, function() {
 					$('#products-action').val('0');
 					$pTable.fnDraw(false);
-					$('#products-selectall').attr('checked', false);
+					$('#products-selectall').prop('checked', false);
 				});
 			break; // }
 		}
