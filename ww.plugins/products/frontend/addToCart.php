@@ -83,8 +83,8 @@ if (isset($_REQUEST['products_values__custom-price'])
 	$price=(float)$_REQUEST['products_values__custom-price'];
 }
 // { does the amount requested bring it over the maximum allowed per purchase
-$max_allowed=$product->vals['os_amount_allowed_per_purchase']
-	?$product->vals['os_amount_allowed_per_purchase']:0;
+$max_allowed=isset($product->vals['os_amount_allowed_per_purchase'])
+	?(int)$product->vals['os_amount_allowed_per_purchase']:0;
 // }
 OnlineStore_addToCart(
 	$price+$price_amendments,

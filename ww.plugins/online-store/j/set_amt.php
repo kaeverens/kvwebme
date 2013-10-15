@@ -25,7 +25,8 @@ require_once '../libs.php';
 $amount=(int)$_REQUEST['amt']
 	-$_SESSION['online-store']['items']['products_'.$id.$md5]['amt'];
 // { does the amount requested bring it over the maximum allowed per purchase
-$max_allowed=(int)$product->vals['os_amount_allowed_per_purchase'];
+$max_allowed=isset($product->vals['os_amount_allowed_per_purchase'])
+	?(int)$product->vals['os_amount_allowed_per_purchase']:0;
 // }
 list($price, $amount, $vat)=Products_getProductPrice(
 	$product, $amount, $md5, false
