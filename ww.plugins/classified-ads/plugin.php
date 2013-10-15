@@ -106,16 +106,30 @@ function ClassifiedAds_frontend($PAGEDATA) {
 			.htmlspecialchars($ad['location']).'</td>'
 			.'<td class="classifiedads-cost">Cost: €'.htmlspecialchars($ad['cost'])
 			.'</td></tr></table>';
+		$images=array();
+		$dir='/f/userfiles/'.$ad['user_id'].'/classified-ads/'.$ad['id'];
+		if (file_exists(USERBASE.$dir)) {
+			$files=new DirectoryIterator(USERBASE.$dir);
+			foreach ($files as $f) {
+				if ($f->isDot() || $f->isDir()) {
+					continue;
+				}
+				$images[]='<a href="'.$dir.'/'.$f->getFilename().'" target="popup">'
+					.'<img src="'.$dir.'/'.$f->getFilename().'"'
+					.' style="max-width:128px;max-height:128px"/></a>';
+			}
+		}
 		$html.='<p class="classified-ads-body">'
-			.nl2br(htmlspecialchars($ad['body'])).'</p>';
+			.nl2br(htmlspecialchars($ad['body'])).'</p>'
+			.join('', $images);
 		$html.='<table class="classifiedads-contact"><tr>';
 		if ($ad['phone']) {
 			$html.='<td>Phone: '.htmlspecialchars($ad['phone']).'</td>';
 		}
-		if ($ad['email']) {
+/*		if ($ad['email']) {
 			$html.='<td>Email: <a href="#" class="classified-ads-email"'
 				.' data-ad-id="'.$ad['id'].'">click to send</a></td>';
-		}
+		} */
 		$html.='</tr></table>';
 		$html.='</div>';
 	}
@@ -144,7 +158,7 @@ function ClassifiedAds_frontend($PAGEDATA) {
 		// { ads
 		$subcatsRecursive=ClassifiedAds_getCategoryIdsRecursive($cid);
 		$ads=dbAll(
-			'select id, category_id, title, cost, location, excerpt, creation_date'
+			'select id, user_id, category_id, title, cost, location, excerpt, creation_date'
 			.' from classifiedads_ad'
 			.' where category_id in ('.join(', ', $subcatsRecursive).')'
 			.' and status'
@@ -156,7 +170,20 @@ function ClassifiedAds_frontend($PAGEDATA) {
 		foreach ($ads as $ad) {
 			$url=ClassifiedAds_getCategoryUrl($ad['category_id'])
 				.'/'.$ad['id'].'-'.preg_replace('/[^a-z0-9A-Z]/', '-', $ad['title']);
+			$img='';
+			$adDir='/f/userfiles/'.$ad['user_id'].'/classified-ads/'.$ad['id'];
+			$dir=USERBASE.$adDir;
+			if (file_exists($dir)) {
+				$files=new DirectoryIterator($dir);
+				foreach ($files as $f) {
+					if (!$f->isDot()) {
+						$img='<img style="max-width:64px;max-height:64px;" src="'.$adDir.'/'.$f->getFilename().'"/>';
+						break;
+					}
+				}
+			}
 			$html.='<tr class="ad-top-details"><td rowspan="2">' // img
+				.$img
 				.'</td><td><a href="'.$url.'">'.htmlspecialchars($ad['title']).'</a></td>'
 				.'<td class="location">'.htmlspecialchars($ad['location']).'</td>'
 				.'<td class="posted">'.Core_dateM2H($ad['creation_date']).'</td>'

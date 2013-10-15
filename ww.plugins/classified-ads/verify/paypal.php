@@ -32,7 +32,6 @@ mail('kae.verens@gmail.com', 'test', 'failed');
 	// HTTP ERROR
 }
 else {
-mail('kae.verens@gmail.com', 'test4', print_r($_REQUEST, true));
 	fputs($fp, $header . $req);
 	while (!feof($fp)) {
 		$res = fgets($fp, 1024);
@@ -44,16 +43,23 @@ mail('kae.verens@gmail.com', 'test4', print_r($_REQUEST, true));
 			}
 			// create ad
 			$data=dbRow('select * from classifiedads_purchase_orders where id='.$id);
-			mail('kae.verens@gmail.com', 'test', print_r($data, true));
+			$userEmail=dbOne('select email from user_accounts where id='.$data['user_id'], 'email');
 			$sql='insert into classifiedads_ad set user_id='.$data['user_id']
-				.',email="'.addslashes($data['email']).'",creation_date=now()'
-				.',title="'.addslashes($data['target_type']).'"'
+				.',email="'.addslashes($userEmail).'",creation_date=now()'
+				.',title="'.addslashes($data['title']).'"'
 				.',body="'.addslashes($data['description']).'"'
 				.',expiry_date=date_add(now(), interval '.$data['days'].' day)'
 				.', status=1, category_id='.$data['category_id'];
-			mail('kae.verens@gmail.com', 'test2', $sql);
 			dbQuery($sql);
 			$ad_id=dbLastInsertId();
+			$dir=USERBASE.'/f/userfiles/'.$data['user_id'];
+			if (file_exists($dir.'/classified-ads-upload/'.$data['id'])) {
+				mkdir($dir.'/classified-ads', 0777, true);
+				rename(
+					$dir.'/classified-ads-upload/'.$data['id'],
+					$dir.'/classified-ads/'.$ad_id
+				);
+			}
 		}
 		else if (strcmp($res, "INVALID") == 0) {
 		}

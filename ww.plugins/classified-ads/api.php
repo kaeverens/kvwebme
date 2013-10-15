@@ -71,6 +71,9 @@ function ClassifiedAds_advertiseThumbsGet() {
 		if ($file->isDot()) {
 			continue;
 		}
+		if ($file->isDir()) {
+			continue;
+		}
 		$images[]=$file->getFilename();
 	}
 	return array(
@@ -150,7 +153,7 @@ function ClassifiedAds_makePurchaseOrder() {
 		'insert into classifiedads_purchase_orders set user_id='.$user_id
 		.', type_id='.$type_id.', days='.$days.', title="'.addslashes($title).'"'
 		.', phone="'.addslashes($phone).'", location="'.addslashes($location).'"'
-		.', cost="'.addslashes($cost).'"'
+		.', cost="'.addslashes($cost).'", category_id='.(int)$_REQUEST['category_id']
 		.', description="'.addslashes($description).'"'
 	);
 	$ad_id=dbLastInsertId();

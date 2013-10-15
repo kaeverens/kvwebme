@@ -71,7 +71,7 @@ $(function() {
 							$days.val(ad.minimum_number_of_days);
 						}
 						var price=ad.price_per_day*$days.val();
-						$wrapper.find('.cost').html('€'+price.toPrecision(3));
+						$wrapper.find('.cost').html('€'+price.toFixed(2));
 						site_url=document.location.toString()
 							.replace(/(https?:\/\/[^\/]*).*/, '$1');
 						// { paypal form
@@ -184,6 +184,9 @@ $(function() {
 									return alert(ret.error);
 								}
 								if (ret.uid && !(/tmp-/.test(ret.uid))) {
+									if (userdata.id && userdata.id==ret.uid) {
+										return;
+									}
 									var html='<p>This email address is already registered in the'
 										+' database. Please <a href="/_r?type=loginpage">Log In</a>'
 										+' before creating an ad.</p>';

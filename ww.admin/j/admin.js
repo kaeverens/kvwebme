@@ -116,6 +116,9 @@ function Core_createTranslatableInputs() {
 function Core_menuShow2(items, name, prefix, depth) {
 	function numSubItems(obj) {
 		var subitems=0;
+		if (typeof obj == 'string') {
+			return 0;
+		}
 		$.each(obj, function(key, val) {
 			if (typeof key == 'number') {
 				return;
