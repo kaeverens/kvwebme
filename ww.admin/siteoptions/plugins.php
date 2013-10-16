@@ -116,11 +116,8 @@ foreach ($available as $name => $plugin) {
 	$description=is_string($plugin['description'])
 		?$plugin['description']
 		:$plugin['description']();
-	echo '<tr>
-		<td>'.$name2.'</td>
-		<td><input type="checkbox" name="plugins['.$name.']"/></td>
-		<td>'.$description.'</td>
-	</tr>';
+	echo '<tr><td>'.$name2.'</td><td><input type="checkbox"';
+	echo ' name="plugins['.$name.']"/></td><td>'.$description.'</td></tr>';
 }
 
 echo '</tbody>

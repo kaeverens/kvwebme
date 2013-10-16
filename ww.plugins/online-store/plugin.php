@@ -72,6 +72,7 @@ $plugin=array(
 		'onlinestoreProfit'=>'Profit'
 	),
 	'do-not-delete' => true,
+	'requires'=>'products',
 	'only-one-page-instance' => true,
 	'version' => '29'
 );

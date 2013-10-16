@@ -34,6 +34,7 @@ $plugin=array(
 	), // }
 	'frontend' => array(
 	),
+	'requires'=>'online-store',
 	'version'=>3
 );
 

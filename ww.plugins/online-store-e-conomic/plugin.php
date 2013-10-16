@@ -36,6 +36,7 @@ $plugin=array(
 		'online-store-order-invoice-num-changed'
 			=>'OnlineStoreEconomics_invoiceNumUpdate'
 	), // }
+	'requires'=>'online-store',
 	'onlinestore_email_templates' => array( // {
 		'onlinestore-economic-email'
 			=>__('email to sent to customer when E-Conomic invoice is created')

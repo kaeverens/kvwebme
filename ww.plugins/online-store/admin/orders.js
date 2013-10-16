@@ -227,7 +227,7 @@ $(function(){
 		var $inps=$('#onlinestore-orders-table tbody input[type="checkbox"]');
 		var ids=[];
 		$inps.each(function() {
-			if (!$(this).attr('checked')) {
+			if (!$(this).prop('checked')) {
 				return;
 			}
 			var id=+$(this).closest('tr').data('id');
@@ -246,16 +246,16 @@ $(function(){
 		$(this).val(0);
 	});
 	$('#onlinestore-orders-selectall').click(function() {
-		$('#onlinestore-orders-table input[type=checkbox]').attr(
+		$('#onlinestore-orders-table input[type=checkbox]').prop(
 			'checked',
-			$(this).attr('checked')?true:false
+			$(this).prop('checked')?true:false
 		);
 	});
 	var idOSAuthorised='#online-store-authorised ',
 		idOSCountries='#online-store-countries ';
 	$(idOSAuthorised+'th input').change(function(){
 		$(idOSAuthorised+'td input')
-			.attr('checked', $(this).is(':checked'));
+			.prop('checked', $(this).is(':checked'));
 	});
 	$(idOSAuthorised+'input[type="button"]').click(function() {
 		var txns=[];
@@ -284,11 +284,11 @@ $(function(){
 	$(idOSCountries+'a.all,'+idOSCountries+'a.none')
 		.click(function() {
 			$(this).siblings('table').find('input')
-				.attr('checked', $(this).is('.all'));
+				.prop('checked', $(this).is('.all'));
 			return false;
 		});
 	if (!$(idOSCountries+'input:checked').length) {
-		$(idOSCountries+'input').attr('checked', true);
+		$(idOSCountries+'input').prop('checked', true);
 	}
 	$('#online_stores_fields_table')
 		.on('click', 'input', onlinestoreFieldsUpdate);
