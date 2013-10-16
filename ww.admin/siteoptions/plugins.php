@@ -116,8 +116,26 @@ foreach ($available as $name => $plugin) {
 	$description=is_string($plugin['description'])
 		?$plugin['description']
 		:$plugin['description']();
-	echo '<tr><td>'.$name2.'</td><td><input type="checkbox"';
-	echo ' name="plugins['.$name.']"/></td><td>'.$description.'</td></tr>';
+	$missing=array();
+	if (isset($plugin['requires'])) {
+		$bits=explode(',', $plugin['requires']);
+		foreach ($bits as $b) {
+			if ($b && !isset($installed[$b])) {
+				$missing[]=$b;
+			}
+		}
+	}
+	if (count($missing)) {
+		echo '<tr><td>'.$name2.'</td><td>'
+			.'<small>requires:<br/>'.join('<br/>', $missing).'</small>'
+			.'</td><td>'.$description
+			.'</td></tr>';
+	}
+	else {
+		echo '<tr><td>'.$name2.'</td><td><input type="checkbox"'
+			.' name="plugins['.$name.']"/></td><td>'.$description
+			.'</td></tr>';
+	}
 }
 
 echo '</tbody>

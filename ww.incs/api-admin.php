@@ -1581,7 +1581,8 @@ function Core_adminPluginsGetAvailable() {
 			'name' => is_string($plugin['name'])?$plugin['name']:$plugin['name'](),
 			'description'=>is_string($plugin['description'])
 				?$plugin['description']:$plugin['description'](),
-			'version'=>(@$plugin['version']==0)?'0':$plugin['version']
+			'version'=>(@$plugin['version']==0)?'0':$plugin['version'],
+			'requires'=>isset($plugin['requires'])?$plugin['requires']:''
 		);
 	}	
 	return $available;
