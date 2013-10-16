@@ -49,6 +49,7 @@ function ClassifiedAds_fileUpload() {
 		}
 	}
 	move_uploaded_file($from, $fname);
+	`convert $fname -quality 85 -resize 800x600 $fname`;
 	return array('ok'=>1);
 }
 

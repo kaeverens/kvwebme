@@ -107,15 +107,15 @@ function ClassifiedAds_frontend($PAGEDATA) {
 			.'<td class="classifiedads-cost">Cost: €'.htmlspecialchars($ad['cost'])
 			.'</td></tr></table>';
 		$images=array();
-		$dir='/f/userfiles/'.$ad['user_id'].'/classified-ads/'.$ad['id'];
-		if (file_exists(USERBASE.$dir)) {
-			$files=new DirectoryIterator(USERBASE.$dir);
+		$dir='/userfiles/'.$ad['user_id'].'/classified-ads/'.$ad['id'];
+		if (file_exists(USERBASE.'/f'.$dir)) {
+			$files=new DirectoryIterator(USERBASE.'/f'.$dir);
 			foreach ($files as $f) {
 				if ($f->isDot() || $f->isDir()) {
 					continue;
 				}
-				$images[]='<a href="'.$dir.'/'.$f->getFilename().'" target="popup">'
-					.'<img src="'.$dir.'/'.$f->getFilename().'"'
+				$images[]='<a href="/f'.$dir.'/'.$f->getFilename().'" target="popup">'
+					.'<img src="/a/f=getImg/w=128/h=128'.$dir.'/'.$f->getFilename().'"'
 					.' style="max-width:128px;max-height:128px"/></a>';
 			}
 		}
@@ -171,13 +171,13 @@ function ClassifiedAds_frontend($PAGEDATA) {
 			$url=ClassifiedAds_getCategoryUrl($ad['category_id'])
 				.'/'.$ad['id'].'-'.preg_replace('/[^a-z0-9A-Z]/', '-', $ad['title']);
 			$img='';
-			$adDir='/f/userfiles/'.$ad['user_id'].'/classified-ads/'.$ad['id'];
-			$dir=USERBASE.$adDir;
+			$adDir='/userfiles/'.$ad['user_id'].'/classified-ads/'.$ad['id'];
+			$dir=USERBASE.'/f'.$adDir;
 			if (file_exists($dir)) {
 				$files=new DirectoryIterator($dir);
 				foreach ($files as $f) {
 					if (!$f->isDot()) {
-						$img='<img style="max-width:64px;max-height:64px;" src="'.$adDir.'/'.$f->getFilename().'"/>';
+						$img='<img style="max-width:64px;max-height:64px;" src="/a/f=getImg/w=64/h=64'.$adDir.'/'.$f->getFilename().'"/>';
 						break;
 					}
 				}
