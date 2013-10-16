@@ -1548,19 +1548,19 @@ function Products_typeEdit(id) {
 	}
 	function updateValues() {
 		switch(activeTab) {
-			case 0: // { main
+			case 't0': // { main
 				return updateMain();
 				// }
-			case 1: // { data fields
+			case 't1': // { data fields
 				return updateDataFields();
 				// }
-			case 2: // { multiview
+			case 't2': // { multiview
 				return updateMultiView();
 				// }
-			case 3: // { singleview
+			case 't3': // { singleview
 				return updateSingleView();
 				// }
-			case 4: // { expired notification
+			case 't4': // { expired notification
 				return updateTemplateExpiredNotification();
 				// }
 		}
@@ -1579,29 +1579,36 @@ function Products_typeEdit(id) {
 		)
 			.appendTo($content)
 			.tabs({
-				'select':updateValues,
-				'show':function(e, ui) {
+				'collapsible':true,
+				'active':false,
+				'beforeActivate':updateValues,
+				'activate':function(e, ui) {
 					$('#product-types-edit-form>div').empty();
-					activeTab=ui.index;
-					switch (ui.index) {
-						case 0: // { main
-							return showMain(ui.panel);
+					if (!ui.newPanel.length) {
+						activetab=-1;
+						return;
+					}
+					activeTab=ui.newPanel[0].id;
+					switch (activeTab) {
+						case 't0': // { main
+							return showMain(ui.newPanel);
 							// }
-						case 1: // { data fields
-							return showDataFields(ui.panel);
+						case 't1': // { data fields
+							return showDataFields(ui.newPanel);
 							// }
-						case 2: // { multiview
-							return showMultiView(ui.panel);
+						case 't2': // { multiview
+							return showMultiView(ui.newPanel);
 							// }
-						case 3: // { singleview
-							return showSingleView(ui.panel);
+						case 't3': // { singleview
+							return showSingleView(ui.newPanel);
 							// }
-						case 4: // { expired notification
-							return showTemplateExpiredNotification(ui.panel);
+						case 't4': // { expired notification
+							return showTemplateExpiredNotification(ui.newPanel);
 							// }
 					}
 				}
 			});
+		$('a[href="#t0"]').click();
 		$('<button>Save</button>')
 			.click(function() {
 				updateValues();
