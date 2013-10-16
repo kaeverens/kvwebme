@@ -26,7 +26,10 @@ $(function() {
 			'edit_type':'boolean', 'searchable':1
 		},
 		{'name':'date_created',
-			'type':'field', 'field_name':'date_created', 'text':'Date Added', 'edit':0}
+			'type':'field', 'field_name':'date_created', 'text':'Date Added', 'edit':0
+		},
+		{'name':'date_edited',
+			'type':'field', 'field_name':'date_edited', 'text':'Last Edit', 'edit':0}
 	];
 	var cols=[
 		{'bSortable':false,'sWidth':'1%'},
@@ -37,6 +40,7 @@ $(function() {
 		{'sWidth':'2%'},
 		{'sWidth':'1%'},
 		{'sWidth':'1%'},
+		{'sWidth':'2%'},
 		{'sWidth':'2%'}
 	];
 	for (var i in extraProductColumns) {

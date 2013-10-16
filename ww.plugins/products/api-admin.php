@@ -1198,11 +1198,14 @@ function Products_adminProductsListDT() {
 		case 8:
 			$orderby='date_created';
 		break;
+		case 9:
+			$orderby='date_edited';
+		break;
 		default:
 			$orderby='name';
 	}
-	if ($orderbyNum>8 && isset($product_columns[$orderbyNum-9]['field_name'])) {
-		$orderby=$product_columns[$orderbyNum-9]['field_name'];
+	if ($orderbyNum>9 && isset($product_columns[$orderbyNum-10]['field_name'])) {
+		$orderby=$product_columns[$orderbyNum-10]['field_name'];
 	}
 	$filters=array();
 	if ($search) {
@@ -1216,7 +1219,7 @@ function Products_adminProductsListDT() {
 		$filter='where '.join(' and ', $filters);
 	}
 	$sql='select id, user_id, images_directory, name, stock_number, enabled'
-		.', date_created, stockcontrol_total';
+		.', date_created, date_edited, stockcontrol_total';
 	foreach ($product_columns as $p) {
 		if (isset($p['field_name'])) {
 			$sql.=', '.$p['field_name'];
@@ -1277,6 +1280,9 @@ function Products_adminProductsListDT() {
 		// }
 		// { created date
 		$row[]=$r['date_created'];
+		// }
+		// { last edit
+		$row[]=$r['date_edited'];
 		// }
 		foreach ($product_columns as $p) {
 			if (isset($p['field_name'])) {
