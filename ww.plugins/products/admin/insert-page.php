@@ -65,14 +65,11 @@ dbQuery(
 	values('$pageid', 'products_per_page', 0)"
 );
 if ($what==2) {
-	$product=dbOne(
-		'select product_id from products_categories_products'
-		.' where category_id='.$id,
-		'product_id'
-	);
+	$product=ProductsCategoriesProducts::getCategoryId($id);
+	$product=count($product)?$product[0]:0;
 }
 else {
-	$product= $id;
+	$product=$id;
 }
 if ($product) {
 	$datafields=dbOne(

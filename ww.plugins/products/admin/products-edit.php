@@ -256,17 +256,14 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 		}
 		// }
 		// { save categories
-		dbQuery('delete from products_categories_products where product_id='.$id);
+		ProductsCategoriesProducts::deleteByProductId($id);
 		if (!isset($_REQUEST['product_categories'])) {
 			$type=ProductType::getInstance((int)$_REQUEST['product_type_id']);
 			$_REQUEST['product_categories']
 				=array((string)$type->default_category=>'on');
 		}
 		foreach ($_REQUEST['product_categories'] as $key=>$val) {
-			dbQuery(
-				'insert into products_categories_products set product_id='
-				.$id.',category_id='.$key
-			);
+			ProductsCategoriesProducts::insert($key, $id);
 		}
 		// }
 		// { save product relations
@@ -320,7 +317,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 		unset($DBVARS['cron-next']);
 		Core_configRewrite();
 	}
-	Core_cacheClear('products,pages,products_categories_products,products_relations');
+	Core_cacheClear('products,pages,products_relations');
 }
 
 if ($id) {
@@ -760,11 +757,10 @@ Core_trigger(
 echo '<h2>'.__('Categories').'</h2><div id="categories"><p>'.__('At least one category must be chosen.')
 	.'</p>';
 // { add selected categories to the list
-$sql='select category_id from products_categories_products where product_id='.$id;
-$rs=dbAll($sql, '', 'products_categories_products');
+$rs=ProductsCategoriesProducts::getByProductId($id);
 echo '<ul id="categories-wrapper">';
 foreach ($rs as $r) {
-	$cat=ProductCategory::getInstance($r['category_id']);
+	$cat=ProductCategory::getInstance($r);
 	if (!$cat) {
 		continue;
 	}

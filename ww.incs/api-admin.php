@@ -1412,7 +1412,7 @@ function Core_adminPageEdit() {
 function Core_adminPageMove() {
 	$id=(int)$_REQUEST['id'];
 	$to=(int)$_REQUEST['parent_id'];
-	$order=$_REQUEST['order'];
+	$order=isset($_REQUEST['order'])?$_REQUEST['order']:array();
 	dbQuery("update pages set parent=$to where id=$id");
 	for ($i=0;$i<count($order);++$i) {
 		$pid=(int)$order[$i];

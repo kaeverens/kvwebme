@@ -80,24 +80,17 @@ function Products_adminCategoriesGetByParent() {
 }
 function Products_adminCategoriesClean() {
 	// { find broken product-category links
-	$rs=dbAll('select distinct category_id from products_categories_products');
+	$rs=ProductsCategoriesProducts::listActiveCategories();
 	foreach ($rs as $r) {
-		echo 'category '.$r['category_id'].'<br/>';
-		$c=dbRow('select id from product_categories where id='.$r['category_id']);
+		echo 'category '.$r.'<br/>';
+		$c=dbRow('select id from product_categories where id='.$r);
 		if (!$c) {
-			$pids=dbAll(
-				'select * from products_categories_products'
-				.' where category_id='.$r['category_id']
-			);
+			$pids=ProductsCategoriesProducts::getByCategoryId($r);
 			foreach ($pids as $p) {
-				$sql='delete from products_categories_products'
-					.' where category_id='.$p['category_id']
-					.' and product_id='.$p['product_id'];
-				echo $sql.'<br/>';
-				dbQuery($sql);
+				ProductsCategoriesProducts::delete($r, $p);
 			}
 			Products_categoriesRecount(array($ps));
-			echo 'cleaned up '.$r['category_id']
+			echo 'cleaned up '.$r
 				.'<script>document.location="/a/p=products/f=adminCategoriesClean";</script>';
 			exit;
 		}
@@ -139,15 +132,11 @@ function Products_adminCategoryDelete() {
 	dbQuery(
 		'update products_categories set parent_id='.$parent.' where parent='.$id
 	);
-	$pids=dbAll(
-		'select product_id from products_categories_products'
-		.' where category_id='.$id
-	);
-	dbQuery(
-		'delete from products_categories_products where category_id='.$id
-	);
+	$pids=ProductsCategoriesProducts::getByCategoryId($id);
+	ProductsCategoriesProducts::deleteByCategoryId($id);
 	Products_categoriesRecount($pids);
 	dbQuery('delete from products_categories where id='.$id);
+	Core_cacheClear('products_categories');
 	return array('status'=>1);
 }
 
@@ -197,20 +186,10 @@ function Products_adminCategoryEdit() {
 	* @return array the data
 	*/
 function Products_adminCategoryGetFromID($id) {
-	$ps=dbAll(
-		'select product_id from products_categories_products where category_id='
-		.$id
-	);
-	$products=array();
-	$pageid= dbOne(
+	$pageid=dbOne(
 		'select page_id from page_vars where name="products_category_to_show"'
-		.' and value='.$id, 'page_id'
+		.' and value='.$id, 'page_id', 'page_vars'
 	);
-	if (is_array($ps) && count($ps)) {
-		foreach ($ps as $p) {
-			$products[]=$p['product_id'];
-		}
-	}
 	$vals=ProductCategory::getInstance($id)->vals;
 	$data=array(
 		'attrs'=>array(
@@ -222,7 +201,7 @@ function Products_adminCategoryGetFromID($id) {
 			'enabled'=>$vals['enabled'],
 			'parent_id'=>$vals['parent_id']
 		),
-		'products'=>$products,
+		'products'=>ProductsCategoriesProducts::getByCategoryId($id),
 		'hasIcon'=>file_exists(USERBASE.'/f/products/categories/'.$id.'/icon.png')
 			?filemtime(USERBASE.'/f/products/categories/'.$id.'/icon.png'):0
 	);
@@ -326,23 +305,17 @@ function Products_adminCategoryProductAdd() {
 	foreach ($pids as $pid) {
 		$pid=(int)$pid;
 		$arr[]=(int)$pid;
-		dbQuery(
-			'delete from products_categories_products where product_id='
-			.$pid.' and category_id='.$cid
-		);
+		ProductsCategoriesProducts::delete($cid, $pid);
 	}
 	foreach ($pids as $pid) {
 		$pid=(int)$pid;
-		dbQuery(
-			'insert into products_categories_products set product_id='
-			.$pid.',category_id='.$cid
-		);
+		ProductsCategoriesProducts::insert($cid, $pid);
 	}
 	Products_categoriesRecount($pids);
 	dbQuery(
 		'update products set date_edited=now() where id in ('.join(', ', $arr).')'
 	);
-	Core_cacheClear('products,products_categories_products');
+	Core_cacheClear('products');
 	return array('ok'=>1);
 }
 
@@ -361,22 +334,19 @@ function Products_adminCategoryProductRemove() {
 	foreach ($pids as $pid) {
 		$pid=(int)$pid;
 		$arr[]=$pid;
-		dbQuery(
-			'delete from products_categories_products where product_id='
-			.$pid.' and category_id='.$cid
-		);
+		ProductscategoriesProducts::delete($cid, $pid);
 	}
 	Products_categoriesRecount($pids);
 	dbQuery(
 		'update products set date_edited=now() where id in ('.join(', ', $arr).')'
 	);
-	Core_cacheClear('products,products_categories_products');
+	Core_cacheClear('products');
 	return array('ok'=>1);
 }
 
 // }
 function Products_adminCategoriesByCount() {
-	return dbAll('select name,category_id,count(product_id) as pids from products_categories_products, products_categories where category_id=id group by category_id order by pids desc');
+	return ProductsCategoriesProducts::listCategoriesByProductCount();
 }
 // { Products_adminCategoryProductsList
 
@@ -386,16 +356,9 @@ function Products_adminCategoriesByCount() {
 	* @return array
 	*/
 function Products_adminCategoryProductsList() {
-	$arr=array();
-	$rs=dbAll('select * from products_categories_products');
-	foreach ($rs as $r) {
-		$arr[]=array(
-			$r['category_id'],
-			$r['product_id']
-		);
-	}
-	return $arr;
+	return ProductsCategoriesProducts::listAll();
 }
+
 // }
 // { Products_adminCategorySetIcon
 
@@ -449,21 +412,13 @@ function Products_adminDatafieldsList() {
 				$rs=dbAll('select distinct product_type_id from products');
 			}
 			else {
-				$rs=dbAll(
-					'select product_id from products_categories_products where category_id='
-					.$cat
-				);
-				$arr2=array();
-				foreach ($rs as $r) {
-					$arr2[]=$r['product_id'];
-				}
+				$arr2=ProductsCategoriesProducts::getByCategoryId($cat);
 				if (!count($arr2)) {
 					return $arr;
 				}
-				$rs=dbAll(
-					'select distinct product_type_id from products where id in ('
-					.join(',', $arr2).')'
-				);
+				$sql='select distinct product_type_id from products where id in ('
+					.join(',', $arr2).')';
+				$rs=dbAll($sql, false, 'products');
 			}
 			$arr2=array();
 			foreach ($rs as $r) {
@@ -518,13 +473,10 @@ function Products_adminExport() {
 		foreach ($fields as $field) {
 			$row.= '"'.str_replace('"', '""', $product[$field['Field']]).'",';
 		}
-		$cats = dbAll(
-			'select category_id from products_categories_products '
-			.'where product_id = '.$product['id']
-		);
+		$cats=ProductsCategoriesProducts::getByProductId($product['id']);
 		$catsArr=array();
 		foreach ($cats as $cat) {
-			$vals=ProductCategory::getInstance($cat['category_id'])->vals;
+			$vals=ProductCategory::getInstance($cat)->vals;
 			$info=array(
 				'name'=>$vals['name'],
 				'parent_id'=>$vals['parent_id']
@@ -915,11 +867,11 @@ function Products_adminProductDatafieldsGet() {
 function Products_adminProductDelete() {
 	$pid=(int)$_REQUEST['id'];
 	dbQuery('delete from products where id='.$pid);
-	dbQuery('delete from products_categories_products where product_id='.$pid);
+	ProductsCategoriesProducts::deleteByProductId($pid);
 	dbQuery('delete from products_relations where from_id='.$pid.' or to_id='.$pid);
 	dbQuery('delete from products_reviews where product_id='.$pid);
 	Core_cacheClear(
-		'products,products_categories_products,products_relations,products_reviews'
+		'products,products_relations,products_reviews'
 	);
 	return array('ok'=>1);
 }
@@ -965,10 +917,7 @@ function Products_adminProductsDelete() {
 		$ids[]=(int)$id;
 	}
 	dbQuery('delete from products where id in ('.join(', ', $ids).')');
-	dbQuery(
-		'delete from products_categories_products where product_id in ('
-		.join(', ', $ids).')'
-	);
+	ProductsCategoriesProducts::deleteByProductId($ids);
 	dbQuery(
 		'delete from products_relations where from_id in ('.join(', ', $ids).')'
 		.' or to_id in ('.join(', ', $ids).')'
@@ -977,7 +926,7 @@ function Products_adminProductsDelete() {
 		'delete from products_reviews where product_id in ('.join(', ', $ids).')'
 	);
 	Products_categoriesRecount($ids);
-	Core_cacheClear();
+	Core_cacheClear('products_reviews,products_relations,products');
 	return array('ok'=>1);
 }
 

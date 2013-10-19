@@ -109,11 +109,9 @@ function OnlineStoreEbay_adminPublish() {
 	$description=$product->get('description');
 	$paypalAddress=$vs['ebay_paypal_address'];
 	$categoryId=0;
-	$sql='select category_id from products_categories_products'
-		.' where product_id='.$productId;
-	$rs=dbAll($sql, false, 'products_categories_products');
+	$rs=ProductsCategoriesProducts::getByProductId($productId);
 	foreach ($rs as $r) {
-		$c=ProductCategory::getInstance($r['category_id']);
+		$c=ProductCategory::getInstance($r);
 		if ($c->vals['ebay_id']) {
 			$categoryId=$c->vals['ebay_id'];
 			break;

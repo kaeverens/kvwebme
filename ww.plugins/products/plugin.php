@@ -509,26 +509,15 @@ class Product{
 		}
 		// }
 		// { Is there a page intended to display its category?
-		$cs=Core_cacheLoad('products', 'categories_for_product_'.$this->id);
-		if ($cs===false) {
-			$sql='select category_id from products_categories_products '
-				.'where category_id!=0 and product_id='.$this->id;
-			$cs=dbAll($sql);
-			Core_cacheSave('products', 'categories_for_product_'.$this->id, $cs);
-		}
-		$productCats=array_merge(
-			$cs,
-			array(array('category_id'=>$this->default_category))
-		);
-		if (count($productCats)) {
-			$pcats=array();
-			foreach ($productCats as $productCat) {
-				$cid=$productCat['category_id'];
-				$cat=ProductCategory::getInstance($cid);
-				if ($cat) {
-					$url=$cat->getRelativeUrl();
-					return $url.'/'.$this->id.'-'.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
-				}
+		$productCats=ProductsCategoriesProducts::getByProductId($this->id);
+		$productCats[]=$this->default_category;
+		$pcats=array();
+		foreach ($productCats as $cid) {
+			$cat=ProductCategory::getInstance($cid);
+			if ($cat) {
+				$url=$cat->getRelativeUrl();
+				return $url.'/'.$this->id.'-'
+					.preg_replace('/[^a-zA-Z0-9]/', '-', $this->link);
 			}
 		}
 		// }
@@ -543,13 +532,8 @@ class Product{
 			}
 			else {
 				$catdir='/missing-category-'.$cat;
-				$pids=dbAll(
-					'select product_id from products_categories_products'
-					.' where category_id='.$cat
-				);
-				dbQuery(
-					'delete from products_categories_products where category_id='.$cat
-				);
+				$pids=ProductsCategoriesProducts::getByCategoryId($cat);
+				ProductsCategoriesProducts::deleteByCategoryId($cat);
 				Products_categoriesRecount($pids);
 				return $this->getRelativeUrl();
 			}
@@ -1091,20 +1075,15 @@ class Products{
 					$cats=array_merge($cats, $cat->getSubCategoryIDs());
 				}
 			}
-			$sql='select id from products,products_categories_products'
-				.' where id=product_id'.$locFilter.' and enabled'
-				.' and category_id in ('.join(', ', $cats).')';
+			$rs=ProductsCategoriesProducts::getByCategoryIds($cats);
+			$sql='select id from products'
+				.' where id in ('.join(',', $rs).') and enabled';
 			if ($search!='') {
 				$str=str_replace(' ', '%', $search);
 				$sql.=' and (name like "%'.addslashes($str)
 					.'%" or data_fields like "%'.addslashes($str).'%")';
 			}
-			$md5_2=md5($sql);
-			$rs=Core_cacheLoad('products', $md5_2, -1);
-			if ($rs===-1) {
-				$rs=dbAll($sql);
-				Core_cacheSave('products', $md5_2, $rs);
-			}
+			$rs=dbAll($sql, false, 'products');
 			foreach ($rs as $r) {
 				$product_ids[]=$r['id'];
 			}
@@ -1507,6 +1486,128 @@ class Products{
 }
 
 // }
+class ProductsCategoriesProducts{
+	static $catsByPid=array();
+	static $prodsByCid=array();
+	static $prodsByCids=array();
+	static $activeCategories=false;
+	function getByProductId($pid) {
+		if (!isset(self::$catsByPid[$pid])) {
+			$rs=dbAll(
+				'select category_id from products_categories_products where product_id='
+				.$pid, false, 'products_categories_products'
+			);
+			$arr=array();
+			foreach ($rs as $r) {
+				$arr[]=(int)$r['category_id'];
+			}
+			self::$catsByPid[$pid]=$arr;
+		}
+		return self::$catsByPid[$pid];
+	}
+	function getByCategoryId($cid) {
+		if (!isset(self::$prodsByCid[$cid])) {
+			$rs=dbAll(
+				'select product_id from products_categories_products where category_id='
+				.$cid, false, 'products_categories_products'
+			);
+			$arr=array();
+			foreach ($rs as $r) {
+				$arr[]=(int)$r['category_id'];
+			}
+			self::$prodsByCid[$cid]=$arr;
+		}
+		return self::$prodsByCid[$cid];
+	}
+	function getByCategoryIds($cids) {
+		if (!isset(self::$prodsByCids[$cids])) {
+			$rs=dbAll(
+				'select product_id from products_categories_products'
+				.' where category_id in ('.join(',', $cids).')',
+				false, 'products_categories_products'
+			);
+			$arr=array();
+			foreach ($rs as $r) {
+				$arr[]=(int)$r['category_id'];
+			}
+			self::$prodsByCids[$cid]=$arr;
+		}
+		return self::$prodsByCids[$cid];
+	}
+	function delete($cid, $pid) {
+		dbQuery(
+			'delete from products_categories_products'
+			.' where category_id='.(int)$cid
+			.' and product_id='.(int)$pid
+		);
+		self::clearCache();
+	}
+	function deleteByCategoryId($id) {
+		dbQuery(
+			'delete from products_categories_products where category_id='.(int)$id
+		);
+		self::clearCache();
+	}
+	function deleteByProductId($id) {
+		if (is_array($id)) {
+			foreach ($id as $i) {
+				self::deleteByProductId($i);
+			}
+			return;
+		}
+		dbQuery(
+			'delete from products_categories_products where product_id='.(int)$id
+		);
+		self::clearCache();
+	}
+	function insert($cid, $pid) {
+		dbQuery(
+			'insert into products_categories_products'
+			.' set category_id='.(int)$cid.', product_id='.(int)$pid
+		);
+		self::clearCache();
+	}
+	function listActiveCategories() {
+		if (self::$activeCategories===false) {
+			$sql='select distinct category_id from products_categories_products';
+			$rs=dbAll($sql, false, 'products_categories_products');
+			$arr=array();
+			foreach ($rs as $r) {
+				$arr[]=(int)$r['category_id'];
+			}
+			self::$activeCategories=$arr;
+		}
+		return self::$activeCategories;
+	}
+	function listAll() {
+		$arr=array();
+		$rs=dbAll(
+			'select * from products_categories_products', false,
+			'products_categories_products'
+		);
+		foreach ($rs as $r) {
+			$arr[]=array(
+				$r['category_id'],
+				$r['product_id']
+			);
+		}
+		return $arr;
+	}
+	function listCategoriesByProductCount() {
+		return dbAll(
+			'select name,category_id,count(product_id) as pids'
+			.' from products_categories_products,products_categories'
+			.' where category_id=id group by category_id order by pids desc',
+			false, 'products_categories_products,products_categories'
+		);
+	}
+	function clearCache() {
+		self::$prodsByCid=array();
+		self::$catsByPid=array();
+		self::$activeCategories=false;
+		Core_cacheClear('products_categories_products');
+	}
+}
 // { class ProductType
 
 /**
@@ -2141,19 +2242,11 @@ function Products_breadcrumbs($baseurl) {
 function Products_categories ($params, $smarty) {
 	$product = $smarty->smarty->tpl_vars['product']->value;
 	$productID = $product->id;
-	$categoryIDs=dbAll(
-		'select category_id from products_categories_products where product_id='
-		.$productID
-	);
-	if ($categoryIDs) {
+	$categoryIDs=ProductsCategoriesProducts::getByProductId($productID);
+	if ($categoryIDs && count($categoryIDs)) {
 		$query='select count(id) from products_categories where enabled=1 and'
-			.' id in (';
-		foreach ($categoryIDs as $catID) {
-			$query.= (int)$catID['category_id'].', ';
-		}
-		$query= substr_replace($query, '', -2);
-		$query.=')';
-		$numEnabledCats = dbOne($query, 'count(id)'); 	
+			.' id in ('.join(', ', $categoryIDs).')';
+		$numEnabledCats=dbOne($query, 'count(id)', 'products_categories'); 	
 	}
 	if ($numEnabledCats==0) {
 		return '<div class="products-categories">'
@@ -2231,16 +2324,14 @@ function Products_categoriesRecount($pids=array()) {
 		}
 	}
 	foreach ($ids as $pid) {
-		$r=dbOne(
-			'select count(product_id) as pids from products_categories_products'
-			.' where product_id='.$pid,
-			'pids'
-		);
+		$r=count(ProductsCategoriesProducts::getByProductId($pid));
+		$changes++;
 		dbQuery(
 			'update products set num_of_categories='.$r
 			.' where id='.$pid
 		);
 	}
+	Core_cacheClear('products');
 }
 // { Products_categoryWatchesRun
 
@@ -2276,8 +2367,8 @@ function Products_categoryWatchesSend() {
 		$numFound=0;
 		$email='';
 		foreach ($cats as $cid) {
-			$sql='select id from products,products_categories_products'
-				.' where category_id='.$cid.' and products.id=product_id'
+			$rs=ProductsCategoriesProducts::getByCategoryId($cid);
+			$sql='select id from products where id in ('.join(',', $rs).')'
 				.' and activates_on>date_add(now(), interval -1 day)';
 			$rs=dbAll($sql);
 			if (count($rs)) {
@@ -2480,25 +2571,17 @@ function Products_frontendVarsSetup($PAGEDATA) {
 					}
 				}
 				if ($cat_id) {
-					$id=Core_cacheLoad('products_categories_products,products', $cat_id.'|'.$pconstraint, -1);
-					if ($id===-1) {
-						$id=dbOne(
-							'select product_id,name from products_categories_products,products'
-							.' where category_id='.$cat_id.' and '.$pconstraint.' and id=product_id',
-							'product_id'
-						);
-						Core_cacheSave('products_categories_products,products', $cat_id.'|'.$pconstraint, $id);
-					}
+					$pids=ProductsCategoriesProducts::getByCategoryId($cat_id);
+					$sql='select id from products where id in ('.join(',', $pids).')'
+						.' and '.$pconstraint;
+					$id=dbOne(
+						$sql, 'id', 'products'
+					);
 				}
 				if (!$id) {
-					$id=Core_cacheLoad('products', 'id|'.$pconstraint, -1);
-					if ($id===-1) {
-						$id=dbOne(
-							'select id from products where '.$pconstraint,
-							'id'
-						);
-						Core_cacheSave('products', 'id|'.$pconstraint, $id);
-					}
+					$id=dbOne(
+						'select id from products where '.$pconstraint, 'id', 'products'
+					);
 				}
 				if ($id) {
 					$_REQUEST['product_id']=$id;
@@ -3242,8 +3325,9 @@ function Products_importFile($vars=false) {
 		$cid=(int)@$vars->productsImportCategory['varvalue'];
 		switch ($cid) {
 			case '-1': // { from file
-				dbQuery('delete from products_categories_products where product_id='.$id);
+				ProductsCategoriesProducts::deleteByProductId($id);
 				dbQuery('update products set num_of_categories=0 where id='.$id);
+				Core_cacheClear('products');
 				if (@$data[$headers['_categories']]) {
 					$catnames=explode('|', $data[$headers['_categories']]);
 					foreach ($catnames as $catname) {
@@ -3251,10 +3335,7 @@ function Products_importFile($vars=false) {
 						if (!$cat) {
 							continue;
 						}
-						dbQuery(
-							'insert into products_categories_products set'
-							.' category_id='.$cat->vals['id'].', product_id='.$id
-						);
+						ProductsCategoriesProducts::insert($cat->vals['id'], $id);
 						Products_categoriesRecount(array($id));
 					}
 				}
@@ -3262,12 +3343,8 @@ function Products_importFile($vars=false) {
 			case '0':
 			break;
 			default: // {
-				dbQuery('delete from products_categories_products where product_id='.$id);  
-				dbQuery(
-					'insert into products_categories_products set'
-					.' category_id='.$cid.', product_id='.$id
-				);
-				dbQuery('update products set num_of_categories=1 where id='.$id);
+				ProductsCategoriesProducts::deleteByProductId($id);
+				ProductsCategoriesProducts::insert($cid, $id);
 			break; // }
 		}
 		$imported++;
@@ -4244,17 +4321,20 @@ function Products_widget($vars=null) {
 					.' href="/_r?type=products&product_cid='.$c['id'].'">'
 					.$name.'</a>';
 				if (isset($vars->show_products) && $vars->show_products=='1') {
-					$sql='select id,name from products,products_categories_products'
-						.' where product_id=products.id and category_id='.$c['id'];
-					$ps=dbAll($sql);
-					$html.='<ul class="products-products">';
-					foreach ($ps as $p) {
-						$product=Product::getInstance($p['id']);
-						$html.='<li><a data-pid="'.$p['id'].'" href="'
-							.$product->getRelativeUrl().'">'
-							.htmlspecialchars(__FromJson($p['name'])).'</a></li>';
+					$cs2=ProductsCategoriesProducts::getByCategoryId($c['id']);
+					if (count($cs2)) {
+						$ps=dbAll(
+							'select id, name from products where id in ('.join(',', $cs2).')'
+						);
+						$html.='<ul class="products-products">';
+						foreach ($ps as $p) {
+							$product=Product::getInstance($p['id']);
+							$html.='<li><a data-pid="'.$p['id'].'" href="'
+								.$product->getRelativeUrl().'">'
+								.htmlspecialchars(__FromJson($p['name'])).'</a></li>';
+						}
+						$html.='</ul>';
 					}
-					$html.='</ul>';
 				}
 				$html.='</li>';
 			}

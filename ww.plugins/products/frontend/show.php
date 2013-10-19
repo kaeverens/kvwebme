@@ -746,36 +746,24 @@ class Products{
 					$cats=array_merge($cats, $cat->getSubCategoryIDs());
 				}
 			}
-			$sql='select id from products,products_categories_products'
-				.' where id=product_id'.$locFilter.' and enabled'
-				.' and category_id in ('.join(', ', $cats).')';
+			$pids=ProductsCategoriesProducts::getByCategoryIds($cats);
+			$sql='select id from products'
+				.' where enabled '.$locFilter
+				.' and id in ('.join(',', $pids).')';
 			if ($search!='') {
 				$str=str_replace(' ', '%', $search);
 				$sql.=' and (name like "%'.addslashes($str)
 					.'%" or data_fields like "%'.addslashes($str).'%")';
 			}
-			$md5_2=md5($sql);
-			$rs=Core_cacheLoad('products', $md5_2, -1);
-			if ($rs===-1) {
-				$rs=dbAll($sql);
-				Core_cacheSave('products', $md5_2, $rs);
-			}
+			$rs=dbAll($sql, false, 'products');
 			foreach ($rs as $r) {
 				$product_ids[]=$r['id'];
 			}
 			new Products($product_ids, $md5, $search, $search_arr);
-			$pcs=Core_cacheLoad(
-				'products', 'productcategoriesenabled_parent_'.$id, -1
+			$pcs=dbAll(
+				'select id,name from products_categories where parent_id='.$id
+				.' and enabled order by name', false, 'products_categories'
 			);
-			if ($pcs===-1) {
-				$pcs=dbAll(
-					'select id,name from products_categories where parent_id='.$id
-					.' and enabled order by name'
-				);
-				Core_cacheSave(
-					'products', 'productcategoriesenabled_parent_'.$id, $pcs
-				);
-			}
 			self::$instances[$md5]->subCategories=$pcs;
 		}
 		return self::$instances[$md5];
