@@ -778,8 +778,7 @@ $cid=(int)@$pdata['default_category'];
 if (!$cid) {
 	$cid=1;
 }
-$sql='select name from products_categories where id='.$cid;
-$default_category=dbOne($sql, 'name', 'products_categories');
+$default_category=Product::getInstance($cid)->vals['name'];
 echo '<br/><label>Default Category: <select name="products_default_category">'
 	.'<option value="'.((int)@$pdata['products_default_category']).'">'
 	.$default_category

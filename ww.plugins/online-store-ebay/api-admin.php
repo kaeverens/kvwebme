@@ -4,7 +4,7 @@ function OnlineStoreEbay_adminCheckEbayCats() {
 	$cats=$_REQUEST['cats'];
 	$invalids=array();
 	foreach ($cats as $c) {
-		$r=dbRow('select ebay_id from products_categories where id='.(int)$c);
+		$r=ProductCategory::getInstance((int)$c)->vals;
 		if ($r['ebay_id']=='0') {
 			$invalids[]=$c;
 		}
@@ -69,6 +69,7 @@ function OnlineStoreEbay_adminLinkEbayCat() {
 	$id=(int)$_REQUEST['id'];
 	$ebay_id=(int)$_REQUEST['ebay_id'];
 	dbQuery('update products_categories set ebay_id='.$ebay_id.' where id='.$id);
+	Core_cacheClear('products_categories');
 }
 function OnlineStoreEbay_adminPublish() {
 	require_once 'eBaySession.php';
@@ -107,7 +108,17 @@ function OnlineStoreEbay_adminPublish() {
 	$product=Product::getInstance($productId);
 	$description=$product->get('description');
 	$paypalAddress=$vs['ebay_paypal_address'];
-	$categoryId=dbOne('select ebay_id from products_categories, products_categories_products where product_id='.$productId.' and category_id=id', 'ebay_id');
+	$categoryId=0;
+	$sql='select category_id from products_categories_products'
+		.' where product_id='.$productId;
+	$rs=dbAll($sql, false, 'products_categories_products');
+	foreach ($rs as $r) {
+		$c=ProductCategory::getInstance($r['category_id']);
+		if ($c->vals['ebay_id']) {
+			$categoryId=$c->vals['ebay_id'];
+			break;
+		}
+	}
 	$howMany=(int)$_REQUEST['quantity'];
 	$returnsPolicy=$vs['ebay_returns_policy'];
 	$title=$product->get('name');
@@ -201,10 +212,10 @@ function OnlineStoreEbay_adminPublish() {
 function OnlineStoreEbay_adminLinkProductToEbay() {
 	$id=(int)$_REQUEST['id'];
 	$ebay_id=(int)$_REQUEST['ebay_id'];
-	dbQuery(
-		'update products set ebay_currently_active=1,ebay_id='.$ebay_id
-		.' where id='.$id
-	);
+	Product::getInstance($id)->set(array(
+		'ebay_currently_active'=>1,
+		'ebay_id'=>$ebay_id
+	));
 }
 function OnlineStoreEbay_adminListShipping() {
 	require_once 'eBaySession.php';

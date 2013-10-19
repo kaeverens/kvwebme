@@ -1114,13 +1114,13 @@ function Core_adminPageEdit() {
 			}
 		}
 		$homes=dbOne(
-			"SELECT COUNT(id) AS ids FROM pages WHERE (special&1)"
+			"select count(id) as ids from pages where (special&1)"
 			.($id?" AND id!=$id":""),
 			'ids'
 		);
 		if ($special&1) { // there can be only one homepage
 			if ($homes!=0) {
-				dbQuery("UPDATE pages SET special=special-1 WHERE special&1");
+				dbQuery("update pages set special=special-1 where special&1");
 			}
 		}
 		else {
@@ -1301,7 +1301,7 @@ function Core_adminPageEdit() {
 	
 	// { insert the page
 	if ($id) {
-		$q='UPDATE '.$q.' where id='.$id;
+		$q='update '.$q.' where id='.$id;
 	}
 	else {
 		$onlyOnePageInstance = false;

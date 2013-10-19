@@ -43,16 +43,16 @@ else {
 				Core_quit();
 			} 
 			$extras = dbOne(
-				'SELECT extras FROM user_accounts'
-				.' WHERE id='.((int)$_REQUEST['custom']),
+				'select extras from user_accounts'
+				.' where id='.((int)$_REQUEST['custom']),
 				'extras'
 			);
 			$extras=json_decode($extras, true);
 			$extras['paid_credits'] += (int)$_REQUEST['item_number'];
 			dbQuery(
-				'UPDATE user_accounts SET'
+				'update user_accounts set'
 				.' extras="'.addslashes(json_encode($extras)).'"'
-				.' WHERE id='.$_REQUEST['custom']
+				.' where id='.$_REQUEST['custom']
 			);
 		}
 	}

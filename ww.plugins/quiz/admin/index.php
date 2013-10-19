@@ -24,12 +24,12 @@ if (isset($_POST['action'])) {
 		$enabled = (int)$_POST['enabled'];
 		if ($id) {
 			dbQuery(
-				"UPDATE quiz_quizzes 
-				SET name = '$quizName',
+				"update quiz_quizzes 
+				set name = '$quizName',
 				description = '$quizTopic',
 				number_of_questions = '$numberOfQuestions',
 				enabled = $enabled
-				WHERE id = '$id'"
+				where id = '$id'"
 			);
 		} 
 		else {
@@ -49,7 +49,7 @@ if (isset($_POST['action'])) {
 				'$enabled'
 				)"
 			);
-			$id= dbOne('SELECT LAST_INSERT_ID() AS id', 'id');
+			$id= dbOne('select LAST_INSERT_ID() AS id', 'id');
 			header(
 				'location: /ww.admin/plugin.php'
 				.'?_plugin=quiz&_page=index&action=newQuestion&id='.$id
@@ -61,10 +61,10 @@ echo '<script src="/ww.plugins/quiz/admin/quickDelete.js"></script>';
 $menuItems= array ();
 $quizzes
 	= dbAll(
-		"SELECT DISTINCT name, quiz_quizzes.id 
-		FROM quiz_quizzes,quiz_questions"
+		"select DISTINCT name, quiz_quizzes.id 
+		from quiz_quizzes,quiz_questions"
 	);
-$pageQuizzes= dbAll("SELECT name,id from quiz_quizzes LIMIT 0,15");
+$pageQuizzes= dbAll("select name,id from quiz_quizzes LIMIT 0,15");
 foreach ($pageQuizzes as $quiz) {
 	$menuItems[$quiz['name']]= $_url.'&amp;action=editQuiz&amp;id='.$quiz['id'];
 }
@@ -95,8 +95,8 @@ switch ($action){
 		if (!Core_isAdmin()) {
 			die('Insufficent Privlages');
 		}
-		dbQuery("DELETE FROM quiz_quizzes WHERE id = '$id'");
-		dbQuery("DELETE FROM quiz_questions WHERE quiz_id = '$id'");
+		dbQuery("delete from quiz_quizzes where id = '$id'");
+		dbQuery("delete from quiz_questions where quiz_id = '$id'");
 		//Not breaking because I want the quizzes to display after a quiz is
 		//deleted
 		// }

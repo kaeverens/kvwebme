@@ -477,8 +477,8 @@ function IssueTracker_addVote() {
 		}
 	
 		dbQuery(
-			'UPDATE issuetracker_issues set meta="'.addslashes(json_encode($meta))
-			.'" WHERE id='.$id
+			'update issuetracker_issues set meta="'.addslashes(json_encode($meta))
+			.'" where id='.$id
 		);
 		return $meta['credits'];
 	}
@@ -541,8 +541,8 @@ function IssueTracker_substractVote() {
 		if ($jMeta['votesFrom-'.$_SESSION['userdata']['id']] == 0) {
 			unset($jMeta['votesFrom-'.$_SESSION['userdata']['id']]);
 			dbQuery(
-				'UPDATE issuetracker_issues set meta="'.addslashes(json_encode($jMeta))
-				.'" WHERE id='.$id
+				'update issuetracker_issues set meta="'.addslashes(json_encode($jMeta))
+				.'" where id='.$id
 			);
 		}
 		// }
@@ -639,12 +639,12 @@ function IssueTracker_payPalHttpPost($methodName_, $nvpStr_, $environment) {
 function IssueTracker_setPaypalAddress() {
 	$email=$_REQUEST['email'];
 	$email_site_vars=dbOne(
-		"SELECT * FROM `site_vars` WHERE `name`='paypal_address'", 'value'
+		"select * from `site_vars` where `name`='paypal_address'", 'value'
 	);
 	if ($email_site_vars) {
 		dbQuery(
-			'UPDATE site_vars SET `value`="'.$_REQUEST['email'].'"'
-			.' WHERE `name`="paypal_address"'
+			'update site_vars set `value`="'.$_REQUEST['email'].'"'
+			.' where `name`="paypal_address"'
 		);
 	}
 	else {
@@ -665,7 +665,7 @@ function IssueTracker_setPaypalAddress() {
 	*/
 function IssueTracker_getPaypalAddress() {
 	$email=dbOne(
-		"SELECT * FROM site_vars WHERE `name`='paypal_address'", 'value'
+		"select * from site_vars where `name`='paypal_address'", 'value'
 	);
 	return $email;
 }
@@ -684,7 +684,7 @@ function IssueTracker_payMoney() {
 	// Set request-specific fields.
 	
 	$paypal_address=dbOne(
-		'SELECT * FROM `site_vars` WHERE `name`="paypal_address"', 'value'
+		'select * from `site_vars` where `name`="paypal_address"', 'value'
 	);
 	$emailSubject = urlencode($paypal_address);
 	$receiverType = urlencode('EmailAddress');
@@ -736,7 +736,7 @@ function IssueTracker_payMoney() {
 	*/
 function IssueTracker_finishIssue() {
 	$id = (int)$_REQUEST['id'];
-	$meta = dbOne('SELECT * FROM issuetracker_issues WHERE id='.$id, 'meta');
+	$meta = dbOne('select * from issuetracker_issues where id='.$id, 'meta');
 
 	$meta = json_decode($meta, true);
 	
@@ -748,7 +748,7 @@ function IssueTracker_finishIssue() {
 
 			if ($userId) {
 				$extras=dbOne(
-					"SELECT * FROM `user_accounts` WHERE `id`=".$userId,
+					"select * from `user_accounts` where `id`=".$userId,
 					'extras'
 				);
 				$extras =json_decode($extras, true);
@@ -756,21 +756,21 @@ function IssueTracker_finishIssue() {
 				$extras['free-credits'] += $v;
 				print_r($extras);
 				dbQuery(
-					'UPDATE `user_accounts` SET `extras`="'
+					'update `user_accounts` set `extras`="'
 					.addslashes(json_encode($extras)).'"'
-					.'" WHERE `id`='.$userId
+					.'" where `id`='.$userId
 				);
 			}
 		}
 	}
 
 	//mark the issue as complete
-	dbQuery("UPDATE `issuetracker_issues` set `status`=2 WHERE id=".$id);
+	dbQuery("update `issuetracker_issues` set `status`=2 where id=".$id);
 		
 	//unset the extras field
 	dbQuery(
-		'UPDATE issuetracker_issues set meta="'.addslashes(json_encode(array())).'"'
-		.' WHERE `id`='.$id
+		'update issuetracker_issues set meta="'.addslashes(json_encode(array())).'"'
+		.' where `id`='.$id
 	);
 }
 
@@ -791,7 +791,7 @@ function IssueTracker_depositValue() {
 	}
 
 	$extras = dbOne(
-		"SELECT `extras` FROM `user_accounts` WHERE `id`=".$from, 'extras'
+		"select `extras` from `user_accounts` where `id`=".$from, 'extras'
 	);
 	$extras = json_decode($extras, true);
 
@@ -809,17 +809,17 @@ function IssueTracker_depositValue() {
 
 	$extras['paid_credits'] -= $amount;
 	dbQuery(
-		"UPDATE `user_accounts` SET `extras`='".json_encode($extras)
-		."' WHERE `id`=".$from
+		"update `user_accounts` set `extras`='".json_encode($extras)
+		."' where `id`=".$from
 	);
 
 	$meta = dbOne(
-		"SELECT `meta` FROM `issuetracker_issues` WHERE `id`=".$id, 'meta'
+		"select `meta` from `issuetracker_issues` where `id`=".$id, 'meta'
 	);
 	$meta = json_decode($meta, true);
 
 	$status = dbOne(
-		"SELECT `status` FROM `issuetracker_issues` WHERE `id`=".$id, 'status'
+		"select `status` from `issuetracker_issues` where `id`=".$id, 'status'
 	);
 	if ($status == 2) {
 		return "This issue has 'complete' status"; 
@@ -833,8 +833,8 @@ function IssueTracker_depositValue() {
 	}
 	
 	dbQuery(
-		'UPDATE issuetracker_issues SET `meta`="'.addslashes(json_encode($meta)).'"'
-		.' WHERE `id`='.$id
+		'update issuetracker_issues set `meta`="'.addslashes(json_encode($meta)).'"'
+		.' where `id`='.$id
 	);
 	return "OK";
 }
@@ -851,7 +851,7 @@ function IssueTracker_getDepositedValue() {
 	$id = $_REQUEST['id'];
 	$amount = 0;
 	$meta = dbOne(
-		"SELECT `meta` FROM `issuetracker_issues` WHERE `id`=".$id, 'meta'
+		"select `meta` from `issuetracker_issues` where `id`=".$id, 'meta'
 	);
 	$meta = json_decode($meta, true);
 	if (array_key_exists('paid_credits', $meta)) {

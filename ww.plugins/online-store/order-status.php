@@ -28,7 +28,7 @@ function OnlineStore_processOrder($id, $order=false) {
 	}
 	$items=json_decode($order['items'], true);
 	// { mark order as paid
-	dbQuery("UPDATE online_store_orders SET status='1' WHERE id=$id");
+	dbQuery("update online_store_orders set status='1' where id=$id");
 	OnlineStore_updateProductSales($id, $items, $order['date_created']);
 	if (!$order['invoice_num']) {
 		$highest=dbOne('select invoice_num from online_store_orders order by invoice_num desc limit 1', 'invoice_num');

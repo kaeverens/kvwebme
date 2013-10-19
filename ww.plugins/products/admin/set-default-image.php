@@ -19,10 +19,6 @@ if (!Core_isAdmin()) {
 $product_id=(int)$_REQUEST['product_id'];
 $imgsrc='/'.$_REQUEST['imgsrc'];
 
-dbQuery(
-	'update products set image_default="'.addslashes($imgsrc).'"'
-	.', date_edited=now()'
-	.' where id='.$product_id
-);
+Product::getInstance($product_id)->set('image_default', $imgsrc);
 
 echo 'ok';

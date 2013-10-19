@@ -146,7 +146,7 @@ if (!$id) {
 				}
 			}
 		}
-		if (!$id) {
+		if (!$id && strpos($page, '/')===false) {
 			$sql='select page_id from short_urls where short_url="'.addslashes($page).'"';
 			$id=(int)dbOne($sql, 'page_id', 'short_urls');
 		}

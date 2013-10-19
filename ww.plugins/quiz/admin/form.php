@@ -37,7 +37,7 @@ echo '<h3>';
 if ($id) {
 	echo 'Edit Quiz';
 	$id= addslashes($id);
-	$quiz= dbRow("SELECT * FROM quiz_quizzes WHERE quiz_quizzes.id='$id'");
+	$quiz= dbRow("select * from quiz_quizzes where quiz_quizzes.id='$id'");
 } else {
  	echo 'New Quiz';
 }
@@ -143,7 +143,7 @@ echo '</div>';
 // { Questions tab
 echo '<div id="Questions">';
 if ($id) {
-	$results=dbAll("SELECT * FROM quiz_questions WHERE quiz_id='".$id."'");
+	$results=dbAll("select * from quiz_questions where quiz_id='".$id."'");
 	echo '<ul id="questionLinks">';
 	foreach ($results as $result) {
 		$questionID = $result['id'];
@@ -194,8 +194,8 @@ if (isset($_POST['questionAction'])) {
 		if (isset($_GET['questionid'])) {
 			$questionID=$_GET['questionid'];
 			dbQuery(
-				"UPDATE quiz_questions 
-				SET 
+				"update quiz_questions 
+				set 
 				question = '$question', 
 				topic = '$topic', 
 				answer1 = '$answers[0]', 
@@ -203,7 +203,7 @@ if (isset($_POST['questionAction'])) {
 				answer3 = '$answers[2]', 
 				answer4 = '$answers[3]', 
 				correctAnswer = '$correctAnswer' 
-				WHERE id = '$questionID'"
+				where id = '$questionID'"
 			);
 		} else {
 			dbQuery(
@@ -282,7 +282,7 @@ function addQuestion () {
 	if (isset($_GET['questionid'])) {
 		$questionID= addslashes($_GET['questionid']);
 		$returnString= $returnString.'Edit Question';
-		$question= dbAll("SELECT * FROM quiz_questions WHERE id='$questionID'");
+		$question= dbAll("select * from quiz_questions where id='$questionID'");
 	} 
 	else {
 		$returnString= $returnString.'New Question';

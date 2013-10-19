@@ -33,12 +33,8 @@ if (!isset($_REQUEST['parent_cat'])) {
 	echo '<option value="0"> -- please choose -- </option>';
 }
 else {
-	echo '<option value="'.$_REQUEST['parent_cat'].'">'
-		.dbOne(
-			'select name from products_categories where id='
-			.$_REQUEST['parent_cat'],
-			'name'
-		)
+	echo '<option value="'.(int)$_REQUEST['parent_cat'].'">'
+		.ProductCategory::getInstance((int)$_REQUEST['parent_cat'])->vals['name']
 		.'</option>';
 }
 echo '</select><br/>';

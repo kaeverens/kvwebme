@@ -591,12 +591,12 @@ function Core_sendLoginToken() {
 			'error'=>__('Please enter a properly formatted email address.')
 		);
 	}
-	$u=dbRow("SELECT * FROM user_accounts WHERE email='$email'");
+	$u=dbRow("select * from user_accounts where email='$email'");
 	if ($u && count($u)) {
 		$token=md5(time().'|'.rand());
 		dbQuery(
-			"UPDATE user_accounts SET verification_hash='$token' "
-			."WHERE email='$email'"
+			"update user_accounts set verification_hash='$token' "
+			."where email='$email'"
 		);
 		Core_mail(
 			$email, '['.$_SERVER['HTTP_HOST'].'] user password token',
@@ -674,14 +674,14 @@ function Core_updateUserPasswordUsingToken() {
 		Core_quit('{"error":"no new password entered"}');
 	}
 	$u=dbRow(
-		"SELECT * FROM user_accounts WHERE email='$email' "
+		"select * from user_accounts where email='$email' "
 		."and verification_hash='$token'"
 	);
 	if ($u && count($u)) {
 		$password=md5($password);
 		dbQuery(
-			"UPDATE user_accounts SET password='$password',"
-			."verification_hash='' WHERE email='$email'"
+			"update user_accounts set password='$password',"
+			."verification_hash='' where email='$email'"
 		);
 		Core_quit('{"ok":1}');
 	}

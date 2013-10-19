@@ -176,24 +176,18 @@ class Product{
 		if ($v<1) {
 			return false;
 		}
-		$enabledSql='and ';
 		if ($enabledFilter==0) {
-			$enabledSql.=' enabled';
+			$enabledSql='and enabled';
 		}
 		if ($enabledFilter==1) {
 			$enabledSql='';
 		}
 		if ($enabledFilter==2) {
-			$enabledSql.=' !enabled';
+			$enabledSql='and !enabled';
 		}
 		if (!$r) {
 			$sql="select * from products where id=$v $enabledSql limit 1";
-			$md5=md5($sql);
-			$r=Core_cacheLoad('products', $md5, -1);
-			if ($r===-1) {
-				$r=dbRow($sql);
-				Core_cacheSave('products', $md5, $r);
-			}
+			$r=dbRow($sql, 'products');
 		}
 		if (!count($r) || !is_array($r)) {
 			return false;
@@ -642,6 +636,80 @@ class Product{
 	}
 
 	// }
+	function set($key, $val, $save=true) {
+		if (is_array($key)) {
+			return $this->setMultiple($key);
+		}
+		if (key=='meta') {
+			// todo
+		}
+		else {
+			$this->vals[$key]=$val;
+		}
+		if ($save) {
+			$this->save();
+		}
+	}
+	function setMultiple($arr) {
+		foreach ($arr as $key=>$val) {
+			$this->set($key, $val, false);
+		}
+		$this->save();
+	}
+	function save() {
+		$bits=array();
+		$r=dbRow('select * from products where id='.$this->id);
+		$others=array();
+		foreach ($this->vals as $key=>$val) {
+			if ($key=='date_edited') {
+				continue;
+			}
+			if (!array_key_exists($key, $r)) {
+				$others[$key]=$this->vals[$key];
+				continue;
+			}
+			if ($r[$key]==$val) {
+				continue;
+			}
+			$bits[]=$key.'="'.addslashes($val).'"';
+		}
+		if (count($others)) {
+			$oldDataFields=json_decode($r['data_fields'], true);
+			$changed=false;
+			foreach ($others as $key=>$val) {
+				$found=0;
+				foreach ($oldDataFields as $k=>$v) {
+					if ($v['n']==$key) {
+						$found=1;
+						if ($v['v']!=$val) {
+							$oldDataFields[$k]=array(
+								'n'=>$key,
+								'v'=>$val
+							);
+							$changed=1;
+						}
+					}
+					if (!$found) {
+						$changed=1;
+						$oldDataFields[]=array(
+							'n'=>$key,
+							'v'=>$val
+						);
+					}
+				}
+			}
+			if ($changed) {
+				$bits[]='data_fields="'.addslashes(json_encode($oldDataFields)).'"';
+			}
+		}
+		if (!count($bits)) {
+			return;
+		}
+		$sql='update products set date_edited=now(), '.join(', ', $bits)
+			.' where id='.$this->id;
+		dbQuery($sql);
+		Core_cacheClear('products');
+	}
 }
 
 // }
@@ -671,11 +739,9 @@ class ProductCategory{
 		*/
 	function __construct($id) {
 		$id=(int)$id;
-		$r=Core_cacheLoad('products', 'category-'.$id, -1);
-		if ($r===-1) {
-			$r=dbRow('select * from products_categories where id='.$id);
-			Core_cacheSave('products', 'category-'.$id, $r);
-		}
+		$r=dbRow(
+			'select * from products_categories where id='.$id, 'products_categories'
+		);
 		if (!count($r)) {
 			return false;
 		}
@@ -1469,11 +1535,9 @@ class ProductType{
 		if ($v<1) {
 			return false;
 		}
-		$r=Core_cacheLoad('products', 'productTypes_'.$v, -1);
-		if ($r===-1) {
-			$r=dbRow("select * from products_types where id=$v limit 1");
-			Core_cacheSave('products', 'productTypes_'.$v, $r);
-		}
+		$r=dbRow(
+			"select * from products_types where id=$v limit 1", 'products_types'
+		);
 		if (!count($r)) {
 			return false;
 		}
@@ -2082,7 +2146,7 @@ function Products_categories ($params, $smarty) {
 		.$productID
 	);
 	if ($categoryIDs) {
-		$query='select count(id) from products_categories where enabled = 1 and'
+		$query='select count(id) from products_categories where enabled=1 and'
 			.' id in (';
 		foreach ($categoryIDs as $catID) {
 			$query.= (int)$catID['category_id'].', ';
@@ -2103,9 +2167,7 @@ function Products_categories ($params, $smarty) {
 	foreach ($categoryIDs as $catID) {
 		$pageFound = false;
 		$cid = $catID['category_id'];
-		$catDetails=dbRow(
-			'select name, enabled, parent_id from products_categories where id='.$cid
-		);
+		$catDetails=ProductCategory::getInstance($cid)->vals;
 		$catIsEnabled = $catDetails['enabled'];
 		$catName = $catDetails['name'];
 		if ($catIsEnabled==1) {
@@ -2140,10 +2202,7 @@ function Products_categories ($params, $smarty) {
 							break;
 						}
 					}	
-					$parent=dbOne(
-						'select parent_id from products_categories where id = '.$parent,
-						'parent_id'
-					);
+					$parent=ProductCategory::getInstance($parent)->vals['parent_id'];
 				}
 			}
 			if (!$pageFound) {
@@ -2223,7 +2282,7 @@ function Products_categoryWatchesSend() {
 			$rs=dbAll($sql);
 			if (count($rs)) {
 				$email.='<h2>'
-					.dbOne('select name from products_categories where id='.$cid, 'name')
+					.ProductCategory::getInstance($cid)->vals['name']
 					.'</h2><table style="width:100%">';
 				foreach ($rs as $r) {
 					$product=Product::getInstance($r['id']);
@@ -2399,13 +2458,9 @@ function Products_frontendVarsSetup($PAGEDATA) {
 		$product_id=0;
 		foreach ($bits as $bit) {
 			$n=preg_replace('/[^a-zA-Z0-9]/', '_', $bit);
-			$id=Core_cacheLoad('products_categories', '1|pid='.$cat_id.'|name='.$n, -1);
-			if ($id===-1) {
-				$sql='select id from products_categories where parent_id='.$cat_id
-					.' and name like "'.$n.'"';
-				$id=dbOne($sql, 'id');
-				Core_cacheSave('products_categories', '1|pid='.$cat_id.'|name='.$n, $id);
-			}
+			$sql='select id from products_categories where parent_id='.$cat_id
+				.' and name like "'.$n.'"';
+			$id=dbOne($sql, 'id', 'products_categories');
 			if ($id) {
 				$cat_id=$id;
 				$_REQUEST['product_cid']=$cat_id;

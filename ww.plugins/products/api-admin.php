@@ -135,10 +135,7 @@ function Products_adminCategoryDelete() {
 	if ($id==1) {
 		return array('status'=>0);
 	}
-	$parent=dbOne(
-		'select parent_id from products_categories where id='.$id,
-		'parent_id'
-	);
+	$parent=ProductCategory::getInstance($id)->vals['parent_id'];
 	dbQuery(
 		'update products_categories set parent_id='.$parent.' where parent='.$id
 	);
@@ -214,12 +211,20 @@ function Products_adminCategoryGetFromID($id) {
 			$products[]=$p['product_id'];
 		}
 	}
+	$vals=ProductCategory::getInstance($id)->vals;
 	$data=array(
-		'attrs'=>dbRow(
-			'select thumbsize_w,thumbsize_h,id,associated_colour,name,enabled,parent_id from products_categories where id='.$id
+		'attrs'=>array(
+			'thumbsize_w'=>$vals['thumbsize_w'],
+			'thumbsize_h'=>$vals['thumbsize_h'],
+			'id'=>$vals['id'],
+			'associated_colour'=>$vals['associated_colour'],
+			'name'=>$vals['name'],
+			'enabled'=>$vals['enabled'],
+			'parent_id'=>$vals['parent_id']
 		),
 		'products'=>$products,
-		'hasIcon'=>file_exists(USERBASE.'/f/products/categories/'.$id.'/icon.png')?filemtime(USERBASE.'/f/products/categories/'.$id.'/icon.png'):0
+		'hasIcon'=>file_exists(USERBASE.'/f/products/categories/'.$id.'/icon.png')
+			?filemtime(USERBASE.'/f/products/categories/'.$id.'/icon.png'):0
 	);
 	if (isset($pageid)) {
 		$page= Page::getInstance($pageid);
@@ -320,7 +325,7 @@ function Products_adminCategoryProductAdd() {
 	$arr=array();
 	foreach ($pids as $pid) {
 		$pid=(int)$pid;
-		$arr[]=$pid;
+		$arr[]=(int)$pid;
 		dbQuery(
 			'delete from products_categories_products where product_id='
 			.$pid.' and category_id='.$cid
@@ -519,19 +524,20 @@ function Products_adminExport() {
 		);
 		$catsArr=array();
 		foreach ($cats as $cat) {
-			$info
-				= dbRow(
-					'select name, parent_id 
-					from products_categories
-					where id ='.$cat['category_id']
-				);
+			$vals=ProductCategory::getInstance($cat['category_id'])->vals;
+			$info=array(
+				'name'=>$vals['name'],
+				'parent_id'=>$vals['parent_id']
+			);
 			$thisCat = '';
 			$catName = $info['name'];
 			$thisCat.=$catName;
 			$parent = $info['parent_id'];
 			while ($parent>0) {
-				$info = dbRow(
-					'select name,parent_id from products_categories where id='.$parent
+				$vals=ProductCategory::getInstance($parent)->vals;
+				$info=array(
+					'name'=>$vals['name'],
+					'parent_id'=>$vals['parent_id']
 				);
 				$parentName = $info['name'];
 				$thisCat = $parentName.'>'.$thisCat;
@@ -746,12 +752,10 @@ function Products_adminImportDataFromAmazon() {
 			mkdir(USERBASE.'/f/products/product-images', 0777, true);
 		}
 		$pdata->images_directory='/products/product-images/'
-			.md5(rand().microtime());
-		mkdir(USERBASE.'/f'.$pdata->images_directory);
-		dbQuery(
-			'update products set images_directory="'.$pdata->images_directory
-			.'",date_edited=now() where id='.$pid
-		);
+			.(int)($pid/1000).'/'.$pid;
+		mkdir(USERBASE.'/f'.$pdata->images_directory, 0755, true);
+		Product::getInstance($pid)
+			->set('images_directory', $pdata->images_directory);
 	}
 	$image_exists=0;
 	$dir=new DirectoryIterator(USERBASE.'/f'.$pdata->images_directory);
@@ -804,10 +808,7 @@ function Products_adminImportDataFromAmazon() {
 					'v'=>$description
 				);
 			}
-			dbQuery(
-				'update products set data_fields="'.addslashes(json_encode($meta))
-				.'",date_edited=now() where id='.$pid
-			);
+			Product::getInstance($pid)->set('data_fields', json_encode($meta));
 		}
 		// }
 		// { image
@@ -917,7 +918,9 @@ function Products_adminProductDelete() {
 	dbQuery('delete from products_categories_products where product_id='.$pid);
 	dbQuery('delete from products_relations where from_id='.$pid.' or to_id='.$pid);
 	dbQuery('delete from products_reviews where product_id='.$pid);
-	Core_cacheClear();
+	Core_cacheClear(
+		'products,products_categories_products,products_relations,products_reviews'
+	);
 	return array('ok'=>1);
 }
 
@@ -938,11 +941,9 @@ function Products_adminProductsDisable() {
 	foreach ($ids_to_check as $id) {
 		$ids[]=(int)$id;
 	}
-	dbQuery(
-		'update products set date_edited=now(),enabled=0 where id in ('
-		.join(', ', $ids).')'
-	);
-	Core_cacheClear();
+	foreach ($ids as $id) {
+		Product::getInstance($id, false, true)->set('enabled', 0);
+	}
 	return array('ok'=>1);
 }
 
@@ -997,11 +998,9 @@ function Products_adminProductsEnable() {
 	foreach ($ids_to_check as $id) {
 		$ids[]=(int)$id;
 	}
-	dbQuery(
-		'update products set date_edited=now(),enabled=1 where id in ('
-		.join(', ', $ids).')'
-	);
-	Core_cacheClear();
+	foreach ($ids as $id) {
+		Product::getInstance($id, false, true)->set('enabled', 1);
+	}
 	return array('ok'=>1);
 }
 
@@ -1020,10 +1019,7 @@ function Products_adminProductEditVal() {
 	if ($name=='id') {
 		return array('error'=>'field not allowed');
 	}
-	dbQuery(
-		'update products set '.$name.'="'.addslashes($value).'",date_edited=now()'
-		.' where id='.$id
-	);
+	Product::getInstance($id, false, true)->set($name, $value);
 	if ($name=='enabled') {
 		if ($value=='0') {
 			dbQuery(
@@ -1576,11 +1572,10 @@ function Products_adminUserGroupsGet() {
 // }
 function Products_adminCategoryFullName() {
 	function getParentName($id) {
-		$r=dbRow('select parent_id,name from products_categories where id='.$id);
-		if ($r['parent_id']) {
-			return getParentName($r['parent_id']).'/'.$r['name'];
-		}
-		return $r['name'];
+		$cat=ProductCategory::getInstance($id);
+		return $cat->vals['parent_id']
+			?getParentName($cat->vals['parent_id']).'/'.$cat->vals['name']
+			:$cat->vals['name'];
 	}
 	return getParentName((int)$_REQUEST['id']);
 }

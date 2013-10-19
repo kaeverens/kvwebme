@@ -567,10 +567,9 @@ function Products_typeGet() {
 	$r=Core_cacheLoad('products', 'productTypeDetails_'.$id, -1);
 	if ($r===-1) {
 		$r=dbRow("select * from products_types where id=$id");
-		$r['default_category_name']=dbOne(
-			'select name from products_categories where id='.$r['default_category'],
-			'name'
-		);
+		$r['default_category_name']=ProductCategory::getInstance(
+			$r['default_category']
+		)->vals['name'];
 		$r['data_fields']=json_decode($r['data_fields']);
 		Core_cacheSave('products', 'productTypeDetails_'.$id, $r);
 	}

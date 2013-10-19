@@ -395,3 +395,8 @@ if ($version==51) { // add fulltext search to products
 	dbQuery('alter table products add fulltext(name, data_fields)');
 	$version=52;
 }
+if ($version==52) { // add index to "link"
+	dbQuery('alter table products change link link varchar(300)');
+	dbQuery('alter table products add index link(link)');
+	$version=53;
+}
