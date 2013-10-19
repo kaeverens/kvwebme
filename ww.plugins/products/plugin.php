@@ -1513,7 +1513,7 @@ class ProductsCategoriesProducts{
 			);
 			$arr=array();
 			foreach ($rs as $r) {
-				$arr[]=(int)$r['category_id'];
+				$arr[]=(int)$r['product_id'];
 			}
 			self::$prodsByCid[$cid]=$arr;
 		}
@@ -1528,7 +1528,7 @@ class ProductsCategoriesProducts{
 			);
 			$arr=array();
 			foreach ($rs as $r) {
-				$arr[]=(int)$r['category_id'];
+				$arr[]=(int)$r['product_id'];
 			}
 			self::$prodsByCids[$cid]=$arr;
 		}
