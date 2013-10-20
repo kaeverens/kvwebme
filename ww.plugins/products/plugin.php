@@ -1520,7 +1520,8 @@ class ProductsCategoriesProducts{
 		return self::$prodsByCid[$cid];
 	}
 	function getByCategoryIds($cids) {
-		if (!isset(self::$prodsByCids[$cids])) {
+		$idx=join(',', $cids);
+		if (!isset(self::$prodsByCids[$idx])) {
 			$rs=dbAll(
 				'select product_id from products_categories_products'
 				.' where category_id in ('.join(',', $cids).')',
@@ -1530,9 +1531,9 @@ class ProductsCategoriesProducts{
 			foreach ($rs as $r) {
 				$arr[]=(int)$r['product_id'];
 			}
-			self::$prodsByCids[$cids]=$arr;
+			self::$prodsByCids[$idx]=$arr;
 		}
-		return self::$prodsByCids[$cids];
+		return self::$prodsByCids[$idx];
 	}
 	function delete($cid, $pid) {
 		dbQuery(
