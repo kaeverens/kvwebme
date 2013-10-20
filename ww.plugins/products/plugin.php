@@ -1530,9 +1530,9 @@ class ProductsCategoriesProducts{
 			foreach ($rs as $r) {
 				$arr[]=(int)$r['product_id'];
 			}
-			self::$prodsByCids[$cid]=$arr;
+			self::$prodsByCids[$cids]=$arr;
 		}
-		return self::$prodsByCids[$cid];
+		return self::$prodsByCids[$cids];
 	}
 	function delete($cid, $pid) {
 		dbQuery(
