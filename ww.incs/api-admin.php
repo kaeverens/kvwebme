@@ -1418,8 +1418,8 @@ function Core_adminPageMove() {
 		$pid=(int)$order[$i];
 		dbQuery("update pages set ord=$i where id=$pid");
 	}
-	Core_cacheClear();
 	dbQuery('update page_summaries set rss=""');
+	Core_cacheClear('pages,page_summaries');
 	return array('ok'=>1);
 }
 

@@ -162,11 +162,11 @@ function Products_adminCategoryEdit() {
 	}
 	$sql.=' where id='.$_REQUEST['id'];
 	dbQuery($sql);
-	Core_cacheClear('products');
+	Core_cacheClear('products_categories');
 	$pageid=dbOne(
 		'select page_id from page_vars where name="products_category_to_show" '
 		.'and value='.$_REQUEST['id'],
-		'page_id'
+		'page_id', 'page_vars'
 	);
 	if ($pageid) {
 		dbQuery('update pages set special = special|2 where id='.$pageid);
