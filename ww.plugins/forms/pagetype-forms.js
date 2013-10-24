@@ -558,29 +558,31 @@ function Forms_Pagetype_forms() {
 	)
 		.appendTo($content)
 		.tabs({
-			'select':updateValues,
-			'show':function(e, ui) {
+			'beforeActivate':updateValues,
+			'active':-1,
+			'activate':function(e, ui) {
 				$('#product-types-edit-form>div').empty();
-				activeTab=ui.index;
-				switch (ui.index) {
+				activeTab=+ui.newPanel.selector.replace(/[^0-9]*/, '');
+				switch (activeTab) {
 					case 0: // { main
-						return showMain(ui.panel);
+						return showMain(ui.newPanel);
 						// }
 					case 1: // { form fields
-						return showFormFields(ui.panel);
+						return showFormFields(ui.newPanel);
 						// }
 					case 2: // { header
-						return showHeaderFooter(ui.panel);
+						return showHeaderFooter(ui.newPanel);
 						// }
 					case 3: // { template
-						return showTemplate(ui.panel);
+						return showTemplate(ui.newPanel);
 						// }
 					case 4: // { advanced
-						return showAdvanced(ui.panel);
+						return showAdvanced(ui.newPanel);
 						// }
 				}
 			}
 		});
+	$('a[href="#t0"]').click();
 	// }
 	// { make sure autogrow is loaded
 	var $t=$('<textarea/>');

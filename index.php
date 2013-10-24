@@ -23,8 +23,8 @@
 function WW_getCSS() {
 	global $DBVARS;
 	return '<link href="'.(isset($DBVARS['cdn'])?'//'.$DBVARS['cdn']:'')
-		.'/css/'.join('|', $GLOBALS['css_urls']).'"'
-		.' rel="stylesheet" type="text.css"/>';
+		.'/css'.join('|', $GLOBALS['css_urls']).'"'
+		.' rel="stylesheet" type="text/css"/>';
 }
 
 // }

@@ -5,7 +5,6 @@
 .tier-two{clear:left}
 .fg-menu-container .ui-corner-all{
 	border-radius:0;
-	-moz-border-radius:0;
 }
 .fg-menu-container a.ui-state-hover{
 	background:transparent;
