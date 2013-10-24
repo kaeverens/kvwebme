@@ -44,18 +44,20 @@ WW_addScript('/j/jquery-ui-timepicker-addon.js');
 WW_addScript('/j/jquery.uploadify/jquery.uploadify.js');
 WW_addScript('/j/uploader.js');
 WW_addScript('/j/lang.js');
-WW_addScript('/j/CodeMirror-2.24/lib/codemirror.js');
-WW_addScript('/j/CodeMirror-2.24/mode/css/css.js');
-WW_addScript('/j/CodeMirror-2.24/mode/javascript/javascript.js');
-WW_addScript('/j/CodeMirror-2.24/mode/xml/xml.js');
-WW_addScript('/j/CodeMirror-2.24/mode/smarty/smarty.js');
-WW_addScript('/j/CodeMirror-2.24/mode/htmlmixed/htmlmixed.js');
+WW_addScript('//cdn.jsdelivr.net/codemirror/3.14.0/codemirror.js');
+WW_addScript('//cdn.jsdelivr.net/codemirror/3.14.0/mode/css/css.js');
+WW_addScript(
+	'//cdn.jsdelivr.net/codemirror/3.14.0/mode/javascript/javascript.js'
+);
+WW_addScript('//cdn.jsdelivr.net/codemirror/3.14.0/mode/xml/xml.js');
+WW_addScript('//cdn.jsdelivr.net/codemirror/3.14.0/mode/smarty/smarty.js');
+WW_addScript('//cdn.jsdelivr.net/codemirror/3.14.0/mode/htmlmixed/htmlmixed.js');
 // }
 // { css
 WW_addCSS('/j/cluetip/jquery.cluetip.css');
 WW_addCSS('/j/jquery.saorfm/jquery.saorfm.css');
 WW_addCSS('/ww.admin/theme/admin.css');
-WW_addCSS('/j/CodeMirror-2.24/lib/codemirror.css');
+WW_addCSS('//cdn.jsdelivr.net/codemirror/3.14.0/codemirror.css');
 // }
 // { datatables
 WW_addScript(
