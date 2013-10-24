@@ -14,7 +14,7 @@
 require_once '../ww.incs/basics.php';
 $files=array(
 	'menus.css',
-	'ui.datepicker.css',
+#	'ui.datepicker.css',
 	'forms.css',
 	'contextmenu.css',
 	'misc.css'
@@ -75,6 +75,7 @@ if ($css_code==false) {
 			);
 		}
 	}
+	$css_code=str_replace('}', "}\n", str_replace("\n", ' ', $css_code));
 	Core_cacheSave('c', 'css-'.$name, $css_code);
 }
 
