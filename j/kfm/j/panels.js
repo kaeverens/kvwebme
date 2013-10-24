@@ -252,7 +252,8 @@ function kfm_createPanel(title,id,subels,vars){
 		panelEl,
 		{
 			state:0,height:0,panel_title:title,abilities:0,visible:1,order:99,
-			addCloseButton:function(){if(this.abilities&1)this.addButton('removePanel','','x',kfm.lang.Close)},
+			addCloseButton:function(){//noinspection JSBitwiseOperatorUsage
+                if(this.abilities&1)this.addButton('removePanel','','x',kfm.lang.Close)},
 			addMaxButton:function(){this.addButton('maximisePanel','','M',kfm.lang.Maximise)},
 			addMinButton:function(){this.addButton('minimisePanel','','_',kfm.lang.Minimise)},
 			addMoveDownButton:function(){if(this.id!=this.parentNode.panels[this.parentNode.panels.length-1])this.addButton('movePanel',',1','d',kfm.lang.MoveDown)},

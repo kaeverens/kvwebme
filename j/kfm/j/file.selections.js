@@ -109,7 +109,9 @@ function kfm_shiftFileSelectionUD(dir){
 	var na=document.getElementById('documents_body').fileids,a=0,ns=na.length,icons_per_line=0,topOffset=document.getElementById('kfm_file_icon_'+na[0]).offsetTop;
 	if(selectedFiles.length){
 		if(topOffset==document.getElementById('kfm_file_icon_'+na[ns-1]).offsetTop)return; // only one line of icons
-		for(;document.getElementById('kfm_file_icon_'+na[icons_per_line]).offsetTop==topOffset;++icons_per_line);
+		for(;document.getElementById('kfm_file_icon_'+na[icons_per_line]).offsetTop==topOffset;++icons_per_line){
+
+        }
 		for(;a<ns;++a)if(na[a]==selectedFiles[0])break; // what is the selected file
 		a+=icons_per_line*dir;
 		if(a>=ns)a=ns-1;

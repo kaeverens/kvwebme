@@ -510,31 +510,7 @@ function Core_quit($str='') {
 	* @return null
 	*/
 function Core_shutdown() {
-	global $_language_notfound;
 	return;
-	if (!count($_language_notfound)) {
-		return;
-	}
-	foreach ($_language_notfound as $l) {
-		$where=' where lang="'.addslashes($l[2]).'" and context="'
-			.addslashes($l[1]).'" and str="'.addslashes($l[0]).'"';
-		$requests=(int)dbOne(
-			'select requests from languages_notfound'.$where,
-			'requests'
-		);
-		if ($requests) {
-			dbQuery(
-				'update languages_notfound set requests='.($requests+1).$where
-			);
-		}
-		else {
-			dbQuery(
-				'insert into languages_notfound set requests=1,lang="'
-				.addslashes($l[2]).'",context="'.addslashes($l[1]).'",str="'
-				.addslashes($l[0]).'"'
-			);
-		}
-	}
 }
 
 // }

@@ -152,8 +152,7 @@ var MP3={
 		var seconds=parseInt(Math.round(time%60));
 		if(isNaN(minutes)||isNaN(seconds))
 			return '00:00';
-		var result=(minutes<10?"0"+minutes:minutes)+':'+(seconds<10?'0'+seconds:seconds);
-		return result;
+		return (minutes<10?"0"+minutes:minutes)+':'+(seconds<10?'0'+seconds:seconds);
 	}
 };
 $(function(){

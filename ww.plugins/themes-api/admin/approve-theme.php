@@ -70,5 +70,4 @@ send_mail(
 	false
 );
 
-die( 'ok' );
-?>
+die('ok');

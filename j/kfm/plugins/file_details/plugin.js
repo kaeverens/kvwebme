@@ -1,5 +1,5 @@
 function plugin_file_details(){
-	this.name='file_details',
+	this.name='file_details';
 	this.title="file details";
 	this.mode=2;
 	this.writable=2;

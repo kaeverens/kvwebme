@@ -1,5 +1,5 @@
 <?php
-function kfm_lang($str,$v1='',$v2='',$v3=''){
+function kfm_lang($str, $v1='', $v2='', $v3=''){
 	if(!isset($GLOBALS['kfm_langStrings'])){
 		include KFM_BASE_PATH.'lang/'.$GLOBALS['kfm_language'].'.php';
 		$GLOBAL['kfm_langStrings']=$GLOBALS['kfm_langStrings'];

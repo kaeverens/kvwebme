@@ -2,7 +2,7 @@
 /**
  * @package php-font-lib
  * @link    http://php-font-lib.googlecode.com/
- * @author  Fabien Ménager <fabien.menager@gmail.com>
+ * @author  Fabien Mï¿½nager <fabien.menager@gmail.com>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  * @version $Id: font_table_post.cls.php 40 2012-01-22 21:48:41Z fabien.menager $
  */
@@ -90,53 +90,5 @@ class Font_Table_post extends Font_Table {
     
     return $length;
     
-    $subset = $font->getSubset();
-    
-    switch($data["format"]) {
-      case 1:
-        // nothing to do
-      break;
-      
-      case 2:
-        $old_names = $data["names"];
-        
-        $glyphNameIndex = range(0, count($subset));
-        
-        $names = array();
-        foreach($subset as $gid) {
-          $names[] = $data["names"][$data["glyphNameIndex"][$gid]];
-        }
-    
-        $numberOfGlyphs = count($names);
-        $length += $font->writeUInt16($numberOfGlyphs);
-        
-        foreach($glyphNameIndex as $gni) {
-          $length += $font->writeUInt16($gni);
-        }
-        
-        //$names = array_slice($names, 257);
-        foreach($names as $name) {
-          var_dump($name);
-          $len = strlen($name);
-          $length += $font->writeUInt8($len);
-          $length += $font->write($name, $len);
-        }
-        
-      break;
-      
-      case 2.5:
-        // TODO
-      break;
-      
-      case 3:
-        // nothing
-      break;
-      
-      case 4:
-        // TODO
-      break;
-    }
-    
-    return $length;
   }
 }

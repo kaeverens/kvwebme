@@ -20,7 +20,8 @@
   *
   * @return HTML of either the form
   */
-function RecommendThisSite_send($page, $vars) {
+function RecommendThisSite_send(/** @noinspection PhpUnusedParameterInspection */
+    $page, $vars) {
 	$yname=$_REQUEST['rts_yname'];
 	$yemail=$_REQUEST['rts_yemail'];
 	$fname=$_REQUEST['rts_fname'];

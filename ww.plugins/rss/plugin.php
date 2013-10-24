@@ -31,7 +31,7 @@ $plugin=array(
 	*/
 function RSS_getFeedURLs($vars=null) {
 	if (!isset($GLOBALS['PLUGIN_TRIGGERS']['building-rss-links'])) {
-		return;
+		return '';
 	}
 	$calls=$GLOBALS['PLUGIN_TRIGGERS']['building-rss-links'];
 	$feeds='';

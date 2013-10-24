@@ -70,7 +70,6 @@ function getcontents($type, $status, $name, $mobile) {
 		if ($FIELD['dis_pend']==1) {
 			$f.='<th>Status</th>';
 		}
-		return $f;
 	}
 	elseif ($type=='columns') {
 		if ($FIELD['col_name']==1) {
@@ -82,8 +81,8 @@ function getcontents($type, $status, $name, $mobile) {
 		if ($FIELD['dis_pend']==1) {
 			$f.='<td id="status">'.htmlspecialchars($status).'</td>';
 		}
-		return $f;
 	}
+    return $f;
 }
 
 if ($FIELD['dis_pend']==1) {

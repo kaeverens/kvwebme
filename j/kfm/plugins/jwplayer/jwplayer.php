@@ -13,7 +13,7 @@ print $kfm->doctype;
 <html>
 <head>
 <title>JW FLV MEDIA PLAYER</title>
-<script type="text/javascript" src="swfobject.js"></script>
+<script type="text/javascript" src="/j/swfobject.js"></script>
 </head>
 <body>
 <div id="media_container"><div id="flashreplace"></div></div>

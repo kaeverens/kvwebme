@@ -110,4 +110,3 @@ class eBaySession
 		return $headers;
 	}
 }
-?>

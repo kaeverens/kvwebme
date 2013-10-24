@@ -83,4 +83,3 @@ move_uploaded_file(
 );
 
 echo $last_id;
-?>

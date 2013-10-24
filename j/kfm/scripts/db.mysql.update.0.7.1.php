@@ -9,4 +9,3 @@
 	)');
 
 	$kfmdb->query("update parameters set value='0.7.1' where name='version'");
-?>

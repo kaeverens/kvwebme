@@ -1,13 +1,13 @@
 function plugin_image_resize_multiple(){
-	this.name='image_resize',
-	this.title='Resize Images',
+	this.name='image_resize';
+	this.title='Resize Images';
 	this.mode=1;//single files
 	this.writable=1;//writable files
 	this.category='edit';
 	this.extensions=['jpg','png','gif'];
 	this.doFunction=function(files){
 		var id=files[0];
-		var imgs=0,width=0;height=0,imgfiles=[];
+		var imgs=0, width= 0, height=0, imgfiles=[];
 		{ // figure out average width/height
 			for(var i=0;i<files.length;++i){
 				var data=File_getInstance(files[i]);

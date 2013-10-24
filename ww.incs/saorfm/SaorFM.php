@@ -40,12 +40,14 @@ class SaorFM{
 		$config=dirname(__FILE__).'/config.php';
 		if (!file_exists($config)) {
 			// config.php file does not exist.
-			return $this->initErrors='{"error":1}';
+			$this->initErrors='{"error":1}';
+            return;
 		}
 		require $config;
 		if (!isset($SaorFM_config)) {
 			// $SaorFM_config array missing from config.php file.
-			return $this->initErrors='{"error":2}';
+			$this->initErrors='{"error":2}';
+            return;
 		}
 		// }
 		// { set up private variable $_config
@@ -55,14 +57,16 @@ class SaorFM{
 		else {
 			$this->_config=json_decode($SaorFM_config);
 			if (!is_object($this->_config)) {
-				return $this->initErrors='{"error":11}';
+				$this->initErrors='{"error":11}';
+                return;
 			}
 		}
 		// }
 		// { check the files_directory exists
 		if (!is_dir($this->_config->user_files_directory)) {
 			// files directory does not exist
-			return $this->initErrors='{"error":20}';
+			$this->initErrors='{"error":20}';
+            return;
 		}
 		// }
 		if (!defined('SAORFM_CORE')) {
@@ -295,7 +299,8 @@ class SaorFM{
 	  *
 	  * @return string JSON object
 	  */
-	public function error($error,$params=array()) {
+	public function error($error, /** @noinspection PhpUnusedParameterInspection */
+                          $params=array()) {
 		if ($this->_config->json_errors==true) {
 			return $error;
 		}

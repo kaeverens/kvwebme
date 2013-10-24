@@ -127,7 +127,6 @@ class Image_Cache {
         // Unknown image type
         else {
           throw new DOMPDF_Image_Exception("Image type unknown");
-          unlink($resolved_url);
         }
       }
     }

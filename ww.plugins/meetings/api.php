@@ -68,11 +68,11 @@ function Meetings_formsGet() {
 /**
 	* submit a form
 	*
-	* @return array
+	* @return null
 	*/
 function Meetings_formSubmit() {
 	if (!isset($_SESSION['userdata'])) {
-		return false;
+		return;
 	}
 	$id=(int)$_REQUEST['id'];
 	$values=$_REQUEST['values'];
@@ -80,6 +80,7 @@ function Meetings_formSubmit() {
 		'update meetings set form_values="'
 		.addslashes($values).'" where id='.$id
 	);
+    Core_cacheClear('meetings');
 }
 
 // }
@@ -88,14 +89,15 @@ function Meetings_formSubmit() {
 /**
 	* mark a meeting as complete
 	*
-	* @return array
+	* @return null
 	*/
 function Meetings_complete() {
 	if (!isset($_SESSION['userdata'])) {
-		return false;
+		return;
 	}
 	$id=(int)$_REQUEST['id'];
 	dbQuery('update meetings set is_complete=1 where id='.$id);
+    Core_cacheClear('meetings');
 }
 
 // }

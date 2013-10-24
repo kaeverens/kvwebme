@@ -134,4 +134,5 @@ function FaceBook_widgetShow($vars=null) {
 			.'" scrolling="no" frameborder="0"'
 			.' style="border:none;width:'.$w.'px;height:'.$h.'px"></iframe>';
 	}
+    return '';
 }

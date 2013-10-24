@@ -23,7 +23,7 @@
 	* @param array  $products  array of product IDS to show
 	* @param string $direction the orientation of the table
 	*
-	* @return string HTML of the table
+	* @return string
 	*/
 function Product_datatableMultiple ($products, $direction) {
 	$headers=array();
@@ -121,7 +121,7 @@ function Product_datatableMultiple ($products, $direction) {
 				}
 			}
 			$html.='</tr></tfoot></table>';
-		return $html; // }
+		break; // }
 		case 'vertical': // {
 			$html='<table class="product-vertical">';
 			foreach ($headers as $n=>$d) {
@@ -132,8 +132,9 @@ function Product_datatableMultiple ($products, $direction) {
 				$html.='</tr>';
 			}
 			$html.='</table>';
-		return $html; // }
+		break; // }
 	}
+    return $html;
 }
 
 // }

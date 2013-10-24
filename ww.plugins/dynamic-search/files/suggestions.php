@@ -31,5 +31,3 @@ while ($row=mysql_fetch_assoc($query)) {
 	echo '<li><a href="javascript:dynamic_suggestions(\''.$row['search'].'\')">'
 		.$row['search'].'</a></li>';
 }
-
-?>

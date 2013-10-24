@@ -101,7 +101,7 @@ function __($str, $param1='core', $param2=null) {
 	}
 	// { load from cache or database
 	$sql='select lang,trstr from languages where lang in ("'.join('","', $_languages).'") and context="'.$context.'" and str="'.addslashes($str).'"';
-	$rs=dbAll($rs, 'lang', 'languages');
+	$rs=dbAll($sql, 'lang', 'languages');
 	// }
 	// { find the best-fit translation
 	if ($rs && count($rs)) {

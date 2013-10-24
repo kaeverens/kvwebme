@@ -43,7 +43,7 @@ $c.='<input type="hidden" name="page_vars[image_gallery_directory]" value="';
 $c.=$vars['image_gallery_directory'].'"/>';
 // }
 // { uploader
-WW_addScript('image-gallery/files/swfobject.js');
+WW_addScript('/j/swfobject.js');
 $c.='<div id="upload">'
 	.'<input type="file" name="file_upload" id="uploader"/>'
 	.'</div>';

@@ -290,9 +290,9 @@
 
   $.fn.mColorPicker.colorShow = function (id) {
 
-    var $e = $("#icp_" + id);
+    var $e = $("#icp_" + id),
         pos = $e.offset(),
-        $i = $("#" + id);
+        $i = $("#" + id),
         hex = $i.attr('data-hex') || $i.attr('hex'),
         pickerTop = pos.top + $e.outerHeight(),
         pickerLeft = pos.left,

@@ -53,8 +53,10 @@ function Products_arrayToCSV(
 	* @return null
 	*/
 function Products_categoriesOptionsGet() {
-	$selected=$_REQUEST['selected'];
-	$rs=dbAll('select id,name from products_categories where enabled order by name');
+	$rs=dbAll(
+        'select id,name from products_categories where enabled order by name',
+        false, 'product_categories'
+    );
 	$arr=array(' -- none -- ');
 	foreach ($rs as $r) {
 		$arr[' '.$r['id']]=$r['name'];

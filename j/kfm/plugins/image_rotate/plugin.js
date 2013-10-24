@@ -1,11 +1,13 @@
 function plugin_image_rotate(){
-	this.name='rotate',
-	this.title='rotate',
+	this.name='rotate';
+	this.title='rotate';
 	this.mode=0;//single files
 	this.writable=1;//writable files
 	this.category="edit";
 	this.extensions=['jpg','png','gif'];
-	this.doFunction=function(){}
+	this.doFunction=function(){
+
+    }
 }
 kfm_addHook(new plugin_image_rotate(),{name:'rotate_cw',title:"rotate clockwise",doFunction:function(files){
 		kfm_rotateImage(files[0],270);

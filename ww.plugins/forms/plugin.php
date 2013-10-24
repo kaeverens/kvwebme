@@ -43,7 +43,8 @@ $plugin=array(
   */
 function Form_adminPageForm($page, $vars) {
 	$edit=$GLOBALS['is_an_update'];
-	$id=$page['id'];
+    /** @noinspection PhpUnusedLocalVariableInspection */
+    $id=$page['id'];
 	$c='';
 	if ($edit) {
 		require SCRIPTBASE.'ww.plugins/forms/admin/save.php';

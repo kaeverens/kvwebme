@@ -20,18 +20,15 @@
 	*/
 function Aggregator_show($vars) {
 	if (!is_array($vars) && isset($vars->id) && $vars->id) {
-		$data=Core_cacheLoad('messaging_notifier', 'id'.$vars->id);
-		if ($data===false) {
-			$data=dbOne(
-				'select data from messaging_notifier where id='.$vars->id,
-				'data'
-			);
-			Core_cacheSave('messaging_notifier', 'id'.$vars->id, $data);
-		}
+		$data=dbOne(
+			'select data from messaging_notifier where id='.$vars->id,
+			'data', 'messaging_notifier'
+		);
 		if ($data) {
 			return Aggregator_parse(json_decode($data), $vars);
 		}
 	}
+    return '';
 }
 
 /**

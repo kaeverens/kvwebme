@@ -21,7 +21,8 @@
 	*
 	* @return int number in stock
 	*/
-function Products_amountInStock2($params, $smarty) {
+function Products_amountInStock2(/** @noinspection PhpUnusedParameterInspection */
+    $params, $smarty) {
 	$pid=$smarty->smarty->tpl_vars['product']->value->id;
 	$product=Product::getInstance($pid);
 	return (int)$product->vals['stockcontrol_total'];

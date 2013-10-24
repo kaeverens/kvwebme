@@ -94,5 +94,3 @@ foreach ($approved as $theme) {
 }
 
 echo '</table>';
-
-?>

@@ -796,7 +796,6 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
                 return $this->smarty->$property_name = $args[0];
             } else {
                 throw new SmartyException("property '$property_name' does not exist.");
-                return false;
             }
         }
         if ($name == 'Smarty') {

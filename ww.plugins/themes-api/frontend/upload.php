@@ -26,7 +26,7 @@ $homepage = @$homepage[ 'Homepage (URL):' ];
 /**
  * add scripts to cache
  */
-WW_addScript('themes-api/files/swfobject.js');
+WW_addScript('/j/swfobject.js');
 WW_addScript('themes-api/files/uploadify.jquery.min.js');
 WW_addScript('/j/validate.jquery.min.js');
 WW_addScript('/j/ckeditor-'.CKEDITOR_VERSION.'/ckeditor.js');

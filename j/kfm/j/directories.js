@@ -184,7 +184,7 @@ function kfm_dir_closeNode(dir){
 }
 function kfm_refreshDirectories(res){
 	kfm.directory_attributes=[];
-	var d,p,t;
+	var d, p, t, n;
 	if(res.toString()===res)return;
 	d=res.parent;
 	if(d==kfm_vars.root_folder_id){ // root node
@@ -202,7 +202,8 @@ function kfm_refreshDirectories(res){
 		}
 		document.getElementById('kfm_directory_icon_'+kfm_vars.root_folder_id).parentNode.className+=' kfm_directory_open';
 	}
-	t=document.createElement('table'),n='kfm_dir_node_'+d;
+	t=document.createElement('table');
+    n='kfm_dir_node_'+d;
 	t.style.tableLayout='fixed';
 	dirwrapper=document.getElementById('kfm_directories_subdirs_'+d);
 	dirwrapper.innerHTML='';

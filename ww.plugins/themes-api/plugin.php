@@ -74,7 +74,7 @@ function ThemesApi_admin() {
 	*
 	* @param array $vars list of parameters
 	*
-	* @return html
+	* @return boolean
 	*/
 function ThemesApi_filesCheck( $vars ) {
 	/**
@@ -108,12 +108,13 @@ function ThemesApi_filesCheck( $vars ) {
 		'insert into themes_downloads values("",' . $id . ',"'
 		. $referrer . '","' . $ip . '",now())'
 	);
+    return false;
 }
 
 /**
 	* is this necessary??
 	*
-	* @return html
+	* @return null
 	*/
 function ThemesApi_catalogueAdmin() {
 	echo '<h1>'.__('Themes Repository').'</h1>';

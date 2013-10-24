@@ -190,7 +190,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 					.'" class="email'.$class.' text"'.$help.'/>'.$verify;
 			break; // }
 			case 'file': // {
-				WW_addScript('forms/j/swfobject.js');
+				WW_addScript('/j/swfobject.js');
 				WW_addScript('forms/j/uploadify.jquery.min.js');
 				WW_addCSS('/ww.plugins/forms/j/uploadify.css');
 				$opts=isset($r2['extra'])?explode(':', $r2['extra']):array();

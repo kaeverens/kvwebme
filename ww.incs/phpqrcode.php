@@ -546,7 +546,6 @@ class QRcode{
 	public function encodeString8bit($string, $version, $level) {
 		if (string == NULL) {
 			throw new Exception('empty string!');
-			return NULL;
 		}
 
 		$input = new QRinput($version, $level);
@@ -580,7 +579,6 @@ class QRcode{
 
 		if ($hint != QR_MODE_8 && $hint != QR_MODE_KANJI) {
 			throw new Exception('bad hint');
-			return NULL;
 		}
 
 		$input = new QRinput($version, $level);
@@ -948,7 +946,6 @@ class QRinputItem{
 			throw new Exception(
 				'Error m:'.$mode.',s:'.$size.',d:'.join(',', $setData)
 			);
-			return null;
 		}
 
 		$this->mode = $mode;
@@ -1278,7 +1275,6 @@ class QRinput{
 			|| $level > QR_ECLEVEL_H
 		) {
 			throw new Exception('Invalid version no');
-			return NULL;
 		}
 
 		$this->_version = $version;
@@ -1304,7 +1300,6 @@ class QRinput{
 	public function setVersion($version) {
 		if ($version < 0 || $version > 40) {
 			throw new Exception('Invalid version no');
-			return -1;
 		}
 
 		$this->_version = $version;
@@ -1331,7 +1326,6 @@ class QRinput{
 	public function setErrorCorrectionLevel($level) {
 		if ($level > QR_ECLEVEL_H) {
 			throw new Exception('Invalid ECLEVEL');
-			return -1;
 		}
 
 		$this->_level = $level;
@@ -1736,7 +1730,6 @@ class QRinput{
 			$ver = QRspec::getMinimumVersion((int)(($bits + 7) / 8), $this->_level);
 			if ($ver < 0) {
 				throw new Exception('WRONG VERSION');
-				return -1;
 			}
 			else if ($ver > $this->getVersion()) {
 				$this->setVersion($ver);
@@ -2396,7 +2389,6 @@ class QRrawcode{
 		$ret = $this->init($spec);
 		if ($ret < 0) {
 			throw new Exception('block alloc error');
-			return null;
 		}
 
 		$this->count = 0;

@@ -73,15 +73,15 @@ function Panels_adminVisibilityGet() {
 	* @param int   $id     already selected page
 	* @param int   $prefix something or other
 	*
-	* @return html
+	* @return string
 	*/
 function Panels_selectChildPages($i=0, $n=1, $s=array(), $id=0, $prefix='') {
 	$q=dbAll(
 		'select name,id from pages where parent="'.$i.'" and id!="'.$id
-		.'" order by ord,name'
+		.'" order by ord,name', false, 'pages'
 	);
 	if (count($q)<1) {
-		return;
+		return '';
 	}
 	$html='';
 	foreach ($q as $r) {

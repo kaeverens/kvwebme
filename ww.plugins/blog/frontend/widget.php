@@ -41,8 +41,10 @@ function Blog_widget2($vars=null) {
 		$page=PAGE::getInstanceByType('blog');
 		$links_prefix=$page->getRelativeURL();
 	}
-	$excerpt_length=100;
-	$nobottomlinks=true;
+    /** @noinspection PhpUnusedLocalVariableInspection */
+    $excerpt_length=100;
+    /** @noinspection PhpUnusedLocalVariableInspection */
+    $nobottomlinks=true;
 	if (!isset($vars->widgetType)) {
 		$vars->widgetType='0';
 	}
@@ -52,10 +54,12 @@ function Blog_widget2($vars=null) {
 		break; // }
 		default: // {
 			if (isset($vars->imageSizeX) && $vars->imageSizeX) {
-				$excerptImageSizeX=(int)$vars->imageSizeX;
+                /** @noinspection PhpUnusedLocalVariableInspection */
+                $excerptImageSizeX=(int)$vars->imageSizeX;
 			}
 			if (isset($vars->imageSizeY) && $vars->imageSizeY) {
-				$excerptImageSizeY=(int)$vars->imageSizeY;
+                /** @noinspection PhpUnusedLocalVariableInspection */
+                $excerptImageSizeY=(int)$vars->imageSizeY;
 			}
 			require dirname(__FILE__).'/excerpts.php';
 		break; //}

@@ -51,8 +51,7 @@ class Minify_Controller_Version1 extends Minify_Controller_Base {
         ) {
             return $options;
         }
-        $extension = $m[1];
-        
+
         $files = explode(',', $_GET['files']);
         if (count($files) > MINIFY_MAX_FILES) {
             return $options;
@@ -63,7 +62,6 @@ class Minify_Controller_Version1 extends Minify_Controller_Base {
             . DIRECTORY_SEPARATOR;
         $prependAbsPaths = $_SERVER['DOCUMENT_ROOT'];
         
-        $sources = array();
         $goodFiles = array();
         $hasBadSource = false;
         

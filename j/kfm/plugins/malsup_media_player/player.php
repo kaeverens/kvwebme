@@ -6,7 +6,7 @@ header("content-type:text/html;charset=utf-8");
 echo '<html><head>
 				<script type="text/javascript" src="../../j/jquery/jquery-1.2.2.pack.js"></script>
 				<script type="text/javascript" src="jquery.media.js"></script>
-				<script type="text/javascript" src="swfobject.js"></script>
+				<script type="text/javascript" src="/j/swfobject.js"></script>
 				<script type="text/javascript">$(function() { $("a.media").media({autoplay:true}); });
 </script>
 			</head><body>';

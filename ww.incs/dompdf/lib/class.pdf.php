@@ -11,7 +11,7 @@
  * @author  Helmut Tischer <htischer@weihenstephan.org>
  * @author  Ryan H. Masten <ryan.masten@gmail.com>
  * @author  Brian Sweeney <eclecticgeek@gmail.com>
- * @author  Fabien Ménager <fabien.menager@gmail.com>
+ * @author  Fabien Mï¿½nager <fabien.menager@gmail.com>
  * @version $Id: class.pdf.php 469 2012-02-05 22:25:30Z fabien.menager $
  * @license Public Domain http://creativecommons.org/licenses/publicdomain/
  * @package Cpdf
@@ -2138,10 +2138,6 @@ EOT;
             break;
 
           case  'KPX':
-            break; // don't include them as they are not used yet
-            //KPX Adieresis yacute -40
-            $bits = explode(' ', trim($row));
-            $data['KPX'][$bits[1]][$bits[2]] = $bits[3];
             break;
           }
         }
@@ -3314,9 +3310,6 @@ EOT;
    */
   function PRVTcheckTextDirective(&$text, $i, &$f) {
     return  0;
-    $x =  0;
-    $y =  0;
-    return  $this->PRVTcheckTextDirective1($text, $i, $f, 0, $x, $y);
   }
 
   /**
@@ -3330,178 +3323,6 @@ EOT;
    */
   function PRVTcheckTextDirective1(&$text, $i, &$f, $final, &$x, &$y, $size =  0, $angle =  0, $wordSpaceAdjust =  0) {
     return  0;
-    $directive =  0;
-    $j =  $i;
-    if  ($text[$j] === '<') {
-      $j++;
-      switch ($text[$j]) {
-      case  '/':
-        $j++;
-        if  (mb_strlen($text) <=  $j) {
-          return  $directive;
-        }
-
-        switch ($text[$j]) {
-        case  'b':
-        case  'i':
-          $j++;
-          if  ($text[$j] === '>') {
-            $p =  mb_strrpos($this->currentTextState, $text[$j-1]);
-
-            if  ($p !==  false) {
-              // then there is one to remove
-              $this->currentTextState =  mb_substr($this->currentTextState, 0, $p) .substr($this->currentTextState, $p+1);
-            }
-
-            $directive =  $j-$i+1;
-          }
-          break;
-
-        case  'c':
-          // this this might be a callback function
-          $j++;
-          $k =  mb_strpos($text, '>', $j);
-
-          if  ($k !==  false &&  $text[$j] === ':') {
-            // then this will be treated as a callback directive
-            $directive =  $k-$i+1;
-            $f =  0;
-            // split the remainder on colons to get the function name and the paramater
-            $tmp =  mb_substr($text, $j+1, $k-$j-1);
-            $b1 =  mb_strpos($tmp, ':');
-
-            if  ($b1 !==  false) {
-              $func =  mb_substr($tmp, 0, $b1);
-              $parm =  mb_substr($tmp, $b1+1);
-            } else {
-              $func =  $tmp;
-              $parm =  '';
-            }
-
-            if  (!isset($func) ||  !mb_strlen(trim($func), '8bit')) {
-              $directive =  0;
-            } else {
-              // only call the function if this is the final call
-              if  ($final) {
-                // need to assess the text position, calculate the text width to this point
-                // can use getTextWidth to find the text width I think
-                $tmp =  $this->PRVTgetTextPosition($x, $y, $angle, $size, $wordSpaceAdjust, mb_substr($text, 0, $i));
-
-                $info =  array('x' => $tmp[0], 'y' => $tmp[1], 'angle' => $angle, 'status' => 'end', 'p' => $parm, 'nCallback' => $this->nCallback);
-                $x =  $tmp[0];
-                $y =  $tmp[1];
-                $ret =  $this->$func($info);
-
-                if  (is_array($ret)) {
-                  // then the return from the callback function could set the position, to start with, later will do font colour, and font
-                  foreach($ret as  $rk => $rv) {
-                    switch ($rk) {
-                    case  'x':
-                    case  'y':
-                      $$rk =  $rv;
-                      break;
-                    }
-                  }
-                }
-
-                // also remove from to the stack
-                // for simplicity, just take from the end, fix this another day
-                $this->nCallback--;
-                if  ($this->nCallback<0) {
-                  $this->nCallBack =  0;
-                }
-              }
-            }
-          }
-          break;
-        }
-        break;
-
-      case  'b':
-      case  'i':
-        $j++;
-        if  ($text[$j] === '>') {
-          $this->currentTextState.=  $text[$j-1];
-          $directive =  $j-$i+1;
-        }
-        break;
-
-      case  'C':
-        $noClose =  1;
-      case  'c':
-        // this this might be a callback function
-        $j++;
-        $k =  mb_strpos($text, '>', $j);
-
-        if  ($k !==  false &&  $text[$j] ===  ':') {
-          // then this will be treated as a callback directive
-          $directive =  $k-$i+1;
-
-          $f =  0;
-
-          // split the remainder on colons to get the function name and the paramater
-          //          $bits = explode(':',substr($text,$j+1,$k-$j-1));
-          $tmp =  mb_substr($text, $j+1, $k-$j-1);
-          $b1 =  mb_strpos($tmp, ':');
-
-          if  ($b1 !==  false) {
-            $func =  mb_substr($tmp, 0, $b1);
-            $parm =  mb_substr($tmp, $b1+1);
-          } else {
-            $func =  $tmp;
-            $parm =  '';
-          }
-
-          if  (!isset($func) ||  !mb_strlen(trim($func), '8bit')) {
-            $directive =  0;
-          } else {
-            // only call the function if this is the final call, ie, the one actually doing printing, not measurement
-            if  ($final) {
-              // need to assess the text position, calculate the text width to this point
-              // can use getTextWidth to find the text width I think
-              // also add the text height and descender
-              $tmp =  $this->PRVTgetTextPosition($x, $y, $angle, $size, $wordSpaceAdjust, mb_substr($text, 0, $i));
-
-              $info =  array(
-                'x' => $tmp[0],
-                'y' => $tmp[1],
-                'angle' => $angle,
-                'status' => 'start',
-                'p' => $parm,
-                'f' => $func,
-                'height' => $this->getFontHeight($size),
-                'descender' => $this->getFontDescender($size)
-              );
-              $x =  $tmp[0];
-              $y =  $tmp[1];
-
-              if  (!isset($noClose) ||  !$noClose) {
-                // only add to the stack if this is a small 'c', therefore is a start-stop pair
-                $this->nCallback++;
-                $info['nCallback'] =  $this->nCallback;
-                $this->callback[$this->nCallback] =  $info;
-              }
-
-              $ret =  $this->$func($info);
-              if  (is_array($ret)) {
-                // then the return from the callback function could set the position, to start with, later will do font colour, and font
-                foreach($ret as  $rk => $rv) {
-                  switch ($rk) {
-                  case  'x':
-                  case  'y':
-                    $$rk =  $rv;
-                    break;
-                  }
-                }
-              }
-            }
-          }
-        }
-        break;
-      }
-    }
-
-    return  $directive;
   }
   
   /**

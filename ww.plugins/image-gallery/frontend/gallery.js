@@ -928,11 +928,10 @@ var Gallery={
 		var caption=Gallery.caption_in_slider
 			?file.caption
 			:'';
-		var html='<a href="'+(file.media=='image'?file.url:file.href)+'" id="'
+		return '<a href="'+(file.media=='image'?file.url:file.href)+'" id="'
 			+Gallery.position+'"'+popup+style+'>'
 			+'<span class="image"><img src="'+ww.cdn+file.url+'/w='+xy[0]+'/h='+xy[1]+'"/></span>'
 			+'<span class="caption">'+caption+'</span></a>';
-		return html;
 	},
 	resetTimeout:function() { // resets the slideshow timeout
 		clearTimeout(Gallery.t);

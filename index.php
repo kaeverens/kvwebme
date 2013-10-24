@@ -39,6 +39,7 @@ function WW_getInlineScripts() {
 	if (count($GLOBALS['scripts_inline'])) {
 		return '<script>'.join('', $GLOBALS['scripts_inline']).'</script>';
 	}
+    return '';
 }
 
 // }

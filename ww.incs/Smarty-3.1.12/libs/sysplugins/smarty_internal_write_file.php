@@ -42,7 +42,6 @@ class Smarty_Internal_Write_File {
         if (!file_put_contents($_tmp_file, $_contents)) {
             error_reporting($_error_reporting);
             throw new SmartyException("unable to write file {$_tmp_file}");
-            return false;
         }
         
         /*
@@ -71,7 +70,6 @@ class Smarty_Internal_Write_File {
         if (!$success) {
             error_reporting($_error_reporting);
             throw new SmartyException("unable to write file {$_filepath}");
-            return false;
         }
 
         if ($smarty->_file_perms !== null) {

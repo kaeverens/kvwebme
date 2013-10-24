@@ -63,4 +63,3 @@ echo '</select></td>
 
 echo '<input type="submit" value="Back" class="back-link"/>'
 . '<input type="submit" value="Next" class="next-link" style="float:right"/>';
-?>

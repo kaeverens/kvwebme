@@ -274,7 +274,7 @@ if (!window.CanvasRenderingContext2D) {
     this.lineWidth = 1;
     this.lineJoin = "miter";
     this.lineCap = "butt";
-    this.miterLimit = Z * 1;
+    this.miterLimit = Z;
     this.globalAlpha = 1;
     this.canvas = surfaceElement;
 
