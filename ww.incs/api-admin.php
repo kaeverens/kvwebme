@@ -794,7 +794,7 @@ function Core_adminMenuSetMineAsDefault() {
 	* @return menu
 	*/
 function Core_adminMenuClearAll() {
-	AdminVars->deleteByAdminId('admin_menu');
+	AdminVars::deleteByAdminId('admin_menu');
 	return array('{"ok":1}');
 }
 
@@ -820,7 +820,7 @@ function Core_adminMenuClearAllAdmins() {
 	* @return menu
 	*/
 function Core_adminMenuClearMine() {
-	AdminVars->delete('admin_menu');
+	AdminVars::delete('admin_menu');
 	return array('{"ok":1}');
 }
 
