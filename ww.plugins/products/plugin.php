@@ -1076,16 +1076,18 @@ class Products{
 				}
 			}
 			$rs=ProductsCategoriesProducts::getByCategoryIds($cats);
-			$sql='select id from products'
-				.' where id in ('.join(',', $rs).') and enabled';
-			if ($search!='') {
-				$str=str_replace(' ', '%', $search);
-				$sql.=' and (name like "%'.addslashes($str)
-					.'%" or data_fields like "%'.addslashes($str).'%")';
-			}
-			$rs=dbAll($sql, false, 'products');
-			foreach ($rs as $r) {
-				$product_ids[]=$r['id'];
+			if (count($rs)) {
+				$sql='select id from products'
+					.' where id in ('.join(',', $rs).') and enabled';
+				if ($search!='') {
+					$str=str_replace(' ', '%', $search);
+					$sql.=' and (name like "%'.addslashes($str)
+						.'%" or data_fields like "%'.addslashes($str).'%")';
+				}
+				$rs=dbAll($sql, false, 'products');
+				foreach ($rs as $r) {
+					$product_ids[]=$r['id'];
+				}
 			}
 			new Products($product_ids, $md5, $search, $search_arr);
 			$pcs=Core_cacheLoad(
