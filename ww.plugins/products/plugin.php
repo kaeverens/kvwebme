@@ -3369,11 +3369,7 @@ function Products_importFile($vars=false) {
 	* @return status
 	*/
 function Products_importFromCron() {
-	$vars=(object)dbAll(
-		'select varname,varvalue from admin_vars'
-		.' where varname like "productsImport%"',
-		'varname'
-	);
+	$vars=(object)AdminVars::getAllStartsWith('productsImport');
 	return Products_importFile($vars);
 }
 

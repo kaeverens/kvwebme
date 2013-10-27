@@ -532,11 +532,7 @@ function Products_adminExport() {
 	*/
 function Products_adminImportFile() {
 	// { get import vals
-	$vars=(object)dbAll(
-		'select varname,varvalue from admin_vars where admin_id='
-		.$_SESSION['userdata']['id'].' and varname like "productsImport%"',
-		'varname'
-	);
+	$vars=(object)AdminVars::getAllStartsWith('productsImport');
 	return Products_importFile($vars);
 }
 
@@ -551,11 +547,7 @@ function Products_adminImportFile() {
 	* @return status
 	*/
 function Products_adminImportFileUpload() {
-	$vars=(object)dbAll(
-		'select varname,varvalue from admin_vars where admin_id='
-		.$_SESSION['userdata']['id'].' and varname like "productsImport%"',
-		'varname'
-	);
+	$vars=(object)AdminVars::getAllStartsWith('productsImport');
 	if (!@$vars->productsImportFileUrl['varvalue']) {
 		$vars->productsImportFileUrl=array(
 			'varvalue'=>'ww.cache/products/import.csv'

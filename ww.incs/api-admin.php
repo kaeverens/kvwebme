@@ -24,15 +24,7 @@ function Core_adminAdminVarsSave() {
 	if ($name=='') {
 		return array('error'=>__('Missing name'));
 	}
-	dbQuery(
-		'delete from admin_vars where admin_id='.$_SESSION['userdata']['id']
-		.' and varname="'.addslashes($name).'"'
-	);
-	dbQuery(
-		'insert into admin_vars set admin_id='.$_SESSION['userdata']['id']
-		.',varname="'.addslashes($name).'",varvalue="'.addslashes($val).'"'
-	);
-	Core_cacheClear('admin');
+	AdminVars::set($name, $val);
 	return array('ok'=>1);
 }
 
@@ -670,21 +662,13 @@ function Core_adminLocationsEdit() {
 function Core_adminMenusGet() {
 	$menus=Core_cacheLoad('admin', 'menus-'.$_SESSION['userdata']['id']);
 	if (!$menus) {
-		$menus=dbOne(
-			'select varvalue from admin_vars where admin_id='
-			.$_SESSION['userdata']['id'].' and varname="admin_menu"',
-			'varvalue'
-		);
+		$menus=AdminVars::get('admin_menu');
 		if ($menus) {
 			$menus=json_decode($menus);
 		}
 		else {
 			$menus=Core_adminMenusGetDefault();
-			dbQuery(
-				'insert into admin_vars set admin_id='.$_SESSION['userdata']['id']
-				.', varname="admin_menu", varvalue="'
-				.addslashes(json_encode($menus)).'"'
-			);
+			AdminVars::set('admin_menu', json_encode($menus));
 		}
 		Core_cacheSave('admin', 'menus-'.$_SESSION['userdata']['id'], $menus);
 	}
@@ -702,11 +686,7 @@ function Core_adminMenusGet() {
 function Core_adminMenusGetDefault() {
 	$menus=Core_cacheLoad('admin', 'menus-0');
 	if (!$menus) {
-		$menus=dbOne(
-			'select varvalue from admin_vars where admin_id=0'
-			.' and varname="admin_menu"',
-			'varvalue'
-		);
+		$menus=AdminVars::getByAdminId('admin_menu', 0);
 		if ($menus) {
 			$menus=json_decode($menus);
 		}
@@ -780,11 +760,7 @@ function Core_adminMenusGetDefault() {
 				.'\'modal,width=800,height=640\')'
 			);
 			// }
-			dbQuery(
-				'insert into admin_vars set admin_id=0'
-				.', varname="admin_menu", varvalue="'
-				.addslashes(json_encode($menus)).'"'
-			);
+			AdminVars::set('admin_menu', json_encode($menus));
 		}
 		Core_cacheSave('admin', 'menus-0', $menus);
 	}
@@ -800,20 +776,12 @@ function Core_adminMenusGetDefault() {
 	* @return menu
 	*/
 function Core_adminMenuSetMineAsDefault() {
-	$menus=dbOne(
-		'select varvalue from admin_vars where admin_id='
-		.$_SESSION['userdata']['id'].' and varname="admin_menu"',
-		'varvalue'
-	);
+	$menus=AdminVars::get('admin_menu');
 	if (!$menus) {
 		return array('{"error":"admin does not have a custom menu"}');
 	}
-	dbQuery('delete from admin_vars where admin_id=0 and varname="admin_menu"');
-	dbQuery(
-		'insert into admin_vars set admin_id=0,varname="admin_menu"'
-		.',varvalue="'.addslashes($menus).'"'
-	);
-	Core_cacheClear('admin');
+	AdminVars::deleteByAdminId('admin_menu', 0);
+	AdminVars::setByAdminId('admin_menu', $menus, 0);
 	return array('{"ok":1}');
 }
 
@@ -826,10 +794,7 @@ function Core_adminMenuSetMineAsDefault() {
 	* @return menu
 	*/
 function Core_adminMenuClearAll() {
-	dbQuery(
-		'delete from admin_vars where varname="admin_menu"'
-	);
-	Core_cacheClear('admin');
+	AdminVars->deleteByAdminId('admin_menu');
 	return array('{"ok":1}');
 }
 
@@ -842,10 +807,7 @@ function Core_adminMenuClearAll() {
 	* @return menu
 	*/
 function Core_adminMenuClearAllAdmins() {
-	dbQuery(
-		'delete from admin_vars where admin_id and varname="admin_menu"'
-	);
-	Core_cacheClear('admin');
+	AdminVars::deleteByAdminId('admin_menu', -1);
 	return array('{"ok":1}');
 }
 
@@ -858,11 +820,7 @@ function Core_adminMenuClearAllAdmins() {
 	* @return menu
 	*/
 function Core_adminMenuClearMine() {
-	dbQuery(
-		'delete from admin_vars where admin_id='.$_SESSION['userdata']['id']
-		.' and varname="admin_menu"'
-	);
-	Core_cacheClear('admin');
+	AdminVars->delete('admin_menu');
 	return array('{"ok":1}');
 }
 
@@ -882,14 +840,11 @@ function Core_adminMenusAdd($name, $link) {
 		.'":{"_link":"'.$link.'"}}'
 		.str_repeat('}', substr_count($name, '>'));
 	$newlink=json_decode($json, true);
-	$rs=dbAll('select * from admin_vars where varname="admin_menu"');
+	$rs=AdminVars::getAll('admin_menu');
 	foreach ($rs as $r) {
 		$menus=json_decode($r['varvalue'], true);
 		$menus=array_merge_recursive($menus, $newlink);
-		$sql='update admin_vars set varvalue="'
-			.addslashes(json_encode($menus))
-			.'" where admin_id='.$r['admin_id'].' and varname="admin_menu"';
-		dbQuery($sql);
+		AdminVars::set('admin_menu', json_encode($menus), $r['admin_id']);
 	}
 }
 
@@ -906,14 +861,11 @@ function Core_adminMenusAdd($name, $link) {
 function Core_adminMenusRemove($path) {
 	$bits=explode('>', $path);
 	$name=array_shift($bits);
-	$rs=dbAll('select * from admin_vars where varname="admin_menu"');
+	$rs=AdminVars::getAll('admin_menu');
 	foreach ($rs as $r) {
 		$menus=json_decode($r['varvalue'], true);
 		$menus=Core_adminMenusRemoveRecurse($menus, $bits, $name);
-		$sql='update admin_vars set varvalue="'
-			.addslashes(json_encode($menus))
-			.'" where admin_id='.$r['admin_id'].' and varname="admin_menu"';
-		dbQuery($sql);
+		AdminVars::setByAdminId('admin_menu', json_encode($menus), $r['admin_id']);
 	}
 }
 

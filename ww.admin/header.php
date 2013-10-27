@@ -22,7 +22,6 @@ if (!Core_isAdmin()) {
 }
 // }
 require SCRIPTBASE . 'ww.admin/admin_libs.php';
-$admin_vars=array();
 // { common variables
 foreach (array('action','resize') as $v) {
 	$$v=@$_REQUEST[$v];

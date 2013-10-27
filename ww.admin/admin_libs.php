@@ -199,9 +199,7 @@ function WW_getScripts() {
 	// { set up inline scripts
 	// { set up admin vars
 	$adminVars=(object)null;
-	$rs=dbAll(
-		'select * from admin_vars where admin_id='.((int)$_SESSION['userdata']['id'])
-	);
+	$rs=AdminVars::getAll();
 	if ($rs) {
 		foreach ($rs as $r) {
 			$adminVars->{$r['varname']}=$r['varvalue'];
