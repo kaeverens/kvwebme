@@ -272,11 +272,7 @@ $(function(){
 						if (userdata.id) {
 							content.text('logged in as '+userdata.name);
 							setTimeout(function() {
-								$('#online-store-checkout-accordion-wrapper').accordion(
-									'option',
-									'active',
-									'h2[panel="Billing Address"]'
-								);
+								$('h2[panel="Billing Address"] a').click();
 							}, 500);
 							return;
 						}
@@ -451,11 +447,7 @@ $(function(){
 							}
 						});
 						content.find('.user-guest button').click(function() {
-							$('#online-store-checkout-accordion-wrapper').accordion(
-								'option',
-								'active',
-								'h2[panel="Billing Address"]'
-							);
+							$('h2[panel="Billing Address"] a').click();
 						});
 					break; // }
 					case 'Billing Address': // {
@@ -519,11 +511,7 @@ $(function(){
 						);
 						$('#online-store-billing .next').click(function() {
 							if (checkBillingAddress()) {
-								$accordion.accordion(
-									'option',
-									'active',
-									'h2[panel="Delivery Address"]'
-								);
+								$('h2[panel="Delivery Address"] a').click();
 							}
 						});
 						$('#online-store-billing .address-picker').click(addressPicker);
@@ -650,20 +638,12 @@ $(function(){
 								// TODO: tranlation needed
 								var next=$('h2[panel="Delivery Options"]').length
 									?'Delivery Options':'Payment';
-								$accordion.accordion(
-									'option',
-									'active',
-									'h2[panel="'+next+'"]'
-								);
+								$('h2[panel="'+next+'"] a').click();
 							}
 						});
 						if (!checkBillingAddress()) {
 							setTimeout(function() {
-								$accordion.accordion(
-									'option',
-									'active',
-									'h2[panel="Billing Address"]'
-								);
+								$('h2[panel="Billing Address"] a').click();
 							}, 500);
 						}
 					break; // }
@@ -690,21 +670,11 @@ $(function(){
 							}
 						);
 						$('#online-store-pandp button').click(function() {
-							$accordion.accordion(
-								// TODO: translation needed
-								'option',
-								'active',
-								'h2[panel="Payment"]'
-							);
+							$('h2[panel="Payment"] a').click();
 						});
 						if (!checkBillingAddress()) {
 							setTimeout(function() {
-								$accordion.accordion(
-									// TODO: translation needed
-									'option',
-									'active',
-									'h2[panel="Billing Address"]'
-								);
+								$('h2[panel="Billing Address"]').click();
 							}, 500);
 						}
 					break; // }
@@ -751,11 +721,7 @@ $(function(){
 						);
 						if (!checkBillingAddress()) {
 							setTimeout(function() {
-								$accordion.accordion(
-									'option',
-									'active',
-									'h2[panel="Billing Address"]'
-								);
+								$('h2[panel="Billing Address"] a').click();
 							}, 500);
 						}
 					break; // }
