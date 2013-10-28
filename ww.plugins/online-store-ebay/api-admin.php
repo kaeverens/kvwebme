@@ -71,7 +71,7 @@ function OnlineStoreEbay_adminLinkEbayCat() {
 	dbQuery('update products_categories set ebay_id='.$ebay_id.' where id='.$id);
 	Core_cacheClear('products_categories');
 }
-function OnlineStoreEbay_adminPublish() {
+function OnlineStoreEbay_sessionStart() {
 	require_once 'eBaySession.php';
 	$rs=dbAll('select * from online_store_vars where name like "ebay%"');
 	$vs=array();
@@ -99,6 +99,10 @@ function OnlineStoreEbay_adminPublish() {
 		$userToken, $devID, $appID, $certID, $serverUrl,
 		$compatabilityLevel, $siteToUseID, 'AddItem'
 	);
+	return array($sess, $vs);
+}
+function OnlineStoreEbay_adminPublish() {
+	list($sess, $vs)=OnlineStoreEbay_sessionStart();
 	$price=(float)$_REQUEST['buy_now_price'];
 	$bidsStartPrice=(float)$_REQUEST['bids_start_at'];
 	$countryFrom=$vs['ebay_country_from'];
@@ -216,34 +220,7 @@ function OnlineStoreEbay_adminLinkProductToEbay() {
 	));
 }
 function OnlineStoreEbay_adminListShipping() {
-	require_once 'eBaySession.php';
-	error_reporting(E_ALL);
-	$rs=dbAll('select * from online_store_vars where name like "ebay%"');
-	$vs=array();
-	foreach ($rs as $r) {
-		$vs[$r['name']]=$r['val'];
-	}
-	$production=(int)$vs['ebay_status'];
-	if ($production) {
-		$devID=$vs['ebay_devid'];
-		$appID=$vs['ebay_appid'];
-		$certID=$vs['ebay_certid'];
-		$serverUrl = 'https://api.ebay.com/ws/api.dll';	  // server URL different for prod and sandbox
-		$userToken=$vs['ebay_usertoken'];
-	}
-	else {  
-		$devID=$vs['ebay_sandbox_devid'];
-		$appID=$vs['ebay_sandbox_appid'];
-		$certID=$vs['ebay_sandbox_certid'];
-		$serverUrl='https://api.sandbox.ebay.com/ws/api.dll';
-		$userToken=$vs['ebay_sandbox_usertoken'];
-	}
-	$compatabilityLevel=823;	// eBay API version
-	$siteToUseID=205;
-	$sess=new eBaySession(
-		$userToken, $devID, $appID, $certID, $serverUrl,
-		$compatabilityLevel, $siteToUseID, 'AddItem'
-	);
+	list($sess, $vs)=OnlineStoreEbay_sessionStart();
 	$xml='<?xml version="1.0" encoding="utf-8"?>'."\n"
 		.'<GeteBayDetailsRequest xmlns="urn:ebay:apis:eBLBaseComponents">'
 		.'<ErrorLanguage>en_US</ErrorLanguage><WarningLevel>High</WarningLevel>'
