@@ -191,8 +191,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 			break; // }
 			case 'file': // {
 				WW_addScript('/j/swfobject.js');
-				WW_addScript('forms/j/uploadify.jquery.min.js');
-				WW_addCSS('/ww.plugins/forms/j/uploadify.css');
+				WW_addScript('/j/jquery.uploadify/jquery.uploadify.min.js');
 				$opts=isset($r2['extra'])?explode(':', $r2['extra']):array();
 				if (!isset($opts[0])||!isset($opts[1])) {
 					$opts=array(
@@ -204,7 +203,7 @@ function Form_showForm($page, $vars, $errors, $form_fields) {
 				$script='
 				$(function(){
 					$("#'.$name.'").uploadify({
-						"uploader":"/ww.plugins/forms/j/uploadify.swf",
+						"uploader":"/j/jquery.uploadify/uploadify.swf",
 						"script":"/ww.plugins/forms/frontend/file-upload.php",
 						"cancelImg":"/ww.plugins/forms/j/cancel.png",
 						"multi":'.$multi.',

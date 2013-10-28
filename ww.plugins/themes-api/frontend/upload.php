@@ -27,11 +27,10 @@ $homepage = @$homepage[ 'Homepage (URL):' ];
  * add scripts to cache
  */
 WW_addScript('/j/swfobject.js');
-WW_addScript('themes-api/files/uploadify.jquery.min.js');
+WW_addScript('/j/jquery.uploadify/jquery.uploadify.min.js');
 WW_addScript('/j/validate.jquery.min.js');
 WW_addScript('/j/ckeditor-'.CKEDITOR_VERSION.'/ckeditor.js');
 WW_addScript('/j/ckeditor-'.CKEDITOR_VERSION.'/adapters/jquery.js');
-WW_addCSS('/ww.plugins/themes-api/files/uploadify.css');
 WW_addCSS('/ww.css/forms.css');
 WW_addCSS('/ww.plugins/themes-api/files/jquery-ui-1.8.12.custom.css');
 
@@ -42,7 +41,7 @@ $script='function displayTags(tags){var html="";for(var i in tags)html+="<s'
 	.'").attr("value").split(",");var new_tags=[];for(var i in tags){if(tags['
 	.'i]!=tag)new_tags.push(tags[i]);}displayTags(new_tags);$("#hidden-tags")'
 	.'.val(new_tags.join(","));});$("#theme-upload").uploadify({"uploader":"/'
-	.'ww.plugins/themes-api/files/uploadify.swf","script":"/ww.plugins/themes'
+	.'j/jquery.uploadify/uploadify.swf","script":"/ww.plugins/themes'
 	.'-api/frontend/theme-upload.php","cancelling":"/ww.plugins/themes-api/fi'
 	.'les/cancel.png","auto":false,"removeCompleted":false,"multi":false,"met'
 	.'hod":"post","fileDataName":"theme-zip","buttonText":"'
