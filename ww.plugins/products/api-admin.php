@@ -156,6 +156,7 @@ function Products_adminCategoryEdit() {
 	) {
 		Core_quit();
 	}
+	$id=(int)$_REQUEST['id'];
 	$sql='update products_categories set name="'.addslashes($_REQUEST['name']).'"'
 		.', enabled="'.((int)$_REQUEST['enabled']).'"'
 		.', thumbsize_w='.(int)$_REQUEST['thumbsize_w']
@@ -163,18 +164,19 @@ function Products_adminCategoryEdit() {
 	if (isset($_REQUEST['associated_colour']) && strlen($_REQUEST['associated_colour'])==6) {
 		$sql.=', associated_colour="'.addslashes($_REQUEST['associated_colour']).'"';
 	}
-	$sql.=' where id='.$_REQUEST['id'];
+	$sql.=' where id='.$id;
 	dbQuery($sql);
 	Core_cacheClear('products_categories');
 	$pageid=dbOne(
 		'select page_id from page_vars where name="products_category_to_show" '
-		.'and value='.$_REQUEST['id'],
+		.'and value='.$id,
 		'page_id', 'page_vars'
 	);
 	if ($pageid) {
 		dbQuery('update pages set special = special|2 where id='.$pageid);
+		Core_cacheClear('pages');
 	}
-	$data=Products_adminCategoryGetFromID($_REQUEST['id']);
+	$data=Products_adminCategoryGetFromID($id);
 	return $data;
 }
 
@@ -798,12 +800,11 @@ function Products_adminPageDelete() {
 	$pid=(int)$_REQUEST['pid'];
 	$pageID=dbOne(
 		'select page_id from page_vars where name= "products_product_to_show" '
-		.'and value='.$pid.' limit 1', 
-		'page_id'
+		.'and value='.$pid, 'page_id', 'page_vars'
 	);
 	dbQuery('delete from pages where id='.$pageID);
 	dbQuery('delete from page_vars where page_id='.$pageID);
-	Core_cacheClear();
+	Core_cacheClear('pages,page_vars');
 	return array('ok'=>1);
 }
 

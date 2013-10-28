@@ -742,6 +742,9 @@ function dbLastInsertId() {
   * @return mixed false if it failed, or the requested field if successful
   */
 function dbOne($query, $field='', $cache=false) {
+	if (!preg_match('/ limit 1$/', $query)) {
+		$query.=' limit 1';
+	}
 	if ($cache) {
 		$r=Core_cacheLoad($cache, $query, -1);
 		if ($r===-1) {
@@ -789,6 +792,9 @@ function dbQuery($query) {
   * @return array the returned row
   */
 function dbRow($query, $cache=false) {
+	if (!preg_match('/ limit 1$/', $query)) {
+		$query.=' limit 1';
+	}
 	if ($cache) {
 		$q=Core_cacheLoad($cache, $query, -1);
 		if ($q!=-1) {

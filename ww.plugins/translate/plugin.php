@@ -83,7 +83,7 @@ function Translate_checkCurrentPage($PAGEDATA) {
 	}
 	$trs=dbAll(
 		'select page_id from page_vars where name="translate_page_id" and value='
-		.$page_to_translate
+		.$page_to_translate, false, 'page_vars'
 	);
 	// { try to find a version of the current page in the selected language
 	if ($trs===false || !count($trs)) {

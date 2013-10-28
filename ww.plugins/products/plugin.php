@@ -806,24 +806,15 @@ class ProductCategory{
 		*/
 	function getRelativeUrl() {
 		// { see if there are any pages that use this category
-		$ps1=Core_cacheLoad('products', 'page_for_category_'.$this->vals['id']);
-		if ($ps1===false) {
-			$ps1=dbAll(
-				'select page_id from page_vars where name="products_category_to_show" '
-				.'and value='.$this->vals['id'],
-				'page_id'
-			);
-			Core_cacheSave('products', 'page_for_category_'.$this->vals['id'], $ps1);
-		}
+		$ps1=dbAll(
+			'select page_id from page_vars where name="products_category_to_show"'
+			.' and value='.$this->vals['id'], 'page_id', 'page_vars'
+		);
 		if ($ps1 && count($ps1)) {
-			$pid=Core_cacheLoad('pages,page_vars', 'idIn'.join(', ', array_keys($ps1)), -1);
-			if ($pid==-1) {
-				$sql='select id from pages,page_vars where page_id=pages.id '
-					.'and page_vars.name="products_what_to_show" and page_vars.value=2 '
-					.'and id in ('.join(', ', array_keys($ps1)).')';
-				$pid=dbOne($sql, 'id');
-				Core_cacheSave('pages,page_vars', 'idIn'.join(', ', array_keys($ps1)), $pid);
-			}
+			$sql='select id from pages,page_vars where page_id=pages.id '
+				.'and page_vars.name="products_what_to_show" and page_vars.value=2 '
+				.'and id in ('.join(', ', array_keys($ps1)).')';
+			$pid=dbOne($sql, 'id', 'pages,page_vars');
 			if ($pid) {
 				$page=Page::getInstance($pid);
 				return $page->getRelativeUrl();
