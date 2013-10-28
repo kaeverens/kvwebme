@@ -72,11 +72,15 @@ $c.='</td></tr>';
 // }
 // { category names
 $c.='<tr id="products_what_to_show_2"><th>Which category to show</th><td>';
-$rs=dbAll('select id,name from products_categories order by name');
+$rs=dbAll(
+	'select id,name from products_categories order by name',
+	false, 'products_categories'
+);
 function showCategoriesRecursive($pid, $level, $sid) {
 	$opts=array();
 	$cs=dbAll(
-		'select id,name from products_categories where parent_id='.$pid.' order by name'
+		'select id,name from products_categories where parent_id='.$pid
+		.' order by name', false, 'products_categories'
 	);
 	foreach ($cs as $c) {
 		$opt='<option value="'.$c['id'].'"';

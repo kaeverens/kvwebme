@@ -54,9 +54,9 @@ function Products_arrayToCSV(
 	*/
 function Products_categoriesOptionsGet() {
 	$rs=dbAll(
-        'select id,name from products_categories where enabled order by name',
-        false, 'product_categories'
-    );
+		'select id,name from products_categories where enabled order by name',
+		false, 'products_categories'
+	);
 	$arr=array(' -- none -- ');
 	foreach ($rs as $r) {
 		$arr[' '.$r['id']]=$r['name'];
@@ -83,7 +83,10 @@ function Products_categoriesGetFull() {
 		* @return array
 		*/
 	function getFull($pid, $prefix='') {
-		$rs=dbAll('select name,id from products_categories where parent_id='.$pid);
+		$rs=dbAll(
+			'select name,id from products_categories where parent_id='.$pid,
+			false, 'products_categories'
+		);
 		$cats=array();
 		foreach ($rs as $r) {
 			$cats[$prefix.$r['name']]=$r['id'];

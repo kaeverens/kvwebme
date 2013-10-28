@@ -787,7 +787,7 @@ class ProductCategory{
 			else {
 				$sql.=' and parent_id=0';
 			}
-			$id=dbOne($sql, 'id');
+			$id=dbOne($sql, 'id', 'products_categories');
 			Core_cacheSave('products', $md5, $id);
 		}
 		if (!array_key_exists($id, self::$instances)) {
@@ -864,7 +864,7 @@ class ProductCategory{
 			$ids=array();
 			$rs=dbAll(
 				'select id from products_categories where parent_id='.$this->vals['id']
-				.' and enabled'
+				.' and enabled', false, 'products_categories'
 			);
 			foreach ($rs as $r) {
 				$ids[]=$r['id'];
@@ -1096,7 +1096,7 @@ class Products{
 			if ($pcs===-1) {
 				$pcs=dbAll(
 					'select id,name from products_categories where parent_id='.$id
-					.' and enabled order by name'
+					.' and enabled order by name', false, 'products_categories'
 				);
 				Core_cacheSave(
 					'products', 'productcategoriesenabled_parent_'.$id, $pcs
@@ -1128,7 +1128,7 @@ class Products{
 			$cid=dbOne(
 				'select id from products_categories where parent_id='.$cid
 				.' and name="'.addslashes($name).'" limit 1',
-				'id'
+				'id', 'products_categories'
 			);
 			if (!$cid) {
 				break;
@@ -2833,7 +2833,8 @@ function Products_getSubCategoriesAsMenu($ignore, $page) {
 		$pid=(int)$page;
 	}
 	$cats=dbAll(
-		'select * from products_categories where parent_id='.$pid.' order by name'
+		'select * from products_categories where parent_id='.$pid.' order by name',
+		false, 'products_categories'
 	);
 	$rs=array();
 	foreach ($cats as $cat) {
@@ -2848,7 +2849,7 @@ function Products_getSubCategoriesAsMenu($ignore, $page) {
 		);
 		$subcats=dbOne(
 			'select id from products_categories where parent_id='.$cat->vals['id'],
-			'id'
+			'id', 'products_categories'
 		);
 		if ($subcats) {
 			$arr['classes'].=' ajaxmenu_hasChildren';
@@ -2889,7 +2890,7 @@ function Products_getSubCategoriesAsMenuHtml(
 	}
 	$rs=dbAll(
 		'select id,name from products_categories where parent_id='.$pid
-		.' and enabled'
+		.' and enabled', false, 'products_categories'
 	);
 	if ($rs===false || !count($rs)) {
 		return '';
@@ -3426,7 +3427,7 @@ function Products_listCategories($params, $smarty) {
 	}
 	$cats=dbAll(
 		'select * from products_categories where parent_id='
-		.((int)$parent).' and enabled order by name'
+		.((int)$parent).' and enabled order by name', false, 'products_categories'
 	);
 	$html='<ul class="products-list-categories sc_subcatnames">';
 	foreach ($cats as $cat) {
@@ -3478,7 +3479,8 @@ function Products_listCategoryContents($params, $smarty) {
 function Products_categoriesListSubCats($pid) {
 	$cats=dbAll(
 		'select id,name from products_categories '
-		.'where parent_id='.$pid.' and enabled order by sortNum'
+		.'where parent_id='.$pid.' and enabled order by sortNum',
+		false, 'products_categories'
 	);
 	if (!$cats || !count($cats)) {
 		return '';

@@ -36,6 +36,30 @@ $plugin=array(
 
 // }
 
+class ClassifiedAds {
+	static function get($id, $status=1) {
+		$status=$status?' and status':'';
+		return dbRow(
+			'select * from classifiedads_ad where id='.(int)$id.$status
+			, 'classifiedads_ad'
+		);
+	}
+	static function getByCategories($subcatsRecursive) {
+		return dbAll(
+			'select id, user_id, category_id, title, cost, location, excerpt'
+			.', creation_date'
+			.' from classifiedads_ad'
+			.' where category_id in ('.join(', ', $subcatsRecursive).')'
+			.' and status'
+			.' order by creation_date desc limit 100', false, 'classifiedads_ad'
+		);
+	}
+	static function deleteFromCategory($id) {
+		dbQuery('delete from classifiedads_ad where category_id='.$id);
+		Core_cacheClear('classifiedads_ad');
+	}
+}
+
 // { ClassifiedAds_admin
 
 /**
@@ -96,7 +120,7 @@ function ClassifiedAds_frontend($PAGEDATA) {
 	// }
 	if ($bits && preg_match('/^[0-9]+-.*/', $bits[count($bits)-1])) {
 		$ad_id=(int)preg_replace('/[^0-9].*/', '', $bits[count($bits)-1]);
-		$ad=dbRow('select * from classifiedads_ad where id='.$ad_id.' and status');
+		$ad=ClassifiedAds::get($ad_id);
 		$html.='<div id="classifiedads-single">'
 			.'<h2>'.htmlspecialchars($ad['title']).'</h2>'
 			.'<table id="classifiedads-ad-details"><tr>'
@@ -157,13 +181,7 @@ function ClassifiedAds_frontend($PAGEDATA) {
 		// }
 		// { ads
 		$subcatsRecursive=ClassifiedAds_getCategoryIdsRecursive($cid);
-		$ads=dbAll(
-			'select id, user_id, category_id, title, cost, location, excerpt, creation_date'
-			.' from classifiedads_ad'
-			.' where category_id in ('.join(', ', $subcatsRecursive).')'
-			.' and status'
-			.' order by creation_date desc limit 100'
-		);
+		$ads=ClassifiedAds::getByCategories($subcatsRecursive);
 		$html.='<table id="classifiedads-ads">'
 			.'<thead><tr><th colspan="2">Title</th><th>Location</th><th>Posted</th>'
 			.'<th>Price</th></tr></thead><tbody>';

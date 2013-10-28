@@ -24,7 +24,7 @@
 function Products_adminCategoriesGetJSTree($params=array(), $pid=0) {
 	$sql='select id,name from products_categories where parent_id='.$pid
 		.' order by sortNum, name';
-	$cats=dbAll($sql);
+	$cats=dbAll($sql, false, 'products_categories');
 	$arr=array();
 	foreach ($cats as $cat) {
 		$obj=array(
@@ -61,7 +61,7 @@ function Products_adminCategoriesGetRecursiveList(
 ) {
 	$sql='select id,name from products_categories where parent_id='.$pid
 		.' order by name';
-	$cats=dbAll($sql);
+	$cats=dbAll($sql, false, 'products_categories');
 	$arr=array();
 	foreach ($cats as $cat) {
 		$arr[' '.$cat['id']]=str_repeat(' - ', $level).$cat['name'];
@@ -76,7 +76,10 @@ function Products_adminCategoriesGetRecursiveList(
 // }
 function Products_adminCategoriesGetByParent() {
 	$pid=(int)$_REQUEST['pid'];
-	return dbAll('select id,name from products_categories where parent_id='.$pid.' order by sortNum', '', 'products_categories');
+	return dbAll(
+		'select id,name from products_categories where parent_id='.$pid
+		.' order by sortNum', '', 'products_categories'
+	);
 }
 function Products_adminCategoriesClean() {
 	// { find broken product-category links
@@ -247,6 +250,7 @@ function Products_adminCategoryNew() {
 		.'",enabled=1,parent_id='.$_REQUEST['parent_id']
 	);
 	$id=dbOne('select last_insert_id() as id', 'id');
+	Core_cacheClear('products_categories');
 	$data=Products_adminCategoryGetFromID($id);	
 	return $data;
 }
@@ -274,7 +278,8 @@ function Products_adminCategoryMove() {
 		$rs=dbAll(
 			'select id from products_categories where parent_id='.$pid
 			.' and id!='.$cid
-			.' order by sortNum'
+			.' order by sortNum',
+			false, 'products_categories'
 		);
 		$index=(int)$_REQUEST['index'];
 		for ($i=0;$i<count($rs);++$i) {

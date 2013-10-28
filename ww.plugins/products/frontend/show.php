@@ -200,8 +200,9 @@ function Products_listCategories2($params, $smarty) {
 		$parent=0;
 	}
 	$cats=dbAll(
-		'select * from products_categories where parent_id='
-		.((int)$parent).' and enabled order by name'
+		'select * from products_categories where parent_id='.(int)$parent
+		.' and enabled order by name',
+		false, 'products_categories'
 	);
 	$html='<ul class="products-list-categories sc_subcatnames">';
 	foreach ($cats as $cat) {
@@ -791,7 +792,7 @@ class Products{
 			$cid=dbOne(
 				'select id from products_categories where parent_id='.$cid
 				.' and name="'.addslashes($name).'" limit 1',
-				'id'
+				'id', 'products_categories'
 			);
 			if (!$cid) {
 				break;

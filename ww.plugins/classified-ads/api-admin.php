@@ -20,8 +20,7 @@
 	*/
 function ClassifiedAds_adminCategoryDelete() {
 	$id=(int)$_REQUEST['id'];
-	dbQuery('delete from classifiedads_ad where category_id='.$id);
-	dbQuery('delete from classifiedads_categories where id='.$id);
+	ClassifiedAds::deleteFromCategory($id);
 	return array('ok'=>1);
 }
 
@@ -209,7 +208,7 @@ function ClassifiedAds_adminAdsGetDT() {
 	*/
 function ClassifiedAds_adminAdGet() {
 	$id=(int)$_REQUEST['id'];
-	return dbRow('select * from classifiedads_ad where id='.$id);
+	return ClassifiedAds::get($id, true);
 }
 
 // }
