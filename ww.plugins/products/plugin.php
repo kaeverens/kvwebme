@@ -1549,8 +1549,9 @@ class ProductsCategoriesProducts{
 			}
 			return;
 		}
+		$id=(int)$id;
 		dbQuery(
-			'delete from products_categories_products where product_id='.(int)$id
+			'delete from products_categories_products where product_id='.$id
 		);
 		self::clearCache();
 	}
@@ -2319,7 +2320,6 @@ function Products_categoriesRecount($pids=array()) {
 	}
 	foreach ($ids as $pid) {
 		$r=count(ProductsCategoriesProducts::getByProductId($pid));
-		$changes++;
 		dbQuery(
 			'update products set num_of_categories='.$r
 			.' where id='.$pid

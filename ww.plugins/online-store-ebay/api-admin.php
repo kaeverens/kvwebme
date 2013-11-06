@@ -99,10 +99,10 @@ function OnlineStoreEbay_sessionStart() {
 		$userToken, $devID, $appID, $certID, $serverUrl,
 		$compatabilityLevel, $siteToUseID, 'AddItem'
 	);
-	return array($sess, $vs);
+	return array($sess, $vs, $userToken);
 }
 function OnlineStoreEbay_adminPublish() {
-	list($sess, $vs)=OnlineStoreEbay_sessionStart();
+	list($sess, $vs, $userToken)=OnlineStoreEbay_sessionStart();
 	$price=(float)$_REQUEST['buy_now_price'];
 	$bidsStartPrice=(float)$_REQUEST['bids_start_at'];
 	$countryFrom=$vs['ebay_country_from'];
@@ -174,7 +174,7 @@ function OnlineStoreEbay_adminPublish() {
 		.'<Quantity>'.$howMany.'</Quantity>'
 		// { refunds and returns
 		.'<ReturnPolicy><ReturnsAcceptedOption>ReturnsAccepted</ReturnsAcceptedOption>'
-		.'<ReturnsWithinOption>Days_30</ReturnsWithinOption>'
+		.'<ReturnsWithinOption>Days_14</ReturnsWithinOption>'
 		.'<Description>'.htmlspecialchars($returnsPolicy).'</Description>'
 		.'<ShippingCostPaidByOption>Buyer</ShippingCostPaidByOption>'
 		.'</ReturnPolicy>'
@@ -220,7 +220,7 @@ function OnlineStoreEbay_adminLinkProductToEbay() {
 	));
 }
 function OnlineStoreEbay_adminListShipping() {
-	list($sess, $vs)=OnlineStoreEbay_sessionStart();
+	list($sess, $vs, $userToken)=OnlineStoreEbay_sessionStart();
 	$xml='<?xml version="1.0" encoding="utf-8"?>'."\n"
 		.'<GeteBayDetailsRequest xmlns="urn:ebay:apis:eBLBaseComponents">'
 		.'<ErrorLanguage>en_US</ErrorLanguage><WarningLevel>High</WarningLevel>'
@@ -401,6 +401,7 @@ function OnlineStoreEbay_adminImportOrders() {
 		$id=dbLastInsertId();
 		// }
 		dbQuery('update online_store_orders set invoice_num=id where id='.$id);
+		Core_cacheClear('online_store_orders');
 		OnlineStore_updateProductSales($id, $items, $date_created);
 		$imported++;
 	}
