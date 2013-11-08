@@ -297,12 +297,24 @@ table.borders>thead *{
 	width:120px;
 }
 #menu-top div{
-	background:#000;
 	opacity:.9;
 	position:absolute;
 	top:20px;
 	left:0;
 	display:none;
+}
+#menu-top li li{
+	background:#000;
+	transition:all 1s linear;
+}
+#menu-top li li:hover{
+	background:#333;
+	box-shadow:0 0 5px #f00;
+	z-index:2;
+}
+#menu-top li a:hover{
+	color:#ff0;
+	text-shadow:1px 1px 1px #000;
 }
 #menu-top li:hover>div{
 	display:block;
