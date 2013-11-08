@@ -184,22 +184,8 @@ function Core_menuShow2(items, name, prefix, depth) {
 function Core_menuShow(items) {
 	var html=Core_menuShow2(items, 'top', 'menu', 0);
 	$('#header').html(html);
-	Core_menuShowInitEvents();
+	console.log(html);
 	__langInit();
-}
-function Core_menuShowInitEvents() {
-	$('#menu-top>ul>li>a').each(function(){
-		$(this).fgmenu({
-			content: $(this).next().html(),
-			flyOut:true,
-			showSpeed: 400,
-			callerOnState: '',
-			loadingState: '',
-			linkHover: '',
-			linkHoverSecondary: '',
-			flyOutOnState: ''
-		});
-	});
 }
 function Core_prompt(text, val, validator, callback) {
 	var html='<div class="prompt"><p>'+text+'</p><input/></div>';
