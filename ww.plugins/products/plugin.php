@@ -283,6 +283,9 @@ class Product{
 
 	// }
 	function getAllImages() {
+		if (!$this->id) {
+			return;
+		}
 		$vals=$this->vals;
 		if (!isset($vals['images_directory']) || !$vals['images_directory']) {
 			$basedir='/products/product-images/';
@@ -494,15 +497,11 @@ class Product{
 		}
 		// }
 		// { Does the product have a page assigned to display the product?
-		$pageID=Core_cacheLoad('products', 'page_for_product_'.$this->id, -1);
-		if ($pageID===-1) {
-			$pageID=dbOne(
-				'select page_id from page_vars where name="products_product_to_show" '
-				.'and value='.$this->id.' limit 1', 
-				'page_id'
-			);
-			Core_cacheSave('products', 'page_for_product_'.$this->id, $pageID);
-		}
+		$pageID=dbOne(
+			'select page_id from page_vars where name="products_product_to_show" '
+			.'and value='.$this->id.' limit 1', 
+			'page_id', 'page_vars'
+		);
 		if ($pageID) {
 			$this->relativeUrl=Page::getInstance($pageID)->getRelativeUrl();
 			return $this->relativeUrl; 
@@ -776,20 +775,12 @@ class ProductCategory{
 				preg_replace('/>[^>]*$/', '', $name)
 			);
 		}
-		$md5=md5('categorybyname-'.$name);
-		$id=Core_cacheLoad('products', $md5, -1);
-		if ($id===-1) {
-			$sql='select id from products_categories'
-				.' where name="'.addslashes($cname).'"';
-			if ($parent) {
-				$sql.=' and parent_id='.$parent->vals['id'];
-			}
-			else {
-				$sql.=' and parent_id=0';
-			}
-			$id=dbOne($sql, 'id', 'products_categories');
-			Core_cacheSave('products', $md5, $id);
-		}
+		$id=dbOne(
+			'select id from products_categories'
+			.' where name="'.addslashes($cname).'"'
+			.' and parent_id='.($parent?$parent->vals['id']:0),
+			'id', 'products_categories'
+		);
 		if (!array_key_exists($id, self::$instances)) {
 			new ProductCategory($id);
 		}
@@ -1016,7 +1007,7 @@ class Products{
 				if ($enabledFilter==2) {
 					$enabledSql.=' !enabled';
 				}
-				$rs=dbAll('select id from products '.$enabledSql);
+				$rs=dbAll('select id from products '.$enabledSql, false, 'products');
 				foreach ($rs as $r) {
 					$product_ids[]=$r['id'];
 				}
@@ -1081,18 +1072,11 @@ class Products{
 				}
 			}
 			new Products($product_ids, $md5, $search, $search_arr);
-			$pcs=Core_cacheLoad(
-				'products', 'productcategoriesenabled_parent_'.$id, -1
+			$pcs=dbAll(
+				'select id,name from products_categories where parent_id='.$id
+				.' and enabled order by name', false, 'products_categories',
+				false, 'products_categories'
 			);
-			if ($pcs===-1) {
-				$pcs=dbAll(
-					'select id,name from products_categories where parent_id='.$id
-					.' and enabled order by name', false, 'products_categories'
-				);
-				Core_cacheSave(
-					'products', 'productcategoriesenabled_parent_'.$id, $pcs
-				);
-			}
 			self::$instances[$md5]->subCategories=$pcs;
 		}
 		return self::$instances[$md5];
@@ -1186,11 +1170,10 @@ class Products{
 		);
 		if (!array_key_exists($md5, self::$instances)) {
 			$product_ids=array();
-			$rs=Core_cacheLoad('products', 'productByType-'.$id, -1);
-			if ($rs===-1) {
-				$rs=dbAll('select id from products where enabled and product_type_id='.$id);
-				Core_cacheSave('products', 'productByType-'.$id, $rs);
-			}
+			$rs=dbAll(
+				'select id from products where enabled and product_type_id='.$id, false,
+				'products'
+			);
 			foreach ($rs as $r) {
 				$product_ids[]=$r['id'];
 			}
