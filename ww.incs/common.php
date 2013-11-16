@@ -388,9 +388,17 @@ function Core_menuShowFg ($opts=array()) {
 	*
 	* @return string HTML of the menu
 	*/
-function menuDisplay($a=0) {
+function menuDisplay($opts=array()) {
+	$opts=array_merge(
+		array(
+			'pid'=>0,
+			'direction'=>'horizontal',
+			'type'=>'ajaxmenu'
+		),
+		$opts
+	);
 	require_once SCRIPTBASE . 'ww.incs/menus.php';
-	return Menu_show($a);
+	return Menu_show($opts);
 }
 
 // }

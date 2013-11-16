@@ -125,6 +125,7 @@ function Menu_getChildren(
 		}
 		if ($r['id']==$currentpage) {
 			$c[]='ajaxmenu_currentPage';
+			$c[]='current-page';
 			$pageParentFound=1;
 		}
 		else {
@@ -219,29 +220,42 @@ function Menu_show($b) {
 	else {
 		$vals['spans']=1;
 	}
-	$ajaxmenu=isset($vals['nodropdowns']) && $vals['nodropdowns']?'':' ajaxmenu ';
-	$c='<div id="ajaxmenu'.$parent.'" class="menuBar'.$align.$ajaxmenu
-		.$classes.' parent'.$parent.'">';
-	$rs=Menu_getChildren($parent, $PAGEDATA->id, 0, $parent);
-	$links=0;
-	if ($vals['spans']) {
-		$spanl='<span class="l"></span>';
-		$spanr='<span class="r"></span>';
+	if ($b['type']=='bootstrap') {
+		$c='<div class="navbar"><div class="navbar-inner"><a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><h1><a class="brand" href="/">'.htmlspecialchars($GLOBALS['DBVARS']['site_title']).'</a></h1><div class="nav-collapse collapse"><ul class="nav pull-right">';
 	}
 	else {
-		$spanl='';
-		$spanr='';
+		$c='<div id="ajaxmenu'.$parent.'" class="menuBar'.$align
+			.(isset($vals['nodropdowns']) && $vals['nodropdowns']?'':' ajaxmenu ')
+			.$classes.' parent'.$parent.'">';
 	}
+	$rs=Menu_getChildren($parent, $PAGEDATA->id, 0, $parent);
+	$links=0;
 	if (count($rs)) {
 		foreach ($rs as $r) {
 			$page=Page::getInstance($r['id']);
-			if (!$links) {
-				$r['classes'].=' first';
+			if ($b['type']=='bootstrap') {
+				$c.='<li class="'.$r['classes'].'"><a href="'
+					.$page->getRelativeURL().'"><i class="icon"></i><br>'
+					.htmlspecialchars(__FromJson($page->name))
+					.'</a></li>';
 			}
-			$c.='<a id="ajaxmenu_link'.$r['id'].'" class="'.$r['classes'].'" href="'
-				.$page->getRelativeURL().'">'.$spanl
-				.htmlspecialchars(__FromJson($page->name))
-				.$spanr.'</a>';
+			else {
+				if ($vals['spans']) {
+					$spanl='<span class="l"></span>';
+					$spanr='<span class="r"></span>';
+				}
+				else {
+					$spanl='';
+					$spanr='';
+				}
+				if (!$links) {
+					$r['classes'].=' first';
+				}
+				$c.='<a id="ajaxmenu_link'.$r['id'].'" class="'.$r['classes'].'" href="'
+					.$page->getRelativeURL().'">'.$spanl
+					.htmlspecialchars(__FromJson($page->name))
+					.$spanr.'</a>';
+			}
 			$links++;
 		}
 	}
@@ -250,7 +264,12 @@ function Menu_show($b) {
 			.$PAGEDATA->getRelativeURL().'?cmsspecial=sitemap">'
 			.__('Site Map').'</a>';
 	}
-	$c.='</div>';
+	if ($b['type']=='bootstrap') {
+		$c.='</ul></div></div>';
+	}
+	else {
+		$c.='</div>';
+	}
 	if ($vals['mode']=='two-tier') {
 		$pid=$PAGEDATA->getTopParentId();
 		if ($pid!=2 && $pid!=3 && $pid!=17 && $pid!=32 && $pid!=33 && $pid!=34) {

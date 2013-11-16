@@ -228,8 +228,7 @@ function Core_getMenu() {
 			@$_REQUEST['pid'],
 			@$_REQUEST['id'],
 			0,
-			@$_REQUEST['top_id'],
-			0
+			@$_REQUEST['top_id']
 		)
 	);
 }
