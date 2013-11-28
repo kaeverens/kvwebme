@@ -34,6 +34,9 @@ foreach ($parts as $part) {
 }
 // }
 if(isset($_GET['uri'])){
+	if (strpos($_GET['uri'], '../')!==false) {
+		die('no hacking, thank you');
+	}
 	$bits=explode('/',$_GET['uri']);
 	$fname=array_pop($bits);
 	$dir=0;
