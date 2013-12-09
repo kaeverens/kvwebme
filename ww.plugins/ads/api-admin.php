@@ -196,3 +196,63 @@ function Ads_adminTrackSummarise() {
 		dbQuery('update ads set clicks='.$ad['clicks'].', views='.$ad['views'].' where id='.$ad['ad_id']);
 	}
 }
+
+function Ads_adminOrderMarkPaid() {
+	$id=(int)$_REQUEST['item_number'];
+	// create ad
+	$data=dbRow('select * from ads_purchase_orders where id='.$id);
+	$sql=
+		'insert into ads set name="ad",customer_id='.$data['user_id']
+		.',target_url="'.addslashes($data['target_url']).'",cdate=now()'
+		.',target_type="'.addslashes($data['target_type']).'"'
+		.',is_active=1,type_id='.$data['type_id']
+		.',date_expire=date_add(now(), interval '.$data['days'].' day)';
+	dbQuery($sql);
+	$ad_id=dbLastInsertId();
+	// { poster 
+	$url=false;
+	$dirname=USERBASE.'/f/userfiles/'.$data['user_id'].'/ads-upload-poster';
+	if (file_exists($dirname)) {
+		$dir=new DirectoryIterator($dirname);
+		foreach ($dir as $file) {
+			if ($file->isDot()) {
+				continue;
+			}
+			$url='userfiles/'.$data['user_id'].'/ads-upload-poster/'
+				.$file->getFilename();
+		}
+	}
+	$newName='/f/userfiles/'.$data['user_id'].'/ad-poster-'.$ad_id.'.'
+		.preg_replace('/.*\./', '', $url);
+	if ($url) {
+		rename(
+			USERBASE.'/f/'.$url,
+			USERBASE.$newName
+		);
+		dbQuery(
+			'update ads set poster="'.addslashes($newName).'" where id='.$ad_id
+		);
+	}
+	// }
+	// { image
+	$url=false;
+	$dir=new DirectoryIterator(
+		USERBASE.'/f/userfiles/'.$data['user_id'].'/ads-upload'
+	);
+	foreach ($dir as $file) {
+		if ($file->isDot()) {
+			continue;
+		}
+		$url='userfiles/'.$data['user_id'].'/ads-upload/'.$file->getFilename();
+	}
+	$newName='/f/userfiles/'.$data['user_id'].'/ad-'.$ad_id.'.'
+		.preg_replace('/.*\./', '', $url);
+	rename(
+		USERBASE.'/f/'.$url,
+		USERBASE.$newName
+	);
+	dbQuery(
+		'update ads set image_url="'.addslashes($newName).'" where id='.$ad_id
+	);
+	// }
+}
