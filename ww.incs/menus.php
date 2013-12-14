@@ -121,7 +121,7 @@ function Menu_getChildren(
 		}
 		// }
 		if ($r['numchildren']) {
-			$c[]='ajaxmenu_hasChildren';
+			$c[]='ajaxmenu_hasChildren dropdown';
 		}
 		if ($r['id']==$currentpage) {
 			$c[]='ajaxmenu_currentPage';
@@ -237,7 +237,9 @@ function Menu_show($b) {
 				$c.='<li class="'.$r['classes'].'"><a href="'
 					.$page->getRelativeURL().'"><i class="icon"></i><br>'
 					.htmlspecialchars(__FromJson($page->name))
-					.'</a></li>';
+					.'</a>'
+					.Menu_getSubMenuBootstrap($r, $r['id'])
+					.'</li>';
 			}
 			else {
 				if ($vals['spans']) {
@@ -295,3 +297,18 @@ function Menu_show($b) {
 }
 
 // }
+function Menu_getSubMenuBootstrap($parent, $top_id) {
+	if (!$parent['numchildren']) {
+		return '';
+	}
+	$rs=Menu_getChildren($parent['id'], $PAGEDATA->id, 0, $top_id);
+	$html='<ul class="dropdown-menu">';
+	foreach ($rs as $r) {
+		$html.='<li><a href="'.htmlspecialchars($r['link']).'"'
+			.' classes="'.$r['classes'].'">'.htmlspecialchars($r['name']).'</a>'
+			.Menu_getSubMenuBootstrap($r, $top_id)
+			.'</li>';
+	}
+	$html.='</ul>';
+	return $html;
+}
