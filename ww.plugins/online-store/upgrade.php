@@ -313,3 +313,7 @@ if ($version==28) { // profit
 	dbQuery('alter table online_store_sales add profit float default 0');
 	$version=29;
 }
+if ($version==29) {
+	dbQuery('alter table products add os_shipping text');
+	$version=30;
+}

@@ -259,8 +259,8 @@ class Product{
 		* @return int ID of the image
 		*/
 	function getDefaultImage() {
-		if (isset($this->default_image)) {
-			return $this->default_image;
+		if (isset($this->image_default)) {
+			return $this->image_default;
 		}
 		$vals=$this->vals;
 		if ($vals['image_default']
@@ -270,14 +270,14 @@ class Product{
 		}
 		$images=$this->getAllImages();
 		if (count($images)) {
-			$this->default_image=$images[0];
+			$this->image_default=$images[0];
 			dbQuery(
-				'update products set default_image="'.addslashes($images[0]).'"'
+				'update products set image_default="'.addslashes($images[0]).'"'
 				.' where id='.$this->id
 			);
-			return $this->default_image;
+			return $this->image_default;
 		}
-		$this->default_image=false;
+		$this->image_default=false;
 		return false;
 	}
 
@@ -4234,6 +4234,7 @@ function Products_widget($vars=null) {
 			else {
 				$rs=dbAll(
 					'select sum(quantity) as amt,product_id from online_store_sales'
+					.' where product_id>0'
 					.' group by product_id order by amt desc limit 8',
 					'', 'online_store_sales'
 				);
@@ -4241,6 +4242,14 @@ function Products_widget($vars=null) {
 			foreach ($rs as $r) {
 				$pid=$r['product_id'];
 				$product=Product::getInstance($pid);
+				if (!$product->name) {
+					dbQuery(
+						'update online_store_sales set product_id=-'.$pid
+						.' where product_id="'.$pid.'"'
+					);
+					Core_cacheClear('online_store_sales');
+					continue;
+				}
 				$iid=$product->getDefaultImage();
 				$img=$iid
 					?'<a class="product-widget-imglink" href="'.$product->getRelativeURL()

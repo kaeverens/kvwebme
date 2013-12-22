@@ -1256,12 +1256,13 @@ function Products_adminProductsListCommonDetails() {
 	}
 	$sql='select id, name, num_of_categories, date_edited from products'
 		.$constraint;
-	$ps=dbAll($sql);
+	$ps=dbAll($sql, false, 'products');
 	$arr=array();
-	foreach ($ps as $p) {
+	foreach ($ps as $k=>$p) {
 		$arr[]=array(
 			$p['id'], $p['name'], $p['num_of_categories'], $p['date_edited']
 		);
+		unset($ps[$k]);
 	}
 	return $arr;
 }

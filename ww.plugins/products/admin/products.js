@@ -193,6 +193,7 @@ $(function() {
 			'bServerSide': true,
 			'bAutoWidth':false,
 			'aoColumns':cols,
+			'aaSorting':[[8, 'desc']],
 			'sAjaxSource': '/a/p=products/f=adminProductsListDT',
 			'fnRowCallback': function( nRow, aData, iDisplayIndex ) {
 				var tCols=$pTable.fnSettings().aoColumns;

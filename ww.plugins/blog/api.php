@@ -261,7 +261,7 @@ function Blog_postEdit() {
 			'insert into blog_tags set entry_id='.$id.', tag="'.addslashes($tag).'"'
 		);
 	}
-	Core_cacheClear('blog');
+	Core_cacheClear('blog_tags,blog_entry');
 	return array('ok'=>$id);
 }
 
