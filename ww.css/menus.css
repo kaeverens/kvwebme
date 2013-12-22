@@ -13,3 +13,7 @@
 .menu-fg-horizontal li{
 	display:inline-block;
 }
+
+.dropdown:hover>.dropdown-menu{
+	display:block;
+}
