@@ -465,3 +465,7 @@ if ($version==53) { // add online-store-specific stuff
 	dbQuery('alter table products add os_shipping text');
 	$version=54;
 }
+if ($version==54) { // add "contains" to products_categories
+	dbQuery('alter table products_categories add contains longtext');
+	$version=55;
+}

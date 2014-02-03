@@ -741,14 +741,7 @@ class Products{
 		if (!array_key_exists($md5, self::$instances)) {
 			$product_ids=array();
 			$locFilter=$location?' and location in ('.$location.')':'';
-			$cats=array($id);
-			if (!$noRecurse) {
-				$cat=ProductCategory::getInstance($id);
-				if ($cat) {
-					$cats=array_merge($cats, $cat->getSubCategoryIDs());
-				}
-			}
-			$pids=ProductsCategoriesProducts::getByCategoryIds($cats);
+			$pids=ProductsCategoriesProducts::getByCategoryIds($id, $noRecurse);
 			$sql='select id from products'
 				.' where enabled '.$locFilter
 				.' and id in ('.join(',', $pids).')';

@@ -335,13 +335,16 @@ function Products_adminCategoryProductAdd() {
 	* @return null
 	*/
 function Products_adminCategoryProductRemove() {
+	if ($_REQUEST['pid']=='') {
+		return array('ok'=>1);
+	}
 	$pids=explode(',', $_REQUEST['pid']);
 	$cid=(int)$_REQUEST['cid'];
 	$arr=array();
 	foreach ($pids as $pid) {
 		$pid=(int)$pid;
 		$arr[]=$pid;
-		ProductscategoriesProducts::delete($cid, $pid);
+		ProductsCategoriesProducts::delete($cid, $pid);
 	}
 	Products_categoriesRecount($pids);
 	dbQuery(
@@ -1526,4 +1529,60 @@ function Products_adminCategoryFullName() {
 			:$cat->vals['name'];
 	}
 	return getParentName((int)$_REQUEST['id']);
+}
+function Products_adminProductCategoryContainsUpdate() {
+	$id=(int)$_REQUEST['id'];
+	if (!$id) {
+		$id=dbOne('select id from products order by id limit 1', 'id');
+	}
+	$rs=dbAll(
+		'select * from products_categories_products where product_id='.$id
+	);
+	foreach ($rs as $r) {
+		$cat=ProductCategory::getInstance($r['category_id']);
+		if ($cat) {
+			$cat->containsDel(
+				$r['product_id'], $r['category_id']
+			);
+			$cat->containsAdd(
+				$r['product_id'], $r['category_id']
+			);
+		}
+		else {
+			dbQuery(
+				'delete from products_categories_products where product_id='.$id
+				.' and category_id='.$r['category_id']
+			);
+		}
+	}
+	echo $id;
+	$id=dbOne(
+		'select id from products where id>'.$id.' order by id limit 1', 'id'
+	);
+	if ($id) {
+		echo '<script>setTimeout(function() {document.location="./id='.$id.'";}, 1);</script>';
+	}
+	else {
+		echo '<br/>DONE';
+	}
+	exit;
+}
+function products_adminFixOrphanedCategories() {
+	$rs=dbAll('select id,name,parent_id from products_categories');
+	foreach ($rs as $r) {
+		if ($r['parent_id']=='0') {
+			continue;
+		}
+		$pid=dbOne('select id from products_categories where id='.$r['parent_id'], 'id');
+		if (!$pid) {
+			$sql='update products_categories set parent_id=0 where id='.$r['id'];
+			dbQuery($sql);
+			echo $sql."<br/>";
+		}
+		else {
+			echo 'product_category '.$r['name'].' is okay.<br/>';
+		}
+	}
+	Core_cacheClear('products_categories');
+	exit;
 }

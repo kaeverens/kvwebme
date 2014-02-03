@@ -23,3 +23,6 @@ td.editable{
 #product-images-wrapper .default{
 	border:1px solid red;
 }
+#categories-accordion>div{
+	overflow:auto;
+}

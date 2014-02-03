@@ -138,7 +138,7 @@ $plugin=array(
 		'menu-subpages' => 'Products_getSubCategoriesAsMenu',
 		'menu-subpages-html' => 'Products_getSubCategoriesAsMenuHtml'
 	), // }
-	'version' => '54'
+	'version' => '55'
 );
 // }
 
@@ -869,6 +869,150 @@ class ProductCategory{
 		}
 		return $name;
 	}
+	function containsAdd($pid, $cid) {
+		$pid=(int)$pid;
+		$cid=(int)$cid;
+		$contains=$this->vals['contains'];
+		if ($contains) {
+			$contains=json_decode($contains, true);
+		}
+		else {
+			$contains=array();
+		}
+		// { recursive
+		if (!isset($contains['recursive'])) {
+			$contains['recursive']=array();
+		}
+		$contains['recursive'][]=$pid;
+		// }
+		// { this level
+		if ($cid==$this->vals['id']) {
+			if (!isset($contains['thisLevel'])) {
+				$contains['thisLevel']=array();
+			}
+			$contains['thisLevel'][]=$pid;
+		}
+		// }
+		if (isset($GLOBALS['PLUGINS']['online-store'])) {
+			// { recursive by base price
+			$rs=dbAll(
+				'select id from products where id in ('.join(',', $contains['recursive']).')'
+				.' order by os_base_price'
+			);
+			$arr=array();
+			foreach ($rs as $r) {
+				$arr[]=$r['id'];
+			}
+			$contains['recursiveByOsBasePrice']=$arr;
+			// }
+			// { this level by base price
+			$arr=array();
+			if (isset($contains['thisLevel']) && count($contains['thisLevel'])) {
+				$rs=dbAll(
+					'select id from products where id in ('.join(',', $contains['thisLevel']).')'
+					.' order by os_base_price'
+				);
+				foreach ($rs as $r) {
+					$arr[]=$r['id'];
+				}
+			}
+			$contains['thisLevelByOsBasePrice']=$arr;
+			// }
+		}
+		$this->vals['contains']=json_encode($contains);
+		$sql='update products_categories set'
+			.' contains="'.addslashes($this->vals['contains']).'"'
+			.' where id='.$this->vals['id'];
+		dbQuery($sql);
+		Core_cacheClear('products_categories');
+		if ($this->vals['parent_id']) {
+			$cat=ProductCategory::getInstance($this->vals['parent_id']);
+			if ($cat) {
+				$cat->containsAdd($pid, $cid);
+			}
+		}
+	}
+	function containsDel($pid, $cid) {
+		$pid=(int)$pid;
+		$cid=(int)$cid;
+		$contains=$this->vals['contains'];
+		if ($contains) {
+			$contains=json_decode($contains, true);
+		}
+		else {
+			$contains=array();
+		}
+		// { recursive
+		if (!isset($contains['recursive'])) {
+			$contains['recursive']=array();
+		}
+		if (in_array($pid, $contains['recursive'])) {
+			$arr=array();
+			foreach ($contains['recursive'] as $v) {
+				if ($v!=$pid) {
+					$arr[]=$v;
+				}
+			}
+			$contains['recursive']=$arr;
+		}
+		// }
+		// { this level
+		if ($cid==$this->vals['id']) {
+			if (!isset($contains['thisLevel'])) {
+				$contains['thisLevel']=array();
+			}
+			$arr=array();
+			foreach ($contains['thisLevel'] as $v) {
+				if ($v!=$pid) {
+					$arr[]=$v;
+				}
+			}
+			$contains['thisLevel']=$arr;
+		}
+		// }
+		if (isset($GLOBALS['PLUGINS']['online-store'])) {
+			// { recursive by base price
+			$arr=array();
+			if (
+				isset($contains['recursiveByOsBasePrice'])
+				&& count($contains['recursiveByOsBasePrice'])
+			) {
+				foreach ($contains['recursiveByOsBasePrice'] as $v) {
+					if ($v!=$pid) {
+						$arr[]=$v;
+					}
+				}
+			}
+			$contains['recursiveByOsBasePrice']=$arr;
+			// }
+			// { this level by base price
+			$arr=array();
+			if (
+				isset($contains['thisLevelByOsBasePrice'])
+				&& count($contains['thisLevelByOsBasePrice'])
+			) {
+				foreach ($contains['thisLevelByOsBasePrice'] as $v) {
+					if ($v!=$pid) {
+						$arr[]=$v;
+					}
+				}
+			}
+			$contains['thisLevelByOsBasePrice']=$arr;
+			// }
+		}
+		$this->vals['contains']=json_encode($contains);
+		$sql='update products_categories set'
+			.' contains="'.addslashes($this->vals['contains']).'"'
+			.' where id='.$this->vals['id'];
+		dbQuery($sql);
+		Core_cacheClear('products_categories');
+		if ($this->vals['parent_id']) {
+			$cat=ProductCategory::getInstance($this->vals['parent_id']);
+			if ($cat) {
+				$cat->containsDel($pid, $cid);
+			}
+		}
+	}
 }
 
 // }
@@ -1050,14 +1194,7 @@ class Products{
 		if (!array_key_exists($md5, self::$instances)) {
 			$product_ids=array();
 			$locFilter=$location?' and location in ('.$location.')':'';
-			$cats=array($id);
-			if (!$noRecurse) {
-				$cat=ProductCategory::getInstance($id);
-				if ($cat) {
-					$cats=array_merge($cats, $cat->getSubCategoryIDs());
-				}
-			}
-			$rs=ProductsCategoriesProducts::getByCategoryIds($cats);
+			$rs=ProductsCategoriesProducts::getByCategoryIds($id, $noRecurse);
 			if (count($rs)) {
 				$sql='select id from products'
 					.' where id in ('.join(',', $rs).') and enabled';
@@ -1495,7 +1632,23 @@ class ProductsCategoriesProducts{
 		}
 		return self::$prodsByCid[$cid];
 	}
-	function getByCategoryIds($cids) {
+	function getByCategoryIds($id, $noRecurse) {
+		$cat=ProductCategory::getInstance($id);
+		$contains=$cat->vals['contains'];
+		if ($contains) {
+			$contains=json_decode($contains);
+			if ($noRecurse) {
+				return isset($contains->thisLevel)?$contains->thisLevel:array();
+			}
+			return isset($contains->recursive)?$contains->recursive:array();
+		}
+		if (!$cat) {
+			return array();
+		}
+		$cids=array($id);
+		if (!$noRecurse) {
+			$cids=array_merge($cids, $cat->getSubCategoryIDs());
+		}
 		$idx=join(',', $cids);
 		if (!isset(self::$prodsByCids[$idx])) {
 			$rs=dbAll(
@@ -1512,6 +1665,13 @@ class ProductsCategoriesProducts{
 		return self::$prodsByCids[$idx];
 	}
 	function delete($cid, $pid) {
+		$cat=ProductCategory::getInstance($cid);
+		if (!$cat) {
+			return;
+		}
+		$cat->containsDel(
+			(int)$pid, (int)$cid
+		);
 		dbQuery(
 			'delete from products_categories_products'
 			.' where category_id='.(int)$cid
@@ -1520,6 +1680,18 @@ class ProductsCategoriesProducts{
 		self::clearCache();
 	}
 	function deleteByCategoryId($id) {
+		$rs=dbAll(
+			'select * from products_categories_products where category_id='.$id
+		);
+		foreach ($rs as $r) {
+			$cat=ProductCategory::getInstance($id);
+			if (!$cat) {
+				continue;
+			}
+			$cat->containsDel(
+				$r['product_id'], $r['category_id']
+			);
+		}
 		dbQuery(
 			'delete from products_categories_products where category_id='.(int)$id
 		);
@@ -1533,16 +1705,35 @@ class ProductsCategoriesProducts{
 			return;
 		}
 		$id=(int)$id;
+		$rs=dbAll(
+			'select * from products_categories_products where product_id='.$id
+		);
+		foreach ($rs as $r) {
+			$cat=ProductCategory::getInstance($r['category_id']);
+			if (!$cat) {
+				continue;
+			}
+			$cat->containsDel(
+				$r['product_id'], $r['category_id']
+			);
+		}
 		dbQuery(
 			'delete from products_categories_products where product_id='.$id
 		);
 		self::clearCache();
 	}
 	function insert($cid, $pid) {
+		$cid=(int)$cid;
+		$pid=(int)$pid;
+		$cat=ProductCategory::getInstance($cid);
+		if (!$cat) {
+			return;
+		}
 		dbQuery(
 			'insert into products_categories_products'
-			.' set category_id='.(int)$cid.', product_id='.(int)$pid
+			.' set category_id='.$cid.', product_id='.$pid
 		);
+		$cat->containsAdd($pid, $cid);
 		self::clearCache();
 	}
 	function listActiveCategories() {
@@ -1572,12 +1763,27 @@ class ProductsCategoriesProducts{
 		return $arr;
 	}
 	function listCategoriesByProductCount() {
-		return dbAll(
-			'select name,category_id,count(product_id) as pids'
-			.' from products_categories_products,products_categories'
-			.' where category_id=id group by category_id order by pids desc',
-			false, 'products_categories_products,products_categories'
-		);
+		$rs=dbAll('select id,name,contains from products_categories order by id desc');
+		$arr=array();
+		foreach ($rs as $r) {
+			$c=json_decode($r['contains'], true);
+			$arr[]=array(
+				'name'=>$r['name'],
+				'category_id'=>$r['id'],
+				'pids'=>(isset($c['thisLevel'])&& is_array($c['thisLevel']))
+					?count($c['thisLevel']):0
+			);
+		}
+		for ($i=0;$i<count($arr)-1;++$i) {
+			for ($j=$i+1;$j<count($arr);++$j) {
+				if ($arr[$j]['pids']>$arr[$i]['pids']) {
+					$tmp=$arr[$i];
+					$arr[$i]=$arr[$j];
+					$arr[$j]=$tmp;
+				}
+			}
+		}
+		return $arr;
 	}
 	function clearCache() {
 		self::$prodsByCid=array();
