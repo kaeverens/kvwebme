@@ -138,7 +138,7 @@ $plugin=array(
 		'menu-subpages' => 'Products_getSubCategoriesAsMenu',
 		'menu-subpages-html' => 'Products_getSubCategoriesAsMenuHtml'
 	), // }
-	'version' => '53'
+	'version' => '54'
 );
 // }
 
