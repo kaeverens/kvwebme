@@ -1618,6 +1618,7 @@ function Core_adminPluginsSetInstalled() {
 	  Core_configRewrite();
 		return array('ok'=>1, 'added'=>$added, 'removed'=>$removed);
 	}
+	Core_cacheClear();
 	return array('ok'=>0);
 }
 
