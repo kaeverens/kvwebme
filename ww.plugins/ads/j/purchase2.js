@@ -48,33 +48,79 @@ $(function() {
 			+'</div>';
 		$(html)
 			.appendTo($wrapper.empty());
-		$.post('/a/p=ads/f=typesGet', function(ret) {
+		$.post('/a/p=ads/f=typesGet/not_for_sale=0', function(ret) {
 			var buttons=[];
 			ads=[];
 			for (var i=0;i<ret.length;++i) {
 				ads[ret[i].id]=ret[i];
+				var type=ret[i].type=='0'
+					?'('+ret[i].width+'px x  '+ret[i].height+'px)'
+					:'(Full Page)';
 				$('<button id="ad-button-'+ret[i].id+'" class="full-width" data-id="'+ret[i].id+'">'+ret[i].name
-					+' <small>('+ret[i].width+'px x  '+ret[i].height+'px)</small>'
+					+' <small>'+type+'</small>'
 					+'</button>')
 					.appendTo($wrapper.find('>div'))
 					.button()
 					.click(function() {
 						var id=$(this).data('id');
 						opts.ad_id=id;
+						opts.ad_type=+ads[id].type;
 						opts.ad_width=ads[id].width;
 						opts.ad_height=ads[id].height;
-						stage3TargetType();
+						var next=opts.ad_type==0?stage3TargetType:stage3PageDetails;
+						next();
 					});
 			}
 			if (opts.ad_id) {
 				$('#ad-button-'+opts.ad_id)
 					.addClass('selected');
+				var next=opts.ad_type==0?stage3TargetType:stage3PageDetails;
 				$('<button class="next">Next</button>')
 					.button()
 					.appendTo($wrapper.find('>div'))
-					.click(stage3TargetType);
+					.click(next);
 			}
 		});
+	}
+	function stage3PageDetails() {
+		var html='<div>'
+			+'<h2>Step 3 of 7</h2>'
+			+'<p>What is the name of the company the page is for?</p>'
+			+'<input id="ad-name" style="width:100%" />'
+			+'<p>Contact Details:</p>'
+			+'<table style="width:100%">'
+			+'<tr><th>Address</th><td><input style="width:100%" id="ad-address" placeholder="street, town, city, country"/></td></tr>'
+			+'<tr><th>Landline</th><td><input style="width:100%" id="ad-phone" placeholder="123456789"/></td></tr>'
+			+'<tr><th>Mobile</th><td><input style="width:100%" id="ad-mobile" placeholder="123456789"/></td></tr>'
+			+'<tr><th>Email</th><td><input style="width:100%" type="email" id="ad-email" placeholder="your@email.address"/></td></tr>'
+			+'<tr><th>Website</th><td><input style="width:100%" id="ad-url" placeholder="http://yourdomain/"/></td></tr>'
+			+'<tr><th>Twitter</th><td><input style="width:100%" id="ad-twitter" placeholder="@your_handle"/></td></tr>'
+			+'<tr><th>Facebook</th><td><input style="width:100%" id="ad-facebook" placeholder="http://facebook.com/your_address"/></td></tr>'
+			+'</table>'
+			+'<button class="prev">Prev</button>'
+			+'<button class="full-width">Next</button>'
+			+'</div>';
+		$(html).appendTo($wrapper.empty());
+		$wrapper.find('.prev').button().click(stage2AdType);
+		if (opts.meta) {
+			$.each (opts.meta, function(k, v) {
+				$('#ad-'+k).val(v);
+			});
+		}
+		$wrapper.find('.full-width').button()
+			.click(function() {
+				if (!opts.meta) {
+					opts.meta={};
+				}
+				opts.meta.name=$('#ad-name').val();
+				opts.meta.address=$('#ad-address').val();
+				opts.meta.phone=$('#ad-phone').val();
+				opts.meta.email=$('#ad-email').val();
+				opts.meta.url=$('#ad-url').val();
+				opts.meta.twitter=$('#ad-twitter').val();
+				opts.meta.facebook=$('#ad-facebook').val();
+				stage4PageDetails();
+			});
 	}
 	function stage3TargetType() {
 		var html='<div>'
@@ -168,6 +214,30 @@ $(function() {
 		}
 		updatePoster();
 	}
+	function stage4PageDetails() {
+		var html='<div>'
+			+'<h2>Step 4 of 7</h2>'
+			+'<p>Please fill in the content of the page. You can amend it after purchase with formatting, links, etc.</p>'
+			+'<textarea style="width:100%;height:200px" id="ad-content"></textarea>'
+			+'<button class="prev">Prev</button>'
+			+'<button class="full-width">Next</button>'
+			+'</div>';
+		$(html).appendTo($wrapper.empty());
+		$wrapper.find('.prev').button().click(stage3PageDetails);
+		if (opts.meta) {
+			$.each (opts.meta, function(k, v) {
+				$('#ad-'+k).val(v);
+			});
+		}
+		$wrapper.find('.full-width').button()
+			.click(function() {
+				if (!opts.meta) {
+					opts.meta={};
+				}
+				opts.meta.content=$('#ad-content').val();
+				stage5AdUpload();
+			});
+	}
 	function stage5AdUpload() {
 		function updatePreview() {
 			$.post('/a/p=ads/f=getTmpImage', function(ret) {
@@ -197,7 +267,7 @@ $(function() {
 			.appendTo($wrapper.empty());
 		$wrapper.find('.prev')
 			.button()
-			.click(stage4ActionDetails);
+			.click(opts.ad_type?stage4PageDetails:stage4ActionDetails);
 		$wrapper.find('.next')
 			.button()
 			.click(function() {
@@ -221,12 +291,8 @@ $(function() {
 		var e=ads[opts.ad_id].price_per_day;
 		html+='<p>How long do you want your ad to run for?</p>'
 			+'<select>'
-			+'<option value="7">1 Week (€'+(e*7).toFixed(2)+')</option>'
-			+'<option value="14">2 Weeks (€'+(e*14).toFixed(2)+')</option>'
-			+'<option value="31">1 Month (€'+(e*31*.9).toFixed(2)+' - 10% off!)</option>'
-			+'<option value="122">3 Months (€'+(e*122*.9).toFixed(2)+' - 10% off!)</option>'
-			+'<option value="183">6 Months (€'+(e*183*.9).toFixed(2)+' - 10% off!)</option>'
-			+'<option value="365">1 Year (€'+(e*365*.9).toFixed(2)+' - 10% off!)</option>'
+			+'<option value="183">6 Months (€'+(e*183).toFixed(2)+')</option>'
+			+'<option value="365">1 Year (€'+(e*365*.8595).toFixed(2)+')</option>'
 			+'</select>';
 		html+='<button class="prev">Prev</button>'
 			+'<button class="next">Next</button>'
@@ -253,9 +319,10 @@ $(function() {
 		$(html)
 			.appendTo($wrapper.empty());
 		var subtotal=opts.days*ads[opts.ad_id].price_per_day;
-		if (opts.days>=31) {
-			subtotal*=.9;
+		if (opts.days>183) {
+			subtotal*=.8595;
 		}
+		subtotal=subtotal.toFixed(2);
 		$wrapper.find('.prev')
 			.button()
 			.click(stage6ChooseLength);
@@ -288,7 +355,8 @@ $(function() {
 					'days':opts.days,
 					'target_url':opts.target_url,
 					'target_type':+(opts.action=='poster'),
-					'email':opts.email
+					'email':opts.email,
+					'meta':opts.meta
 				}, function(ret) {
 					$('#paypal-order-id').val(ret.id).closest('form').submit();
 				});

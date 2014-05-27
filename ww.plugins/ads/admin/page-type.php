@@ -12,11 +12,11 @@
   * @link       www.kvweb.me
  */
 
-$c = '<div class="tabs">'
+$c='<div class="tabs">'
 	.'<ul>'
 	.'<li><a href="#ads-header">Header</a></li>'
 	.'<li><a href="#ads-footer">Footer</a></li>'
-	.'<li><a href="#ads-payment-details">Payment Details</a></li>'
+	.'<li><a href="#ads-payment-details">Options</a></li>'
 	.'</ul>';
 // { header
 $c.='<div id="ads-header">'
@@ -37,6 +37,21 @@ $c.='<div id="ads-payment-details"><table>'
 	.'<tr><th>'.__('Profile Page Payment Tab').'</th><td>'
 	.ckeditor('page_vars[ads-profile-page]', (isset($vars['ads-profile-page'])?$vars['ads-profile-page']:''))
 	.'</td></tr>'
+	.'<tr><th>Fullpage parent</th><td>'
+	.'<select id="ads_fullpage_parent" name="'
+	.'page_vars[ads_fullpage_parent]">';
+if (@$vars['ads_fullpage_parent']) {
+	$parent=Page::getInstance($vars['ads_fullpage_parent']);
+	$c.='<option value="'.$parent->id.'">'
+		.htmlspecialchars(__FromJSON($parent->name))
+		.'</option>';
+}
+else {
+	$page_vars['ads_fullpage_parent']=0;
+	$c.='<option value="0"> -- none -- </option>';
+}
+$c.='</select></td></tr>'
 	.'</table></div>';
 // }
 $c.='</div>';
+$c.='<script src="/ww.plugins/ads/admin/page-type.js"></script>';

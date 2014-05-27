@@ -62,8 +62,10 @@ function Ads_adminTypesEdit() {
 	$width=(int)$_REQUEST['width'];
 	$height=(int)$_REQUEST['height'];
 	$price_per_day=(float)$_REQUEST['price_per_day'];
+	$type=(int)$_REQUEST['type'];
 	$sql='ads_types set name="'.addslashes($name).'", width='.$width
-		.', height='.$height.', price_per_day='.$price_per_day;
+		.', height='.$height.', price_per_day='.$price_per_day.', type='.$type
+		.', not_for_sale='.(int)$_REQUEST['not_for_sale'];
 	if ($id) {
 		dbQuery('update '.$sql.' where id='.$id);
 	}
@@ -201,14 +203,19 @@ function Ads_adminOrderMarkPaid() {
 	$id=(int)$_REQUEST['item_number'];
 	// create ad
 	$data=dbRow('select * from ads_purchase_orders where id='.$id);
-	$sql=
-		'insert into ads set name="ad",customer_id='.$data['user_id']
+	if (!$data) {
+		return array(
+			'error'=>'no such ad'
+		);
+	}
+	$sql='insert into ads set name="ad",customer_id='.$data['user_id']
 		.',target_url="'.addslashes($data['target_url']).'",cdate=now()'
 		.',target_type="'.addslashes($data['target_type']).'"'
 		.',is_active=1,type_id='.$data['type_id']
 		.',date_expire=date_add(now(), interval '.$data['days'].' day)';
 	dbQuery($sql);
 	$ad_id=dbLastInsertId();
+	$type=dbRow('select * from ads_types where id='.$data['type_id']);
 	// { poster 
 	$url=false;
 	$dirname=USERBASE.'/f/userfiles/'.$data['user_id'].'/ads-upload-poster';
@@ -255,4 +262,48 @@ function Ads_adminOrderMarkPaid() {
 		'update ads set image_url="'.addslashes($newName).'" where id='.$ad_id
 	);
 	// }
+	if ($type['type']=='1') { // page
+		$page=Page::getInstanceByType('ads');
+		$pid=$page->id;
+		$page->initValues();
+		$pid=(int)$page->vars['ads_fullpage_parent'];
+		$meta=json_decode($data['meta'], true);
+		$body='<h1>'.htmlspecialchars($meta['name']).'</h1>';
+		if (isset($meta['address']) && $meta['address']) {
+			$body.='<strong>Address</strong>: '.htmlspecialchars($meta['address']).'<br/>';
+		}
+		if (isset($meta['landline']) && $meta['landline']) {
+			$body.='<strong>Landline</strong>: '.htmlspecialchars($meta['landline']).'<br/>';
+		}
+		if (isset($meta['mobile']) && $meta['mobile']) {
+			$body.='<strong>Mobile</strong>: '.htmlspecialchars($meta['mobile']).'<br/>';
+		}
+		if (isset($meta['email']) && $meta['email']) {
+			$body.='<span class="email"><a href="mailto:'.htmlspecialchars($meta['email']).'">Send Email</a></span> ';
+		}
+		if (isset($meta['url']) && $meta['url']) {
+			$body.='<span class="url"><a target="_blank" href="'.htmlspecialchars($meta['url']).'">'
+				.'Visit Website</a></span> ';
+		}
+		if (isset($meta['twitter']) && $meta['twitter']) {
+			$body.='<span class="twitter"><a target="_blank" href="http://twitter.com/'.htmlspecialchars(str_replace('@', '', $meta['twitter'])).'">'
+				.htmlspecialchars($meta['twitter']).'</a></span> ';
+		}
+		if (isset($meta['facebook']) && $meta['facebook']) {
+			$body.='<span class="facebook"><a target="_blank" href="'.htmlspecialchars($meta['facebook']).'">Facebook</a></span> ';
+		}
+		$body.=str_replace("\n", '</p><p>', '<p>'.htmlspecialchars($meta['content']).'</p>');
+		if (isset($meta['address']) && $meta['address']) {
+			$body.='<iframe frameborder="0" height="320" scrolling="no" src="//maps.google.com/maps?q='.htmlspecialchars($meta['address']).'&amp;num=1&amp;t=m&amp;ie=UTF8&amp;z=14&amp;output=embed" width="480"></iframe>';
+		}
+		dbQuery(
+			'insert into pages set parent='.$pid.', date_publish="0000-00-00"'
+			.', body="'.addslashes($body).'"'
+			.', date_unpublish=date_add(now(), interval '.$data['days'].' day)'
+			.', name="'.addslashes($meta['name']).'"'
+			.', alias="'.addslashes($meta['name']).'", type=0'
+		);
+		Core_cacheClear('pages');
+	}
+	dbQuery('delete from ads_purchase_orders where id='.$id);
 }

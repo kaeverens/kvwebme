@@ -167,7 +167,11 @@ function ClassifiedAds_makePurchaseOrder() {
 		$fname=$file->getFilename();
 		rename($dirname.'/'.$fname, $dirname.'/'.$ad_id.'/'.$fname);
 	}
-	return array('id'=>dbLastInsertId());
+	$id=dbLastInsertId();
+	if ($cost==0) {
+		ClassifiedAds_publish($id);
+	}
+	return array('id'=>$id);
 }
 
 // }

@@ -79,7 +79,11 @@ function Ads_typeGet() {
 	* @return list of ad types
 	*/
 function Ads_typesGet() {
-	return dbAll('select * from ads_types order by name');
+	$sql='select * from ads_types';
+	if (isset($_REQUEST['not_for_sale'])) {
+		$sql.=' where not_for_sale='.(int)$_REQUEST['not_for_sale'];
+	}
+	return dbAll($sql.' order by name');
 }
 
 // }
@@ -206,11 +210,11 @@ function Ads_makePurchaseOrder() {
 	$days=(int)$_REQUEST['days'];
 	$target_url=$_REQUEST['target_url'];
 	$target_type=(int)$_REQUEST['target_type'];
-	dbQuery(
-		'insert into ads_purchase_orders set user_id='.$user_id.', type_id='
+	$sql='insert into ads_purchase_orders set user_id='.$user_id.', type_id='
 		.$type_id.', days='.$days.', target_url="'.addslashes($target_url).'"'
-		.', target_type='.$target_type
-	);
+		.', target_type='.$target_type.', meta="'.addslashes(json_encode($_REQUEST['meta'])).'"';
+	mail('kae.verens@gmail.com,sales@monaghanlife.ie', '[kvwebme] ad created', $sql);
+	dbQuery($sql);
 	return array('id'=>dbLastInsertId());
 }
 

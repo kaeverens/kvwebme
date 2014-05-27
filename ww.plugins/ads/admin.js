@@ -159,9 +159,13 @@ $(function() {
 	function editAdsType(ret) {
 		var html='<table>'
 			+'<tr><th>Name</th><td><input id="popup-name"/></td></tr>'
+			+'<tr><th>Type</th><td><select id="popup-type"><option value="0">Ad</option><option value="1">Full Page</option></select></td></tr>'
 			+'<tr><th>Width</th><td><input id="popup-width"/></td></tr>'
 			+'<tr><th>Height</th><td><input id="popup-height"/></td></tr>'
 			+'<tr><th>Daily Price</th><td><input id="popup-price-per-day"/></td></tr>'
+			+'<tr><th>For Sale</th><td><select id="popup-not-for-sale">'
+			+'<option value="0">for sale</option>'
+			+'<option value="1">not for sale</option></select></td></tr>'
 			+'</table>';
 		var $dialog=$(html).dialog({
 			'modal':true,
@@ -175,7 +179,9 @@ $(function() {
 						'name':$('#popup-name').val(),
 						'width':$('#popup-width').val(),
 						'height':$('#popup-height').val(),
-						'price_per_day':$('#popup-price-per-day').val()
+						'price_per_day':$('#popup-price-per-day').val(),
+						'not_for_sale':$('#popup-not-for-sale').val(),
+						'type':$('#popup-type').val()
 					}, function() {
 						document.location="/ww.admin/plugin.php?_plugin=ads&_page=ad-types";
 					});
@@ -186,5 +192,6 @@ $(function() {
 		$('#popup-height').val(ret.height);
 		$('#popup-width').val(ret.width);
 		$('#popup-price-per-day').val(ret.price_per_day);
+		$('#popup-not-for-sale').val(ret.not_for_sale);
 	}
 });

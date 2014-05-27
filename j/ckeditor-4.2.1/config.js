@@ -23,6 +23,6 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'colors' },
 		{ name: 'about' }
 	];
-	config.extraPlugins='youtube';
+	config.extraPlugins='youtube,wenzgmap';
 	config.allowedContent=true;
 };

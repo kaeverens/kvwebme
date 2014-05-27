@@ -99,16 +99,23 @@ function Blog_getPostsList() {
 	$numPerPage=isset($_REQUEST['iDisplayLength'])
 		?(int)$_REQUEST['iDisplayLength']:25;
 	$startAt=isset($_REQUEST['iDisplayStart'])?(int)$_REQUEST['iDisplayStart']:0;
-	$userfilter=Core_isAdmin()
-		?'':' and user_id='.$_SESSION['userdata']['id'];
+	$filters=array();
+	if (!Core_isAdmin()) {
+		$filters[]='user_id='.$_SESSION['userdata']['id'];
+	}
+	if (isset($_REQUEST['sSearch']) && $_REQUEST['sSearch']) {
+		$filters[]='title like "%'.addslashes($_REQUEST['sSearch']).'%"';
+	}
+	$filter=count($filters)
+		?' where '.join(' and ', $filters)
+		:'';
 	$totalRecords=dbOne(
-		'select count(id) as ids from blog_entry where 1'.$userfilter,
+		'select count(id) as ids from blog_entry'.$filter,
 		'ids'
 	);
 	$totalDisplayRecords=$totalRecords;
 	$sql='select id, title, cdate, pdate, udate, user_id, status, comments'
-		.' from blog_entry where 1'
-		.$userfilter
+		.' from blog_entry'.$filter
 		.' order by cdate desc limit '.$startAt.','.$numPerPage;
 	$rows=dbAll($sql);
 	$posts=array();

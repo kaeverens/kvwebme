@@ -44,11 +44,6 @@ $plugin=array(
 $banner_image_types=array('jpg','gif','png');
 
 function BannerImage_getImgHtml($id, $hide_message=false) {
-	mail(
-		'kae.verens@gmail.com',
-		'deprecated Banner usage 1',
-		$_SERVER['HTTP_HOST'].' '.$_SERVER['REQUEST_URI']
-	);
 	global $banner_image_types;
 	$type='';
 	foreach ($banner_image_types as $t) {
@@ -62,11 +57,6 @@ function BannerImage_getImgHtml($id, $hide_message=false) {
 	return '<img src="/f/skin_files/banner-image/'.$id.'.'.$type.'" />';
 }
 function BannerImage_showBanner($vars=null) {
-	mail(
-		'kae.verens@gmail.com',
-		'deprecated Banner usage 2',
-		$_SERVER['HTTP_HOST'].' '.$_SERVER['REQUEST_URI']
-	);
 	require_once SCRIPTBASE.'ww.plugins/banner-image/frontend/banner-image.php';
 	return show_banner($vars);
 }

@@ -137,11 +137,13 @@ class User{
 		* @return string
 		*/
 	public static function getAsScript() {
+		$email=isset($_SESSION['userdata']['email'])
+			?$_SESSION['userdata']['email']:'';
 		$tmp='userdata={isAdmin:'.(Core_isAdmin()?1:0)
 			.',id:'.$_SESSION['userdata']['id']
 			.(isset($_SESSION['wasAdmin'])?',wasAdmin:1':'')
 			.',name:"'.addslashes($_SESSION['userdata']['name']).'"'
-			.',email:"'.addslashes($_SESSION['userdata']['email']).'"'
+			.',email:"'.addslashes($email).'"'
 			.',lat:'.((float)@$_SESSION['userdata']['location_lat'])
 			.',lng:'.((float)@$_SESSION['userdata']['location_lng']);
 		if (isset($_SESSION['userdata']['discount'])) {

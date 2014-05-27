@@ -85,6 +85,7 @@ class CoreGraphics{
 			case 'imagick': // {
 				$thumb=new Imagick();
 				$thumb->read($from);
+				$thumb->setImageOpacity(1.0);
 				$thumb->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1, true);
 				$thumb->writeImage($to);
 				$thumb->clear();

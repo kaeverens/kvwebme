@@ -157,7 +157,7 @@ function ClassifiedAds_frontend($PAGEDATA) {
 		$html.='</tr></table>';
 		$html.='</div>';
 	}
-	else { // show sub-categories and products
+	else { // show sub-categories and ads
 		// { sub-categories
 		$subcats=dbAll(
 			'select id, icon, name from classifiedads_categories where parent='.$cid
@@ -185,7 +185,13 @@ function ClassifiedAds_frontend($PAGEDATA) {
 		$html.='<table id="classifiedads-ads">'
 			.'<thead><tr><th colspan="2">Title</th><th>Location</th><th>Posted</th>'
 			.'<th>Price</th></tr></thead><tbody>';
+		$today=date('Y-m-d');
 		foreach ($ads as $ad) {
+			if ($ad['expiry_date']<$today) {
+				dbQuery('delete from classifiedads_ad where id='.$ad['id']);
+				Core_cacheClear('classifiedads_ad');
+				continue;
+			}
 			$url=ClassifiedAds_getCategoryUrl($ad['category_id'])
 				.'/'.$ad['id'].'-'.preg_replace('/[^a-z0-9A-Z]/', '-', $ad['title']);
 			$img='';
@@ -360,3 +366,24 @@ function ClassifiedAds_categoryTree($pid=0) {
 }
 
 // }
+function ClassifiedAds_publish($id) {
+	$data=dbRow('select * from classifiedads_purchase_orders where id='.$id);
+	$userEmail=dbOne('select email from user_accounts where id='.$data['user_id'], 'email');
+	$sql='insert into classifiedads_ad set user_id='.$data['user_id']
+		.',email="'.addslashes($userEmail).'",creation_date=now()'
+		.',title="'.addslashes($data['title']).'"'
+		.',body="'.addslashes($data['description']).'"'
+		.',expiry_date=date_add(now(), interval '.$data['days'].' day)'
+		.', status=1, category_id='.$data['category_id'];
+	dbQuery($sql);
+	$ad_id=dbLastInsertId();
+	$dir=USERBASE.'/f/userfiles/'.$data['user_id'];
+	if (file_exists($dir.'/classified-ads-upload/'.$data['id'])) {
+		@mkdir($dir.'/classified-ads', 0777, true);
+		rename(
+			$dir.'/classified-ads-upload/'.$data['id'],
+			$dir.'/classified-ads/'.$ad_id
+		);
+	}
+	Core_cacheClear('classifiedads_ad');
+}

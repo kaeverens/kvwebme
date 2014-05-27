@@ -112,7 +112,7 @@ $id=(int)@$_REQUEST['pageid'];
 $page=preg_replace('#&.*|/$#', '', @$_REQUEST['page']);
 // }
 // { is this a search?
-if ($page=='' && isset($_GET['search']) || isset($_GET['s'])) {
+if ($page=='' && (isset($_GET['search']) || isset($_GET['s']))) {
 	require_once 'ww.incs/search.php';
 	$id=Search_getPage();
 }
@@ -130,6 +130,23 @@ if (isset($DBVARS['maintenance-mode']) && $DBVARS['maintenance-mode']=='yes') {
 }
 // }
 // { get current page id
+if (!$id && !$page) {
+	$r=Page::getInstanceBySpecial(1);
+	if ($r && isset($r->id)) {
+		$id=$r->id;
+		$PAGEDATA=Page::getInstance($id)->initValues();
+		if (isset($PAGEDATA->vars['_short_url'])
+			&& $PAGEDATA->vars['_short_url']
+		) {
+			$s=dbOne(
+				'select short_url from short_urls where page_id='.$id, 'short_url'
+			);
+			if ($s!=$page) {
+				redirect('/'.$s, 'page has a shorter URL');
+			}
+		}
+	}
+}
 if (!$id) {
 	if ($page) {         // find using the page name
 		$r=Page::getInstanceByName($page);

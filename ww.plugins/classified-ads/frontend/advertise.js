@@ -94,9 +94,13 @@ $(function() {
 							+'idth="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" '
 							+'alt=""/></form>';
 						// }
+						if (price==0) {
+							paypal='<span><button>FREE</button></span>';
+						}
 						var $paypal=$(paypal)
 							.appendTo($wrapper.find('.paypal').empty());
-						$paypal.find('input').click(function() {
+						$paypal.find('>button').button();
+						$paypal.find('*').click(function() {
 							$.post('/a/p=classified-ads/f=makePurchaseOrder', {
 								'type_id':ad.id,
 								'category_id':classifiedads_categoryId,
@@ -112,6 +116,9 @@ $(function() {
 									return alert(ret.error);
 								}
 								$('#paypal-order-id').val(ret.id).closest('form').submit();
+								if (price==0) {
+									$('#classifiedads-wrapper').html('<p>Thank you. Your classified ad is in the database now.</p>');
+								}
 							});
 							return false;
 						});

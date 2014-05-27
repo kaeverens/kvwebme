@@ -80,3 +80,19 @@ if ($version==10) { // calculate ad views
 	);
 	$version=11;
 }
+if ($version==11) {
+	dbQuery('alter table ads_types add type tinyint(1) default 0');
+	$version=12;
+}
+if ($version==12) {
+	dbQuery('alter table ads add meta text;');
+	$version=13;
+}
+if ($version==13) {
+	dbQuery('alter table ads_purchase_orders add meta text;');
+	$version=14;
+}
+if ($version==14) {
+	dbQuery('alter table ads_types add not_for_sale tinyint(1) default 0');
+	$version=15;
+}

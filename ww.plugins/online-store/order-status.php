@@ -96,8 +96,8 @@ function OnlineStore_sendInvoiceEmail($id, $order=false) {
 	if (isset($form_vals->billing_email)) {
 		$form_vals->Billing_Email=$form_vals->billing_email;
 	}
-	if (!isset($form_vals->Billing_Email)) {
-		$form_vals->Billing_Email='no-email-supplied@example.com';
+	if (!isset($form_vals->Billing_Email) || !$form_vals->Billing_Email) {
+		$form_vals->Billing_Email=$form_vals->Email;
 	}
 	$headers='';
 	if ($bcc) {
@@ -176,19 +176,21 @@ function OnlineStore_sendInvoiceEmail($id, $order=false) {
 			);
 		}
 		// { stock control
-		$valsOS=$p->vals['online-store'];
-		$stock_amount=(int)@$valsOS['_stock_amt']-$item->amt;
-		$valsOS['_stock_amt']=$stock_amount;
-		$sold_amount=(int)@$valsOS['_sold_amt']+$item->amt;
-		$valsOS['_sold_amt']=$sold_amount;
-		dbQuery(
-			'update products set'
-			.' online_store_fields="'.addslashes(json_encode($valsOS)).'"'
-			.', os_amount_in_stock='.$stock_amount
-			.', os_amount_sold='.$sold_amount
-			.', date_edited=now()'
-			.' where id='.$item->id
-		);
+		if (isset($p->vals['online-store'])) {
+			$valsOS=$p->vals['online-store'];
+			$stock_amount=(int)@$valsOS['_stock_amt']-$item->amt;
+			$valsOS['_stock_amt']=$stock_amount;
+			$sold_amount=(int)@$valsOS['_sold_amt']+$item->amt;
+			$valsOS['_sold_amt']=$sold_amount;
+			dbQuery(
+				'update products set'
+				.' online_store_fields="'.addslashes(json_encode($valsOS)).'"'
+				.', os_amount_in_stock='.$stock_amount
+				.', os_amount_sold='.$sold_amount
+				.', date_edited=now()'
+				.' where id='.$item->id
+			);
+		}
 		// }
 	}
 	Core_cacheClear('products');

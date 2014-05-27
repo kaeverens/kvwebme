@@ -19,6 +19,8 @@ $plugin=array(
 		'menu' => array(
 			'Ads>Ads'=>
 				'/ww.admin/plugin.php?_plugin=ads&amp;_page=ads',
+			'Ads>Unpaid Ads'=>
+				'/ww.admin/plugin.php?_plugin=ads&amp;_page=unpaid-ads',
 			'Ads>Ad Types'=>
 				'/ww.admin/plugin.php?_plugin=ads&amp;_page=ad-types'
 		),
@@ -39,7 +41,7 @@ $plugin=array(
 	'triggers'=>array(
 		'privacy_user_profile' => 'Ads_userProfile'
 	),
-	'version'=>11
+	'version'=>14
 );
 
 // }

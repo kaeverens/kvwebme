@@ -29,6 +29,7 @@ function Core_pagesCronHandle() {
 }
 
 while (!isset($DBVARS['cron-next'])
+	|| $DBVARS['cron-next']==''
 	|| ($DBVARS['cron-next']!=false && $DBVARS['cron-next']<date('Y-m-d H:i:s'))
 ) {
 	$rs=dbAll('select * from cron where next_date<now()');
@@ -37,7 +38,9 @@ while (!isset($DBVARS['cron-next'])
 		if ($r['period']=='never') {
 			continue;
 		}
-		$r['func']();
+		if (function_exists($r['func'])) {
+			$r['func']();
+		}
 		$sql='update cron set next_date=date_add(next_date, interval '
 			.$r['period_multiplier'].' '.$r['period'].') where id='.$r['id'];
 		dbQuery($sql);
