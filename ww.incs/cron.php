@@ -28,7 +28,7 @@ function Core_pagesCronHandle() {
 	Core_cacheClear('pages,menus');
 }
 
-while (!isset($DBVARS['cron-next'])
+if (!isset($DBVARS['cron-next'])
 	|| $DBVARS['cron-next']==''
 	|| ($DBVARS['cron-next']!=false && $DBVARS['cron-next']<date('Y-m-d H:i:s'))
 ) {

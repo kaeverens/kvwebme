@@ -357,7 +357,7 @@ function OnlineStoreEbay_adminImportOrders() {
 		);
 		$form_vals=json_encode($form_vals);
 		$total=(float)$order->Total;
-		$date_created=$order->CreatedTime;
+		$date_created=date('Y-m-d h:i:s', strtotime($order->CreatedTime));
 		$transactions=array();
 		$tArr=$order->TransactionArray->Transaction;
 		if (!is_array($tArr)) {

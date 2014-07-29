@@ -184,7 +184,6 @@ function Core_menuShow2(items, name, prefix, depth) {
 function Core_menuShow(items) {
 	var html=Core_menuShow2(items, 'top', 'menu', 0);
 	$('#header').html(html);
-	console.log(html);
 	__langInit();
 }
 function Core_prompt(text, val, validator, callback) {

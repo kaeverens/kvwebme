@@ -469,3 +469,8 @@ if ($version==54) { // add "contains" to products_categories
 	dbQuery('alter table products_categories add contains longtext');
 	$version=55;
 }
+if ($version==55) { // change 'enabled' to tinyint, and index it
+	dbQuery('alter table products change enabled enabled tinyint');
+	dbQuery('alter table products add index (enabled)');
+	$version=56;
+}

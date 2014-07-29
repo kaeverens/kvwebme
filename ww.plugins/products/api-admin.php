@@ -116,6 +116,15 @@ function Products_adminCategoriesRecount() {
 	}
 	exit;
 }
+function Products_adminCategoriesRemoveEmpty() {
+	$rs=dbAll('select a.id, a.name, (select count(id) from products_categories where parent_id=a.id) as cats, (select count(product_id) from products_categories_products where category_id=a.id) as products from products_categories as a;');
+	foreach ($rs as $r) {
+		if (!(int)$r['products'] && !(int)$r['cats']) {
+			$_REQUEST['id']=$r['id'];
+			Products_adminCategoryDelete();
+		}
+	}
+}
 // { Products_adminCategoryDelete
 
 /**

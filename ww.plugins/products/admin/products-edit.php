@@ -327,7 +327,7 @@ if ($id) {
 		echo '<em>No product with that ID exists.</em>';
 		return;
 	}
-	$product=Product::getInstance($id);
+	$product=Product::getInstance($id, false, 1);
 	$product_url=$product->getRelativeUrl();
 }
 else {
@@ -497,7 +497,12 @@ echo '</select></td>';
 // { view on front-end
 echo '<td>';
 if ($id) {
-	echo '<a href="'.$product_url.'" target="_blank">view on front-end</a>';
+	if ($product->vals['enabled']) {
+		echo '<a href="'.$product_url.'" target="_blank">view on front-end</a>';
+	}
+	else {
+		echo 'not enabled';
+	}
 }
 echo '</td>';
 // }
@@ -688,11 +693,12 @@ if ($id && isset($PLUGINS['online-store'])) {
 			echo '<input class="small" type="number" name="productsExtra[os_'
 				.$k.']"';
 			if (isset($online_store_data->$k)) {
-				echo ' value="'.$online_store_data->$k.'"';
+				echo ' value="'.(float)$online_store_data->$k.'"';
 			}
-			if ($pdata['os_'.$k]) {
-				echo ' value="'.$pdata['os_'.$k].'"';
+			else if ($pdata['os_'.$k]) {
+				echo ' value="'.(float)$pdata['os_'.$k].'"';
 			}
+			else echo ' value="0"';
 			echo ' />';
 		}
 		else {

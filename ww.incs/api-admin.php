@@ -1268,7 +1268,7 @@ function Core_adminPageEdit() {
 				'COUNT(type)'
 			)
 			:0;
-		$q='INSERT into '.$q;		
+		$q='INSERT into '.$q.',category=""';
 		if ($onlyOnePageInstance == true) {
 			if ($howMany>=1) {
 				return array('error'=>__('You can have only one page of this type'));
@@ -1348,7 +1348,8 @@ function Core_adminPageEdit() {
 	return array(
 		'id'   =>$id,
 		'pid'  =>$pid,
-		'alias'=>$alias		
+		'alias'=>$alias,
+		'sql'  =>$q
 	);
 	// }
 }

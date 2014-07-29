@@ -138,7 +138,7 @@ $plugin=array(
 		'menu-subpages' => 'Products_getSubCategoriesAsMenu',
 		'menu-subpages-html' => 'Products_getSubCategoriesAsMenuHtml'
 	), // }
-	'version' => '55'
+	'version' => '56'
 );
 // }
 
@@ -1604,7 +1604,7 @@ class ProductsCategoriesProducts{
 	static $prodsByCid=array();
 	static $prodsByCids=array();
 	static $activeCategories=false;
-	function getByProductId($pid) {
+	static function getByProductId($pid) {
 		if (!isset(self::$catsByPid[$pid])) {
 			$rs=dbAll(
 				'select category_id from products_categories_products where product_id='
@@ -1618,7 +1618,7 @@ class ProductsCategoriesProducts{
 		}
 		return self::$catsByPid[$pid];
 	}
-	function getByCategoryId($cid) {
+	static function getByCategoryId($cid) {
 		if (!isset(self::$prodsByCid[$cid])) {
 			$rs=dbAll(
 				'select product_id from products_categories_products where category_id='
@@ -1632,7 +1632,7 @@ class ProductsCategoriesProducts{
 		}
 		return self::$prodsByCid[$cid];
 	}
-	function getByCategoryIds($id, $noRecurse) {
+	static function getByCategoryIds($id, $noRecurse) {
 		$cat=ProductCategory::getInstance($id);
 		$contains=$cat->vals['contains'];
 		if ($contains) {
@@ -1664,7 +1664,7 @@ class ProductsCategoriesProducts{
 		}
 		return self::$prodsByCids[$idx];
 	}
-	function delete($cid, $pid) {
+	static function delete($cid, $pid) {
 		$cat=ProductCategory::getInstance($cid);
 		if (!$cat) {
 			return;
@@ -1679,7 +1679,7 @@ class ProductsCategoriesProducts{
 		);
 		self::clearCache();
 	}
-	function deleteByCategoryId($id) {
+	static function deleteByCategoryId($id) {
 		$rs=dbAll(
 			'select * from products_categories_products where category_id='.$id
 		);
@@ -1697,7 +1697,7 @@ class ProductsCategoriesProducts{
 		);
 		self::clearCache();
 	}
-	function deleteByProductId($id) {
+	static function deleteByProductId($id) {
 		if (is_array($id)) {
 			foreach ($id as $i) {
 				self::deleteByProductId($i);
@@ -1722,7 +1722,7 @@ class ProductsCategoriesProducts{
 		);
 		self::clearCache();
 	}
-	function insert($cid, $pid) {
+	static function insert($cid, $pid) {
 		$cid=(int)$cid;
 		$pid=(int)$pid;
 		$cat=ProductCategory::getInstance($cid);
@@ -1785,7 +1785,7 @@ class ProductsCategoriesProducts{
 		}
 		return $arr;
 	}
-	function clearCache() {
+	static function clearCache() {
 		self::$prodsByCid=array();
 		self::$catsByPid=array();
 		self::$activeCategories=false;

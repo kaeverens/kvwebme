@@ -194,7 +194,7 @@ function Products_screenCategories() {
 		alert(toptwenty.join("\t"));
 	}
 	function showTree() {
-		var $wrapper=$('#categories-tree');
+		var $wrapper=$('#categories-tree').empty();
 		$('<button>Add Category</button>')
 			.button()
 			.click(function() {
@@ -308,6 +308,12 @@ function Products_screenCategories() {
 				);
 			})
 			.appendTo($wrapper);
+		$('<button>Delete Empty Categories</button>')
+			.button()
+			.click(function() {
+				$.post('/a/p=products/f=adminCategoriesRemoveEmpty', showTree);
+			})
+			.appendTo($wrapper);
 		$('#category-jstree').on('click', 'a', function() {
 			var id=$(this).closest('li').attr('id').replace('cat-', '');
 			showCategory(id);
@@ -399,7 +405,7 @@ function Products_screenCategories() {
 					if (request.result) {
 						var name=request.result.name;
 						if (!productsInCategoryFilter || filterMatch(name, filters)) {
-							if (name[0]=='{') {
+							if (name[0]=='{') { // }
 								name=JSON.parse(name).en;
 							}
 							products.push(
@@ -435,7 +441,7 @@ function Products_screenCategories() {
 							|| (onlyShowProductsWithNoCategory && !(+cursor.value.num_of_categories))
 						)
 					) {
-						if (name[0]=='{') {
+						if (name[0]=='{') { // }
 							name=JSON.parse(name).en;
 						}
 						products.push(
