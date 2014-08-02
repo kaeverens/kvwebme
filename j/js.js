@@ -122,11 +122,12 @@ Date.prototype.toYMD =function() {
 	return year+'-'+month+'-'+day;
 };
 var CKEditor_config={
-	filebrowserBrowseUrl:'/j/kfm/',
-	menu:'WebME',
-	scayt_autoStartup:false,
-	removeButtons:'Save,NewPage,Preview,Print,Templates',
-	removePlugins:'forms,about'
+	'filebrowserBrowseUrl':'/j/kfm/',
+	'menu':'WebME',
+	'scayt_autoStartup':false,
+	'removeButtons':'Save,NewPage,Preview,Print,Templates',
+	'removePlugins':'forms,about',
+	'customConfig':'/j/ckeditor-config.js'
 };
 jQuery.fn.center = function () {
 	this.css('position', 'absolute');

@@ -29,8 +29,9 @@ $homepage = @$homepage[ 'Homepage (URL):' ];
 WW_addScript('/j/swfobject.js');
 WW_addScript('/j/jquery.uploadify/jquery.uploadify.min.js');
 WW_addScript('/j/validate.jquery.min.js');
-WW_addScript('/j/ckeditor-'.CKEDITOR_VERSION.'/ckeditor.js');
-WW_addScript('/j/ckeditor-'.CKEDITOR_VERSION.'/adapters/jquery.js');
+WW_addScript('//cdn.ckeditor.com/4.4.3/standard/ckeditor.js');
+WW_addScript('//cdn.ckeditor.com/4.4.3/standard/adapters/jquery.js');
+WW_addInlineScript('CKEDITOR_BASEPATH="//cdn.ckeditor.com/4.4.3/standard/";');
 WW_addCSS('/ww.css/forms.css');
 WW_addCSS('/ww.plugins/themes-api/files/jquery-ui-1.8.12.custom.css');
 

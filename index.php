@@ -374,7 +374,7 @@ $tmp='var pagedata={id:'.$PAGEDATA->id
 	.',sessid:"'.session_id().'"'
 	.',lang:"'.@$_SESSION['language'].'"'
 	.'},'
-	.'CKEDITOR_BASEPATH="/j/ckeditor-'.CKEDITOR_VERSION.'/", '
+	.'CKEDITOR_BASEPATH="//cdn.ckeditor.com/4.4.3/standard/", '
 	.(
 		isset($_SESSION['userdata']['id'])
 			?User::getAsScript()
