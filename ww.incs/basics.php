@@ -404,7 +404,7 @@ function Core_mail(
 			}
 		}
 	}
-	require_once SCRIPTBASE . '/ww.incs/Smarty-3.1.12/libs/Smarty.class.php';
+	require_once SCRIPTBASE . '/vendor/Smarty-3.1.19/libs/Smarty.class.php';
 	$smarty=new Smarty;
 	$smarty->left_delimiter = '{{';
 	$smarty->right_delimiter = '}}';

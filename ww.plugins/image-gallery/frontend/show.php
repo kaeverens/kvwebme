@@ -61,7 +61,7 @@ function ImageGallery_show($PAGEDATA) {
 		}
 		// }
 		// { display the template
-		require_once SCRIPTBASE.'ww.incs/Smarty-3.1.12/libs/Smarty.class.php';
+		require_once SCRIPTBASE.'vendor/Smarty-3.1.19/libs/Smarty.class.php';
 		require_once SCRIPTBASE
 			.'ww.plugins/image-gallery/frontend/template-functions.php';
 		$smarty=new Smarty;

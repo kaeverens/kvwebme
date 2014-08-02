@@ -205,7 +205,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 		$_SESSION['online_store_last_order_id']=$id;
 		 // }
 		// { generate emails
-		require_once SCRIPTBASE . 'ww.incs/Smarty-3.1.12/libs/Smarty.class.php';
+		require_once SCRIPTBASE.'vendor/Smarty-3.1.19/libs/Smarty.class.php';
 		$smarty = new Smarty;
 		$smarty->compile_dir=USERBASE.'/ww.cache/templates_c';
 		$smarty->left_delimiter = '{{';
