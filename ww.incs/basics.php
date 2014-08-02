@@ -563,8 +563,8 @@ function Core_siteVar($name, $value=null) {
 	*/
 function Core_smartySetup($compile_dir) {
 	global $DBVARS, $PLUGINS, $PAGEDATA;
-	require_once SCRIPTBASE . '/ww.incs/Smarty-3.1.12/libs/Smarty.class.php';
-	$smarty = new Smarty;
+	require_once SCRIPTBASE.'/vendor/Smarty-3.1.19/libs/Smarty.class.php';
+	$smarty=new Smarty;
 	$smarty->left_delimiter = '{{';
 	$smarty->right_delimiter = '}}';
 	$smarty->assign(
