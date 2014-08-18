@@ -1,6 +1,6 @@
 $(function() {
-	CKEDITOR.plugins.addExternal( 'youtube', '/vendor/ckeditor-plugins/youtube/', 'plugin.js' );
-	CKEDITOR.plugins.addExternal( 'wenzgmap', '/vendor/ckeditor-plugins/wenzgmap/', 'plugin.js' );
+	CKEDITOR.plugins.addExternal( 'youtube', '/ww.incs/vendor/ckeditor-plugins/youtube/', 'plugin.js' );
+	CKEDITOR.plugins.addExternal( 'wenzgmap', '/ww.incs/vendor/ckeditor-plugins/wenzgmap/', 'plugin.js' );
 	CKEDITOR.editorConfig = function( config ) {
 		// Define changes to default configuration here. For example:
 		// config.language = 'fr';
