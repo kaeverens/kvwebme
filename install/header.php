@@ -144,14 +144,11 @@ echo '
 	<title>'.__('%1 Installer', array($cms_name), 'core').'</title>';
 echo '<link rel="stylesheet" type="text/css" href="/j/cluetip/jquery.cluetip.css" />
 	<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />
-	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui'
-		.'/1.8.14/themes/base/jquery-ui.css" />
 
 	<!-- Installer specific javascript -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min'
-		.'.js"></script>
- 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-'
-		.'ui.min.js"></script>
+	<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+ 	<script src="//code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/ui-lightness/jquery-ui.css" />
 	<script src="/j/validate.jquery.min.js"></script>
 
 	<script defer="defer" type="text/javascript">

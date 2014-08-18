@@ -49,7 +49,6 @@ function Ratings_templateFunction($vars) {
 
 	$script = '$(function(){$(".ratings").ratings();});';
 
-	WW_addScript('/j/jquery.tooltip.min.js');
 	WW_addScript('ratings/ratings.js');
 	WW_addInlineScript($script);
 

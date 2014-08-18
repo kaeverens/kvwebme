@@ -19,13 +19,56 @@ $(function(){
 			return;
 		}
 		var name=$('input[name=name]').val(),email=$('input[name=email]').val();
-		msg='Dear '+name+',<br/>\n<br/>\nWe have activated your account.'+
-			'<br/>\n<br/>\nYou can log in using your email address "'+email+'"'+
-			' and the password you chose when registering.<br/>\n<br/>\nThank you.';
-		$('<textarea name="email-to-send">'+msg+'</textarea>')
+		var $textarea=$('<textarea name="email-to-send"></textarea>')
 			.appendTo('#users-email-to-send-holder');
 		$('#users-email-to-send')
 			.css('display','table-row');
+		$textarea.ckeditor();
+		function newUserEmailTemplateGet(callback) {
+			$.post(
+				'/a/f=adminSiteVarsGet/name=new-user-email-template',
+				function(ret) {
+					if (!ret) {
+						ret='Dear {{NAME}},<br/>\n<br/>\nWe have activated your account.'
+							+'<br/>\n<br/>\nYou can log in using your email address "{{EMAIL}}"'
+							+' and the password you chose when registering.<br/>\n<br/>\nThank you.';
+					}
+					callback(ret);
+				}
+			);
+		}
+		function userEmailSet() {
+			newUserEmailTemplateGet(function(ret) {
+				ret=ret.replace(/\{\{NAME\}\}/, name).replace(/\{\{EMAIL\}\}/, email);
+				$textarea.val(ret);
+			});
+		}
+		userEmailSet();
+		$('#new-user-email-template').click(function() {
+			newUserEmailTemplateGet(function(ret) {
+				var html='<div><textarea style="width:95%;height:300px"/><p>Codes: {{NAME}}, {{EMAIL}}</p></div>';
+				var $dialog=$(html).dialog({
+					'height':470,
+					'width':650,
+					'modal':true,
+					'buttons':{
+						'Save':function() {
+							var val=$dialog.find('textarea').val();
+							$.post('/a/f=adminSiteVarsSet', {
+								'name':'new-user-email-template',
+								'value':val
+							}, function() {
+								$dialog.remove();
+								userEmailSet();
+							});
+						}
+					}
+				});
+				$dialog.find('textarea').val(ret).ckeditor();
+				console.log(ret);
+			});
+			return false;
+		});
 	});
 	var $holder=$('#custom');
 	var extras=$holder.find('input').val();

@@ -1804,6 +1804,28 @@ function Core_adminSaveJSVar() {
 }
 
 // }
+// { Core_adminSiteVarsGet
+
+function Core_adminSiteVarsGet() {
+	$name=$_REQUEST['name'];
+	return dbOne(
+		'select value from site_vars where name="'.addslashes($name).'"',
+		'value'
+	);
+}
+
+// }
+// { Core_adminSiteVarsSet
+
+function Core_adminSiteVarsSet() {
+	$name=$_REQUEST['name'];
+	$val=$_REQUEST['value'];
+	dbQuery('delete from site_vars where name="'.addslashes($name).'"');
+	dbQuery('insert into site_vars set value="'.addslashes($val).'", name="'.addslashes($name).'"');
+	Core_cacheClear('site_vars');
+}
+
+// }
 // { Core_adminUserEditVal
 
 /**
