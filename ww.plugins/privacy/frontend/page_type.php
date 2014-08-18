@@ -80,7 +80,7 @@ function Privacy_controller() {
 				) {
 					$redirect_url=$_REQUEST['login_referer'];
 				}
-				elseif(@$PAGEDATA->vars['userlogin_redirect_to']) {
+				else if(@$PAGEDATA->vars['userlogin_redirect_to']) {
 					$p=Page::getInstance($PAGEDATA->vars['userlogin_redirect_to']);
 					$redirect_url=$p->getRelativeUrl();
 				}
