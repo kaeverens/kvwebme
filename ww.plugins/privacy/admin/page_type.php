@@ -50,7 +50,7 @@ foreach ($arr as $k=>$v) {
 	$html.='>'.htmlspecialchars($v).'</option>';
 }
 $html.='</select></td>';
-$html.='<th rowspan="3">Add New Users To</th><td rowspan="3">';
+$html.='<th rowspan="5">Add New Users To</th><td rowspan="3">';
 $groups=array();
 $grs=dbAll('select id,name from groups');
 $gms=array();
@@ -109,6 +109,22 @@ if (isset($page_vars['userlogin_can_purchase_credits']) && $page_vars['userlogin
 	$html.=' selected="selected"';
 }
 $html.='>Yes</option></select></td></tr>';
+// }
+// { form source type
+$html.='<tr><th>Source Type</th><td>'
+	.'<select name="page_vars[userlogin_sourcetype]">';
+$arr=array(
+	'0'=>'Table',
+	'1'=>'Label/Input'
+);
+foreach ($arr as $k=>$v) {
+	$html.='<option value="'.$k.'"';
+	if ($k==$page_vars['userlogin_sourcetype']) {
+		$html.=' selected="selected"';
+	}
+	$html.='>'.htmlspecialchars($v).'</option>';
+}
+$html.='</select></td></tr>';
 // }
 $html.='</table></div>';
 // }

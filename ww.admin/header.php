@@ -61,17 +61,11 @@ WW_addCSS('//cdn.jsdelivr.net/codemirror/3.14.0/codemirror.css');
 // }
 // { datatables
 WW_addScript(
-	'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/'
-	.'jquery.dataTables.min.js'
+	'//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js'
 );
 WW_addScript('/j/datatables-delay.js');
 WW_addCSS(
-	'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/'
-	.'jquery.dataTables.css'
-);
-WW_addCSS(
-	'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/'
-	.'jquery.dataTables_themeroller.css'
+	'//cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css'
 );
 // }
 echo '<!doctype html>
