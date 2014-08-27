@@ -178,13 +178,30 @@ function Privacy_loginForm() {
 	}
 	$c.='<form class="userLoginBox" action="'
 		.$GLOBALS['PAGEDATA']->getRelativeUrl()
-		.'#tab=Login" method="post"><table>';
-	$c.='<tr><th><label for="email">'.__('Email', 'core').'</label></th>'
-		.'<td><input name="email" '
-		.'value="'.@$_REQUEST['email'].'" /></td>';
-	$c.='<th><label for="password">'.__('Password', 'core').'</label></th>'
-		.'<td><input type="password" name="password" /></td></tr>';
-	$c.='</table>'
+		.'#tab=Login" method="post">';
+	$sourcetype=isset($PAGEDATA->vars['userlogin_sourcetype'])
+		?$PAGEDATA->vars['userlogin_sourcetype']:'0';
+	switch ($sourcetype) {
+		case '1':
+		break;
+	default:
+			$start='<table>';
+			$labelprefix='<tr><th>';
+			$labelpostfix='</th>';
+			$inputprefix='<td>';
+			$inputpostfix='</td></tr>';
+			$finish='</table>';
+	}
+	$c.=$start;
+	$c.=$labelprefix.'<label for="email">'.__('Email', 'core').'</label>'
+		.$labelpostfix.$inputprefix.'<input name="email" '
+		.'value="'.@$_REQUEST['email'].'" placeholder="'.__('Email', 'core').'"/>'
+		.$inputpostfix;
+	$c.=$labelprefix.'<label for="password">'.__('Password', 'core').'</label>'
+		.$labelpostfix.$inputprefix
+		.'<input type="password" name="password"'
+		.' placeholder="'.__('Password', 'core').'" />'.$inputpostfix;
+	$c.=$finish
 		.'<button>'.__('Login', 'core').'</button>'
 		.'<input type="hidden" name="action" value="Login"/>';
 	if (isset($_REQUEST['login_referer'])) {

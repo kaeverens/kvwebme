@@ -217,8 +217,8 @@ echo '<tr><th>Blog</th><td><input name="contact[blog]" value="'
 echo '</table></td>';
 // }
 echo '</tr>'
-	.'<tr style="display:none" id="users-email-to-send"><th>Email to send'
-	.' to user</th><td colspan="3" id="users-email-to-send-holder"></td></tr>'
+	.'<tr style="display:none" id="users-email-to-send"><th colspan="3">Email to send to user</th><th><a href="#" id="new-user-email-template">template</a></th></tr>'
+	.'<tr><td colspan="4" id="users-email-to-send-holder"></td></tr>'
 	.'</table></div>';
 // }
 // { locations 

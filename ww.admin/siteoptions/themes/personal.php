@@ -126,6 +126,5 @@ echo '</tr></table><br style="clear:both"/>
 </div>
 ';
 // }
-WW_addScript('/j/jquery.tooltip.min.js');
 WW_addScript('ratings/ratings.js');
 WW_addScript('themes-api/carousel.js');

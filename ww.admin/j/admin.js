@@ -364,6 +364,14 @@ $(function(){
 			'Your browser does not support IndexedDB. Please use a different one.'
 		);
 	}
+	// { disable autofill: based on http://stackoverflow.com/questions/15738259/disabling-chrome-autofill
+	$('form').prepend('<div class="deleteme" style="display:none">'
+		+'<input name="username"/><input type="password" name="password"/></div>'
+	);
+	setTimeout(function() {
+		$('.deleteme').remove();
+	}, 1000);
+	// }
 });
 var jsvars={
 	'datatables':{}

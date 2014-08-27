@@ -162,7 +162,6 @@ if (isset($_POST[ 'install-theme' ])) { // install theme if selected
 
 echo
 	'<script defer="defer" src="/ww.plugins/ratings/ratings.js"></script>'
-	.'<script defer="defer" src="/j/jquery.tooltip.min.js"></script>'
 	.'<script defer="defer" src="/ww.plugins/themes-api/carousel.js"></script>'
 	.'<script defer="defer" src="/install/themes.js"></script>'
 	.'<link rel="stylesheet" type="text/css" href="/ww.plugins/themes-api'
