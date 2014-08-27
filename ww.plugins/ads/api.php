@@ -208,7 +208,7 @@ function Ads_makePurchaseOrder() {
 	}
 	$type_id=(int)$_REQUEST['type_id'];
 	$days=(int)$_REQUEST['days'];
-	$target_url=$_REQUEST['target_url'];
+	$target_url=isset($_REQUEST['target_url'])?$_REQUEST['target_url']:'';
 	$target_type=(int)$_REQUEST['target_type'];
 	$sql='insert into ads_purchase_orders set user_id='.$user_id.', type_id='
 		.$type_id.', days='.$days.', target_url="'.addslashes($target_url).'"'
