@@ -29,8 +29,11 @@ if (strpos($md5, '..')!==false) {
 	Core_quit();
 }
 
-@mkdir(USERBASE.'/ww.cache/admin', 0777, true);
 $fname=USERBASE.'/ww.cache/admin/'.$md5;
+if (!file_exists($fname)) {
+	header('Status: 404 WTF');
+	exit;
+}
 header('X-Powered-By:');
 header("Expires: ".gmdate("D, d M Y H:i:s", filemtime($fname)+216000)." GMT");
 header("Cache-Control: max-age=216000, private, must-revalidate", true);

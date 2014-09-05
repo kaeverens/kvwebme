@@ -1769,15 +1769,14 @@ function Core_adminReportsVisitorStats() {
 			.' from logs_archive where cdate="'.$key.'"'
 		);
 		dbQuery('delete from logs_archive where cdate="'.$key.'"');
-		dbQuery(
-			'insert into logs_archive set cdate="'.$key.'"'
+		$sql='insert into logs_archive set cdate="'.$key.'"'
 			.',unique_visitors='.$r['unique_visitors']
 			.',page_loads='.$r['page_loads']
 			.',ram_used='.$r['ram_used']
 			.',bandwidth_used='.$r['bandwidth_used']
 			.',render_time='.$r['render_time']
-			.',db_calls='.$r['db_calls']
-		);
+			.',db_calls='.$r['db_calls'];
+		dbQuery($sql);
 	}
 	return $days;
 }
