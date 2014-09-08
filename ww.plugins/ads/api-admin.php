@@ -219,15 +219,13 @@ function Ads_adminOrderMarkPaid() {
 	// { poster 
 	$url=false;
 	$dirname=USERBASE.'/f/userfiles/'.$data['user_id'].'/ads-upload-poster';
-	if (file_exists($dirname)) {
-		$dir=new DirectoryIterator($dirname);
-		foreach ($dir as $file) {
-			if ($file->isDot()) {
-				continue;
-			}
-			$url='userfiles/'.$data['user_id'].'/ads-upload-poster/'
-				.$file->getFilename();
+	$dir=new DirectoryIterator($dirname);
+	foreach ($dir as $file) {
+		if ($file->isDot()) {
+			continue;
 		}
+		$url='userfiles/'.$data['user_id'].'/ads-upload-poster/'
+			.$file->getFilename();
 	}
 	$newName='/f/userfiles/'.$data['user_id'].'/ad-poster-'.$ad_id.'.'
 		.preg_replace('/.*\./', '', $url);
@@ -254,10 +252,12 @@ function Ads_adminOrderMarkPaid() {
 	}
 	$newName='/f/userfiles/'.$data['user_id'].'/ad-'.$ad_id.'.'
 		.preg_replace('/.*\./', '', $url);
-	rename(
-		USERBASE.'/f/'.$url,
-		USERBASE.$newName
-	);
+	if (file_exists(USERBASE.'/f/'.$url)) {
+		rename(
+			USERBASE.'/f/'.$url,
+			USERBASE.$newName
+		);
+	}
 	dbQuery(
 		'update ads set image_url="'.addslashes($newName).'" where id='.$ad_id
 	);
@@ -296,13 +296,13 @@ function Ads_adminOrderMarkPaid() {
 		if (isset($meta['address']) && $meta['address']) {
 			$body.='<iframe frameborder="0" height="320" scrolling="no" src="//maps.google.com/maps?q='.htmlspecialchars($meta['address']).'&amp;num=1&amp;t=m&amp;ie=UTF8&amp;z=14&amp;output=embed" width="480"></iframe>';
 		}
-		dbQuery(
-			'insert into pages set parent='.$pid.', date_publish="0000-00-00"'
+		$sql='insert into pages set parent='.$pid.', date_publish="0000-00-00"'
 			.', body="'.addslashes($body).'"'
 			.', date_unpublish=date_add(now(), interval '.$data['days'].' day)'
 			.', name="'.addslashes($meta['name']).'"'
-			.', alias="'.addslashes($meta['name']).'", type=0'
-		);
+			.', category=""'
+			.', alias="'.addslashes($meta['name']).'", type=0';
+		dbQuery($sql);
 		Core_cacheClear('pages');
 	}
 	dbQuery('delete from ads_purchase_orders where id='.$id);

@@ -1,10 +1,13 @@
 $(function() {
 	CKEDITOR.plugins.addExternal( 'youtube', '/ww.incs/vendor/ckeditor-plugins/youtube/', 'plugin.js' );
 	CKEDITOR.plugins.addExternal( 'wenzgmap', '/ww.incs/vendor/ckeditor-plugins/wenzgmap/', 'plugin.js' );
+	CKEDITOR.plugins.addExternal( 'colorbutton', '/ww.incs/vendor/ckeditor-plugins/colorbutton/', 'plugin.js' );
+	CKEDITOR.plugins.addExternal( 'panelbutton', '/ww.incs/vendor/ckeditor-plugins/panelbutton/', 'plugin.js' );
+	CKEDITOR.plugins.addExternal( 'font', '/ww.incs/vendor/ckeditor-plugins/font/', 'plugin.js' );
 	CKEDITOR.editorConfig = function( config ) {
 		// Define changes to default configuration here. For example:
 		// config.language = 'fr';
-		// config.uiColor = '#AADC6E';
+		config.uiColor = '#999999';
 		config.toolbarGroups = [
 			{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
 			{ name: 'editing',	 groups: [ 'find', 'selection', 'spellchecker' ] },
@@ -20,7 +23,7 @@ $(function() {
 			{ name: 'colors' },
 			{ name: 'about' }
 		];
-		config.extraPlugins='youtube,wenzgmap';
+		config.extraPlugins='youtube,wenzgmap,colorbutton,font';
 		config.allowedContent=true;
 	};
 });
