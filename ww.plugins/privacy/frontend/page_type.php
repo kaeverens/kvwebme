@@ -183,6 +183,12 @@ function Privacy_loginForm() {
 		?$PAGEDATA->vars['userlogin_sourcetype']:'0';
 	switch ($sourcetype) {
 		case '1':
+			$start='';
+			$labelprefix='';
+			$labelpostfix='';
+			$inputprefix='';
+			$inputpostfix='';
+			$finish='';
 		break;
 	default:
 			$start='<table>';
