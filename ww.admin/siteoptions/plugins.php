@@ -56,7 +56,7 @@ if ($message=='updated') {
 	echo '<em>plugins updated</em>';
 }
 elseif ($message=='failed') {
-	echo'<em>update failed</em><p>failed to meet the plugin dependencies</p>';
+	echo'<em>'.__('update failed').'</em><p>'.__('failed to meet the plugin dependencies').'</p>';
 }
 
 $installed=Core_adminPluginsGetInstalled();
@@ -67,8 +67,8 @@ echo '
 <form method="post" action="siteoptions.php?page=plugins">
 <div id="tabs">
 	<ul>
-		<li><a href="#installed">Installed</a></li>
-		<li><a href="#available">Available</a></li>
+		<li><a href="#installed">'.__('Installed').'</a></li>
+		<li><a href="#available">'.__('Available').'</a></li>
 	</ul>';
 // }
 // { installed
@@ -76,9 +76,9 @@ echo '<div id="installed">
 		<table id="installed_plugins" class="display" style="width:100%">
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Installed</th>
-					<th style="width:90%">Description</th>
+					<th>'.__('Name').'</th>
+					<th>'.__('Installed').'</th>
+					<th style="width:90%">'.__('Description').'</th>
 				</tr>
 			</thead>
 			<tbody>';
@@ -102,9 +102,9 @@ echo '<div id="available">
 		<table id="available_plugins" class="display">
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Installed</th>
-					<th style="width:90%">Description</th>
+					<th>'.__('Name').'</th>
+					<th>'.__('Installed').'</th>
+					<th style="width:90%">'.__('Description').'</th>
 				</tr>
 			</thead>
 			<tbody>';
